@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { Analytics } from "@vercel/analytics/react";
 import Index from "./pages/Index";
 import SubjectDashboard from "./pages/SubjectDashboard";
 import TopicPage from "./pages/TopicPage";
@@ -38,6 +39,7 @@ const App = () => (
           </AuthProvider>
         </ErrorBoundary>
       </BrowserRouter>
+      <Analytics />
     </TooltipProvider>
   </QueryClientProvider>
 );
