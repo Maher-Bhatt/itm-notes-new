@@ -18,6 +18,7 @@ export interface Topic {
   title: string;
   simpleExplanation: string;
   detailedExplanation: string;
+  richContent?: string; // Markdown with KaTeX, Mermaid, and chart directives
   examples: Example[];
   keyPoints: string[];
   mcqs: MCQ[];

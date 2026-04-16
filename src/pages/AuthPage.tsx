@@ -47,9 +47,9 @@ export default function AuthPage() {
           <ArrowLeft className="h-4 w-4" /> Back to home
         </Link>
 
-        <div className="surface-elevated rounded-2xl p-8">
+        <div className="surface-elevated rounded p-8">
           <div className="text-center mb-8">
-            <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center mx-auto mb-4">
+            <div className="w-12 h-12 rounded bg-primary flex items-center justify-center mx-auto mb-4">
               <span className="text-primary-foreground font-bold text-sm">ITM</span>
             </div>
             <h1 className="text-2xl font-bold">{isLogin ? "Welcome Back" : "Create Account"}</h1>

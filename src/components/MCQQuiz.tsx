@@ -25,16 +25,14 @@ export function MCQQuiz({ mcqs, topicId, onComplete }: MCQQuizProps) {
   };
 
   const handleNext = () => {
-    const isLastQuestion = current === mcqs.length - 1;
-    const finalScore = score + (selected === mcq.correctIndex ? 1 : 0);
-
-    if (!isLastQuestion) {
+    if (current < mcqs.length - 1) {
       setCurrent((c) => c + 1);
       setSelected(null);
       setShowResult(false);
     } else {
+      // Score already updated in handleSelect — just finish
       setFinished(true);
-      onComplete?.(finalScore, mcqs.length);
+      onComplete?.(score + (selected === mcq.correctIndex ? 1 : 0), mcqs.length);
     }
   };
 
@@ -45,6 +43,10 @@ export function MCQQuiz({ mcqs, topicId, onComplete }: MCQQuizProps) {
     setScore(0);
     setFinished(false);
   };
+
+  if (mcqs.length === 0) {
+    return <p className="text-sm text-muted-foreground text-center py-4">No questions available yet.</p>;
+  }
 
   if (finished) {
     const pct = Math.round((score / mcqs.length) * 100);
@@ -82,18 +84,18 @@ export function MCQQuiz({ mcqs, topicId, onComplete }: MCQQuizProps) {
       <h4 className="text-[16px] font-semibold mb-4">{mcq.question}</h4>
       <div className="space-y-2 mb-6">
         {mcq.options.map((opt, i) => {
-          let cls = "apple-press w-full text-left py-3 px-4 rounded-xl border transition-colors text-[14px] ";
+          let cls = "apple-press w-full text-left py-3 px-4 rounded border transition-colors text-[14px] ";
           if (showResult) {
             if (i === mcq.correctIndex) cls += "border-success/30 bg-success/6 ";
             else if (i === selected) cls += "border-destructive/30 bg-destructive/6 ";
-            else cls += "border-white/5 opacity-40 ";
+            else cls += "border opacity-40 ";
           } else {
-            cls += "border-white/5 hover:bg-white/3 cursor-pointer ";
+            cls += "border hover:bg-secondary cursor-pointer ";
           }
           return (
             <button key={i} className={cls} onClick={() => handleSelect(i)} disabled={showResult}>
               <div className="flex items-center gap-3">
-                <span className="w-6 h-6 rounded-md border border-white/10 flex items-center justify-center text-[12px] font-medium shrink-0">
+                <span className="w-6 h-6 rounded-md border border flex items-center justify-center text-[12px] font-medium shrink-0">
                   {String.fromCharCode(65 + i)}
                 </span>
                 <span>{opt}</span>
@@ -105,7 +107,7 @@ export function MCQQuiz({ mcqs, topicId, onComplete }: MCQQuizProps) {
         })}
       </div>
       {showResult && (
-        <div className="surface-elevated rounded-xl p-4 mb-4 animate-fade-in">
+        <div className="surface-elevated rounded p-4 mb-4 animate-fade-in">
           <p className="text-[13px] text-muted-foreground">
             <strong className="text-foreground">Explanation:</strong> {mcq.explanation}
           </p>

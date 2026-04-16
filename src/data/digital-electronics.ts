@@ -7,7 +7,7 @@ export const digitalElectronicsSubject: Subject = {
   color: "152 69% 40%",
   icon: "⚡",
   description: "Number Systems, Logic Gates, Boolean Algebra, K-Maps, Combinational Circuits",
-  semester: 1,
+  semester: 2,
   units: [
     {
       id: "de-u1",

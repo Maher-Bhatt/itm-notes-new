@@ -3,12 +3,31 @@ import { pythonSubject } from "./python";
 import { cLanguageSubject } from "./c-language";
 import { digitalElectronicsSubject } from "./digital-electronics";
 import { probabilityStatsSubject, financialAccountingSubject } from "./other-subjects";
+import { deRichContent } from "./rich-content-de";
+import { psrRichContent } from "./rich-content-psr";
+
+// Inject rich content into topics
+function injectRichContent(subject: Subject, contentMap: Record<string, string>): Subject {
+  return {
+    ...subject,
+    units: subject.units.map((unit) => ({
+      ...unit,
+      topics: unit.topics.map((topic) => ({
+        ...topic,
+        richContent: contentMap[topic.id] || topic.richContent,
+      })),
+    })),
+  };
+}
+
+const enrichedDE = injectRichContent(digitalElectronicsSubject, deRichContent);
+const enrichedPSR = injectRichContent(probabilityStatsSubject, psrRichContent);
 
 export const subjects: Subject[] = [
   pythonSubject,
   cLanguageSubject,
-  digitalElectronicsSubject,
-  probabilityStatsSubject,
+  enrichedDE,
+  enrichedPSR,
   financialAccountingSubject,
 ];
 

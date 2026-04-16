@@ -137,7 +137,7 @@ export function ReviewSystem({ topicId }: { topicId: string }) {
 
       {/* Review form */}
       {showForm && user && (
-        <div className="surface-elevated rounded-xl p-6 animate-scale-in">
+        <div className="surface-elevated rounded p-6 animate-scale-in">
           <p className="font-medium mb-3">Rate this topic</p>
           <div className="flex gap-1 mb-4 star-rating">
             {[1, 2, 3, 4, 5].map((s) => (
@@ -176,7 +176,7 @@ export function ReviewSystem({ topicId }: { topicId: string }) {
 
       {/* Sign-in prompt */}
       {!user && (
-        <div className="surface-elevated rounded-xl p-4 text-center text-sm text-muted-foreground">
+        <div className="surface-elevated rounded p-4 text-center text-sm text-muted-foreground">
           <a href="/auth" className="text-primary hover:underline">Sign in</a> to leave a review
         </div>
       )}
@@ -185,9 +185,9 @@ export function ReviewSystem({ topicId }: { topicId: string }) {
       {loading && reviews.length === 0 && (
         <div className="space-y-3">
           {[1, 2].map((i) => (
-            <div key={i} className="surface-elevated rounded-xl p-4 animate-pulse">
-              <div className="h-4 w-1/3 bg-white/5 rounded mb-2" />
-              <div className="h-3 w-2/3 bg-white/5 rounded" />
+            <div key={i} className="surface-elevated rounded p-4 animate-pulse">
+              <div className="h-4 w-1/3 bg-secondary rounded mb-2" />
+              <div className="h-3 w-2/3 bg-secondary rounded" />
             </div>
           ))}
         </div>
@@ -200,7 +200,7 @@ export function ReviewSystem({ topicId }: { topicId: string }) {
 
       <div className="space-y-3">
         {reviews.map((r) => (
-          <div key={r.id} className="surface-elevated rounded-xl p-4 animate-fade-in">
+          <div key={r.id} className="surface-elevated rounded p-4 animate-fade-in">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-full bg-primary/12 flex items-center justify-center">

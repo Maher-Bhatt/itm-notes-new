@@ -7,7 +7,7 @@ export const cLanguageSubject: Subject = {
   color: "199 89% 48%",
   icon: "{ }",
   description: "Complete C Programming — Syntax, Data Types, Operators, Control Flow, Functions, Arrays, Pointers, Structures",
-  semester: 1,
+  semester: 2,
   units: [
     {
       id: "c-u1",

@@ -7,7 +7,7 @@ export const probabilityStatsSubject: Subject = {
   color: "280 65% 55%",
   icon: "📊",
   description: "Descriptive Statistics, Probability Rules, Conditional Probability, Bayes' Theorem",
-  semester: 1,
+  semester: 2,
   units: [
     {
       id: "ps-u1",
@@ -173,7 +173,7 @@ export const financialAccountingSubject: Subject = {
   color: "25 95% 53%",
   icon: "₹",
   description: "Double-Entry Bookkeeping, Golden Rules of Accounting, Journal Entries",
-  semester: 1,
+  semester: 2,
   units: [
     {
       id: "fa-u1",

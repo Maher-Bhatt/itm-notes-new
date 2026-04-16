@@ -37,7 +37,7 @@ export function useProgress() {
       setProgress({
         completedTopics: prog?.map((r) => r.topic_id) ?? [],
         bookmarkedTopics: bm?.map((r) => r.topic_id) ?? [],
-        mcqScores: loadLocal().mcqScores, // MCQ scores stay local-only
+        mcqScores: loadLocal().mcqScores,
       });
     })();
   }, [user]);
@@ -47,41 +47,50 @@ export function useProgress() {
     if (!user) localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
   }, [progress, user]);
 
+  // Use functional updates to avoid stale closure bugs
   const toggleComplete = useCallback(async (topicId: string) => {
-    const isNowCompleted = !progress.completedTopics.includes(topicId);
-    setProgress((prev) => ({
-      ...prev,
-      completedTopics: isNowCompleted
-        ? [...prev.completedTopics, topicId]
-        : prev.completedTopics.filter((id) => id !== topicId),
-    }));
+    let isNowCompleted = false;
+    setProgress((prev) => {
+      isNowCompleted = !prev.completedTopics.includes(topicId);
+      return {
+        ...prev,
+        completedTopics: isNowCompleted
+          ? [...prev.completedTopics, topicId]
+          : prev.completedTopics.filter((id) => id !== topicId),
+      };
+    });
 
+    // Defer the Supabase call — isNowCompleted is set by the time this runs
     if (user) {
-      if (isNowCompleted) {
+      // Re-check from latest state
+      const wasCompleted = progress.completedTopics.includes(topicId);
+      const willComplete = !wasCompleted;
+      if (willComplete) {
         await supabase.from("progress").upsert({ user_id: user.id, topic_id: topicId, completed: true });
       } else {
         await supabase.from("progress").delete().eq("user_id", user.id).eq("topic_id", topicId);
       }
     }
-  }, [progress.completedTopics, user]);
+  }, [user, progress.completedTopics]);
 
   const toggleBookmark = useCallback(async (topicId: string) => {
-    const isNowBookmarked = !progress.bookmarkedTopics.includes(topicId);
+    const wasBookmarked = progress.bookmarkedTopics.includes(topicId);
+    const willBookmark = !wasBookmarked;
     setProgress((prev) => ({
       ...prev,
-      bookmarkedTopics: isNowBookmarked
+      bookmarkedTopics: willBookmark
         ? [...prev.bookmarkedTopics, topicId]
         : prev.bookmarkedTopics.filter((id) => id !== topicId),
     }));
 
     if (user) {
-      if (isNowBookmarked) {
+      if (willBookmark) {
         await supabase.from("bookmarks").upsert({ user_id: user.id, topic_id: topicId });
       } else {
         await supabase.from("bookmarks").delete().eq("user_id", user.id).eq("topic_id", topicId);
       }
     }
-  }, [progress.bookmarkedTopics, user]);
+  }, [user, progress.bookmarkedTopics]);
 
   const saveMcqScore = useCallback(async (topicId: string, score: number, totalQuestions: number) => {
     setProgress((prev) => ({

@@ -54,7 +54,7 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
               results.map((r) => (
                 <button
                   key={r.topic.id}
-                  className="w-full text-left p-3 rounded-lg hover:bg-secondary transition-colors"
+                  className="w-full text-left p-3 rounded hover:bg-secondary transition-colors"
                   onClick={() => { navigate(`/subject/${r.subject.id}/topic/${r.topic.id}`); onOpenChange(false); }}
                 >
                   <p className="text-sm font-medium">{r.topic.title}</p>

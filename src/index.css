@@ -2,39 +2,39 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 @layer base {
   :root {
-    --background: 0 0% 0%;
-    --foreground: 0 0% 98%;
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
 
-    --card: 240 6% 11%;
-    --card-foreground: 0 0% 98%;
+    --card: 0 0% 98%;
+    --card-foreground: 0 0% 0%;
 
-    --popover: 240 6% 11%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 0 0% 98%;
+    --popover-foreground: 0 0% 0%;
 
     --primary: 211 100% 50%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 240 4% 16%;
-    --secondary-foreground: 0 0% 85%;
+    --secondary: 0 0% 95%;
+    --secondary-foreground: 0 0% 0%;
 
-    --muted: 240 4% 16%;
-    --muted-foreground: 240 5% 65%;
+    --muted: 0 0% 95%;
+    --muted-foreground: 0 0% 50%;
 
-    --accent: 240 6% 14%;
-    --accent-foreground: 0 0% 90%;
+    --accent: 0 0% 90%;
+    --accent-foreground: 0 0% 0%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 100% / 0.06;
-    --input: 240 4% 16%;
+    --border: 0 0% 0% / 0.1;
+    --input: 0 0% 98%;
     --ring: 211 100% 50%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
 
     --success: 142 71% 45%;
     --success-foreground: 0 0% 100%;
@@ -43,13 +43,13 @@
     --info: 211 100% 50%;
     --info-foreground: 0 0% 100%;
 
-    --sidebar-background: 0 0% 0%;
-    --sidebar-foreground: 0 0% 85%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 0 0% 0%;
     --sidebar-primary: 211 100% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 6% 11%;
-    --sidebar-accent-foreground: 0 0% 90%;
-    --sidebar-border: 0 0% 100% / 0.06;
+    --sidebar-accent: 0 0% 95%;
+    --sidebar-accent-foreground: 0 0% 0%;
+    --sidebar-border: 0 0% 0% / 0.1;
     --sidebar-ring: 211 100% 50%;
   }
 }
@@ -64,6 +64,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
+    line-height: 1.5;
   }
 
   html {
@@ -72,48 +73,47 @@
 }
 
 @layer utilities {
-  /* Apple-style frosted glass - ONLY for nav bar and sidebar */
+  /* Minimal header */
   .apple-vibrancy {
-    background: rgba(0, 0, 0, 0.72);
-    backdrop-filter: blur(40px) saturate(1.8);
-    -webkit-backdrop-filter: blur(40px) saturate(1.8);
+    background: hsl(var(--background));
+    border-bottom: 1px solid hsl(var(--border));
   }
 
-  /* Elevated surface (cards) */
+  /* Minimal surface */
   .surface-elevated {
     background: hsl(var(--card));
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border: 1px solid hsl(var(--border));
   }
 
   .surface-elevated-hover {
     background: hsl(var(--card));
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border: 1px solid hsl(var(--border));
     transition: background-color 0.15s ease;
   }
 
   .surface-elevated-hover:hover {
-    background: hsl(240 6% 14%);
+    background: hsl(0 0% 96%);
   }
 
-  /* Apple press animation */
+  /* Subtle press animation */
   .apple-press:active {
-    transform: scale(0.97);
+    transform: scale(0.98);
   }
   .apple-press {
     transition: transform 0.12s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
 
-  /* iOS inset grouped style */
+  /* Inset group */
   .inset-group {
     background: hsl(var(--card));
-    border-radius: 14px;
+    border-radius: 0.5rem;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border: 1px solid hsl(var(--border));
   }
 
   .inset-group-item {
     padding: 13px 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid hsl(var(--border));
     transition: background-color 0.12s ease;
   }
 
@@ -122,14 +122,14 @@
   }
 
   .inset-group-item:hover {
-    background: rgba(255, 255, 255, 0.03);
+    background: hsl(0 0% 96%);
   }
 
-  /* Xcode-style code blocks */
+  /* Code blocks */
   .xcode-block {
-    background: #000000;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: #f5f5f5;
+    border-radius: 0.5rem;
+    border: 1px solid hsl(var(--border));
     overflow: hidden;
   }
 
@@ -138,8 +138,8 @@
     align-items: center;
     justify-content: space-between;
     padding: 10px 14px;
-    background: rgba(255, 255, 255, 0.03);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    background: hsl(0 0% 98%);
+    border-bottom: 1px solid hsl(var(--border));
   }
 
   .xcode-block-body {
@@ -163,31 +163,14 @@
   }
 
   .pill-button:hover {
-    opacity: 0.88;
+    opacity: 0.9;
   }
 
   .pill-button:active {
     transform: scale(0.96);
   }
 
-  /* Subtle text */
-  .text-apple-secondary {
-    color: rgba(235, 235, 245, 0.6);
-  }
 
-  .text-apple-tertiary {
-    color: rgba(235, 235, 245, 0.3);
-  }
-
-  /* Progress ring */
-  .progress-ring {
-    transform: rotate(-90deg);
-  }
-
-  .progress-ring-circle {
-    transition: stroke-dashoffset 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    stroke-linecap: round;
-  }
 
   /* Fade in animation */
   .animate-fade-in {
@@ -220,9 +203,10 @@
 
 /* Code blocks default */
 pre {
-  @apply rounded-xl p-4 overflow-x-auto text-sm font-mono;
-  background: #000000;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  @apply rounded p-4 overflow-x-auto text-sm font-mono;
+  background: #f5f5f5;
+  border: 1px solid hsl(var(--border));
+  color: #000;
 }
 
 code {
@@ -230,9 +214,9 @@ code {
 }
 
 :not(pre) > code {
-  @apply px-1.5 py-0.5 rounded-md text-sm;
+  @apply px-1.5 py-0.5 rounded text-sm;
   background: hsl(var(--secondary));
-  color: hsl(var(--accent-foreground));
+  color: hsl(var(--secondary-foreground));
 }
 
 /* Scrollbar */
@@ -246,12 +230,12 @@ code {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
+  background: hsl(0 0% 80%);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: hsl(0 0% 70%);
 }
 
 /* Star rating */
@@ -262,3 +246,36 @@ code {
 .star-rating .star:hover {
   transform: scale(1.15);
 }
+
+/* Focus Mode */
+.focus-mode {
+  background: hsl(0 0% 100%);
+}
+
+.focus-mode header {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateY(-100%) !important;
+}
+
+/* Smooth reading column expansion */
+.focus-mode main {
+  padding-top: 2.5rem;
+}
+
+/* Floating exit toolbar animation */
+.focus-mode .focus-toolbar {
+  animation: slideUpFade 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes slideUpFade {
+  from { opacity: 0; transform: translate(-50%, 12px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* Progress bar transition */
+.progress-bar-fill {
+  transition: width 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+

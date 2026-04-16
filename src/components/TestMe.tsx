@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import type { MCQ } from "@/data/types";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, XCircle, Clock, Trophy, RotateCcw } from "lucide-react";
@@ -19,6 +19,7 @@ export function TestMe({ mcqs, topicId, topicTitle }: TestMeProps) {
   const [answers, setAnswers] = useState<(number | null)[]>([]);
   const [submitted, setSubmitted] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0);
+  const submittedRef = useRef(false);
 
   const startTest = () => {
     const shuffled = [...mcqs].sort(() => Math.random() - 0.5);
@@ -26,25 +27,14 @@ export function TestMe({ mcqs, topicId, topicTitle }: TestMeProps) {
     setQuestions(picked);
     setAnswers(new Array(picked.length).fill(null));
     setSubmitted(false);
+    submittedRef.current = false;
     setTimeLeft(picked.length * 60);
     setOpen(true);
   };
 
-  useEffect(() => {
-    if (!open || submitted || timeLeft <= 0) return;
-    const timer = setInterval(() => {
-      setTimeLeft((t) => {
-        if (t <= 1) {
-          handleSubmit();
-          return 0;
-        }
-        return t - 1;
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [open, submitted, timeLeft]);
-
   const handleSubmit = useCallback(async () => {
+    if (submittedRef.current) return;
+    submittedRef.current = true;
     setSubmitted(true);
     const score = questions.reduce((s, q, i) => s + (answers[i] === q.correctIndex ? 1 : 0), 0);
     if (user) {
@@ -56,6 +46,23 @@ export function TestMe({ mcqs, topicId, topicTitle }: TestMeProps) {
       });
     }
   }, [questions, answers, user, topicId]);
+
+  // Timer with ref to avoid stale closure
+  useEffect(() => {
+    if (!open || submitted || timeLeft <= 0) return;
+    const timer = setInterval(() => {
+      setTimeLeft((t) => {
+        if (t <= 1) {
+          clearInterval(timer);
+          // Use timeout to avoid setState during render
+          setTimeout(() => handleSubmit(), 0);
+          return 0;
+        }
+        return t - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [open, submitted, handleSubmit]);
 
   const score = submitted ? questions.reduce((s, q, i) => s + (answers[i] === q.correctIndex ? 1 : 0), 0) : 0;
   const pct = submitted ? Math.round((score / questions.length) * 100) : 0;
@@ -71,7 +78,7 @@ export function TestMe({ mcqs, topicId, topicTitle }: TestMeProps) {
       </button>
 
       <Dialog open={open} onOpenChange={(v) => { if (!v && !submitted) return; setOpen(v); }}>
-        <DialogContent className="sm:max-w-2xl surface-elevated border border-white/5 max-h-[90vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-2xl surface-elevated border max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="font-semibold flex items-center justify-between">
               <span>Test: {topicTitle}</span>
@@ -93,11 +100,11 @@ export function TestMe({ mcqs, topicId, topicTitle }: TestMeProps) {
 
               <div className="text-left space-y-3 mt-6">
                 {questions.map((q, qi) => (
-                  <div key={qi} className="surface-elevated rounded-xl p-4">
+                  <div key={qi} className="surface-elevated rounded p-4">
                     <p className="text-[14px] font-medium mb-2">{qi + 1}. {q.question}</p>
                     <div className="space-y-1.5">
                       {q.options.map((opt, oi) => (
-                        <div key={oi} className={`text-[13px] px-3 py-2 rounded-lg flex items-center gap-2 ${
+                        <div key={oi} className={`text-[13px] px-3 py-2 rounded flex items-center gap-2 ${
                           oi === q.correctIndex ? "bg-success/8 text-success" :
                           oi === answers[qi] ? "bg-destructive/8 text-destructive" :
                           "text-muted-foreground"
@@ -121,7 +128,7 @@ export function TestMe({ mcqs, topicId, topicTitle }: TestMeProps) {
           ) : (
             <div className="space-y-5">
               {questions.map((q, qi) => (
-                <div key={qi} className="surface-elevated rounded-xl p-4">
+                <div key={qi} className="surface-elevated rounded p-4">
                   <p className="text-[14px] font-medium mb-3">{qi + 1}. {q.question}</p>
                   <div className="space-y-1.5">
                     {q.options.map((opt, oi) => (
@@ -132,10 +139,10 @@ export function TestMe({ mcqs, topicId, topicTitle }: TestMeProps) {
                           next[qi] = oi;
                           setAnswers(next);
                         }}
-                        className={`apple-press w-full text-left text-[13px] px-4 py-2.5 rounded-xl border transition-colors ${
+                        className={`apple-press w-full text-left text-[13px] px-4 py-2.5 rounded border transition-colors ${
                           answers[qi] === oi
                             ? "border-primary bg-primary/8 text-foreground"
-                            : "border-white/5 hover:bg-white/3"
+                            : "border hover:bg-secondary"
                         }`}
                       >
                         <span className="font-medium mr-2">{String.fromCharCode(65 + oi)}.</span> {opt}

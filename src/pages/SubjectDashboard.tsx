@@ -14,12 +14,11 @@ function ProgressRing({ progress, size = 44, strokeWidth = 3 }: { progress: numb
 
   return (
     <svg width={size} height={size} className="progress-ring">
-      <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={strokeWidth} />
-      <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="hsl(211, 100%, 50%)" strokeWidth={strokeWidth} strokeDasharray={circumference} strokeDashoffset={offset} className="progress-ring-circle" />
+      <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="hsl(var(--secondary))" strokeWidth={strokeWidth} />
+      <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="hsl(var(--primary))" strokeWidth={strokeWidth} strokeDasharray={circumference} strokeDashoffset={offset} className="progress-ring-circle" />
     </svg>
   );
 }
-
 export default function SubjectDashboard() {
   const { subjectId } = useParams<{ subjectId: string }>();
   const subject = getSubject(subjectId || "");
@@ -94,7 +93,7 @@ export default function SubjectDashboard() {
                           onClick={() => navigate(`/subject/${subject.id}/topic/${topic.id}`)}
                           className="inset-group-item apple-press w-full flex items-center gap-3 text-left"
                         >
-                          <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${completed ? "bg-success/12 text-success" : "bg-secondary text-muted-foreground"}`}>
+                          <div className={`w-7 h-7 rounded flex items-center justify-center shrink-0 ${completed ? "bg-success/12 text-success" : "bg-secondary text-muted-foreground"}`}>
                             {completed ? <CheckCircle className="h-3.5 w-3.5" /> : <BookOpen className="h-3.5 w-3.5" />}
                           </div>
                           <div className="flex-1 min-w-0">
