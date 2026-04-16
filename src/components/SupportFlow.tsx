@@ -4,26 +4,39 @@ import { Button } from "@/components/ui/button";
 import { Heart } from "lucide-react";
 import qrImage from "@/assets/qr-payment.jpeg";
 
-const SESSION_KEY = "itm_support_dismissed";
+// Keys stored in localStorage so they survive page reloads
+const DISMISSED_KEY = "itm_support_dismissed_until";
 const ENGAGEMENT_KEY = "itm_topics_viewed";
+
+// Show popup no sooner than 20 minutes after the last dismissal
+const COOLDOWN_MS = 20 * 60 * 1000; // 20 minutes
+
+function isCooledDown(): boolean {
+  const dismissedUntil = localStorage.getItem(DISMISSED_KEY);
+  if (!dismissedUntil) return true;
+  return Date.now() > parseInt(dismissedUntil, 10);
+}
 
 export function useSupportFlow() {
   const [shouldShow, setShouldShow] = useState(false);
 
   useEffect(() => {
-    const dismissed = sessionStorage.getItem(SESSION_KEY);
-    if (dismissed) return;
+    // Don't show if still within the cooldown window
+    if (!isCooledDown()) return;
 
     const viewedCount = parseInt(localStorage.getItem(ENGAGEMENT_KEY) || "0", 10);
     if (viewedCount >= 3) {
-      const timer = setTimeout(() => setShouldShow(true), 2000);
+      // Small delay to avoid interrupting page load
+      const timer = setTimeout(() => setShouldShow(true), 3000);
       return () => clearTimeout(timer);
     }
   }, []);
 
   const dismiss = () => {
     setShouldShow(false);
-    sessionStorage.setItem(SESSION_KEY, "true");
+    // Persist cooldown end-time — next show is 20–30 min from now
+    const jitter = Math.floor(Math.random() * 10 * 60 * 1000); // 0–10 min random jitter
+    localStorage.setItem(DISMISSED_KEY, String(Date.now() + COOLDOWN_MS + jitter));
   };
 
   const recordEngagement = () => {

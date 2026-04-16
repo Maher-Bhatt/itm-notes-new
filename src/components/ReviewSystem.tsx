@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -6,56 +6,108 @@ import { Textarea } from "@/components/ui/textarea";
 import { Star, MessageSquare, User } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-interface Review {
+interface ReviewRow {
   id: string;
   rating: number;
   review_text: string | null;
   created_at: string;
-  profiles: { display_name: string | null } | null;
+  user_id: string;
+}
+
+interface ReviewWithAuthor extends ReviewRow {
+  display_name: string | null;
 }
 
 export function ReviewSystem({ topicId }: { topicId: string }) {
   const { user } = useAuth();
   const { toast } = useToast();
-  const [reviews, setReviews] = useState<Review[]>([]);
+  const [reviews, setReviews] = useState<ReviewWithAuthor[]>([]);
+  const [loading, setLoading] = useState(true);
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [text, setText] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
 
-  useEffect(() => {
-    loadReviews();
+  const loadReviews = useCallback(async () => {
+    setLoading(true);
+    try {
+      // Step 1: fetch reviews for this topic
+      const { data: reviewRows, error: reviewErr } = await supabase
+        .from("reviews")
+        .select("id, rating, review_text, created_at, user_id")
+        .eq("topic_id", topicId)
+        .order("created_at", { ascending: false });
+
+      if (reviewErr) {
+        console.error("[ReviewSystem] fetch reviews error:", reviewErr);
+        return;
+      }
+      if (!reviewRows || reviewRows.length === 0) {
+        setReviews([]);
+        return;
+      }
+
+      // Step 2: fetch profiles for those user_ids (avoids broken FK join)
+      const userIds = [...new Set(reviewRows.map((r) => r.user_id))];
+      const { data: profileRows, error: profileErr } = await supabase
+        .from("profiles")
+        .select("user_id, display_name")
+        .in("user_id", userIds);
+
+      if (profileErr) {
+        console.error("[ReviewSystem] fetch profiles error:", profileErr);
+      }
+
+      const profileMap: Record<string, string | null> = {};
+      for (const p of profileRows ?? []) {
+        profileMap[p.user_id] = p.display_name;
+      }
+
+      setReviews(
+        reviewRows.map((r) => ({
+          ...r,
+          display_name: profileMap[r.user_id] ?? null,
+        }))
+      );
+    } finally {
+      setLoading(false);
+    }
   }, [topicId]);
 
-  const loadReviews = async () => {
-    const { data } = await supabase
-      .from("reviews")
-      .select("id, rating, review_text, created_at, profiles:user_id(display_name)")
-      .eq("topic_id", topicId)
-      .order("created_at", { ascending: false });
-    if (data) setReviews(data as any);
-  };
+  useEffect(() => {
+    loadReviews();
+  }, [loadReviews]);
 
   const handleSubmit = async () => {
     if (!user || rating === 0) return;
     setSubmitting(true);
-    const { error } = await supabase.from("reviews").upsert({
-      user_id: user.id,
-      topic_id: topicId,
-      rating,
-      review_text: text || null,
-    });
-    if (error) {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
-    } else {
-      toast({ title: "Review submitted! ⭐" });
-      setShowForm(false);
-      setRating(0);
-      setText("");
-      loadReviews();
+    try {
+      // upsert with explicit onConflict to handle the UNIQUE(user_id, topic_id) constraint
+      const { error } = await supabase.from("reviews").upsert(
+        {
+          user_id: user.id,
+          topic_id: topicId,
+          rating,
+          review_text: text.trim() || null,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "user_id,topic_id" }
+      );
+
+      if (error) {
+        console.error("[ReviewSystem] upsert error:", error);
+        toast({ title: "Error", description: error.message, variant: "destructive" });
+      } else {
+        toast({ title: "Review submitted! ⭐" });
+        setShowForm(false);
+        setRating(0);
+        setText("");
+        await loadReviews();
+      }
+    } finally {
+      setSubmitting(false);
     }
-    setSubmitting(false);
   };
 
   const avgRating = reviews.length
@@ -64,7 +116,7 @@ export function ReviewSystem({ topicId }: { topicId: string }) {
 
   return (
     <div className="space-y-6">
-      {/* Summary */}
+      {/* Header row */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <MessageSquare className="h-5 w-5 text-primary" />
@@ -83,7 +135,7 @@ export function ReviewSystem({ topicId }: { topicId: string }) {
         )}
       </div>
 
-      {/* Form */}
+      {/* Review form */}
       {showForm && user && (
         <div className="surface-elevated rounded-xl p-6 animate-scale-in">
           <p className="font-medium mb-3">Rate this topic</p>
@@ -96,7 +148,11 @@ export function ReviewSystem({ topicId }: { topicId: string }) {
                 onMouseEnter={() => setHoverRating(s)}
                 onMouseLeave={() => setHoverRating(0)}
               >
-                <Star className={`h-7 w-7 transition-colors ${s <= (hoverRating || rating) ? "fill-warning text-warning" : "text-muted-foreground"}`} />
+                <Star
+                  className={`h-7 w-7 transition-colors ${
+                    s <= (hoverRating || rating) ? "fill-warning text-warning" : "text-muted-foreground"
+                  }`}
+                />
               </button>
             ))}
           </div>
@@ -111,18 +167,37 @@ export function ReviewSystem({ topicId }: { topicId: string }) {
             <Button onClick={handleSubmit} disabled={submitting || rating === 0}>
               {submitting ? "Submitting..." : "Submit Review"}
             </Button>
-            <Button variant="ghost" onClick={() => setShowForm(false)}>Cancel</Button>
+            <Button variant="ghost" onClick={() => { setShowForm(false); setRating(0); setText(""); }}>
+              Cancel
+            </Button>
           </div>
         </div>
       )}
 
+      {/* Sign-in prompt */}
       {!user && (
         <div className="surface-elevated rounded-xl p-4 text-center text-sm text-muted-foreground">
           <a href="/auth" className="text-primary hover:underline">Sign in</a> to leave a review
         </div>
       )}
 
-      {/* Reviews List */}
+      {/* Loading skeleton */}
+      {loading && reviews.length === 0 && (
+        <div className="space-y-3">
+          {[1, 2].map((i) => (
+            <div key={i} className="surface-elevated rounded-xl p-4 animate-pulse">
+              <div className="h-4 w-1/3 bg-white/5 rounded mb-2" />
+              <div className="h-3 w-2/3 bg-white/5 rounded" />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Reviews list */}
+      {!loading && reviews.length === 0 && (
+        <p className="text-sm text-muted-foreground text-center py-4">No reviews yet. Be the first!</p>
+      )}
+
       <div className="space-y-3">
         {reviews.map((r) => (
           <div key={r.id} className="surface-elevated rounded-xl p-4 animate-fade-in">
@@ -132,17 +207,30 @@ export function ReviewSystem({ topicId }: { topicId: string }) {
                   <User className="h-4 w-4 text-primary" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium">{(r.profiles as any)?.display_name || "Anonymous"}</p>
-                  <p className="text-xs text-muted-foreground">{new Date(r.created_at).toLocaleDateString()}</p>
+                  <p className="text-sm font-medium">{r.display_name || "Anonymous"}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {new Date(r.created_at).toLocaleDateString("en-IN", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </p>
                 </div>
               </div>
               <div className="flex gap-0.5">
                 {[1, 2, 3, 4, 5].map((s) => (
-                  <Star key={s} className={`h-3.5 w-3.5 ${s <= r.rating ? "fill-warning text-warning" : "text-muted-foreground/30"}`} />
+                  <Star
+                    key={s}
+                    className={`h-3.5 w-3.5 ${
+                      s <= r.rating ? "fill-warning text-warning" : "text-muted-foreground/30"
+                    }`}
+                  />
                 ))}
               </div>
             </div>
-            {r.review_text && <p className="text-sm text-muted-foreground">{r.review_text}</p>}
+            {r.review_text && (
+              <p className="text-sm text-muted-foreground leading-relaxed">{r.review_text}</p>
+            )}
           </div>
         ))}
       </div>
