@@ -50,7 +50,10 @@ export function MaterialsDownloadDialog({ open, onOpenChange, subjectId, subject
   }, [open, subjectId]);
 
   const handleDownload = async (m: Material) => {
-    if (!user) return;
+    if (!user) {
+      toast.info("Please sign in to download materials");
+      return;
+    }
     setDownloadingId(m.id);
     const toastId = toast.loading(`Downloading ${m.file_name}…`);
     try {

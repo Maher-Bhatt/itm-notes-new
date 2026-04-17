@@ -1,7 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Search, LogIn, LogOut, User, ChevronLeft, Shield, Download } from "lucide-react";
+import { useState } from "react";
+import { Search, LogIn, LogOut, User, ChevronLeft, Shield, Download, FolderOpen } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
+import { MaterialsBrowser } from "@/components/MaterialsBrowser";
+import { toast } from "sonner";
 import logo from "@/assets/logo.png";
 
 interface HeaderProps {
@@ -14,6 +17,7 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
   const navigate = useNavigate();
   const { user, loading, signOut } = useAuth();
   const { isAdmin } = useIsAdmin();
+  const [materialsOpen, setMaterialsOpen] = useState(false);
 
   const displayName = user?.user_metadata?.display_name
     || user?.email?.split("@")[0]
@@ -37,6 +41,21 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
           </Link>
         </div>
         <div className="flex items-center gap-1.5">
+          <button
+            onClick={() => {
+              if (!user) {
+                toast.info("Please sign in to view materials");
+                navigate("/auth");
+                return;
+              }
+              setMaterialsOpen(true);
+            }}
+            title={user ? "Browse study materials" : "Sign in to view materials"}
+            className="apple-press inline-flex items-center gap-1.5 h-8 px-2.5 rounded text-sm text-muted-foreground hover:bg-secondary transition-colors"
+          >
+            <FolderOpen className="h-4 w-4" />
+            <span className="hidden sm:inline">Materials</span>
+          </button>
           <button onClick={onSearchOpen} className="apple-press inline-flex items-center gap-1.5 h-8 px-2.5 rounded text-sm text-muted-foreground hover:bg-secondary transition-colors">
             <Search className="h-4 w-4" />
             <span className="hidden sm:inline">Search</span>
@@ -91,6 +110,7 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
           )}
         </div>
       </div>
+      <MaterialsBrowser open={materialsOpen} onOpenChange={setMaterialsOpen} />
     </header>
   );
 }
