@@ -242,12 +242,24 @@ export type Database = {
     Functions: {
       admin_list_users: {
         Args: {
+          _from?: string
           _limit?: number
           _offset?: number
           _search?: string
-          _since?: string
+          _to?: string
         }
-        Returns: Json
+        Returns: {
+          created_at: string
+          display_name: string
+          downloads: number
+          email: string
+          is_admin: boolean
+          last_sign_in_at: string
+          quizzes_taken: number
+          topics_completed: number
+          total_count: number
+          user_id: string
+        }[]
       }
       admin_set_role: {
         Args: {
@@ -259,7 +271,13 @@ export type Database = {
       }
       admin_stats: { Args: never; Returns: Json }
       admin_user_details: { Args: { _user_id: string }; Returns: Json }
-      admin_user_growth: { Args: { _days?: number }; Returns: Json }
+      admin_user_growth: {
+        Args: { _from?: string; _to?: string }
+        Returns: {
+          count: number
+          day: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

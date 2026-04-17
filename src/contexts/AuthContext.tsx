@@ -43,7 +43,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       password,
       options: {
         data: { display_name: displayName || email },
-        emailRedirectTo: redirectBase,
+        // Send users back to /auth with a flag so we can show "Email confirmed — please log in"
+        emailRedirectTo: `${redirectBase}/auth?confirmed=1`,
       },
     });
     return { error: error as Error | null };

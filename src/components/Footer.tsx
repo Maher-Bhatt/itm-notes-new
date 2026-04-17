@@ -1,6 +1,7 @@
 import { Globe } from "lucide-react";
 import { Link } from "react-router-dom";
 import { subjects } from "@/data/subjects";
+import logo from "@/assets/logo.png";
 
 export function Footer() {
   return (
@@ -11,11 +12,7 @@ export function Footer() {
           {/* About */}
           <div className="lg:col-span-1">
             <Link to="/" className="flex items-center gap-2 mb-4">
-              <img
-                src="/logo.png"
-                alt="Velocity Web"
-                className="h-8 w-auto object-contain"
-              />
+              <img src={logo} alt="Velocity Web" className="w-7 h-7 object-contain dark:invert" />
               <span className="font-semibold text-sm">ITM Notes</span>
             </Link>
 

@@ -114,9 +114,9 @@ export default function AdminDashboard() {
       ),
       sb.from("progress").select("topic_id, user_id").eq("completed", true),
       sb.from("test_results")
-        .select("score, total_questions, completed_at")
-        .gte("completed_at", dateRange.from ? dateRange.from.toISOString() : "1970-01-01")
-        .order("completed_at"),
+        .select("score, total_questions, taken_at")
+        .gte("taken_at", dateRange.from ? dateRange.from.toISOString() : "1970-01-01")
+        .order("taken_at"),
     ]);
 
     if (statsRes.error) setStatsError(statsRes.error.message ?? "Couldn't load stats");
@@ -149,8 +149,8 @@ export default function AdminDashboard() {
 
     if (scoresRes.data) {
       const byDay = new Map<string, { sum: number; n: number }>();
-      for (const r of scoresRes.data as { score: number; total_questions: number; completed_at: string }[]) {
-        const day = new Date(r.completed_at).toLocaleDateString(undefined, { month: "short", day: "numeric" });
+      for (const r of scoresRes.data as { score: number; total_questions: number; taken_at: string }[]) {
+        const day = new Date(r.taken_at).toLocaleDateString(undefined, { month: "short", day: "numeric" });
         const pct = (r.score / Math.max(r.total_questions, 1)) * 100;
         const cur = byDay.get(day) ?? { sum: 0, n: 0 };
         cur.sum += pct; cur.n += 1;
@@ -176,7 +176,7 @@ export default function AdminDashboard() {
     }
     const list = (data ?? []) as AdminUser[];
     setUsers(list);
-    setTotalUsers(list[0]?.total_count ? Number(list[0].total_count) : 0);
+    setTotalUsers(list.length > 0 ? Number(list[0].total_count) : 0);
   }, [debouncedSearch, dateRange.from, dateRange.to, page]);
 
   const loadAll = useCallback(async () => {

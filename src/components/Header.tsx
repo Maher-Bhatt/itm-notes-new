@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Search, LogIn, LogOut, User, ChevronLeft, Shield, Download } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
+import logo from "@/assets/logo.png";
 
 interface HeaderProps {
   onSearchOpen: () => void;
@@ -28,11 +29,7 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
             </button>
           )}
           <Link to="/" className="flex items-center gap-2 group">
-            <img
-              src="/logo.png"
-              alt="Velocity Web"
-              className="h-7 w-auto object-contain"
-            />
+            <img src={logo} alt="Velocity Web" className="w-7 h-7 object-contain dark:invert" />
             <div className="flex flex-col">
               <span className="font-semibold text-sm leading-tight">ITM Notes</span>
               <span className="text-[9px] text-muted-foreground leading-none hidden sm:block">by Velocity Web</span>

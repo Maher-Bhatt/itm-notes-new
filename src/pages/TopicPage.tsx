@@ -209,14 +209,15 @@ export default function TopicPage() {
             >
               {focusMode ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
             </button>
-            <button
-              onClick={() => setMaterialsOpen(true)}
-              title="Download materials"
-              className="apple-press inline-flex items-center gap-1.5 h-8 px-3 rounded-full bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition-colors shrink-0"
-            >
-              <Download className="h-3.5 w-3.5" />
-              <span>Materials</span>
-            </button>
+            {user && (
+              <button
+                onClick={() => setMaterialsOpen(true)}
+                title="Download materials"
+                className="apple-press p-1.5 rounded hover:bg-secondary text-muted-foreground"
+              >
+                <Download className="h-4 w-4" />
+              </button>
+            )}
             <button onClick={() => toggleBookmark(topic.id)} className="apple-press p-1.5 rounded hover:bg-secondary">
               <Bookmark className={`h-4 w-4 transition-colors ${bookmarked ? "fill-warning text-warning" : "text-muted-foreground"}`} />
             </button>
@@ -224,7 +225,7 @@ export default function TopicPage() {
         </div>
       </header>
 
-      {subjectId && subject && (
+      {user && subjectId && subject && (
         <MaterialsDownloadDialog
           open={materialsOpen}
           onOpenChange={setMaterialsOpen}

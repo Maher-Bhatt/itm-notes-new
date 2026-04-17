@@ -1,14 +1,17 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { LogIn, UserPlus, ArrowLeft, Eye, EyeOff } from "lucide-react";
+import { LogIn, UserPlus, ArrowLeft, Eye, EyeOff, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import logo from "@/assets/logo.png";
 
 export default function AuthPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const justConfirmed = searchParams.get("confirmed") === "1";
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,6 +21,11 @@ export default function AuthPage() {
   const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  // When the email-confirm link redirects here, force the Login tab and show a banner
+  useEffect(() => {
+    if (justConfirmed) setIsLogin(true);
+  }, [justConfirmed]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,14 +57,22 @@ export default function AuthPage() {
 
         <div className="surface-elevated rounded p-8">
           <div className="text-center mb-8">
-            <div className="w-12 h-12 rounded bg-primary flex items-center justify-center mx-auto mb-4">
-              <span className="text-primary-foreground font-bold text-sm">ITM</span>
-            </div>
+            <img src={logo} alt="Velocity Web" className="w-12 h-12 mx-auto mb-4 object-contain dark:invert" />
             <h1 className="text-2xl font-bold">{isLogin ? "Welcome Back" : "Create Account"}</h1>
             <p className="text-muted-foreground text-sm mt-1">
               {isLogin ? "Sign in to track your progress" : "Join ITM Notes today"}
             </p>
           </div>
+
+          {justConfirmed && (
+            <div className="mb-6 flex items-start gap-3 rounded border border-primary/30 bg-primary/5 p-4 text-sm">
+              <CheckCircle2 className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+              <div>
+                <p className="font-semibold">Email confirmed 🎉</p>
+                <p className="text-muted-foreground">Your account is ready. Sign in below to get started.</p>
+              </div>
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {!isLogin && (
