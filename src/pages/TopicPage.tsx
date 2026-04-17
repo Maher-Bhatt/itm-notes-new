@@ -5,12 +5,13 @@ import { MCQQuiz } from "@/components/MCQQuiz";
 import { ReviewSystem } from "@/components/ReviewSystem";
 import { TestMe } from "@/components/TestMe";
 import { MarkdownRenderer, extractTOC } from "@/components/MarkdownRenderer";
-import { ArrowLeft, Bookmark, CheckCircle, BookOpen, ChevronLeft, ChevronRight, Menu, X, Copy, Check, Maximize2, Minimize2, List } from "lucide-react";
+import { ArrowLeft, Bookmark, CheckCircle, BookOpen, ChevronLeft, ChevronRight, Menu, X, Copy, Check, Maximize2, Minimize2, List, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { SearchDialog } from "@/components/SearchDialog";
 import { Footer } from "@/components/Footer";
+import { MaterialsDownloadDialog } from "@/components/MaterialsDownloadDialog";
 
 import { useAuth } from "@/contexts/AuthContext";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -82,6 +83,7 @@ export default function TopicPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [focusMode, setFocusMode] = useState(false);
   const [activeTocId, setActiveTocId] = useState("");
+  const [materialsOpen, setMaterialsOpen] = useState(false);
 
   // Keyboard shortcut: F to toggle focus mode
   useEffect(() => {
@@ -207,12 +209,30 @@ export default function TopicPage() {
             >
               {focusMode ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
             </button>
+            {user && (
+              <button
+                onClick={() => setMaterialsOpen(true)}
+                title="Download materials"
+                className="apple-press p-1.5 rounded hover:bg-secondary text-muted-foreground"
+              >
+                <Download className="h-4 w-4" />
+              </button>
+            )}
             <button onClick={() => toggleBookmark(topic.id)} className="apple-press p-1.5 rounded hover:bg-secondary">
               <Bookmark className={`h-4 w-4 transition-colors ${bookmarked ? "fill-warning text-warning" : "text-muted-foreground"}`} />
             </button>
           </div>
         </div>
       </header>
+
+      {user && subjectId && subject && (
+        <MaterialsDownloadDialog
+          open={materialsOpen}
+          onOpenChange={setMaterialsOpen}
+          subjectId={subjectId}
+          subjectName={subject.name}
+        />
+      )}
 
       <div className="flex flex-1 max-w-[1400px] mx-auto w-full">
         {/* Left sidebar — topic navigation */}

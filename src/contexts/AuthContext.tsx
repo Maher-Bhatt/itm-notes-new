@@ -37,12 +37,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signUp = async (email: string, password: string, displayName?: string) => {
+    const redirectBase = import.meta.env.VITE_APP_URL || window.location.origin;
     const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         data: { display_name: displayName || email },
-        emailRedirectTo: window.location.origin,
+        emailRedirectTo: redirectBase,
       },
     });
     return { error: error as Error | null };

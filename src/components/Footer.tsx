@@ -11,9 +11,11 @@ export function Footer() {
           {/* About */}
           <div className="lg:col-span-1">
             <Link to="/" className="flex items-center gap-2 mb-4">
-              <div className="w-7 h-7 rounded bg-primary flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-[9px]">ITM</span>
-              </div>
+              <img
+                src="/logo.png"
+                alt="Velocity Web"
+                className="h-8 w-auto object-contain"
+              />
               <span className="font-semibold text-sm">ITM Notes</span>
             </Link>
 

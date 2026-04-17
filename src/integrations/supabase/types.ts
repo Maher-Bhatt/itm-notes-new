@@ -35,6 +35,77 @@ export type Database = {
         }
         Relationships: []
       }
+      download_history: {
+        Row: {
+          downloaded_at: string
+          id: string
+          material_id: string
+          user_id: string
+        }
+        Insert: {
+          downloaded_at?: string
+          id?: string
+          material_id: string
+          user_id: string
+        }
+        Update: {
+          downloaded_at?: string
+          id?: string
+          material_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "download_history_material_id_fkey"
+            columns: ["material_id"]
+            isOneToOne: false
+            referencedRelation: "materials"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      materials: {
+        Row: {
+          created_by: string | null
+          description: string | null
+          download_count: number
+          external_url: string | null
+          file_name: string
+          file_size: number | null
+          file_type: string
+          id: string
+          storage_path: string | null
+          subject_id: string
+          uploaded_at: string
+        }
+        Insert: {
+          created_by?: string | null
+          description?: string | null
+          download_count?: number
+          external_url?: string | null
+          file_name: string
+          file_size?: number | null
+          file_type: string
+          id?: string
+          storage_path?: string | null
+          subject_id: string
+          uploaded_at?: string
+        }
+        Update: {
+          created_by?: string | null
+          description?: string | null
+          download_count?: number
+          external_url?: string | null
+          file_name?: string
+          file_size?: number | null
+          file_type?: string
+          id?: string
+          storage_path?: string | null
+          subject_id?: string
+          uploaded_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -65,23 +136,23 @@ export type Database = {
       progress: {
         Row: {
           completed: boolean
+          completed_at: string
           id: string
           topic_id: string
-          updated_at: string
           user_id: string
         }
         Insert: {
           completed?: boolean
+          completed_at?: string
           id?: string
           topic_id: string
-          updated_at?: string
           user_id: string
         }
         Update: {
           completed?: boolean
+          completed_at?: string
           id?: string
           topic_id?: string
-          updated_at?: string
           user_id?: string
         }
         Relationships: []
@@ -118,27 +189,48 @@ export type Database = {
       }
       test_results: {
         Row: {
-          completed_at: string
           id: string
           score: number
+          taken_at: string
           topic_id: string
           total_questions: number
           user_id: string
         }
         Insert: {
-          completed_at?: string
           id?: string
           score: number
+          taken_at?: string
           topic_id: string
           total_questions: number
           user_id: string
         }
         Update: {
-          completed_at?: string
           id?: string
           score?: number
+          taken_at?: string
           topic_id?: string
           total_questions?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
         }
         Relationships: []
@@ -148,10 +240,40 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      admin_list_users: {
+        Args: {
+          _limit?: number
+          _offset?: number
+          _search?: string
+          _since?: string
+        }
+        Returns: Json
+      }
+      admin_set_role: {
+        Args: {
+          _grant: boolean
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: undefined
+      }
+      admin_stats: { Args: never; Returns: Json }
+      admin_user_details: { Args: { _user_id: string }; Returns: Json }
+      admin_user_growth: { Args: { _days?: number }; Returns: Json }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      record_material_download: {
+        Args: { _material_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "moderator" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -278,6 +400,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "moderator", "user"],
+    },
   },
 } as const

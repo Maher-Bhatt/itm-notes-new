@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Search, LogIn, LogOut, User, ChevronLeft } from "lucide-react";
+import { Search, LogIn, LogOut, User, ChevronLeft, Shield, Download } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
 
 interface HeaderProps {
   onSearchOpen: () => void;
@@ -11,6 +12,7 @@ interface HeaderProps {
 export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
   const navigate = useNavigate();
   const { user, loading, signOut } = useAuth();
+  const { isAdmin } = useIsAdmin();
 
   const displayName = user?.user_metadata?.display_name
     || user?.email?.split("@")[0]
@@ -26,9 +28,11 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
             </button>
           )}
           <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-7 h-7 rounded bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-[9px] tracking-tight">ITM</span>
-            </div>
+            <img
+              src="/logo.png"
+              alt="Velocity Web"
+              className="h-7 w-auto object-contain"
+            />
             <div className="flex flex-col">
               <span className="font-semibold text-sm leading-tight">ITM Notes</span>
               <span className="text-[9px] text-muted-foreground leading-none hidden sm:block">by Velocity Web</span>
@@ -44,6 +48,24 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
           {!loading && (
             user ? (
               <div className="flex items-center gap-1.5">
+                {isAdmin && (
+                  <button
+                    onClick={() => navigate("/admin/dashboard")}
+                    title="Admin"
+                    className="apple-press inline-flex items-center gap-1 h-8 px-2 rounded text-xs text-primary hover:bg-primary/10 transition-colors"
+                  >
+                    <Shield className="h-3.5 w-3.5" />
+                    <span className="hidden sm:inline">Admin</span>
+                  </button>
+                )}
+                <button
+                  onClick={() => navigate("/my-downloads")}
+                  title="My downloads"
+                  className="apple-press inline-flex items-center gap-1 h-8 px-2 rounded text-xs text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+                >
+                  <Download className="h-3.5 w-3.5" />
+                  <span className="hidden md:inline">Downloads</span>
+                </button>
                 <div className="flex items-center gap-1.5 h-8 px-2 rounded bg-secondary">
                   <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
                     <User className="h-3 w-3 text-primary" />
