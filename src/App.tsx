@@ -12,6 +12,8 @@ import TopicPage from "./pages/TopicPage";
 import AuthPage from "./pages/AuthPage";
 import MyDownloadsPage from "./pages/MyDownloadsPage";
 import NotFound from "./pages/NotFound";
+import ImpQuestionsSubjectsPage from "./pages/ImpQuestionsSubjectsPage";
+import CProgrammingImpQuestionsPage from "./pages/CProgrammingImpQuestionsPage";
 
 // Heavy admin route + recharts split out of the main bundle
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
@@ -46,6 +48,8 @@ const App = () => (
               <Route path="/subject/:subjectId" element={<SubjectDashboard />} />
               <Route path="/subject/:subjectId/topic/:topicId" element={<TopicPage />} />
               <Route path="/my-downloads" element={<MyDownloadsPage />} />
+              <Route path="/imp-questions" element={<ImpQuestionsSubjectsPage />} />
+              <Route path="/imp-questions/c-programming" element={<CProgrammingImpQuestionsPage />} />
               <Route
                 path="/admin/dashboard"
                 element={

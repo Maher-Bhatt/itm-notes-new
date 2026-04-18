@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Search, LogIn, LogOut, User, ChevronLeft, Shield, Download, FolderOpen } from "lucide-react";
+import { Search, LogIn, LogOut, User, ChevronLeft, Shield, Download, FolderOpen, HelpCircle } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { MaterialsBrowser } from "@/components/MaterialsBrowser";
@@ -44,12 +44,19 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
           <button
             onClick={() => {
               if (!user) {
-                toast.info("Please sign in to view materials");
+                toast.info("Please sign in to view IMP Questions");
                 navigate("/auth");
                 return;
               }
-              setMaterialsOpen(true);
+              navigate("/imp-questions");
             }}
+            title={user ? "IMP Questions" : "Sign in to view IMP Questions"}
+            className="apple-press inline-flex items-center gap-1.5 h-8 px-2.5 rounded text-sm text-muted-foreground hover:bg-secondary transition-colors"
+          >
+            <HelpCircle className="h-4 w-4" />
+            <span className="hidden sm:inline">IMP Questions</span>
+          </button>
+          <button
             title={user ? "Browse study materials" : "Sign in to view materials"}
             className="apple-press inline-flex items-center gap-1.5 h-8 px-2.5 rounded text-sm text-muted-foreground hover:bg-secondary transition-colors"
           >
