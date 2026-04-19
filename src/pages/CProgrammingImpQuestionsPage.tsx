@@ -5,6 +5,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SearchDialog } from "@/components/SearchDialog";
 import { Download, ChevronDown, ChevronUp, BookOpen, Code2, HelpCircle, CheckCircle2 } from "lucide-react";
+import { useTrackImpView } from "@/hooks/useTrackImpView";
 
 // ── MCQ Data ────────────────────────────────────────────────────────────────
 const MCQ_DATA = [
@@ -393,6 +394,8 @@ export default function CProgrammingImpQuestionsPage() {
   const [activeTab, setActiveTab] = useState<"mcq" | "questions" | "programs">("mcq");
 
   const PDF_URL = "/CET_C_Programming_Study_Guide.pdf";
+
+  useTrackImpView("c-programming", "Programming in C");
 
   useEffect(() => {
     if (loading) return;

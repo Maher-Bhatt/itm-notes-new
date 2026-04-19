@@ -57,6 +57,14 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
             <span className="hidden sm:inline">IMP Questions</span>
           </button>
           <button
+            onClick={() => {
+              if (!user) {
+                toast.info("Please sign in to view materials");
+                navigate("/auth");
+                return;
+              }
+              setMaterialsOpen(true);
+            }}
             title={user ? "Browse study materials" : "Sign in to view materials"}
             className="apple-press inline-flex items-center gap-1.5 h-8 px-2.5 rounded text-sm text-muted-foreground hover:bg-secondary transition-colors"
           >

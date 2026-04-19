@@ -18,7 +18,7 @@ import { MaterialsManager } from "@/components/admin/MaterialsManager";
 import { UserDetailsDialog } from "@/components/admin/UserDetailsDialog";
 import {
   Download, Search, Users, TrendingUp, Activity, Star, FileDown, Shield, ShieldCheck,
-  ShieldOff, Loader2, Eye,
+  ShieldOff, Loader2, Eye, HelpCircle,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -45,6 +45,22 @@ interface Stats {
   total_reviews: number;
   avg_rating: number;
   retention_pct: number;
+}
+
+interface ImpStat {
+  subject_id: string;
+  subject_name: string;
+  total_views: number;
+  unique_users: number;
+  last_viewed: string | null;
+}
+
+interface ImpRecentView {
+  user_id: string;
+  email: string;
+  display_name: string | null;
+  subject_name: string;
+  viewed_at: string;
 }
 
 const PAGE_SIZE = 25;
@@ -79,6 +95,9 @@ export default function AdminDashboard() {
   const [detailUser, setDetailUser] = useState<{ id: string; email: string } | null>(null);
   const [roleBusyId, setRoleBusyId] = useState<string | null>(null);
   const [materialsKey, setMaterialsKey] = useState(0);
+  const [impStats, setImpStats] = useState<ImpStat[]>([]);
+  const [impRecent, setImpRecent] = useState<ImpRecentView[]>([]);
+  const [impLoading, setImpLoading] = useState(false);
 
   // Redirect non-admins
   useEffect(() => {
@@ -179,11 +198,23 @@ export default function AdminDashboard() {
     setTotalUsers(list.length > 0 ? Number(list[0].total_count) : 0);
   }, [debouncedSearch, dateRange.from, dateRange.to, page]);
 
+  const loadImpStats = useCallback(async () => {
+    const sb = supabase as any;
+    setImpLoading(true);
+    const [statsRes, recentRes] = await Promise.all([
+      sb.rpc("admin_imp_stats"),
+      sb.rpc("admin_imp_recent_views", { _limit: 50 }),
+    ]);
+    if (statsRes.data) setImpStats(statsRes.data as ImpStat[]);
+    if (recentRes.data) setImpRecent(recentRes.data as ImpRecentView[]);
+    setImpLoading(false);
+  }, []);
+
   const loadAll = useCallback(async () => {
     setLoadingData(true);
-    await Promise.all([loadStatsAndCharts(), loadUsers()]);
+    await Promise.all([loadStatsAndCharts(), loadUsers(), loadImpStats()]);
     setLoadingData(false);
-  }, [loadStatsAndCharts, loadUsers]);
+  }, [loadStatsAndCharts, loadUsers, loadImpStats]);
 
   useEffect(() => { if (isAdmin) loadAll(); }, [isAdmin, loadAll]);
 
@@ -288,6 +319,7 @@ export default function AdminDashboard() {
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="users">Users</TabsTrigger>
             <TabsTrigger value="materials">Materials</TabsTrigger>
+            <TabsTrigger value="imp-questions">IMP Questions</TabsTrigger>
           </TabsList>
 
           {/* Overview */}
@@ -424,6 +456,80 @@ export default function AdminDashboard() {
           <TabsContent value="materials" className="space-y-6">
             <MaterialUploadForm onUploaded={() => setMaterialsKey((k) => k + 1)} />
             <MaterialsManager refreshKey={materialsKey} />
+          </TabsContent>
+
+          {/* IMP Questions */}
+          <TabsContent value="imp-questions" className="space-y-4">
+            <div className="flex items-center gap-2 mb-2">
+              <HelpCircle className="h-4 w-4 text-primary" />
+              <h2 className="font-semibold text-sm">IMP Questions Analytics</h2>
+            </div>
+
+            {/* Stats cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+              {impLoading ? (
+                [0,1,2].map((i) => <div key={i} className="surface-elevated rounded p-4 h-24 animate-pulse bg-secondary" />)
+              ) : impStats.length === 0 ? (
+                <div className="col-span-3 surface-elevated rounded p-6 text-center text-sm text-muted-foreground">
+                  No views recorded yet. Views are tracked when logged-in users open a subject page.
+                </div>
+              ) : impStats.map((s) => (
+                <div key={s.subject_id} className="surface-elevated rounded p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <HelpCircle className="h-3.5 w-3.5 text-muted-foreground" />
+                    <span className="text-xs text-muted-foreground truncate">{s.subject_name}</span>
+                  </div>
+                  <div className="text-2xl font-bold tabular-nums">{s.total_views}</div>
+                  <p className="text-xs text-muted-foreground mt-1">{s.unique_users} unique users</p>
+                  {s.last_viewed && (
+                    <p className="text-[10px] text-muted-foreground/60 mt-0.5">
+                      Last: {new Date(s.last_viewed).toLocaleDateString()}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* Recent views table */}
+            <div className="surface-elevated rounded p-5">
+              <h3 className="font-semibold text-sm mb-4">Recent Views (last 50)</h3>
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>User</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Subject</TableHead>
+                      <TableHead>Viewed At</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {impLoading ? (
+                      Array.from({ length: 5 }).map((_, i) => (
+                        <TableRow key={i}>
+                          <TableCell colSpan={4}><div className="h-5 bg-secondary animate-pulse rounded" /></TableCell>
+                        </TableRow>
+                      ))
+                    ) : impRecent.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={4} className="text-center text-muted-foreground py-8 text-sm">
+                          No views yet
+                        </TableCell>
+                      </TableRow>
+                    ) : impRecent.map((r, i) => (
+                      <TableRow key={i}>
+                        <TableCell className="font-medium">{r.display_name ?? "—"}</TableCell>
+                        <TableCell className="text-muted-foreground text-xs max-w-[200px] truncate">{r.email}</TableCell>
+                        <TableCell>{r.subject_name}</TableCell>
+                        <TableCell className="text-xs text-muted-foreground">
+                          {new Date(r.viewed_at).toLocaleString()}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
           </TabsContent>
         </Tabs>
 

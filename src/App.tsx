@@ -14,6 +14,7 @@ import MyDownloadsPage from "./pages/MyDownloadsPage";
 import NotFound from "./pages/NotFound";
 import ImpQuestionsSubjectsPage from "./pages/ImpQuestionsSubjectsPage";
 import CProgrammingImpQuestionsPage from "./pages/CProgrammingImpQuestionsPage";
+import PythonImpQuestionsPage from "./pages/PythonImpQuestionsPage";
 
 // Heavy admin route + recharts split out of the main bundle
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
@@ -50,6 +51,7 @@ const App = () => (
               <Route path="/my-downloads" element={<MyDownloadsPage />} />
               <Route path="/imp-questions" element={<ImpQuestionsSubjectsPage />} />
               <Route path="/imp-questions/c-programming" element={<CProgrammingImpQuestionsPage />} />
+              <Route path="/imp-questions/python" element={<PythonImpQuestionsPage />} />
               <Route
                 path="/admin/dashboard"
                 element={

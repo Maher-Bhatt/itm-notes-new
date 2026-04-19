@@ -9,11 +9,21 @@ import { BookOpen, ChevronRight, HelpCircle } from "lucide-react";
 const IMP_SUBJECTS = [
   {
     id: "c-programming",
+    route: "/imp-questions/c-programming",
     name: "Programming in C",
     description: "Units 4–8 · Pointers, Structures, I/O, UNIX, Standard Library",
-    units: "5 Units",
     questions: "15 MCQs · 15 Important Questions · 6 Programs",
     badge: "CET Exam",
+    badgeColor: "bg-primary/10 text-primary",
+  },
+  {
+    id: "python",
+    route: "/imp-questions/python",
+    name: "Python Programming",
+    description: "Threading, Exception Handling & Regular Expressions",
+    questions: "11 Threading/Exception Qs · 14 Regex Qs",
+    badge: "Assignment",
+    badgeColor: "bg-yellow-500/20 text-yellow-700 dark:text-yellow-400",
   },
 ];
 
@@ -41,7 +51,7 @@ export default function ImpQuestionsSubjectsPage() {
             <h1 className="text-2xl font-bold">IMP Questions</h1>
           </div>
           <p className="text-sm text-muted-foreground">
-            Curated MCQs, important theory questions, and programs for your CET exam.
+            Curated MCQs, important theory questions, and programs for exams and assignments.
           </p>
         </div>
 
@@ -49,7 +59,7 @@ export default function ImpQuestionsSubjectsPage() {
           {IMP_SUBJECTS.map((subject) => (
             <button
               key={subject.id}
-              onClick={() => navigate(`/imp-questions/${subject.id}`)}
+              onClick={() => navigate(subject.route)}
               className="group w-full surface-elevated rounded p-4 flex items-center gap-4 text-left hover:bg-secondary transition-all duration-150 apple-press"
             >
               <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
@@ -58,7 +68,7 @@ export default function ImpQuestionsSubjectsPage() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-0.5">
                   <h3 className="font-semibold text-base">{subject.name}</h3>
-                  <span className="text-[10px] font-semibold bg-primary/10 text-primary px-2 py-0.5 rounded-full shrink-0">
+                  <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full shrink-0 ${subject.badgeColor}`}>
                     {subject.badge}
                   </span>
                 </div>
