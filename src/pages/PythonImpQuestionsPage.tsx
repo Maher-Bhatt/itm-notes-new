@@ -119,7 +119,7 @@ get_numbers()`,
         if num < 0:
             raise ValueError(f"Negative number not allowed! You entered: {num}")
         print(f"Valid number: {num}")
-        print(f"Square root: {num ** 0.5:.4f}")
+        print(f"Square root: {'{num ** 0.5:.4f}'")
     except ValueError as e:
         print(f"ValueError: {e}")
 
@@ -386,12 +386,14 @@ for d in dates:
     title: "Q10. Extract all prices from a string (e.g., $100, $49.99)",
     pattern: `r'\\$\\d+(?:\\.\\d{1,2})?'`,
     desc: "$ sign + digits + optional decimal point with 1-2 digits.",
-    code: `import re
-text = "Sale: $100, $250, $49.99, $0.50. Special: $75.00 and $5."
-prices = re.findall(r'\\$\\d+(?:\\.\\d{1,2})?', text)
-print("Prices found:", prices)
-total = sum(float(p.replace('$','')) for p in prices)
-print(f"Total: ${total:.2f}")`,
+    code: [
+      "import re",
+      "text = \"Sale: $100, $250, $49.99, $0.50. Special: $75.00 and $5.\"",
+      "prices = re.findall(r'\\$\\d+(?:\\.\\d{1,2})?', text)",
+      "print(\"Prices found:\", prices)",
+      "total = sum(float(p.replace('$','')) for p in prices)",
+      "print(f\"Total: ${'{total:.2f}'}\")",
+    ].join("\n"),
     output: `Prices found: ['$100', '$250', '$49.99', '$0.50', '$75.00', '$5']\nTotal: $480.49`,
   },
   {
@@ -403,7 +405,7 @@ text = "Files: notes.txt, report.pdf, data.txt, image.png, readme.txt, script.py
 txt_files = re.findall(r'\\b\\w+\\.txt\\b', text)
 print(".txt files:", txt_files)
 for f in txt_files:
-    print(f"  File: {f:<20} | Name: {f.replace('.txt','')}")`,
+    print(f"  File: {'{f:<20}'} | Name: {f.replace('.txt','')}")`,
     output: `.txt files: ['notes.txt', 'data.txt', 'readme.txt']\n  File: notes.txt  | Name: notes\n  ...`,
   },
   {
