@@ -6,8 +6,8 @@ export interface Achievement {
   title: string;
   description: string;
   icon: string;
-  tier: 'bronze' | 'silver' | 'gold' | 'legendary';
-  category: 'learning' | 'streak' | 'quiz' | 'time' | 'coding';
+  tier: 'bronze' | 'silver' | 'gold' | 'legendary' | 'mythic';
+  category: 'learning' | 'streak' | 'quiz' | 'time' | 'coding' | 'admin';
   unlockedAt: string | null;
   xpReward: number;
 }
@@ -288,6 +288,17 @@ export const INITIAL_ACHIEVEMENTS: Achievement[] = [
     unlockedAt: null,
     xpReward: 500,
   },
+  // ─── ADMIN ONLY ───
+  {
+    id: 'admin-god-mode',
+    title: 'The Architect',
+    description: 'You built this world. You have ultimate power over the matrix. Admin God Mode unlocked.',
+    icon: '👁️‍🗨️',
+    tier: 'mythic',
+    category: 'admin',
+    unlockedAt: null,
+    xpReward: 9999,
+  }
 ];
 
 const INITIAL_QUESTS: DailyQuest[] = [

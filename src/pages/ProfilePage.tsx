@@ -37,9 +37,9 @@ const PRESET_AVATARS = [
 ];
 
 export default function ProfilePage() {
-  const { user, profile, updateProfile } = useAuth();
+  const { user, profile, role, updateProfile } = useAuth();
   const navigate = useNavigate();
-  const { state: game, levelInfo, claimQuest } = useGamification();
+  const { state: game, levelInfo, claimQuest, unlockAchievement } = useGamification();
   const { progress } = useProgress();
 
   const [isEditing, setIsEditing] = useState(false);
@@ -62,6 +62,16 @@ export default function ProfilePage() {
       if (profile.goal) setGoal(profile.goal);
     }
   }, [profile]);
+
+  // Admin God Mode Unlocker
+  useEffect(() => {
+    if (role === 'admin') {
+      const adminAch = game.achievements.find(a => a.id === 'admin-god-mode');
+      if (adminAch && !adminAch.unlockedAt) {
+        unlockAchievement('admin-god-mode');
+      }
+    }
+  }, [role, game.achievements, unlockAchievement]);
 
   // Handle image upload from file picker
   const handleAvatarFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -127,6 +137,7 @@ export default function ProfilePage() {
     if (activeTierFilter === 'silver') return ach.tier === 'silver';
     if (activeTierFilter === 'gold') return ach.tier === 'gold';
     if (activeTierFilter === 'legendary') return ach.tier === 'legendary';
+    if (activeTierFilter === 'mythic') return ach.tier === 'mythic';
     return true;
   });
 
@@ -373,10 +384,11 @@ export default function ProfilePage() {
                   { id: 'silver', label: 'Silver' },
                   { id: 'gold', label: 'Gold' },
                   { id: 'legendary', label: 'Legendary' },
+                  { id: 'mythic', label: 'Mythic' },
                 ].map((tab) => (
                   <button
                     key={tab.id}
-                    onClick={() => setActiveTierFilter(tab.id as typeof activeTierFilter)}
+                    onClick={() => setActiveTierFilter(tab.id as any)}
                     className={`px-3 py-1.5 rounded-lg whitespace-nowrap transition-all border ${
                       activeTierFilter === tab.id
                         ? 'bg-primary text-primary-foreground border-primary shadow-xs'
@@ -408,7 +420,9 @@ export default function ProfilePage() {
                           <div className="flex items-center justify-between gap-1 mb-1">
                             <h4 className="font-bold text-sm text-foreground truncate">{ach.title}</h4>
                             <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${
-                              ach.tier === 'legendary'
+                              ach.tier === 'mythic'
+                                ? 'bg-rose-500/20 text-rose-500 border border-rose-500/30'
+                                : ach.tier === 'legendary'
                                 ? 'bg-purple-600/20 text-purple-600 border border-purple-500/30'
                                 : ach.tier === 'gold'
                                 ? 'bg-amber-500/20 text-amber-600 border border-amber-500/30'

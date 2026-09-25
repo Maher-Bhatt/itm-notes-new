@@ -12,7 +12,7 @@ export interface AchievementCardData {
   achievementTitle: string;
   achievementDescription: string;
   achievementIcon: string;
-  tier: 'bronze' | 'silver' | 'gold' | 'legendary';
+  tier: 'bronze' | 'silver' | 'gold' | 'legendary' | 'mythic';
   xpReward: number;
   totalXp: number;
   streakDays: number;
@@ -23,6 +23,7 @@ const TIER_COLORS = {
   silver: { primary: '#E2E8F0', glow: 'rgba(226, 232, 240, 0.4)', label: 'SILVER TIER' },
   gold: { primary: '#F59E0B', glow: 'rgba(245, 158, 11, 0.5)', label: 'GOLD TIER' },
   legendary: { primary: '#A855F7', glow: 'rgba(168, 85, 247, 0.5)', label: 'LEGENDARY TIER' },
+  mythic: { primary: '#FF0055', glow: 'rgba(255, 0, 85, 0.8)', label: 'MYTHIC ADMIN TIER' },
 };
 
 /**
@@ -40,14 +41,23 @@ export async function generateAchievementStoryCard(data: AchievementCardData): P
 
   const tierStyle = TIER_COLORS[data.tier] || TIER_COLORS.gold;
 
-  // 1. Deep Midnight Gradient Background
+  // 1. Deep Midnight Gradient Background (or Crazy Mythic)
   const bgGrad = ctx.createLinearGradient(0, 0, width, height);
-  bgGrad.addColorStop(0, '#090D16');
-  bgGrad.addColorStop(0.35, '#0F172A');
-  bgGrad.addColorStop(0.7, '#1E1B4B');
-  bgGrad.addColorStop(1, '#0B0A1A');
+  if (data.tier === 'mythic') {
+    bgGrad.addColorStop(0, '#1A0000');
+    bgGrad.addColorStop(0.2, '#33001a');
+    bgGrad.addColorStop(0.5, '#660000');
+    bgGrad.addColorStop(0.8, '#ff0055');
+    bgGrad.addColorStop(1, '#000000');
+  } else {
+    bgGrad.addColorStop(0, '#090D16');
+    bgGrad.addColorStop(0.35, '#0F172A');
+    bgGrad.addColorStop(0.7, '#1E1B4B');
+    bgGrad.addColorStop(1, '#0B0A1A');
+  }
   ctx.fillStyle = bgGrad;
   ctx.fillRect(0, 0, width, height);
+
 
   // 2. Ambient Glowing Orbs
   const drawGlow = (cx: number, cy: number, r: number, color: string) => {
