@@ -207,7 +207,7 @@ export default function Index() {
               </h1>
               <p className="text-sm sm:text-base lg:text-lg text-muted-foreground mb-8 leading-relaxed max-w-2xl mx-auto">
                 Everything for your semester in one place: <strong className="text-foreground">Anonymous campus social discussions</strong>,{' '}
-                <strong className="text-foreground">75% attendance calculator</strong>, <strong className="text-foreground">94 coding practicals</strong>, and complete university exam notes.
+                <strong className="text-foreground">75% attendance calculator</strong>, <strong className="text-foreground">150+ coding practicals</strong>, and complete university exam notes.
               </p>
 
               {/* Action Buttons */}
@@ -281,7 +281,7 @@ export default function Index() {
                       <Code className="h-4 w-4" />
                     </div>
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                      94 Codes
+                      150+ Codes
                     </span>
                   </div>
                   <h3 className="text-sm font-bold text-foreground group-hover:text-emerald-500 transition-colors">
@@ -518,7 +518,7 @@ export default function Index() {
         </div>
       </section>
 
-      {/* ── 4. PROMOTE: Practical Coding Lab (94 Programs) ── */}
+      {/* ── 4. PROMOTE: Practical Coding Lab (150+ Programs) ── */}
       <section className="py-14 sm:py-20 px-4 sm:px-6 bg-secondary/20 border-b border-border">
         <div className="max-w-5xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
@@ -528,10 +528,10 @@ export default function Index() {
                 <span>Lab Exam Ready</span>
               </div>
               <h2 className="text-2xl sm:text-4xl font-black text-foreground tracking-tight">
-                94 Practical Coding Lab
+                150+ Practical Coding Lab
               </h2>
               <p className="text-xs sm:text-sm text-muted-foreground mt-1 max-w-xl">
-                Every lab assignment in C, Java OOP, and Python with one-click copy, verified terminal output, and viva explanations.
+                Every lab assignment in C, Java OOP, Python, and SQL with one-click copy, verified terminal output, and viva explanations.
               </p>
             </div>
 
@@ -540,7 +540,7 @@ export default function Index() {
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-600 text-white font-bold text-sm hover:bg-emerald-700 transition-colors apple-press shadow-sm self-start md:self-auto"
             >
               <Code className="h-4 w-4" />
-              <span>Explore All 94 Programs</span>
+              <span>Explore All 150+ Programs</span>
               <ArrowRight className="h-4 w-4" />
             </button>
           </div>

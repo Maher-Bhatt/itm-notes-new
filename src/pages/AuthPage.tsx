@@ -1,11 +1,24 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, Lock, Sparkles } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+
+function getFeatureName(path?: string) {
+  if (!path) return "this feature";
+  if (path.includes("material")) return "the Academic Materials Library";
+  if (path.includes("quiz")) return "Practice Quizzes";
+  if (path.includes("calculator") || path.includes("gpa")) return "the Attendance & GPA Calculator";
+  if (path.includes("coding")) return "the Practical Coding Lab";
+  if (path.includes("community") || path.includes("social")) return "Campus Social & Confessions";
+  if (path.includes("imp-questions")) return "University Exam IMP Questions";
+  if (path.includes("profile")) return "Student Profile";
+  if (path.includes("bookmark")) return "Bookmarked Topics";
+  return "this feature";
+}
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -15,10 +28,16 @@ export default function AuthPage() {
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  // If already logged in, redirect to home
+  const fromState = (location.state as any)?.from;
+  const fromLocation = fromState
+    ? (typeof fromState === 'string' ? fromState : `${fromState.pathname || "/"}${fromState.search || ""}${fromState.hash || ""}`)
+    : "/";
+
+  // If already logged in, redirect to intended target
   if (user) {
-    navigate("/");
+    navigate(fromLocation, { replace: true });
     return null;
   }
 
@@ -45,7 +64,7 @@ export default function AuthPage() {
         }
 
         toast.success("Successfully logged in!");
-        navigate("/");
+        navigate(fromLocation, { replace: true });
       } else {
         const { data, error } = await supabase.auth.signUp({
           email,
@@ -71,7 +90,7 @@ export default function AuthPage() {
           } catch {}
         }
 
-        toast.success("Registration successful! You can now log in.");
+        toast.success("Account created successfully! Please sign in.");
         setIsLogin(true);
       }
     } catch (error: any) {
@@ -87,14 +106,24 @@ export default function AuthPage() {
       
       <main className="flex-1 flex items-center justify-center p-4">
         <div className="w-full max-w-md surface-elevated rounded-xl p-8 animate-slide-up">
+          {/* Target Feature Requirement Banner */}
+          {(location.state as any)?.from && (
+            <div className="mb-6 p-3.5 rounded-xl bg-primary/10 border border-primary/20 text-xs text-primary font-medium flex items-center gap-2.5 animate-pulse">
+              <Lock className="h-4 w-4 shrink-0 text-primary" />
+              <div>
+                <span className="font-bold">Student Login Required:</span> Sign in to access {getFeatureName((location.state as any)?.from?.pathname)}.
+              </div>
+            </div>
+          )}
+
           <div className="text-center mb-8">
             <h1 className="text-2xl font-bold mb-2">
-              {isLogin ? "Welcome Back" : "Create an Account"}
+              {isLogin ? "Welcome to ITM Notes" : "Join Your Campus Platform"}
             </h1>
             <p className="text-muted-foreground text-sm">
               {isLogin 
-                ? "Sign in to pick up where you left off." 
-                : "Join ITM Notes to track your progress and access premium materials."}
+                ? "Sign in to access official materials, 150+ coding practicals, GPA prediction, and campus social." 
+                : "Create your student account to join the campus pulse and unlock all university tools."}
             </p>
           </div>
 

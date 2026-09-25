@@ -53,25 +53,24 @@ const App = () => (
                   <Route path="/auth" element={<AuthPage />} />
                   <Route path="/onboarding" element={<ProtectedRoute><OnboardingPage /></ProtectedRoute>} />
                   <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
-                  <Route path="/admin/seed" element={<ProtectedRoute requireAdmin><SeedPage /></ProtectedRoute>} />
+                  <Route path="/bookmarks" element={<ProtectedRoute><BookmarksPage /></ProtectedRoute>} />
+                  <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
                   <Route path="/subject/:subjectId" element={<SubjectDashboard />} />
                   <Route path="/subject/:subjectId/cheat-sheet" element={<SubjectCheatSheetPage />} />
                   <Route path="/subject/:subjectId/topic/:topicId" element={<TopicPage />} />
-                  <Route path="/bookmarks" element={<ProtectedRoute><BookmarksPage /></ProtectedRoute>} />
-                  <Route path="/profile" element={<ProfilePage />} />
-                  <Route path="/materials" element={<MaterialsPage />} />
-                  <Route path="/calculator" element={<GpaCalculatorPage />} />
-                  <Route path="/gpa-calculator" element={<GpaCalculatorPage />} />
-                  <Route path="/quiz" element={<QuizPage />} />
-                    <Route path="/coding-lab" element={<CodingLabPage />} />
-                    <Route path="/community" element={<CommunityPage />} />
-                    <Route path="/social" element={<CommunityPage />} />
-                    <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminDashboard /></ProtectedRoute>} />
+                  <Route path="/materials" element={<ProtectedRoute><MaterialsPage /></ProtectedRoute>} />
+                  <Route path="/calculator" element={<ProtectedRoute><GpaCalculatorPage /></ProtectedRoute>} />
+                  <Route path="/gpa-calculator" element={<ProtectedRoute><GpaCalculatorPage /></ProtectedRoute>} />
+                  <Route path="/quiz" element={<ProtectedRoute><QuizPage /></ProtectedRoute>} />
+                  <Route path="/coding-lab" element={<ProtectedRoute><CodingLabPage /></ProtectedRoute>} />
+                  <Route path="/community" element={<ProtectedRoute><CommunityPage /></ProtectedRoute>} />
+                  <Route path="/social" element={<ProtectedRoute><CommunityPage /></ProtectedRoute>} />
+                  <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminDashboard /></ProtectedRoute>} />
                   <Route path="/admin/seed" element={<ProtectedRoute requireAdmin><SeedPage /></ProtectedRoute>} />
-                  <Route path="/imp-questions" element={<ImpQuestionsSubjectsPage />} />
-                  <Route path="/imp-questions/c-programming" element={<CProgrammingImpQuestionsPage />} />
-                  <Route path="/imp-questions/python" element={<PythonImpQuestionsPage />} />
-                  <Route path="/imp-questions/:subjectId" element={<SubjectImpQuestionsPage />} />
+                  <Route path="/imp-questions" element={<ProtectedRoute><ImpQuestionsSubjectsPage /></ProtectedRoute>} />
+                  <Route path="/imp-questions/c-programming" element={<ProtectedRoute><CProgrammingImpQuestionsPage /></ProtectedRoute>} />
+                  <Route path="/imp-questions/python" element={<ProtectedRoute><PythonImpQuestionsPage /></ProtectedRoute>} />
+                  <Route path="/imp-questions/:subjectId" element={<ProtectedRoute><SubjectImpQuestionsPage /></ProtectedRoute>} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </ErrorBoundary>
