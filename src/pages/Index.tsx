@@ -123,7 +123,7 @@ export default function Index() {
             <GraduationCap className="h-4 w-4 text-primary" />
             <span>ITM SLS Baroda University</span>
             <span className="text-muted-foreground/40">•</span>
-            <span className="text-primary font-bold">B.Tech CSE Semester {currentSemester}</span>
+            <span className="text-primary font-bold">B.Tech CSE Semester {semesterNumber || 1}</span>
           </div>
 
           {user ? (
