@@ -1,4 +1,4 @@
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { subjects, getAllTopicIds } from "@/data/subjects";
 import { useProgress } from "@/hooks/useProgress";
 import { useGamification } from "@/hooks/useGamification";
@@ -21,8 +21,9 @@ import {
   GraduationCap,
   CheckCircle2,
   HelpCircle,
-  ExternalLink,
-  Layers,
+  Clock,
+  EyeOff,
+  UserCheck,
   Zap,
 } from "lucide-react";
 import { useState, useMemo } from "react";
@@ -38,9 +39,9 @@ function OverallProgressBar({ progress }: { progress: number }) {
         <span className="text-xs sm:text-sm text-muted-foreground font-medium">Curriculum Completion</span>
         <span className="text-xs sm:text-sm font-bold text-primary tabular-nums">{progress}%</span>
       </div>
-      <div className="h-2.5 rounded-full bg-secondary overflow-hidden">
+      <div className="h-2 rounded-full bg-secondary overflow-hidden">
         <div
-          className="h-full bg-gradient-to-r from-primary to-purple-600 transition-all duration-700 ease-out rounded-full"
+          className="h-full bg-primary transition-all duration-700 ease-out rounded-full"
           style={{ width: `${progress}%` }}
         />
       </div>
@@ -93,35 +94,35 @@ export default function Index() {
       <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
       <Header onSearchOpen={() => setSearchOpen(true)} />
 
-      {/* ── Top Hero Section ── */}
-      <section className="relative overflow-hidden pt-8 pb-12 sm:pt-14 sm:pb-20 px-4 sm:px-6 border-b border-border/50 bg-gradient-to-b from-primary/5 via-background to-background">
+      {/* ── 1. Clean Apple-Style Hero ── */}
+      <section className="relative overflow-hidden pt-10 pb-16 sm:pt-16 sm:pb-24 px-4 sm:px-6 border-b border-border">
         <div className="max-w-5xl mx-auto text-center relative z-10 animate-slide-up">
           
-          {/* University Department Pill */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-secondary/80 border border-border/80 text-foreground text-xs font-semibold mb-6 shadow-sm">
+          {/* Clean University Badge */}
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-secondary text-foreground text-xs font-semibold mb-6 border border-border">
             <GraduationCap className="h-4 w-4 text-primary" />
             <span>ITM SLS Baroda University</span>
             <span className="text-muted-foreground/40">•</span>
             <span className="text-primary font-bold">B.Tech CSE Semester 3</span>
           </div>
 
-          {/* Logged in vs Guest Hero */}
           {user ? (
+            /* Logged-In Student Hero */
             <>
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight mb-4 text-foreground leading-[1.1]">
-                Welcome back, <span className="text-primary">{studentName}</span>! 👋
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4 text-foreground leading-[1.1]">
+                Welcome back, {studentName}.
               </h1>
               <p className="text-sm sm:text-lg text-muted-foreground mb-8 leading-relaxed max-w-2xl mx-auto">
-                Ready to crush your next study session? Your streak is safe at{' '}
-                <strong className="text-amber-500 font-bold">{game.streakDays} days</strong> with{' '}
-                <strong className="text-primary font-bold">{game.xp} XP</strong> (Level {levelInfo.level} · {levelInfo.title}).
+                Keep your momentum going. You are on a{' '}
+                <strong className="text-amber-500 font-bold">{game.streakDays} day study streak</strong> with{' '}
+                <strong className="text-foreground font-bold">{game.xp} XP</strong> (Level {levelInfo.level} · {levelInfo.title}).
               </p>
 
-              {/* Logged-In Progress Bar & Fast Action Dashboard */}
-              <div className="w-full max-w-lg mx-auto p-5 sm:p-6 rounded-2xl sm:rounded-3xl bg-card border border-border shadow-sm text-left mb-8">
+              {/* Progress Summary Card */}
+              <div className="w-full max-w-lg mx-auto p-5 sm:p-6 rounded-2xl bg-card border border-border shadow-sm text-left mb-8">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-                    <TrendingUp className="h-3.5 w-3.5 text-primary" /> Study Progress
+                    <TrendingUp className="h-3.5 w-3.5 text-primary" /> Syllabus Progress
                   </span>
                   <span className="text-xs font-bold text-foreground">
                     {completedCount} / {totalTopics} topics mastered
@@ -129,34 +130,34 @@ export default function Index() {
                 </div>
                 <OverallProgressBar progress={overallProgress} />
 
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-5">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mt-5">
                   <button
                     onClick={() => navigate("/dashboard")}
-                    className="p-2.5 rounded-xl bg-secondary hover:bg-secondary/80 text-center transition-colors apple-press"
+                    className="p-3 rounded-xl bg-secondary hover:bg-secondary/80 text-center transition-colors apple-press"
                   >
                     <BookOpen className="h-4 w-4 text-primary mx-auto mb-1" />
-                    <span className="text-[11px] font-bold text-foreground block">Dashboard</span>
+                    <span className="text-xs font-bold text-foreground block">Dashboard</span>
                   </button>
                   <button
                     onClick={() => navigate("/coding-lab")}
-                    className="p-2.5 rounded-xl bg-secondary hover:bg-secondary/80 text-center transition-colors apple-press"
+                    className="p-3 rounded-xl bg-secondary hover:bg-secondary/80 text-center transition-colors apple-press"
                   >
                     <Code className="h-4 w-4 text-emerald-500 mx-auto mb-1" />
-                    <span className="text-[11px] font-bold text-foreground block">94 Practicals</span>
+                    <span className="text-xs font-bold text-foreground block">Coding Lab</span>
                   </button>
                   <button
                     onClick={() => navigate("/calculator")}
-                    className="p-2.5 rounded-xl bg-secondary hover:bg-secondary/80 text-center transition-colors apple-press"
+                    className="p-3 rounded-xl bg-secondary hover:bg-secondary/80 text-center transition-colors apple-press"
                   >
                     <Calculator className="h-4 w-4 text-blue-500 mx-auto mb-1" />
-                    <span className="text-[11px] font-bold text-foreground block">75% Attendance</span>
+                    <span className="text-xs font-bold text-foreground block">Attendance</span>
                   </button>
                   <button
                     onClick={() => navigate("/community")}
-                    className="p-2.5 rounded-xl bg-secondary hover:bg-secondary/80 text-center transition-colors apple-press"
+                    className="p-3 rounded-xl bg-secondary hover:bg-secondary/80 text-center transition-colors apple-press"
                   >
-                    <MessageSquare className="h-4 w-4 text-purple-500 mx-auto mb-1" />
-                    <span className="text-[11px] font-bold text-foreground block">Campus Feed</span>
+                    <MessageSquare className="h-4 w-4 text-primary mx-auto mb-1" />
+                    <span className="text-xs font-bold text-foreground block">Campus Feed</span>
                   </button>
                 </div>
               </div>
@@ -166,83 +167,93 @@ export default function Index() {
                   onClick={() => document.getElementById("subjects")?.scrollIntoView({ behavior: "smooth" })}
                   className="pill-button apple-press bg-primary text-primary-foreground h-11 px-7 text-sm sm:text-base font-bold inline-flex items-center gap-2 shadow-sm hover:opacity-90"
                 >
-                  Browse Semester 3 Subjects <ArrowRight className="h-4 w-4" />
+                  Browse All Subjects <ArrowRight className="h-4 w-4" />
                 </button>
                 <button
                   onClick={() => navigate("/community")}
                   className="pill-button apple-press bg-secondary text-foreground h-11 px-6 text-sm sm:text-base font-bold inline-flex items-center gap-2 border border-border hover:bg-secondary/80"
                 >
-                  <MessageSquare className="h-4 w-4 text-purple-500" />
+                  <MessageSquare className="h-4 w-4 text-primary" />
                   <span>Campus Social & Mask</span>
                 </button>
               </div>
             </>
           ) : (
+            /* Visitor / Guest Student Hero */
             <>
               <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight mb-5 text-foreground leading-[1.1]">
-                Master Your Semester 3 <br className="hidden sm:inline" />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-purple-600 to-amber-500">
-                  Engineering Examinations.
-                </span>
+                The Engineering Student <br className="hidden sm:inline" />
+                Super-Platform.
               </h1>
               <p className="text-sm sm:text-lg text-muted-foreground mb-8 leading-relaxed max-w-2xl mx-auto">
-                Comprehensive university notes, <strong className="text-foreground">94 practical coding labs</strong>,{' '}
-                <strong className="text-foreground">75% attendance calculator</strong>, AI audio lectures, and active recall
-                flashcards — designed to maximize your SGPA.
+                Everything for your semester in one place: <strong className="text-foreground">Anonymous campus social discussions</strong>,{' '}
+                <strong className="text-foreground">75% attendance calculator</strong>, <strong className="text-foreground">94 coding practicals</strong>, and complete university exam notes.
               </p>
 
-              {/* Call-to-actions */}
+              {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto mb-10">
                 <button
                   onClick={() => navigate("/auth")}
-                  className="w-full sm:w-auto pill-button apple-press bg-primary text-primary-foreground h-12 px-8 text-sm sm:text-base font-bold inline-flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:opacity-90 transition-all"
+                  className="w-full sm:w-auto pill-button apple-press bg-primary text-primary-foreground h-12 px-8 text-sm sm:text-base font-bold inline-flex items-center justify-center gap-2 shadow-sm hover:opacity-90 transition-all"
                 >
                   <Sparkles className="h-4 w-4" />
-                  <span>Sign In Free (+50 XP)</span>
+                  <span>Sign In / Create Profile</span>
                   <ArrowRight className="h-4 w-4" />
                 </button>
 
                 <button
-                  onClick={() => document.getElementById("subjects")?.scrollIntoView({ behavior: "smooth" })}
+                  onClick={() => navigate("/community")}
                   className="w-full sm:w-auto pill-button apple-press bg-secondary hover:bg-secondary/80 text-foreground h-12 px-6 text-sm sm:text-base font-bold inline-flex items-center justify-center gap-2 border border-border transition-colors"
                 >
-                  <span>Explore Subjects</span>
-                  <ChevronRight className="h-4 w-4 opacity-50" />
+                  <MessageSquare className="h-4 w-4 text-primary" />
+                  <span>Campus Social</span>
                 </button>
               </div>
 
-              {/* Live Metric Badges */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto pt-6 border-t border-border/50 text-left">
-                <div className="p-3 rounded-2xl bg-card border border-border/70 shadow-xs">
-                  <div className="flex items-center gap-2 text-primary font-bold text-base sm:text-lg">
-                    <BookOpen className="h-4 w-4" />
-                    <span>5 Subjects</span>
+              {/* Key Platform Pillars Bar */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto pt-6 border-t border-border text-left">
+                <div
+                  onClick={() => navigate("/community")}
+                  className="p-3.5 rounded-xl bg-card border border-border hover:border-primary transition-all cursor-pointer apple-press"
+                >
+                  <div className="flex items-center gap-2 text-primary font-bold text-sm sm:text-base">
+                    <MessageSquare className="h-4 w-4" />
+                    <span>Campus Social</span>
                   </div>
-                  <p className="text-[11px] text-muted-foreground mt-0.5">Full Semester 3 Syllabus</p>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">Masked Confessions & Feed</p>
                 </div>
 
-                <div className="p-3 rounded-2xl bg-card border border-border/70 shadow-xs">
-                  <div className="flex items-center gap-2 text-emerald-600 font-bold text-base sm:text-lg">
-                    <Code className="h-4 w-4" />
-                    <span>94 Practicals</span>
-                  </div>
-                  <p className="text-[11px] text-muted-foreground mt-0.5">DSA, Java OOP & Python</p>
-                </div>
-
-                <div className="p-3 rounded-2xl bg-card border border-border/70 shadow-xs">
-                  <div className="flex items-center gap-2 text-amber-500 font-bold text-base sm:text-lg">
+                <div
+                  onClick={() => navigate("/calculator")}
+                  className="p-3.5 rounded-xl bg-card border border-border hover:border-primary transition-all cursor-pointer apple-press"
+                >
+                  <div className="flex items-center gap-2 text-blue-500 font-bold text-sm sm:text-base">
                     <Calculator className="h-4 w-4" />
                     <span>75% Attendance</span>
                   </div>
-                  <p className="text-[11px] text-muted-foreground mt-0.5">Safe Bunk & Risk Modeler</p>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">Safe Bunk & SGPA Predictor</p>
                 </div>
 
-                <div className="p-3 rounded-2xl bg-card border border-border/70 shadow-xs">
-                  <div className="flex items-center gap-2 text-purple-600 font-bold text-base sm:text-lg">
-                    <Shield className="h-4 w-4" />
-                    <span>Campus Mask</span>
+                <div
+                  onClick={() => navigate("/coding-lab")}
+                  className="p-3.5 rounded-xl bg-card border border-border hover:border-primary transition-all cursor-pointer apple-press"
+                >
+                  <div className="flex items-center gap-2 text-emerald-500 font-bold text-sm sm:text-base">
+                    <Code className="h-4 w-4" />
+                    <span>94 Practicals</span>
                   </div>
-                  <p className="text-[11px] text-muted-foreground mt-0.5">Fearless Student Feedback</p>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">DSA, Java & Python</p>
+                </div>
+
+                <div
+                  onClick={() => document.getElementById("subjects")?.scrollIntoView({ behavior: "smooth" })}
+                  className="p-3.5 rounded-xl bg-card border border-border hover:border-primary transition-all cursor-pointer apple-press"
+                >
+                  <div className="flex items-center gap-2 text-foreground font-bold text-sm sm:text-base">
+                    <BookOpen className="h-4 w-4 text-primary" />
+                    <span>5 Subjects</span>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">Full Semester Curricula</p>
                 </div>
               </div>
             </>
@@ -251,158 +262,282 @@ export default function Index() {
         </div>
       </section>
 
-      {/* ── Key Feature Showcase Grid ── */}
-      <section className="py-12 sm:py-16 px-4 sm:px-6 bg-secondary/15 border-b border-border/50">
+      {/* ── 2. PROMOTE: Campus Social & Anonymous Mask Shield ── */}
+      <section className="py-14 sm:py-20 px-4 sm:px-6 bg-secondary/20 border-b border-border">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-10">
-            <span className="text-xs font-bold uppercase tracking-wider text-primary">Engineered For Top Grades</span>
-            <h2 className="text-2xl sm:text-4xl font-extrabold text-foreground mt-1 tracking-tight">
-              Everything You Need To Top B.Tech CSE
-            </h2>
-            <p className="text-xs sm:text-sm text-muted-foreground mt-2 max-w-xl mx-auto">
-              Built directly from official ITM SLS Baroda course plans and previous university exam question banks.
-            </p>
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-10">
+            <div className="max-w-xl">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold mb-3">
+                <Shield className="h-3.5 w-3.5" />
+                <span>Anti-Retaliation Student Voice</span>
+              </div>
+              <h2 className="text-2xl sm:text-4xl font-black text-foreground tracking-tight">
+                Campus Pulse & Anonymous Social
+              </h2>
+              <p className="text-xs sm:text-sm text-muted-foreground mt-2 leading-relaxed">
+                Connect with B.Tech classmates, ask tough academic doubts, or post honest feedback on college labs,
+                faculty, and the canteen using the <strong className="text-foreground">Campus Mask Shield</strong>.
+              </p>
+            </div>
+
+            <div className="shrink-0">
+              <button
+                onClick={() => navigate("/community")}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground font-bold text-sm hover:opacity-90 transition-opacity apple-press shadow-sm"
+              >
+                <MessageSquare className="h-4 w-4" />
+                <span>Open Campus Social Feed</span>
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {/* Feature 1: Practical Coding Lab */}
-            <div
-              onClick={() => navigate("/coding-lab")}
-              className="p-5 sm:p-6 rounded-2xl sm:rounded-3xl bg-card border border-border/80 hover:border-emerald-500/50 transition-all cursor-pointer shadow-sm hover:shadow-md group apple-press flex flex-col justify-between"
-            >
-              <div>
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center font-bold mb-4">
-                  <Code className="h-5 w-5" />
-                </div>
-                <h3 className="font-bold text-base sm:text-lg text-foreground group-hover:text-emerald-600 transition-colors">
-                  94 Practical Coding Lab
-                </h3>
-                <p className="text-xs sm:text-sm text-muted-foreground mt-1.5 leading-relaxed">
-                  32 DSA in C, 31 Java OOP, and 31 Python COANMP practical programs with live code copy, expected output, and Big-O complexity analysis.
-                </p>
-              </div>
-              <div className="mt-5 pt-3 border-t border-border/50 flex items-center justify-between text-xs font-bold text-emerald-600">
-                <span>Open Coding Lab</span>
-                <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-              </div>
-            </div>
-
-            {/* Feature 2: 75% Attendance Modeler */}
-            <div
-              onClick={() => navigate("/calculator")}
-              className="p-5 sm:p-6 rounded-2xl sm:rounded-3xl bg-card border border-border/80 hover:border-blue-500/50 transition-all cursor-pointer shadow-sm hover:shadow-md group apple-press flex flex-col justify-between"
-            >
-              <div>
-                <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-600 flex items-center justify-center font-bold mb-4">
-                  <Calculator className="h-5 w-5" />
-                </div>
-                <h3 className="font-bold text-base sm:text-lg text-foreground group-hover:text-blue-600 transition-colors">
-                  75% Attendance & SGPA
-                </h3>
-                <p className="text-xs sm:text-sm text-muted-foreground mt-1.5 leading-relaxed">
-                  Never get detained! Calculate exact safe bunks remaining, required consecutive lectures, and project your semester SGPA & CGPA.
-                </p>
-              </div>
-              <div className="mt-5 pt-3 border-t border-border/50 flex items-center justify-between text-xs font-bold text-blue-600">
-                <span>Check My Attendance Buffer</span>
-                <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-              </div>
-            </div>
-
-            {/* Feature 3: Campus Social & Mask */}
+          {/* Interactive Sample Posts Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div
               onClick={() => navigate("/community")}
-              className="p-5 sm:p-6 rounded-2xl sm:rounded-3xl bg-card border border-border/80 hover:border-purple-500/50 transition-all cursor-pointer shadow-sm hover:shadow-md group apple-press flex flex-col justify-between"
+              className="p-5 rounded-2xl bg-card border border-border hover:border-primary/50 transition-all cursor-pointer shadow-xs flex flex-col justify-between"
             >
               <div>
-                <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-600 flex items-center justify-center font-bold mb-4">
-                  <Shield className="h-5 w-5" />
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-base">🎭</span>
+                    <span className="font-bold text-xs text-foreground">Anonymous Student</span>
+                  </div>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-secondary text-muted-foreground">
+                    College Feedback
+                  </span>
                 </div>
-                <h3 className="font-bold text-base sm:text-lg text-foreground group-hover:text-purple-600 transition-colors">
-                  Campus Social & Mask 🎭
-                </h3>
-                <p className="text-xs sm:text-sm text-muted-foreground mt-1.5 leading-relaxed">
-                  Share academic doubts, exam survival rants, or post honest feedback on canteen/labs anonymously with our student mask shield.
+                <p className="text-xs sm:text-[13px] text-foreground/90 leading-relaxed">
+                  "The AC in Lab 3 has been leaking water near power sockets and Wi-Fi drops to zero during practical hours. Administration please look into this before exams!"
                 </p>
               </div>
-              <div className="mt-5 pt-3 border-t border-border/50 flex items-center justify-between text-xs font-bold text-purple-600">
-                <span>Join Campus Feed</span>
-                <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              <div className="mt-4 pt-3 border-t border-border/50 flex items-center justify-between text-[11px] text-muted-foreground">
+                <span className="font-mono">🔒 Mask Shield Active</span>
+                <span className="text-primary font-semibold">38 Upvotes</span>
               </div>
             </div>
 
-            {/* Feature 4: Audio Lecture Player */}
             <div
-              onClick={() => navigate("/subject/ca-101/topic/instruction-cycle-flowchart")}
-              className="p-5 sm:p-6 rounded-2xl sm:rounded-3xl bg-card border border-border/80 hover:border-amber-500/50 transition-all cursor-pointer shadow-sm hover:shadow-md group apple-press flex flex-col justify-between"
+              onClick={() => navigate("/community")}
+              className="p-5 rounded-2xl bg-card border border-border hover:border-primary/50 transition-all cursor-pointer shadow-xs flex flex-col justify-between"
             >
               <div>
-                <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center font-bold mb-4">
-                  <Volume2 className="h-5 w-5" />
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 rounded-full bg-primary/20 text-primary font-bold text-[10px] flex items-center justify-center">
+                      P
+                    </div>
+                    <span className="font-bold text-xs text-foreground">Priya Sharma</span>
+                  </div>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-secondary text-muted-foreground">
+                    Exam Tips
+                  </span>
                 </div>
-                <h3 className="font-bold text-base sm:text-lg text-foreground group-hover:text-amber-600 transition-colors">
-                  Continuous AI Audio Notes
-                </h3>
-                <p className="text-xs sm:text-sm text-muted-foreground mt-1.5 leading-relaxed">
-                  Listen to in-depth lecture explanations and formulas hands-free on the college bus. Sequential auto-play with speed controls.
+                <p className="text-xs sm:text-[13px] text-foreground/90 leading-relaxed">
+                  "For Computer Architecture Unit 2: definitely practice the Master Instruction Cycle flowchart (T0 to T6). That is an almost guaranteed 7-mark question in MST!"
                 </p>
               </div>
-              <div className="mt-5 pt-3 border-t border-border/50 flex items-center justify-between text-xs font-bold text-amber-600">
-                <span>Listen to a Topic</span>
-                <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              <div className="mt-4 pt-3 border-t border-border/50 flex items-center justify-between text-[11px] text-muted-foreground">
+                <span>B.Tech CSE '26</span>
+                <span className="text-primary font-semibold">47 Upvotes</span>
               </div>
             </div>
 
-            {/* Feature 5: Question Banks & Flashcards */}
             <div
-              onClick={() => navigate("/quiz")}
-              className="p-5 sm:p-6 rounded-2xl sm:rounded-3xl bg-card border border-border/80 hover:border-pink-500/50 transition-all cursor-pointer shadow-sm hover:shadow-md group apple-press flex flex-col justify-between"
+              onClick={() => navigate("/community")}
+              className="p-5 rounded-2xl bg-card border border-border hover:border-primary/50 transition-all cursor-pointer shadow-xs flex flex-col justify-between"
             >
               <div>
-                <div className="w-10 h-10 rounded-xl bg-pink-500/10 text-pink-600 flex items-center justify-center font-bold mb-4">
-                  <HelpCircle className="h-5 w-5" />
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-base">🎭</span>
+                    <span className="font-bold text-xs text-foreground">Anonymous Student</span>
+                  </div>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-secondary text-muted-foreground">
+                    Confession
+                  </span>
                 </div>
-                <h3 className="font-bold text-base sm:text-lg text-foreground group-hover:text-pink-600 transition-colors">
-                  Custom Quizzes & Flashcards
-                </h3>
-                <p className="text-xs sm:text-sm text-muted-foreground mt-1.5 leading-relaxed">
-                  Grand mock exams, custom question count picker (5 to All), and active recall flashcards mapped directly to university patterns.
+                <p className="text-xs sm:text-[13px] text-foreground/90 leading-relaxed">
+                  "Confession: I skipped Friday 8:30 AM lecture just to finish my assignment, but thanks to the 75% attendance calculator I checked first and still have 3 safe bunks left 😎"
                 </p>
               </div>
-              <div className="mt-5 pt-3 border-t border-border/50 flex items-center justify-between text-xs font-bold text-pink-600">
-                <span>Start Practice Quiz</span>
-                <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-              </div>
-            </div>
-
-            {/* Feature 6: Gamification & Ranks */}
-            <div
-              onClick={() => navigate("/profile")}
-              className="p-5 sm:p-6 rounded-2xl sm:rounded-3xl bg-card border border-border/80 hover:border-primary/50 transition-all cursor-pointer shadow-sm hover:shadow-md group apple-press flex flex-col justify-between"
-            >
-              <div>
-                <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold mb-4">
-                  <Trophy className="h-5 w-5" />
-                </div>
-                <h3 className="font-bold text-base sm:text-lg text-foreground group-hover:text-primary transition-colors">
-                  Study Streaks & XP Ranks
-                </h3>
-                <p className="text-xs sm:text-sm text-muted-foreground mt-1.5 leading-relaxed">
-                  Earn XP for reading notes, maintain your daily study streak, unlock prestigious badges, and benchmark side-by-side with classmates!
-                </p>
-              </div>
-              <div className="mt-5 pt-3 border-t border-border/50 flex items-center justify-between text-xs font-bold text-primary">
-                <span>View My Profile & Badges</span>
-                <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              <div className="mt-4 pt-3 border-t border-border/50 flex items-center justify-between text-[11px] text-muted-foreground">
+                <span className="font-mono">🔒 Mask Shield Active</span>
+                <span className="text-primary font-semibold">62 Upvotes</span>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── Bookmarked Topics (If Any) ── */}
+      {/* ── 3. PROMOTE: 75% Attendance & SGPA / CGPA Predictor ── */}
+      <section className="py-14 sm:py-20 px-4 sm:px-6 border-b border-border">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            
+            <div className="lg:col-span-6 space-y-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-xs font-bold">
+                <Calculator className="h-3.5 w-3.5" />
+                <span>Attendance Protection</span>
+              </div>
+              <h2 className="text-2xl sm:text-4xl font-black text-foreground tracking-tight">
+                Never Get Detained. <br />
+                75% Attendance & SGPA Suite.
+              </h2>
+              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                ITM SLS Baroda University strictly requires <strong className="text-foreground">75% minimum attendance</strong> to appear in final exams. Our dynamic calculator tells you the exact number of classes you can safely miss, or how many consecutive lectures you must attend to cross the threshold.
+              </p>
+
+              <div className="space-y-2 pt-2">
+                <div className="flex items-center gap-2.5 text-xs text-foreground">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
+                  <span>Real-time Safe Bunks Simulator (Never guess attendance again)</span>
+                </div>
+                <div className="flex items-center gap-2.5 text-xs text-foreground">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
+                  <span>Subject-wise Semester 3 Attendance Tracker</span>
+                </div>
+                <div className="flex items-center gap-2.5 text-xs text-foreground">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
+                  <span>Credit-weighted SGPA & Cumulative CGPA Forecaster</span>
+                </div>
+              </div>
+
+              <div className="pt-4">
+                <button
+                  onClick={() => navigate("/calculator")}
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground font-bold text-sm hover:opacity-90 transition-opacity apple-press shadow-sm"
+                >
+                  <Calculator className="h-4 w-4" />
+                  <span>Calculate Safe Bunks & SGPA</span>
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Attendance Simulator Card Preview */}
+            <div className="lg:col-span-6 p-6 rounded-2xl bg-card border border-border shadow-sm space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-border">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center font-bold text-xs">
+                    75%
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-sm text-foreground">University 75% Requirement Buffer</h4>
+                    <p className="text-[11px] text-muted-foreground">Sample Student Simulation</p>
+                  </div>
+                </div>
+                <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600">
+                  Eligible
+                </span>
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex justify-between text-xs font-semibold text-foreground">
+                  <span>Current Attendance</span>
+                  <span className="text-emerald-600 font-bold">84% (42 / 50 Conducted)</span>
+                </div>
+                <div className="w-full h-3 rounded-full bg-secondary overflow-hidden">
+                  <div className="bg-emerald-500 h-full rounded-full" style={{ width: '84%' }} />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 text-center pt-2">
+                <div className="p-3 rounded-xl bg-secondary/50 border border-border">
+                  <p className="text-[10px] text-muted-foreground uppercase font-bold">Safe Bunks Left</p>
+                  <p className="text-xl font-black text-emerald-600 mt-0.5">6 Classes</p>
+                  <p className="text-[10px] text-muted-foreground">Without dropping below 75%</p>
+                </div>
+
+                <div className="p-3 rounded-xl bg-secondary/50 border border-border">
+                  <p className="text-[10px] text-muted-foreground uppercase font-bold">Target SGPA</p>
+                  <p className="text-xl font-black text-primary mt-0.5">8.85 / 10</p>
+                  <p className="text-[10px] text-muted-foreground">Based on 21 Credits</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ── 4. PROMOTE: Practical Coding Lab (94 Programs) ── */}
+      <section className="py-14 sm:py-20 px-4 sm:px-6 bg-secondary/20 border-b border-border">
+        <div className="max-w-5xl mx-auto">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-bold mb-3">
+                <Code className="h-3.5 w-3.5" />
+                <span>Lab Exam Ready</span>
+              </div>
+              <h2 className="text-2xl sm:text-4xl font-black text-foreground tracking-tight">
+                94 Practical Coding Lab
+              </h2>
+              <p className="text-xs sm:text-sm text-muted-foreground mt-1 max-w-xl">
+                Every lab assignment in C, Java OOP, and Python with one-click copy, verified terminal output, and viva explanations.
+              </p>
+            </div>
+
+            <button
+              onClick={() => navigate("/coding-lab")}
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-600 text-white font-bold text-sm hover:bg-emerald-700 transition-colors apple-press shadow-sm self-start md:self-auto"
+            >
+              <Code className="h-4 w-4" />
+              <span>Explore All 94 Programs</span>
+              <ArrowRight className="h-4 w-4" />
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div
+              onClick={() => navigate("/coding-lab")}
+              className="p-5 rounded-2xl bg-card border border-border hover:border-emerald-500/50 transition-all cursor-pointer shadow-xs apple-press"
+            >
+              <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center font-bold text-xs mb-3">
+                C
+              </div>
+              <h3 className="font-bold text-base text-foreground">32 DSA in C Practicals</h3>
+              <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                Pointers, Singly & Doubly Linked Lists, BST, Stacks, Queues, Graphs, and Quick/Merge Sort with Big-O memory traces.
+              </p>
+              <p className="text-[11px] font-bold text-emerald-600 mt-4">Browse C Programs →</p>
+            </div>
+
+            <div
+              onClick={() => navigate("/coding-lab")}
+              className="p-5 rounded-2xl bg-card border border-border hover:border-emerald-500/50 transition-all cursor-pointer shadow-xs apple-press"
+            >
+              <div className="w-8 h-8 rounded-lg bg-red-500/10 text-red-600 flex items-center justify-center font-bold text-xs mb-3">
+                Java
+              </div>
+              <h3 className="font-bold text-base text-foreground">31 Java OOP Practicals</h3>
+              <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                Inheritance, Polymorphism dispatch, Custom Exceptions, Multithreading synchronization, and Collections Framework.
+              </p>
+              <p className="text-[11px] font-bold text-red-500 mt-4">Browse Java Programs →</p>
+            </div>
+
+            <div
+              onClick={() => navigate("/coding-lab")}
+              className="p-5 rounded-2xl bg-card border border-border hover:border-emerald-500/50 transition-all cursor-pointer shadow-xs apple-press"
+            >
+              <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-600 flex items-center justify-center font-bold text-xs mb-3">
+                Py
+              </div>
+              <h3 className="font-bold text-base text-foreground">31 Python COANMP Practicals</h3>
+              <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                Bisection, Newton-Raphson, Simpson's 1/3rd, Gauss Elimination, and Runge-Kutta differential equations.
+              </p>
+              <p className="text-[11px] font-bold text-blue-500 mt-4">Browse Python Programs →</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 5. PROMOTE: Bookmarked Topics (If Any) ── */}
       {bookmarkedTopics.length > 0 && (
-        <section className="max-w-5xl mx-auto px-4 sm:px-6 pt-10 pb-4 w-full">
+        <section className="max-w-5xl mx-auto px-4 sm:px-6 pt-12 pb-2 w-full">
           <div className="flex items-center gap-2 mb-3">
             <Bookmark className="h-4 w-4 text-amber-500 fill-amber-500" />
             <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Bookmarked For Quick Revision</h2>
@@ -412,7 +547,7 @@ export default function Index() {
               <button
                 key={item.topicId}
                 onClick={() => navigate(`/subject/${item.subjectId}/topic/${item.topicId}`)}
-                className="p-3.5 rounded-2xl bg-card border border-border text-left hover:border-primary transition-colors apple-press flex items-center gap-3 shadow-xs"
+                className="p-3.5 rounded-xl bg-card border border-border text-left hover:border-primary transition-colors apple-press flex items-center gap-3 shadow-xs"
               >
                 <BookOpen className="h-4 w-4 text-primary shrink-0" />
                 <div className="min-w-0">
@@ -425,12 +560,12 @@ export default function Index() {
         </section>
       )}
 
-      {/* ── Semester 3 Subjects Section ── */}
-      <section id="subjects" className="max-w-5xl mx-auto px-4 sm:px-6 py-12 flex-1 w-full">
+      {/* ── 6. PROMOTE: Semester 3 Curricula & Audio Notes ── */}
+      <section id="subjects" className="max-w-5xl mx-auto px-4 sm:px-6 py-14 flex-1 w-full">
         <div className="flex items-center justify-between mb-6 pb-2 border-b border-border">
           <div>
-            <h2 className="text-xl sm:text-2xl font-black text-foreground">Semester 3 Curricula</h2>
-            <p className="text-xs sm:text-sm text-muted-foreground">Select a course module to begin reading comprehensive lecture notes.</p>
+            <h2 className="text-xl sm:text-2xl font-black text-foreground">Semester 3 Master Curricula</h2>
+            <p className="text-xs sm:text-sm text-muted-foreground">Select a course module to start studying notes and listening to audio lectures.</p>
           </div>
           <ReadingTimeEstimate topicCount={totalTopics} />
         </div>
@@ -444,7 +579,7 @@ export default function Index() {
             return (
               <div
                 key={subject.id}
-                className="group w-full rounded-2xl bg-card border border-border/80 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-primary/50 transition-all duration-150 shadow-xs"
+                className="group w-full rounded-2xl bg-card border border-border p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-primary/60 transition-all duration-150 shadow-xs"
               >
                 <div
                   onClick={() => navigate(`/subject/${subject.id}`)}
@@ -464,7 +599,7 @@ export default function Index() {
                     {subProgress > 0 && ` · ${completedInSub} completed (${subProgress}%)`}
                   </p>
 
-                  {/* Progress bar inside subject */}
+                  {/* Subject Progress bar */}
                   {subProgress > 0 && (
                     <div className="mt-2.5 h-1.5 w-full max-w-md rounded-full bg-secondary overflow-hidden">
                       <div
@@ -475,7 +610,7 @@ export default function Index() {
                   )}
                 </div>
 
-                {/* Subject Actions */}
+                {/* Quick actions */}
                 <div className="flex items-center gap-2 shrink-0">
                   <button
                     onClick={() => navigate(`/subject/${subject.id}/cheat-sheet`)}
@@ -498,30 +633,30 @@ export default function Index() {
         </div>
       </section>
 
-      {/* ── High-Converting Sign-In Callout Banner ── */}
+      {/* ── 7. Clean High-Converting Sign-In Section ── */}
       {!user && (
         <section className="px-4 sm:px-6 pb-16 max-w-5xl mx-auto w-full">
-          <div className="rounded-3xl p-6 sm:p-10 bg-gradient-to-r from-primary via-purple-700 to-indigo-900 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="rounded-2xl sm:rounded-3xl p-6 sm:p-10 bg-card border border-border shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="max-w-xl text-center md:text-left">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-white text-xs font-bold mb-3 backdrop-blur">
-                <Sparkles className="h-3.5 w-3.5 text-amber-300" />
-                <span>Join 500+ ITM SLS Baroda Students</span>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold mb-3">
+                <Sparkles className="h-3.5 w-3.5" />
+                <span>Join B.Tech CSE Classmates</span>
               </div>
-              <h3 className="text-2xl sm:text-3xl font-black tracking-tight">
-                Don't Study In The Dark. Track Your Progress.
+              <h3 className="text-2xl sm:text-3xl font-black text-foreground tracking-tight">
+                Don't Study In The Dark. Sync Your Progress.
               </h3>
-              <p className="text-xs sm:text-sm text-white/80 mt-2 leading-relaxed">
-                Create a student profile in 10 seconds to sync your 75% attendance data, maintain daily study streaks,
-                and earn XP across all your devices.
+              <p className="text-xs sm:text-sm text-muted-foreground mt-2 leading-relaxed">
+                Sign in with your student account to sync 75% attendance logs, save your daily study streaks,
+                unlock badges, and benchmark side-by-side with classmates.
               </p>
             </div>
 
             <div className="shrink-0 flex flex-col sm:flex-row gap-3 w-full md:w-auto">
               <button
                 onClick={() => navigate("/auth")}
-                className="pill-button apple-press bg-white text-black font-extrabold text-sm sm:text-base h-12 px-8 hover:bg-white/90 transition-all shadow-lg text-center"
+                className="pill-button apple-press bg-primary text-primary-foreground font-extrabold text-sm sm:text-base h-12 px-8 hover:opacity-90 transition-all shadow-sm text-center"
               >
-                Sign In Now (+50 XP)
+                Sign In Free (+50 XP)
               </button>
             </div>
           </div>

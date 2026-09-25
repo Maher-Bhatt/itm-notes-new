@@ -127,9 +127,9 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
             <button
               onClick={() => navigate("/community")}
               title="Campus Social Feed & Confessions"
-              className="apple-press hidden lg:inline-flex items-center gap-1.5 h-8 px-2.5 rounded text-sm font-medium text-purple-600 dark:text-purple-400 hover:text-foreground hover:bg-secondary transition-colors"
+              className="apple-press hidden lg:inline-flex items-center gap-1.5 h-8 px-2.5 rounded text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
             >
-              <MessageSquare className="h-4 w-4 text-purple-500" />
+              <MessageSquare className="h-4 w-4 text-primary" />
               <span>Social</span>
             </button>
 
@@ -223,23 +223,10 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <div className="flex items-center gap-1.5 ml-1">
-                <button
-                  onClick={() => navigate("/profile")}
-                  title="My Student Profile"
-                  className="apple-press hidden sm:inline-flex items-center justify-center h-8 w-8 rounded-full bg-secondary hover:bg-secondary/80 transition-colors border overflow-hidden"
-                >
-                  {profile?.avatar_url ? (
-                    <img src={profile.avatar_url} alt="Avatar" className="h-full w-full rounded-full object-cover" />
-                  ) : (
-                    <span className="text-xs font-bold text-primary">
-                      {profile?.display_name?.charAt(0).toUpperCase() || 'M'}
-                    </span>
-                  )}
-                </button>
+              <div className="flex items-center gap-2 ml-1">
                 <button
                   onClick={() => navigate("/auth")}
-                  className="apple-press inline-flex items-center justify-center gap-1.5 h-8 px-2.5 rounded text-xs bg-primary text-primary-foreground hover:bg-primary/90 transition-colors font-medium"
+                  className="apple-press inline-flex items-center justify-center gap-1.5 h-8 px-3 rounded-lg text-xs bg-primary text-primary-foreground hover:bg-primary/90 transition-colors font-semibold shadow-sm"
                 >
                   Sign In
                 </button>
@@ -286,11 +273,11 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
             Resources & Community
           </div>
 
-          <button onClick={() => { navigate("/community"); setIsDrawerOpen(false); }} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-secondary text-left transition-colors text-purple-600 dark:text-purple-400">
-            <MessageSquare className="h-5 w-5 text-purple-500" />
+          <button onClick={() => { navigate("/community"); setIsDrawerOpen(false); }} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-secondary text-left transition-colors text-foreground">
+            <MessageSquare className="h-5 w-5 text-primary" />
             <div className="flex items-center justify-between w-full">
               <span>Campus Social & Mask</span>
-              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-purple-500/10 font-bold border border-purple-500/20">Live</span>
+              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-primary/10 text-primary font-bold border border-primary/20">Feed</span>
             </div>
           </button>
           
