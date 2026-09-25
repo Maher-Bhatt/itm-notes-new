@@ -3,6 +3,7 @@ import { subjects, getAllTopicIds } from "@/data/subjects";
 import { useProgress } from "@/hooks/useProgress";
 import { useGamification } from "@/hooks/useGamification";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAcademic } from "@/contexts/AcademicContext";
 import {
   ArrowRight,
   ChevronRight,
@@ -26,7 +27,7 @@ import {
   UserCheck,
   Zap,
 } from "lucide-react";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { SearchDialog } from "@/components/SearchDialog";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -64,29 +65,30 @@ export default function Index() {
   const { getSubjectProgress, isBookmarked, progress } = useProgress();
   const { state: game, levelInfo } = useGamification();
   const { user, profile } = useAuth();
+  const { semesterNumber } = useAcademic();
   const [searchOpen, setSearchOpen] = useState(false);
-  const [semesterFilter, setSemesterFilter] = useState<number | 'all'>('all');
+  const [semesterFilter, setSemesterFilter] = useState<number | 'all'>(semesterNumber || 1);
   const navigate = useNavigate();
 
-  // Import semester context for dynamic filtering
-  let currentSemester = 3;
-  try {
-    const stored = localStorage.getItem("academic_context");
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      const sid = parsed.semesterId;
-      if (sid?.startsWith("sem-")) {
-        const num = parseInt(sid.replace("sem-", ""), 10);
-        if (!isNaN(num)) currentSemester = num;
-      } else if (sid && !isNaN(parseInt(sid, 10))) {
-        const num = parseInt(sid, 10);
-        if (num >= 1 && num <= 8) currentSemester = num;
-      }
+  // Sync with user's academic context when changed
+  useEffect(() => {
+    if (semesterNumber && semesterFilter !== semesterNumber && semesterFilter !== 'all') {
+      setSemesterFilter(semesterNumber);
     }
-  } catch { /* ignore */ }
+  }, [semesterNumber]);
 
-  const totalTopics = subjects.reduce((sum, s) => sum + getAllTopicIds(s.id).length, 0);
-  const allTopicIds = subjects.flatMap((s) => getAllTopicIds(s.id));
+  // Clean list of verified subjects with actual topics
+  const validSubjects = useMemo(() => {
+    return subjects
+      .filter((s) => s.units && s.units.some((u) => u.topics && u.topics.length > 0))
+      .sort((a, b) => {
+        if (a.semester !== b.semester) return a.semester - b.semester;
+        return a.name.localeCompare(b.name);
+      });
+  }, []);
+
+  const totalTopics = validSubjects.reduce((sum, s) => sum + getAllTopicIds(s.id).length, 0);
+  const allTopicIds = validSubjects.flatMap((s) => getAllTopicIds(s.id));
   const overallProgress = getSubjectProgress(allTopicIds);
 
   // Bookmarked topics for quick access
@@ -299,11 +301,11 @@ export default function Index() {
                       <BookOpen className="h-4 w-4" />
                     </div>
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-secondary text-foreground border border-border">
-                      Sem 3
+                      Sem 1, 2 & 3
                     </span>
                   </div>
                   <h3 className="text-sm font-bold text-foreground group-hover:text-primary transition-colors">
-                    5 Master Subjects
+                    15 Engineering Subjects
                   </h3>
                   <p className="text-[11px] text-muted-foreground mt-0.5 leading-relaxed">
                     Syllabus notes, audio lectures & quick cheat sheets.
@@ -624,38 +626,95 @@ export default function Index() {
           <ReadingTimeEstimate topicCount={totalTopics} />
         </div>
 
-        {/* Semester Filter Tabs */}
-        <div className="flex items-center gap-1.5 mb-5 overflow-x-auto pb-1 scrollbar-none">
-          {[
-            { label: 'All Semesters', value: 'all' as const },
-            { label: `Semester 1`, value: 1 as const },
-            { label: `Semester 2`, value: 2 as const },
-            { label: `Semester 3`, value: 3 as const },
-          ].map((tab) => (
+        {/* ── 1. SEMESTER-FIRST PROMINENT SELECTOR ── */}
+        <div className="mb-6">
+          <div className="flex items-center justify-between mb-3">
+            <div>
+              <h3 className="text-sm font-bold text-foreground">Select Your Semester</h3>
+              <p className="text-xs text-muted-foreground">Click a semester below to view its official subjects and study notes.</p>
+            </div>
             <button
-              key={String(tab.value)}
-              onClick={() => setSemesterFilter(tab.value)}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all border ${
-                semesterFilter === tab.value
+              onClick={() => setSemesterFilter('all')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border ${
+                semesterFilter === 'all'
                   ? 'bg-primary text-primary-foreground border-primary shadow-xs'
                   : 'bg-card text-muted-foreground hover:text-foreground border-border hover:bg-secondary'
               }`}
             >
-              {tab.label}
-              {tab.value !== 'all' && (
-                <span className="ml-1.5 text-[10px] opacity-70">
-                  ({subjects.filter(s => s.semester === tab.value).length})
-                </span>
-              )}
-              {tab.value === currentSemester && tab.value !== 'all' && (
-                <span className="ml-1 text-[10px]">⭐</span>
-              )}
+              View All ({validSubjects.length})
             </button>
-          ))}
+          </div>
+
+          {/* 3 Prominent Semester Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {[
+              {
+                sem: 1,
+                title: 'Semester 1',
+                tagline: 'Engineering Foundations',
+                subjects: 'Python 1, Physics, CLA, TCS, Web Tech',
+                count: validSubjects.filter((s) => s.semester === 1).length,
+              },
+              {
+                sem: 2,
+                title: 'Semester 2',
+                tagline: 'Core Systems & Math',
+                subjects: 'Python 2, C Lang, Digital Electronics, Stats, Accounts',
+                count: validSubjects.filter((s) => s.semester === 2).length,
+              },
+              {
+                sem: 3,
+                title: 'Semester 3',
+                tagline: 'Advanced Computer Science',
+                subjects: 'Comp Architecture, DSA, DBMS, Java, COANMP',
+                count: validSubjects.filter((s) => s.semester === 3).length,
+              },
+            ].map((card) => {
+              const isSelected = semesterFilter === card.sem;
+              const isUserCurrent = semesterNumber === card.sem;
+
+              return (
+                <button
+                  key={card.sem}
+                  onClick={() => setSemesterFilter(card.sem)}
+                  className={`p-4 rounded-2xl text-left transition-all duration-200 apple-press border relative ${
+                    isSelected
+                      ? 'bg-card border-primary shadow-md ring-2 ring-primary/20'
+                      : 'bg-card/60 border-border hover:border-primary/40 hover:bg-secondary/40'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className={`text-xs font-black px-2.5 py-0.5 rounded-full ${
+                      card.sem === 1
+                        ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                        : card.sem === 2
+                        ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
+                        : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
+                    }`}>
+                      {card.title}
+                    </span>
+                    <div className="flex items-center gap-1">
+                      {isUserCurrent && (
+                        <span className="text-[10px] font-bold text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded-full" title="Your Enrolled Semester">
+                          ⭐ Your Sem
+                        </span>
+                      )}
+                      <span className="text-xs font-mono font-bold text-muted-foreground">
+                        {card.count} Sub
+                      </span>
+                    </div>
+                  </div>
+
+                  <p className="font-bold text-sm text-foreground mb-1">{card.tagline}</p>
+                  <p className="text-[11px] text-muted-foreground line-clamp-1 leading-snug">{card.subjects}</p>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         <div className="space-y-3">
-          {subjects
+          {validSubjects
             .filter(s => semesterFilter === 'all' || s.semester === semesterFilter)
             .map((subject) => {
             const topicIds = getAllTopicIds(subject.id);
@@ -717,7 +776,7 @@ export default function Index() {
             );
           })}
 
-          {subjects.filter(s => semesterFilter === 'all' || s.semester === semesterFilter).length === 0 && (
+          {validSubjects.filter(s => semesterFilter === 'all' || s.semester === semesterFilter).length === 0 && (
             <div className="text-center py-12 text-muted-foreground">
               <BookOpen className="h-8 w-8 mx-auto mb-3 opacity-50" />
               <p className="font-semibold text-sm">No subjects available for this semester yet.</p>

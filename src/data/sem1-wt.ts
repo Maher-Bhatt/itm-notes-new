@@ -167,6 +167,164 @@ Content-Length: 1024
               explanation: 'The <aside> element defines content tangentially related to the main content (e.g. sidebars or pull quotes).'
             }
           ]
+        },
+        {
+          id: 'wt-t2b',
+          title: 'HTML Tables, Complex Forms, Input Constraints & Multimedia Tags',
+          simpleExplanation: 'HTML tables organize tabular data using rows, header cells, and column/row spans. HTML forms gather student input with specialized controls, validation rules, and multimedia support.',
+          detailedExplanation: `### 1. HTML5 Tables & Tabular Data Architecture
+
+Tables present structured relational or matrix information:
+- \`<table>\`: Container element.
+- \`<caption>\`: Table title.
+- \`<thead>\`: Header section containing column titles.
+- \`<tbody>\`: Main data rows.
+- \`<tfoot>\`: Summary or total row.
+- \`<tr>\`: Table row.
+- \`<th>\`: Header cell (bold and centered by default).
+- \`<td>\`: Standard data cell.
+
+#### Merging Cells:
+- \`colspan="N"\`: Stretches a cell across $N$ columns.
+- \`rowspan="N"\`: Stretches a cell down across $N$ rows.
+
+\`\`\`html
+<table border="1" cellpadding="8">
+    <caption>Semester 1 Examination Timetable</caption>
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Subject</th>
+            <th>Max Marks</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td rowspan="2">28 Nov</td>
+            <td>Engineering Physics (PHY102)</td>
+            <td>70</td>
+        </tr>
+        <tr>
+            <td>Python Programming (PY101)</td>
+            <td>70</td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="2">Total Core Evaluation</td>
+            <td>140</td>
+        </tr>
+    </tfoot>
+</table>
+\`\`\`
+
+### 2. Comprehensive HTML Form Controls
+
+The \`<form>\` tag submits client data to a backend endpoint:
+- **Attributes**:
+  - \`action="/api/register"\`: Destination URL.
+  - \`method="GET" | "POST"\`: \`GET\` appends data to URL query parameters (search bars); \`POST\` sends data securely inside the HTTP request body (passwords, file uploads).
+  - \`enctype="multipart/form-data"\`: Mandatory when uploading files.
+
+#### Specialized Form Controls:
+\`\`\`html
+<form action="/save" method="POST" enctype="multipart/form-data">
+    <fieldset>
+        <legend>Personal Information</legend>
+        
+        <!-- Text & Password Inputs -->
+        <input type="text" name="username" placeholder="Roll Number" required>
+        <input type="password" name="password" minlength="8" required>
+        
+        <!-- Radio Buttons (Mutual exclusion via identical name attribute) -->
+        <label><input type="radio" name="gender" value="male"> Male</label>
+        <label><input type="radio" name="gender" value="female"> Female</label>
+        
+        <!-- Checkboxes -->
+        <label><input type="checkbox" name="agree" required> I accept university rules</label>
+        
+        <!-- Dropdown Selector -->
+        <select name="branch" required>
+            <option value="">-- Select Branch --</option>
+            <option value="cse">Computer Science (CSE)</option>
+            <option value="it">Information Technology (IT)</option>
+        </select>
+        
+        <!-- Multi-line Text Area -->
+        <textarea name="remarks" rows="3" cols="30"></textarea>
+        
+        <!-- File Upload -->
+        <input type="file" name="resume" accept=".pdf,.docx">
+        
+        <!-- Buttons -->
+        <button type="submit">Submit Form</button>
+        <button type="reset">Clear Entries</button>
+    </fieldset>
+</form>
+\`\`\`
+
+### 3. Native Multimedia Tags: \`<audio>\` & \`<video>\`
+HTML5 eliminated third-party flash plugins with native browser media engines:
+\`\`\`html
+<!-- Video player with fallback format support -->
+<video width="640" height="360" controls poster="poster.jpg">
+    <source src="lecture1.mp4" type="video/mp4">
+    <source src="lecture1.webm" type="video/webm">
+    Your browser does not support HTML5 video.
+</video>
+
+<!-- Audio player -->
+<audio controls loop>
+    <source src="pronunciation.mp3" type="audio/mpeg">
+</audio>
+\`\`\`
+
+> [!TIP] **EXAM TIP:**
+> For university 7-mark questions on "Design an HTML registration form", always draw and code a form using \`<fieldset>\`, \`<legend>\`, \`<select>\`, radio buttons with identical \`name\` attributes, and a submit button with \`POST\` method!`,
+          shortNotes: 'Tables: table, tr, th, td with colspan/rowspan. Forms: method (GET vs POST), fieldset, radio, select, input types. Multimedia: audio and video with controls.',
+          examples: [
+            {
+              title: 'Student Grade Table with Colspan & Rowspan',
+              problem: 'Create a clean HTML table displaying theory and practical marks.',
+              explanation: 'Use the thead, tbody structure with rowspan on subject names.',
+              code: `<table border="1">
+    <tr>
+        <th rowspan="2">Subject</th>
+        <th colspan="2">Marks</th>
+    </tr>
+    <tr>
+        <th>Theory</th>
+        <th>Practical</th>
+    </tr>
+    <tr>
+        <td>Python 1</td>
+        <td>68</td>
+        <td>28</td>
+    </tr>
+</table>`,
+              output: 'Renders a structured 2x2 merged grid with appropriate table headers.'
+            }
+          ],
+          keyPoints: [
+            'rowspan spans multiple rows vertically; colspan spans multiple columns horizontally.',
+            'Radio buttons must share the exact same name attribute to enforce single-choice selection.',
+            'POST method hides payload in request body; GET exposes data in the browser URL query string.',
+            'enctype="multipart/form-data" is mandatory whenever an input type="file" is present.'
+          ],
+          mcqs: [
+            {
+              question: 'Which HTML attribute enables radio buttons to function as mutually exclusive options?',
+              options: ['type', 'id', 'name', 'value'],
+              correctIndex: 2,
+              explanation: 'Radio buttons sharing the same name attribute belong to one mutual exclusion group.'
+            },
+            {
+              question: 'Which attribute merges 3 adjacent table columns into a single cell?',
+              options: ['rowspan="3"', 'colspan="3"', 'span="3"', 'colwidth="3"'],
+              correctIndex: 1,
+              explanation: 'colspan="3" merges 3 columns horizontally.'
+            }
+          ]
         }
       ]
     },

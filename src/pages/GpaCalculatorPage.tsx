@@ -61,8 +61,9 @@ export interface SubjectAttendance {
   id: string;
   name: string;
   code: string;
-  attended: number;
-  total: number;
+  present: number;      // Lectures conducted & attended
+  absent: number;       // Lectures conducted & missed
+  noAttendance: number; // Lectures cancelled / suspended / no attendance taken (not conducted)
 }
 
 const DEFAULT_INITIAL_SUBJECTS: SubjectGrade[] = [
@@ -77,14 +78,14 @@ const DEFAULT_INITIAL_SUBJECTS: SubjectGrade[] = [
 ];
 
 const DEFAULT_INITIAL_ATTENDANCE: SubjectAttendance[] = [
-  { id: 'att-ca', name: 'Computer Architecture', code: 'CS401', attended: 28, total: 32 },
-  { id: 'att-dsa', name: 'Data Structures & Algorithms', code: 'DSA301', attended: 30, total: 35 },
-  { id: 'att-dbms', name: 'Database Management Systems', code: 'DBMS302', attended: 26, total: 32 },
-  { id: 'att-java', name: 'OOP with Java', code: 'JAVA303', attended: 27, total: 30 },
-  { id: 'att-coanmp', name: 'Computer Oriented Numerical Methods', code: 'COANMP', attended: 24, total: 28 },
-  { id: 'att-dsa-lab', name: 'DSA Laboratory', code: 'DSA301P', attended: 12, total: 12 },
-  { id: 'att-dbms-lab', name: 'DBMS Laboratory', code: 'DBMS302P', attended: 11, total: 12 },
-  { id: 'att-java-lab', name: 'Java Laboratory', code: 'JAVA303P', attended: 11, total: 12 },
+  { id: 'att-ca', name: 'Computer Architecture', code: 'CS401', present: 28, absent: 4, noAttendance: 2 },
+  { id: 'att-dsa', name: 'Data Structures & Algorithms', code: 'DSA301', present: 30, absent: 5, noAttendance: 3 },
+  { id: 'att-dbms', name: 'Database Management Systems', code: 'DBMS302', present: 26, absent: 6, noAttendance: 1 },
+  { id: 'att-java', name: 'OOP with Java', code: 'JAVA303', present: 27, absent: 3, noAttendance: 2 },
+  { id: 'att-coanmp', name: 'Computer Oriented Numerical Methods', code: 'COANMP', present: 24, absent: 4, noAttendance: 4 },
+  { id: 'att-dsa-lab', name: 'DSA Laboratory', code: 'DSA301P', present: 12, absent: 0, noAttendance: 2 },
+  { id: 'att-dbms-lab', name: 'DBMS Laboratory', code: 'DBMS302P', present: 11, absent: 1, noAttendance: 1 },
+  { id: 'att-java-lab', name: 'Java Laboratory', code: 'JAVA303P', present: 11, absent: 1, noAttendance: 1 },
 ];
 
 function getGradeFromPercentage(percentage: number): { grade: string; points: number; label: string } {
@@ -132,8 +133,6 @@ export default function GpaCalculatorPage() {
   const [customCourseCredits, setCustomCourseCredits] = useState(3);
 
   // Attendance states
-  const [overallTotalClasses, setOverallTotalClasses] = useState<number>(48);
-  const [overallAttendedClasses, setOverallAttendedClasses] = useState<number>(38);
   const [targetAttendancePercent, setTargetAttendancePercent] = useState<number>(75);
 
   const [subjectAttendance, setSubjectAttendance] = useState<SubjectAttendance[]>(() => {
@@ -141,10 +140,34 @@ export default function GpaCalculatorPage() {
       const saved = localStorage.getItem('itm_attendance_records');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          // Normalize entries to guarantee present, absent, noAttendance exist
+          return parsed.map((item: any) => {
+            const present = typeof item.present === 'number' ? item.present : (item.attended || 0);
+            const absent = typeof item.absent === 'number'
+              ? item.absent
+              : Math.max(0, (item.total || 0) - present);
+            const noAttendance = typeof item.noAttendance === 'number' ? item.noAttendance : 0;
+            return {
+              id: item.id || `att-${Date.now()}`,
+              name: item.name || 'Subject',
+              code: item.code || 'SUB101',
+              present,
+              absent,
+              noAttendance,
+            };
+          });
+        }
       }
     } catch {}
     return DEFAULT_INITIAL_ATTENDANCE;
+  });
+
+  const [overallTotalClasses, setOverallTotalClasses] = useState<number>(() => {
+    return DEFAULT_INITIAL_ATTENDANCE.reduce((sum, s) => sum + s.present + s.absent, 0);
+  });
+  const [overallAttendedClasses, setOverallAttendedClasses] = useState<number>(() => {
+    return DEFAULT_INITIAL_ATTENDANCE.reduce((sum, s) => sum + s.present, 0);
   });
 
   useEffect(() => {
@@ -341,54 +364,53 @@ export default function GpaCalculatorPage() {
       if (existing) return existing;
       const catalogMatch = ITM_SEM3_CATALOG.find((c) => c.code === sub.code);
       const defaultTotal = catalogMatch?.defaultClasses || (sub.type === 'Lab' ? 14 : 32);
+      const presentCount = Math.round(defaultTotal * 0.8);
+      const absentCount = defaultTotal - presentCount;
       return {
         id: `att-${sub.code}-${Date.now()}`,
         name: sub.name,
         code: sub.code,
-        attended: Math.round(defaultTotal * 0.8),
-        total: defaultTotal,
+        present: presentCount,
+        absent: absentCount,
+        noAttendance: 2,
       };
     });
 
     setSubjectAttendance(newAttendanceList);
-    // Recalculate overall
-    const totalHeld = newAttendanceList.reduce((acc, curr) => acc + curr.total, 0);
-    const totalAtt = newAttendanceList.reduce((acc, curr) => acc + curr.attended, 0);
-    setOverallTotalClasses(totalHeld);
+    const totalConducted = newAttendanceList.reduce((acc, curr) => acc + curr.present + curr.absent, 0);
+    const totalAtt = newAttendanceList.reduce((acc, curr) => acc + curr.present, 0);
+    setOverallTotalClasses(totalConducted);
     setOverallAttendedClasses(totalAtt);
 
     toast.success('Synced attendance list with your registered courses!');
   };
 
   // Operations for Attendance
-  const updateSubjectAttendance = (id: string, field: 'attended' | 'total', val: number) => {
+  const updateSubjectAttendance = (id: string, field: 'present' | 'absent' | 'noAttendance', val: number) => {
     setSubjectAttendance((prev) =>
       prev.map((s) => {
         if (s.id !== id) return s;
-        const updated = { ...s, [field]: Math.max(0, val) };
-        if (field === 'total' && updated.attended > val) {
-          updated.attended = val;
-        }
-        return updated;
+        return { ...s, [field]: Math.max(0, val) };
       })
     );
   };
 
-  const quickAttendanceStep = (id: string, type: 'present' | 'absent') => {
+  const quickAttendanceStep = (id: string, type: 'present' | 'absent' | 'noAttendance') => {
     setSubjectAttendance((prev) =>
       prev.map((s) => {
         if (s.id !== id) return s;
-        if (type === 'present') {
-          return { ...s, attended: s.attended + 1, total: s.total + 1 };
-        } else {
-          return { ...s, total: s.total + 1 };
-        }
+        return { ...s, [type]: s[type] + 1 };
       })
     );
-    // Update overall too
-    setOverallTotalClasses((prev) => prev + 1);
     if (type === 'present') {
       setOverallAttendedClasses((prev) => prev + 1);
+      setOverallTotalClasses((prev) => prev + 1);
+      toast.success('Marked Present (+1)');
+    } else if (type === 'absent') {
+      setOverallTotalClasses((prev) => prev + 1);
+      toast.error('Marked Absent (+1 Missed)');
+    } else {
+      toast.info('Marked No Attendance / Class Cancelled (Doesn\'t penalize 75%)');
     }
   };
 
@@ -1024,9 +1046,13 @@ export default function GpaCalculatorPage() {
                   <thead className="bg-secondary/50 text-muted-foreground uppercase text-[11px] font-bold border-b border-border">
                     <tr>
                       <th className="py-3 px-4">Subject</th>
-                      <th className="py-3 px-3">Attended</th>
-                      <th className="py-3 px-3">Total Held</th>
-                      <th className="py-3 px-3">Attendance %</th>
+                      <th className="py-3 px-2 text-center text-emerald-600 dark:text-emerald-400">Present (P)</th>
+                      <th className="py-3 px-2 text-center text-rose-600 dark:text-rose-400">Absent (A)</th>
+                      <th className="py-3 px-2 text-center text-amber-600 dark:text-amber-400" title="Lectures cancelled or no attendance marked (not counted in 75%)">
+                        No Att. (NA)
+                      </th>
+                      <th className="py-3 px-2 text-center">Conducted (P+A)</th>
+                      <th className="py-3 px-3 text-center">Attendance %</th>
                       <th className="py-3 px-3">Quick Step</th>
                       <th className="py-3 px-3">75% Recommendation</th>
                       <th className="py-3 px-3">Status</th>
@@ -1035,12 +1061,15 @@ export default function GpaCalculatorPage() {
                   </thead>
                   <tbody className="divide-y divide-border/60">
                     {subjectAttendance.map((sub) => {
-                      const total = Math.max(1, sub.total);
-                      const attended = Math.min(total, Math.max(0, sub.attended));
-                      const pct = Math.round((attended / total) * 100);
-                      const isSafe = pct >= 75;
-                      const bunks = Math.max(0, Math.floor((100 * attended) / 75 - total));
-                      const needed = Math.max(0, Math.ceil((75 * total - 100 * attended) / 25));
+                      const present = Math.max(0, sub.present || 0);
+                      const absent = Math.max(0, sub.absent || 0);
+                      const noAtt = Math.max(0, sub.noAttendance || 0);
+                      const conducted = present + absent;
+                      const scheduled = conducted + noAtt;
+                      const pct = conducted === 0 ? 100 : Math.round((present / conducted) * 100);
+                      const isSafe = pct >= targetAttendancePercent;
+                      const bunks = conducted === 0 ? 0 : Math.max(0, Math.floor((100 * present) / targetAttendancePercent - conducted));
+                      const needed = conducted === 0 ? 0 : Math.max(0, Math.ceil((targetAttendancePercent * conducted - 100 * present) / (100 - targetAttendancePercent)));
 
                       return (
                         <tr key={sub.id} className="hover:bg-secondary/20 transition-colors">
@@ -1049,55 +1078,86 @@ export default function GpaCalculatorPage() {
                             <span className="text-[11px] font-mono text-muted-foreground">{sub.code}</span>
                           </td>
 
-                          <td className="py-3.5 px-3">
+                          {/* Present input */}
+                          <td className="py-3.5 px-2 text-center">
                             <input
                               type="number"
                               min="0"
-                              max={sub.total}
-                              value={sub.attended}
-                              onChange={(e) => updateSubjectAttendance(sub.id, 'attended', Number(e.target.value))}
-                              className="w-16 h-8 px-2 rounded-lg border border-input bg-background font-mono text-xs focus:ring-1 focus:ring-primary text-center"
+                              value={present}
+                              onChange={(e) => updateSubjectAttendance(sub.id, 'present', Number(e.target.value))}
+                              className="w-14 h-8 px-1 rounded-lg border border-emerald-500/30 bg-emerald-500/5 font-mono text-xs font-bold text-emerald-600 dark:text-emerald-400 text-center focus:ring-1 focus:ring-emerald-500"
+                              title="Lectures attended"
                             />
                           </td>
 
-                          <td className="py-3.5 px-3">
+                          {/* Absent input */}
+                          <td className="py-3.5 px-2 text-center">
                             <input
                               type="number"
-                              min="1"
-                              max="100"
-                              value={sub.total}
-                              onChange={(e) => updateSubjectAttendance(sub.id, 'total', Number(e.target.value))}
-                              className="w-16 h-8 px-2 rounded-lg border border-input bg-background font-mono text-xs focus:ring-1 focus:ring-primary text-center"
+                              min="0"
+                              value={absent}
+                              onChange={(e) => updateSubjectAttendance(sub.id, 'absent', Number(e.target.value))}
+                              className="w-14 h-8 px-1 rounded-lg border border-rose-500/30 bg-rose-500/5 font-mono text-xs font-bold text-rose-600 dark:text-rose-400 text-center focus:ring-1 focus:ring-rose-500"
+                              title="Lectures missed"
                             />
                           </td>
 
-                          <td className="py-3.5 px-3 font-mono font-bold">
+                          {/* No Attendance input */}
+                          <td className="py-3.5 px-2 text-center">
+                            <input
+                              type="number"
+                              min="0"
+                              value={noAtt}
+                              onChange={(e) => updateSubjectAttendance(sub.id, 'noAttendance', Number(e.target.value))}
+                              className="w-14 h-8 px-1 rounded-lg border border-amber-500/30 bg-amber-500/5 font-mono text-xs font-bold text-amber-600 dark:text-amber-400 text-center focus:ring-1 focus:ring-amber-500"
+                              title="Lectures cancelled or no attendance recorded (exempted from 75%)"
+                            />
+                          </td>
+
+                          {/* Total Conducted */}
+                          <td className="py-3.5 px-2 text-center font-mono font-semibold text-muted-foreground">
+                            {conducted} <span className="text-[10px] text-muted-foreground/60">({scheduled} sch.)</span>
+                          </td>
+
+                          {/* Percentage */}
+                          <td className="py-3.5 px-3 text-center font-mono font-bold text-sm">
                             <span className={isSafe ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}>
                               {pct}%
                             </span>
                           </td>
 
+                          {/* Quick Step Buttons */}
                           <td className="py-3.5 px-3">
-                            <div className="flex items-center gap-1.5">
+                            <div className="flex items-center gap-1">
                               <button
                                 onClick={() => quickAttendanceStep(sub.id, 'present')}
-                                className="px-2 py-1 rounded bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20 text-[11px] font-bold transition-colors"
-                                title="Attended class"
+                                className="px-2 py-1 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20 text-[10px] font-bold transition-colors"
+                                title="Attended lecture (+1 Present)"
                               >
-                                +1 Pres
+                                +1 P
                               </button>
                               <button
                                 onClick={() => quickAttendanceStep(sub.id, 'absent')}
-                                className="px-2 py-1 rounded bg-rose-500/10 text-rose-600 hover:bg-rose-500/20 text-[11px] font-bold transition-colors"
-                                title="Bunked class"
+                                className="px-2 py-1 rounded bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-500/20 text-[10px] font-bold transition-colors"
+                                title="Missed lecture (+1 Absent)"
                               >
-                                +1 Miss
+                                +1 A
+                              </button>
+                              <button
+                                onClick={() => quickAttendanceStep(sub.id, 'noAttendance')}
+                                className="px-2 py-1 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 text-[10px] font-bold transition-colors"
+                                title="Class cancelled or faculty on leave (+1 No Attendance)"
+                              >
+                                +1 NA
                               </button>
                             </div>
                           </td>
 
+                          {/* Recommendation */}
                           <td className="py-3.5 px-3 text-xs">
-                            {isSafe ? (
+                            {conducted === 0 ? (
+                              <span className="text-muted-foreground">No classes yet</span>
+                            ) : isSafe ? (
                               <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
                                 Can bunk {bunks} class{bunks === 1 ? '' : 'es'}
                               </span>
@@ -1108,16 +1168,20 @@ export default function GpaCalculatorPage() {
                             )}
                           </td>
 
+                          {/* Status Badge */}
                           <td className="py-3.5 px-3">
                             <span className={`inline-block px-2.5 py-0.5 rounded-full font-bold text-xs ${
-                              isSafe
+                              conducted === 0
+                                ? 'bg-secondary text-muted-foreground border border-border'
+                                : isSafe
                                 ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
                                 : 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20'
                             }`}>
-                              {isSafe ? 'Eligible' : 'Debarred Risk'}
+                              {conducted === 0 ? 'Pending' : isSafe ? 'Eligible' : 'Debarred Risk'}
                             </span>
                           </td>
 
+                          {/* Actions */}
                           <td className="py-3.5 px-3 text-right">
                             <button
                               onClick={() => removeSubjectAttendance(sub.id)}
@@ -1137,12 +1201,14 @@ export default function GpaCalculatorPage() {
               {/* Mobile Cards for Attendance */}
               <div className="md:hidden divide-y divide-border/60">
                 {subjectAttendance.map((sub) => {
-                  const total = Math.max(1, sub.total);
-                  const attended = Math.min(total, Math.max(0, sub.attended));
-                  const pct = Math.round((attended / total) * 100);
-                  const isSafe = pct >= 75;
-                  const bunks = Math.max(0, Math.floor((100 * attended) / 75 - total));
-                  const needed = Math.max(0, Math.ceil((75 * total - 100 * attended) / 25));
+                  const present = Math.max(0, sub.present || 0);
+                  const absent = Math.max(0, sub.absent || 0);
+                  const noAtt = Math.max(0, sub.noAttendance || 0);
+                  const conducted = present + absent;
+                  const pct = conducted === 0 ? 100 : Math.round((present / conducted) * 100);
+                  const isSafe = pct >= targetAttendancePercent;
+                  const bunks = conducted === 0 ? 0 : Math.max(0, Math.floor((100 * present) / targetAttendancePercent - conducted));
+                  const needed = conducted === 0 ? 0 : Math.max(0, Math.ceil((targetAttendancePercent * conducted - 100 * present) / (100 - targetAttendancePercent)));
 
                   return (
                     <div key={sub.id} className="p-4 space-y-3">
@@ -1152,7 +1218,9 @@ export default function GpaCalculatorPage() {
                           <span className="text-[11px] font-mono text-muted-foreground">{sub.code}</span>
                         </div>
                         <span className={`px-2 py-0.5 rounded-full font-bold text-xs ${
-                          isSafe
+                          conducted === 0
+                            ? 'bg-secondary text-muted-foreground'
+                            : isSafe
                             ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
                             : 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
                         }`}>
@@ -1160,11 +1228,28 @@ export default function GpaCalculatorPage() {
                         </span>
                       </div>
 
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="text-muted-foreground">
-                          {attended} attended / {total} held
+                      {/* Present / Absent / No Attendance counts */}
+                      <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                        <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                          <p className="text-[10px] text-muted-foreground uppercase font-bold">Present</p>
+                          <p className="text-base font-mono font-bold text-emerald-600 dark:text-emerald-400">{present}</p>
+                        </div>
+                        <div className="p-2 rounded-lg bg-rose-500/10 border border-rose-500/20">
+                          <p className="text-[10px] text-muted-foreground uppercase font-bold">Absent</p>
+                          <p className="text-base font-mono font-bold text-rose-600 dark:text-rose-400">{absent}</p>
+                        </div>
+                        <div className="p-2 rounded-lg bg-amber-500/10 border border-amber-500/20">
+                          <p className="text-[10px] text-muted-foreground uppercase font-bold">No Att.</p>
+                          <p className="text-base font-mono font-bold text-amber-600 dark:text-amber-400">{noAtt}</p>
+                        </div>
+                      </div>
+
+                      {/* Quick step buttons */}
+                      <div className="flex items-center justify-between gap-2 pt-1">
+                        <span className="text-xs text-muted-foreground font-mono">
+                          {conducted} Conducted
                         </span>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1.5">
                           <button
                             onClick={() => quickAttendanceStep(sub.id, 'present')}
                             className="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-600 font-bold text-xs"
@@ -1175,13 +1260,22 @@ export default function GpaCalculatorPage() {
                             onClick={() => quickAttendanceStep(sub.id, 'absent')}
                             className="px-2.5 py-1 rounded-lg bg-rose-500/10 text-rose-600 font-bold text-xs"
                           >
-                            +1 Bunk
+                            +1 Absent
+                          </button>
+                          <button
+                            onClick={() => quickAttendanceStep(sub.id, 'noAttendance')}
+                            className="px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-600 font-bold text-xs"
+                            title="Class Cancelled / No Attendance"
+                          >
+                            +1 No Att
                           </button>
                         </div>
                       </div>
 
-                      <div className="text-[11px]">
-                        {isSafe ? (
+                      <div className="text-[11px] pt-1 border-t border-border/40">
+                        {conducted === 0 ? (
+                          <span className="text-muted-foreground">Pending attendance records.</span>
+                        ) : isSafe ? (
                           <span className="text-emerald-600 dark:text-emerald-400 font-medium">
                             ✓ Safe margin: Can miss {bunks} more class{bunks === 1 ? '' : 'es'}.
                           </span>

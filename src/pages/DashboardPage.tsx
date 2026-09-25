@@ -30,72 +30,29 @@ function OverallProgressBar({ progress }: { progress: number }) {
 
 export default function DashboardPage() {
   const { user, profile } = useAuth();
-  const { semesterId } = useAcademic();
-  const { data: dbSubjects, isLoading } = useSubjects(undefined);
-  const { progress } = useProgress();
+  const { semesterNumber } = useAcademic();
+  const { progress, getSubjectProgress } = useProgress();
   const gamification = useGamification();
   const [searchOpen, setSearchOpen] = useState(false);
-  const [filterSem, setFilterSem] = useState<number | 'all'>('all');
+  const [filterSem, setFilterSem] = useState<number | 'all'>(semesterNumber || 3);
   const navigate = useNavigate();
 
-  // Combine database subjects with local static subjects so NO SUBJECT is ever missing!
+  // Keep filterSem in sync with semesterNumber when user updates their semester
+  useEffect(() => {
+    if (semesterNumber && filterSem !== semesterNumber && filterSem !== 'all') {
+      setFilterSem(semesterNumber);
+    }
+  }, [semesterNumber]);
+
+  // Clean verified list of subjects that contain actual topics
   const allSubjectsToRender = useMemo(() => {
-    const list: any[] = [];
-    const seen = new Set<string>();
-
-    // 1. Add DB subjects first, enriched with static metadata (units, semester)
-    if (dbSubjects && dbSubjects.length > 0) {
-      for (const s of dbSubjects) {
-        const matchingStatic = subjects.find(
-          (stat) =>
-            stat.id.toLowerCase() === s.id.toLowerCase() ||
-            (s.code && stat.code?.toLowerCase() === s.code.toLowerCase()) ||
-            (s.name && stat.name.toLowerCase() === s.name.toLowerCase())
-        );
-        const resolvedSemester = Number(s.semester || matchingStatic?.semester || 3);
-        const resolvedUnits = (matchingStatic?.units && matchingStatic.units.length > 0)
-          ? matchingStatic.units
-          : (s.units || []);
-
-        list.push({
-          ...s,
-          semester: resolvedSemester,
-          units: resolvedUnits,
-          description: s.description || matchingStatic?.description,
-          icon: s.icon || matchingStatic?.icon || 'book-open',
-        });
-        seen.add(s.id.toLowerCase());
-        if (s.code) seen.add(s.code.toLowerCase());
-        if (s.name) seen.add(s.name.toLowerCase());
-      }
-    }
-
-    // 2. Add static subjects that are not in DB
-    for (const s of subjects) {
-      const isKnown =
-        seen.has(s.id.toLowerCase()) ||
-        (s.code && seen.has(s.code.toLowerCase())) ||
-        seen.has(s.name.toLowerCase());
-
-      if (!isKnown) {
-        list.push({
-          ...s,
-          semester: Number(s.semester || 3),
-        });
-        seen.add(s.id.toLowerCase());
-        if (s.code) seen.add(s.code.toLowerCase());
-        seen.add(s.name.toLowerCase());
-      }
-    }
-
-    // Sort Semester 3 subjects first, then alphabetically
-    return list.sort((a, b) => {
-      const semA = a.semester === 3 ? 0 : 1;
-      const semB = b.semester === 3 ? 0 : 1;
-      if (semA !== semB) return semA - semB;
-      return (a.name || "").localeCompare(b.name || "");
-    });
-  }, [dbSubjects]);
+    return subjects
+      .filter((s) => s.units && s.units.some((u) => u.topics && u.topics.length > 0))
+      .sort((a, b) => {
+        if (a.semester !== b.semester) return a.semester - b.semester;
+        return a.name.localeCompare(b.name);
+      });
+  }, []);
 
   const filteredSubjects = useMemo(() => {
     if (filterSem === 'all') return allSubjectsToRender;
@@ -176,88 +133,198 @@ export default function DashboardPage() {
 
             {/* Current Subjects */}
             <section>
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-                <div>
-                  <h2 className="text-lg font-semibold">Your Subjects</h2>
-                  <p className="text-xs text-muted-foreground">
-                    {filteredSubjects.length} subjects available
-                  </p>
-                </div>
-
-                {/* Filter Pills */}
-                <div className="flex gap-1.5 bg-secondary/50 p-1 rounded-lg self-start sm:self-auto">
+              {/* ── 1. SEMESTER-FIRST SELECTOR ── */}
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-3">
+                  <div>
+                    <h2 className="text-xl font-bold tracking-tight text-foreground">Select Your Semester</h2>
+                    <p className="text-xs text-muted-foreground">Choose a semester to view its official curriculum and study materials.</p>
+                  </div>
                   <button
                     onClick={() => setFilterSem('all')}
-                    className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border ${
                       filterSem === 'all'
-                        ? 'bg-background text-foreground shadow-sm'
-                        : 'text-muted-foreground hover:text-foreground'
+                        ? 'bg-primary text-primary-foreground border-primary shadow-xs'
+                        : 'bg-card text-muted-foreground hover:text-foreground border-border hover:bg-secondary'
                     }`}
                   >
-                    All ({allSubjectsToRender.length})
-                  </button>
-                  <button
-                    onClick={() => setFilterSem(3)}
-                    className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${
-                      filterSem === 3
-                        ? 'bg-background text-foreground shadow-sm'
-                        : 'text-muted-foreground hover:text-foreground'
-                    }`}
-                  >
-                    Semester 3 ⭐
+                    View All ({allSubjectsToRender.length})
                   </button>
                 </div>
-              </div>
 
-              <div className="space-y-3">
-                {isLoading ? (
-                  <div className="animate-pulse space-y-3">
-                    <div className="h-20 bg-secondary/50 rounded-xl w-full"></div>
-                    <div className="h-20 bg-secondary/50 rounded-xl w-full"></div>
-                  </div>
-                ) : filteredSubjects.length === 0 ? (
-                  <div className="text-center p-8 border border-dashed rounded-xl border-border">
-                    <p className="text-muted-foreground">No subjects found for this selection.</p>
-                  </div>
-                ) : (
-                  filteredSubjects.map((subject) => {
-                    const matchingStatic = subjects.find(
-                      (s) =>
-                        s.id.toLowerCase() === subject.id.toLowerCase() ||
-                        (subject.code && s.code?.toLowerCase() === subject.code.toLowerCase()) ||
-                        (subject.name && s.name.toLowerCase() === subject.name.toLowerCase())
-                    );
-                    const targetId = matchingStatic ? matchingStatic.id : subject.id;
-                    const semNumber = subject.semester || matchingStatic?.semester || 3;
+                {/* 3 Prominent Semester Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  {[
+                    {
+                      sem: 1,
+                      title: 'Semester 1',
+                      tagline: 'Engineering Foundations',
+                      subjects: 'Python 1, Physics, CLA, TCS, Web Tech',
+                      color: 'emerald',
+                      count: allSubjectsToRender.filter((s) => s.semester === 1).length,
+                    },
+                    {
+                      sem: 2,
+                      title: 'Semester 2',
+                      tagline: 'Core Systems & Math',
+                      subjects: 'Python 2, C Lang, Digital Electronics, Stats, Accounts',
+                      color: 'blue',
+                      count: allSubjectsToRender.filter((s) => s.semester === 2).length,
+                    },
+                    {
+                      sem: 3,
+                      title: 'Semester 3',
+                      tagline: 'Advanced Computer Science',
+                      subjects: 'Comp Architecture, DSA, DBMS, Java, COANMP',
+                      color: 'amber',
+                      count: allSubjectsToRender.filter((s) => s.semester === 3).length,
+                    },
+                  ].map((card) => {
+                    const isSelected = filterSem === card.sem;
+                    const isUserCurrent = semesterNumber === card.sem;
 
                     return (
                       <button
-                        key={subject.id}
-                        onClick={() => navigate(`/subject/${targetId}`)}
-                        className="group w-full surface-elevated rounded-xl p-4 flex items-center gap-4 text-left hover:bg-secondary transition-all duration-150 apple-press"
+                        key={card.sem}
+                        onClick={() => setFilterSem(card.sem)}
+                        className={`p-4 rounded-2xl text-left transition-all duration-200 apple-press border relative ${
+                          isSelected
+                            ? 'bg-card border-primary shadow-md ring-2 ring-primary/20'
+                            : 'bg-card/60 border-border hover:border-primary/40 hover:bg-secondary/40'
+                        }`}
                       >
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between mb-1">
-                            <div className="flex items-center gap-2 truncate pr-2">
-                              <h3 className="font-semibold text-base truncate">{subject.name}</h3>
-                              {semNumber === 3 && (
-                                <span className="bg-primary/10 text-primary text-[10px] font-semibold px-2 py-0.5 rounded-full shrink-0">
-                                  Sem 3
-                                </span>
-                              )}
-                            </div>
-                            {subject.code && (
-                              <span className="text-xs text-muted-foreground font-mono shrink-0">
-                                {subject.code}
+                        <div className="flex items-center justify-between mb-1.5">
+                          <span className={`text-xs font-black px-2.5 py-0.5 rounded-full ${
+                            card.sem === 1
+                              ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                              : card.sem === 2
+                              ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
+                              : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
+                          }`}>
+                            {card.title}
+                          </span>
+                          <div className="flex items-center gap-1">
+                            {isUserCurrent && (
+                              <span className="text-[10px] font-bold text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded-full" title="Your Enrolled Semester">
+                                ⭐ Your Sem
                               </span>
                             )}
+                            <span className="text-xs font-mono font-bold text-muted-foreground">
+                              {card.count} Sub
+                            </span>
                           </div>
-                          <p className="text-xs text-muted-foreground line-clamp-1">
+                        </div>
+
+                        <p className="font-bold text-sm text-foreground mb-1">{card.tagline}</p>
+                        <p className="text-[11px] text-muted-foreground line-clamp-1 leading-snug">{card.subjects}</p>
+
+                        <div className="mt-2.5 flex items-center gap-1 text-[11px] font-semibold text-primary">
+                          <span>{isSelected ? 'Viewing subjects below' : 'Click to view subjects'}</span>
+                          <ChevronRight className="h-3 w-3" />
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* ── 2. SUBJECTS LIST FOR SELECTED SEMESTER ── */}
+              <div className="flex items-center justify-between gap-3 mb-3.5 pb-2 border-b border-border">
+                <div className="flex items-center gap-2">
+                  <h3 className="text-base font-bold text-foreground">
+                    {filterSem === 'all' ? 'All University Subjects' : `Semester ${filterSem} Subjects`}
+                  </h3>
+                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-secondary text-muted-foreground">
+                    {filteredSubjects.length} courses
+                  </span>
+                </div>
+                <span className="text-xs text-muted-foreground">Select a course to read complete notes</span>
+              </div>
+
+              <div className="space-y-3">
+                {filteredSubjects.length === 0 ? (
+                  <div className="text-center p-8 border border-dashed rounded-xl border-border">
+                    <p className="text-muted-foreground font-semibold">No subjects found for this selection.</p>
+                  </div>
+                ) : (
+                  filteredSubjects.map((subject) => {
+                    const topicIds = subject.units?.flatMap((u: any) => u.topics?.map((t: any) => t.id) || []) || [];
+                    const subProgress = getSubjectProgress(topicIds);
+                    const completedInSub = Math.round((subProgress / 100) * topicIds.length);
+                    const semNumber = Number(subject.semester || 1);
+
+                    return (
+                      <div
+                        key={subject.id}
+                        className="group w-full bg-card border border-border hover:border-primary/60 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all duration-150 shadow-xs"
+                      >
+                        <div
+                          onClick={() => navigate(`/subject/${subject.id}`)}
+                          className="flex-1 min-w-0 cursor-pointer"
+                        >
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-primary/10 text-primary">
+                              {subject.code || "CSE"}
+                            </span>
+                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                              semNumber === 1
+                                ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                                : semNumber === 2
+                                ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20'
+                                : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'
+                            }`}>
+                              Sem {semNumber}
+                            </span>
+                            <h3 className="font-bold text-sm sm:text-base text-foreground group-hover:text-primary transition-colors truncate">
+                              {subject.name}
+                            </h3>
+                          </div>
+
+                          <p className="text-xs text-muted-foreground line-clamp-1 mb-1.5">
                             {subject.description || 'Deep research notes, diagrams & practice quizzes'}
                           </p>
+
+                          <div className="flex items-center gap-3 text-[11px] text-muted-foreground font-medium">
+                            <span>{subject.units?.length || 0} Units</span>
+                            <span>•</span>
+                            <span>{topicIds.length} Core Topics</span>
+                            {subProgress > 0 && (
+                              <>
+                                <span>•</span>
+                                <span className="text-primary font-bold">{completedInSub} completed ({subProgress}%)</span>
+                              </>
+                            )}
+                          </div>
+
+                          {/* Progress bar */}
+                          {subProgress > 0 && (
+                            <div className="mt-2.5 h-1.5 w-full max-w-sm rounded-full bg-secondary overflow-hidden">
+                              <div
+                                className="h-full bg-primary transition-all duration-500 rounded-full"
+                                style={{ width: `${subProgress}%` }}
+                              />
+                            </div>
+                          )}
                         </div>
-                        <ChevronRight className="h-4 w-4 text-muted-foreground/50 group-hover:text-muted-foreground/80 transition-colors shrink-0" />
-                      </button>
+
+                        {/* Actions */}
+                        <div className="flex items-center gap-2 shrink-0">
+                          <button
+                            onClick={() => navigate(`/subject/${subject.id}/cheat-sheet`)}
+                            className="px-3 py-1.5 rounded-xl bg-secondary hover:bg-secondary/80 text-foreground font-semibold text-xs apple-press transition-colors"
+                            title="Quick Exam Cheat Sheet"
+                          >
+                            Cheat Sheet
+                          </button>
+                          <button
+                            onClick={() => navigate(`/subject/${subject.id}`)}
+                            className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-primary text-primary-foreground font-bold text-xs hover:opacity-90 apple-press transition-opacity shadow-sm"
+                          >
+                            <span>Study Notes</span>
+                            <ChevronRight className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                      </div>
                     );
                   })
                 )}

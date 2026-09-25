@@ -402,6 +402,111 @@ else:
               explanation: 'A loop else block runs only if the loop terminates normally without hitting a break statement.'
             }
           ]
+        },
+        {
+          id: 'py1-t6b',
+          title: 'Nested Loops: Star Patterns, Number Triangles & Floyd Triangle',
+          simpleExplanation: 'Nested loops place one loop inside another. The outer loop controls rows, while the inner loop controls columns and characters printed on each row.',
+          detailedExplanation: `### Structure of Nested Loops
+
+A nested loop has an outer loop and one or more inner loops:
+\`\`\`python
+for i in range(rows):         # Outer loop: controls rows
+    for j in range(cols):     # Inner loop: controls columns
+        print(char, end="")
+    print()                   # Moves cursor to the next line
+\`\`\`
+
+### 1. Right-Angled Star Triangle:
+\`\`\`python
+n = 5
+for i in range(1, n + 1):
+    for j in range(i):
+        print("* ", end="")
+    print()
+\`\`\`
+*Output:*
+\`\`\`
+* 
+* * 
+* * * 
+* * * * 
+* * * * * 
+\`\`\`
+
+### 2. Inverted Right Triangle:
+\`\`\`python
+n = 5
+for i in range(n, 0, -1):
+    for j in range(i):
+        print("* ", end="")
+    print()
+\`\`\`
+
+### 3. Centered Pyramid Pattern:
+\`\`\`python
+n = 5
+for i in range(1, n + 1):
+    # Print leading spaces
+    print(" " * (n - i), end="")
+    # Print stars
+    print("* " * i)
+\`\`\`
+
+### 4. Floyd's Number Triangle:
+A triangle of consecutive integers starting from 1:
+\`\`\`python
+n = 4
+num = 1
+for i in range(1, n + 1):
+    for j in range(i):
+        print(f"{num:2d} ", end="")
+        num += 1
+    print()
+\`\`\`
+*Output:*
+\`\`\`
+ 1 
+ 2  3 
+ 4  5  6 
+ 7  8  9 10 
+\`\`\`
+
+> [!TIP] **EXAM TIP:**
+> When asked to print pyramid patterns in paper exams, write down the grid coordinates $(i, j)$ and notice:
+> - Spaces on row $i$: $n - i$
+> - Stars / Numbers on row $i$: $2i - 1$ (for connected pyramids) or $i$ (for space-separated pyramids).
+> Always remember \`end=""\` inside the inner loop and an empty \`print()\` in the outer loop!`,
+          shortNotes: 'Outer loop controls rows; inner loop controls columns. Use print(..., end="") to stay on same line and print() for line break.',
+          examples: [
+            {
+              title: "Floyd's Number Triangle Generator",
+              problem: "Generate Floyd's Triangle up to 4 rows.",
+              explanation: "Track consecutive numbers across inner loop iterations.",
+              code: `rows = 4
+current = 1
+for r in range(1, rows + 1):
+    for c in range(r):
+        print(current, end=" ")
+        current += 1
+    print()`,
+              output: "1 \n2 3 \n4 5 6 \n7 8 9 10 "
+            }
+          ],
+          keyPoints: [
+            'Outer loop executes once per row; inner loop executes multiple times per row.',
+            'Total iterations of inner loop in a triangular pattern of size N is N*(N+1)/2.',
+            'print(val, end="") suppresses the default newline in Python.',
+            'Floyds triangle uses a single continuous counter across all rows.'
+          ],
+          mcqs: [
+            {
+              question: 'How many times does the inner print execute for a triangle with N = 4 rows (1 to N)?',
+              options: ['4', '16', '10', '8'],
+              correctIndex: 2,
+              explanation: 'Sum of 1 + 2 + 3 + 4 = 10 times (Formula: N*(N+1)/2 = 4*5/2 = 10).'
+            }
+          ]
         }
       ]
     },
@@ -657,6 +762,106 @@ print("Dice roll is valid (1-6):", 1 <= dice <= 6)`,
               options: ['External', 'Enclosing', 'Execution', 'Environment'],
               correctIndex: 1,
               explanation: 'LEGB stands for Local, Enclosing, Global, Built-in.'
+            }
+          ]
+        },
+        {
+          id: 'py1-t11',
+          title: 'Recursion, Call Stack Mechanics & File Handling (I/O)',
+          simpleExplanation: 'Recursion is when a function calls itself to solve smaller instances of the same problem until a base condition is hit. File handling allows programs to read from and write data to disk persistently.',
+          detailedExplanation: `### 1. Recursion & The Call Stack
+
+Every recursive function MUST have two parts:
+1. **Base Case**: The termination condition that returns a value without further recursive calls (prevents infinite recursion and \`RecursionError: maximum recursion depth exceeded\`).
+2. **Recursive Step**: The function calling itself with a strictly smaller sub-problem approaching the base case.
+
+#### Factorial Function: $n! = n \\times (n-1)!$
+\`\`\`python
+def factorial(n):
+    if n <= 1:           # Base case
+        return 1
+    return n * factorial(n - 1)  # Recursive step
+\`\`\`
+
+#### Fibonacci Sequence: $F(n) = F(n-1) + F(n-2)$
+\`\`\`python
+def fibonacci(n):
+    if n <= 0: return 0
+    if n == 1: return 1
+    return fibonacci(n - 1) + fibonacci(n - 2)
+\`\`\`
+
+### 2. File Handling in Python
+
+Files store data persistently on secondary storage. Python provides the built-in \`open()\` function:
+\`\`\`python
+file_object = open(filename, mode)
+\`\`\`
+
+#### Access Modes:
+- \`'r'\`: Read mode (default). Raises \`FileNotFoundError\` if file does not exist.
+- \`'w'\`: Write mode. Overwrites existing contents or creates a new file.
+- \`'a'\`: Append mode. Writes data at the end of the file without erasing contents.
+- \`'r+'\`: Read and Write mode.
+- \`'b'\`: Binary mode (e.g., \`'rb'\`, \`'wb'\` for images/audio).
+
+#### Safe File Handling: The \`with\` Context Manager
+The \`with\` statement automatically closes the file even if exceptions occur during execution:
+\`\`\`python
+# Writing to a file
+with open("students.txt", "w") as f:
+    f.write("Rahul Sharma, CSE, 8.8\\n")
+    f.write("Ananya Patel, IT, 9.2\\n")
+
+# Reading line by line
+with open("students.txt", "r") as f:
+    for line in f:
+        print(line.strip())
+\`\`\`
+
+> [!WARNING] **TRAP:**
+> Never forget to close files when not using \`with\`! An unclosed file can lead to resource leaks and incomplete buffered writes. Always prefer \`with open(...) as f:\`.`,
+          shortNotes: 'Recursion requires base case + recursive step. File modes: r (read), w (write/truncate), a (append). with open() guarantees automatic file closing.',
+          examples: [
+            {
+              title: 'Recursive Sum of Digits & File Logger',
+              problem: 'Compute sum of digits recursively and write result to a text log.',
+              explanation: 'Base case: single digit returns itself. Recursive step: n % 10 + sum_digits(n // 10).',
+              code: `def sum_digits(n):
+    if n < 10:
+        return n
+    return (n % 10) + sum_digits(n // 10)
+
+result = sum_digits(12345)  # 1+2+3+4+5 = 15
+print("Sum of digits:", result)
+
+# Write to log
+with open("log.txt", "w") as f:
+    f.write(f"Computation result: {result}\\n")
+
+with open("log.txt", "r") as f:
+    print("File Content:", f.read().strip())`,
+              output: "Sum of digits: 15\nFile Content: Computation result: 15"
+            }
+          ],
+          keyPoints: [
+            'Recursion must have a base case to avoid RecursionError.',
+            'Default Python recursion limit is 1000 (configurable via sys.setrecursionlimit).',
+            'with open(...) as f automatically calls f.close() upon exiting the block.',
+            'read() reads entire file, readline() reads one line, readlines() returns list of lines.'
+          ],
+          mcqs: [
+            {
+              question: 'Which file mode opens a file for writing without truncating/deleting existing data?',
+              options: ["'r'", "'w'", "'a'", "'x'"],
+              correctIndex: 2,
+              explanation: "Mode 'a' (append) positions the file pointer at the end of the file, preserving existing content."
+            },
+            {
+              question: 'What error occurs if a recursive function never reaches its base case in Python?',
+              options: ['ZeroDivisionError', 'RecursionError', 'MemoryError', 'TypeError'],
+              correctIndex: 1,
+              explanation: 'Python throws a RecursionError: maximum recursion depth exceeded.'
             }
           ]
         }

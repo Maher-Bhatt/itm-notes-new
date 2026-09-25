@@ -152,6 +152,86 @@ print(f"Wavelength = {wavelength * 1e10:.2f} Angstroms")`,
               explanation: 'At contact, t = 0, but reflection from the lower glass plate introduces a π phase shift (path λ/2), resulting in destructive interference.'
             }
           ]
+        },
+        {
+          id: 'phy-t2b',
+          title: 'Wedge-Shaped Thin Film: Fringe Width Derivation & Testing Optical Flatness',
+          simpleExplanation: 'When two flat glass plates are placed at a tiny angle θ separated by a thin spacer at one end, a wedge-shaped film is formed. Light reflecting from both surfaces creates straight, equidistant, parallel interference fringes.',
+          detailedExplanation: `### Wedge-Shaped Film Interference
+
+A wedge-shaped film of refractive index $\\mu$ is formed by two optical glass plates inclined at a very small angle $\\theta$ (in radians), touching along an edge and separated by a thin spacer of thickness $d$ at distance $L$:
+$$\\theta \\approx \\frac{d}{L} \\text{ radians}$$
+
+### Optical Path Difference for Normal Incidence ($i = 0, r = 0$):
+At a distance $x$ from the contact edge, the film thickness is $t = x \\theta$.
+Including the phase change of $\\pi$ (path $\\lambda/2$) due to reflection at the lower optically denser boundary:
+$$\\Delta = 2\\mu t - \\frac{\\lambda}{2} = 2\\mu x \\theta - \\frac{\\lambda}{2}$$
+
+### Conditions for Interference:
+1. **Bright Fringes (Maxima):**
+   $$2\\mu x \\theta - \\frac{\\lambda}{2} = n\\lambda \\implies 2\\mu x_n \\theta = \\left(n + \\frac{1}{2}\\right)\\lambda \\implies x_n = \\frac{(2n + 1)\\lambda}{4\\mu \\theta}$$
+2. **Dark Fringes (Minima):**
+   $$2\\mu x \\theta - \\frac{\\lambda}{2} = \\left(n + \\frac{1}{2}\\right)\\lambda \\implies 2\\mu x_n \\theta = n\\lambda \\implies x_n = \\frac{n\\lambda}{2\\mu \\theta}$$
+
+### Fringe Width (\\(\\beta\\)) Derivation:
+The distance between two consecutive dark fringes or two consecutive bright fringes:
+$$\\beta = x_{n+1} - x_n = \\frac{(n+1)\\lambda}{2\\mu \\theta} - \\frac{n\\lambda}{2\\mu \\theta} = \\frac{\\lambda}{2\\mu \\theta}$$
+Substituting $\\theta = \\frac{d}{L}$:
+$$\\beta = \\frac{\\lambda L}{2\\mu d}$$
+
+> [!IMPORTANT] **MEMORIZE:**
+> - The fringes are **straight, parallel to the line of contact, and equidistant**.
+> - At the apex of contact ($x = 0$, $t = 0$), path difference is $\\lambda/2$, so the **edge of contact is always a DARK fringe**.
+> - If the wedge angle $\\theta$ increases, fringe width $\\beta$ decreases (fringes become crowded).
+
+### Testing Optical Flatness of Surfaces:
+Interference in a wedge film provides a high-precision non-destructive test for surface flatness:
+1. An optically flat master plate is placed over the test surface.
+2. Under monochromatic light, if the test surface is **perfectly flat**, the fringes are **straight, parallel, and equidistant**.
+3. If the surface has a **depression (valley)**, fringes curve **towards the contact edge** (region of thinner film).
+4. If the surface has an **elevation (hill)**, fringes curve **away from the contact edge** (region of thicker film).`,
+          shortNotes: 'Wedge film fringe width β = λ / (2μθ) = (λL) / (2μd). Fringes are straight, equidistant, parallel. Contact edge is always dark.',
+          examples: [
+            {
+              title: 'Determining Wire Diameter Using Wedge Fringes',
+              problem: 'A thin wire of unknown diameter d is placed between two 10 cm long glass plates at one edge to form an air wedge. When illuminated with light of wavelength λ = 6000 Å, 20 fringes are counted over a distance of 1 cm. Find the diameter of the wire.',
+              explanation: 'Calculate fringe width β = 1 cm / 20 = 0.05 cm. Then use d = λL / (2β).',
+              code: `L = 10.0e-2       # length of plates = 10 cm = 0.1 m
+wavelength = 6000e-10 # 600 nm
+beta = (1.0e-2) / 20  # 20 fringes in 1 cm -> beta = 0.05 cm = 5e-4 m
+mu = 1.0          # air film
+
+# beta = lambda * L / (2 * mu * d) => d = lambda * L / (2 * mu * beta)
+d = (wavelength * L) / (2 * mu * beta)
+print(f"Wire diameter d = {d * 1e6:.2f} micrometers")`,
+              output: 'Wire diameter d = 60.00 micrometers'
+            }
+          ],
+          keyPoints: [
+            'Fringes in a wedge-shaped film are straight, parallel, and of equal thickness.',
+            'Fringe width β = λ / (2μθ); inversely proportional to the wedge angle θ.',
+            'The line of contact (t = 0) is always dark due to Stokes phase reversal.',
+            'Curvature of fringes detects microscopic hills and valleys on precision polished glass.'
+          ],
+          mcqs: [
+            {
+              question: 'In a wedge-shaped thin film, what is the nature of the interference fringes?',
+              options: [
+                'Concentric circles',
+                'Straight and parallel to the edge of contact',
+                'Hyperbolic',
+                'Irregular random spots'
+              ],
+              correctIndex: 1,
+              explanation: 'Loci of constant thickness in a wedge film are straight lines parallel to the contact edge, producing straight, parallel, equidistant fringes.'
+            },
+            {
+              question: 'If the spacer thickness d at the end of a wedge-shaped film is doubled, the fringe width β will:',
+              options: ['Be doubled', 'Be halved', 'Remain unchanged', 'Become zero'],
+              correctIndex: 1,
+              explanation: 'Since β = λL / (2μd), doubling d doubles the wedge angle θ and halves the fringe width β.'
+            }
+          ]
         }
       ]
     },

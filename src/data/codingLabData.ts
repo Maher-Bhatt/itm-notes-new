@@ -1650,10 +1650,12 @@ export const PYTHON_PROBLEMS: CodingProblem[] = [
 ];
 
 import { DBMS_PROBLEMS } from './dbmsPracticalsData';
-export { DBMS_PROBLEMS };
+import { SEM1_CODING_PROBLEMS } from './sem1CodingLabData';
+export { DBMS_PROBLEMS, SEM1_CODING_PROBLEMS };
 
-// Combine all 126 problems (32 DBMS + 32 DSA + 31 Java + 31 Python)
+// Combine all 139+ university problems across Semesters 1, 2, and 3
 export const ALL_CODING_PROBLEMS: CodingProblem[] = [
+  ...SEM1_CODING_PROBLEMS,
   ...DBMS_PROBLEMS,
   ...DSA_PROBLEMS,
   ...JAVA_PROBLEMS,
