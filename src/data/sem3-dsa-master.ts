@@ -37,7 +37,31 @@ In non-linear data structures, elements are not arranged in a sequence. Elements
 ### Differences
 - **Memory Layout**: Linear is sequential; Non-Linear is scattered (usually).
 - **Access Method**: Linear often allows straightforward iteration. Non-linear requires traversal algorithms like BFS or DFS.
-- **Complexity**: Linear structures are relatively easy to implement; Non-linear structures are harder but often provide better efficiency for search and hierarchical data mapping.`,
+- **Complexity**: Linear structures are relatively easy to implement; Non-linear structures are harder but often provide better efficiency for search and hierarchical data mapping.
+
+
+> [!IMPORTANT] **MEMORIZE:**
+> **Linear**: Data is sequential (Arrays, Linked Lists, Stacks, Queues).
+> **Non-Linear**: Data is hierarchical or network-based (Trees, Graphs).
+
+> [!NOTE] **DEV BRAIN:**
+> Think of a Linear DS as an array in JSON \`[1, 2, 3]\`. Non-linear is like a nested JSON object or a GraphQL response where objects reference other objects.
+
+> [!WARNING] **TRAP:**
+> A Linked List is logically linear, but physically non-linear (nodes are scattered in memory). Don't confuse logical and physical layouts!
+
+> [!TIP] **EXAM TIP:**
+> Always draw a table to compare Linear vs Non-Linear. Draw sequential boxes for linear, and connected circles for non-linear.
+
+### Comparison: Linear vs Non-Linear
+
+| Feature | Linear Data Structure | Non-Linear Data Structure |
+| :--- | :--- | :--- |
+| **Arrangement** | Sequential (one after another) | Hierarchical / Network |
+| **Traversal** | Single run (O(n)) | Needs special algorithms (BFS/DFS) |
+| **Memory** | Less efficient (except Linked Lists) | Highly efficient |
+| **Examples** | Array, Linked List, Stack, Queue | Tree, Graph |
+`,
           shortNotes: 'Linear: Data in sequence (Array, Stack). Non-Linear: Data in hierarchy/network (Tree, Graph).',
           examples: [
             {
@@ -102,7 +126,33 @@ Theta describes the **exact bound** or average-case scenario. It bounds the algo
 - **O(n²)**: Quadratic time (e.g., nested loops).
 - **O(2^n)**: Exponential time (e.g., naive recursive Fibonacci).
 
-Analyzing loops, recursions, and data structure operations using these notations helps developers choose the optimal algorithm.`,
+Analyzing loops, recursions, and data structure operations using these notations helps developers choose the optimal algorithm.
+
+
+> [!IMPORTANT] **MEMORIZE:**
+> **Big-O (O):** Worst-case (Upper bound).
+> **Omega (Ω):** Best-case (Lower bound).
+> **Theta (Θ):** Average-case (Exact bound).
+
+> [!NOTE] **DEV BRAIN:**
+> Big-O is like SLA guarantees. If a database query is O(n), you are guaranteed it won't take worse than linear time as the database grows.
+
+> [!WARNING] **TRAP:**
+> Don't say "Big-O is the exact time an algorithm takes". It's the **growth rate** as input size approaches infinity!
+
+> [!TIP] **EXAM TIP:**
+> Draw the time complexity graph (O(1) flat, O(log n) gentle curve, O(n) straight line, O(n^2) steep curve). This graph alone is worth 2-3 marks!
+
+### Time Complexity Comparison
+
+| Notation | Name | Speed | Example |
+| :--- | :--- | :--- | :--- |
+| **O(1)** | Constant | ⚡ Fastest | Array lookup \`arr[0]\` |
+| **O(log n)** | Logarithmic | 🏃 Fast | Binary Search |
+| **O(n)** | Linear | 🚶 Moderate | Linear Search |
+| **O(n log n)**| Linearithmic| 🐢 Slow | Merge Sort |
+| **O(n²)** | Quadratic | 🐌 Very Slow | Bubble Sort |
+`,
           shortNotes: 'Big-O: Worst case (Upper Bound). Omega: Best case (Lower Bound). Theta: Average case (Exact Bound).',
           examples: [
             {
@@ -156,7 +206,21 @@ We express space complexity using Big-O notation, just like time complexity.
 - Recursive functions use the call stack, so a recursion depth of n takes **O(n)** auxiliary space.
 
 ### Time-Space Tradeoff
-Often, you can reduce the time complexity of an algorithm by using more space (e.g., using a hash map to cache results). Conversely, you can reduce space usage by accepting a longer running time (e.g., recalculating values instead of storing them).`,
+Often, you can reduce the time complexity of an algorithm by using more space (e.g., using a hash map to cache results). Conversely, you can reduce space usage by accepting a longer running time (e.g., recalculating values instead of storing them).
+
+
+> [!IMPORTANT] **MEMORIZE:**
+> **Space Complexity** = Fixed Space (Code + Constants) + Variable Space (Dynamic variables + Recursion Stack).
+
+> [!NOTE] **DEV BRAIN:**
+> Space complexity is exactly like monitoring your app's RAM usage. Using a recursive function? Watch out for stack overflow (High auxiliary space)!
+
+> [!WARNING] **TRAP:**
+> **Auxiliary Space** is NOT the same as **Space Complexity**. Space Complexity includes input data size; Auxiliary Space is just the EXTRA space used by the algorithm.
+
+> [!TIP] **EXAM TIP:**
+> Always explicitly state: \`Total Space = Input Space + Auxiliary Space\`.
+`,
           shortNotes: 'Space complexity = Fixed Space + Variable (Input-dependent) Space.',
           examples: [
             {
@@ -204,7 +268,30 @@ When a recursive function is called, its execution state (variables, parameters,
 
 ### Pros and Cons
 - **Pros**: Can make code much cleaner and easier to understand for problems like tree traversal or complex mathematical sequences.
-- **Cons**: Can be slow and use a lot of memory due to the overhead of multiple function calls and stack frames. Iterative solutions are generally more efficient.`,
+- **Cons**: Can be slow and use a lot of memory due to the overhead of multiple function calls and stack frames. Iterative solutions are generally more efficient.
+
+
+> [!IMPORTANT] **MEMORIZE:**
+> Recursion must have two parts:
+> 1. **Base Case:** The condition to stop.
+> 2. **Recursive Step:** The function calling itself with a smaller problem.
+
+> [!NOTE] **DEV BRAIN:**
+> Recursion is just an infinite loop until a specific \`if\` condition (base case) \`returns\`. It uses the Call Stack under the hood.
+
+> [!WARNING] **TRAP:**
+> Forgetting the base case leads to a **Stack Overflow Error**, which crashes the program. Always define the base case first!
+
+> [!TIP] **EXAM TIP:**
+> When tracing recursion in an exam, draw a "Recursion Tree" or stack frames showing the parameter values at each step.
+
+### Step-by-Step Trace: Factorial(3)
+1. \`fact(3)\` calls \`3 * fact(2)\`
+2. \`fact(2)\` calls \`2 * fact(1)\`
+3. \`fact(1)\` returns \`1\` (Base Case!)
+4. \`fact(2)\` computes \`2 * 1 = 2\`, returns \`2\`
+5. \`fact(3)\` computes \`3 * 2 = 6\`, returns \`6\`
+`,
           shortNotes: 'Recursion requires a base case to stop. Uses the call stack, impacting space complexity.',
           examples: [
             {
@@ -265,7 +352,21 @@ A two-dimensional array can be visualized as a grid or a table with rows and col
 
 ### Advantages and Disadvantages
 - **Advantages**: Constant time O(1) random access using index. Easy to implement.
-- **Disadvantages**: Fixed size. Costly insertions and deletions due to shifting.`,
+- **Disadvantages**: Fixed size. Costly insertions and deletions due to shifting.
+
+
+> [!IMPORTANT] **MEMORIZE:**
+> Arrays use contiguous memory locations. Indexing starts at 0. Random access is O(1).
+
+> [!NOTE] **DEV BRAIN:**
+> An array is just a block of RAM. Because elements are the same size and back-to-back, \`address = base_address + (index * element_size)\`. That's why lookup is instant!
+
+> [!WARNING] **TRAP:**
+> Array insertion in the middle takes O(n) time because you have to shift all subsequent elements to the right. It is NOT O(1).
+
+> [!TIP] **EXAM TIP:**
+> Write the address calculation formula for 1D and 2D arrays (Row Major / Column Major) to score maximum marks.
+`,
           shortNotes: 'Arrays offer O(1) random access but O(n) insertions/deletions.',
           examples: [
             {
@@ -322,7 +423,22 @@ Pattern matching (or string searching) involves finding the occurrences of a "pa
 #### 3. Rabin-Karp Algorithm
 - Uses hashing to find the pattern.
 - Computes a hash value for the pattern and for every substring of the text of the same length.
-- Time Complexity: Average O(m+n), Worst-case O(m*n) (due to hash collisions).`,
+- Time Complexity: Average O(m+n), Worst-case O(m*n) (due to hash collisions).
+
+
+> [!IMPORTANT] **MEMORIZE:**
+> **Naive Pattern Matching:** O(m*n). Checks every position.
+> **KMP Algorithm:** O(m+n). Uses LPS (Longest Prefix Suffix) array to skip comparisons.
+
+> [!NOTE] **DEV BRAIN:**
+> Pattern matching is exactly what happens when you press \`Ctrl + F\` to find a word in a document. Browsers use algorithms like KMP or Boyer-Moore to make it instant.
+
+> [!WARNING] **TRAP:**
+> Don't confuse the time complexity of Naive search (O(n*m)) with KMP (O(n+m)). KMP is linear!
+
+> [!TIP] **EXAM TIP:**
+> For KMP questions, focus on showing how to build the **pi table (LPS array)** step-by-step.
+`,
           shortNotes: 'Strings are character arrays. KMP algorithm does pattern matching in O(m+n) time.',
           examples: [
             {
@@ -389,7 +505,21 @@ Starting from the \`head\` (first node), follow the \`next\` pointers until you 
 
 ### Disadvantages
 - No random access (must traverse from the beginning to reach an element).
-- Extra memory required for pointers.`,
+- Extra memory required for pointers.
+
+
+> [!IMPORTANT] **MEMORIZE:**
+> A Singly Linked List node contains \`[Data | Next Pointer]\`. The last node points to \`NULL\`.
+
+> [!NOTE] **DEV BRAIN:**
+> Think of a linked list like a treasure hunt. Each clue (node) gives you a piece of data and the address of the next clue. You can't skip clues!
+
+> [!WARNING] **TRAP:**
+> To insert or delete at the END of a singly linked list without a tail pointer, you MUST traverse the whole list: O(n) time.
+
+> [!TIP] **EXAM TIP:**
+> Always draw the boxes with arrows. Show the \`temp\` pointer moving from \`head\` to \`NULL\` to demonstrate traversal.
+`,
           shortNotes: 'Singly Linked List: Nodes point in one direction. Dynamic size, O(1) head insertion.',
           examples: [
             {
@@ -447,7 +577,30 @@ A DLL node contains:
 
 ### Operations
 - **Insertion**: Similar to singly linked lists but requires updating the \`prev\` pointers of adjacent nodes.
-- **Deletion**: Unlink the node by updating the \`next\` pointer of the preceding node and the \`prev\` pointer of the succeeding node.`,
+- **Deletion**: Unlink the node by updating the \`next\` pointer of the preceding node and the \`prev\` pointer of the succeeding node.
+
+
+> [!IMPORTANT] **MEMORIZE:**
+> A Doubly Linked List (DLL) node contains \`[Prev Pointer | Data | Next Pointer]\`.
+
+> [!NOTE] **DEV BRAIN:**
+> A DLL is like your browser's history tab. You can go forward (Next pointer) and backward (Prev pointer) in O(1) time.
+
+> [!WARNING] **TRAP:**
+> When inserting/deleting in a DLL, you have to update up to 4 pointers! (Prev and Next of the current, previous, and next nodes). Forgetting one causes memory leaks.
+
+> [!TIP] **EXAM TIP:**
+> Compare Singly vs Doubly Linked Lists in a table. Mention memory overhead (DLL needs extra memory for \`prev\`).
+
+### Singly vs Doubly Linked List
+
+| Feature | Singly Linked List | Doubly Linked List |
+| :--- | :--- | :--- |
+| **Pointers per node** | 1 (Next) | 2 (Prev, Next) |
+| **Traversal** | Forward only | Bidirectional |
+| **Deletion** | O(n) if previous node unknown | O(1) if node pointer is known |
+| **Memory** | Less memory | More memory per node |
+`,
           shortNotes: 'Doubly Linked List allows traversal in both directions. Needs extra memory for the previous pointer.',
           examples: [
             {
@@ -493,7 +646,21 @@ In a Circular Linked List, all nodes are connected to form a continuous circle. 
 - Often, instead of a \`head\` pointer, a \`tail\` pointer is maintained that points to the last node. This allows O(1) insertion at both the beginning (tail->next) and the end.
 
 ### Operations
-When traversing, the condition to stop is not reaching \`NULL\`, but returning to the starting node. This requires careful implementation to avoid infinite loops.`,
+When traversing, the condition to stop is not reaching \`NULL\`, but returning to the starting node. This requires careful implementation to avoid infinite loops.
+
+
+> [!IMPORTANT] **MEMORIZE:**
+> In a Circular Linked List, the last node points back to the \`head\` node. There is no \`NULL\` pointer.
+
+> [!NOTE] **DEV BRAIN:**
+> Circular lists are used in the OS for Alt-Tab task switching or round-robin CPU scheduling. It loops infinitely.
+
+> [!WARNING] **TRAP:**
+> The loop condition for traversal is \`while (temp->next != head)\` instead of \`!= NULL\`. Using \`!= NULL\` creates an infinite loop!
+
+> [!TIP] **EXAM TIP:**
+> Mention that maintaining a \`tail\` pointer instead of a \`head\` pointer allows both front and rear insertions in O(1) time!
+`,
           shortNotes: 'Circular Linked List has no NULL pointers. The last node points to the head.',
           examples: [
             {
@@ -559,7 +726,22 @@ We use a singly linked list. The head of the list acts as the top of the stack.
 - **Push**: Insert a new node at the head (beginning of the list).
 - **Pop**: Delete the node at the head.
 - **Pros**: Dynamic size, can grow indefinitely.
-- **Cons**: Requires extra memory for pointers.`,
+- **Cons**: Requires extra memory for pointers.
+
+
+> [!IMPORTANT] **MEMORIZE:**
+> **Stack = LIFO** (Last In, First Out).
+> Operations: \`push()\`, \`pop()\`, \`peek()\`. All take O(1) time.
+
+> [!NOTE] **DEV BRAIN:**
+> A stack is literally the **Undo button (Ctrl+Z)** in your text editor. The last action you performed is the first one to be undone.
+
+> [!WARNING] **TRAP:**
+> **Stack Overflow** occurs when you push to a full array-based stack. **Stack Underflow** occurs when you pop from an empty stack. Mention both!
+
+> [!TIP] **EXAM TIP:**
+> Draw a vertical bucket to represent a stack. Show \`top\` pointing to the topmost element.
+`,
           shortNotes: 'Stack follows LIFO. Operations are Push, Pop, Peek. Implemented via Arrays or Linked Lists.',
           examples: [
             {
@@ -621,7 +803,32 @@ Once an expression is in postfix, a stack is used to evaluate it:
 ### 3. Other Applications
 - **Function Call Stack**: Managing function returns and local variables in programming languages.
 - **Undo Features**: Storing the history of actions in text editors.
-- **Parentheses Matching**: Checking for balanced parentheses in code blocks.`,
+- **Parentheses Matching**: Checking for balanced parentheses in code blocks.
+
+
+> [!IMPORTANT] **MEMORIZE:**
+> **Infix**: \`A + B\`
+> **Postfix**: \`A B +\`
+> **Prefix**: \`+ A B\`
+
+> [!NOTE] **DEV BRAIN:**
+> Postfix is how the V8 JavaScript engine or JVM evaluates expressions under the hood. No brackets needed, just a simple stack machine!
+
+> [!WARNING] **TRAP:**
+> When evaluating postfix: if you pop \`val1\` then \`val2\`, the operation is \`val2 (operator) val1\`. The order matters for division and subtraction!
+
+> [!TIP] **EXAM TIP:**
+> For Infix to Postfix conversions, always show the state of the Stack and the Output String at each step in a 3-column table: [Symbol Scanned | Stack | Output].
+
+### Step-by-Step Postfix Evaluation
+Expression: \`2 3 * 4 +\`
+1. Read \`2\`: Push to stack -> \`[2]\`
+2. Read \`3\`: Push to stack -> \`[2, 3]\`
+3. Read \`*\`: Pop \`3\`, Pop \`2\`. Compute \`2 * 3 = 6\`. Push \`6\` -> \`[6]\`
+4. Read \`4\`: Push to stack -> \`[6, 4]\`
+5. Read \`+\`: Pop \`4\`, Pop \`6\`. Compute \`6 + 4 = 10\`. Push \`10\` -> \`[10]\`
+6. Result: \`10\`
+`,
           shortNotes: 'Stacks evaluate Postfix expressions and convert Infix to Postfix. Also manage function calls.',
           examples: [
             {
@@ -675,7 +882,30 @@ To solve the empty space problem of simple queues, the Circular Queue connects t
 In a priority queue, every element is associated with a priority. Elements are dequeued based on their priority rather than their arrival time.
 - If two elements have the same priority, they are served according to their order in the queue.
 - Typically implemented using **Heaps** for efficient O(log n) enqueue and dequeue operations.
-- **Applications**: CPU scheduling, Dijkstra's algorithm.`,
+- **Applications**: CPU scheduling, Dijkstra's algorithm.
+
+
+> [!IMPORTANT] **MEMORIZE:**
+> **Queue = FIFO** (First In, First Out).
+> Insertion is done at the **Rear**, deletion at the **Front**.
+
+> [!NOTE] **DEV BRAIN:**
+> A Queue is like an async task queue in Node.js, or a message broker like RabbitMQ. The first request that comes in is the first one served.
+
+> [!WARNING] **TRAP:**
+> In a linear array queue, \`front\` and \`rear\` keep moving right. Eventually, the queue appears "full" even if there is space at the beginning. This is why we use Circular Queues!
+
+> [!TIP] **EXAM TIP:**
+> For Circular Queues, write the modulo formula: \`rear = (rear + 1) % MAX\`. This line gets you full marks.
+
+### Queue Types Comparison
+
+| Type | Insertion | Deletion | Use Case |
+| :--- | :--- | :--- | :--- |
+| **Simple Queue** | Rear | Front | Basic scheduling |
+| **Circular Queue** | Rear (Wraparound) | Front (Wraparound) | Memory-efficient buffering |
+| **Priority Queue** | Based on priority | Highest priority first | Dijkstra's Algorithm |
+`,
           shortNotes: 'Queue is FIFO. Circular queue reuses space. Priority queue serves highest priority first.',
           examples: [
             {
@@ -731,7 +961,21 @@ Like standard queues, a Deque can be implemented using either arrays (specifical
 ### Applications
 - **Palindromic Checking**: A deque can efficiently check if a string is a palindrome by comparing and popping the front and rear characters simultaneously.
 - **Undo-Redo Operations**: Managing a history of states where you might drop the oldest state or the newest state.
-- **Multiprocessor Scheduling**: Used in work-stealing algorithms where idle processors steal tasks from the rear of busy processors' deques.`,
+- **Multiprocessor Scheduling**: Used in work-stealing algorithms where idle processors steal tasks from the rear of busy processors' deques.
+
+
+> [!IMPORTANT] **MEMORIZE:**
+> **Deque (Double-Ended Queue)** allows insertion and deletion from BOTH ends (Front and Rear).
+
+> [!NOTE] **DEV BRAIN:**
+> A Deque in JavaScript can be simulated using an array with \`push()\`, \`pop()\`, \`shift()\`, and \`unshift()\`.
+
+> [!WARNING] **TRAP:**
+> Don't confuse Deque with Priority Queue. Deque is about *where* you insert/delete. Priority Queue is about *value order*.
+
+> [!TIP] **EXAM TIP:**
+> Differentiate between Input-Restricted Deque (insertion at one end, deletion at both) and Output-Restricted Deque (insertion at both, deletion at one end).
+`,
           shortNotes: 'Deque allows insertion and deletion from both ends. Can act as both stack and queue.',
           examples: [
             {
@@ -789,7 +1033,23 @@ A Tree is a hierarchical non-linear data structure. A **Binary Tree** is a speci
 ### Properties of Binary Trees
 - The maximum number of nodes at level 'l' is **2^l**.
 - The maximum number of nodes in a binary tree of height 'h' is **2^(h+1) - 1**.
-- In a strictly Full Binary Tree, the number of leaf nodes is the number of internal nodes plus 1.`,
+- In a strictly Full Binary Tree, the number of leaf nodes is the number of internal nodes plus 1.
+
+
+> [!IMPORTANT] **MEMORIZE:**
+> **Binary Tree**: Max 2 children per node.
+> **Full**: 0 or 2 children.
+> **Complete**: Filled left-to-right.
+
+> [!NOTE] **DEV BRAIN:**
+> Binary Trees are the foundation of the Virtual DOM diffing algorithm in React.
+
+> [!WARNING] **TRAP:**
+> A "Complete" binary tree does NOT need to be full at the last level, it just needs to be filled from left to right without gaps.
+
+> [!TIP] **EXAM TIP:**
+> Memorize this formula: The maximum number of nodes in a binary tree of height \`h\` is \`2^(h+1) - 1\`.
+`,
           shortNotes: 'Binary Tree nodes have max 2 children. Types: Full, Complete, Perfect, Balanced.',
           examples: [
             {
@@ -849,7 +1109,30 @@ Deleting a node is complex and has three cases:
 3. **Node has two children**: Find the **inorder successor** (the smallest node in the right subtree), copy its value to the node, and recursively delete the inorder successor.
 
 ### Importance
-BSTs allow for fast lookup, addition, and removal of items, bridging the gap between sorted arrays (fast search, slow insert) and linked lists (fast insert, slow search).`,
+BSTs allow for fast lookup, addition, and removal of items, bridging the gap between sorted arrays (fast search, slow insert) and linked lists (fast insert, slow search).
+
+
+> [!IMPORTANT] **MEMORIZE:**
+> **BST Property**: Left Child < Parent < Right Child.
+> Inorder traversal of a BST gives elements in **sorted ascending order**.
+
+> [!NOTE] **DEV BRAIN:**
+> A BST is like a database index. Instead of scanning a million rows (O(n)), you binary-search the tree (O(log n)) to find the record instantly.
+
+> [!WARNING] **TRAP:**
+> The worst-case time complexity for a BST search/insert is **O(n)**, not O(log n). This happens if you insert sorted data, creating a skewed tree (essentially a linked list).
+
+> [!TIP] **EXAM TIP:**
+> For deletion questions, remember the 3 cases: 1) Leaf node. 2) One child. 3) Two children (Replace with Inorder Successor).
+
+### BST Operations Complexity
+
+| Operation | Average Case | Worst Case (Skewed) |
+| :--- | :--- | :--- |
+| **Search** | O(log n) | O(n) |
+| **Insert** | O(log n) | O(n) |
+| **Delete** | O(log n) | O(n) |
+`,
           shortNotes: 'BST: Left < Parent < Right. Searching takes O(log n) on average.',
           examples: [
             {
@@ -904,7 +1187,31 @@ There are 4 types of rotations:
 4. **Right-Left Rotation (RL Case)**: Used when a node is inserted into the left subtree of the right child.
 
 ### Performance
-Because the tree is always strictly balanced, search, insertion, and deletion all take **O(log n)** time in both average and worst cases. The tradeoff is the overhead of calculating balance factors and performing rotations during modifications.`,
+Because the tree is always strictly balanced, search, insertion, and deletion all take **O(log n)** time in both average and worst cases. The tradeoff is the overhead of calculating balance factors and performing rotations during modifications.
+
+
+> [!IMPORTANT] **MEMORIZE:**
+> **AVL Tree**: A self-balancing BST where the Balance Factor (BF) of every node is -1, 0, or 1.
+> **BF = Height(Left) - Height(Right)**
+
+> [!NOTE] **DEV BRAIN:**
+> AVL trees fix the worst-case O(n) problem of standard BSTs. By rotating nodes on insert, they guarantee O(log n) performance for all operations.
+
+> [!WARNING] **TRAP:**
+> When applying rotations, remember: LL (Right Rotation), RR (Left Rotation). The name indicates where the imbalance is, and the rotation is in the *opposite* direction!
+
+> [!TIP] **EXAM TIP:**
+> Always write down the Balance Factor next to each node when drawing the tree step-by-step.
+
+### AVL Rotations Summary
+
+| Imbalance Location | Rotation Needed | Example Scenario |
+| :--- | :--- | :--- |
+| **Left-Left (LL)** | Single Right Rotation | Insert 3, 2, 1 |
+| **Right-Right (RR)** | Single Left Rotation | Insert 1, 2, 3 |
+| **Left-Right (LR)** | Left then Right Rotation | Insert 3, 1, 2 |
+| **Right-Left (RL)** | Right then Left Rotation | Insert 1, 3, 2 |
+`,
           shortNotes: 'AVL Tree is a self-balancing BST. Balance Factor must be -1, 0, or 1.',
           examples: [
             {
@@ -968,7 +1275,21 @@ Building a heap from an unsorted array takes **O(n)** time.
 ### Applications
 - Priority Queues.
 - Heap Sort algorithm.
-- Finding the k-th largest/smallest element in an array.`,
+- Finding the k-th largest/smallest element in an array.
+
+
+> [!IMPORTANT] **MEMORIZE:**
+> **Heap**: A Complete Binary Tree where Parent >= Children (Max-Heap) or Parent <= Children (Min-Heap).
+
+> [!NOTE] **DEV BRAIN:**
+> Heaps are implemented as **Arrays**, not with node pointers! Left child is at \`2i + 1\`, Right at \`2i + 2\`. This makes them incredibly memory-efficient and fast.
+
+> [!WARNING] **TRAP:**
+> A Max-Heap is NOT a fully sorted array. It only guarantees the largest element is at the root \`arr[0]\`.
+
+> [!TIP] **EXAM TIP:**
+> Heapify takes O(n) time, but extracting the max element takes O(log n). Mentioning Priority Queues as an application is a guaranteed mark!
+`,
           shortNotes: 'Heaps are complete binary trees. Max-Heap: Root is largest. Usually stored in an array.',
           examples: [
             {
@@ -1026,7 +1347,23 @@ DFS goes as deep as possible into a subtree before returning. The three types de
 - **Level-Order Traversal**
    - Algorithm: Visit nodes level by level, from left to right.
    - Requires a **Queue** data structure.
-   - Start by enqueueing the root. Then, loop: dequeue a node, process it, and enqueue its children.`,
+   - Start by enqueueing the root. Then, loop: dequeue a node, process it, and enqueue its children.
+
+
+> [!IMPORTANT] **MEMORIZE:**
+> **Inorder:** Left -> Root -> Right
+> **Preorder:** Root -> Left -> Right
+> **Postorder:** Left -> Right -> Root
+
+> [!NOTE] **DEV BRAIN:**
+> Trees use Recursion heavily. Preorder is useful for cloning a tree. Postorder is useful for safely deleting a tree (deleting children before parents).
+
+> [!WARNING] **TRAP:**
+> "Level-order" traversal is NOT done with recursion (DFS). It requires a Queue data structure (BFS).
+
+> [!TIP] **EXAM TIP:**
+> In a binary expression tree, Inorder traversal gives infix notation, Preorder gives prefix, and Postorder gives postfix!
+`,
           shortNotes: 'Inorder: Left-Root-Right. Preorder: Root-Left-Right. Postorder: Left-Right-Root.',
           examples: [
             {
@@ -1088,7 +1425,31 @@ An array of lists. The size of the array is equal to the number of vertices.
 
 ### Which one to choose?
 - Use an **Adjacency Matrix** for dense graphs (many edges) or when fast edge lookups are necessary.
-- Use an **Adjacency List** for sparse graphs, which represents most real-world networks (like social networks or maps).`,
+- Use an **Adjacency List** for sparse graphs, which represents most real-world networks (like social networks or maps).
+
+
+> [!IMPORTANT] **MEMORIZE:**
+> **Adjacency Matrix**: 2D Array (V x V). O(V²) space.
+> **Adjacency List**: Array of Linked Lists. O(V + E) space.
+
+> [!NOTE] **DEV BRAIN:**
+> Think of Adjacency List like an Object in JavaScript where keys are nodes and values are arrays of neighbors: \`{ A: ['B', 'C'] }\`. It's the standard for real-world graphs.
+
+> [!WARNING] **TRAP:**
+> Adjacency Matrices waste a massive amount of memory for sparse graphs. Never use them unless the graph is dense (E is close to V²).
+
+> [!TIP] **EXAM TIP:**
+> Draw a table comparing Adjacency Matrix and Adjacency List. 
+
+### Matrix vs List
+
+| Feature | Adjacency Matrix | Adjacency List |
+| :--- | :--- | :--- |
+| **Space Complexity** | O(V²) | O(V + E) |
+| **Check if edge exists** | O(1) (Instant) | O(V) (Search list) |
+| **Find all neighbors** | O(V) (Scan row) | O(1) to get list |
+| **Best For** | Dense Graphs | Sparse Graphs |
+`,
           shortNotes: 'Adjacency Matrix is O(V^2) space. Adjacency List is O(V+E) space and better for sparse graphs.',
           examples: [
             {
@@ -1147,7 +1508,22 @@ DFS explores as far as possible along each branch before backtracking.
 Unlike trees, graphs can contain cycles. To avoid infinite loops, both BFS and DFS must maintain a boolean \`visited\` array to track nodes that have already been processed.
 
 ### Time Complexity
-For both algorithms, the time complexity is **O(V + E)** when using an adjacency list representation.`,
+For both algorithms, the time complexity is **O(V + E)** when using an adjacency list representation.
+
+
+> [!IMPORTANT] **MEMORIZE:**
+> **BFS (Breadth-First Search)**: Explores level-by-level. Uses a **Queue**.
+> **DFS (Depth-First Search)**: Explores deep down one path. Uses a **Stack** (or Recursion).
+
+> [!NOTE] **DEV BRAIN:**
+> BFS is like a shockwave spreading out. DFS is like walking through a maze holding the left wall until you hit a dead end, then backtracking.
+
+> [!WARNING] **TRAP:**
+> Unlike trees, graphs have cycles. If you don't maintain a \`visited[]\` array, your BFS/DFS will run in an infinite loop!
+
+> [!TIP] **EXAM TIP:**
+> Time complexity for both is **O(V + E)** when using an Adjacency List. Write this down!
+`,
           shortNotes: 'BFS uses a Queue (level-by-level). DFS uses a Stack/Recursion (deep path first).',
           examples: [
             {
@@ -1210,7 +1586,28 @@ The algorithm maintains two sets: one containing vertices included in the shorte
 - Using a Min-Heap (Priority Queue) and adjacency list: **O((V + E) log V)**. This is highly efficient.
 
 ### Limitations
-It fails if the graph has negative edge weights because it assumes that once a node is processed, its shortest path is finalized (greedy choice). Negative weights could later provide a cheaper path.`,
+It fails if the graph has negative edge weights because it assumes that once a node is processed, its shortest path is finalized (greedy choice). Negative weights could later provide a cheaper path.
+
+
+> [!IMPORTANT] **MEMORIZE:**
+> **Dijkstra's Algorithm** finds the shortest path from a single source to all other nodes.
+> It uses a Greedy approach and a Priority Queue.
+
+> [!NOTE] **DEV BRAIN:**
+> Dijkstra is the engine behind Google Maps routing and OSPF network packet routing.
+
+> [!WARNING] **TRAP:**
+> Dijkstra **fails** if there are negative edge weights. If a negative weight exists, you must use the Bellman-Ford algorithm instead.
+
+> [!TIP] **EXAM TIP:**
+> The relaxation formula is key: \`if (dist[u] + cost(u,v) < dist[v]) { dist[v] = dist[u] + cost(u,v); }\`.
+
+### Step-by-Step Trace (Conceptual)
+1. Initialize distances to \`INF\`, source to \`0\`.
+2. Pick unvisited node \`u\` with smallest distance.
+3. Update distances of its neighbors (\`Relaxation\`).
+4. Mark \`u\` as visited. Repeat.
+`,
           shortNotes: 'Dijkstra finds the single-source shortest path. Uses greedy approach. Fails with negative weights.',
           examples: [
             {
@@ -1269,7 +1666,29 @@ Prim's algorithm builds the MST by growing it from a starting vertex, similar to
 ### Real-world Applications
 - Laying out electrical wiring across houses with minimum wire cost.
 - Computer network topology design.
-- Road network planning.`,
+- Road network planning.
+
+
+> [!IMPORTANT] **MEMORIZE:**
+> **MST (Minimum Spanning Tree)** connects all \`V\` vertices with exactly \`V - 1\` edges at the minimum total cost, without any cycles.
+
+> [!NOTE] **DEV BRAIN:**
+> Kruskal's algorithm is like sorting your cheapest fiber optic cables and placing them one by one unless they form a redundant loop.
+
+> [!WARNING] **TRAP:**
+> Prim's builds the tree from a single starting vertex, expanding outward. Kruskal's picks the cheapest edges globally, regardless of where they are.
+
+> [!TIP] **EXAM TIP:**
+> Mention that Kruskal uses a **Disjoint Set (Union-Find)** data structure to detect cycles, while Prim uses a **Priority Queue (Min-Heap)**.
+
+### Kruskal vs Prim
+
+| Feature | Kruskal's Algorithm | Prim's Algorithm |
+| :--- | :--- | :--- |
+| **Approach** | Sorts all edges globally | Grows from a starting node |
+| **Data Structure** | Union-Find | Priority Queue / Min-Heap |
+| **Best For** | Sparse Graphs (Few edges) | Dense Graphs (Many edges) |
+`,
           shortNotes: 'MST connects all nodes with V-1 edges at minimum cost. Solved using Kruskal\'s (sort edges) or Prim\'s (grow from vertex).',
           examples: [
             {
@@ -1332,7 +1751,22 @@ A highly efficient divide-and-conquer algorithm.
 - **Use case**: Large, sorted datasets.
 
 ### Comparison
-While Binary Search is drastically faster for large datasets (e.g., searching 1 million items takes at most 20 comparisons in Binary Search, vs 1 million in Linear Search), the overhead of keeping the array sorted must be considered if the data changes frequently.`,
+While Binary Search is drastically faster for large datasets (e.g., searching 1 million items takes at most 20 comparisons in Binary Search, vs 1 million in Linear Search), the overhead of keeping the array sorted must be considered if the data changes frequently.
+
+
+> [!IMPORTANT] **MEMORIZE:**
+> **Linear Search**: O(n). Checks sequentially.
+> **Binary Search**: O(log n). Requires sorted array. Divides search space in half.
+
+> [!NOTE] **DEV BRAIN:**
+> Binary search is like looking up a word in a dictionary. You don't read page 1, 2, 3... you open to the middle, check if the word is before or after, and repeat!
+
+> [!WARNING] **TRAP:**
+> When calculating the middle index \`m\`, using \`(l + r) / 2\` can cause integer overflow in languages like C/Java. Always write: \`m = l + (r - l) / 2\`.
+
+> [!TIP] **EXAM TIP:**
+> Show a trace of binary search: Initial Array -> Pick Mid -> Discard Half -> New Search Space.
+`,
           shortNotes: 'Linear Search: O(n), unsorted. Binary Search: O(log n), must be sorted.',
           examples: [
             {
@@ -1385,7 +1819,23 @@ These three algorithms are considered "comparison sorts" with an O(n²) average 
 ### 3. Insertion Sort
 - **How it works**: Builds the final sorted array one item at a time. It takes an element from the unsorted part and inserts it into its correct position in the sorted part (like sorting playing cards in your hands).
 - **Advantage**: Highly efficient for small arrays or arrays that are already mostly sorted.
-- **Time Complexity**: O(n²) worst, O(n) best.`,
+- **Time Complexity**: O(n²) worst, O(n) best.
+
+
+> [!IMPORTANT] **MEMORIZE:**
+> **Bubble Sort**: O(n²). Largest elements bubble up.
+> **Selection Sort**: O(n²). Selects the smallest and swaps.
+> **Insertion Sort**: O(n²). Places elements into correct sorted position.
+
+> [!NOTE] **DEV BRAIN:**
+> Insertion sort is exactly how you sort a hand of playing cards. You pick a card, find its spot, and shift the others.
+
+> [!WARNING] **TRAP:**
+> Even though they all have O(n²) worst-case, Insertion Sort is O(n) in the best case (if data is already sorted), making it very fast for nearly-sorted data!
+
+> [!TIP] **EXAM TIP:**
+> Selection Sort makes the MINIMUM number of swaps (O(n) swaps total), which is great if writing to memory is expensive. Mention this!
+`,
           shortNotes: 'Bubble: swaps adjacent. Selection: finds minimum. Insertion: places one by one. All are O(n²).',
           examples: [
             {
@@ -1442,7 +1892,31 @@ For large datasets, O(n²) algorithms are too slow. Merge Sort and Quick Sort us
   3. Recursively apply the above steps to the sub-arrays on the left and right of the pivot.
 - **Time Complexity**: **O(n log n)** average case. **O(n²)** worst case (happens if the pivot chosen is consistently the greatest or smallest element, e.g., already sorted array with last element as pivot).
 - **Space Complexity**: **O(log n)** auxiliary stack space.
-- **Characteristics**: Usually faster in practice than Merge Sort due to better cache locality, but it is unstable and has a poor worst-case.`,
+- **Characteristics**: Usually faster in practice than Merge Sort due to better cache locality, but it is unstable and has a poor worst-case.
+
+
+> [!IMPORTANT] **MEMORIZE:**
+> **Merge Sort**: O(n log n) always. Uses extra space O(n).
+> **Quick Sort**: O(n log n) avg, O(n²) worst. In-place (no extra space).
+
+> [!NOTE] **DEV BRAIN:**
+> Quick sort is the default \`Array.prototype.sort()\` algorithm in many engines like V8 because it is extremely fast in practice due to good CPU cache locality.
+
+> [!WARNING] **TRAP:**
+> The worst-case for Quick Sort (O(n²)) happens when the array is *already sorted* and you pick the last element as the pivot!
+
+> [!TIP] **EXAM TIP:**
+> Both use the **Divide and Conquer** paradigm. Mention this clearly to get easy marks.
+
+### Merge Sort vs Quick Sort
+
+| Feature | Merge Sort | Quick Sort |
+| :--- | :--- | :--- |
+| **Time Complexity** | O(n log n) Guaranteed | O(n log n) Avg, O(n²) Worst |
+| **Space Complexity**| O(n) (Requires extra array) | O(log n) (In-place) |
+| **Stability** | Stable | Unstable |
+| **Best For** | Linked Lists, Large Datasets | Arrays in memory |
+`,
           shortNotes: 'Merge Sort: O(n log n) always, needs extra space. Quick Sort: O(n log n) average, O(n²) worst, in-place.',
           examples: [
             {
@@ -1505,7 +1979,24 @@ A collision occurs when the hash function generates the same index for two diffe
    - All elements are stored in the hash table itself. When a collision occurs, we look for the next empty slot in the array.
    - **Linear Probing**: Linearly search for the next empty slot (\`index + 1\`, \`index + 2\`, etc.). Can cause primary clustering.
    - **Quadratic Probing**: Search slots using a quadratic formula (\`index + 1^2\`, \`index + 2^2\`, etc.).
-   - **Double Hashing**: Use a second hash function to determine the step size for probing.`,
+   - **Double Hashing**: Use a second hash function to determine the step size for probing.
+
+
+> [!IMPORTANT] **MEMORIZE:**
+> **Hashing** gives O(1) average time complexity for Search, Insert, and Delete.
+> **Collisions** happen when two keys hash to the same index.
+
+> [!NOTE] **DEV BRAIN:**
+> Hashing is exactly how JavaScript \`Map\`, \`Set\`, and plain Objects \`{}\` work under the hood! Fast, instant lookup via hash functions.
+
+> [!WARNING] **TRAP:**
+> Open Addressing methods (like Linear Probing) suffer from **Primary Clustering**, where a block of filled slots slows down future insertions.
+
+> [!TIP] **EXAM TIP:**
+> Explain the two ways to handle collisions: 
+> 1) **Chaining** (Array of Linked Lists).
+> 2) **Open Addressing** (Linear Probing: look for next empty slot).
+`,
           shortNotes: 'Hashing uses a function to map keys to indices for O(1) access. Collisions are handled via Chaining or Probing.',
           examples: [
             {

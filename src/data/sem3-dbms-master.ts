@@ -20,7 +20,13 @@ export const sem3DbmsMaster: Subject = {
           simpleExplanation: 'A DBMS is a software that helps you store, manage, and retrieve data efficiently, unlike traditional file systems which are messy and redundant.',
           detailedExplanation: `### Introduction to Database Management Systems
 
-A Database Management System (DBMS) is a specialized software application designed to manage, store, retrieve, and manipulate data in a structured and efficient manner. Before the advent of DBMS, data was typically stored in flat files. This traditional File System approach had numerous drawbacks, including data redundancy (storing the same data in multiple places), data inconsistency (updating data in one place but not another), difficulty in accessing data, and lack of security.
+> [!IMPORTANT] **MEMORIZE:**
+> **DBMS (Database Management System):** A specialized software application used to create, manage, and manipulate databases efficiently and securely.
+
+Before the advent of DBMS, data was typically stored in flat files. This traditional File System approach had numerous drawbacks, including data redundancy (storing the same data in multiple places), data inconsistency (updating data in one place but not another), difficulty in accessing data, and lack of security.
+
+> [!NOTE] **DEV BRAIN:**
+> Think of a File System like keeping all your app data in a bunch of .txt or .csv files scattered across folders. A DBMS is like having a dedicated API (like Prisma or Mongoose) that handles all the reading/writing, validation, and concurrency for you.
 
 ### Advantages of DBMS over File Systems
 
@@ -31,13 +37,35 @@ A Database Management System (DBMS) is a specialized software application design
 5. **Concurrent Access and Crash Recovery:** DBMS handles concurrent access by multiple users without data corruption and provides mechanisms to recover data in case of system failures.
 6. **Data Independence:** DBMS separates the data from the applications that use it. This means you can change the underlying storage structure without modifying the applications.
 
+> [!WARNING] **TRAP:**
+> Students often write "DBMS completely removes redundancy". This is FALSE. DBMS *minimizes* or *controls* redundancy, it doesn't always completely eliminate it (sometimes controlled redundancy is needed for performance, like in indexing).
+
 ### Core Components of a DBMS
 
 *   **Hardware:** The physical devices where data is stored (servers, hard drives).
 *   **Software:** The DBMS software itself (e.g., MySQL, Oracle, PostgreSQL).
 *   **Data:** The actual information being stored.
 *   **Procedures:** The rules and instructions that govern the design and use of the database.
-*   **Users:** The people interacting with the database (Database Administrators, Application Programmers, End Users).`,
+*   **Users:** The people interacting with the database (Database Administrators, Application Programmers, End Users).
+
+### Comparison: DBMS vs File System
+
+| Feature | File System | DBMS |
+| :--- | :--- | :--- |
+| **Redundancy** | High (Duplicate data) | Low (Controlled) |
+| **Data Access** | Difficult (Needs custom programs) | Easy (Uses SQL queries) |
+| **Security** | Weak (OS level only) | Strong (User roles, passwords) |
+| **Crash Recovery**| None/Manual | Automatic (Logs & Checkpoints) |
+| **Concurrency** | Very limited | Highly supported |
+
+> [!TIP] **EXAM TIP:**
+> If asked for "Advantages of DBMS", always draw the comparison table. It gives a structured look and guarantees full marks!`,
+          richContent: `### Visualizing DBMS Architecture
+Here is how DBMS conceptually sits between the user and the data:
+User -> Application -> DBMS -> Database
+
+In a file system, it's just:
+User -> Application -> File`,
           shortNotes: 'DBMS manages data, prevents redundancy, ensures security and integrity compared to file systems.',
           examples: [
             {
@@ -81,6 +109,12 @@ A Database Management System (DBMS) is a specialized software application design
 
 Database architecture establishes the framework for how a database system is structured, how users interact with it, and how components communicate. The architecture is broadly classified into single-tier, two-tier, and three-tier models, depending on the separation between the user interface, business logic, and database management.
 
+> [!IMPORTANT] **MEMORIZE:**
+> **Tier:** A physical or logical separation of components in a system. 
+> - 1-Tier: Everything on 1 machine.
+> - 2-Tier: Client machine + DB Server machine.
+> - 3-Tier: Client + App Server + DB Server.
+
 ### 1-Tier Architecture
 
 In a 1-tier architecture, the database and the application are tightly coupled and reside on the same machine. The user interacts directly with the database without any intermediate layers.
@@ -91,9 +125,16 @@ In a 1-tier architecture, the database and the application are tightly coupled a
 ### 2-Tier Architecture (Client-Server)
 
 In a 2-tier architecture, the system is divided into two parts: the client application and the database server. The client application contains the user interface and the business logic, and it communicates directly with the database server using APIs like ODBC or JDBC.
+
+> [!NOTE] **DEV BRAIN:**
+> 2-Tier is like a React Native mobile app (Client) talking directly to a Firebase database (DB Server). The app contains all the logic, and directly queries the database. 
+
 *   **Use Cases:** Internal corporate networks, desktop applications requiring a centralized database.
 *   **Pros:** Better scalability than 1-tier, improved security, centralized data management.
 *   **Cons:** Business logic is on the client, making updates difficult (fat client). Heavy network traffic if the client requests large datasets.
+
+> [!WARNING] **TRAP:**
+> Don't confuse "Tier" with "Schema Architecture" (like Internal, Conceptual, External schemas). Tiers refer to physical/network deployment, while Schemas refer to data abstraction levels!
 
 ### 3-Tier Architecture
 
@@ -101,9 +142,28 @@ This is the most common architecture for modern web applications. It introduces 
 1.  **Presentation Tier (Client):** The user interface (e.g., a web browser or mobile app).
 2.  **Application Tier (Business Logic):** An intermediate server (e.g., Node.js, Django, Spring Boot) that processes user inputs, enforces business rules, and communicates with the database.
 3.  **Data Tier (Database Server):** The DBMS that stores and manages the data.
+
+> [!TIP] **EXAM TIP:**
+> Always draw a simple block diagram for 3-tier architecture: \`Client [UI] <--> App Server [Logic] <--> DB Server [Data]\`. This visual representation is crucial for full marks.
+
 *   **Use Cases:** Web applications, large-scale enterprise systems.
 *   **Pros:** High scalability, strong security (client never touches the DB), easy to maintain and update business logic.
-*   **Cons:** More complex to design and implement, potential latency due to multiple hops.`,
+*   **Cons:** More complex to design and implement, potential latency due to multiple hops.
+
+### Comparison Table
+
+| Architecture | Components | Security | Scalability | Best For |
+| :--- | :--- | :--- | :--- | :--- |
+| **1-Tier** | App + DB on same machine | Very Low | None | Local dev, desktop tools |
+| **2-Tier** | Client App + DB Server | Medium | Moderate | Internal corporate tools |
+| **3-Tier** | Client + App Server + DB Server | High | Very High | Web Apps, Enterprise Apps |
+`,
+          richContent: `### Step-by-Step Request Trace in 3-Tier Architecture
+1. **Client (Tier 1):** User clicks "Login" on a webpage. Browser sends an HTTP POST request with credentials.
+2. **App Server (Tier 2):** Node.js receives the request. It validates the input format. It constructs a SQL query: \`SELECT * FROM Users WHERE username = '...'\`
+3. **Database (Tier 3):** MySQL receives the query, executes it, and returns the user record to the App Server.
+4. **App Server (Tier 2):** Checks password hash. Generates a session token and sends it back in an HTTP response.
+5. **Client (Tier 1):** Browser saves the token and redirects to the dashboard.`,
           shortNotes: '1-tier: direct access. 2-tier: client + DB server. 3-tier: client + app server + DB server.',
           examples: [
             {
@@ -147,16 +207,30 @@ This is the most common architecture for modern web applications. It introduces 
 
 The ER model is a high-level conceptual data model used to design and represent the logical structure of a database. It allows database designers to sketch out the database architecture before implementing it in a specific DBMS.
 
+> [!IMPORTANT] **MEMORIZE:**
+> **ER Diagram Notations:**
+> - Rectangle = Entity
+> - Oval = Attribute
+> - Diamond = Relationship
+> - Double Rectangle = Weak Entity
+> - Dashed Oval = Derived Attribute
+
 ### Core Components
 
-1. **Entity:** An entity is a real-world object or concept that can be distinctly identified. Examples include a Student, Course, or Employee. In an ER diagram, entities are represented by **rectangles**.
-   * **Weak Entity:** An entity that cannot be uniquely identified by its own attributes and relies on a related strong entity (e.g., a Dependent relies on an Employee). Represented by a double rectangle.
+1. **Entity:** An entity is a real-world object or concept that can be distinctly identified. Examples include a Student, Course, or Employee. 
+   * **Weak Entity:** An entity that cannot be uniquely identified by its own attributes and relies on a related strong entity (e.g., a Dependent relies on an Employee). 
 
-2. **Attribute:** Attributes describe the properties or characteristics of an entity. Examples for a Student entity include Roll_Number, Name, and Age. Represented by **ovals**.
+> [!NOTE] **DEV BRAIN:**
+> An Entity is like a Class in Object-Oriented Programming (e.g., \`class User\`). An Attribute is like a property of that class (e.g., \`User.name\`). A Relationship is like a reference between classes (e.g., \`User.posts\`).
+
+2. **Attribute:** Attributes describe the properties or characteristics of an entity. 
    * **Key Attribute:** Uniquely identifies an entity (e.g., Roll_Number). Represented by an oval with underlined text.
    * **Composite Attribute:** An attribute that can be divided into smaller sub-parts (e.g., Name can be First_Name and Last_Name).
    * **Multivalued Attribute:** An attribute that can have multiple values (e.g., Phone_Number). Represented by a double oval.
-   * **Derived Attribute:** An attribute whose value is calculated from other attributes (e.g., Age derived from Date_of_Birth). Represented by a dashed oval.
+   * **Derived Attribute:** An attribute whose value is calculated from other attributes (e.g., Age derived from Date_of_Birth). 
+
+> [!WARNING] **TRAP:**
+> Do NOT store derived attributes physically in a database table! Since Age changes every year, if you store it, you have to update it constantly. Store Date_of_Birth and calculate Age dynamically.
 
 3. **Relationship:** A relationship illustrates how two or more entities are associated with each other. For example, a Student "Enrolls" in a Course. Represented by **diamonds**.
 
@@ -166,7 +240,16 @@ Cardinality defines the maximum number of relationship instances an entity can p
 *   **One-to-One (1:1):** One instance of entity A is associated with one instance of entity B (e.g., a Manager manages one Department).
 *   **One-to-Many (1:N):** One instance of entity A is associated with multiple instances of entity B (e.g., a Department has many Employees).
 *   **Many-to-One (N:1):** Multiple instances of entity A are associated with one instance of entity B (e.g., many Students enroll in one Course).
-*   **Many-to-Many (M:N):** Multiple instances of entity A are associated with multiple instances of entity B (e.g., many Students enroll in many Courses).`,
+*   **Many-to-Many (M:N):** Multiple instances of entity A are associated with multiple instances of entity B (e.g., many Students enroll in many Courses).
+
+> [!TIP] **EXAM TIP:**
+> When asked to draw an ER Diagram for a system (like Hospital or Library), always clearly mark Primary Keys with an underline and label the cardinalities (1, M, N) on the relationship lines!`,
+          richContent: `### Step-by-Step: Converting ER to Relational Tables
+Let's convert an ER model to actual tables:
+1. **Strong Entities:** Create a table for each strong entity. (e.g., \`Student(RollNo, Name)\`)
+2. **Weak Entities:** Create a table, include the primary key of the strong entity as a foreign key. (e.g., \`Dependent(Dep_ID, Name, Emp_ID)\`)
+3. **1:M Relationships:** The primary key of the '1' side goes into the 'M' side table as a foreign key. (e.g., Department(1) to Employee(M) -> add \`Dept_ID\` to Employee table).
+4. **M:N Relationships:** Create a NEW junction table containing the primary keys of both participating entities. (e.g., \`Student_Course(RollNo, CourseID)\`)`,
           shortNotes: 'Entities are objects. Attributes are properties. Relationships are associations. ER diagrams visualize this.',
           examples: [
             {
@@ -217,12 +300,20 @@ Cardinality defines the maximum number of relationship instances an entity can p
 
 DML allows users to interact with the data stored in a relational database. The core commands are SELECT (to retrieve data), INSERT (to add new rows), UPDATE (to modify existing data), and DELETE (to remove rows).
 
+> [!IMPORTANT] **MEMORIZE:**
+> **DML vs DDL:**
+> DML (Data Manipulation) = SELECT, INSERT, UPDATE, DELETE. Operates on the *rows* / *data*.
+> DDL (Data Definition) = CREATE, ALTER, DROP, TRUNCATE. Operates on the *tables* / *schema*.
+
 ### 1. SELECT Statement
 
 The \`SELECT\` statement is the most frequently used SQL command. It retrieves data from one or more tables.
 *   **Syntax:** \`SELECT column1, column2 FROM table_name WHERE condition;\`
 *   You can use \`*\` to select all columns.
 *   The \`WHERE\` clause filters the results based on a condition.
+
+> [!NOTE] **DEV BRAIN:**
+> Think of \`SELECT\` as an HTTP GET request or an \`Array.filter()\` and \`Array.map()\` in JavaScript. You are fetching data without modifying the source.
 
 ### 2. INSERT Statement
 
@@ -234,13 +325,26 @@ The \`INSERT INTO\` statement is used to add new records (rows) to a table.
 
 The \`UPDATE\` statement modifies existing records in a table.
 *   **Syntax:** \`UPDATE table_name SET column1 = value1, column2 = value2 WHERE condition;\`
-*   **CRITICAL WARNING:** Always use a \`WHERE\` clause with \`UPDATE\`. If you omit it, ALL records in the table will be updated!
+
+> [!WARNING] **TRAP:**
+> **THE MISSING WHERE CLAUSE TRAP:**
+> Always use a \`WHERE\` clause with \`UPDATE\` and \`DELETE\`. If you run \`UPDATE Employees SET Salary = 90000;\`, it will update the salary for EVERY SINGLE EMPLOYEE in the database! Always double-check!
 
 ### 4. DELETE Statement
 
 The \`DELETE\` statement removes existing records from a table.
 *   **Syntax:** \`DELETE FROM table_name WHERE condition;\`
-*   **CRITICAL WARNING:** Similar to UPDATE, if you omit the \`WHERE\` clause, ALL records in the table will be deleted.`,
+
+> [!TIP] **EXAM TIP:**
+> Be prepared to write simple SQL queries in the exam. Always capitalize SQL keywords (\`SELECT\`, \`FROM\`, \`WHERE\`) to make your answer easy to read for the examiner.`,
+          richContent: `### Query Execution Step-by-Step
+Consider the query: 
+\`SELECT Name, Salary FROM Employees WHERE Department = 'IT' ORDER BY Salary DESC;\`
+Here is the logical order of execution by the database engine:
+1. **FROM:** The DBMS identifies the \`Employees\` table.
+2. **WHERE:** It filters out all rows where Department is not 'IT'.
+3. **SELECT:** It projects (extracts) only the \`Name\` and \`Salary\` columns.
+4. **ORDER BY:** It sorts the final result set by \`Salary\` in descending order.`,
           shortNotes: 'SELECT reads data. INSERT adds data. UPDATE modifies data. DELETE removes data.',
           examples: [
             {
@@ -293,21 +397,59 @@ DELETE FROM Students WHERE ID = 1;`
 
 In relational databases, data is often normalized and split across multiple tables to reduce redundancy. To view a complete picture, you need to combine data from these tables. SQL \`JOIN\` clauses allow you to link tables together based on common columns (usually Primary Key - Foreign Key relationships).
 
+> [!IMPORTANT] **MEMORIZE:**
+> **Types of Joins:**
+> - INNER: Intersection (matches only)
+> - LEFT: All left + matches
+> - RIGHT: All right + matches
+> - FULL: Union (everything from both)
+
 ### Types of Joins
 
 1.  **INNER JOIN:** Returns records that have matching values in **both** tables. If a row in Table A has no match in Table B, it is omitted.
     *   *Analogy:* The intersection of two Venn diagram circles.
 
 2.  **LEFT (OUTER) JOIN:** Returns **all** records from the left table (Table A), and the matched records from the right table (Table B). The result is NULL from the right side if there is no match.
-    *   *Analogy:* The entire left circle, plus the intersection.
+
+> [!NOTE] **DEV BRAIN:**
+> Think of a LEFT JOIN like calling \`map\` on an array of Users, and finding their matching Profile. Even if a User doesn't have a Profile, they still stay in the array, but their \`profile\` property is \`null\`.
 
 3.  **RIGHT (OUTER) JOIN:** Returns **all** records from the right table (Table B), and the matched records from the left table (Table A). The result is NULL from the left side when there is no match.
-    *   *Analogy:* The entire right circle, plus the intersection.
 
 4.  **FULL (OUTER) JOIN:** Returns all records when there is a match in either left or right table. Unmatched rows will contain NULL for the columns of the table that lacked a match.
-    *   *Analogy:* Both circles completely.
 
-5.  **CROSS JOIN:** Returns the Cartesian product of the two tables. If Table A has 3 rows and Table B has 4 rows, the result will have 12 rows. Usually used without an ON clause.`,
+5.  **CROSS JOIN:** Returns the Cartesian product of the two tables. If Table A has 3 rows and Table B has 4 rows, the result will have 12 rows. Usually used without an ON clause.
+
+> [!WARNING] **TRAP:**
+> Forgetting the \`ON\` clause! If you do \`SELECT * FROM A JOIN B\`, many databases will throw an error, but some will treat it as a CROSS JOIN, resulting in millions of rows and crashing your query!
+
+### Joins Comparison
+
+| Join Type | Left Table Unmatched | Right Table Unmatched | Result Set Size (usually) |
+| :--- | :--- | :--- | :--- |
+| **INNER** | Dropped | Dropped | Smallest |
+| **LEFT** | Kept (NULLs on right) | Dropped | Medium |
+| **RIGHT** | Dropped | Kept (NULLs on left) | Medium |
+| **FULL** | Kept | Kept | Largest |
+
+> [!TIP] **EXAM TIP:**
+> When writing a JOIN query in an exam, always clearly specify the table names or use aliases for columns (e.g., \`SELECT E.Name, D.DeptName FROM Employees E JOIN Departments D ON E.DeptID = D.ID\`). It shows the examiner you understand column ambiguity.`,
+          richContent: `### Step-by-Step Join Execution
+Let's trace a LEFT JOIN:
+\`Table A (Students)\`: (1, 'Alice'), (2, 'Bob'), (3, 'Charlie')
+\`Table B (Grades)\`: (1, 'A'), (2, 'B')
+
+**Query:** \`SELECT Students.Name, Grades.Grade FROM Students LEFT JOIN Grades ON Students.ID = Grades.StudentID\`
+
+**Trace:**
+1. Read first row of A: (1, 'Alice'). Match found in B? Yes, (1, 'A'). Result: \`('Alice', 'A')\`
+2. Read second row of A: (2, 'Bob'). Match found in B? Yes, (2, 'B'). Result: \`('Bob', 'B')\`
+3. Read third row of A: (3, 'Charlie'). Match found in B? No. Output NULL for B's columns. Result: \`('Charlie', NULL)\`
+
+**Final Output:**
+- Alice, A
+- Bob, B
+- Charlie, NULL`,
           shortNotes: 'INNER: Match only. LEFT: All left + match. RIGHT: All right + match. FULL: All rows with nulls where missing.',
           examples: [
             {
@@ -358,27 +500,68 @@ INNER JOIN Courses ON Enrollments.CourseID = Courses.ID;`
           simpleExplanation: 'Normalization is a step-by-step process to organize data in a database to reduce redundancy and improve data integrity.',
           detailedExplanation: `### Database Normalization
 
-Normalization is the process of structuring a relational database in accordance with a series of so-called normal forms in order to reduce data redundancy and improve data integrity. It involves dividing large tables into smaller, less redundant tables and defining relationships between them.
+Normalization is the process of structuring a relational database in accordance with a series of normal forms to reduce data redundancy and improve data integrity. It divides large tables into smaller, less redundant tables and defines relationships between them.
+
+> [!IMPORTANT] **MEMORIZE:**
+> **The Normal Forms:**
+> - 1NF: Atomic values only.
+> - 2NF: 1NF + No Partial Dependencies.
+> - 3NF: 2NF + No Transitive Dependencies.
+> - BCNF: 3NF + Every determinant is a candidate key.
 
 ### First Normal Form (1NF)
 
 *   **Rule:** A table is in 1NF if it contains only atomic (indivisible) values. There can be no repeating groups or arrays.
 *   **Action:** If a column has multiple values (e.g., a student with multiple phone numbers in one cell), separate them into multiple rows or create a new table.
 
+> [!NOTE] **DEV BRAIN:**
+> In NoSQL or JSON, storing arrays (like \`tags: ["tech", "coding"]\`) is perfectly fine. But in a strictly relational SQL database, this violates 1NF! You'd need a separate \`Tags\` table.
+
 ### Second Normal Form (2NF)
 
 *   **Rule:** A table is in 2NF if it is in 1NF AND every non-prime attribute is fully functionally dependent on the primary key.
-*   **Action:** This applies primarily to tables with composite primary keys. If an attribute depends on only part of the primary key (Partial Dependency), move it to a new table.
+*   **Action:** This applies primarily to tables with **composite primary keys**. If an attribute depends on only part of the primary key (Partial Dependency), move it to a new table.
 
 ### Third Normal Form (3NF)
 
 *   **Rule:** A table is in 3NF if it is in 2NF AND there are no transitive dependencies.
 *   **Action:** A transitive dependency occurs when a non-prime attribute depends on another non-prime attribute (A -> B and B -> C, so A -> C). Move the transitively dependent attributes to a new table.
 
+> [!WARNING] **TRAP:**
+> Do not confuse 2NF and 3NF. 
+> 2NF deals with partial dependency on a **Primary Key**. 
+> 3NF deals with dependencies on **Non-Key Attributes**.
+
 ### Boyce-Codd Normal Form (BCNF)
 
 *   **Rule:** BCNF is a stronger version of 3NF. A table is in BCNF if for every non-trivial functional dependency X -> Y, X is a superkey.
-*   **Action:** It addresses situations where a table is in 3NF but still has anomalies, typically when there are multiple overlapping candidate keys.`,
+*   **Action:** It addresses situations where a table is in 3NF but still has anomalies, typically when there are multiple overlapping candidate keys.
+
+> [!TIP] **EXAM TIP:**
+> When asked to normalize a table in the exam, clearly write down the Functional Dependencies (FDs) first. Then, identify the Primary Key. Without finding the PK, you cannot check for 2NF or 3NF!`,
+          richContent: `### Normalization Step-by-Step Trace
+**Given Table:** \`Orders(OrderID, ProductID, ProductName, CustomerID, CustomerCity)\`
+**Primary Key:** \`(OrderID, ProductID)\`
+
+**Step 1: Check 1NF**
+Are all values atomic? Yes. It is in 1NF.
+
+**Step 2: Check 2NF**
+Are there partial dependencies? 
+Yes! \`ProductName\` depends ONLY on \`ProductID\`, not on the full \`(OrderID, ProductID)\` key.
+*Fix:* Split into two tables:
+- \`OrderDetails(OrderID, ProductID, CustomerID, CustomerCity)\`
+- \`Products(ProductID, ProductName)\`
+
+**Step 3: Check 3NF**
+Look at \`OrderDetails\`. Are there transitive dependencies?
+Yes! \`CustomerCity\` depends on \`CustomerID\`, and \`CustomerID\` depends on \`OrderID\`. 
+*Fix:* Split again:
+- \`Orders(OrderID, CustomerID)\`
+- \`Customers(CustomerID, CustomerCity)\`
+- \`OrderItems(OrderID, ProductID)\`
+
+Now the schema is fully normalized in 3NF.`,
           shortNotes: '1NF: Atomic values. 2NF: No partial dependency. 3NF: No transitive dependency. BCNF: Stricter 3NF.',
           examples: [
             {
@@ -428,10 +611,20 @@ Normalization is the process of structuring a relational database in accordance 
 
 A transaction is a single logical unit of work that accesses and possibly modifies the contents of a database. To maintain data integrity, database transactions must adhere to four key properties, known collectively by the acronym ACID.
 
+> [!IMPORTANT] **MEMORIZE:**
+> **ACID stands for:**
+> **A**tomicity
+> **C**onsistency
+> **I**solation
+> **D**urability
+
 ### 1. Atomicity (The All-or-Nothing Rule)
 
 Atomicity ensures that all operations within a transaction are completed successfully. If any operation fails, the entire transaction is aborted, and the database is rolled back to its previous state prior to the transaction.
 *   *Example:* Transferring money from Account A to Account B involves deducting from A and adding to B. If deducting succeeds but adding fails, the money must be refunded to A.
+
+> [!NOTE] **DEV BRAIN:**
+> Atomicity is like wrapping multiple API calls in a single \`try...catch\` block where if anything throws, you manually revert all previous changes. In a DBMS, the engine handles the reverting (Rollback) for you automatically.
 
 ### 2. Consistency
 
@@ -443,10 +636,23 @@ Consistency ensures that a transaction takes the database from one valid state t
 Isolation ensures that the concurrent execution of multiple transactions leaves the database in the same state as if the transactions were executed sequentially.
 *   *Example:* If User 1 and User 2 both try to buy the last seat on a flight at the exact same time, isolation ensures only one succeeds, and the other sees the seat as unavailable.
 
+> [!WARNING] **TRAP:**
+> Students often confuse Consistency with Isolation. Consistency is about business rules and constraints (e.g., age > 0). Isolation is strictly about handling multiple users accessing the data at the EXACT same time.
+
 ### 4. Durability
 
 Durability guarantees that once a transaction has been committed, it will remain committed even in the event of a system failure (e.g., power loss, crash). The database writes the committed data to non-volatile memory.
-*   *Example:* Once you receive confirmation of a successful bank transfer, the money is transferred, even if the bank's server crashes immediately after.`,
+*   *Example:* Once you receive confirmation of a successful bank transfer, the money is transferred, even if the bank's server crashes immediately after.
+
+> [!TIP] **EXAM TIP:**
+> For ACID properties, ALWAYS use the Bank Transfer example. Examiners look for this specific example because it perfectly illustrates all four properties.`,
+          richContent: `### Transaction States Trace
+When a transaction executes, it passes through various states:
+1. **Active:** The initial state. The transaction stays here while executing.
+2. **Partially Committed:** After the final statement has been executed, but before actual disk writes are confirmed.
+3. **Failed:** If a check fails or the system crashes before committing.
+4. **Aborted:** After the transaction has been rolled back and the DB is restored to its prior state.
+5. **Committed:** After successful execution and data is permanently saved to disk.`,
           shortNotes: 'Atomicity (All or nothing), Consistency (Valid state), Isolation (Concurrent safety), Durability (Permanent changes).',
           examples: [
             {
@@ -499,6 +705,9 @@ COMMIT;`
 
 Indexing is a data structure technique used to quickly locate and access the data in a database. Without an index, a DBMS has to scan the entire table to find the relevant rows (known as a full table scan), which is extremely slow for large datasets.
 
+> [!IMPORTANT] **MEMORIZE:**
+> **Index:** A data structure (usually a B-Tree) that improves the speed of data retrieval operations on a database table at the cost of additional writes and storage space.
+
 ### Types of Indexes
 
 1.  **Primary Index:** Based on the primary key of the table. The primary index defines the physical order of the data in the table. Because data can only be sorted in one physical order, a table can have only ONE primary (clustered) index.
@@ -506,11 +715,27 @@ Indexing is a data structure technique used to quickly locate and access the dat
 3.  **Dense Index:** Contains an index record for *every* search key value in the data file. Faster for lookups but takes up more space.
 4.  **Sparse Index:** Contains index records for only *some* search key values. Usually used when the data file itself is sequentially ordered.
 
+> [!NOTE] **DEV BRAIN:**
+> Think of an Index like a Hash Map (Object/Dict) or a Binary Search Tree in memory. If you search an array of 1 million items linearly \`.find()\`, it's slow (O(N)). An index turns that search into O(log N) or O(1).
+
 ### B-Trees and B+ Trees
 
 Modern relational databases primarily use B-Tree (Balanced Tree) or B+ Tree data structures to implement indexes.
+
 *   **B-Tree:** A self-balancing tree data structure that keeps data sorted and allows searches, sequential access, insertions, and deletions in logarithmic time. Data is stored in both internal nodes and leaf nodes.
-*   **B+ Tree:** A variation of the B-Tree where all data pointers are stored ONLY at the leaf nodes. Internal nodes only store keys to guide the search. Leaf nodes are linked together in a linked list format. This is highly preferred for database systems because it makes sequential scanning (range queries like \`BETWEEN 10 AND 50\`) extremely fast.`,
+*   **B+ Tree:** A variation of the B-Tree where all data pointers are stored ONLY at the leaf nodes. Internal nodes only store keys to guide the search. Leaf nodes are linked together in a linked list format. This is highly preferred for database systems because it makes sequential scanning (range queries like \`BETWEEN 10 AND 50\`) extremely fast.
+
+> [!WARNING] **TRAP:**
+> More indexes do NOT mean better performance! While they speed up \`SELECT\` queries, every time you \`INSERT\`, \`UPDATE\`, or \`DELETE\`, the DBMS must also update all related indexes. Too many indexes will make your write operations painfully slow.
+
+> [!TIP] **EXAM TIP:**
+> Always highlight the difference between B-Tree and B+ Tree: "In B+ Trees, data pointers are ONLY at the leaf nodes, and leaves are linked." This is the core distinction examiners look for.`,
+          richContent: `### Step-by-Step Index Lookup
+**Scenario:** Looking for Employee ID = 45 in a B+ Tree index.
+1. **Root Node:** Contains keys [20, 40, 60]. 45 is between 40 and 60, so follow the middle pointer.
+2. **Internal Node:** Contains keys [42, 48]. 45 is between 42 and 48, so follow the left pointer.
+3. **Leaf Node:** Contains [43, 44, 45]. Match found! 
+4. **Data Fetch:** Read the memory address pointer attached to 45 in the leaf node and fetch the full row from the disk.`,
           shortNotes: 'Indexes speed up read queries but slow down write queries. B+ Trees are standard for DB indexes.',
           examples: [
             {

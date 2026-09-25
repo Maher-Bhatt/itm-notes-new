@@ -98,8 +98,8 @@ export const sem3DetailedSubjects: Subject[] = [
             examples: [
               {
                 title: "3NF Violation Example",
-                problem: "Identify the 3NF violation: `Students(StudentID, Name, Department, DeptHead)`",
-                explanation: "DeptHead depends on Department, and Department depends on StudentID. This is a transitive dependency! Fix: Split into `Students(StudentID, Name, Department)` and `Departments(Department, DeptHead)`."
+                problem: "Identify the 3NF violation: \`Students(StudentID, Name, Department, DeptHead)\`",
+                explanation: "DeptHead depends on Department, and Department depends on StudentID. This is a transitive dependency! Fix: Split into \`Students(StudentID, Name, Department)\` and \`Departments(Department, DeptHead)\`."
               }
             ],
             keyPoints: ["Reduces redundancy", "Prevents anomalies", "BCNF is stricter than 3NF"],

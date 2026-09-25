@@ -143,10 +143,10 @@ A variable is a named memory location.
           ],
           mcqs: [
             {
-              question: 'What is the size of the `int` data type in Java?',
+              question: 'What is the size of the \`int\` data type in Java?',
               options: ['2 bytes', '4 bytes', '8 bytes', 'Depends on OS'],
               correctIndex: 1,
-              explanation: 'In Java, an `int` is always 4 bytes (32 bits), regardless of the operating system.'
+              explanation: 'In Java, an \`int\` is always 4 bytes (32 bits), regardless of the operating system.'
             },
             {
               question: 'Which of these is NOT a primitive data type in Java?',
@@ -194,10 +194,10 @@ Control flow statements direct the order in which code executes in a Java progra
 - **break:** Exits the loop or switch entirely.
 - **continue:** Skips the current iteration and moves to the next one.`,
           keyPoints: [
-            'Use `for` loop when iterations are fixed.',
-            'Use `while` loop when iterations depend on a condition.',
-            '`do-while` loop executes at least once.',
-            '`switch` can evaluate Strings starting from Java 7.'
+            'Use \`for\` loop when iterations are fixed.',
+            'Use \`while\` loop when iterations depend on a condition.',
+            '\`do-while\` loop executes at least once.',
+            '\`switch\` can evaluate Strings starting from Java 7.'
           ],
           examples: [
             {
@@ -275,7 +275,7 @@ If you try to access an index that is negative or greater than or equal to the s
             'Arrays in Java are dynamically allocated on the heap.',
             'Array sizes are fixed upon creation.',
             'Jagged arrays are multidimensional arrays with varying column lengths.',
-            'Use `array.length` to get the size.'
+            'Use \`array.length\` to get the size.'
           ],
           examples: [
             {
@@ -309,10 +309,10 @@ If you try to access an index that is negative or greater than or equal to the s
               explanation: 'A jagged array is an array of arrays where each sub-array can have a different length.'
             },
             {
-              question: 'How do you find the length of an array named `arr`?',
+              question: 'How do you find the length of an array named \`arr\`?',
               options: ['arr.length()', 'arr.size', 'arr.length', 'arr.size()'],
               correctIndex: 2,
-              explanation: 'In Java, arrays have a property named `length` (no parentheses).'
+              explanation: 'In Java, arrays have a property named \`length\` (no parentheses).'
             },
             {
               question: 'What exception is thrown if you access an invalid array index?',
@@ -379,7 +379,7 @@ public class Main {
     }
 }`,
               output: 'Toyota is driving at 120 km/h.',
-              explanation: 'We defined a Car class with properties brand and speed. Then we created an object `myCar`, set its properties, and invoked its behavior.'
+              explanation: 'We defined a Car class with properties brand and speed. Then we created an object \`myCar\`, set its properties, and invoked its behavior.'
             }
           ],
           mcqs: [
@@ -393,7 +393,7 @@ public class Main {
               question: 'Which keyword is used to allocate memory for an object?',
               options: ['alloc', 'create', 'new', 'instance'],
               correctIndex: 2,
-              explanation: 'The `new` keyword is used for memory allocation and object creation.'
+              explanation: 'The \`new\` keyword is used for memory allocation and object creation.'
             },
             {
               question: 'A class is a _______ entity, while an object is a ________ entity.',
@@ -515,7 +515,7 @@ If Class A and Class B both have a method named \`msg()\`, and Class C calls \`m
 ### IS-A Relationship
 Inheritance represents an IS-A relationship. For example, a Dog IS-A Animal.`,
           keyPoints: [
-            'Keyword `extends` is used for inheritance.',
+            'Keyword \`extends\` is used for inheritance.',
             'Promotes Code Reusability and Method Overriding (Run-time Polymorphism).',
             'Constructors and private members are NOT inherited.',
             'Multiple inheritance is not supported through classes to avoid ambiguity.'
@@ -551,7 +551,7 @@ public class Main {
               question: 'Which keyword is used to inherit a class?',
               options: ['implements', 'inherits', 'extends', 'super'],
               correctIndex: 2,
-              explanation: 'The `extends` keyword is used for class inheritance in Java.'
+              explanation: 'The \`extends\` keyword is used for class inheritance in Java.'
             },
             {
               question: 'Which type of inheritance is NOT supported by Java classes?',
@@ -678,10 +678,10 @@ Abstraction focuses on *what* the object does instead of *how* it does it. It is
 2. **Methods:** Abstract class has both; Interface mainly has abstract methods.
 3. **Variables:** Abstract class can have instance variables; Interface only has static final variables.`,
           keyPoints: [
-            'Abstract classes cannot be instantiated using `new`.',
+            'Abstract classes cannot be instantiated using \`new\`.',
             'Interfaces are used to achieve multiple inheritance.',
-            'Interface variables are `public static final` by default.',
-            'Interface methods are `public abstract` by default.'
+            'Interface variables are \`public static final\` by default.',
+            'Interface methods are \`public abstract\` by default.'
           ],
           examples: [
             {
@@ -735,7 +735,7 @@ public class Main {
               question: 'Which keyword is used by a class to use an interface?',
               options: ['extends', 'inherits', 'implements', 'uses'],
               correctIndex: 2,
-              explanation: 'A class `implements` an interface to define its abstract methods.'
+              explanation: 'A class \`implements\` an interface to define its abstract methods.'
             }
           ]
         }
@@ -769,7 +769,7 @@ Calling one constructor from another constructor of the same class is called con
           keyPoints: [
             'Constructors do not return any value.',
             'If you write a parameterized constructor, the compiler WILL NOT provide a default constructor.',
-            '`this()` is used to call another constructor in the same class.',
+            '\`this()\` is used to call another constructor in the same class.',
             'Constructor chaining prevents duplicate code.'
           ],
           examples: [
@@ -799,7 +799,7 @@ public class Main {
     }
 }`,
               output: 'Parameterized constructor called for Unknown\nDefault constructor called.',
-              explanation: 'Creating s1 triggers the default constructor. The default constructor first calls `this("Unknown", 18)`, jumping to the parameterized constructor. After the parameterized constructor finishes, the default constructor completes.'
+              explanation: 'Creating s1 triggers the default constructor. The default constructor first calls \`this("Unknown", 18)\`, jumping to the parameterized constructor. After the parameterized constructor finishes, the default constructor completes.'
             }
           ],
           mcqs: [
@@ -819,14 +819,14 @@ public class Main {
               question: 'What is used to call another constructor in the SAME class?',
               options: ['super()', 'this()', 'new()', 'parent()'],
               correctIndex: 1,
-              explanation: '`this()` is used for constructor chaining within the same class.'
+              explanation: '\`this()\` is used for constructor chaining within the same class.'
             }
           ]
         },
         {
           id: 'this-super',
           title: 'this and super keywords',
-          simpleExplanation: '`this` refers to the CURRENT object. `super` refers to the PARENT class object. They are crucial for resolving naming conflicts and calling parent class methods/constructors.',
+          simpleExplanation: '\`this\` refers to the CURRENT object. \`super\` refers to the PARENT class object. They are crucial for resolving naming conflicts and calling parent class methods/constructors.',
           detailedExplanation: `## \`this\` Keyword
 \`this\` is a reference variable that refers to the current object.
 
@@ -847,10 +847,10 @@ public class Main {
 ### Important Note on Constructors
 Whenever you create an object of a child class, the compiler automatically inserts \`super()\` as the first line of the child constructor, ensuring the parent class is initialized first.`,
           keyPoints: [
-            '`this` = current object; `super` = parent object.',
-            '`this()` and `super()` must be the FIRST statement in a constructor.',
-            'You cannot use `this()` and `super()` together in the same constructor block.',
-            'Both keywords cannot be used in `static` contexts.'
+            '\`this\` = current object; \`super\` = parent object.',
+            '\`this()\` and \`super()\` must be the FIRST statement in a constructor.',
+            'You cannot use \`this()\` and \`super()\` together in the same constructor block.',
+            'Both keywords cannot be used in \`static\` contexts.'
           ],
           examples: [
             {
@@ -888,26 +888,26 @@ public class Main {
               question: 'Which keyword is used to access an overridden method of the parent class?',
               options: ['this', 'super', 'parent', 'base'],
               correctIndex: 1,
-              explanation: '`super.methodName()` allows you to call the parent\'s version of an overridden method.'
+              explanation: '\`super.methodName()\` allows you to call the parent\'s version of an overridden method.'
             },
             {
-              question: 'Where must `super()` or `this()` be placed inside a constructor?',
+              question: 'Where must \`super()\` or \`this()\` be placed inside a constructor?',
               options: ['Anywhere', 'Last line', 'First line', 'Outside the constructor'],
               correctIndex: 2,
-              explanation: 'Calls to `this()` or `super()` must be the very first statement in a constructor.'
+              explanation: 'Calls to \`this()\` or \`super()\` must be the very first statement in a constructor.'
             },
             {
-              question: 'Can `this` be used inside a static method?',
+              question: 'Can \`this\` be used inside a static method?',
               options: ['Yes', 'No', 'Only if the class is public', 'Only in Java 8+'],
               correctIndex: 1,
-              explanation: 'Static methods belong to the class, not instances. `this` refers to an instance, so it cannot be used in a static context.'
+              explanation: 'Static methods belong to the class, not instances. \`this\` refers to an instance, so it cannot be used in a static context.'
             }
           ]
         },
         {
           id: 'static-final',
           title: 'static and final keywords',
-          simpleExplanation: '`static` means "belongs to the class, not individual objects." `final` means "cannot be changed." A final variable is a constant, a final method cannot be overridden, a final class cannot be inherited.',
+          simpleExplanation: '\`static\` means "belongs to the class, not individual objects." \`final\` means "cannot be changed." A final variable is a constant, a final method cannot be overridden, a final class cannot be inherited.',
           detailedExplanation: `## The \`static\` Keyword
 Used for memory management. If you apply static to a variable or method, it belongs to the class rather than instances of the class.
 
@@ -1003,9 +1003,9 @@ An Exception is an abnormal condition that arises during the execution of a prog
 - **throws:** Used in a method signature to declare that this method might throw an exception.`,
           keyPoints: [
             'Checked exceptions MUST be handled, Unchecked are optional.',
-            '`finally` block ALWAYS executes, except if `System.exit()` is called.',
+            '\`finally\` block ALWAYS executes, except if \`System.exit()\` is called.',
             'You can have multiple catch blocks for a single try block.',
-            '`throw` is for an object; `throws` is for a class type in method signature.'
+            '\`throw\` is for an object; \`throws\` is for a class type in method signature.'
           ],
           examples: [
             {
@@ -1044,7 +1044,7 @@ An Exception is an abnormal condition that arises during the execution of a prog
               question: 'What is the keyword used to explicitly generate an exception?',
               options: ['throw', 'throws', 'catch', 'finally'],
               correctIndex: 0,
-              explanation: 'The `throw` keyword is used to explicitly throw a specific exception object.'
+              explanation: 'The \`throw\` keyword is used to explicitly throw a specific exception object.'
             }
           ]
         },
@@ -1072,9 +1072,9 @@ A Thread is a lightweight sub-process, the smallest unit of processing. Multithr
 ### Synchronization
 When multiple threads try to access a shared resource simultaneously, it can lead to inconsistent data. **Synchronization** ensures that only one thread can access the resource at a time using the \`synchronized\` keyword.`,
           keyPoints: [
-            'Never call `run()` directly. Always call `start()` to spawn a new thread.',
+            'Never call \`run()\` directly. Always call \`start()\` to spawn a new thread.',
             'Implementing Runnable is better design as it leaves room to extend another class.',
-            '`Thread.sleep(ms)` pauses the thread.',
+            '\`Thread.sleep(ms)\` pauses the thread.',
             'Synchronization prevents thread interference but can cause Deadlocks.'
           ],
           examples: [
@@ -1109,19 +1109,19 @@ public class Main {
               question: 'Which method must be implemented when using the Runnable interface?',
               options: ['start()', 'run()', 'stop()', 'execute()'],
               correctIndex: 1,
-              explanation: 'The Runnable interface has a single abstract method named `run()`.'
+              explanation: 'The Runnable interface has a single abstract method named \`run()\`.'
             },
             {
-              question: 'What happens if you call `run()` directly instead of `start()`?',
+              question: 'What happens if you call \`run()\` directly instead of \`start()\`?',
               options: ['Compilation error', 'Runtime exception', 'It behaves like a normal method call, no new thread is created', 'It works the same way'],
               correctIndex: 2,
-              explanation: 'Calling `run()` directly executes it on the current thread, defeating the purpose of multithreading.'
+              explanation: 'Calling \`run()\` directly executes it on the current thread, defeating the purpose of multithreading.'
             },
             {
               question: 'Which keyword prevents multiple threads from accessing a block of code simultaneously?',
               options: ['volatile', 'synchronized', 'lock', 'static'],
               correctIndex: 1,
-              explanation: 'The `synchronized` keyword acts as a lock, ensuring thread safety.'
+              explanation: 'The \`synchronized\` keyword acts as a lock, ensuring thread safety.'
             }
           ]
         }
@@ -1158,7 +1158,7 @@ You can traverse collections using:
           keyPoints: [
             'Collections only store Objects (Reference types), not primitive types. (Use Integer instead of int).',
             'ArrayList is good for read-heavy operations.',
-            'HashSet uniqueness is determined by `hashCode()` and `equals()` methods.',
+            'HashSet uniqueness is determined by \`hashCode()\` and \`equals()\` methods.',
             'TreeSet is sorted naturally.'
           ],
           examples: [
@@ -1199,7 +1199,7 @@ public class Main {
               explanation: 'TreeSet implements SortedSet and automatically sorts elements.'
             },
             {
-              question: 'Can a Collection store primitive types like `int`?',
+              question: 'Can a Collection store primitive types like \`int\`?',
               options: ['Yes', 'No', 'Only in Java 8+', 'Only Lists can'],
               correctIndex: 1,
               explanation: 'Collections can only store Objects. Primitives are automatically converted to their Wrapper classes (Autoboxing) e.g., int to Integer.'
@@ -1230,7 +1230,7 @@ A Map contains values on the basis of key-value pairs. It does NOT inherit from 
             'Maps store Key-Value pairs.',
             'Keys cannot be duplicated, values can.',
             'HashMap is the most commonly used Map implementation.',
-            'Iterate over a Map using `map.keySet()` or `map.entrySet()`.'
+            'Iterate over a Map using \`map.keySet()\` or \`map.entrySet()\`.'
           ],
           examples: [
             {
@@ -1263,7 +1263,7 @@ public class Main {
               explanation: 'Map is a separate branch in the Collections Framework hierarchy; it does not extend Collection.'
             },
             {
-              question: 'What happens if you use `put()` with an existing key in a HashMap?',
+              question: 'What happens if you use \`put()\` with an existing key in a HashMap?',
               options: ['It throws an exception', 'It creates a duplicate entry', 'It ignores the new entry', 'It replaces the old value with the new value'],
               correctIndex: 3,
               explanation: 'Maps do not allow duplicate keys. The existing value is overwritten.'
@@ -1329,7 +1329,7 @@ public class Main {
     }
 }`,
               output: 'Read from file: Hello, File I/O in Java!',
-              explanation: 'The code creates a file, writes a string to it, and then reads that string back. Try-with-resources `( ... )` ensures files are closed.'
+              explanation: 'The code creates a file, writes a string to it, and then reads that string back. Try-with-resources \`( ... )\` ensures files are closed.'
             }
           ],
           mcqs: [
@@ -1337,7 +1337,7 @@ public class Main {
               question: 'Which class is best suited for reading text files line-by-line?',
               options: ['FileInputStream', 'FileReader', 'BufferedReader', 'ScannerStream'],
               correctIndex: 2,
-              explanation: 'BufferedReader has a handy `readLine()` method and provides performance improvements via buffering.'
+              explanation: 'BufferedReader has a handy \`readLine()\` method and provides performance improvements via buffering.'
             },
             {
               question: 'Which stream should be used to read an image file?',
@@ -1386,7 +1386,7 @@ In Java, a \`String\` is an object that represents a sequence of characters.
 - \`length()\`, \`charAt(int index)\`, \`substring(int begin)\`, \`toLowerCase()\`, \`equals()\`, \`trim()\`.`,
           keyPoints: [
             'Strings are strictly immutable in Java.',
-            '`==` checks memory reference (address), `equals()` checks actual content.',
+            '\`==\` checks memory reference (address), \`equals()\` checks actual content.',
             'StringBuilder is faster than StringBuffer.',
             'Use StringBuilder when performing many string concatenations in a loop.'
           ],
@@ -1407,7 +1407,7 @@ In Java, a \`String\` is an object that represents a sequence of characters.
     }
 }`,
               output: 'String: Java\nStringBuilder: Java 8',
-              explanation: 'The String `concat` result is lost because it wasn\'t reassigned (`s = s.concat(...)`). StringBuilder modifies itself directly.'
+              explanation: 'The String \`concat\` result is lost because it wasn\'t reassigned (\`s = s.concat(...)\`). StringBuilder modifies itself directly.'
             }
           ],
           mcqs: [
@@ -1427,7 +1427,7 @@ In Java, a \`String\` is an object that represents a sequence of characters.
               question: 'Which operator/method compares the ACTUAL text content of two Strings?',
               options: ['==', '=', 'equals()', 'compareTo()'],
               correctIndex: 2,
-              explanation: 'The `equals()` method compares the character sequence. The `==` operator compares memory addresses.'
+              explanation: 'The \`equals()\` method compares the character sequence. The \`==\` operator compares memory addresses.'
             }
           ]
         },
@@ -1457,7 +1457,7 @@ A Stream is a pipeline of computational operations applied to a source (like a C
             'Lambda expressions provide implementation for Functional Interfaces.',
             'A Stream pipeline must have exactly one Terminal operation to execute.',
             'Streams do not mutate the original collection.',
-            '`filter` takes a condition (Predicate) and keeps matching items.'
+            '\`filter\` takes a condition (Predicate) and keeps matching items.'
           ],
           examples: [
             {
@@ -1493,13 +1493,13 @@ public class Main {
               question: 'What is the syntax for a lambda expression?',
               options: ['parameters => body', 'parameters -> body', 'parameters >> body', 'body -> parameters'],
               correctIndex: 1,
-              explanation: 'Java uses the arrow `->` for lambda expressions.'
+              explanation: 'Java uses the arrow \`->\` for lambda expressions.'
             },
             {
               question: 'Which of the following is a Terminal Operation in the Stream API?',
               options: ['filter()', 'map()', 'sorted()', 'collect()'],
               correctIndex: 3,
-              explanation: '`collect()` produces a final result (like a List), while the others return another Stream (Intermediate).'
+              explanation: '\`collect()\` produces a final result (like a List), while the others return another Stream (Intermediate).'
             }
           ]
         }

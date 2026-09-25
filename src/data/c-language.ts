@@ -39,7 +39,7 @@ int main() {
     printf("Hello, World!\\n");
     printf("Welcome to C Programming\\n");
     return 0;
-}`, output: `Hello, World!
+}\`, output: \`Hello, World!
 Welcome to C Programming` },
             { title: "Program with Comments and Variables", problem: "Create a program that uses comments, variables, and formatted output.", explanation: "Comments explain code. Variables store data. printf with format specifiers (%d, %s) displays variable values.", code: `#include <stdio.h>
 
@@ -57,7 +57,7 @@ int main() {
     printf("Grade: %c\\n", grade);
 
     return 0;  // Success
-}`, output: `Age: 20
+}\`, output: \`Age: 20
 CGPA: 8.5
 Grade: A` }
           ],
@@ -121,7 +121,7 @@ int main() {
     printf("Size of char: %lu bytes\\n", sizeof(char));
 
     return 0;
-}`, output: `Age: 20
+}\`, output: \`Age: 20
 CGPA: 9.5
 Pi: 3.14159
 Grade: A
@@ -145,7 +145,7 @@ int main() {
     printf("%d / %d = %.2f\\n", num1, num2, result);
 
     return 0;
-}`, output: `Enter two numbers: 10 3
+}\`, output: \`Enter two numbers: 10 3
 10 + 3 = 13
 10 / 3 = 3.33` }
           ],
@@ -217,7 +217,7 @@ int main() {
     printf("  5 << 1 = %d\\n", 5 << 1);
 
     return 0;
-}`, output: `Arithmetic:
+}\`, output: \`Arithmetic:
   10 + 3 = 13
   10 / 3 = 3
   10 % 3 = 1
@@ -304,7 +304,7 @@ int main() {
     }
 
     return 0;
-}`, output: `Grade: A
+}\`, output: \`Grade: A
 
 Counting 1 to 5: 1 2 3 4 5
 
@@ -395,7 +395,7 @@ void swap(int *a, int *b) {
     int temp = *a;
     *a = *b;
     *b = temp;
-}`, output: `3 + 5 = 8
+}\`, output: \`3 + 5 = 8
 5! = 120
 Before swap: x=10, y=20
 After swap: x=20, y=10` }
@@ -468,7 +468,7 @@ int main() {
     printf("Compare 'abc' vs 'abd': %d\\n", strcmp("abc", "abd"));
 
     return 0;
-}`, output: `Marks: 85 92 78 95 88
+}\`, output: \`Marks: 85 92 78 95 88
 Average: 87.6
 
 Name: Rahul
@@ -538,7 +538,7 @@ int main() {
     }
 
     return 0;
-}`, output: `Value of num: 42
+}\`, output: \`Value of num: 42
 Address of num: 0x7ffd5c3e4a04
 ptr stores: 0x7ffd5c3e4a04
 Value at ptr: 42
@@ -624,7 +624,7 @@ int main() {
     }
 
     return 0;
-}`, output: `Student Records:
+}\`, output: \`Student Records:
 Name: Rahul, Roll: 101, GPA: 8.5
 Name: Priya, Roll: 102, GPA: 9.2
 

@@ -59,7 +59,7 @@ STANDARD DEVIATION:
 Differences from mean: -4.29, -2.29, -1.29, -1.29, 0.71, 2.71, 5.71
 Squared: 18.40, 5.24, 1.66, 1.66, 0.50, 7.34, 32.60
 Variance = 67.40/7 = 9.63
-SD = √9.63 = 3.10`, output: `Mean = 9.29
+SD = √9.63 = 3.10\`, output: \`Mean = 9.29
 Median = 8
 Mode = 8
 Standard Deviation = 3.10` },
@@ -73,7 +73,7 @@ Median = 30 ← Unchanged!
 
 Conclusion: Use Median when outliers exist.
 Examples: Income data, house prices, test scores
-with one student scoring 0.`, output: `Without outlier: Mean=30, Median=30
+with one student scoring 0.\`, output: \`Without outlier: Mean=30, Median=30
 With outlier: Mean=120, Median=30
 Median is more robust to outliers!` }
           ],
@@ -123,7 +123,7 @@ P(NOT 4)       = 1 - 1/6 = 5/6
 
 P(even OR >4):
 P(even) = 3/6, P(>4) = 2/6, P(even AND >4) = 1/6
-= 3/6 + 2/6 - 1/6 = 4/6 = 2/3`, output: `P(4) = 0.167
+= 3/6 + 2/6 - 1/6 = 4/6 = 2/3\`, output: \`P(4) = 0.167
 P(even) = 0.5
 P(not 4) = 0.833
 P(even or >4) = 0.667` },
@@ -139,7 +139,7 @@ P(Positive) = P(Pos|Dis)×P(Dis) + P(Pos|NoDis)×P(NoDis)
 = 0.99 × 0.01 + 0.01 × 0.99
 = 0.0099 + 0.0099 = 0.0198
 
-P(Disease | Positive) = 0.0099 / 0.0198 = 0.5`, output: `Answer: 50%!
+P(Disease | Positive) = 0.0099 / 0.0198 = 0.5\`, output: \`Answer: 50%!
 
 Even with a 99% accurate test, a positive result
 means only 50% chance of disease when it's rare (1%).
@@ -230,7 +230,7 @@ Accounts: Salary (Nominal) & Cash (Real)
 Entry:
   Salary A/c       Dr  ₹15,000
     To Cash A/c              ₹15,000
-  (Salary paid to employees)`, output: `All entries balance: Total Dr = Total Cr
+  (Salary paid to employees)\`, output: \`All entries balance: Total Dr = Total Cr
 Furniture: Dr 10,000 = Cr 10,000
 Rent: Dr 5,000 = Cr 5,000
 Salary: Dr 15,000 = Cr 15,000` },
@@ -255,7 +255,7 @@ Quick Test:
 
   "Received loan from bank ₹50,000"
   → Cash (Real - coming in) → DEBIT
-  → Bank (Personal - giver) → CREDIT`, output: `Always ask:
+  → Bank (Personal - giver) → CREDIT\`, output: \`Always ask:
 1. What accounts are involved?
 2. What TYPE is each account?
 3. Apply the golden rule for that type.` }

@@ -42,7 +42,7 @@ export const digitalElectronicsSubject: Subject = {
 3  ÷ 2 = 1  remainder 1
 1  ÷ 2 = 0  remainder 1
 
-Read remainders bottom to top: 11001`, output: `25₁₀ = 11001₂
+Read remainders bottom to top: 11001\`, output: \`25₁₀ = 11001₂
 
 Verify: 1×16 + 1×8 + 0×4 + 0×2 + 1×1 = 16+8+1 = 25 ✓` },
             { title: "Binary to Hex Conversion", problem: "Convert binary 11010110 to hexadecimal.", explanation: "Group binary digits into groups of 4 from the right, then convert each group.", code: `Binary:  1101  0110
@@ -50,7 +50,7 @@ Verify: 1×16 + 1×8 + 0×4 + 0×2 + 1×1 = 16+8+1 = 25 ✓` },
 Hex:     D     6
 
 1101 = 8+4+0+1 = 13 = D
-0110 = 0+4+2+0 = 6  = 6`, output: `11010110₂ = D6₁₆` }
+0110 = 0+4+2+0 = 6  = 6\`, output: \`11010110₂ = D6₁₆` }
           ],
           keyPoints: [
             "Binary (base 2), Octal (base 8), Decimal (base 10), Hexadecimal (base 16)",
@@ -103,7 +103,7 @@ A | B | Y                  A | B | Y
 0 | 0 | 0                  0 | 0 | 1
 0 | 1 | 1                  0 | 1 | 1
 1 | 0 | 1                  1 | 0 | 1
-1 | 1 | 0                  1 | 1 | 0`, output: `AND: Both must be 1 → output 1
+1 | 1 | 0                  1 | 1 | 0\`, output: \`AND: Both must be 1 → output 1
 OR: At least one 1 → output 1
 XOR: Inputs must differ → output 1
 NAND: Opposite of AND` }
@@ -156,7 +156,7 @@ Step 3: A·1 = A (Identity law)
 Y = A + A'·B
 
 Step 4: Apply absorption: A + A'·B = A + B
-Y = A + B`, output: `Simplified: Y = A + B
+Y = A + B\`, output: \`Simplified: Y = A + B
 
 This means a complex 3-term expression
 reduces to just an OR gate!` },
@@ -169,7 +169,7 @@ Right: 0 + 0 + 1 = 1  ✓
 Another example: (A+B)' = A'·B'
 Verify with A=0, B=1:
 Left:  (0+1)' = (1)' = 0
-Right: 1·0 = 0  ✓`, output: `(A·B·C)' = A' + B' + C'
+Right: 1·0 = 0  ✓\`, output: \`(A·B·C)' = A' + B' + C'
 (A+B+C)' = A'·B'·C'
 Both theorems verified!` }
           ],
@@ -221,7 +221,7 @@ Groups:
 - Column B=1: {m1, m3} → B (A changes, B stays 1)
 - Row A=1: {m2, m3} → A (B changes, A stays 1)
 
-F = A + B`, output: `F(A,B) = Σm(1,2,3) = A + B
+F = A + B\`, output: \`F(A,B) = Σm(1,2,3) = A + B
 
 Without K-Map: A'B + AB' + AB
 With K-Map: A + B  (much simpler!)` }
@@ -277,7 +277,7 @@ Sum = A XOR B
 Carry = A AND B
 
 Example: 1 + 1 = 10 (binary)
-Sum = 0, Carry = 1 → result is "10"`, output: `Half Adder needs only 2 gates: XOR + AND
+Sum = 0, Carry = 1 → result is "10"\`, output: \`Half Adder needs only 2 gates: XOR + AND
 Full Adder extends this with Carry-in input` },
             { title: "4:1 Multiplexer", problem: "Select one of 4 inputs using 2 selection lines.", explanation: "A MUX is like a rotary switch — selection lines choose which input passes through.", code: `4:1 MUX with Select lines S1, S0:
 
@@ -289,7 +289,7 @@ S1 | S0 | Output
 
 Boolean: Y = S1'·S0'·I₀ + S1'·S0·I₁ + S1·S0'·I₂ + S1·S0·I₃
 
-Example: If S1=1, S0=0, and I₂=1 → Output = 1`, output: `4:1 MUX: 4 data inputs, 2 select lines, 1 output
+Example: If S1=1, S0=0, and I₂=1 → Output = 1\`, output: \`4:1 MUX: 4 data inputs, 2 select lines, 1 output
 Used in data routing, memory addressing, function generation` }
           ],
           keyPoints: [

@@ -20,20 +20,37 @@ export const sem3CoanmpMaster: Subject = {
           simpleExplanation: 'Computers use different number bases like Binary (base 2), Octal (base 8), and Hexadecimal (base 16) instead of our usual Decimal (base 10) system.',
           detailedExplanation: `
 ## What are Number Systems?
-A number system is a way to represent numbers. We humans use the Decimal system (base 10) because we have 10 fingers. But computers use switches that are either ON or OFF, so they use the Binary system (base 2).
+A number system is a way to represent numbers. We humans use the Decimal system (base 10). But computers use switches that are either ON or OFF, so they use the Binary system (base 2).
 
-### Types of Number Systems
-1. **Decimal (Base 10):** Uses digits 0-9. Example: 145
-2. **Binary (Base 2):** Uses digits 0 and 1. Example: 1011
-3. **Octal (Base 8):** Uses digits 0-7. Example: 75
-4. **Hexadecimal (Base 16):** Uses digits 0-9 and A-F (where A=10, B=11, C=12, D=13, E=14, F=15). Example: 1A3
+> [!IMPORTANT] **MEMORIZE:** 
+> - Decimal: Base 10 (0-9)
+> - Binary: Base 2 (0-1)
+> - Octal: Base 8 (0-7)
+> - Hexadecimal: Base 16 (0-9, A-F)
+
+> [!NOTE] **DEV BRAIN:** 
+> Think of number systems like text encodings (UTF-8, ASCII). It's the same underlying data, just represented differently for different hardware/software requirements. Hexadecimal is like base64 for binaries—it compresses long binary strings into shorter, human-readable formats!
+
+### Comparisons
+| System | Base | Digits Used | Example |
+|---|---|---|---|
+| Binary | 2 | 0, 1 | 1011 |
+| Octal | 8 | 0-7 | 75 |
+| Decimal | 10 | 0-9 | 145 |
+| Hexadecimal| 16 | 0-9, A-F | 1A3 |
 
 ### Conversions
 **1. Decimal to Binary:**
 Divide the decimal number by 2 repeatedly and note the remainders. Read the remainders from bottom to top.
 
+> [!TIP] **EXAM TIP:**
+> Always show your division steps clearly in the exam. Write the final answer with a small subscript 2, like $(1101)_2$. 
+
 **2. Binary to Decimal:**
 Multiply each bit by 2 raised to the power of its position (starting from 0 on the right) and add them up.
+
+> [!WARNING] **TRAP:**
+> Don't forget that position indices start at **0**, not 1! The rightmost bit is multiplied by $2^0$, not $2^1$.
 
 ### Python Code for Conversions
 \`\`\`python
@@ -44,6 +61,17 @@ print("Octal:", oct(decimal_num))  # Output: 0o31
 print("Hexadecimal:", hex(decimal_num)) # Output: 0x19
 \`\`\`
 `,
+          richContent: `
+### Step-by-Step Trace: Decimal 13 to Binary
+| Step | Operation | Quotient | Remainder |
+|---|---|---|---|
+| 1 | 13 / 2 | 6 | **1** |
+| 2 | 6 / 2 | 3 | **0** |
+| 3 | 3 / 2 | 1 | **1** |
+| 4 | 1 / 2 | 0 | **1** |
+
+Read remainders bottom-up: **1101**
+          `,
           shortNotes: 'Decimal = Base 10, Binary = Base 2, Octal = Base 8, Hexadecimal = Base 16. Convert decimal to other bases by repeated division.',
           examples: [
             {
@@ -59,24 +87,9 @@ print("Hexadecimal:", hex(decimal_num)) # Output: 0x19
             'Python provides built-in functions like bin(), oct(), and hex() for conversions.'
           ],
           mcqs: [
-            {
-              question: 'Which base is used for Hexadecimal numbers?',
-              options: ['2', '8', '10', '16'],
-              correctOptionIndex: 3,
-              explanation: 'Hexadecimal uses base 16.'
-            },
-            {
-              question: 'What is the binary representation of decimal 5?',
-              options: ['101', '111', '100', '110'],
-              correctOptionIndex: 0,
-              explanation: '5/2=2 rem 1, 2/2=1 rem 0, 1/2=0 rem 1 -> 101'
-            },
-            {
-              question: 'Which symbol represents 14 in Hexadecimal?',
-              options: ['C', 'D', 'E', 'F'],
-              correctOptionIndex: 2,
-              explanation: 'A=10, B=11, C=12, D=13, E=14.'
-            }
+            { question: 'Which base is used for Hexadecimal numbers?', options: ['2', '8', '10', '16'], correctOptionIndex: 3, explanation: 'Hexadecimal uses base 16.' },
+            { question: 'What is the binary representation of decimal 5?', options: ['101', '111', '100', '110'], correctOptionIndex: 0, explanation: '5/2=2 rem 1, 2/2=1 rem 0, 1/2=0 rem 1 -> 101' },
+            { question: 'Which symbol represents 14 in Hexadecimal?', options: ['C', 'D', 'E', 'F'], correctOptionIndex: 2, explanation: 'A=10, B=11, C=12, D=13, E=14.' }
           ]
         },
         {
@@ -85,104 +98,104 @@ print("Hexadecimal:", hex(decimal_num)) # Output: 0x19
           simpleExplanation: 'How computers store numbers with decimal points (real numbers) using a specific format called floating-point representation.',
           detailedExplanation: `
 ## Floating Point Representation
-Computers cannot store infinite real numbers. They use floating-point representation, which is similar to scientific notation (e.g., $1.23 \\times 10^3$).
+Computers cannot store infinite real numbers. They use floating-point representation, which is similar to scientific notation.
 
-In a computer, a floating-point number is divided into three parts:
-1. **Sign bit:** 1 bit (0 for positive, 1 for negative)
-2. **Exponent:** Represents the power of the base.
-3. **Mantissa (or Significand):** The actual digits of the number.
+> [!IMPORTANT] **MEMORIZE:**
+> Floating-point structure = Sign bit + Exponent + Mantissa (Significand).
+
+> [!NOTE] **DEV BRAIN:**
+> Think of Floating-Point like string interpolation where the string has a fixed length. You allocate 1 char for sign, 8 chars for the power (exponent), and 23 chars for the actual value (mantissa). If your number needs more chars, it gets cut off (precision loss!).
 
 ### Normalization
-A floating-point number is normalized if the leading digit of the mantissa is non-zero. For example, $0.123 \\times 10^2$ is normalized, but $0.0123 \\times 10^3$ is not. Normalization maximizes the precision of the stored number.
+A floating-point number is normalized if the leading digit of the mantissa is non-zero. Normalization maximizes the precision of the stored number.
 
-### IEEE 754 Standard
-The most common standard for floating-point representation.
-- **Single Precision (32-bit):** 1 sign bit, 8 exponent bits, 23 mantissa bits.
-- **Double Precision (64-bit):** 1 sign bit, 11 exponent bits, 52 mantissa bits.
+> [!TIP] **EXAM TIP:**
+> For normalization questions, always shift the decimal point until exactly one non-zero digit is to the left of the decimal, and adjust the exponent accordingly.
+
+### IEEE 754 Standard Comparison
+| Precision | Total Bits | Sign Bits | Exponent Bits | Mantissa Bits |
+|---|---|---|---|---|
+| Single (Float) | 32 | 1 | 8 | 23 |
+| Double (Double) | 64 | 1 | 11 | 52 |
+
+> [!WARNING] **TRAP:**
+> Don't confuse the Mantissa length for the whole size. Single precision is 32 bits TOTAL, not a 32-bit mantissa!
 `,
+          richContent: `
+### Example of Floating Point Storage
+Storing $1.23 \\times 10^3$:
+- Sign: Positive (0)
+- Exponent: Encodes the '3'
+- Mantissa: Encodes '123'
+          `,
           shortNotes: 'Real numbers are stored as floating-point numbers: Sign, Exponent, and Mantissa. IEEE 754 is the standard.',
           examples: [
-            {
-              title: 'Scientific Notation',
-              description: 'The number 123.45 is stored as 0.12345 * 10^3 in normalized decimal floating point.'
-            }
+            { title: 'Scientific Notation', description: 'The number 123.45 is stored as 0.12345 * 10^3 in normalized decimal floating point.' }
           ],
           keyPoints: [
             'Real numbers use floating-point representation.',
             'It consists of a sign, exponent, and mantissa.',
             'Normalization ensures maximum precision.',
-            'IEEE 754 standard defines single (32-bit) and double (64-bit) precision.'
+            'IEEE 754 standard defines single and double precision.'
           ],
           mcqs: [
-            {
-              question: 'In floating-point representation, what part holds the actual digits of the number?',
-              options: ['Sign', 'Exponent', 'Mantissa', 'Base'],
-              correctOptionIndex: 2,
-              explanation: 'The mantissa holds the significant digits.'
-            },
-            {
-              question: 'How many bits are used for the exponent in single precision IEEE 754?',
-              options: ['8', '11', '23', '52'],
-              correctOptionIndex: 0,
-              explanation: 'Single precision uses 8 bits for the exponent.'
-            },
-            {
-              question: 'What is the purpose of normalization?',
-              options: ['Save memory', 'Maximize precision', 'Increase speed', 'None of the above'],
-              correctOptionIndex: 1,
-              explanation: 'Normalization maximizes the number of significant digits stored, thus maximizing precision.'
-            }
+            { question: 'In floating-point representation, what part holds the actual digits of the number?', options: ['Sign', 'Exponent', 'Mantissa', 'Base'], correctOptionIndex: 2, explanation: 'The mantissa holds the significant digits.' },
+            { question: 'How many bits are used for the exponent in single precision IEEE 754?', options: ['8', '11', '23', '52'], correctOptionIndex: 0, explanation: 'Single precision uses 8 bits for the exponent.' },
+            { question: 'What is the purpose of normalization?', options: ['Save memory', 'Maximize precision', 'Increase speed', 'None'], correctOptionIndex: 1, explanation: 'Normalization maximizes the number of significant digits stored.' }
           ]
         },
         {
           id: 'types-of-errors',
-          title: 'Types of Errors (Absolute, Relative, Round-off, Truncation)',
+          title: 'Types of Errors',
           simpleExplanation: 'Numerical methods give approximate answers. Errors tell us how far our approximate answer is from the exact true answer.',
           detailedExplanation: `
 ## Types of Errors in Numerical Computing
 
-Because computers have limited memory and numerical methods are approximations, we always encounter errors. 
+> [!IMPORTANT] **MEMORIZE:**
+> - Absolute Error = $|True - Approx|$
+> - Relative Error = $\\frac{|True - Approx|}{|True|}$
+> - Percentage Error = $Relative \\times 100\\%$
 
-### 1. Absolute Error ($E_a$)
-The direct difference between the True Value ($X$) and the Approximate Value ($X'$).
-**Formula:** $E_a = |X - X'|$
+> [!NOTE] **DEV BRAIN:**
+> Absolute error is like measuring page load time (e.g., "it took 200ms longer"). Relative error is like a performance degradation percentage (e.g., "it was 15% slower"). In large systems, a 200ms delay might be fine (low relative error), but for a 10ms microservice, it's terrible (high relative error).
 
-### 2. Relative Error ($E_r$)
-The ratio of the Absolute Error to the True Value. It tells you how big the error is compared to the number itself.
-**Formula:** $E_r = \\frac{|X - X'|}{|X|}$
+### Summary Table
+| Error Type | Cause | Example |
+|---|---|---|
+| Absolute | Direct difference | $10 - 9.8 = 0.2$ |
+| Relative | Ratio to true value | $0.2 / 10 = 0.02$ |
+| Round-off | Limited precision | $\\pi \\approx 3.14$ |
+| Truncation| Stopping an infinite process early | Taylor series cut off after 3 terms |
 
-### 3. Percentage Error ($E_p$)
-Relative error expressed as a percentage.
-**Formula:** $E_p = E_r \\times 100\\%$
+> [!WARNING] **TRAP:**
+> Always use the **True** value in the denominator for Relative error, not the Approximate value.
 
-### 4. Round-off Error
-Occurs when a number with many decimal places is approximated by a number with fewer decimal places.
-Example: Rounding $\\pi$ (3.14159...) to 3.14.
+> [!TIP] **EXAM TIP:**
+> When asked to calculate errors, write down all formulas first. Showing the formulas guarantees partial marks even if you mess up the final calculator arithmetic.
 
-### 5. Truncation Error
-Occurs when an infinite mathematical process is stopped (truncated) after a finite number of steps.
-Example: Using only the first 3 terms of a Taylor series to approximate a function.
-
-### Python Code to Calculate Errors
+### Python Code
 \`\`\`python
 true_val = 10.0
 approx_val = 9.8
 
-absolute_error = abs(true_val - approx_val)
-relative_error = absolute_error / abs(true_val)
-percentage_error = relative_error * 100
+abs_err = abs(true_val - approx_val)
+rel_err = abs_err / abs(true_val)
+pct_err = rel_err * 100
 
-print(f"Absolute Error: {absolute_error}")
-print(f"Relative Error: {relative_error}")
-print(f"Percentage Error: {percentage_error}%")
+print(f"Absolute Error: {abs_err}") # Output: 0.1999999999999993
+print(f"Percentage Error: {pct_err}%") # Output: 1.999999999999993%
 \`\`\`
 `,
-          shortNotes: 'Errors measure inaccuracy. Absolute = |True - Approx|. Relative = Absolute/|True|. Round-off = due to limited digits. Truncation = due to stopping an infinite series.',
+          richContent: `
+### Step-by-Step Trace
+True = 3.14159, Approx = 3.14
+1. Abs Error = |3.14159 - 3.14| = 0.00159
+2. Rel Error = 0.00159 / 3.14159 = 0.000506
+3. Pct Error = 0.0506%
+          `,
+          shortNotes: 'Errors measure inaccuracy. Absolute = |True - Approx|. Relative = Absolute/|True|. Round-off = limited digits. Truncation = stopping an infinite series.',
           examples: [
-            {
-              title: 'Error Calculation',
-              description: 'True = 3.14159, Approx = 3.14. Absolute Error = |3.14159 - 3.14| = 0.00159. Relative Error = 0.00159 / 3.14159 = 0.000506.'
-            }
+            { title: 'Error Calculation', description: 'True = 3.14159, Approx = 3.14. Absolute Error = 0.00159.' }
           ],
           keyPoints: [
             'Absolute error is the magnitude of the difference.',
@@ -191,24 +204,9 @@ print(f"Percentage Error: {percentage_error}%")
             'Truncation happens when cutting mathematical formulas short.'
           ],
           mcqs: [
-            {
-              question: 'Which error occurs when an infinite series is approximated by a finite number of terms?',
-              options: ['Round-off error', 'Truncation error', 'Absolute error', 'Relative error'],
-              correctOptionIndex: 1,
-              explanation: 'Truncation error arises from cutting off (truncating) an infinite process.'
-            },
-            {
-              question: 'What is the formula for Relative Error?',
-              options: ['|True - Approx|', '|True - Approx| / |Approx|', '|True - Approx| / |True|', 'True / Approx'],
-              correctOptionIndex: 2,
-              explanation: 'Relative error is Absolute Error divided by True Value.'
-            },
-            {
-              question: 'If True Value is 10 and Approx Value is 9, what is the Percentage Error?',
-              options: ['1%', '10%', '0.1%', '90%'],
-              correctOptionIndex: 1,
-              explanation: 'Absolute = 1. Relative = 1/10 = 0.1. Percentage = 0.1 * 100% = 10%.'
-            }
+            { question: 'Which error occurs when an infinite series is approximated by a finite number of terms?', options: ['Round-off error', 'Truncation error', 'Absolute error', 'Relative error'], correctOptionIndex: 1, explanation: 'Truncation error arises from cutting off an infinite process.' },
+            { question: 'What is the formula for Relative Error?', options: ['|True - Approx|', '|True - Approx| / |Approx|', '|True - Approx| / |True|', 'True / Approx'], correctOptionIndex: 2, explanation: 'Relative error is Absolute Error divided by True Value.' },
+            { question: 'If True Value is 10 and Approx Value is 9, what is the Percentage Error?', options: ['1%', '10%', '0.1%', '90%'], correctOptionIndex: 1, explanation: 'Absolute = 1. Relative = 1/10 = 0.1. Percentage = 10%.' }
           ]
         },
         {
@@ -217,50 +215,49 @@ print(f"Percentage Error: {percentage_error}%")
           simpleExplanation: 'Significant figures are the digits in a number that carry meaningful information about its precision.',
           detailedExplanation: `
 ## What are Significant Figures?
-Significant figures (or significant digits) represent the meaningful digits in a number that contribute to its precision.
+Significant figures represent the meaningful digits in a number that contribute to its precision.
 
-### Rules for counting Significant Figures:
-1. **All non-zero digits are significant.** (e.g., 123 has 3 sig figs)
-2. **Zeros between non-zero digits are significant.** (e.g., 1005 has 4 sig figs)
-3. **Leading zeros are NOT significant.** They just show where the decimal point is. (e.g., 0.0045 has 2 sig figs: 4 and 5)
-4. **Trailing zeros to the right of a decimal point ARE significant.** (e.g., 2.500 has 4 sig figs)
-5. **Trailing zeros in a whole number may or may not be significant**, depending on context, but usually, without a decimal point, they are not (e.g., 1500 has 2 sig figs). If written as $1.500 \\times 10^3$, it has 4.
+> [!IMPORTANT] **MEMORIZE:**
+> 1. All non-zero digits are significant.
+> 2. Zeros between non-zero digits are significant.
+> 3. Leading zeros are NEVER significant.
+> 4. Trailing zeros to the right of a decimal ARE significant.
+
+> [!NOTE] **DEV BRAIN:**
+> Think of trailing zeros like explicitly typing a variable as a 'float' instead of an 'int'. When you write \`2.500\`, you are explicitly telling the system "I measured this up to 3 decimal places", whereas \`2.5\` implies you only measured up to 1 decimal place. The zeros carry metadata about precision!
+
+> [!WARNING] **TRAP:**
+> 0.0045 has **two** significant figures (4 and 5), not four! Leading zeros only act as placeholders. 
 
 ### Why do they matter?
-In numerical computing, you need to know how many digits you can trust. If a result is calculated to 10 decimal places, but the input data only had 3 significant figures, most of those 10 decimal places are garbage (meaningless noise).
+If a result is calculated to 10 decimal places, but the input data only had 3 significant figures, most of those 10 decimal places are garbage noise.
+
+> [!TIP] **EXAM TIP:**
+> When doing arithmetic, your final answer should have the same number of significant figures as the input with the *fewest* significant figures.
 `,
+          richContent: `
+### Example Trace
+| Number | Significant Figures | Explanation |
+|---|---|---|
+| 123 | 3 | All non-zero |
+| 1005 | 4 | Trapped zeros count |
+| 0.0045 | 2 | Leading zeros ignore |
+| 2.500 | 4 | Trailing after decimal counts |
+          `,
           shortNotes: 'Non-zero digits, trapped zeros, and trailing zeros after a decimal point are significant. Leading zeros are never significant.',
           examples: [
-            {
-              title: 'Counting Sig Figs',
-              description: '0.003040 has 4 significant figures: the 3, the trapped 0, the 4, and the trailing 0.'
-            }
+            { title: 'Counting Sig Figs', description: '0.003040 has 4 significant figures: the 3, the trapped 0, the 4, and the trailing 0.' }
           ],
           keyPoints: [
             'Non-zero digits are always significant.',
             'Zeros between non-zeros are significant.',
-            'Leading zeros only locate the decimal point and are not significant.',
-            'Trailing zeros after a decimal point indicate precision and are significant.'
+            'Leading zeros only locate the decimal point.',
+            'Trailing zeros after a decimal point indicate precision.'
           ],
           mcqs: [
-            {
-              question: 'How many significant figures are in the number 0.004050?',
-              options: ['3', '4', '6', '7'],
-              correctOptionIndex: 1,
-              explanation: 'The leading zeros are not significant. The 4, 0, 5, 0 are significant. Total = 4.'
-            },
-            {
-              question: 'How many significant figures are in 1002.0?',
-              options: ['2', '4', '5', '6'],
-              correctOptionIndex: 2,
-              explanation: 'All non-zeros are significant. The trapped zeros are significant. The trailing zero after decimal is significant. Total = 5.'
-            },
-            {
-              question: 'Which of the following numbers has exactly 3 significant figures?',
-              options: ['0.03', '300', '3.00', '0.30'],
-              correctOptionIndex: 2,
-              explanation: '3.00 has three significant figures because trailing zeros after the decimal are significant.'
-            }
+            { question: 'How many significant figures are in the number 0.004050?', options: ['3', '4', '6', '7'], correctOptionIndex: 1, explanation: 'Leading zeros are not significant. 4, 0, 5, 0 are significant.' },
+            { question: 'How many significant figures are in 1002.0?', options: ['2', '4', '5', '6'], correctOptionIndex: 2, explanation: 'All non-zeros and trapped zeros are significant. Trailing zero after decimal is significant.' },
+            { question: 'Which of the following numbers has exactly 3 significant figures?', options: ['0.03', '300', '3.00', '0.30'], correctOptionIndex: 2, explanation: '3.00 has three significant figures due to trailing zeros after decimal.' }
           ]
         }
       ]
@@ -276,77 +273,66 @@ In numerical computing, you need to know how many digits you can trust. If a res
           simpleExplanation: 'A slow but guaranteed way to find a root by repeatedly cutting an interval in half.',
           detailedExplanation: `
 ## The Bisection Method
-If a continuous function $f(x)$ has a positive value at $a$ ($f(a) > 0$) and a negative value at $b$ ($f(b) < 0$), then the graph of the function must cross the x-axis somewhere between $a$ and $b$. That crossing point is the root!
+This method repeatedly halves an interval to find the root.
+
+> [!IMPORTANT] **MEMORIZE:**
+> Initial condition: $f(a) \\times f(b) < 0$
+> Midpoint formula: $c = \\frac{a + b}{2}$
+
+> [!NOTE] **DEV BRAIN:**
+> The Bisection method is literally **Binary Search**! You check the middle element, see if the target is to the left or right, and throw away half the array. It's $O(\\log N)$ in terms of interval size reduction, which is slow compared to hash maps (Newton-Raphson), but it's 100% guaranteed to find the target!
 
 ### Algorithm
-1. Find two points, $a$ and $b$, such that $f(a) \\times f(b) < 0$ (they have opposite signs).
-2. Calculate the midpoint $c = \\frac{a + b}{2}$.
+1. Find $a, b$ such that $f(a) \\times f(b) < 0$.
+2. Calculate midpoint $c = \\frac{a + b}{2}$.
 3. Check $f(c)$:
-   - If $f(c) == 0$, $c$ is the exact root. Stop.
-   - If $f(c)$ has the same sign as $f(a)$, the root is between $c$ and $b$. Update $a = c$.
-   - If $f(c)$ has the same sign as $f(b)$, the root is between $a$ and $c$. Update $b = c$.
-4. Repeat steps 2 and 3 until $|a - b|$ is smaller than your desired error tolerance.
+   - If $f(c) \\times f(a) < 0$, root is between $a$ and $c$. So $b = c$.
+   - Else, root is between $c$ and $b$. So $a = c$.
+4. Repeat until $|a - b| < tolerance$.
 
-### Convergence
-The Bisection method is **guaranteed to converge** (find the root) if the initial guesses bracket the root. However, it is **slow** (linear convergence).
+> [!WARNING] **TRAP:**
+> Do NOT forget to check the sign of $f(c)$. Students often mistakenly check the value of $c$ instead of $f(c)$.
+
+> [!TIP] **EXAM TIP:**
+> Always draw a table with columns: Iteration | a | b | c | f(a) | f(b) | f(c) | Error. This guarantees full marks for steps.
 
 ### Python Code
 \`\`\`python
-def f(x):
-    return x**3 - x - 2
+def f(x): return x**3 - x - 2
 
 def bisection(a, b, tol):
-    if f(a) * f(b) >= 0:
-        print("Incorrect initial guesses.")
-        return None
-    
+    if f(a) * f(b) >= 0: return None
     while (b - a) >= tol:
         c = (a + b) / 2
-        if f(c) == 0:
-            break
-        elif f(c) * f(a) < 0:
-            b = c
-        else:
-            a = c
-            
+        if f(c) == 0: break
+        elif f(c) * f(a) < 0: b = c
+        else: a = c
     return c
-
-root = bisection(1, 2, 0.001)
-print(f"Root: {root}")
 \`\`\`
 `,
+          richContent: `
+### Step-by-Step Trace for $f(x) = x^2 - 4$
+Target Tolerance: 0.5. Initial $a=0, b=3$.
+| Iter | a | b | c (Mid) | f(c) | New Interval |
+|---|---|---|---|---|---|
+| 1 | 0 | 3 | 1.5 | -1.75 | [1.5, 3] |
+| 2 | 1.5 | 3 | 2.25 | 1.06 | [1.5, 2.25] |
+| 3 | 1.5 | 2.25 | 1.875 | -0.48 | [1.875, 2.25] |
+*(Stop since interval width is < 0.5)*
+          `,
           shortNotes: 'Finds root by halving interval [a,b]. Condition: f(a)*f(b) < 0. Midpoint c = (a+b)/2. Guaranteed convergence but very slow.',
           examples: [
-            {
-              title: 'Finding Root of x^2 - 4',
-              description: 'Let a=0 (f(0)=-4) and b=3 (f(3)=5). Midpoint c=1.5. f(1.5)= -1.75. Since f(1.5) is negative, replace a. New interval [1.5, 3].'
-            }
+            { title: 'Finding Root', description: 'Let a=0 (f(0)=-4) and b=3 (f(3)=5). Midpoint c=1.5. f(1.5)= -1.75. Replace a.' }
           ],
           keyPoints: [
-            'Requires two initial guesses that bracket the root.',
-            'Relies on the Intermediate Value Theorem.',
+            'Requires two initial guesses bracketing the root.',
             'Convergence is linear (slow).',
-            'It is a bracketing method, so it never fails to find a root if one exists in the interval.'
+            'Never fails to find a root if one exists.'
           ],
           mcqs: [
-            {
-              question: 'What is the necessary condition for initial guesses a and b in the Bisection method?',
-              options: ['f(a) * f(b) > 0', 'f(a) * f(b) = 0', 'f(a) * f(b) < 0', 'f(a) = f(b)'],
-              correctOptionIndex: 2,
-              explanation: 'The function must have opposite signs at a and b for a root to exist between them.'
-            },
-            {
-              question: 'What is the convergence rate of the Bisection method?',
-              options: ['Linear', 'Quadratic', 'Cubic', 'Exponential'],
-              correctOptionIndex: 0,
-              explanation: 'Bisection method has a linear convergence rate, making it slow.'
-            },
-            {
-              question: 'How is the next point calculated in Bisection method?',
-              options: ['c = a - b', 'c = (a * b) / 2', 'c = a + b', 'c = (a + b) / 2'],
-              correctOptionIndex: 3,
-              explanation: 'The interval is halved by finding the arithmetic mean (midpoint) of a and b.'
-            }
+            { question: 'What is the necessary condition for initial guesses a and b?', options: ['f(a) * f(b) > 0', 'f(a) * f(b) = 0', 'f(a) * f(b) < 0', 'f(a) = f(b)'], correctOptionIndex: 2, explanation: 'Opposite signs guarantee a root.' },
+            { question: 'What is the convergence rate of the Bisection method?', options: ['Linear', 'Quadratic', 'Cubic', 'Exponential'], correctOptionIndex: 0, explanation: 'Bisection method has linear convergence.' },
+            { question: 'How is the next point calculated?', options: ['c = a - b', 'c = (a * b) / 2', 'c = a + b', 'c = (a + b) / 2'], correctOptionIndex: 3, explanation: 'Midpoint.' }
           ]
         },
         {
@@ -355,323 +341,204 @@ print(f"Root: {root}")
           simpleExplanation: 'A very fast method that uses the tangent line (derivative) of the function to slide quickly toward the root.',
           detailedExplanation: `
 ## Newton-Raphson Method
-Instead of just guessing, Newton's method uses the slope of the curve to point towards the root. You start with one guess, draw a tangent line there, and see where that tangent hits the x-axis. That hit becomes your new, better guess.
 
-### Derivation
-From Taylor's series, or geometrically looking at the tangent:
-Slope $f'(x_0) = \\frac{f(x_0) - 0}{x_0 - x_1}$
-Rearranging for $x_1$:
-**Formula:** $x_{n+1} = x_n - \\frac{f(x_n)}{f'(x_n)}$
+> [!IMPORTANT] **MEMORIZE:**
+> Formula: $x_{n+1} = x_n - \\frac{f(x_n)}{f'(x_n)}$
+> Convergence: Quadratic (Fastest!)
+
+> [!NOTE] **DEV BRAIN:**
+> Think of Newton-Raphson like Gradient Descent in Machine Learning. You use the derivative (gradient) to take huge steps when you are far away, and smaller steps as the gradient flattens out near the target. 
 
 ### Algorithm
-1. Choose an initial guess $x_0$.
-2. Calculate the next guess using the formula: $x_{n+1} = x_n - \\frac{f(x_n)}{f'(x_n)}$
-3. Repeat step 2 until $|x_{n+1} - x_n|$ is less than the tolerance.
+1. Choose initial guess $x_0$.
+2. Compute next guess: $x_{n+1} = x_n - \\frac{f(x_n)}{f'(x_n)}$
+3. Repeat until $|x_{n+1} - x_n| < tolerance$.
 
-### Convergence
-Newton-Raphson has **Quadratic convergence** (very fast). The number of correct decimal places roughly doubles with every step! However, it can fail if $f'(x_n) = 0$ (division by zero) or if the initial guess is too far away.
+> [!WARNING] **TRAP:**
+> The method fails entirely if $f'(x_n) = 0$ (division by zero). If you hit a horizontal tangent, you must pick a new starting point!
+
+> [!TIP] **EXAM TIP:**
+> Always compute the derivative $f'(x)$ algebraically *before* starting your iterations table. Write it explicitly on the exam paper.
 
 ### Python Code
 \`\`\`python
-def f(x):
-    return x**2 - 4
-
-def df(x):
-    return 2*x
-
 def newton_raphson(x0, tol):
     x = x0
     while True:
         fx = f(x)
         dfx = df(x)
-        if dfx == 0:
-            print("Derivative is zero. Fails.")
-            return None
-            
         x_new = x - fx / dfx
-        if abs(x_new - x) < tol:
-            return x_new
+        if abs(x_new - x) < tol: return x_new
         x = x_new
-
-root = newton_raphson(3, 0.0001)
-print(f"Root: {root}")
 \`\`\`
 `,
+          richContent: `
+### Trace for $f(x) = x^2 - 4$, $f'(x) = 2x$, $x_0 = 3$
+| n | $x_n$ | $f(x_n)$ | $f'(x_n)$ | $x_{n+1}$ |
+|---|---|---|---|---|
+| 0 | 3 | 5 | 6 | 3 - (5/6) = 2.1667 |
+| 1 | 2.1667 | 0.694 | 4.333 | 2.1667 - 0.16 = 2.006 |
+| 2 | 2.006 | 0.024 | 4.012 | 2.000 |
+          `,
           shortNotes: 'Formula: x_{n+1} = x_n - f(x_n)/f\'(x_n). Requires only one initial guess. Very fast (quadratic convergence). Fails if derivative is zero.',
           examples: [
-            {
-              title: 'Find root of x^2 - 4 = 0',
-              description: 'Guess x0 = 3. f(3)=5, f\'(3)=6. x1 = 3 - (5/6) = 2.166. Much closer to true root 2.0 very quickly.'
-            }
+            { title: 'Find root of x^2 - 4 = 0', description: 'Guess x0 = 3. x1 = 3 - (5/6) = 2.166. Fast convergence.' }
           ],
           keyPoints: [
-            'Requires the derivative of the function $f\'(x)$.',
-            'Needs only one initial guess (Open method).',
-            'Quadratic convergence rate (fastest among basic methods).',
-            'Fails if the tangent is horizontal ($f\'(x) = 0$).'
+            'Requires derivative $f\'(x)$.',
+            'Needs one initial guess (Open method).',
+            'Quadratic convergence rate.',
+            'Fails if tangent is horizontal.'
           ],
           mcqs: [
-            {
-              question: 'What is the formula for the Newton-Raphson method?',
-              options: ['x - f(x)/f\'(x)', 'x + f(x)/f\'(x)', 'x - f\'(x)/f(x)', 'f(x) - x/f\'(x)'],
-              correctOptionIndex: 0,
-              explanation: 'The next point is derived by subtracting the ratio of the function to its derivative from the current point.'
-            },
-            {
-              question: 'What is the order of convergence for the Newton-Raphson method?',
-              options: ['Linear (1)', 'Quadratic (2)', 'Cubic (3)', 'Super-linear (1.618)'],
-              correctOptionIndex: 1,
-              explanation: 'It converges quadratically, meaning the error squares at each step.'
-            },
-            {
-              question: 'When will Newton-Raphson method fail?',
-              options: ['If initial guess is a root', 'If f(x) is negative', 'If f\'(x) is zero', 'If f(x) is a polynomial'],
-              correctOptionIndex: 2,
-              explanation: 'If the derivative f\'(x) is zero, the tangent is parallel to the x-axis and will never intersect it, leading to a division by zero error.'
-            }
+            { question: 'What is the formula for Newton-Raphson?', options: ['x - f(x)/f\'(x)', 'x + f(x)/f\'(x)', 'x - f\'(x)/f(x)', 'f(x) - x/f\'(x)'], correctOptionIndex: 0, explanation: 'Standard formula.' },
+            { question: 'What is the convergence order?', options: ['Linear', 'Quadratic', 'Cubic', 'Exponential'], correctOptionIndex: 1, explanation: 'Quadratic.' },
+            { question: 'When will it fail?', options: ['If guess is root', 'If f(x) is negative', 'If f\'(x) is zero', 'If f(x) is polynomial'], correctOptionIndex: 2, explanation: 'Division by zero.' }
           ]
         },
         {
           id: 'secant-method',
           title: 'Secant Method',
-          simpleExplanation: 'Like Newton-Raphson, but you don’t need to calculate the derivative. It uses two previous points to draw a line instead of a tangent.',
+          simpleExplanation: 'Like Newton-Raphson, but without derivatives. It uses two previous points to draw a secant line instead of a tangent.',
           detailedExplanation: `
 ## Secant Method
-The Newton-Raphson method is fast but requires calculating the derivative $f'(x)$, which can be hard for complex functions. The Secant method approximates the derivative by using a secant line drawn through two recent points.
+Approximates the derivative using a secant line drawn through two recent points.
 
-### Formula
-Approximate derivative: $f'(x_n) \\approx \\frac{f(x_n) - f(x_{n-1})}{x_n - x_{n-1}}$
+> [!IMPORTANT] **MEMORIZE:**
+> Formula: $x_{n+1} = x_n - f(x_n) \\frac{x_n - x_{n-1}}{f(x_n) - f(x_{n-1})}$
 
-Substitute this into Newton's formula to get the **Secant Method Formula**:
-$x_{n+1} = x_n - f(x_n) \\frac{x_n - x_{n-1}}{f(x_n) - f(x_{n-1})}$
+> [!NOTE] **DEV BRAIN:**
+> If Newton-Raphson is exact analytic calculation, Secant is a numerical approximation. It's like calculating FPS by taking the delta time between the last two frames instead of analyzing the underlying game loop code.
 
 ### Algorithm
-1. Choose two initial guesses $x_0$ and $x_1$. (They do NOT need to bracket the root).
-2. Calculate the next point $x_2$ using the formula.
-3. Replace $x_0$ with $x_1$, and $x_1$ with $x_2$.
-4. Repeat until $|x_{n+1} - x_n| < \\text{tolerance}$.
+1. Choose $x_0, x_1$.
+2. Calculate $x_2$ using the formula.
+3. Shift variables: $x_0 = x_1, x_1 = x_2$.
+4. Repeat.
 
-### Convergence
-It is faster than Bisection but slightly slower than Newton-Raphson. Its convergence rate is super-linear (approx $1.618$).
+> [!WARNING] **TRAP:**
+> DO NOT require the two initial guesses to bracket the root. This is an *open* method, not a bracketing method like Bisection!
 
-### Python Code
-\`\`\`python
-def f(x):
-    return x**3 - 20
-
-def secant(x0, x1, tol):
-    while abs(x1 - x0) >= tol:
-        f0 = f(x0)
-        f1 = f(x1)
-        if f1 - f0 == 0:
-            print("Division by zero")
-            break
-            
-        x2 = x1 - f1 * (x1 - x0) / (f1 - f0)
-        x0 = x1
-        x1 = x2
-        
-    return x1
-
-root = secant(2, 3, 0.0001)
-print(f"Root: {root}")
-\`\`\`
+> [!TIP] **EXAM TIP:**
+> Be very careful with calculator parentheses here. Calculate the denominator $f(x_n) - f(x_{n-1})$ first, then multiply.
 `,
-          shortNotes: 'Uses a secant line to approximate the derivative. Formula: x2 = x1 - f(x1)*(x1-x0)/(f(x1)-f(x0)). Requires two guesses, but no bracketing. Super-linear convergence.',
+          richContent: `
+### Comparison Table
+| Feature | Newton-Raphson | Secant |
+|---|---|---|
+| Guesses Required | 1 | 2 |
+| Derivative Needed | Yes | No |
+| Convergence | Quadratic (2.0) | Super-linear (1.618) |
+          `,
+          shortNotes: 'Uses a secant line. Formula uses previous two points. Requires two guesses, no bracketing. Super-linear convergence.',
           examples: [
-            {
-              title: 'No derivative needed',
-              description: 'If f(x) is extremely complex, you just plug in two x values to get a straight line slope, avoiding complex calculus.'
-            }
+            { title: 'No derivative needed', description: 'Just plug in two x values to get a straight line slope.' }
           ],
           keyPoints: [
-            'Does NOT require calculating derivatives.',
-            'Requires two initial guesses (Open method).',
-            'Convergence rate is 1.618 (Golden ratio).',
-            'Can fail if $f(x_n) = f(x_{n-1})$ (division by zero).'
+            'Does NOT require derivatives.',
+            'Requires two initial guesses.',
+            'Convergence rate is 1.618.',
+            'Fails if $f(x_n) = f(x_{n-1})$.'
           ],
           mcqs: [
-            {
-              question: 'Why is the Secant method often preferred over Newton-Raphson?',
-              options: ['It is faster', 'It does not require finding derivatives', 'It is guaranteed to converge', 'It only requires one initial guess'],
-              correctOptionIndex: 1,
-              explanation: 'Secant approximates the derivative, saving the user from doing analytical calculus.'
-            },
-            {
-              question: 'How many initial guesses does the Secant method require?',
-              options: ['1', '2', '3', 'None'],
-              correctOptionIndex: 1,
-              explanation: 'It requires two points to draw the initial secant line.'
-            },
-            {
-              question: 'What is the order of convergence for the Secant method?',
-              options: ['1 (Linear)', '1.618 (Super-linear)', '2 (Quadratic)', '3 (Cubic)'],
-              correctOptionIndex: 1,
-              explanation: 'The order is approximately 1.618, making it faster than linear but slower than quadratic.'
-            }
+            { question: 'Why is Secant often preferred?', options: ['Faster', 'No derivatives needed', 'Guaranteed to converge', 'One guess'], correctOptionIndex: 1, explanation: 'Saves from complex analytical calculus.' },
+            { question: 'How many initial guesses?', options: ['1', '2', '3', 'None'], correctOptionIndex: 1, explanation: 'Requires two points.' },
+            { question: 'Order of convergence?', options: ['1', '1.618', '2', '3'], correctOptionIndex: 1, explanation: '1.618 (Super-linear).' }
           ]
         },
         {
           id: 'regula-falsi',
-          title: 'Regula-Falsi (False Position) Method',
-          simpleExplanation: 'A mix of Bisection and Secant methods. It brackets the root like Bisection but draws straight lines between points like Secant to find the next guess faster.',
+          title: 'Regula-Falsi (False Position)',
+          simpleExplanation: 'A mix of Bisection (safe) and Secant (fast). Brackets the root but draws straight lines to find the next guess.',
           detailedExplanation: `
-## Regula-Falsi (False Position) Method
-The Bisection method always picks the midpoint, which is safe but ignores the function's values. If $f(a)$ is very close to 0 and $f(b)$ is huge, the root is probably closer to $a$. The False Position method takes advantage of this by connecting $f(a)$ and $f(b)$ with a straight line to find the next guess.
+## Regula-Falsi Method
+
+> [!IMPORTANT] **MEMORIZE:**
+> Formula: $x_2 = \\frac{x_0 f(x_1) - x_1 f(x_0)}{f(x_1) - f(x_0)}$
+> Guaranteed convergence because it brackets the root!
+
+> [!NOTE] **DEV BRAIN:**
+> It's an optimization of Binary Search! Instead of strictly picking the 50% midpoint, it estimates where the target is based on the values at the endpoints (Interpolation Search). If $f(a)$ is -1 and $f(b)$ is 100, the root is likely very close to $a$.
 
 ### Algorithm
-1. Find initial guesses $x_0$ and $x_1$ such that $f(x_0) \\times f(x_1) < 0$ (bracketing).
-2. Calculate the intersection of the straight line with the x-axis:
-   $x_2 = \\frac{x_0 \\cdot f(x_1) - x_1 \\cdot f(x_0)}{f(x_1) - f(x_0)}$
-3. Evaluate $f(x_2)$.
-4. Replace either $x_0$ or $x_1$ with $x_2$ such that the new interval still brackets the root (just like Bisection).
-5. Repeat until tolerance is reached.
+1. Find $x_0, x_1$ such that $f(x_0) \\times f(x_1) < 0$.
+2. Calculate $x_2$ using formula.
+3. Check $f(x_2)$ and replace $x_0$ or $x_1$ to maintain opposite signs.
 
-### Convergence
-It is a bracketing method, so it **always converges**. It is generally faster than Bisection but can be very slow if the curve is highly convex (it can get "stuck" using the same endpoint repeatedly).
+> [!WARNING] **TRAP:**
+> For highly curved functions, one endpoint might never change, making the algorithm extremely slow. It can get "stuck".
 
-### Python Code
-\`\`\`python
-def f(x):
-    return x**3 - x - 1
-
-def regula_falsi(x0, x1, tol):
-    if f(x0) * f(x1) >= 0:
-        return None
-        
-    x2 = x0
-    while True:
-        f0 = f(x0)
-        f1 = f(x1)
-        x2_old = x2
-        
-        # False position formula
-        x2 = (x0 * f1 - x1 * f0) / (f1 - f0)
-        
-        if abs(x2 - x2_old) < tol:
-            break
-            
-        if f(x2) * f0 < 0:
-            x1 = x2
-        else:
-            x0 = x2
-            
-    return x2
-
-root = regula_falsi(1, 2, 0.0001)
-print(f"Root: {root}")
-\`\`\`
+> [!TIP] **EXAM TIP:**
+> The formula is essentially identical to the Secant method, but the logic for *updating* the points is identical to the Bisection method.
 `,
-          shortNotes: 'Bracketing method. Connects f(a) and f(b) with a line. Formula: c = (a*f(b) - b*f(a))/(f(b) - f(a)). Guaranteed convergence. Faster than bisection.',
+          richContent: `
+### Bracketing Methods Comparison
+| Feature | Bisection | Regula-Falsi |
+|---|---|---|
+| Next Point | Midpoint | Line Intercept |
+| Speed | Slow | Faster (usually) |
+| Convergence | Guaranteed | Guaranteed |
+          `,
+          shortNotes: 'Bracketing method. Formula: (a*f(b) - b*f(a))/(f(b) - f(a)). Guaranteed convergence. Faster than bisection.',
           examples: [
-            {
-              title: 'Visualizing False Position',
-              description: 'Instead of blindly cutting the interval in half, it draws a chord. Where the chord crosses the x-axis is the new guess.'
-            }
+            { title: 'Visualizing', description: 'Draws a chord. Where the chord crosses the x-axis is the new guess.' }
           ],
           keyPoints: [
             'Requires two initial guesses that bracket the root.',
-            'Uses a straight line (chord) interpolation.',
+            'Uses a straight line interpolation.',
             'Guaranteed to converge.',
-            'Can suffer from slow convergence on one side of the root.'
+            'Can suffer slow convergence on one side.'
           ],
           mcqs: [
-            {
-              question: 'Regula-Falsi method is similar to which two methods?',
-              options: ['Newton & Secant', 'Bisection & Secant', 'Bisection & Newton', 'Euler & Secant'],
-              correctOptionIndex: 1,
-              explanation: 'It uses bracketing like Bisection and straight lines like Secant.'
-            },
-            {
-              question: 'Does Regula-Falsi guarantee convergence?',
-              options: ['Yes', 'No', 'Only for polynomials', 'Only if f\'(x) > 0'],
-              correctOptionIndex: 0,
-              explanation: 'Because it is a bracketing method, it traps the root and guarantees finding it.'
-            },
-            {
-              question: 'What is a primary disadvantage of Regula-Falsi?',
-              options: ['It requires derivatives', 'It may diverge', 'One endpoint may remain fixed, causing slow convergence', 'It requires 3 guesses'],
-              correctOptionIndex: 2,
-              explanation: 'For concave/convex curves, one endpoint might never update, making progress very slow.'
-            }
+            { question: 'Regula-Falsi is similar to which two methods?', options: ['Newton & Secant', 'Bisection & Secant', 'Bisection & Newton', 'Euler & Secant'], correctOptionIndex: 1, explanation: 'Bracketing like Bisection, straight lines like Secant.' },
+            { question: 'Does it guarantee convergence?', options: ['Yes', 'No', 'Only for polynomials', 'Only if f\'>0'], correctOptionIndex: 0, explanation: 'It traps the root.' },
+            { question: 'Primary disadvantage?', options: ['Requires derivatives', 'May diverge', 'One endpoint fixed (slow)', 'Requires 3 guesses'], correctOptionIndex: 2, explanation: 'Endpoint stalling.' }
           ]
         },
         {
           id: 'fixed-point-iteration',
           title: 'Fixed Point Iteration Method',
-          simpleExplanation: 'Rewrite the equation f(x) = 0 into the form x = g(x). Then keep plugging your answer back into g(x) until it stops changing.',
+          simpleExplanation: 'Rewrite equation f(x) = 0 into x = g(x). Plug answer back into g(x) until it stops changing.',
           detailedExplanation: `
 ## Fixed Point Iteration Method
-This is a very simple method, but it requires some algebraic manipulation.
 
-### The Concept
-If you have an equation $f(x) = 0$, you rearrange it algebraically into the form $x = g(x)$.
-A "fixed point" is a value of $x$ where plugging it into $g(x)$ gives you back $x$. (i.e., $x = g(x)$).
+> [!IMPORTANT] **MEMORIZE:**
+> Rearrange into $x = g(x)$.
+> Condition for convergence: $|g'(x)| < 1$ near the root.
+
+> [!NOTE] **DEV BRAIN:**
+> This is a recursive function or a \`while(true)\` loop. \`x = g(x)\` is like updating your state: \`state = update(state)\`. It only terminates if the update function stabilizes!
 
 ### Algorithm
-1. Rearrange $f(x) = 0$ to get $x = g(x)$.
-2. Choose an initial guess $x_0$.
-3. Calculate $x_1 = g(x_0)$.
-4. Calculate $x_2 = g(x_1)$, and in general $x_{n+1} = g(x_n)$.
-5. Repeat until $|x_{n+1} - x_n| < \\text{tolerance}$.
+1. Rearrange $f(x) = 0$ into $x = g(x)$.
+2. Initial guess $x_0$.
+3. $x_{n+1} = g(x_n)$.
+4. Repeat.
 
-### Convergence Condition
-This method will ONLY converge if the slope of $g(x)$ is gentle near the root.
-Specifically, **$|g'(x)| < 1$** near the root. If $|g'(x)| > 1$, the guesses will diverge (blow up).
+> [!WARNING] **TRAP:**
+> Not every rearrangement $x = g(x)$ will work. If you pick a $g(x)$ where the derivative is $> 1$, the values will explode toward infinity!
 
-### Python Code
-\`\`\`python
-import math
-
-# Solving f(x) = x^3 + x - 1 = 0
-# Rearrange to: x = 1 / (x^2 + 1)
-def g(x):
-    return 1 / (x**2 + 1)
-
-def fixed_point(x0, tol):
-    x_old = x0
-    while True:
-        x_new = g(x_old)
-        if abs(x_new - x_old) < tol:
-            return x_new
-        x_old = x_new
-
-root = fixed_point(0.5, 0.0001)
-print(f"Root: {root}")
-\`\`\`
+> [!TIP] **EXAM TIP:**
+> If a question asks you to "show convergence is possible", compute $g'(x)$ and prove that substituting your initial guess gives a value between -1 and 1.
 `,
-          shortNotes: 'Convert f(x)=0 to x=g(x). Iterate x_{n+1} = g(x_n). Converges ONLY IF |g\'(x)| < 1 near the root. Linear convergence.',
+          richContent: `
+### Example Rearrangement: $x^2 - x - 2 = 0$
+- **Option 1:** $x = x^2 - 2 \\Rightarrow g'(x) = 2x$. If root is near 2, $|g'(2)| = 4 > 1$. **Diverges.**
+- **Option 2:** $x = \\sqrt{x + 2} \\Rightarrow g'(x) = \\frac{1}{2\\sqrt{x+2}}$. If root is near 2, $|g'(2)| = 1/4 < 1$. **Converges!**
+          `,
+          shortNotes: 'Convert f(x)=0 to x=g(x). Converges ONLY IF |g\'(x)| < 1. Linear convergence.',
           examples: [
-            {
-              title: 'Rearranging f(x)',
-              description: 'f(x) = x^2 - x - 2 = 0. Option A: x = x^2 - 2. Option B: x = sqrt(x + 2). Option B is better because its derivative is smaller, aiding convergence.'
-            }
+            { title: 'Rearranging', description: 'f(x) = x^2 - x - 2 = 0. Option B: x = sqrt(x + 2) is better because derivative is smaller.' }
           ],
           keyPoints: [
-            'Requires rearranging the function to $x = g(x)$.',
-            'Convergence depends entirely on how you rearrange it.',
-            'Must satisfy $|g\'(x)| < 1$ to converge.',
-            'Simple to program but can be unstable.'
+            'Requires rearranging to $x = g(x)$.',
+            'Must satisfy $|g\'(x)| < 1$.',
+            'Simple but can be unstable.'
           ],
           mcqs: [
-            {
-              question: 'What is the mandatory condition for convergence in Fixed Point Iteration?',
-              options: ['|g\'(x)| > 1', '|g\'(x)| < 1', 'g\'(x) = 0', 'g(x) < 0'],
-              correctOptionIndex: 1,
-              explanation: 'The absolute value of the derivative of g(x) must be strictly less than 1 near the root.'
-            },
-            {
-              question: 'How is the equation $f(x)=0$ manipulated for this method?',
-              options: ['$f\'(x) = 0$', '$x = f(x)$', '$x = g(x)$', '$g(x) = 0$'],
-              correctOptionIndex: 2,
-              explanation: 'It is algebraically rearranged into $x = g(x)$.'
-            },
-            {
-              question: 'If $|g\'(x)| > 1$, what happens?',
-              options: ['It converges faster', 'It converges to a different root', 'It diverges', 'It loops infinitely at the same value'],
-              correctOptionIndex: 2,
-              explanation: 'A derivative greater than 1 means errors get multiplied at each step, causing divergence.'
-            }
+            { question: 'Mandatory condition for convergence?', options: ['|g\'(x)| > 1', '|g\'(x)| < 1', 'g\'(x) = 0', 'g(x) < 0'], correctOptionIndex: 1, explanation: 'Derivative strictly less than 1.' },
+            { question: 'How is equation manipulated?', options: ['f\'(x)=0', 'x=f(x)', 'x=g(x)', 'g(x)=0'], correctOptionIndex: 2, explanation: 'Rearranged into x=g(x).' },
+            { question: 'If |g\'(x)| > 1, what happens?', options: ['Converges faster', 'Different root', 'Diverges', 'Loops'], correctOptionIndex: 2, explanation: 'Errors multiply, causing divergence.' }
           ]
         }
       ]
@@ -686,57 +553,47 @@ print(f"Root: {root}")
           title: 'Newton\'s Forward Difference Interpolation',
           simpleExplanation: 'A formula to guess a value when your target x is near the BEGINNING of a set of equally spaced data points.',
           detailedExplanation: `
-## Interpolation Basics
-Interpolation means finding a value inside a given range of data points. If the x-values (independent variables) are equally spaced, we use Newton's Forward or Backward difference formulas.
+## Newton's Forward Formula
 
-### Forward Difference Table
-We build a table of differences. 
-$\\Delta y_0 = y_1 - y_0$
-$\\Delta^2 y_0 = \\Delta y_1 - \\Delta y_0$ ... and so on.
+> [!IMPORTANT] **MEMORIZE:**
+> Parameter $u = \\frac{x - x_0}{h}$
+> Formula: $y = y_0 + u \\Delta y_0 + \\frac{u(u-1)}{2!} \\Delta^2 y_0 + ...$
 
-### Newton's Forward Formula
-Use this when finding a value near the **start** (top) of the data table.
-Let $h$ be the equal spacing between x-values.
-Let $u = \\frac{x - x_0}{h}$ (where $x$ is the value to find, $x_0$ is the first x-value).
+> [!NOTE] **DEV BRAIN:**
+> Interpolation is just a lookup table (LUT) with a built-in easing function! When your data points are equally spaced (like frames in an animation), you can use predictable mathematical steps (forward differences) to smoothly estimate frames in between.
 
-**Formula:**
-$y = y_0 + u \\Delta y_0 + \\frac{u(u-1)}{2!} \\Delta^2 y_0 + \\frac{u(u-1)(u-2)}{3!} \\Delta^3 y_0 + ...$
+### When to use
+- The x-values MUST be **equally spaced** (constant interval $h$).
+- Use for targets near the **top/beginning** of the table.
 
-### Python Implementation (Concept)
-To do this in Python, you first compute the forward difference table (a 2D array), then apply the formula using the top row of differences.
+> [!WARNING] **TRAP:**
+> Do not use this for unequally spaced data. It will yield completely wrong results.
+
+> [!TIP] **EXAM TIP:**
+> Always draw the difference table completely. Even if your formula calculation is wrong, a correct difference table gets you 50% of the marks!
 `,
-          shortNotes: 'Used for equally spaced data. Best for finding values near the START of the table. Uses forward difference operator Δ.',
+          richContent: `
+### Trace: Creating a Difference Table
+| $x$ | $y$ | $\\Delta y$ | $\\Delta^2 y$ |
+|---|---|---|---|
+| 10| 5 | (8-5) = **3** | |
+| 20| 8 | (14-8) = 6 | (6-3) = **3** |
+| 30| 14| | |
+Use the top row numbers (3 and 3) for the formula!
+          `,
+          shortNotes: 'Equally spaced data. Best for finding values near START. Uses forward difference operator Δ.',
           examples: [
-            {
-              title: 'When to use Forward',
-              description: 'If x-values are 10, 20, 30, 40. And you want to find y for x=12, use Forward because 12 is near the beginning (10).'
-            }
+            { title: 'When to use Forward', description: 'If x are 10, 20, 30. Want x=12, use Forward because 12 is near 10.' }
           ],
           keyPoints: [
-            'Only works for equally spaced x-values.',
-            'Uses the forward difference operator $\\Delta$.',
-            'Relies on the top row of the difference table.',
-            'Calculates a parameter $u = (x - x_0)/h$.'
+            'Only for equally spaced x-values.',
+            'Relies on top row of difference table.',
+            'u = (x - x0)/h.'
           ],
           mcqs: [
-            {
-              question: 'When is Newton\'s Forward Interpolation best used?',
-              options: ['Near the end of the data', 'Near the beginning of the data', 'For unequally spaced data', 'In the exact middle of the data'],
-              correctOptionIndex: 1,
-              explanation: 'It is designed to be most accurate using the leading differences near the top of the table.'
-            },
-            {
-              question: 'What does \'h\' represent in the formula?',
-              options: ['Height of the function', 'Difference between x and y', 'Equal spacing interval between x-values', 'The first x-value'],
-              correctOptionIndex: 2,
-              explanation: 'h is the step size or constant interval between consecutive x data points.'
-            },
-            {
-              question: 'What is the formula for u in Forward Interpolation?',
-              options: ['(x - x_n)/h', '(x_0 - x)/h', '(x - x_0)/h', '(x + x_0)/h'],
-              correctOptionIndex: 2,
-              explanation: 'u measures how many steps h the target x is away from the starting point x0.'
-            }
+            { question: 'When is Newton Forward Interpolation best used?', options: ['Near end', 'Near beginning', 'Unequally spaced', 'Middle'], correctOptionIndex: 1, explanation: 'Best accuracy near the start.' },
+            { question: 'What does h represent?', options: ['Height', 'x,y diff', 'Equal spacing interval', 'First x'], correctOptionIndex: 2, explanation: 'h is step size.' },
+            { question: 'Formula for u?', options: ['(x-xn)/h', '(x0-x)/h', '(x-x0)/h', '(x+x0)/h'], correctOptionIndex: 2, explanation: 'Distance from start divided by step size.' }
           ]
         },
         {
@@ -745,70 +602,46 @@ To do this in Python, you first compute the forward difference table (a 2D array
           simpleExplanation: 'A flexible method for guessing values that works even when the data points are NOT equally spaced.',
           detailedExplanation: `
 ## Lagrange's Interpolation
-Newton's Forward and Backward formulas only work if the x-values are equally spaced (e.g., 2, 4, 6, 8). If the data is randomly spaced (e.g., 2, 3, 7, 10), we MUST use a different method. Lagrange's formula is perfect for this.
+
+> [!IMPORTANT] **MEMORIZE:**
+> For the $y_i$ term: Numerator skips $(x - x_i)$. Denominator replaces $x$ with $x_i$.
+
+> [!NOTE] **DEV BRAIN:**
+> Lagrange interpolation is like a series of ON/OFF switches (Basis Polynomials). For each known point $x_i$, it creates a sub-function that equals exactly 1 at $x_i$, and 0 at all other points. It then scales this function by $y_i$ and adds them all up! 
 
 ### The Formula
-For given points $(x_0, y_0), (x_1, y_1), ... (x_n, y_n)$, the interpolated value $y$ for a given $x$ is:
+$y = \\frac{(x-x_1)(x-x_2)...}{(x_0-x_1)(x_0-x_2)...} y_0 + \\frac{(x-x_0)(x-x_2)...}{(x_1-x_0)(x_1-x_2)...} y_1 + ...$
 
-$y = \\frac{(x-x_1)(x-x_2)...(x-x_n)}{(x_0-x_1)(x_0-x_2)...(x_0-x_n)} y_0 + \\frac{(x-x_0)(x-x_2)...(x-x_n)}{(x_1-x_0)(x_1-x_2)...(x_1-x_n)} y_1 + ...$
+### When to use
+Works perfectly for **unequally spaced** data points.
 
-Notice the pattern: for the term containing $y_i$, the numerator has all $(x - x_j)$ except $x_i$, and the denominator replaces the plain $x$ with $x_i$.
+> [!WARNING] **TRAP:**
+> The calculation gets very messy. Watch your minus signs carefully in the denominator!
 
-### Python Code
-\`\`\`python
-def lagrange_interpolation(x_vals, y_vals, x_target):
-    n = len(x_vals)
-    result = 0.0
-    
-    for i in range(n):
-        term = y_vals[i]
-        for j in range(n):
-            if i != j:
-                term = term * (x_target - x_vals[j]) / (x_vals[i] - x_vals[j])
-        result += term
-        
-    return result
-
-# Unequally spaced data
-X = [0, 1, 3, 4]
-Y = [5, 6, 50, 105]
-# Find y for x=2
-ans = lagrange_interpolation(X, Y, 2)
-print(f"y at x=2 is {ans}") # Expected output: 19.0
-\`\`\`
+> [!TIP] **EXAM TIP:**
+> Write out the fraction structure empty first: $\\frac{()()}{()()} y_0 + ...$ Then fill in the x values. This prevents skipping a term.
 `,
-          shortNotes: 'Works for UNEQUALLY spaced data. Computes a weighted sum of the y-values. No difference table required.',
+          richContent: `
+### Comparison Table
+| Feature | Newton Forward | Lagrange |
+|---|---|---|
+| Spacing | Must be equal | Can be unequal |
+| Table Required | Yes | No |
+| Complexity | Easy arithmetic | Heavy multiplication |
+          `,
+          shortNotes: 'Works for UNEQUALLY spaced data. No difference table required.',
           examples: [
-            {
-              title: 'Unequal Spacing',
-              description: 'Data: x=[1, 2, 5], y=[10, 15, 30]. Spacing is 1, then 3. Newton methods fail here. Lagrange handles it perfectly.'
-            }
+            { title: 'Unequal Spacing', description: 'Data: x=[1, 2, 5]. Spacing is 1, then 3. Lagrange handles it perfectly.' }
           ],
           keyPoints: [
             'Does not require equally spaced intervals.',
-            'Does not require a difference table.',
-            'Computationally heavy if the number of points is large.',
-            'Can also be used for equally spaced data.'
+            'No difference table.',
+            'Computationally heavy for large n.'
           ],
           mcqs: [
-            {
-              question: 'When must you use Lagrange Interpolation over Newton Forward?',
-              options: ['When points are equally spaced', 'When points are unequally spaced', 'When finding roots', 'When finding derivatives'],
-              correctOptionIndex: 1,
-              explanation: 'Lagrange does not rely on a constant step size h, making it perfect for unequal intervals.'
-            },
-            {
-              question: 'Does Lagrange Interpolation require a difference table?',
-              options: ['Yes', 'No', 'Only for large datasets', 'Only for polynomials'],
-              correctOptionIndex: 1,
-              explanation: 'It computes the polynomial directly using products and sums, skipping difference tables.'
-            },
-            {
-              question: 'What happens to the numerator term corresponding to y_i?',
-              options: ['It includes (x - x_i)', 'It skips (x - x_i)', 'It is squared', 'It is zero'],
-              correctOptionIndex: 1,
-              explanation: 'To avoid the term becoming zero at x = x_i, the factor (x - x_i) is skipped in the numerator and denominator.'
-            }
+            { question: 'When MUST you use Lagrange over Newton Forward?', options: ['Equally spaced', 'Unequally spaced', 'Finding roots', 'Finding derivatives'], correctOptionIndex: 1, explanation: 'Perfect for unequal intervals.' },
+            { question: 'Does Lagrange require a difference table?', options: ['Yes', 'No', 'Large datasets', 'Polynomials'], correctOptionIndex: 1, explanation: 'Computes directly.' },
+            { question: 'What happens to numerator term corresponding to y_i?', options: ['Includes (x-xi)', 'Skips (x-xi)', 'Squared', 'Zero'], correctOptionIndex: 1, explanation: 'Skipped to avoid making term 0.' }
           ]
         }
       ]
@@ -816,149 +649,97 @@ print(f"y at x=2 is {ans}") # Expected output: 19.0
     {
       id: 'unit4',
       title: 'Numerical Differentiation & Integration',
-      description: 'Using algorithms to find slopes (derivatives) and areas under curves (integrals).',
+      description: 'Using algorithms to find slopes and areas under curves.',
       topics: [
         {
           id: 'numerical-integration-trapezoidal',
           title: 'Trapezoidal Rule',
-          simpleExplanation: 'Estimating the area under a curve by drawing straight lines between points, creating shapes that look like trapezoids.',
+          simpleExplanation: 'Estimating area by drawing straight lines between points.',
           detailedExplanation: `
 ## Numerical Integration
-Integration finds the area under a curve. When a function is too hard to integrate analytically, or we only have a table of data points, we use numerical integration (quadrature).
 
-### The Trapezoidal Rule
-This is the simplest method. It connects data points with straight lines. The area under the curve is approximated as the sum of the areas of multiple trapezoids.
+> [!IMPORTANT] **MEMORIZE:**
+> Formula: $\\frac{h}{2} [ (First + Last) + 2(Sum \\; of \\; Rest) ]$
 
-**Formula:**
-Let $h = \\frac{b - a}{n}$ be the width of each trapezoid (where $n$ is number of intervals).
-$y_0, y_1, ... y_n$ are the function values.
+> [!NOTE] **DEV BRAIN:**
+> Trapezoidal rule is like rendering a 3D circle in an old video game—you just connect the points with flat polygons (straight lines). It looks blocky (error), but if you increase the polygon count (increase $n$, decrease $h$), it looks perfectly smooth!
 
-$\\int_a^b f(x) dx \\approx \\frac{h}{2} \\left[ (y_0 + y_n) + 2(y_1 + y_2 + ... + y_{n-1}) \\right]$
+### Usage
+- Interval width $h = \\frac{b - a}{n}$
+- Uses linear segments (degree 1).
 
-**In words:** "h over 2 times (first + last + 2 * sum of the rest)."
+> [!WARNING] **TRAP:**
+> Do NOT multiply the first and last $y$ values by 2. Only the middle terms get the $2x$ multiplier.
 
-### Python Code
-\`\`\`python
-def f(x):
-    return 1 / (1 + x**2)
-
-def trapezoidal(a, b, n):
-    h = (b - a) / n
-    result = f(a) + f(b) # first and last
-    
-    for i in range(1, n):
-        result += 2 * f(a + i*h) # sum of the rest * 2
-        
-    return (h / 2) * result
-
-# Integrate 1/(1+x^2) from 0 to 1 with 10 intervals
-area = trapezoidal(0, 1, 10)
-print(f"Area: {area}") 
-\`\`\`
+> [!TIP] **EXAM TIP:**
+> $n$ represents the number of intervals, not the number of points. Number of points is always $n + 1$.
 `,
-          shortNotes: 'Connects points with straight lines (linear). Formula: (h/2) * [ (y_first + y_last) + 2*(sum of rest) ]. Can be used for ANY number of intervals.',
+          richContent: `
+### Step-by-Step Trace
+$h = 1$. Points: $y_0=10, y_1=20, y_2=30$
+1. First + Last = 10 + 30 = 40
+2. Rest = 20 $\\rightarrow 2 \\times 20 = 40$
+3. Area = (1/2) * (40 + 40) = 40
+          `,
+          shortNotes: 'Connects points with straight lines (linear). Any number of intervals.',
           examples: [
-            {
-              title: 'Simple Area',
-              description: 'If h=1, and y values are [10, 20, 30]. Area = (1/2) * [(10 + 30) + 2*(20)] = 0.5 * [40 + 40] = 40.'
-            }
+            { title: 'Simple Area', description: 'h=1, y=[10, 20, 30]. Area = 40.' }
           ],
           keyPoints: [
-            'Approximates the curve using straight linear segments.',
-            'Has no restrictions on the number of intervals ($n$ can be odd or even).',
-            'Least accurate of the Newton-Cotes formulas.',
-            'Error is proportional to $h^2$.'
+            'Straight linear segments.',
+            'No restrictions on number of intervals.',
+            'Error proportional to h^2.'
           ],
           mcqs: [
-            {
-              question: 'The Trapezoidal rule approximates the curve using:',
-              options: ['Parabolas', 'Straight lines', 'Cubic curves', 'Circles'],
-              correctOptionIndex: 1,
-              explanation: 'It draws a straight line between two adjacent points, forming a trapezoid.'
-            },
-            {
-              question: 'In the Trapezoidal rule formula, which values are multiplied by 2?',
-              options: ['First and last only', 'All values', 'All intermediate values', 'None'],
-              correctOptionIndex: 2,
-              explanation: 'The first and last y-values are taken once; all the middle (intermediate) values are multiplied by 2.'
-            },
-            {
-              question: 'Is there a restriction on the number of intervals (n) for the Trapezoidal rule?',
-              options: ['Must be even', 'Must be a multiple of 3', 'Must be odd', 'No restriction'],
-              correctOptionIndex: 3,
-              explanation: 'Unlike Simpson\'s rules, Trapezoidal can be applied to any number of intervals.'
-            }
+            { question: 'Trapezoidal rule approximates the curve using:', options: ['Parabolas', 'Straight lines', 'Cubic', 'Circles'], correctOptionIndex: 1, explanation: 'Draws straight line forming trapezoid.' },
+            { question: 'Which values multiplied by 2?', options: ['First/last', 'All', 'Intermediate', 'None'], correctOptionIndex: 2, explanation: 'Intermediate values only.' },
+            { question: 'Restriction on intervals (n)?', options: ['Even', 'Multiple 3', 'Odd', 'No restriction'], correctOptionIndex: 3, explanation: 'Can be applied to any n.' }
           ]
         },
         {
           id: 'simpsons-13',
           title: 'Simpson\'s 1/3 Rule',
-          simpleExplanation: 'A much better way to find area. Instead of straight lines, it uses smooth U-shaped curves (parabolas) to connect the points.',
+          simpleExplanation: 'A better way to find area. Uses smooth U-shaped curves (parabolas) to connect the points.',
           detailedExplanation: `
 ## Simpson's 1/3 Rule
-While Trapezoidal uses straight lines (degree 1), Simpson's 1/3 rule fits a parabola (degree 2 curve) through three adjacent points. Because curves match real functions better than straight lines, this method is highly accurate.
 
-### The Formula
-Let $h = \\frac{b - a}{n}$. **Crucial: $n$ MUST be an EVEN number.**
+> [!IMPORTANT] **MEMORIZE:**
+> Constraint: **$n$ MUST be an EVEN number.**
+> Formula: $\\frac{h}{3} [ (First + Last) + 4(Odd) + 2(Even) ]$
 
-$\\int_a^b f(x) dx \\approx \\frac{h}{3} \\left[ (y_0 + y_n) + 4(y_1 + y_3 + ...) + 2(y_2 + y_4 + ...) \\right]$
-
-**In words:** "h over 3 times (first + last + 4 * sum of ODD positions + 2 * sum of EVEN positions)."
+> [!NOTE] **DEV BRAIN:**
+> If Trapezoidal is flat-shaded polygons, Simpson's 1/3 is Bezier curves. It uses 3 points to define a smooth quadratic curve (parabola), which matches mathematical functions much better.
 
 ### Why 1/3?
-The coefficient in front of the formula is $h/3$, hence the name.
+Because the multiplier in front is $h/3$.
 
-### Python Code
-\`\`\`python
-def simpson13(a, b, n):
-    if n % 2 != 0:
-        return "n must be even"
-        
-    h = (b - a) / n
-    result = f(a) + f(b)
-    
-    for i in range(1, n):
-        k = a + i*h
-        if i % 2 == 0:
-            result += 2 * f(k) # Even indices
-        else:
-            result += 4 * f(k) # Odd indices
-            
-    return (h / 3) * result
-\`\`\`
+> [!WARNING] **TRAP:**
+> "Odd" and "Even" refer to the **subscripts** ($y_1, y_2$), NOT the actual data values! $y_1$ is odd, $y_2$ is even.
+
+> [!TIP] **EXAM TIP:**
+> Check $n$ before applying. If a question gives you 6 data points, $n = 5$ (odd). You cannot use Simpson's 1/3 for the whole thing! (You'd use Simpson's 3/8, or combine methods).
 `,
-          shortNotes: 'Uses parabolas. Formula: (h/3)*[ (y_first + y_last) + 4*(Odd y) + 2*(Even y) ]. Requires an EVEN number of intervals (n).',
+          richContent: `
+### Integration Comparison Table
+| Method | Curve Used | Multipliers | n Requirement |
+|---|---|---|---|
+| Trapezoidal | Line (Degree 1) | 1, 2, 2, 2... 1 | None |
+| Simpson's 1/3 | Parabola (Degree 2) | 1, 4, 2, 4... 1 | Must be Even |
+          `,
+          shortNotes: 'Uses parabolas. Formula: (h/3)*[ (y_first + y_last) + 4*(Odd y) + 2*(Even y) ]. EVEN intervals.',
           examples: [
-            {
-              title: 'Requirement Check',
-              description: 'If you have 5 data points, n = 4 intervals. Since 4 is even, you CAN use Simpson\'s 1/3.'
-            }
+            { title: 'Requirement Check', description: '5 data points -> n = 4. 4 is even, CAN use Simpson 1/3.' }
           ],
           keyPoints: [
-            'Approximates the curve using quadratic parabolas.',
-            'The number of intervals ($n$) MUST be an even number.',
-            'Much more accurate than the Trapezoidal rule.',
-            'Multiplier pattern is 1, 4, 2, 4, 2... 4, 1.'
+            'Quadratic parabolas.',
+            'n MUST be even.',
+            'More accurate than Trapezoidal.',
+            'Multiplier pattern: 1, 4, 2, 4, 2... 4, 1.'
           ],
           mcqs: [
-            {
-              question: 'Simpson\'s 1/3 rule assumes the curve between points is a:',
-              options: ['Straight line', 'Parabola', 'Cubic spline', 'Circle'],
-              correctOptionIndex: 1,
-              explanation: 'It uses quadratic interpolation, which forms parabolas.'
-            },
-            {
-              question: 'What is the restriction on the number of intervals (n) for Simpson\'s 1/3 rule?',
-              options: ['Must be odd', 'Must be a multiple of 3', 'Must be even', 'No restriction'],
-              correctOptionIndex: 2,
-              explanation: 'It requires pairs of intervals to fit parabolas, so total intervals must be even.'
-            },
-            {
-              question: 'In the formula, what are the odd-indexed terms multiplied by?',
-              options: ['2', '3', '4', '1'],
-              correctOptionIndex: 2,
-              explanation: 'Terms like y_1, y_3, y_5 are multiplied by 4.'
-            }
+            { question: 'Assumes curve is a:', options: ['Line', 'Parabola', 'Cubic', 'Circle'], correctOptionIndex: 1, explanation: 'Uses quadratic interpolation.' },
+            { question: 'Restriction on n?', options: ['Odd', 'Multiple 3', 'Even', 'No restriction'], correctOptionIndex: 2, explanation: 'Requires pairs of intervals.' },
+            { question: 'Odd-indexed terms multiplied by?', options: ['2', '3', '4', '1'], correctOptionIndex: 2, explanation: 'y_1, y_3 get 4.' }
           ]
         }
       ]
@@ -966,117 +747,105 @@ def simpson13(a, b, n):
     {
       id: 'unit5',
       title: 'Solution of Linear Algebraic Equations',
-      description: 'Methods to solve multiple equations with multiple unknowns (like x, y, z) simultaneously.',
+      description: 'Methods to solve multiple equations with multiple unknowns.',
       topics: [
         {
           id: 'gauss-elimination',
           title: 'Gauss Elimination Method',
-          simpleExplanation: 'A step-by-step way to simplify a system of equations into a triangle shape, making it super easy to solve from the bottom up.',
+          simpleExplanation: 'Simplify a system of equations into a triangle shape, solve from the bottom up.',
           detailedExplanation: `
 ## Gauss Elimination
-If you have a system of linear equations (e.g., $3x + 2y - z = 1$), you can represent it as a matrix. Gauss elimination systematically modifies this matrix to make the bottom-left corner all zeros.
+
+> [!IMPORTANT] **MEMORIZE:**
+> Step 1: Forward Elimination (Make Upper Triangular Matrix)
+> Step 2: Back Substitution (Solve z, then y, then x)
+
+> [!NOTE] **DEV BRAIN:**
+> Think of this as cleaning up a dependency graph. You systematically remove dependencies until one module stands alone (e.g. $z = 5$). Then you resolve the parent modules up the chain using that known value.
 
 ### The Process
-1. **Forward Elimination:** Use row operations (adding/subtracting multiples of rows) to convert the matrix into an **Upper Triangular Matrix** (all zeros below the main diagonal).
-2. **Back Substitution:** Once you have a triangle, the last equation will look like $5z = 10$, meaning $z = 2$. Plug $z$ into the equation above it to find $y$, and so on up to $x$.
+Use row operations to make all numbers below the main diagonal zero.
 
-### Example System
-$2x + y - z = 8$
-$-3x - y + 2z = -11$
-$-2x + y + 2z = -3$
+> [!WARNING] **TRAP:**
+> Do NOT swap columns. You can swap rows (Partial Pivoting) to avoid division by zero, but swapping columns changes the variables!
 
-Forward elimination turns the coefficient matrix into:
-$[2, 1, -1]$
-$[0, 0.5, 0.5]$
-$[0, 0, 1]$
-Then solve for z, then y, then x.
+> [!TIP] **EXAM TIP:**
+> Write out your row operations explicitly (e.g., $R_2 \\rightarrow R_2 - 2R_1$). If you make a math error, the examiner will see your logic was correct.
 `,
-          shortNotes: 'Direct method. Step 1: Forward elimination to create Upper Triangular Matrix. Step 2: Back substitution to find unknowns.',
+          richContent: `
+### Step-by-Step Triangle Formation
+Start:
+$[2, 1, -1]$
+$[-3, -1, 2]$
+$[-2, 1, 2]$
+
+Goal (Upper Triangular):
+$[X, X, X]$
+$[0, X, X]$
+$[0, 0, X]$
+          `,
+          shortNotes: 'Direct method. Step 1: Forward elimination to Upper Triangular. Step 2: Back substitution.',
           examples: [
-            {
-              title: 'Upper Triangular form',
-              description: 'Matrix looks like: [ [a, b, c], [0, d, e], [0, 0, f] ]. Notice the zeros form a triangle in the bottom left.'
-            }
+            { title: 'Upper Triangular', description: 'Zeros form a triangle in bottom left.' }
           ],
           keyPoints: [
-            'It is a direct method (gives exact answer in finite steps, ignoring round-off).',
-            'Goal is an Upper Triangular Matrix.',
-            'Uses row operations.',
-            'Requires back substitution at the end.'
+            'Direct method.',
+            'Goal: Upper Triangular Matrix.',
+            'Row operations.',
+            'Back substitution.'
           ],
           mcqs: [
-            {
-              question: 'What is the goal of the forward elimination step in Gauss Elimination?',
-              options: ['Identity Matrix', 'Lower Triangular Matrix', 'Upper Triangular Matrix', 'Diagonal Matrix'],
-              correctOptionIndex: 2,
-              explanation: 'It zeroes out the elements below the main diagonal, forming an upper triangular matrix.'
-            },
-            {
-              question: 'What process is used after forming the upper triangular matrix?',
-              options: ['Forward substitution', 'Back substitution', 'Integration', 'Iteration'],
-              correctOptionIndex: 1,
-              explanation: 'You solve the easiest variable at the bottom and substitute backward up the equations.'
-            },
-            {
-              question: 'Is Gauss Elimination a direct or iterative method?',
-              options: ['Iterative', 'Direct', 'Graphical', 'Randomized'],
-              correctOptionIndex: 1,
-              explanation: 'It provides the solution in a fixed number of algorithmic steps (direct method).'
-            }
+            { question: 'Goal of forward elimination?', options: ['Identity', 'Lower Triangular', 'Upper Triangular', 'Diagonal'], correctOptionIndex: 2, explanation: 'Zeroes below diagonal.' },
+            { question: 'Process used after?', options: ['Forward sub', 'Back sub', 'Integration', 'Iteration'], correctOptionIndex: 1, explanation: 'Solve bottom-up.' },
+            { question: 'Direct or iterative?', options: ['Iterative', 'Direct', 'Graphical', 'Randomized'], correctOptionIndex: 1, explanation: 'Fixed algorithmic steps.' }
           ]
         },
         {
           id: 'gauss-seidel',
           title: 'Gauss-Seidel Iterative Method',
-          simpleExplanation: 'A guessing game. Start with guesses for x, y, z. Use the equations to improve x, then IMMEDIATELY use the new x to improve y. Repeat until the numbers stop changing.',
+          simpleExplanation: 'Guess x, y, z. Use equations to improve x, IMMEDIATELY use new x to improve y.',
           detailedExplanation: `
 ## Gauss-Seidel Method
-Unlike Gauss Elimination, which is direct, Gauss-Seidel is an **Iterative Method**. You start with a guess (usually zeros) and keep refining it.
+
+> [!IMPORTANT] **MEMORIZE:**
+> Rule: Use the most recently calculated values **immediately**.
+> Condition: Matrix must be **Diagonally Dominant**.
+
+> [!NOTE] **DEV BRAIN:**
+> In Jacobi method (the alternative), updates are synchronous (values update only after the whole loop). In Gauss-Seidel, updates are asynchronous/immediate. Because it uses the freshest data, Gauss-Seidel converges much faster!
 
 ### How it works
-1. Rearrange the equations so each variable is on the left side of one equation.
-   $x = (C_1 - b_1y - c_1z) / a_1$
-   $y = (C_2 - a_2x - c_2z) / b_2$
-   $z = (C_3 - a_3x - b_3y) / c_3$
-2. Guess $y=0, z=0$, plug into the first equation to get a new $x$.
-3. **The Trick:** When calculating the new $y$ in the second equation, use the **NEW** $x$ you just found, not the old guess!
-4. Repeat this loop until the values stabilize.
+1. Rearrange to isolate $x, y, z$.
+2. Guess $y=0, z=0$. Get new $x$.
+3. When finding new $y$, use the NEW $x$ immediately!
 
-### Convergence Condition
-It only works if the system is **Diagonally Dominant**. This means the absolute value of the diagonal coefficient is greater than or equal to the sum of the absolute values of the other coefficients in that row.
+> [!WARNING] **TRAP:**
+> If the matrix is NOT diagonally dominant, the iterations will diverge (numbers go to infinity). Always check and rearrange rows if needed before starting.
+
+> [!TIP] **EXAM TIP:**
+> Create a neat table: Iteration | x | y | z. Circle the updated values in your calculation to prove you used the immediate update property.
 `,
-          shortNotes: 'Iterative method. Uses the most recently updated values immediately in the next equation. Requires Diagonally Dominant matrix to converge.',
+          richContent: `
+### Comparison Table
+| Feature | Jacobi | Gauss-Seidel |
+|---|---|---|
+| Variable Update | End of iteration | Immediately |
+| Convergence Speed | Slow | Fast |
+          `,
+          shortNotes: 'Iterative method. Uses latest updated values immediately. Requires Diagonally Dominant matrix.',
           examples: [
-            {
-              title: 'Immediate Update',
-              description: 'If you find x=2 in eq 1, you use x=2 immediately in eq 2 to find y. You don\'t wait for the next loop.'
-            }
+            { title: 'Immediate Update', description: 'Find x=2 in eq 1, use x=2 immediately in eq 2.' }
           ],
           keyPoints: [
             'Iterative method.',
-            'Uses latest updated values immediately (unlike Jacobi method).',
-            'Converges faster than the Jacobi method.',
-            'System must be diagonally dominant to guarantee convergence.'
+            'Uses latest updated values immediately.',
+            'Faster than Jacobi.',
+            'Must be diagonally dominant.'
           ],
           mcqs: [
-            {
-              question: 'What is the main difference between Gauss-Seidel and Jacobi methods?',
-              options: ['Seidel is direct', 'Seidel uses updated values immediately', 'Jacobi requires no initial guess', 'Seidel uses a difference table'],
-              correctOptionIndex: 1,
-              explanation: 'Gauss-Seidel uses the newest available variable values instantly, while Jacobi waits for the next full iteration cycle.'
-            },
-            {
-              question: 'What condition guarantees convergence for Gauss-Seidel?',
-              options: ['Symmetric matrix', 'Diagonal dominance', 'Identity matrix', 'Zero matrix'],
-              correctOptionIndex: 1,
-              explanation: 'The diagonal elements must be larger in magnitude than the sum of the other elements in their respective rows.'
-            },
-            {
-              question: 'Which method generally converges faster?',
-              options: ['Jacobi', 'Gauss-Seidel', 'They are equal', 'Bisection'],
-              correctOptionIndex: 1,
-              explanation: 'Because it uses updated information immediately, Gauss-Seidel reaches the solution in fewer iterations than Jacobi.'
-            }
+            { question: 'Difference between Seidel and Jacobi?', options: ['Direct', 'Uses updated values immediately', 'No initial guess', 'Difference table'], correctOptionIndex: 1, explanation: 'Instantly uses new variables.' },
+            { question: 'Condition for convergence?', options: ['Symmetric', 'Diagonal dominance', 'Identity', 'Zero'], correctOptionIndex: 1, explanation: 'Diagonal > sum of others.' },
+            { question: 'Which converges faster?', options: ['Jacobi', 'Gauss-Seidel', 'Equal', 'Bisection'], correctOptionIndex: 1, explanation: 'Uses fresher data.' }
           ]
         }
       ]
@@ -1084,137 +853,101 @@ It only works if the system is **Diagonally Dominant**. This means the absolute 
     {
       id: 'unit6',
       title: 'Ordinary Differential Equations (ODE)',
-      description: 'Solving differential equations numerically when analytical calculus is too difficult.',
+      description: 'Solving differential equations numerically.',
       topics: [
         {
           id: 'eulers-method',
           title: 'Euler\'s Method',
-          simpleExplanation: 'Using the slope (derivative) at a point to take a tiny step forward in a straight line to guess the next point.',
+          simpleExplanation: 'Using slope to take a tiny step forward in a straight line to guess next point.',
           detailedExplanation: `
 ## Euler's Method
-This is the simplest numerical method for solving Ordinary Differential Equations (ODEs) of the form $dy/dx = f(x, y)$ with an initial condition $y(x_0) = y_0$.
+
+> [!IMPORTANT] **MEMORIZE:**
+> Formula: $y_{n+1} = y_n + h \\cdot f(x_n, y_n)$
+> (New Y = Old Y + step_size * slope)
+
+> [!NOTE] **DEV BRAIN:**
+> Euler's method is basic physics simulation in games! \`position += velocity * delta_time\`. The problem? If \`delta_time\` ($h$) is too big, physics breaks and players clip through walls! 
 
 ### The Concept
-A differential equation gives you the slope of the curve at any point. If you know a starting point, you can calculate the slope there. Assume the slope stays constant for a very small step $h$, and draw a straight line to find the next point.
+Assume the slope stays constant for a very small step $h$, and draw a straight line.
 
-### Formula
-$y_{n+1} = y_n + h \\cdot f(x_n, y_n)$
-$x_{n+1} = x_n + h$
+> [!WARNING] **TRAP:**
+> Euler's method has very large truncation error. The straight line approximation diverges quickly from the true curve if $h$ is large.
 
-Where $h$ is the step size. Smaller $h$ means better accuracy but more computation.
-
-### Python Code
-\`\`\`python
-# Solve dy/dx = x + y, given y(0) = 1. Find y at x=0.2 with h=0.1
-def f(x, y):
-    return x + y
-
-def euler(x0, y0, target_x, h):
-    x = x0
-    y = y0
-    
-    while x < target_x:
-        slope = f(x, y)
-        y = y + h * slope # Update y
-        x = x + h         # Update x
-        
-    return y
-
-ans = euler(0, 1, 0.2, 0.1)
-print(ans)
-\`\`\`
+> [!TIP] **EXAM TIP:**
+> Write $f(x_n, y_n)$ explicitly as your differential equation. If the ODE is $dy/dx = x+y$, then slope $= x_n + y_n$.
 `,
-          shortNotes: 'Simplest ODE solver. Formula: y_{new} = y_{old} + h * f(x, y). Assumes constant slope over step h. Not very accurate unless h is tiny.',
+          richContent: `
+### Step-by-Step Trace
+$dy/dx = x+y$. Start (0,1), $h=0.1$.
+1. Slope at (0,1) = 0 + 1 = 1
+2. New $y = 1 + 0.1 \\times 1 = 1.1$
+3. Next point: (0.1, 1.1)
+          `,
+          shortNotes: 'Simplest ODE solver. y_new = y_old + h*f(x,y). Not very accurate unless h is tiny.',
           examples: [
-            {
-              title: 'One step of Euler',
-              description: 'dy/dx = x+y. Start (0,1), h=0.1. Slope = 0+1=1. New y = 1 + 0.1*(1) = 1.1. New point is (0.1, 1.1).'
-            }
+            { title: 'One step', description: 'dy/dx = x+y. Start (0,1), h=0.1. New point is (0.1, 1.1).' }
           ],
           keyPoints: [
             'First-order method.',
-            'Uses the tangent line to approximate the curve.',
-            'Error is large unless the step size $h$ is very small.',
-            'Forms the basis for more advanced methods like Runge-Kutta.'
+            'Uses tangent line.',
+            'Error is large unless h is small.',
+            'Basis for advanced methods.'
           ],
           mcqs: [
-            {
-              question: 'Euler\'s method is used for solving:',
-              options: ['Roots of equations', 'Integrals', 'Ordinary Differential Equations', 'Linear Systems'],
-              correctOptionIndex: 2,
-              explanation: 'It steps through an ODE using its derivative to find y values.'
-            },
-            {
-              question: 'In Euler\'s formula $y_{n+1} = y_n + h * f(x_n, y_n)$, what does $f(x_n, y_n)$ represent?',
-              options: ['The area', 'The slope (dy/dx)', 'The second derivative', 'The step size'],
-              correctOptionIndex: 1,
-              explanation: 'f(x, y) is the differential equation dy/dx, representing the slope of the tangent.'
-            },
-            {
-              question: 'How can you increase the accuracy of Euler\'s method?',
-              options: ['Increase h', 'Decrease h', 'Use negative h', 'It is perfectly accurate always'],
-              correctOptionIndex: 1,
-              explanation: 'A smaller step size h means the tangent line approximation is used for a shorter distance, reducing error.'
-            }
+            { question: 'Euler method used for:', options: ['Roots', 'Integrals', 'ODEs', 'Linear Systems'], correctOptionIndex: 2, explanation: 'Steps through ODE.' },
+            { question: 'What does f(x,y) represent?', options: ['Area', 'Slope (dy/dx)', 'Second derivative', 'Step size'], correctOptionIndex: 1, explanation: 'Slope of tangent.' },
+            { question: 'Increase accuracy by:', options: ['Increase h', 'Decrease h', 'Negative h', 'Always accurate'], correctOptionIndex: 1, explanation: 'Smaller step size = shorter tangent approximation.' }
           ]
         },
         {
           id: 'runge-kutta-4',
           title: 'Runge-Kutta Method (4th order)',
-          simpleExplanation: 'The industry standard for solving ODEs. It calculates the slope at four different places in a single step and averages them to get a highly accurate next point.',
+          simpleExplanation: 'Industry standard. Calculates slope at four places in a single step and averages them.',
           detailedExplanation: `
 ## Runge-Kutta 4th Order (RK4)
-Euler's method only looks at the slope at the beginning of the step. RK4 is vastly superior because it calculates four different slopes and takes a weighted average.
 
-### The Four Slopes (k1, k2, k3, k4)
-1. **$k_1$:** Slope at the beginning of the step (same as Euler).
-   $k_1 = h \\cdot f(x_n, y_n)$
-2. **$k_2$:** Slope at the midpoint, using $k_1$ to guess the midpoint $y$.
-   $k_2 = h \\cdot f(x_n + \\frac{h}{2}, y_n + \\frac{k_1}{2})$
-3. **$k_3$:** Another slope at the midpoint, using $k_2$ to guess the midpoint $y$.
-   $k_3 = h \\cdot f(x_n + \\frac{h}{2}, y_n + \\frac{k_2}{2})$
-4. **$k_4$:** Slope at the end of the step, using $k_3$.
-   $k_4 = h \\cdot f(x_n + h, y_n + k_3)$
+> [!IMPORTANT] **MEMORIZE:**
+> $y_{n+1} = y_n + \\frac{1}{6}(k_1 + 2k_2 + 2k_3 + k_4)$
 
-### The Formula
-Take a weighted average where the midpoints get twice the weight:
-$y_{n+1} = y_n + \\frac{1}{6}(k_1 + 2k_2 + 2k_3 + k_4)$
-$x_{n+1} = x_n + h$
+> [!NOTE] **DEV BRAIN:**
+> If Euler is just checking the slope once, RK4 is like Anti-Aliasing. It samples the slope at the start ($k_1$), twice in the middle ($k_2, k_3$), and at the end ($k_4$), then blends them. It's incredibly stable!
 
-This method is incredibly accurate and is the default algorithm in software like MATLAB and SciPy for solving ODEs.
+### The Four Slopes
+- $k_1 = h \\cdot f(x_n, y_n)$ (Start)
+- $k_2 = h \\cdot f(x_n + h/2, y_n + k_1/2)$ (Mid 1)
+- $k_3 = h \\cdot f(x_n + h/2, y_n + k_2/2)$ (Mid 2)
+- $k_4 = h \\cdot f(x_n + h, y_n + k_3)$ (End)
+
+> [!WARNING] **TRAP:**
+> $k_3$ uses $k_2$ to guess the y-coordinate. Do NOT use $k_1$ for $k_3$!
+
+> [!TIP] **EXAM TIP:**
+> Calculate $k_1, k_2, k_3, k_4$ separately and clearly. The examiner looks for these 4 values before looking at your final answer.
 `,
-          shortNotes: 'Highly accurate. Calculates 4 slopes (k1,k2,k3,k4). k2 & k3 are at midpoints. Formula: y_{new} = y_{old} + (1/6)*(k1 + 2k2 + 2k3 + k4).',
+          richContent: `
+### Comparison Table
+| Feature | Euler | RK4 |
+|---|---|---|
+| Slopes per step | 1 | 4 |
+| Accuracy | Low | Very High |
+| Computation | Fast | Heavy |
+          `,
+          shortNotes: 'Highly accurate. Calculates 4 slopes (k1,k2,k3,k4). y_new = y_old + (1/6)*(k1 + 2k2 + 2k3 + k4).',
           examples: [
-            {
-              title: 'Weights',
-              description: 'Notice the weights in the formula: 1/6 for k1, 2/6 for k2, 2/6 for k3, and 1/6 for k4. They sum to 1, making it an average slope.'
-            }
+            { title: 'Weights', description: 'Weights: 1/6 for k1, 2/6 for k2, 2/6 for k3, 1/6 for k4. Sum to 1 (average).' }
           ],
           keyPoints: [
-            'Fourth-order accuracy (very low error).',
-            'Evaluates the function 4 times per step.',
-            'Uses a weighted average of slopes.',
-            'Industry standard for solving initial value problems.'
+            'Fourth-order accuracy.',
+            'Evaluates function 4 times.',
+            'Weighted average of slopes.',
+            'Industry standard.'
           ],
           mcqs: [
-            {
-              question: 'How many function evaluations (slopes) are calculated per step in RK4?',
-              options: ['1', '2', '3', '4'],
-              correctOptionIndex: 3,
-              explanation: 'It calculates k1, k2, k3, and k4.'
-            },
-            {
-              question: 'In the RK4 formula, which slopes are given double weight?',
-              options: ['k1 and k4', 'k2 and k3', 'k1 and k2', 'None'],
-              correctOptionIndex: 1,
-              explanation: 'k2 and k3, the midpoint slopes, are multiplied by 2 in the weighted average.'
-            },
-            {
-              question: 'Why is RK4 preferred over Euler\'s method?',
-              options: ['It requires fewer calculations', 'It is much more accurate for the same step size', 'It is a direct method', 'It does not use h'],
-              correctOptionIndex: 1,
-              explanation: 'RK4 averages slopes across the interval, making its error drastically lower than Euler\'s.'
-            }
+            { question: 'Evaluations per step in RK4?', options: ['1', '2', '3', '4'], correctOptionIndex: 3, explanation: 'Calculates k1,k2,k3,k4.' },
+            { question: 'Which slopes given double weight?', options: ['k1, k4', 'k2, k3', 'k1, k2', 'None'], correctOptionIndex: 1, explanation: 'Midpoint slopes multiplied by 2.' },
+            { question: 'Why preferred over Euler?', options: ['Fewer calculations', 'Much more accurate', 'Direct', 'No h'], correctOptionIndex: 1, explanation: 'Averages slopes, lower error.' }
           ]
         }
       ]
