@@ -124,6 +124,7 @@ export default function ProfilePage() {
           streakDays: game.streakDays,
           level: levelInfo.level,
           levelTitle: levelInfo.title,
+          isReplay: true,
         },
       })
     );

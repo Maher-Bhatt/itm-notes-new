@@ -16,6 +16,7 @@ interface UnlockedEventDetail {
   streakDays?: number;
   level?: number;
   levelTitle?: string;
+  isReplay?: boolean;
 }
 
 export function AchievementCelebrationModal() {
@@ -124,8 +125,10 @@ export function AchievementCelebrationModal() {
       if (detail && detail.achievement) {
         setActiveAchievement(detail.achievement);
         setEventData(detail);
-        playVictoryFanfare();
-        setTimeout(() => startConfetti(), 100);
+        if (!detail.isReplay) {
+          playVictoryFanfare();
+          setTimeout(() => startConfetti(), 100);
+        }
       }
     };
 
@@ -299,11 +302,11 @@ export function AchievementCelebrationModal() {
         <div className="flex flex-col items-center">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold uppercase tracking-wider mb-2">
             <Sparkles className="h-3.5 w-3.5" />
-            <span>Achievement Unlocked</span>
+            <span>{eventData?.isReplay ? 'Achievement Viewer' : 'Achievement Unlocked'}</span>
           </div>
 
           <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-white tracking-tight">
-            Academic Triumph!
+            {eventData?.isReplay ? 'Your Academic Triumph' : 'Academic Triumph!'}
           </h2>
           <p className="text-xs sm:text-sm text-zinc-400 mt-0.5">
             ITM SLS Baroda University • Department of CSE
