@@ -1,6 +1,6 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { getTopic, getAdjacentTopics, getSubject } from "@/data/subjects";
-import { Subject } from "@/data/types";
+import { Subject, Topic } from "@/data/types";
 import { useProgress } from "@/hooks/useProgress";
 import { useGamification } from "@/hooks/useGamification";
 import { useTopic, useSubject } from "@/hooks/useAcademicData";
@@ -140,13 +140,14 @@ export default function TopicPage() {
         shortNotes: dbTop.short_notes || undefined,
         examples: dbTop.examples || [],
         keyPoints: (dbTop.key_points || []).map((kp: any) => kp.point),
+        theoryQuestions: (dbTop.theory_questions || []),
         mcqs: (dbTop.mcqs || []).map((m: any) => ({
           question: m.question,
           options: m.options,
           correctIndex: m.correct_index,
           explanation: m.explanation,
         })),
-      },
+      } as Topic,
       unitTitle: "Lecture Unit",
     };
   }, [staticResult, dbTopic]);

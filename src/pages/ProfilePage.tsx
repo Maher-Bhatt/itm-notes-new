@@ -44,7 +44,7 @@ export default function ProfilePage() {
 
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [activeTierFilter, setActiveTierFilter] = useState<'all' | 'unlocked' | 'bronze' | 'silver' | 'gold' | 'legendary'>('all');
+  const [activeTierFilter, setActiveTierFilter] = useState<'all' | 'unlocked' | 'bronze' | 'silver' | 'gold' | 'legendary' | 'mythic'>('all');
 
   const [displayName, setDisplayName] = useState(profile?.display_name || user?.email?.split('@')[0] || 'Maher Bhatt');
   const [avatarUrl, setAvatarUrl] = useState<string | null>(profile?.avatar_url || null);
