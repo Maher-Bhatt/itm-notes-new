@@ -2,10 +2,14 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 
-interface UserProfile {
-  id: string;
+export interface UserProfile {
+  id?: string;
+  user_id?: string;
   display_name: string | null;
   avatar_url: string | null;
+  bio?: string | null;
+  target_cgpa?: string | null;
+  goal?: string | null;
 }
 
 type AppRole = 'admin' | 'moderator' | 'user';
@@ -17,6 +21,7 @@ interface AuthContextType {
   role: AppRole | null;
   isLoading: boolean;
   signOut: () => Promise<void>;
+  updateProfile: (updates: Partial<UserProfile>) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -24,7 +29,21 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
-  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(() => {
+    try {
+      const saved = localStorage.getItem('itm_student_profile');
+      if (saved) return JSON.parse(saved);
+    } catch {
+      // ignore
+    }
+    return {
+      display_name: 'Maher Bhatt',
+      avatar_url: null,
+      bio: 'Passionate engineering student preparing for Semester 3 University Exams at ITM SLS Baroda.',
+      target_cgpa: '8.5+',
+      goal: 'Ace Computer Architecture MST & master DSA Trees',
+    };
+  });
   const [role, setRole] = useState<AppRole | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -49,7 +68,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (session?.user) {
         fetchProfileAndRole(session.user.id);
       } else {
-        setProfile(null);
         setRole(null);
         setIsLoading(false);
       }
@@ -66,7 +84,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       ]);
 
       if (profileResponse.data) {
-        setProfile(profileResponse.data);
+        setProfile(prev => {
+          const merged = { ...prev, ...profileResponse.data };
+          try {
+            localStorage.setItem('itm_student_profile', JSON.stringify(merged));
+          } catch {
+            // ignore
+          }
+          return merged;
+        });
       }
       
       if (rolesResponse.data) {
@@ -85,12 +111,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const updateProfile = async (updates: Partial<UserProfile>) => {
+    setProfile(prev => {
+      const merged = { ...prev, ...updates };
+      try {
+        localStorage.setItem('itm_student_profile', JSON.stringify(merged));
+      } catch (err) {
+        console.error('Failed to save profile to localStorage:', err);
+      }
+      return merged;
+    });
+
+    if (user?.id) {
+      try {
+        await supabase.from('profiles').upsert({
+          user_id: user.id,
+          display_name: updates.display_name ?? profile?.display_name ?? null,
+          avatar_url: updates.avatar_url ?? profile?.avatar_url ?? null,
+          updated_at: new Date().toISOString(),
+        });
+      } catch (err) {
+        console.error("Failed to update profile in Supabase:", err);
+      }
+    }
+  };
+
   const signOut = async () => {
     await supabase.auth.signOut();
   };
 
   return (
-    <AuthContext.Provider value={{ session, user, profile, role, isLoading, signOut }}>
+    <AuthContext.Provider value={{ session, user, profile, role, isLoading, signOut, updateProfile }}>
       {children}
     </AuthContext.Provider>
   );

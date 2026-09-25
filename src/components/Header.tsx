@@ -184,12 +184,27 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <button
-              onClick={() => navigate("/auth")}
-              className="apple-press inline-flex items-center justify-center gap-1.5 h-8 px-3 rounded text-sm bg-primary text-primary-foreground hover:bg-primary/90 transition-colors ml-2 font-medium"
-            >
-              Sign In
-            </button>
+            <div className="flex items-center gap-1.5 ml-1">
+              <button
+                onClick={() => navigate("/profile")}
+                title="My Student Profile"
+                className="apple-press inline-flex items-center justify-center h-8 w-8 rounded-full bg-secondary hover:bg-secondary/80 transition-colors border overflow-hidden"
+              >
+                {profile?.avatar_url ? (
+                  <img src={profile.avatar_url} alt="Avatar" className="h-full w-full rounded-full object-cover" />
+                ) : (
+                  <span className="text-xs font-bold text-primary">
+                    {profile?.display_name?.charAt(0).toUpperCase() || 'M'}
+                  </span>
+                )}
+              </button>
+              <button
+                onClick={() => navigate("/auth")}
+                className="apple-press inline-flex items-center justify-center gap-1.5 h-8 px-2.5 rounded text-xs bg-primary text-primary-foreground hover:bg-primary/90 transition-colors font-medium"
+              >
+                Sign In
+              </button>
+            </div>
           )}
         </div>
       </div>

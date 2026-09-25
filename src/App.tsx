@@ -29,6 +29,7 @@ import GpaCalculatorPage from "./pages/GpaCalculatorPage";
 import SubjectCheatSheetPage from "./pages/SubjectCheatSheetPage";
 import { PomodoroProvider } from "@/contexts/PomodoroContext";
 import { PomodoroFloatingWidget } from "@/components/PomodoroFloatingWidget";
+import { AchievementCelebrationModal } from "@/components/AchievementCelebrationModal";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
@@ -45,6 +46,7 @@ const App = () => (
               <BrowserRouter>
                 <ErrorBoundary>
                   <PomodoroFloatingWidget />
+                  <AchievementCelebrationModal />
                   <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/auth" element={<AuthPage />} />
