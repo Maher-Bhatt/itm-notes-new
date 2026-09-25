@@ -27,6 +27,7 @@ import {
   Plus,
   X,
   ExternalLink,
+  RotateCw,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
@@ -36,9 +37,17 @@ import {
   PostCategory,
   ClassmateProfile,
   INITIAL_CLASSMATES,
-  getStoredPosts,
-  saveStoredPosts,
 } from '@/data/communityData';
+import {
+  fetchCommunityPosts,
+  createCommunityPost,
+  toggleCommunityLike,
+  addCommunityComment,
+  deleteCommunityPost,
+  fetchUserFriends,
+  toggleFriendInDb,
+  subscribeToCommunityFeed,
+} from '@/services/communityService';
 import { FriendComparisonModal } from '@/components/FriendComparisonModal';
 import { SharePostModal } from '@/components/SharePostModal';
 
@@ -67,7 +76,10 @@ export default function CommunityPage() {
     return email.includes('maher') || email.includes('admin') || name.includes('maher') || localStorage.getItem('itm_admin_god_mode') === 'true';
   }, [role, user, profile]);
 
-  const [posts, setPosts] = useState<CommunityPost[]>(() => getStoredPosts());
+  const [posts, setPosts] = useState<CommunityPost[]>([]);
+  const [isLoadingPosts, setIsLoadingPosts] = useState(true);
+  const [isSubmittingPost, setIsSubmittingPost] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [activeTab, setActiveTab] = useState<'all' | 'masked' | 'feedback' | 'trending'>('all');
   const [expandedComments, setExpandedComments] = useState<Record<string, boolean>>({});
@@ -123,6 +135,42 @@ export default function CommunityPage() {
   const [newFriendRollNo, setNewFriendRollNo] = useState('');
   const [newFriendBranch, setNewFriendBranch] = useState("B.Tech CSE '26");
 
+  // Load feed directly from Supabase Backend & listen for realtime updates
+  const loadFeed = async (showLoading = false) => {
+    if (showLoading) setIsLoadingPosts(true);
+    try {
+      const fetched = await fetchCommunityPosts(user?.id);
+      setPosts(fetched);
+    } catch (err) {
+      console.error('Failed to load feed from Supabase:', err);
+    } finally {
+      if (showLoading) setIsLoadingPosts(false);
+      setIsRefreshing(false);
+    }
+  };
+
+  useEffect(() => {
+    loadFeed(true);
+    const unsubscribe = subscribeToCommunityFeed(() => {
+      // Background realtime update
+      loadFeed(false);
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, [user?.id]);
+
+  // Sync friends from Supabase Backend
+  useEffect(() => {
+    if (user?.id) {
+      fetchUserFriends(user.id).then((ids) => {
+        if (ids && ids.length > 0) {
+          setFriendIds(ids);
+        }
+      });
+    }
+  }, [user?.id]);
+
   // Scroll to shared post if URL query parameter is present
   useEffect(() => {
     if (sharedPostId) {
@@ -139,8 +187,8 @@ export default function CommunityPage() {
   const currentAuthorName = profile?.display_name || user?.email?.split('@')[0] || (user ? 'Student' : 'Guest');
   const currentAuthorEmail = user?.email || '';
 
-  // Handle Create Post
-  const handleCreatePost = (e: React.FormEvent) => {
+  // Handle Create Post (connected to Supabase backend)
+  const handleCreatePost = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) {
       toast.error('You must sign in with your student account to post.');
@@ -157,61 +205,89 @@ export default function CommunityPage() {
       return;
     }
 
-    const newPost: CommunityPost = {
-      id: `post-${Date.now()}`,
-      authorId: user.id,
-      authorName: currentAuthorName,
-      authorEmail: currentAuthorEmail,
-      authorAvatar: profile?.avatar_url || undefined,
-      authorBranch: "B.Tech CSE '26",
-      isMasked: isMasked,
-      maskAlias: 'Anonymous Student 🎭',
-      category: postCategory,
-      content: postContent.trim(),
-      createdAt: 'Just now',
-      likes: 1,
-      likedByMe: true,
-      comments: [],
-    };
+    setIsSubmittingPost(true);
+    try {
+      const created = await createCommunityPost({
+        authorId: user.id,
+        authorName: currentAuthorName,
+        authorEmail: currentAuthorEmail,
+        authorAvatar: profile?.avatar_url || undefined,
+        authorBranch: profile?.branch || "B.Tech CSE '26",
+        isMasked: isMasked,
+        maskAlias: 'Anonymous Student 🎭',
+        category: postCategory,
+        content: postContent.trim(),
+      });
 
-    const updated = [newPost, ...posts];
-    setPosts(updated);
-    saveStoredPosts(updated);
-    setPostContent('');
+      setPosts((prev) => [created, ...prev.filter((p) => p.id !== created.id)]);
+      setPostContent('');
 
-    // Reward XP for community participation
-    addXp(15);
-    toast.success(
-      isMasked
-        ? '🎭 Posted anonymously with Campus Mask!'
-        : '🚀 Your post was published to the campus feed!',
-      {
-        description: isMasked
-          ? 'Your real identity is hidden from all classmates. (+15 XP)'
-          : 'Classmates can view and discuss your thoughts. (+15 XP)',
-      }
+      // Reward XP for community participation
+      addXp(15);
+      toast.success(
+        isMasked
+          ? '🎭 Posted anonymously with Campus Mask!'
+          : '🚀 Your post was published to the campus feed!',
+        {
+          description: isMasked
+            ? 'Your real identity is hidden from all classmates. (+15 XP)'
+            : 'Classmates can view and discuss your thoughts. (+15 XP)',
+        }
+      );
+    } catch (err) {
+      console.error('Failed to create post:', err);
+      toast.error('Failed to publish post. Please check your connection.');
+    } finally {
+      setIsSubmittingPost(false);
+    }
+  };
+
+  // Toggle Like on Post (connected to Supabase backend)
+  const handleToggleLike = async (postId: string) => {
+    if (!user) {
+      toast.info('Please sign in to like campus posts.');
+      return;
+    }
+
+    const targetPost = posts.find((p) => p.id === postId);
+    if (!targetPost) return;
+
+    const prevLiked = targetPost.likedByMe || false;
+    const prevLikes = targetPost.likes;
+
+    // Optimistic UI update
+    setPosts((prev) =>
+      prev.map((p) => {
+        if (p.id === postId) {
+          const nextLiked = !prevLiked;
+          return {
+            ...p,
+            likedByMe: nextLiked,
+            likes: nextLiked ? prevLikes + 1 : Math.max(0, prevLikes - 1),
+          };
+        }
+        return p;
+      })
+    );
+
+    // Backend sync
+    const result = await toggleCommunityLike(postId, user.id, prevLiked, prevLikes);
+    setPosts((prev) =>
+      prev.map((p) => {
+        if (p.id === postId) {
+          return {
+            ...p,
+            likedByMe: result.likedByMe,
+            likes: result.likes,
+          };
+        }
+        return p;
+      })
     );
   };
 
-  // Toggle Like on Post
-  const handleToggleLike = (postId: string) => {
-    const updated = posts.map((p) => {
-      if (p.id === postId) {
-        const liked = !p.likedByMe;
-        return {
-          ...p,
-          likedByMe: liked,
-          likes: liked ? p.likes + 1 : Math.max(0, p.likes - 1),
-        };
-      }
-      return p;
-    });
-    setPosts(updated);
-    saveStoredPosts(updated);
-  };
-
-  // Add Comment to a Post
-  const handleAddComment = (postId: string) => {
+  // Add Comment to a Post (connected to Supabase backend)
+  const handleAddComment = async (postId: string) => {
     if (!user) {
       toast.error('You must sign in to comment.');
       navigate('/auth');
@@ -222,44 +298,49 @@ export default function CommunityPage() {
 
     const masked = Boolean(commentMasked[postId]);
 
-    const newComment = {
-      id: `c-${Date.now()}`,
-      postId,
-      authorId: user.id,
-      authorName: currentAuthorName,
-      authorEmail: currentAuthorEmail,
-      authorAvatar: profile?.avatar_url || undefined,
-      isMasked: masked,
-      maskAlias: 'Masked Student 🎭',
-      content,
-      createdAt: 'Just now',
-      likes: 0,
-    };
+    try {
+      const newComment = await addCommunityComment({
+        postId,
+        authorId: user.id,
+        authorName: currentAuthorName,
+        authorEmail: currentAuthorEmail,
+        authorAvatar: profile?.avatar_url || undefined,
+        isMasked: masked,
+        maskAlias: 'Masked Student 🎭',
+        content,
+      });
 
-    const updated = posts.map((p) => {
-      if (p.id === postId) {
-        return {
-          ...p,
-          comments: [...p.comments, newComment],
-        };
-      }
-      return p;
-    });
+      setPosts((prev) =>
+        prev.map((p) => {
+          if (p.id === postId) {
+            return {
+              ...p,
+              comments: [...p.comments, newComment],
+            };
+          }
+          return p;
+        })
+      );
 
-    setPosts(updated);
-    saveStoredPosts(updated);
-    setCommentInputs((prev) => ({ ...prev, [postId]: '' }));
-    addXp(5);
-    toast.success('Comment added (+5 XP)!');
+      setCommentInputs((prev) => ({ ...prev, [postId]: '' }));
+      addXp(5);
+      toast.success('Comment added (+5 XP)!');
+    } catch (err) {
+      console.error('Failed to add comment:', err);
+      toast.error('Could not post comment. Please try again.');
+    }
   };
 
-  // Delete Post (Admin or Author only)
-  const handleDeletePost = (postId: string) => {
+  // Delete Post (Admin or Author only - connected to Supabase backend)
+  const handleDeletePost = async (postId: string) => {
     if (!confirm('Are you sure you want to delete this post?')) return;
-    const updated = posts.filter((p) => p.id !== postId);
-    setPosts(updated);
-    saveStoredPosts(updated);
-    toast.success('Post removed from feed.');
+    setPosts((prev) => prev.filter((p) => p.id !== postId));
+    const ok = await deleteCommunityPost(postId);
+    if (ok) {
+      toast.success('Post removed from feed.');
+    } else {
+      toast.error('Failed to remove post from backend.');
+    }
   };
 
   // Open Share Post Modal
@@ -268,8 +349,8 @@ export default function CommunityPage() {
     setIsShareModalOpen(true);
   };
 
-  // Friends Handlers
-  const handleToggleFriend = (studentId: string) => {
+  // Friends Handlers (connected to Supabase backend)
+  const handleToggleFriend = async (studentId: string) => {
     const student = classmates.find((c) => c.id === studentId);
     const isAlreadyFriend = friendIds.includes(studentId);
 
@@ -281,9 +362,17 @@ export default function CommunityPage() {
       addXp(15);
       toast.success(`🎉 Added ${student?.name || 'Classmate'} to your study friends (+15 XP)!`);
     }
+
+    if (user?.id) {
+      await toggleFriendInDb(user.id, studentId, {
+        name: student?.name,
+        email: student?.email,
+        branch: student?.branch,
+      });
+    }
   };
 
-  const handleCreateCustomFriend = (e: React.FormEvent) => {
+  const handleCreateCustomFriend = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newFriendName.trim()) {
       toast.error('Please enter your friend name.');
@@ -313,6 +402,14 @@ export default function CommunityPage() {
     setIsAddFriendModalOpen(false);
     addXp(20);
     toast.success(`✨ Added ${newStudent.name} (${roll}) to your study friends network (+20 XP)!`);
+
+    if (user?.id) {
+      await toggleFriendInDb(user.id, newStudent.id, {
+        name: newStudent.name,
+        email: newStudent.email,
+        branch: newStudent.branch,
+      });
+    }
   };
 
   const handleOpenComparison = (classmate: ClassmateProfile) => {
@@ -359,9 +456,15 @@ export default function CommunityPage() {
         <div className="relative rounded-3xl p-6 sm:p-10 mb-8 overflow-hidden border border-border bg-card shadow-sm">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
             <div className="max-w-xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold mb-3">
-                <Users className="h-3.5 w-3.5" />
-                <span>ITM SLS Baroda University Campus Social</span>
+              <div className="flex items-center gap-2 flex-wrap mb-3">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold">
+                  <Users className="h-3.5 w-3.5" />
+                  <span>ITM SLS Baroda University Campus Social</span>
+                </div>
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-[11px] font-bold">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  <span>Supabase Cloud Live</span>
+                </div>
               </div>
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-foreground tracking-tight leading-tight">
                 Campus Pulse & Confessions
@@ -524,10 +627,20 @@ export default function CommunityPage() {
                     {/* Submit Button */}
                     <button
                       type="submit"
-                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-primary-foreground font-bold text-xs hover:opacity-90 transition-opacity apple-press shadow-sm"
+                      disabled={isSubmittingPost}
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-primary-foreground font-bold text-xs hover:opacity-90 transition-opacity apple-press shadow-sm disabled:opacity-60"
                     >
-                      <Send className="h-3.5 w-3.5" />
-                      <span>Post to Campus (+15 XP)</span>
+                      {isSubmittingPost ? (
+                        <>
+                          <RotateCw className="h-3.5 w-3.5 animate-spin" />
+                          <span>Publishing to Cloud...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Send className="h-3.5 w-3.5" />
+                          <span>Post to Campus (+15 XP)</span>
+                        </>
+                      )}
                     </button>
                   </div>
                 </form>
@@ -580,8 +693,19 @@ export default function CommunityPage() {
                 </button>
               </div>
 
-              {/* Category Dropdown Filter */}
+              {/* Category Dropdown Filter & Refresh */}
               <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsRefreshing(true);
+                    loadFeed(false);
+                  }}
+                  title="Refresh Feed from Supabase Cloud"
+                  className="p-1.5 rounded-lg bg-secondary hover:bg-secondary/80 text-muted-foreground hover:text-foreground border border-border/80 transition-colors"
+                >
+                  <RotateCw className={`h-3.5 w-3.5 ${isRefreshing ? 'animate-spin text-primary' : ''}`} />
+                </button>
                 <Filter className="h-3.5 w-3.5 text-muted-foreground" />
                 <select
                   value={selectedCategory}
@@ -600,7 +724,26 @@ export default function CommunityPage() {
 
             {/* Posts Stream */}
             <div className="space-y-4">
-              {filteredPosts.length === 0 ? (
+              {isLoadingPosts ? (
+                <div className="space-y-4">
+                  {[1, 2, 3].map((n) => (
+                    <div key={n} className="rounded-2xl border border-border/80 bg-card p-6 shadow-sm animate-pulse space-y-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-secondary/80" />
+                        <div className="space-y-2 flex-1">
+                          <div className="h-4 w-32 bg-secondary/80 rounded" />
+                          <div className="h-3 w-24 bg-secondary/60 rounded" />
+                        </div>
+                      </div>
+                      <div className="h-14 bg-secondary/50 rounded-xl" />
+                      <div className="flex items-center gap-4">
+                        <div className="h-6 w-16 bg-secondary/60 rounded-lg" />
+                        <div className="h-6 w-20 bg-secondary/60 rounded-lg" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : filteredPosts.length === 0 ? (
                 <div className="p-10 rounded-2xl border border-dashed border-border text-center text-muted-foreground">
                   <MessageSquare className="h-8 w-8 mx-auto mb-2 opacity-40" />
                   <p className="font-semibold text-sm">No posts found in this section</p>

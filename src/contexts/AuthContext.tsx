@@ -77,7 +77,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const fetchProfileAndRole = async (userId: string) => {
     try {
       const [profileResponse, rolesResponse] = await Promise.all([
-        supabase.from('profiles').select('*').eq('user_id', userId).single(),
+        supabase.from('profiles').select('*').eq('user_id', userId).maybeSingle(),
         supabase.from('user_roles').select('role').eq('user_id', userId)
       ]);
 
@@ -90,6 +90,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             // ignore
           }
           return merged;
+        });
+      } else {
+        // Auto-create initial profile for user in Supabase
+        const defaultName = session?.user?.user_metadata?.display_name || session?.user?.email?.split('@')[0] || 'Student';
+        supabase.from('profiles').insert({
+          user_id: userId,
+          display_name: defaultName,
+          branch: "B.Tech CSE '26",
+        }).select().maybeSingle().then(({ data }) => {
+          if (data) {
+            setProfile(data as any);
+            try {
+              localStorage.setItem('itm_student_profile', JSON.stringify(data));
+            } catch {}
+          }
         });
       }
       

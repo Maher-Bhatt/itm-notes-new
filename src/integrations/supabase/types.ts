@@ -105,6 +105,146 @@ export interface Database {
         Insert: { id?: string, topic_id: string, question: string, options: Json, correct_index: number, explanation?: string | null, order_index?: number, created_at?: string }
         Update: { id?: string, topic_id?: string, question?: string, options?: Json, correct_index?: number, explanation?: string | null, order_index?: number, created_at?: string }
       }
+      community_posts: {
+        Row: {
+          id: string
+          author_id: string
+          author_name: string
+          author_email: string | null
+          author_avatar: string | null
+          author_branch: string | null
+          is_masked: boolean
+          mask_alias: string
+          category: string
+          content: string
+          likes: number
+          pinned: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          author_id: string
+          author_name: string
+          author_email?: string | null
+          author_avatar?: string | null
+          author_branch?: string | null
+          is_masked?: boolean
+          mask_alias?: string
+          category: string
+          content: string
+          likes?: number
+          pinned?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          author_id?: string
+          author_name?: string
+          author_email?: string | null
+          author_avatar?: string | null
+          author_branch?: string | null
+          is_masked?: boolean
+          mask_alias?: string
+          category?: string
+          content?: string
+          likes?: number
+          pinned?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      community_comments: {
+        Row: {
+          id: string
+          post_id: string
+          author_id: string
+          author_name: string
+          author_email: string | null
+          author_avatar: string | null
+          is_masked: boolean
+          mask_alias: string
+          content: string
+          likes: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          post_id: string
+          author_id: string
+          author_name: string
+          author_email?: string | null
+          author_avatar?: string | null
+          is_masked?: boolean
+          mask_alias?: string
+          content: string
+          likes?: number
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          post_id?: string
+          author_id?: string
+          author_name?: string
+          author_email?: string | null
+          author_avatar?: string | null
+          is_masked?: boolean
+          mask_alias?: string
+          content?: string
+          likes?: number
+          created_at?: string
+        }
+      }
+      community_post_likes: {
+        Row: {
+          id: string
+          post_id: string
+          user_id: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          post_id: string
+          user_id: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          post_id?: string
+          user_id?: string
+          created_at?: string
+        }
+      }
+      student_friends: {
+        Row: {
+          id: string
+          user_id: string
+          friend_id: string
+          friend_name: string | null
+          friend_email: string | null
+          friend_branch: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          friend_id: string
+          friend_name?: string | null
+          friend_email?: string | null
+          friend_branch?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          friend_id?: string
+          friend_name?: string | null
+          friend_email?: string | null
+          friend_branch?: string | null
+          created_at?: string
+        }
+      }
     }
     Views: {
       [_ in never]: never
