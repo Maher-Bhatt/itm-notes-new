@@ -632,11 +632,11 @@ export default function Index() {
 
                   <p className="text-xs text-muted-foreground">
                     {subject.units.length} Units · {topicIds.length} Core Topics · Semester {subject.semester}
-                    {subProgress > 0 && ` · ${completedInSub} completed (${subProgress}%)`}
+                    {user && subProgress > 0 && ` · ${completedInSub} completed (${subProgress}%)`}
                   </p>
 
-                  {/* Subject Progress bar */}
-                  {subProgress > 0 && (
+                  {/* Subject Progress bar - Authenticated Only */}
+                  {user && subProgress > 0 && (
                     <div className="mt-2.5 h-1.5 w-full max-w-md rounded-full bg-secondary overflow-hidden">
                       <div
                         className="h-full bg-primary transition-all duration-500 rounded-full"

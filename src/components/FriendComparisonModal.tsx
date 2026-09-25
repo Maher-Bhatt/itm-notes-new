@@ -9,9 +9,17 @@ interface FriendComparisonModalProps {
   isOpen: boolean;
   onClose: () => void;
   friend: ClassmateProfile | null;
+  isFriend?: boolean;
+  onToggleFriend?: (friendId: string) => void;
 }
 
-export function FriendComparisonModal({ isOpen, onClose, friend }: FriendComparisonModalProps) {
+export function FriendComparisonModal({
+  isOpen,
+  onClose,
+  friend,
+  isFriend = false,
+  onToggleFriend,
+}: FriendComparisonModalProps) {
   const { user, profile } = useAuth();
   const { state: game, levelInfo } = useGamification();
 
@@ -38,7 +46,7 @@ export function FriendComparisonModal({ isOpen, onClose, friend }: FriendCompari
   const userStats = useMemo(() => {
     const unlockedBadges = game.achievements.filter((a) => a.unlockedAt !== null).length;
     return {
-      name: profile?.display_name || user?.email?.split('@')[0] || 'Maher Bhatt (You)',
+      name: profile?.display_name || user?.email?.split('@')[0] || (user ? 'You' : 'Guest Student'),
       avatar: profile?.avatar_url,
       branch: "B.Tech CSE '26",
       level: levelInfo.level,
@@ -54,7 +62,8 @@ export function FriendComparisonModal({ isOpen, onClose, friend }: FriendCompari
   if (!isOpen || !friend) return null;
 
   const handleShareComparison = () => {
-    const text = `🎓 Campus Study Rivalry on ITM Notes!\n${userStats.name} (Lvl ${userStats.level} · ${userStats.xp} XP) vs ${friend.name} (Lvl ${friend.level} · ${friend.xp} XP).\nWho has the best 75% attendance and study streak? Check it out on ITM Notes!`;
+    const shareUrl = `${window.location.origin}/community`;
+    const text = `🎓 Campus Study Rivalry on ITM Notes!\n${userStats.name} (Lvl ${userStats.level} · ${userStats.xp} XP) vs ${friend.name} (Lvl ${friend.level} · ${friend.xp} XP).\nWho has the best 75% attendance and study streak? Check it out: ${shareUrl}`;
     if (navigator.clipboard) {
       navigator.clipboard.writeText(text);
       toast.success('Comparison summary copied to clipboard!', {
@@ -70,10 +79,10 @@ export function FriendComparisonModal({ isOpen, onClose, friend }: FriendCompari
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header Banner */}
-        <div className="relative p-5 sm:p-6 bg-gradient-to-r from-primary/15 via-purple-500/10 to-amber-500/15 border-b border-border">
+        <div className="relative p-5 sm:p-6 bg-secondary/40 border-b border-border">
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 p-2 rounded-full bg-secondary/80 hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors apple-press"
+            className="absolute top-4 right-4 p-2 rounded-full bg-secondary hover:bg-secondary/80 text-muted-foreground hover:text-foreground transition-colors apple-press"
           >
             <X className="h-4 w-4" />
           </button>
@@ -83,10 +92,27 @@ export function FriendComparisonModal({ isOpen, onClose, friend }: FriendCompari
             </span>
             <span className="text-xs font-bold uppercase tracking-wider text-primary">Head-to-Head Study Comparison</span>
           </div>
-          <h2 className="text-xl sm:text-2xl font-black text-foreground">Classmate Rivalry & Stats</h2>
-          <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
-            Compare your curriculum progress, attendance buffer, and XP rank side-by-side.
-          </p>
+          <div className="flex flex-wrap items-center justify-between gap-3 mt-1">
+            <div>
+              <h2 className="text-xl sm:text-2xl font-black text-foreground">Classmate Rivalry & Stats</h2>
+              <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
+                Compare your curriculum progress, attendance buffer, and XP rank side-by-side.
+              </p>
+            </div>
+            {onToggleFriend && user && (
+              <button
+                type="button"
+                onClick={() => onToggleFriend(friend.id)}
+                className={`px-3 py-1.5 rounded-xl font-bold text-xs transition-all apple-press shadow-2xs ${
+                  isFriend
+                    ? 'bg-secondary text-muted-foreground hover:text-destructive hover:bg-destructive/10 border border-border'
+                    : 'bg-primary text-primary-foreground hover:opacity-90'
+                }`}
+              >
+                {isFriend ? '✓ In Friends List' : '+ Add Study Friend'}
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Comparison Body */}

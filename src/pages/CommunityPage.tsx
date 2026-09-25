@@ -1,5 +1,5 @@
-import { useState, useMemo } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useMemo, useEffect } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import {
@@ -21,6 +21,12 @@ import {
   HelpCircle,
   Trash2,
   Search,
+  UserPlus,
+  UserCheck,
+  UserX,
+  Plus,
+  X,
+  ExternalLink,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
@@ -34,6 +40,7 @@ import {
   saveStoredPosts,
 } from '@/data/communityData';
 import { FriendComparisonModal } from '@/components/FriendComparisonModal';
+import { SharePostModal } from '@/components/SharePostModal';
 
 const CATEGORIES: PostCategory[] = [
   'College Feedback',
@@ -46,6 +53,9 @@ const CATEGORIES: PostCategory[] = [
 
 export default function CommunityPage() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const sharedPostId = searchParams.get('post');
+
   const { user, profile, role } = useAuth();
   const { addXp } = useGamification();
 
@@ -69,9 +79,61 @@ export default function CommunityPage() {
   const [commentInputs, setCommentInputs] = useState<Record<string, string>>({});
   const [commentMasked, setCommentMasked] = useState<Record<string, boolean>>({});
 
+  // Share Post Modal State
+  const [sharingPost, setSharingPost] = useState<CommunityPost | null>(null);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+
   // Comparison Modal State
   const [comparisonFriend, setComparisonFriend] = useState<ClassmateProfile | null>(null);
   const [isComparisonOpen, setIsComparisonOpen] = useState(false);
+
+  // ─── Friends & Classmates System ───
+  const [classmates, setClassmates] = useState<ClassmateProfile[]>(() => {
+    try {
+      const raw = localStorage.getItem('itm_user_classmates_network');
+      if (raw) return JSON.parse(raw);
+    } catch {}
+    return INITIAL_CLASSMATES;
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('itm_user_classmates_network', JSON.stringify(classmates));
+    } catch {}
+  }, [classmates]);
+
+  const [friendIds, setFriendIds] = useState<string[]>(() => {
+    try {
+      const raw = localStorage.getItem('itm_user_friends_ids');
+      if (raw) return JSON.parse(raw);
+    } catch {}
+    return ['student-1', 'student-2'];
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('itm_user_friends_ids', JSON.stringify(friendIds));
+    } catch {}
+  }, [friendIds]);
+
+  const [classmateTab, setClassmateTab] = useState<'friends' | 'all'>('friends');
+  const [classmateSearch, setClassmateSearch] = useState('');
+  const [isAddFriendModalOpen, setIsAddFriendModalOpen] = useState(false);
+  const [newFriendName, setNewFriendName] = useState('');
+  const [newFriendRollNo, setNewFriendRollNo] = useState('');
+  const [newFriendBranch, setNewFriendBranch] = useState("B.Tech CSE '26");
+
+  // Scroll to shared post if URL query parameter is present
+  useEffect(() => {
+    if (sharedPostId) {
+      setTimeout(() => {
+        const el = document.getElementById(sharedPostId);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 350);
+    }
+  }, [sharedPostId]);
 
   // Author information
   const currentAuthorName = profile?.display_name || user?.email?.split('@')[0] || (user ? 'Student' : 'Guest');
@@ -131,7 +193,7 @@ export default function CommunityPage() {
     );
   };
 
-  // Toggle Like on a Post
+  // Toggle Like on Post
   const handleToggleLike = (postId: string) => {
     const updated = posts.map((p) => {
       if (p.id === postId) {
@@ -200,21 +262,93 @@ export default function CommunityPage() {
     toast.success('Post removed from feed.');
   };
 
+  // Open Share Post Modal
+  const handleOpenShare = (post: CommunityPost) => {
+    setSharingPost(post);
+    setIsShareModalOpen(true);
+  };
+
+  // Friends Handlers
+  const handleToggleFriend = (studentId: string) => {
+    const student = classmates.find((c) => c.id === studentId);
+    const isAlreadyFriend = friendIds.includes(studentId);
+
+    if (isAlreadyFriend) {
+      setFriendIds((prev) => prev.filter((id) => id !== studentId));
+      toast.info(`Removed ${student?.name || 'Classmate'} from your study friends.`);
+    } else {
+      setFriendIds((prev) => [...prev, studentId]);
+      addXp(15);
+      toast.success(`🎉 Added ${student?.name || 'Classmate'} to your study friends (+15 XP)!`);
+    }
+  };
+
+  const handleCreateCustomFriend = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newFriendName.trim()) {
+      toast.error('Please enter your friend name.');
+      return;
+    }
+    const roll = newFriendRollNo.trim() || `23CSE0${Math.floor(Math.random() * 80) + 10}`;
+    const newStudent: ClassmateProfile = {
+      id: `student-custom-${Date.now()}`,
+      name: newFriendName.trim(),
+      email: `${roll.toLowerCase()}@itm.ac.in`,
+      branch: newFriendBranch.trim() || "B.Tech CSE '26",
+      level: Math.floor(Math.random() * 4) + 4,
+      levelTitle: 'Study Peer',
+      xp: Math.floor(Math.random() * 1500) + 1200,
+      streakDays: Math.floor(Math.random() * 14) + 3,
+      attendancePercent: Math.floor(Math.random() * 18) + 78,
+      topicsCompleted: Math.floor(Math.random() * 25) + 15,
+      quizzesTaken: Math.floor(Math.random() * 10) + 5,
+      badgesCount: Math.floor(Math.random() * 8) + 4,
+      statusQuote: `Connected as study partner! Roll: ${roll}`,
+    };
+
+    setClassmates((prev) => [newStudent, ...prev]);
+    setFriendIds((prev) => [...prev, newStudent.id]);
+    setNewFriendName('');
+    setNewFriendRollNo('');
+    setIsAddFriendModalOpen(false);
+    addXp(20);
+    toast.success(`✨ Added ${newStudent.name} (${roll}) to your study friends network (+20 XP)!`);
+  };
+
+  const handleOpenComparison = (classmate: ClassmateProfile) => {
+    setComparisonFriend(classmate);
+    setIsComparisonOpen(true);
+  };
+
   // Filtered Posts
   const filteredPosts = useMemo(() => {
     return posts.filter((p) => {
+      // If user came via a shared post link, prioritize that post
+      if (sharedPostId && p.id === sharedPostId) return true;
       if (activeTab === 'masked' && !p.isMasked) return false;
       if (activeTab === 'feedback' && p.category !== 'College Feedback') return false;
       if (activeTab === 'trending' && p.likes < 10) return false;
       if (selectedCategory !== 'All' && p.category !== selectedCategory) return false;
       return true;
     });
-  }, [posts, activeTab, selectedCategory]);
+  }, [posts, activeTab, selectedCategory, sharedPostId]);
 
-  const handleOpenComparison = (classmate: ClassmateProfile) => {
-    setComparisonFriend(classmate);
-    setIsComparisonOpen(true);
-  };
+  // Filtered Classmates / Friends
+  const displayedClassmates = useMemo(() => {
+    return classmates.filter((c) => {
+      if (classmateTab === 'friends' && !friendIds.includes(c.id)) return false;
+      if (classmateSearch.trim()) {
+        const q = classmateSearch.toLowerCase();
+        return c.name.toLowerCase().includes(q) || c.branch.toLowerCase().includes(q) || c.email.toLowerCase().includes(q);
+      }
+      return true;
+    });
+  }, [classmates, classmateTab, friendIds, classmateSearch]);
+
+  const sharedPostData = useMemo(() => {
+    if (!sharedPostId) return null;
+    return posts.find((p) => p.id === sharedPostId) || null;
+  }, [posts, sharedPostId]);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -240,7 +374,7 @@ export default function CommunityPage() {
 
             {/* Quick Stats Banner */}
             <div className="grid grid-cols-2 gap-3 shrink-0">
-              <div className="p-3.5 rounded-2xl bg-card/80 backdrop-blur border border-border text-center shadow-sm">
+              <div className="p-3.5 rounded-2xl bg-secondary/50 backdrop-blur border border-border text-center shadow-2xs">
                 <p className="text-xs text-muted-foreground font-medium">Campus Shield</p>
                 <div className="flex items-center justify-center gap-1.5 mt-1">
                   <Shield className="h-4 w-4 text-emerald-500" />
@@ -249,19 +383,44 @@ export default function CommunityPage() {
                 <p className="text-[10px] text-muted-foreground mt-0.5">Mask hides public identity</p>
               </div>
 
-              <div className="p-3.5 rounded-2xl bg-card/80 backdrop-blur border border-border text-center shadow-sm">
-                <p className="text-xs text-muted-foreground font-medium">Study Rivals</p>
+              <div className="p-3.5 rounded-2xl bg-secondary/50 backdrop-blur border border-border text-center shadow-2xs">
+                <p className="text-xs text-muted-foreground font-medium">Study Buddies</p>
                 <div className="flex items-center justify-center gap-1.5 mt-1">
                   <Trophy className="h-4 w-4 text-amber-500" />
-                  <span className="text-sm sm:text-base font-extrabold text-foreground">Compare Peers</span>
+                  <span className="text-sm sm:text-base font-extrabold text-foreground">{friendIds.length} Friends</span>
                 </div>
-                <p className="text-[10px] text-muted-foreground mt-0.5">75% Attendance & XP</p>
+                <p className="text-[10px] text-muted-foreground mt-0.5">Compare attendance & XP</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Main Grid: Feed on Left (7 cols), Classmates on Right (5 cols) */}
+        {/* Deep Linked Shared Post Banner */}
+        {sharedPostId && (
+          <div className="p-4 rounded-2xl bg-secondary/80 border border-primary/40 flex items-center justify-between gap-4 mb-6 shadow-xs animate-slide-up">
+            <div className="flex items-center gap-2.5">
+              <span className="w-8 h-8 rounded-xl bg-primary/20 text-primary flex items-center justify-center text-sm font-bold">
+                📍
+              </span>
+              <div>
+                <p className="text-xs sm:text-sm font-bold text-foreground">
+                  Viewing Shared Post by {sharedPostData ? (sharedPostData.isMasked ? 'Anonymous Student 🎭' : sharedPostData.authorName) : 'Classmate'}
+                </p>
+                <p className="text-[11px] text-muted-foreground">
+                  You opened a direct post link. You can reply or clear filter to view the full feed.
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => setSearchParams({})}
+              className="px-3.5 py-1.5 rounded-xl bg-primary text-primary-foreground font-bold text-xs hover:opacity-90 transition-opacity shrink-0 shadow-sm"
+            >
+              View Full Feed
+            </button>
+          </div>
+        )}
+
+        {/* Main Grid: Feed on Left (7 cols), Classmates & Friends on Right (5 cols) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* ── Left Column: Feed ── */}
           <div className="lg:col-span-8 space-y-6">
@@ -396,42 +555,43 @@ export default function CommunityPage() {
                       : 'bg-secondary/60 text-muted-foreground hover:text-foreground'
                   }`}
                 >
-                  🏛️ College Feedback
+                  College Feedback
                 </button>
                 <button
                   onClick={() => setActiveTab('masked')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 ${
                     activeTab === 'masked'
-                      ? 'bg-purple-600 text-white shadow-sm'
+                      ? 'bg-primary text-primary-foreground shadow-sm'
                       : 'bg-secondary/60 text-muted-foreground hover:text-foreground'
                   }`}
                 >
-                  🎭 Masked Only
+                  <span>🎭 Anonymous Masked</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('trending')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 ${
                     activeTab === 'trending'
-                      ? 'bg-amber-500 text-white shadow-sm'
+                      ? 'bg-primary text-primary-foreground shadow-sm'
                       : 'bg-secondary/60 text-muted-foreground hover:text-foreground'
                   }`}
                 >
-                  🔥 Trending
+                  <Flame className="h-3.5 w-3.5 text-amber-500" />
+                  <span>Trending</span>
                 </button>
               </div>
 
               {/* Category Dropdown Filter */}
-              <div className="flex items-center gap-1.5 text-xs">
+              <div className="flex items-center gap-2">
                 <Filter className="h-3.5 w-3.5 text-muted-foreground" />
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="bg-transparent font-medium text-muted-foreground hover:text-foreground outline-none cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg bg-secondary text-xs text-foreground font-medium border border-border/80 outline-none"
                 >
-                  <option value="All">All Topics</option>
-                  {CATEGORIES.map((c) => (
-                    <option key={c} value={c}>
-                      {c}
+                  <option value="All">All Categories</option>
+                  {CATEGORIES.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
                     </option>
                   ))}
                 </select>
@@ -450,18 +610,24 @@ export default function CommunityPage() {
                 filteredPosts.map((post) => {
                   const isPostAuthor = user && post.authorId === user.id;
                   const canDelete = isAdmin || isPostAuthor;
+                  const isHighlighted = sharedPostId === post.id;
 
                   return (
                     <div
                       key={post.id}
-                      className="rounded-2xl border border-border/80 bg-card p-5 sm:p-6 shadow-sm hover:border-border transition-all space-y-4"
+                      id={post.id}
+                      className={`rounded-2xl border bg-card p-5 sm:p-6 shadow-sm transition-all space-y-4 ${
+                        isHighlighted
+                          ? 'border-primary ring-2 ring-primary/30 shadow-md'
+                          : 'border-border/80 hover:border-border'
+                      }`}
                     >
                       {/* Post Header */}
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex items-center gap-3">
                           {/* Avatar Display */}
                           {post.isMasked ? (
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-purple-900 to-indigo-700 flex items-center justify-center text-lg shadow-md border border-purple-400/30">
+                            <div className="w-10 h-10 rounded-full bg-zinc-900 text-zinc-100 flex items-center justify-center text-lg shadow-sm border border-zinc-700">
                               🎭
                             </div>
                           ) : post.authorAvatar ? (
@@ -483,8 +649,14 @@ export default function CommunityPage() {
                               </span>
 
                               {post.isMasked && (
-                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20">
+                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-secondary text-muted-foreground border border-border">
                                   🎭 Masked Identity
+                                </span>
+                              )}
+
+                              {isHighlighted && (
+                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
+                                  Shared Post 📍
                                 </span>
                               )}
 
@@ -519,15 +691,14 @@ export default function CommunityPage() {
                             </div>
 
                             <p className="text-[11px] text-muted-foreground mt-0.5">
-                              {post.isMasked ? 'Mask Protected' : post.authorBranch || "B.Tech CSE '26"} ·{' '}
+                              {post.isMasked ? 'Campus Mask Shield' : post.authorBranch || "B.Tech CSE '26"} ·{' '}
                               {post.createdAt}
                             </p>
                           </div>
                         </div>
 
-                        {/* Top-Right Badge & Actions */}
                         <div className="flex items-center gap-2">
-                          <span className="text-[11px] font-medium px-2.5 py-1 rounded-md bg-secondary text-muted-foreground">
+                          <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-secondary text-foreground border border-border/60">
                             {post.category}
                           </span>
                           {canDelete && (
@@ -600,21 +771,14 @@ export default function CommunityPage() {
                           </button>
                         </div>
 
-                        {/* Share */}
+                        {/* Share Button (Opens Professional Share Modal) */}
                         <button
-                          onClick={() => {
-                            if (navigator.clipboard) {
-                              navigator.clipboard.writeText(
-                                `"${post.content.slice(0, 100)}..." - Read more on ITM Notes Campus Feed!`
-                              );
-                              toast.success('Post text copied to clipboard!');
-                            }
-                          }}
-                          className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors p-1"
-                          title="Share post"
+                          onClick={() => handleOpenShare(post)}
+                          className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground hover:bg-secondary px-2.5 py-1.5 rounded-lg transition-colors"
+                          title="Share unique post link"
                         >
-                          <Share2 className="h-3.5 w-3.5" />
-                          <span className="hidden sm:inline">Share</span>
+                          <Share2 className="h-3.5 w-3.5 text-primary" />
+                          <span className="font-semibold text-xs">Share</span>
                         </button>
                       </div>
 
@@ -717,79 +881,169 @@ export default function CommunityPage() {
             </div>
           </div>
 
-          {/* ── Right Column: Classmates & Comparison Hub ── */}
+          {/* ── Right Column: Friends & Classmates Network ── */}
           <div className="lg:col-span-4 space-y-6">
-            {/* Classmate Study Buddies Card */}
+            {/* Friends Hub Card */}
             <div className="rounded-2xl sm:rounded-3xl border border-border/80 bg-card p-5 sm:p-6 shadow-sm">
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
-                  <Trophy className="h-4 w-4 text-amber-500" />
-                  <h3 className="font-extrabold text-sm sm:text-base text-foreground">Classmates & Ranks</h3>
+                  <Users className="h-4 w-4 text-primary" />
+                  <h3 className="font-extrabold text-sm sm:text-base text-foreground">Study Buddies</h3>
                 </div>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary/10 text-primary">
-                  CSE Sem 3
-                </span>
+                <button
+                  onClick={() => setIsAddFriendModalOpen(true)}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-primary text-primary-foreground text-[11px] font-bold hover:opacity-90 transition-opacity apple-press shadow-2xs"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                  <span>Add Friend</span>
+                </button>
               </div>
+
               <p className="text-xs text-muted-foreground mb-4">
-                Click <strong>"Compare"</strong> on any classmate to benchmark your Level, Study Streak, and 75%
-                Attendance buffer.
+                Connect with classmates, add study partners, and compare streaks and 75% attendance buffers.
               </p>
 
-              <div className="space-y-3">
-                {INITIAL_CLASSMATES.map((student, idx) => (
-                  <div
-                    key={student.id}
-                    className="p-3 rounded-2xl bg-secondary/30 border border-border/60 hover:border-primary/40 transition-all flex items-center justify-between gap-3 group"
-                  >
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <div className="relative">
-                        <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center font-bold text-xs text-foreground border overflow-hidden">
-                          {student.avatar ? (
-                            <img src={student.avatar} alt={student.name} className="w-full h-full object-cover" />
-                          ) : (
-                            student.name.charAt(0).toUpperCase()
-                          )}
-                        </div>
-                        <span className="absolute -top-1 -left-1 w-4 h-4 rounded-full bg-amber-500 text-white font-black text-[9px] flex items-center justify-center shadow">
-                          {idx + 1}
-                        </span>
-                      </div>
+              {/* Friends vs All Classmates Tabs */}
+              <div className="flex items-center gap-1.5 p-1 rounded-xl bg-secondary/60 border border-border/80 mb-3">
+                <button
+                  onClick={() => setClassmateTab('friends')}
+                  className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                    classmateTab === 'friends'
+                      ? 'bg-card text-foreground shadow-xs'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  My Friends ({friendIds.length})
+                </button>
+                <button
+                  onClick={() => setClassmateTab('all')}
+                  className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                    classmateTab === 'all'
+                      ? 'bg-card text-foreground shadow-xs'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  All Classmates ({classmates.length})
+                </button>
+              </div>
 
-                      <div className="min-w-0">
-                        <p className="font-bold text-xs text-foreground truncate">{student.name}</p>
-                        <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground mt-0.5">
-                          <span>Lvl {student.level}</span>
-                          <span>•</span>
-                          <span className="text-amber-600 font-bold">🔥 {student.streakDays}d</span>
-                          <span>•</span>
-                          <span
-                            className={
-                              student.attendancePercent >= 75
-                                ? 'text-emerald-600 font-bold'
-                                : 'text-red-500 font-bold'
-                            }
-                          >
-                            {student.attendancePercent}% Att.
-                          </span>
-                        </div>
-                      </div>
-                    </div>
+              {/* Search Friends / Classmates */}
+              <div className="relative mb-3">
+                <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
+                <input
+                  type="text"
+                  value={classmateSearch}
+                  onChange={(e) => setClassmateSearch(e.target.value)}
+                  placeholder="Search by name, roll no or branch..."
+                  className="w-full pl-8 pr-3 py-1.5 rounded-xl bg-secondary/40 border border-border text-xs text-foreground placeholder:text-muted-foreground outline-none focus:border-primary"
+                />
+              </div>
 
-                    <button
-                      onClick={() => handleOpenComparison(student)}
-                      className="px-2.5 py-1.5 rounded-xl bg-primary text-primary-foreground font-bold text-[11px] hover:opacity-90 apple-press shadow-sm shrink-0 transition-opacity"
-                    >
-                      Compare
-                    </button>
+              {/* Classmates Stream */}
+              <div className="space-y-2.5">
+                {displayedClassmates.length === 0 ? (
+                  <div className="p-6 rounded-2xl bg-secondary/20 border border-dashed border-border text-center">
+                    <Users className="h-6 w-6 text-muted-foreground/60 mx-auto mb-1.5" />
+                    <p className="text-xs font-bold text-foreground">
+                      {classmateTab === 'friends' ? 'No study friends added yet' : 'No classmates found'}
+                    </p>
+                    <p className="text-[11px] text-muted-foreground mt-0.5 mb-3">
+                      {classmateTab === 'friends'
+                        ? 'Switch to "All Classmates" to add friends or enter a Roll Number!'
+                        : 'Try searching with a different keyword.'}
+                    </p>
+                    {classmateTab === 'friends' && (
+                      <button
+                        onClick={() => setClassmateTab('all')}
+                        className="px-3 py-1 rounded-xl bg-primary text-primary-foreground font-bold text-xs shadow-2xs"
+                      >
+                        Browse All Classmates
+                      </button>
+                    )}
                   </div>
-                ))}
+                ) : (
+                  displayedClassmates.map((student, idx) => {
+                    const isFriend = friendIds.includes(student.id);
+
+                    return (
+                      <div
+                        key={student.id}
+                        className="p-3 rounded-2xl bg-secondary/30 border border-border/60 hover:border-primary/40 transition-all flex items-center justify-between gap-3 group"
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div className="relative">
+                            <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center font-bold text-xs text-foreground border overflow-hidden">
+                              {student.avatar ? (
+                                <img src={student.avatar} alt={student.name} className="w-full h-full object-cover" />
+                              ) : (
+                                student.name.charAt(0).toUpperCase()
+                              )}
+                            </div>
+                            <span className="absolute -top-1 -left-1 w-4 h-4 rounded-full bg-amber-500 text-white font-black text-[9px] flex items-center justify-center shadow">
+                              {idx + 1}
+                            </span>
+                          </div>
+
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-1.5">
+                              <p className="font-bold text-xs text-foreground truncate">{student.name}</p>
+                              {isFriend && (
+                                <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                                  Friend
+                                </span>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground mt-0.5">
+                              <span>Lvl {student.level}</span>
+                              <span>•</span>
+                              <span className="text-amber-600 font-bold">🔥 {student.streakDays}d</span>
+                              <span>•</span>
+                              <span
+                                className={
+                                  student.attendancePercent >= 75
+                                    ? 'text-emerald-600 font-bold'
+                                    : 'text-red-500 font-bold'
+                                }
+                              >
+                                {student.attendancePercent}% Att.
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          {/* Add / Friend Toggle Button */}
+                          <button
+                            onClick={() => handleToggleFriend(student.id)}
+                            className={`p-1.5 rounded-xl text-xs font-bold transition-all apple-press ${
+                              isFriend
+                                ? 'bg-secondary hover:bg-destructive/10 text-muted-foreground hover:text-destructive border border-border'
+                                : 'bg-secondary hover:bg-primary hover:text-primary-foreground text-foreground border border-border'
+                            }`}
+                            title={isFriend ? 'Remove Friend' : 'Add to Study Friends (+15 XP)'}
+                          >
+                            {isFriend ? <UserCheck className="h-3.5 w-3.5 text-emerald-500" /> : <UserPlus className="h-3.5 w-3.5" />}
+                          </button>
+
+                          {/* Compare Button */}
+                          <button
+                            onClick={() => handleOpenComparison(student)}
+                            className="px-2.5 py-1.5 rounded-xl bg-primary text-primary-foreground font-bold text-[11px] hover:opacity-90 apple-press shadow-2xs shrink-0 transition-opacity"
+                          >
+                            Compare
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
               </div>
             </div>
 
-            {/* University Anti-Retaliation Policy Card */}
-            <div className="rounded-2xl border border-purple-500/20 bg-purple-500/5 p-5 space-y-3">
-              <div className="flex items-center gap-2 text-purple-700 dark:text-purple-400 font-bold text-xs">
-                <Lock className="h-4 w-4" />
+            {/* Safety Architecture Policy Card */}
+            <div className="rounded-2xl border border-border bg-card p-5 space-y-3 shadow-2xs">
+              <div className="flex items-center gap-2 text-foreground font-bold text-xs">
+                <Lock className="h-4 w-4 text-emerald-500" />
                 <span>Mask Shield Safety Architecture</span>
               </div>
               <p className="text-[12px] leading-relaxed text-muted-foreground">
@@ -809,7 +1063,98 @@ export default function CommunityPage() {
         isOpen={isComparisonOpen}
         onClose={() => setIsComparisonOpen(false)}
         friend={comparisonFriend}
+        isFriend={comparisonFriend ? friendIds.includes(comparisonFriend.id) : false}
+        onToggleFriend={handleToggleFriend}
       />
+
+      {/* Professional Social Post Share Modal */}
+      <SharePostModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        post={sharingPost}
+      />
+
+      {/* Add Friend by Roll No / Custom Classmate Modal */}
+      {isAddFriendModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-background/80 backdrop-blur-sm animate-fade-in">
+          <div
+            className="w-full max-w-md bg-card border border-border rounded-3xl shadow-xl overflow-hidden p-6 animate-scale-in"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-4 pb-3 border-b border-border">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                  <UserPlus className="h-4 w-4" />
+                </div>
+                <h3 className="font-bold text-base text-foreground">Add Study Friend</h3>
+              </div>
+              <button
+                onClick={() => setIsAddFriendModalOpen(false)}
+                className="p-1.5 rounded-full hover:bg-secondary text-muted-foreground hover:text-foreground"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateCustomFriend} className="space-y-4">
+              <div>
+                <label className="text-xs font-semibold text-foreground block mb-1">
+                  Friend Full Name
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Rohan Sharma"
+                  value={newFriendName}
+                  onChange={(e) => setNewFriendName(e.target.value)}
+                  className="w-full px-3.5 py-2 rounded-xl bg-secondary/40 border border-border text-xs text-foreground placeholder:text-muted-foreground outline-none focus:border-primary"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-foreground block mb-1">
+                  Roll Number / Student ID
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. 23CSE042"
+                  value={newFriendRollNo}
+                  onChange={(e) => setNewFriendRollNo(e.target.value)}
+                  className="w-full px-3.5 py-2 rounded-xl bg-secondary/40 border border-border text-xs text-foreground placeholder:text-muted-foreground outline-none focus:border-primary uppercase font-mono"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-foreground block mb-1">
+                  Branch & Semester
+                </label>
+                <input
+                  type="text"
+                  value={newFriendBranch}
+                  onChange={(e) => setNewFriendBranch(e.target.value)}
+                  className="w-full px-3.5 py-2 rounded-xl bg-secondary/40 border border-border text-xs text-foreground placeholder:text-muted-foreground outline-none focus:border-primary"
+                />
+              </div>
+
+              <div className="pt-2 flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsAddFriendModalOpen(false)}
+                  className="px-4 py-2 rounded-xl bg-secondary hover:bg-secondary/80 text-foreground font-semibold text-xs"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 rounded-xl bg-primary text-primary-foreground font-bold text-xs hover:opacity-90 shadow-sm"
+                >
+                  + Add to Friends (+20 XP)
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

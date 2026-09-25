@@ -54,16 +54,18 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
               </div>
             </Link>
 
-            {/* Daily Streak Indicator */}
-            <button
-              onClick={() => navigate("/profile")}
-              title={`${game.streakDays} Day Study Streak! Level ${levelInfo.level} ${levelInfo.title}`}
-              className="apple-press inline-flex items-center gap-1 px-2 py-1 md:px-2.5 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 transition-all border border-amber-500/20 mr-0.5"
-            >
-              <Flame className="h-3.5 w-3.5 fill-amber-500 text-amber-500" />
-              <span>{game.streakDays}</span>
-              <span className="hidden md:inline text-[10px] text-muted-foreground font-medium">({game.xp} XP)</span>
-            </button>
+            {/* Daily Streak Indicator (Only visible for authenticated students) */}
+            {user && (
+              <button
+                onClick={() => navigate("/profile")}
+                title={`${game.streakDays} Day Study Streak! Level ${levelInfo.level} ${levelInfo.title}`}
+                className="apple-press inline-flex items-center gap-1 px-2 py-1 md:px-2.5 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 transition-all border border-amber-500/20 mr-0.5"
+              >
+                <Flame className="h-3.5 w-3.5 fill-amber-500 text-amber-500" />
+                <span>{game.streakDays}</span>
+                <span className="hidden md:inline text-[10px] text-muted-foreground font-medium">({game.xp} XP)</span>
+              </button>
+            )}
           </div>
           
           <div className="flex items-center gap-1.5">

@@ -141,6 +141,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.error("Signout error:", e);
     }
     localStorage.removeItem('itm_student_profile');
+    localStorage.removeItem('itm_admin_god_mode');
+    localStorage.removeItem('itm_notes_progress');
+    localStorage.removeItem('itm_notes_gamification_v2');
     setProfile(null);
     setUser(null);
     setSession(null);
