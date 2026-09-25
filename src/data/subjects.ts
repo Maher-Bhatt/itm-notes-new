@@ -1,7 +1,9 @@
 import { Subject } from './types';
 import { computerArchitecture } from './computer-architecture';
-import { sem3DetailedSubjects } from './sem3-detailed';
 import { sem3JavaMaster } from './sem3-java-master';
+import { sem3CoanmpMaster } from './sem3-coanmp-master';
+import { sem3DbmsMaster } from './sem3-dbms-master';
+import { sem3DsaMaster } from './sem3-dsa-master';
 import { pythonSubject } from './python';
 import { cLanguageSubject } from './c-language';
 import { digitalElectronicsSubject } from './digital-electronics';
@@ -30,7 +32,9 @@ export const subjects: Subject[] = [
   // Semester 3 Core & High Priority
   computerArchitecture,
   sem3JavaMaster,
-  ...sem3DetailedSubjects.filter((s) => s.code !== 'JAVA303'),
+  sem3CoanmpMaster,
+  sem3DbmsMaster,
+  sem3DsaMaster,
   
   // All University Semesters & Engineering Subjects
   pythonSubject,
@@ -38,7 +42,7 @@ export const subjects: Subject[] = [
   enrichedDE,
   enrichedPSR,
   financialAccountingSubject,
-  ...extraSubjects.filter((es) => !['sub-dsa', 'sub-dbms', 'sem3-dbms', 'sem3-java'].includes(es.id)),
+  ...extraSubjects.filter((es) => !['sub-dsa', 'sub-dbms', 'sem3-dbms', 'sem3-java', 'sub-coanmp'].includes(es.id)),
 ];
 
 export function getSubject(id: string): Subject | undefined {
