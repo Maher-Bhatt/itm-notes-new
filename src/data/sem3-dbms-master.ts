@@ -18,7 +18,13 @@ export const sem3DbmsMaster: Subject = {
           id: 'intro-dbms',
           title: 'What is DBMS, advantages over file system',
           simpleExplanation: 'A DBMS is a software that helps you store, manage, and retrieve data efficiently, unlike traditional file systems which are messy and redundant.',
-          detailedExplanation: `### Introduction to Database Management Systems
+          detailedExplanation: `### Three-Tier Client-Server Architecture
+\`\`\`mermaid
+flowchart TD
+    CLIENT["Client Tier (Presentation)\nWeb Browser / Mobile App / GUI"] <-->|"Network Request (HTTPS/API)"| APP["Application Server (Logic Tier)\nNode.js / Spring Boot / Python Backend"]
+    APP <-->|"Database Protocol (JDBC / SQL)"| DB["Database Server (Data Tier)\nPostgreSQL / Oracle / MySQL"]
+\`\`\`
+### Introduction to Database Management Systems
 
 > [!IMPORTANT] **MEMORIZE:**
 > **DBMS (Database Management System):** A specialized software application used to create, manage, and manipulate databases efficiently and securely.
@@ -59,8 +65,8 @@ Before the advent of DBMS, data was typically stored in flat files. This traditi
 | **Concurrency** | Very limited | Highly supported |
 
 > [!TIP] **EXAM TIP:**
-> If asked for "Advantages of DBMS", always draw the comparison table. It gives a structured look and guarantees full marks!`,
-          richContent: `### Visualizing DBMS Architecture
+> If asked for "Advantages of DBMS", always draw the comparison table. It gives a structured look and guarantees full marks!\`,
+          richContent: \`### Visualizing DBMS Architecture
 Here is how DBMS conceptually sits between the user and the data:
 User -> Application -> DBMS -> Database
 
@@ -105,7 +111,27 @@ User -> Application -> File`,
           id: 'db-arch',
           title: 'Database Architecture (1-tier, 2-tier, 3-tier)',
           simpleExplanation: 'Database architecture describes how users connect to the database. It can be direct (1-tier), through an application (2-tier), or through an application server and web server (3-tier).',
-          detailedExplanation: `### Database Architecture Overview
+          detailedExplanation: `### Three-Schema ANSI/SPARC Architecture (Data Independence)
+\`\`\`mermaid
+flowchart TD
+    subgraph External["External Level (User Views)"]
+        V1["View 1 (Student Portal)"]
+        V2["View 2 (Faculty Portal)"]
+        V3["View 3 (Registrar / Admin)"]
+    end
+
+    subgraph Conceptual["Conceptual Level (Logical Schema)"]
+        CS["Entities, Attributes, Relationships, Constraints\n(Logical Data Independence)"]
+    end
+
+    subgraph Internal["Internal Level (Physical Schema)"]
+        IS["Data Storage, Indexing, File Structures, B-Trees\n(Physical Data Independence)"]
+    end
+
+    V1 & V2 & V3 <-->|"External / Conceptual Mapping"| CS
+    CS <-->|"Conceptual / Internal Mapping"| IS
+\`\`\`
+### Database Architecture Overview
 
 Database architecture establishes the framework for how a database system is structured, how users interact with it, and how components communicate. The architecture is broadly classified into single-tier, two-tier, and three-tier models, depending on the separation between the user interface, business logic, and database management.
 
@@ -157,8 +183,8 @@ This is the most common architecture for modern web applications. It introduces 
 | **1-Tier** | App + DB on same machine | Very Low | None | Local dev, desktop tools |
 | **2-Tier** | Client App + DB Server | Medium | Moderate | Internal corporate tools |
 | **3-Tier** | Client + App Server + DB Server | High | Very High | Web Apps, Enterprise Apps |
-`,
-          richContent: `### Step-by-Step Request Trace in 3-Tier Architecture
+\`,
+          richContent: \`### Step-by-Step Request Trace in 3-Tier Architecture
 1. **Client (Tier 1):** User clicks "Login" on a webpage. Browser sends an HTTP POST request with credentials.
 2. **App Server (Tier 2):** Node.js receives the request. It validates the input format. It constructs a SQL query: \`SELECT * FROM Users WHERE username = '...'\`
 3. **Database (Tier 3):** MySQL receives the query, executes it, and returns the user record to the App Server.
@@ -177,6 +203,14 @@ This is the most common architecture for modern web applications. It introduces 
             '2-tier is client-server, where client has business logic.',
             '3-tier separates UI, business logic, and data.',
             '3-tier is standard for web apps for security and scalability.'
+          ],
+          theoryQuestions: [
+            {
+              question: 'Explain the Three-Schema ANSI/SPARC Database Architecture with a diagram. Distinguish between Physical and Logical Data Independence.',
+              marks: '7 Marks',
+              answer: 'The ANSI/SPARC architecture divides a database system into three levels:\n1. **External Level (Views):** How individual end-users perceive the data. Different views for different user roles.\n2. **Conceptual Level (Logical Schema):** The global logical structure of the entire database (entities, attributes, relationships, constraints). Independent of physical storage.\n3. **Internal Level (Physical Schema):** The physical representation of the database on disk (file organization, indexes, compression, B-Trees).\n\n**Data Independence:**\n- **Logical Data Independence:** The capacity to change the conceptual schema without altering external views or application programs (e.g., adding a new attribute or table).\n- **Physical Data Independence:** The capacity to change the physical storage structures (e.g., creating a B-Tree index or moving to SSD) without altering the conceptual schema.',
+              keyPoints: ['External, Conceptual, Internal levels.', 'External-Conceptual and Conceptual-Internal mappings.', 'Physical vs Logical data independence definitions.']
+            },
           ],
           mcqs: [
             {
@@ -203,7 +237,43 @@ This is the most common architecture for modern web applications. It introduces 
           id: 'er-model',
           title: 'ER Model (Entity, Attributes, Relationships)',
           simpleExplanation: 'The ER model is a blueprint for your database. It uses Entities (things), Attributes (details about things), and Relationships (how things connect).',
-          detailedExplanation: `### Entity-Relationship (ER) Model
+          detailedExplanation: `### Complete Entity-Relationship (ER) Diagram
+\`\`\`mermaid
+erDiagram
+    STUDENT ||--o{ ENROLLMENT : places
+    COURSE ||--o{ ENROLLMENT : contains
+    DEPARTMENT ||--|{ STUDENT : belongs_to
+    DEPARTMENT ||--|{ PROFESSOR : employs
+
+    STUDENT {
+        int student_id PK
+        string name
+        string email
+        date dob
+    }
+    COURSE {
+        string course_code PK
+        string title
+        int credits
+    }
+    ENROLLMENT {
+        int enrollment_id PK
+        int student_id FK
+        string course_code FK
+        string grade
+        date term
+    }
+    DEPARTMENT {
+        int dept_id PK
+        string dept_name
+    }
+    PROFESSOR {
+        int prof_id PK
+        string name
+        string rank
+    }
+\`\`\`
+### Entity-Relationship (ER) Model
 
 The ER model is a high-level conceptual data model used to design and represent the logical structure of a database. It allows database designers to sketch out the database architecture before implementing it in a specific DBMS.
 
@@ -243,8 +313,8 @@ Cardinality defines the maximum number of relationship instances an entity can p
 *   **Many-to-Many (M:N):** Multiple instances of entity A are associated with multiple instances of entity B (e.g., many Students enroll in many Courses).
 
 > [!TIP] **EXAM TIP:**
-> When asked to draw an ER Diagram for a system (like Hospital or Library), always clearly mark Primary Keys with an underline and label the cardinalities (1, M, N) on the relationship lines!`,
-          richContent: `### Step-by-Step: Converting ER to Relational Tables
+> When asked to draw an ER Diagram for a system (like Hospital or Library), always clearly mark Primary Keys with an underline and label the cardinalities (1, M, N) on the relationship lines!\`,
+          richContent: \`### Step-by-Step: Converting ER to Relational Tables
 Let's convert an ER model to actual tables:
 1. **Strong Entities:** Create a table for each strong entity. (e.g., \`Student(RollNo, Name)\`)
 2. **Weak Entities:** Create a table, include the primary key of the strong entity as a foreign key. (e.g., \`Dependent(Dep_ID, Name, Emp_ID)\`)
@@ -296,7 +366,17 @@ Let's convert an ER model to actual tables:
           id: 'sql-dml',
           title: 'SQL DML (SELECT, INSERT, UPDATE, DELETE)',
           simpleExplanation: 'Data Manipulation Language (DML) is used to add, change, remove, or fetch data from your database tables.',
-          detailedExplanation: `### Data Manipulation Language (DML)
+          detailedExplanation: `### Query Processing & Relational Optimization Pipeline
+\`\`\`mermaid
+flowchart TD
+    SQL["SQL Query Text\n'SELECT name FROM Student WHERE gpa > 3.5'"] --> PARSE["Parser & Translator\n(Syntax & Semantic Validation)"]
+    PARSE --> TREE["Relational Algebra Tree\n(σ_gpa > 3.5 (π_name (Student)))"]
+    TREE --> OPTIM["Query Optimizer\n(Pushes selections down, picks index scan vs full scan)"]
+    OPTIM --> PLAN["Optimized Execution Plan"]
+    PLAN --> ENGINE["Execution Engine\nAccesses DB Storage Engine & Buffers"]
+    ENGINE --> RESULT["Output Result Set"]
+\`\`\`
+### Data Manipulation Language (DML)
 
 DML allows users to interact with the data stored in a relational database. The core commands are SELECT (to retrieve data), INSERT (to add new rows), UPDATE (to modify existing data), and DELETE (to remove rows).
 
@@ -336,8 +416,8 @@ The \`DELETE\` statement removes existing records from a table.
 *   **Syntax:** \`DELETE FROM table_name WHERE condition;\`
 
 > [!TIP] **EXAM TIP:**
-> Be prepared to write simple SQL queries in the exam. Always capitalize SQL keywords (\`SELECT\`, \`FROM\`, \`WHERE\`) to make your answer easy to read for the examiner.`,
-          richContent: `### Query Execution Step-by-Step
+> Be prepared to write simple SQL queries in the exam. Always capitalize SQL keywords (\`SELECT\`, \`FROM\`, \`WHERE\`) to make your answer easy to read for the examiner.\`,
+          richContent: \`### Query Execution Step-by-Step
 Consider the query: 
 \`SELECT Name, Salary FROM Employees WHERE Department = 'IT' ORDER BY Salary DESC;\`
 Here is the logical order of execution by the database engine:
@@ -393,7 +473,18 @@ DELETE FROM Students WHERE ID = 1;`
           id: 'sql-joins',
           title: 'SQL Joins (INNER, LEFT, RIGHT, FULL)',
           simpleExplanation: 'Joins are used to combine rows from two or more tables based on a related column between them.',
-          detailedExplanation: `### Understanding SQL Joins
+          detailedExplanation: `### SQL Joins Venn Diagram
+\`\`\`mermaid
+flowchart TD
+    subgraph Joins["Relational Join Operations"]
+        INNER["1. INNER JOIN\nReturns only matching rows in both tables."]
+        LEFT["2. LEFT JOIN\nAll rows from left table + matched rows from right (NULL if no match)."]
+        RIGHT["3. RIGHT JOIN\nAll rows from right table + matched rows from left (NULL if no match)."]
+        FULL["4. FULL OUTER JOIN\nAll rows when there is a match in either left or right table."]
+        CROSS["5. CROSS JOIN\nCartesian product (m x n combinations)."]
+    end
+\`\`\`
+### Understanding SQL Joins
 
 In relational databases, data is often normalized and split across multiple tables to reduce redundancy. To view a complete picture, you need to combine data from these tables. SQL \`JOIN\` clauses allow you to link tables together based on common columns (usually Primary Key - Foreign Key relationships).
 
@@ -433,8 +524,8 @@ In relational databases, data is often normalized and split across multiple tabl
 | **FULL** | Kept | Kept | Largest |
 
 > [!TIP] **EXAM TIP:**
-> When writing a JOIN query in an exam, always clearly specify the table names or use aliases for columns (e.g., \`SELECT E.Name, D.DeptName FROM Employees E JOIN Departments D ON E.DeptID = D.ID\`). It shows the examiner you understand column ambiguity.`,
-          richContent: `### Step-by-Step Join Execution
+> When writing a JOIN query in an exam, always clearly specify the table names or use aliases for columns (e.g., \`SELECT E.Name, D.DeptName FROM Employees E JOIN Departments D ON E.DeptID = D.ID\`). It shows the examiner you understand column ambiguity.\`,
+          richContent: \`### Step-by-Step Join Execution
 Let's trace a LEFT JOIN:
 \`Table A (Students)\`: (1, 'Alice'), (2, 'Bob'), (3, 'Charlie')
 \`Table B (Grades)\`: (1, 'A'), (2, 'B')
@@ -498,7 +589,18 @@ INNER JOIN Courses ON Enrollments.CourseID = Courses.ID;`
           id: 'normalization-forms',
           title: '1NF, 2NF, 3NF, BCNF',
           simpleExplanation: 'Normalization is a step-by-step process to organize data in a database to reduce redundancy and improve data integrity.',
-          detailedExplanation: `### Database Normalization
+          detailedExplanation: `### Normalization Roadmap (1NF to BCNF)
+\`\`\`mermaid
+flowchart TD
+    UNF["Unnormalized Table\n(Multi-valued attributes, repeating groups)"] -->|"Remove multi-valued attributes / Make atomic"| NF1["1st Normal Form (1NF)\nEvery column contains atomic values"]
+
+    NF1 -->|"Remove Partial Dependencies\n(Non-prime attribute depends on part of composite PK)"| NF2["2nd Normal Form (2NF)\nFull functional dependency on candidate key"]
+
+    NF2 -->|"Remove Transitive Dependencies\n(X -> Y and Y -> Z where Z is non-prime)"| NF3["3rd Normal Form (3NF)\nFor every X -> Y: X is superkey OR Y is prime attribute"]
+
+    NF3 -->|"Strict Superkey Rule\n(Remove anomalies from overlapping candidate keys)"| BCNF["Boyce-Codd Normal Form (BCNF)\nFor every X -> Y: X MUST be a Superkey!"]
+\`\`\`
+### Database Normalization
 
 Normalization is the process of structuring a relational database in accordance with a series of normal forms to reduce data redundancy and improve data integrity. It divides large tables into smaller, less redundant tables and defines relationships between them.
 
@@ -538,8 +640,8 @@ Normalization is the process of structuring a relational database in accordance 
 *   **Action:** It addresses situations where a table is in 3NF but still has anomalies, typically when there are multiple overlapping candidate keys.
 
 > [!TIP] **EXAM TIP:**
-> When asked to normalize a table in the exam, clearly write down the Functional Dependencies (FDs) first. Then, identify the Primary Key. Without finding the PK, you cannot check for 2NF or 3NF!`,
-          richContent: `### Normalization Step-by-Step Trace
+> When asked to normalize a table in the exam, clearly write down the Functional Dependencies (FDs) first. Then, identify the Primary Key. Without finding the PK, you cannot check for 2NF or 3NF!\`,
+          richContent: \`### Normalization Step-by-Step Trace
 **Given Table:** \`Orders(OrderID, ProductID, ProductName, CustomerID, CustomerCity)\`
 **Primary Key:** \`(OrderID, ProductID)\`
 
@@ -575,6 +677,14 @@ Now the schema is fully normalized in 3NF.`,
             'Higher normal forms are more strict.',
             '3NF is typically the standard goal for business databases.'
           ],
+          theoryQuestions: [
+            {
+              question: 'Define 1NF, 2NF, 3NF, and BCNF with functional dependencies and real-world table decomposition examples.',
+              marks: '7 Marks',
+              answer: '1. **1NF:** A relation is in 1NF if and only if all attribute values are atomic (no repeating groups, multi-valued attributes, or nested tables).\n2. **2NF:** A relation is in 2NF if it is in 1NF and **no non-prime attribute is partially dependent** on any candidate key. Every non-prime attribute must depend on the whole candidate key.\n3. **3NF:** A relation is in 3NF if it is in 2NF and **no non-prime attribute is transitively dependent** on a candidate key. For every functional dependency $X \\rightarrow Y$, either $X$ is a superkey or $Y$ is a prime attribute.\n4. **BCNF:** A relation is in BCNF if for every non-trivial functional dependency $X \\rightarrow Y$, $X$ must be a **Superkey**.',
+              keyPoints: ['1NF: Atomic values.', '2NF: No partial dependency.', '3NF: No transitive dependency.', 'BCNF: Every determinant is a superkey.']
+            },
+          ],
           mcqs: [
             {
               question: 'Which normal form prohibits partial dependencies?',
@@ -607,7 +717,21 @@ Now the schema is fully normalized in 3NF.`,
           id: 'acid-props',
           title: 'ACID Properties',
           simpleExplanation: 'ACID guarantees that database transactions are processed reliably, even in the event of errors, power failures, or crashes.',
-          detailedExplanation: `### ACID Properties in DBMS
+          detailedExplanation: `### Transaction State Transition Diagram
+\`\`\`mermaid
+flowchart TD
+    ACTIVE["Active\n(Initial state; transaction executes read/write)"] --> PART_COMM["Partially Committed\n(Final statement executed, changes in buffer)"]
+
+    PART_COMM -->|"Hardware write-ahead log flushed to disk"| COMMITTED(["Committed\n(Transaction permanently successful)"])
+
+    ACTIVE -->|"Error or Abort detected"| FAILED["Failed\n(Transaction encountered error or crash)"]
+    PART_COMM -->|"I/O failure during disk flush"| FAILED
+
+    FAILED -->|"Rollback micro-operations executed"| ABORTED(["Aborted\n(Database restored to clean prior state)"])
+
+    ABORTED -->|"Restart or Kill"| TERMINATED(["Terminated / Restarted"])
+\`\`\`
+### ACID Properties in DBMS
 
 A transaction is a single logical unit of work that accesses and possibly modifies the contents of a database. To maintain data integrity, database transactions must adhere to four key properties, known collectively by the acronym ACID.
 
@@ -645,8 +769,8 @@ Durability guarantees that once a transaction has been committed, it will remain
 *   *Example:* Once you receive confirmation of a successful bank transfer, the money is transferred, even if the bank's server crashes immediately after.
 
 > [!TIP] **EXAM TIP:**
-> For ACID properties, ALWAYS use the Bank Transfer example. Examiners look for this specific example because it perfectly illustrates all four properties.`,
-          richContent: `### Transaction States Trace
+> For ACID properties, ALWAYS use the Bank Transfer example. Examiners look for this specific example because it perfectly illustrates all four properties.\`,
+          richContent: \`### Transaction States Trace
 When a transaction executes, it passes through various states:
 1. **Active:** The initial state. The transaction stays here while executing.
 2. **Partially Committed:** After the final statement has been executed, but before actual disk writes are confirmed.
@@ -668,6 +792,14 @@ COMMIT;`
             'ACID stands for Atomicity, Consistency, Isolation, Durability.',
             'Essential for critical systems like banking and e-commerce.',
             'Implemented by the DBMS transaction manager and recovery manager.'
+          ],
+          theoryQuestions: [
+            {
+              question: 'Explain the ACID properties of database transactions in detail. How does DBMS guarantee each property?',
+              marks: '7 Marks',
+              answer: 'ACID Properties guarantee transaction reliability:\n1. **Atomicity (All or Nothing):** The entire transaction executes to completion, or none of its effects remain in the database. Guaranteed by the **Recovery Manager using Write-Ahead Logging (WAL)** and rollback.\n2. **Consistency (Preserving Invariants):** Execution of a transaction in isolation preserves database integrity constraints. Guaranteed by application code and DBMS constraint checking.\n3. **Isolation (Independent Execution):** Concurrent transactions execute without interfering with one another. Guaranteed by the **Concurrency Control Manager using Two-Phase Locking (2PL) or Timestamp Ordering**.\n4. **Durability (Permanence):** Once a transaction commits, its updates persist permanently, even in the event of a system crash. Guaranteed by the Recovery Manager through flushing transaction logs to non-volatile storage.',
+              keyPoints: ['Atomicity: Recovery manager / WAL.', 'Consistency: Integrity constraints.', 'Isolation: Concurrency control / 2PL.', 'Durability: Non-volatile log flush.']
+            },
           ],
           mcqs: [
             {
@@ -701,7 +833,36 @@ COMMIT;`
           id: 'indexing-basics',
           title: 'Indexing (Primary, Secondary, B-Trees)',
           simpleExplanation: 'An index is like a book\'s table of contents. It helps the database find data quickly without reading every single row (a full table scan).',
-          detailedExplanation: `### Database Indexing
+          detailedExplanation: `### B+ Tree Indexing Hierarchy
+\`\`\`mermaid
+flowchart TD
+    subgraph BPlusTree["B+ Tree Index Structure"]
+        ROOT["Root Index Node: [ K20 | K50 ]"]
+        I1["Internal Node: [ K10 ]"]
+        I2["Internal Node: [ K30 | K40 ]"]
+        I3["Internal Node: [ K60 | K70 ]"]
+
+        ROOT --> I1 & I2 & I3
+
+        L1["Leaf: [ 5, 10 ]"]
+        L2["Leaf: [ 15, 20 ]"]
+        L3["Leaf: [ 25, 30 ]"]
+        L4["Leaf: [ 35, 40, 50 ]"]
+        L5["Leaf: [ 55, 60 ]"]
+        L6["Leaf: [ 65, 70, 80 ]"]
+
+        I1 --> L1 & L2
+        I2 --> L3 & L4
+        I3 --> L5 & L6
+
+        L1 <==>|"Sequential Linked List"| L2
+        L2 <==>|"Range Scan"| L3
+        L3 <==>|"Fast"| L4
+        L4 <==>|"Traversal"| L5
+        L5 <==>|"Pointers"| L6
+    end
+\`\`\`
+### Database Indexing
 
 Indexing is a data structure technique used to quickly locate and access the data in a database. Without an index, a DBMS has to scan the entire table to find the relevant rows (known as a full table scan), which is extremely slow for large datasets.
 
@@ -729,8 +890,8 @@ Modern relational databases primarily use B-Tree (Balanced Tree) or B+ Tree data
 > More indexes do NOT mean better performance! While they speed up \`SELECT\` queries, every time you \`INSERT\`, \`UPDATE\`, or \`DELETE\`, the DBMS must also update all related indexes. Too many indexes will make your write operations painfully slow.
 
 > [!TIP] **EXAM TIP:**
-> Always highlight the difference between B-Tree and B+ Tree: "In B+ Trees, data pointers are ONLY at the leaf nodes, and leaves are linked." This is the core distinction examiners look for.`,
-          richContent: `### Step-by-Step Index Lookup
+> Always highlight the difference between B-Tree and B+ Tree: "In B+ Trees, data pointers are ONLY at the leaf nodes, and leaves are linked." This is the core distinction examiners look for.\`,
+          richContent: \`### Step-by-Step Index Lookup
 **Scenario:** Looking for Employee ID = 45 in a B+ Tree index.
 1. **Root Node:** Contains keys [20, 40, 60]. 45 is between 40 and 60, so follow the middle pointer.
 2. **Internal Node:** Contains keys [42, 48]. 45 is between 42 and 48, so follow the left pointer.

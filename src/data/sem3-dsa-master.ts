@@ -20,6 +20,25 @@ export const sem3DsaMaster: Subject = {
           simpleExplanation: 'Data structures are ways to store and organize data. Linear means data is in a line, non-linear means it is connected randomly or in branches.',
           detailedExplanation: `## Introduction to Data Structures
 
+### Data Structures Classification Diagram
+\`\`\`mermaid
+flowchart TD
+    DS["Data Structures Taxonomy"] --> PRIM["Primitive Data Structures\n(int, float, char, boolean, pointer)"]
+    DS --> NONPRIM["Non-Primitive Data Structures"]
+
+    NONPRIM --> LIN["Linear Data Structures\n(Sequential arrangement)"]
+    NONPRIM --> NONLIN["Non-Linear Data Structures\n(Hierarchical / Multilevel)"]
+
+    LIN --> ARR["Arrays (Contiguous memory)"]
+    LIN --> LL["Linked Lists (Pointer-chained nodes)"]
+    LIN --> STK["Stacks (LIFO: Push / Pop)"]
+    LIN --> QUE["Queues (FIFO: Enqueue / Dequeue)"]
+
+    NONLIN --> TREE["Trees (Hierarchical Root-Child)\n[BST, AVL, B-Tree, Heap]"]
+    NONLIN --> GRAPH["Graphs (Network of Vertices & Edges)\n[Directed, Undirected, Weighted]"]
+\`\`\`
+
+
 Data structures are fundamental concepts in computer science used to store, organize, and manage data efficiently so that it can be accessed and modified easily. Choosing the right data structure for a specific problem can greatly improve the performance of an algorithm.
 
 ### 1. Linear Data Structures
@@ -85,6 +104,20 @@ struct Node {
             'Linear structures are sequential.',
             'Non-linear structures represent hierarchical relationships.'
           ],
+          theoryQuestions: [
+            {
+              question: 'Differentiate between Linear and Non-Linear data structures with diagrams, time complexity, and memory utilization.',
+              marks: '5 Marks',
+              answer: '1. **Linear Data Structures:** Elements are arranged in sequential order. Each element has unique predecessor and successor (except first and last). Examples: Array, Linked List, Stack, Queue. Traversal takes $O(n)$ in a single run. Memory allocation is contiguous in arrays and fragmented in linked lists.\n2. **Non-Linear Data Structures:** Elements are arranged hierarchically or in networks. An element can be connected to multiple other elements. Examples: Tree, Graph. Traversal requires special algorithms (BFS, DFS). Memory utilization is efficient for multi-level relationships.',
+              keyPoints: ['Sequential vs Hierarchical.', 'Examples for each.', 'Single run traversal O(n) vs multi-path BFS/DFS.']
+            },
+            {
+              question: 'What is an Abstract Data Type (ADT)? Give examples of Stack and Queue ADT operations.',
+              marks: '3 Marks',
+              answer: 'An Abstract Data Type (ADT) is a mathematical model for data types where a data type is defined by its behavior (operations) from the point of view of a user, without specifying implementation details.\n- **Stack ADT:** LIFO. Operations: \`push(x)\`, \`pop()\`, \`peek()\`, \`isEmpty()\`.\n- **Queue ADT:** FIFO. Operations: \`enqueue(x)\`, \`dequeue()\`, \`front()\`, \`isEmpty()\`.',
+              keyPoints: ['Definition of ADT as behavior specification.', 'Separation of interface from implementation.', 'Stack and Queue core operations.']
+            },
+          ],
           mcqs: [
             {
               question: 'Which of the following is a linear data structure?',
@@ -99,6 +132,18 @@ struct Node {
           title: 'Time Complexity (Big O, Omega, Theta)',
           simpleExplanation: 'Time complexity is a way to measure how the time taken by an algorithm grows as the input size grows.',
           detailedExplanation: `## Time Complexity Analysis
+
+### Asymptotic Growth Rate Curve
+\`\`\`mermaid
+flowchart LR
+    O1["O(1) Constant\n(Array Index Access)"] --> OLOGN["O(log n) Logarithmic\n(Binary Search)"]
+    OLOGN --> ON["O(n) Linear\n(Linear Search, Traversal)"]
+    ON --> ONLOGN["O(n log n) Linearithmic\n(Merge Sort, Quick Sort)"]
+    ONLOGN --> ON2["O(n^2) Quadratic\n(Bubble Sort, Nested Loops)"]
+    ON2 --> O2N["O(2^n) Exponential\n(Recursive Fibonacci, Hanoi)"]
+    O2N --> ONF["O(n!) Factorial\n(Permutations, TSP)"]
+\`\`\`
+
 
 Time complexity is the computational complexity that describes the amount of computer time it takes to run an algorithm as a function of the size of the input.
 
@@ -253,6 +298,23 @@ Often, you can reduce the time complexity of an algorithm by using more space (e
           simpleExplanation: 'Recursion is when a function calls itself to solve a smaller version of the same problem.',
           detailedExplanation: `## Recursion
 
+### Recursion Call Tree (Fibonacci)
+\`\`\`mermaid
+flowchart TD
+    F4["fib(4)"] --> F3["fib(3)"]
+    F4 --> F2_1["fib(2)"]
+
+    F3 --> F2_2["fib(2)"]
+    F3 --> F1_1["fib(1) = 1"]
+
+    F2_1 --> F1_2["fib(1) = 1"]
+    F2_1 --> F0_1["fib(0) = 0"]
+
+    F2_2 --> F1_3["fib(1) = 1"]
+    F2_2 --> F0_2["fib(0) = 0"]
+\`\`\`
+
+
 Recursion is a programming technique where a function calls itself in order to solve a problem. The problem is broken down into smaller, simpler sub-problems until a base case is reached.
 
 ### Essential Components of Recursion
@@ -331,6 +393,26 @@ When a recursive function is called, its execution state (variables, parameters,
           title: 'Arrays (1D, 2D, operations)',
           simpleExplanation: 'An array stores multiple items of the same type sequentially in memory.',
           detailedExplanation: `## Arrays
+
+### 2D Array Memory Mapping (Row-Major vs Column-Major)
+\`\`\`mermaid
+flowchart TD
+    subgraph Matrix["2D Matrix 2x3: A[i][j]"]
+        M["Row 0: [ A00, A01, A02 ]\nRow 1: [ A10, A11, A12 ]"]
+    end
+
+    subgraph RowMajor["Row-Major Order (C/C++, Java, Python)"]
+        RM["[ A00, A01, A02, A10, A11, A12 ]\nAddress = Base + [i * cols + j] * size"]
+    end
+
+    subgraph ColMajor["Column-Major Order (FORTRAN, MATLAB)"]
+        CM["[ A00, A10, A01, A11, A02, A12 ]\nAddress = Base + [j * rows + i] * size"]
+    end
+
+    Matrix --> RowMajor
+    Matrix --> ColMajor
+\`\`\`
+
 
 An array is a collection of elements, all of the same data type, stored in contiguous memory locations.
 
@@ -478,6 +560,19 @@ Pattern matching (or string searching) involves finding the occurrences of a "pa
           simpleExplanation: 'A linked list is a chain of nodes where each node holds data and a pointer to the next node.',
           detailedExplanation: `## Singly Linked List
 
+### Singly Linked List Architecture & Insertion
+\`\`\`mermaid
+flowchart LR
+    HEAD["Head Pointer"] --> N1["Node 1\n[Data: 10 | Next]"]
+    N1 --> N2["Node 2\n[Data: 20 | Next]"]
+    N2 --> N3["Node 3\n[Data: 30 | Next]"]
+    N3 --> NULL_PTR["NULL\n(End of List)"]
+
+    NEW["New Node (Data: 25)"] -.->|"temp->next = N2->next"| N3
+    N2 -.->|"N2->next = temp"| NEW
+\`\`\`
+
+
 A Singly Linked List is a linear data structure consisting of nodes. Each node contains two parts:
 1. **Data**: The value stored in the node.
 2. **Next Pointer**: A reference (or link) to the next node in the sequence.
@@ -544,6 +639,20 @@ void push(struct Node** head_ref, int new_data) {
             'Insertion at head is O(1).',
             'No random access; traversing is required.'
           ],
+          theoryQuestions: [
+            {
+              question: 'Write an algorithm or C function to insert a node at the beginning, at the end, and after a given node in a Singly Linked List.',
+              marks: '7 Marks',
+              answer: '1. **Insert at Beginning ($O(1)$):**\n``\`c\nvoid insertAtBeginning(Node** head, int val) {\n    Node* newNode = (Node*)malloc(sizeof(Node));\n    newNode->data = val;\n    newNode->next = *head;\n    *head = newNode;\n}\n\``\`\n2. **Insert at End ($O(n)$ without tail pointer):**\n\``\`c\nvoid insertAtEnd(Node** head, int val) {\n    Node* newNode = (Node*)malloc(sizeof(Node));\n    newNode->data = val;\n    newNode->next = NULL;\n    if (*head == NULL) { *head = newNode; return; }\n    Node* temp = *head;\n    while (temp->next != NULL) temp = temp->next;\n    temp->next = newNode;\n}\n\```',
+              keyPoints: ['Dynamic memory allocation with malloc.', 'Pointer reconnection order.', 'Handling empty list head == NULL edge case.']
+            },
+            {
+              question: 'Compare Arrays and Singly Linked Lists across insertion, deletion, searching, and memory overhead.',
+              marks: '5 Marks',
+              answer: '| Operation / Feature | Array | Singly Linked List |\n| :--- | :--- | :--- |\n| **Access / Search by Index** | $O(1)$ random access | $O(n)$ sequential search |\n| **Insertion / Deletion at Start** | $O(n)$ shifting required | $O(1)$ pointer update |\n| **Memory Allocation** | Fixed size at compile time | Dynamic, grows on demand |\n| **Memory Overhead** | Zero extra pointer memory | Extra pointer memory per node |',
+              keyPoints: ['O(1) random access vs O(n) traversal.', 'O(n) element shifting vs O(1) pointer updates.', 'Memory overhead of pointers.']
+            },
+          ],
           mcqs: [
             {
               question: 'What is the time complexity to insert a node at the beginning of a singly linked list?',
@@ -558,6 +667,16 @@ void push(struct Node** head_ref, int new_data) {
           title: 'Doubly Linked List',
           simpleExplanation: 'A linked list where each node has pointers to both the next and the previous nodes, allowing traversal in both directions.',
           detailedExplanation: `## Doubly Linked List
+
+### Doubly Linked List Bidirectional Structure
+\`\`\`mermaid
+flowchart LR
+    NULL1["NULL"] <-- Prev --- N1["Node 1\n[Prev | 10 | Next]"]
+    N1 <===>|"Next / Prev"| N2["Node 2\n[Prev | 20 | Next]"]
+    N2 <===>|"Next / Prev"| N3["Node 3\n[Prev | 30 | Next]"]
+    N3 --- Next --> NULL2["NULL"]
+\`\`\`
+
 
 A Doubly Linked List (DLL) is a complex type of linked list in which a node contains a pointer to the previous as well as the next node in the sequence.
 
@@ -634,6 +753,16 @@ A DLL node contains:
           simpleExplanation: 'A linked list where the last node points back to the first node, forming a circle.',
           detailedExplanation: `## Circular Linked List
 
+### Circular Linked List Architecture
+\`\`\`mermaid
+flowchart LR
+    HEAD["Head Pointer"] --> N1["Node 1\n[Data: 10 | Next]"]
+    N1 --> N2["Node 2\n[Data: 20 | Next]"]
+    N2 --> N3["Node 3\n[Data: 30 | Next]"]
+    N3 ==>|"Tail points back to Head!"| N1
+\`\`\`
+
+
 In a Circular Linked List, all nodes are connected to form a continuous circle. There is no \`NULL\` at the end.
 
 ### Types
@@ -705,6 +834,20 @@ When traversing, the condition to stop is not reaching \`NULL\`, but returning t
           simpleExplanation: 'A stack is a LIFO (Last In First Out) structure. You add and remove elements from only one end, called the top.',
           detailedExplanation: `## Stack Data Structure
 
+### Stack LIFO Structure & Pointer Movement
+\`\`\`mermaid
+flowchart TD
+    subgraph StackOp["Stack LIFO Operations"]
+        TOP["TOP Pointer"] --> E3["Element 3 (Top of Stack)"]
+        E3 --> E2["Element 2"]
+        E2 --> E1["Element 1 (Bottom of Stack)"]
+    end
+
+    PUSH["PUSH Operation\nTOP = TOP + 1\nStack[TOP] = item"] ==>|"Insert"| E3
+    E3 ==>|"Remove"| POP["POP Operation\nitem = Stack[TOP]\nTOP = TOP - 1"]
+\`\`\`
+
+
 A Stack is a linear data structure that follows a particular order in which operations are performed. The order is **LIFO (Last In First Out)** or **FILO (First In Last Out)**.
 Imagine a stack of plates in a cafeteria: you can only add a plate to the top, and you can only remove a plate from the top.
 
@@ -763,6 +906,14 @@ We use a singly linked list. The head of the list acts as the top of the stack.
             'Array implementation can suffer from Stack Overflow.',
             'Linked List implementation uses dynamic memory.'
           ],
+          theoryQuestions: [
+            {
+              question: 'Explain the array implementation of a Stack with PUSH and POP algorithms. Detail Overflow and Underflow conditions.',
+              marks: '5 Marks',
+              answer: 'A stack uses an array \`stack[MAX]\` and an integer variable \`top = -1\`.\n1. **Overflow:** Occurs during \`PUSH\` when \`top == MAX - 1\`. Stack is completely full; cannot insert.\n2. **Underflow:** Occurs during \`POP\` when \`top == -1\`. Stack is completely empty; cannot delete.\n\n**PUSH(x):**\n- \`if (top == MAX - 1) return Stack_Overflow;\`\n- \`top = top + 1;\`\n- \`stack[top] = x;\`\n\n**POP():**\n- \`if (top == -1) return Stack_Underflow;\`\n- \`val = stack[top];\`\n- \`top = top - 1;\`\n- \`return val;\`',
+              keyPoints: ['top initialized to -1.', 'Overflow condition top == MAX - 1.', 'Underflow condition top == -1.']
+            },
+          ],
           mcqs: [
             {
               question: 'Which principle does a Stack follow?',
@@ -777,6 +928,22 @@ We use a singly linked list. The head of the list acts as the top of the stack.
           title: 'Applications of Stack (infix to postfix, expression evaluation)',
           simpleExplanation: 'Stacks are used heavily in compilers for evaluating mathematical expressions and handling function calls.',
           detailedExplanation: `## Applications of Stack
+
+### Infix to Postfix Conversion Flowchart
+\`\`\`mermaid
+flowchart TD
+    START["Read Token from Infix Expression"] --> TYPE{"Token Type?"}
+    TYPE -- "Operand (A, B, 1, 2)" --> OUT["Append directly to Postfix Output"]
+    TYPE -- "'('" --> PUSH_OP["Push '(' onto Operator Stack"]
+    TYPE -- "')'" --> POP_UNTIL["Pop stack to Output until '(' is found. Discard '('."]
+    TYPE -- "Operator (+, -, *, /)" --> PREC{"Stack Top has >= Precedence?"}
+    PREC -- Yes --> POP_PREC["Pop stack to Output"] --> PREC
+    PREC -- No --> PUSH_STK["Push Operator onto Stack"]
+    OUT & PUSH_OP & POP_UNTIL & PUSH_STK --> NEXT{"More Tokens?"}
+    NEXT -- Yes --> START
+    NEXT -- No --> FLUSH["Pop all remaining operators from stack to Output"]
+\`\`\`
+
 
 Stacks are widely used in computer science for parsing and evaluating expressions, as well as managing function calls.
 
@@ -864,6 +1031,19 @@ push(val2 + val1); // push 5`,
           simpleExplanation: 'A queue is a FIFO (First In First Out) structure. Elements are added at the back and removed from the front.',
           detailedExplanation: `## Queue Data Structure
 
+### Circular Queue Architecture
+\`\`\`mermaid
+flowchart TD
+    subgraph CircQueue["Circular Queue Array (Capacity = 5)"]
+        Q0["[0] 10 (Front)"] --> Q1["[1] 20"]
+        Q1 --> Q2["[2] 30 (Rear)"]
+        Q2 --> Q3["[3] Empty"]
+        Q3 --> Q4["[4] Empty"]
+        Q4 ==>|"Wrap around: (rear + 1) % 5"| Q0
+    end
+\`\`\`
+
+
 A Queue is a linear structure which follows the **FIFO (First In First Out)** principle. Like a line at a ticket counter, the first person in line is the first one to be served.
 
 ### Simple Queue Operations
@@ -943,6 +1123,16 @@ In a priority queue, every element is associated with a priority. Elements are d
           simpleExplanation: 'A Deque is a flexible queue where you can add or remove elements from both the front and the rear.',
           detailedExplanation: `## Deque (Double-ended Queue)
 
+### Double-Ended Queue (Deque) Operations
+\`\`\`mermaid
+flowchart LR
+    INS_FRONT["Insert Front"] --> DEQUE["[ Front ... Rear ]\nDouble-Ended Queue (Deque)"]
+    DEL_FRONT["Delete Front"] <-- DEQUE
+    DEQUE <-- INS_REAR["Insert Rear"]
+    DEQUE --> DEL_REAR["Delete Rear"]
+\`\`\`
+
+
 A Deque (pronounced "deck") is a generalization of a queue in which elements can be added to or removed from either the front or the rear. It does not strictly follow FIFO or LIFO.
 
 ### Types of Deques
@@ -1015,6 +1205,20 @@ deleteLast();    // [5, 10, 20, 30]`,
           simpleExplanation: 'A tree where every node has at most two children, commonly called the left and right child.',
           detailedExplanation: `## Binary Tree
 
+### Binary Tree Taxonomy & Properties
+\`\`\`mermaid
+flowchart TD
+    ROOT["Root Node (Depth 0, Level 1)"]
+    ROOT --> L1["Left Child (Depth 1)"]
+    ROOT --> R1["Right Child (Depth 1)"]
+
+    L1 --> L2["Left Leaf (Depth 2)"]
+    L1 --> R2["Right Leaf (Depth 2)"]
+    R1 --> L3["Left Leaf (Depth 2)"]
+    R1 --> R3["Right Leaf (Depth 2)"]
+\`\`\`
+
+
 A Tree is a hierarchical non-linear data structure. A **Binary Tree** is a special type of tree in which each node can have a maximum of two children (left child and right child).
 
 ### Basic Terminology
@@ -1082,6 +1286,21 @@ A Tree is a hierarchical non-linear data structure. A **Binary Tree** is a speci
           title: 'Binary Search Tree (BST) - operations',
           simpleExplanation: 'A binary tree sorted such that left children are smaller than the parent, and right children are larger.',
           detailedExplanation: `## Binary Search Tree (BST)
+
+### Binary Search Tree (BST Property: Left < Root < Right)
+\`\`\`mermaid
+flowchart TD
+    R50["50 (Root)"]
+    R50 -->|"Left < 50"| N30["30"]
+    R50 -->|"Right > 50"| N70["70"]
+
+    N30 -->|"Left < 30"| N20["20"]
+    N30 -->|"Right > 30"| N40["40"]
+
+    N70 -->|"Left < 70"| N60["60"]
+    N70 -->|"Right > 70"| N80["80"]
+\`\`\`
+
 
 A Binary Search Tree is a node-based binary tree data structure which has the following properties:
 - The left subtree of a node contains only nodes with keys **lesser** than the node’s key.
@@ -1155,6 +1374,14 @@ BSTs allow for fast lookup, addition, and removal of items, bridging the gap bet
             'Average time complexity for search/insert/delete is O(log n).',
             'Worst-case time complexity is O(n) (skewed tree).'
           ],
+          theoryQuestions: [
+            {
+              question: 'What is a Binary Search Tree (BST)? Explain the three cases of deleting a node from a BST.',
+              marks: '7 Marks',
+              answer: "A Binary Search Tree (BST) is a binary tree where for every node $X$, all keys in the left subtree are smaller than $X$'s key, and all keys in the right subtree are greater than $X$'s key.\n\n**Three Cases of Deletion:**\n1. **Node is a Leaf (No Children):** Simply remove the node and set parent's pointer to \`NULL\`. Time: $O(h)$.\n2. **Node has One Child:** Link the parent of the node directly to the single child of the node, bypassing the node. Time: $O(h)$.\n3. **Node has Two Children:** Replace the node's key with its **Inorder Successor** (smallest key in right subtree) or Inorder Predecessor (largest key in left subtree), then recursively delete the successor from the subtree.",
+              keyPoints: ['BST ordering property: Left < Root < Right.', 'Case 1: Leaf node (direct free).', 'Case 2: One child (bypass).', 'Case 3: Two children (replace with inorder successor).']
+            },
+          ],
           mcqs: [
             {
               question: 'Which traversal of a BST produces a sorted sequence?',
@@ -1169,6 +1396,23 @@ BSTs allow for fast lookup, addition, and removal of items, bridging the gap bet
           title: 'AVL Tree (rotations, balancing)',
           simpleExplanation: 'An AVL tree is a self-balancing Binary Search Tree where the heights of the two child subtrees of any node differ by at most one.',
           detailedExplanation: `## AVL Tree
+
+### AVL Balancing Rotations
+\`\`\`mermaid
+flowchart TD
+    subgraph LL["LL Rotation (Right Rotate)"]
+        Z1["Node Z (+2)"] --> Y1["Node Y (+1)"]
+        Y1 --> X1["Node X"]
+        ROT1["Rotate Right at Z"] --> RES1["Y (0)\n/ \\\nX   Z"]
+    end
+
+    subgraph RR["RR Rotation (Left Rotate)"]
+        Z2["Node Z (-2)"] --> Y2["Node Y (-1)"]
+        Y2 --> X2["Node X"]
+        ROT2["Rotate Left at Z"] --> RES2["Y (0)\n/ \\\nZ   X"]
+    end
+\`\`\`
+
 
 An AVL tree (named after inventors Adelson-Velsky and Landis) is a **self-balancing Binary Search Tree (BST)**. In a standard BST, insertions can lead to a degenerate tree (essentially a linked list) with O(n) search times. An AVL tree maintains a balance factor to guarantee O(log n) heights.
 
@@ -1251,6 +1495,22 @@ Because the tree is always strictly balanced, search, insertion, and deletion al
           simpleExplanation: 'A Heap is a complete binary tree where the parent is always greater (Max-Heap) or smaller (Min-Heap) than its children.',
           detailedExplanation: `## Heap Data Structure
 
+### Max-Heap Tree Structure & Array Mapping
+\`\`\`mermaid
+flowchart TD
+    H100["[0] 100 (Max Key)"]
+    H100 --> H80["[1] 80"]
+    H100 --> H90["[2] 90"]
+
+    H80 --> H40["[3] 40"]
+    H80 --> H60["[4] 60"]
+    H90 --> H70["[5] 70"]
+    H90 --> H50["[6] 50"]
+
+    ARR["Array Representation: [ 100, 80, 90, 40, 60, 70, 50 ]\nParent(i) = (i-1)/2 | LeftChild(i) = 2i+1 | RightChild(i) = 2i+2"]
+\`\`\`
+
+
 A Heap is a special Tree-based data structure that satisfies two properties:
 1. **Shape Property**: It must be a **Complete Binary Tree** (all levels filled except possibly the last, left-aligned).
 2. **Heap Property**:
@@ -1323,6 +1583,19 @@ Building a heap from an unsorted array takes **O(n)** time.
           title: 'Tree Traversals (Inorder, Preorder, Postorder, Level-order)',
           simpleExplanation: 'Traversals are algorithms to visit every node in a tree exactly once in a specific order.',
           detailedExplanation: `## Tree Traversals
+
+### Binary Tree Traversals Flow
+\`\`\`mermaid
+flowchart TD
+    ROOT["Tree Node (A)"]
+    INORDER["Inorder: Left -> Root -> Right\n(Produces sorted output for BST)"]
+    PREORDER["Preorder: Root -> Left -> Right\n(Used for copying tree / prefix expressions)"]
+    POSTORDER["Postorder: Left -> Right -> Root\n(Used for deleting tree / postfix expressions)"]
+    LEVEL["Level-Order: Breadth-First using Queue\n(Top to bottom, left to right)"]
+
+    ROOT --> INORDER & PREORDER & POSTORDER & LEVEL
+\`\`\`
+
 
 Unlike linear data structures (arrays, linked lists) which have only one logical way to traverse them, trees can be traversed in different ways.
 
@@ -1406,6 +1679,22 @@ DFS goes as deep as possible into a subtree before returning. The three types de
           simpleExplanation: 'Graphs are networks of nodes (vertices) and connections (edges). They are represented using grids (matrices) or lists.',
           detailedExplanation: `## Graph Data Structure
 
+### Graph Representations: Adjacency Matrix vs List
+\`\`\`mermaid
+flowchart TD
+    subgraph Matrix["Adjacency Matrix (V x V Space: O(V^2))"]
+        M["       A  B  C  D\n   A [ 0, 1, 1, 0 ]\n   B [ 1, 0, 0, 1 ]\n   C [ 1, 0, 0, 1 ]\n   D [ 0, 1, 1, 0 ]"]
+    end
+
+    subgraph List["Adjacency List (Space: O(V + E))"]
+        L1["A -> B -> C -> NULL"]
+        L2["B -> A -> D -> NULL"]
+        L3["C -> A -> D -> NULL"]
+        L4["D -> B -> C -> NULL"]
+    end
+\`\`\`
+
+
 A Graph is a non-linear data structure consisting of **Vertices (V)** and **Edges (E)**. Edges connect a pair of vertices. Graphs can be Directed (edges have arrows/directions) or Undirected, and Weighted (edges have costs) or Unweighted.
 
 To use graphs in code, we must represent them in memory. There are two primary ways:
@@ -1483,6 +1772,25 @@ matrix[1][0] = 1;`,
           title: 'BFS and DFS (Graph Traversals)',
           simpleExplanation: 'BFS explores the graph in a wide circle level by level. DFS goes deep down one path before backing up.',
           detailedExplanation: `## Graph Traversals
+
+### BFS (Queue) vs DFS (Stack) Traversal Tree
+\`\`\`mermaid
+flowchart TD
+    subgraph BFS_Tree["Breadth-First Search (Queue - Level Order)"]
+        B0["Level 0: Start Node"] --> B1_1["Level 1: Node A"]
+        B0 --> B1_2["Level 1: Node B"]
+        B1_1 --> B2_1["Level 2: Node C"]
+        B1_2 --> B2_2["Level 2: Node D"]
+    end
+
+    subgraph DFS_Tree["Depth-First Search (Stack / Recursion - Deep Paths)"]
+        D0["Start Node"] --> D1["Node A"]
+        D1 --> D2["Node C"]
+        D2 --> BACK["Backtrack to A"]
+        BACK --> D3["Node B"]
+    end
+\`\`\`
+
 
 Graph traversal means visiting every vertex and edge exactly once in a well-defined order. The two standard algorithms are BFS and DFS.
 
@@ -1565,6 +1873,22 @@ For both algorithms, the time complexity is **O(V + E)** when using an adjacency
           simpleExplanation: 'Dijkstra’s algorithm finds the shortest path from a starting point to all other points in a weighted graph.',
           detailedExplanation: `## Dijkstra's Algorithm
 
+### Dijkstra's Shortest Path Algorithm Flowchart
+\`\`\`mermaid
+flowchart TD
+    START(["Start with Source Vertex s"]) --> INIT["Set dist[s] = 0, dist[v] = INF for all v != s\nInsert all vertices into Priority Queue"]
+    INIT --> LOOP{"Priority Queue Empty?"}
+    LOOP -- Yes --> DONE(["Shortest paths found for all reachable vertices"])
+    LOOP -- No --> EXTRACT["u = Extract-Min(Priority Queue)\nMark u as Visited"]
+    EXTRACT --> FOR_EACH["For each unvisited neighbor v of u:"]
+    FOR_EACH --> RELAX{"dist[u] + weight(u,v) < dist[v]?"}
+    RELAX -- Yes --> UPDATE["dist[v] = dist[u] + weight(u,v)\nparent[v] = u\nDecreaseKey in Priority Queue"]
+    RELAX -- No --> NEXT_NEIGHBOR["Next Neighbor"]
+    UPDATE --> NEXT_NEIGHBOR
+    NEXT_NEIGHBOR --> LOOP
+\`\`\`
+
+
 Dijkstra's Algorithm is a popular greedy algorithm used to find the shortest path from a single source vertex to all other vertices in a given graph. It is heavily used in GPS mapping and network routing protocols.
 
 ### Requirements
@@ -1626,6 +1950,14 @@ It fails if the graph has negative edge weights because it assumes that once a n
             'Requires non-negative edge weights.',
             'Time complexity O((V+E) log V) with Min-Heap.'
           ],
+          theoryQuestions: [
+            {
+              question: "Explain Dijkstra's Algorithm for finding single-source shortest paths. Why does it fail for negative edge weights?",
+              marks: '7 Marks',
+              answer: "Dijkstra's algorithm finds the shortest path from a starting source vertex to all other vertices in a weighted graph with non-negative edges.\n\n**Algorithm:**\n1. Maintain a distance array \`dist[]\` initialized to $\\infty$, except \`dist[source] = 0\`.\n2. Use a min-priority queue to repeatedly extract the unvisited vertex $u$ with minimum \`dist[u]\`.\n3. For every unvisited neighbor $v$ of $u$, perform edge relaxation:\n   $$\\text{if } (dist[u] + weight(u, v) < dist[v]) \\implies dist[v] = dist[u] + weight(u, v)$$\n4. Mark $u$ as visited.\n\n**Why it fails for negative edge weights:**\nDijkstra operates on a **greedy assumption** that once a vertex is extracted from the priority queue and marked visited, its shortest distance is finalized and cannot be decreased further. A negative edge encountered later could create a shorter path through an already finalized vertex, breaking the correctness guarantee. (Use Bellman-Ford for negative weights).",
+              keyPoints: ['Greedy selection of min distance vertex.', 'Edge relaxation formula.', 'Failure reason on negative weights (greedy finalization assumption).']
+            },
+          ],
           mcqs: [
             {
               question: 'Dijkstra\'s algorithm will fail if the graph contains:',
@@ -1640,6 +1972,17 @@ It fails if the graph has negative edge weights because it assumes that once a n
           title: 'Minimum Spanning Tree (Prim\'s, Kruskal\'s)',
           simpleExplanation: 'A Minimum Spanning Tree (MST) connects all the nodes of a graph using the least amount of total edge weight.',
           detailedExplanation: `## Minimum Spanning Tree (MST)
+
+### Minimum Spanning Tree: Prim's vs Kruskal's
+\`\`\`mermaid
+flowchart TD
+    MST["Minimum Spanning Tree (MST) Algorithms\nConnects all V vertices with V-1 edges at minimum total weight"]
+
+    MST --> PRIM["Prim's Algorithm (Vertex-based)\n- Starts from arbitrary root vertex\n- Greedily grows tree by adding minimum-weight edge crossing cut\n- Best for Dense Graphs: O(E log V) or O(V^2)"]
+
+    MST --> KRUSKAL["Kruskal's Algorithm (Edge-based)\n- Sorts all edges by weight\n- Greedily picks smallest edge that does not form a cycle\n- Uses Disjoint Set Union (DSU / Union-Find)\n- Best for Sparse Graphs: O(E log E)"]
+\`\`\`
+
 
 Given a connected, undirected, weighted graph, a Spanning Tree is a subgraph that is a tree and includes all the vertices of the graph. A **Minimum Spanning Tree (MST)** is the spanning tree with the lowest total edge weight.
 
@@ -1730,6 +2073,22 @@ Prim's algorithm builds the MST by growing it from a starting vertex, similar to
           simpleExplanation: 'Linear search checks every item one by one. Binary search splits sorted data in half repeatedly to find the item fast.',
           detailedExplanation: `## Searching Algorithms
 
+### Binary Search Interval Halving Flowchart
+\`\`\`mermaid
+flowchart TD
+    START(["Start Binary Search on Sorted Array"]) --> INIT["low = 0, high = n - 1"]
+    INIT --> CHECK{"low <= high?"}
+    CHECK -- No --> NOT_FOUND(["Element Not Found (-1)"])
+    CHECK -- Yes --> MID["mid = low + (high - low) / 2"]
+    MID --> CMP{"arr[mid] == target?"}
+    CMP -- Yes --> FOUND(["Found at index mid!"])
+    CMP -- "arr[mid] < target" --> RIGHT["low = mid + 1 (Search Right Half)"]
+    CMP -- "arr[mid] > target" --> LEFT["high = mid - 1 (Search Left Half)"]
+    RIGHT --> CHECK
+    LEFT --> CHECK
+\`\`\`
+
+
 Searching is the process of finding the position of a specific element within a data structure.
 
 ### 1. Linear Search
@@ -1804,6 +2163,16 @@ While Binary Search is drastically faster for large datasets (e.g., searching 1 
           simpleExplanation: 'These are simple sorting algorithms that take O(n²) time. They are easy to code but slow for large lists.',
           detailedExplanation: `## Simple Sorting Algorithms
 
+### Sorting Algorithms Comparison
+\`\`\`mermaid
+flowchart TD
+    SORTS["Comparison of Quadratic O(n^2) Sorts"]
+    SORTS --> BUBBLE["Bubble Sort: Repeatedly compares adjacent elements and swaps larger ones to end."]
+    SORTS --> SELECT["Selection Sort: Finds minimum element in unsorted subarray and swaps with first element."]
+    SORTS --> INSERT["Insertion Sort: Takes next element and inserts it into its correct sorted position (Adaptive, O(n) for nearly sorted)."]
+\`\`\`
+
+
 These three algorithms are considered "comparison sorts" with an O(n²) average and worst-case time complexity. They are rarely used in production for large data but are fundamental for understanding algorithmic thinking.
 
 ### 1. Bubble Sort
@@ -1874,6 +2243,28 @@ These three algorithms are considered "comparison sorts" with an O(n²) average 
           title: 'Merge Sort & Quick Sort',
           simpleExplanation: 'Advanced sorting algorithms that use Divide and Conquer to sort data very quickly in O(n log n) time.',
           detailedExplanation: `## Divide and Conquer Sorting
+
+### Merge Sort Divide-and-Conquer Recursion Tree
+\`\`\`mermaid
+flowchart TD
+    ARR["[ 38, 27, 43, 3, 9, 82, 10 ]"] --> D1["[ 38, 27, 43, 3 ]"]
+    ARR --> D2["[ 9, 82, 10 ]"]
+
+    D1 --> D11["[ 38, 27 ]"]
+    D1 --> D12["[ 43, 3 ]"]
+    D2 --> D21["[ 9, 82 ]"]
+    D2 --> D22["[ 10 ]"]
+
+    D11 --> M1["Merged: [ 27, 38 ]"]
+    D12 --> M2["Merged: [ 3, 43 ]"]
+    D21 --> M3["Merged: [ 9, 82 ]"]
+
+    M1 & M2 --> M12["Merged: [ 3, 27, 38, 43 ]"]
+    M3 & D22 --> M34["Merged: [ 9, 10, 82 ]"]
+
+    M12 & M34 --> SORTED["Fully Sorted: [ 3, 9, 10, 27, 38, 43, 82 ]"]
+\`\`\`
+
 
 For large datasets, O(n²) algorithms are too slow. Merge Sort and Quick Sort use the **Divide and Conquer** paradigm to achieve O(n log n) time complexity.
 
@@ -1956,6 +2347,21 @@ For large datasets, O(n²) algorithms are too slow. Merge Sort and Quick Sort us
           title: 'Hashing (Hash functions, collision resolution)',
           simpleExplanation: 'Hashing turns data into an array index using a formula, allowing extremely fast O(1) data retrieval.',
           detailedExplanation: `## Hashing
+
+### Hash Collision Resolution: Chaining vs Open Addressing
+\`\`\`mermaid
+flowchart TD
+    subgraph Chaining["Separate Chaining (Linked Lists)"]
+        B0["Bucket 0"] --> N1["Node 10"] --> N2["Node 20 -> NULL"]
+        B1["Bucket 1"] --> N3["Node 11 -> NULL"]
+        B2["Bucket 2"] --> NULL_B["NULL"]
+    end
+
+    subgraph OpenAddressing["Open Addressing (Linear Probing)"]
+        H["Hash Key k -> h(k) = k % size\nIf collision: probe (h(k) + i) % size\nClustering issue: primary clustering"]
+    end
+\`\`\`
+
 
 Hashing is a technique that uniquely identifies a specific object from a group of similar objects. It allows for O(1) average time complexity for search, insert, and delete operations.
 

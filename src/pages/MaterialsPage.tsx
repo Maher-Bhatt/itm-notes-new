@@ -72,9 +72,46 @@ export default function MaterialsPage() {
   }, [searchQuery, selectedSubject, selectedCategory, selectedSemester]);
 
   const handleDownload = (material: StudyMaterial) => {
-    toast.success(`Preparing "${material.title}" for download...`, {
-      description: `Format: ${material.fileType} (${material.fileSize})`,
-    });
+    if (material.downloadUrl) {
+      const link = document.createElement("a");
+      link.href = material.downloadUrl;
+      link.setAttribute("download", material.downloadUrl.split("/").pop() || `${material.title.replace(/[^a-zA-Z0-9_-]/g, "_")}.${material.fileType.toLowerCase()}`);
+      link.setAttribute("target", "_blank");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      toast.success(`Downloading: "${material.title}"`, {
+        description: `Format: ${material.fileType} (${material.fileSize})`,
+      });
+    } else {
+      const content = `# ITM SLS BARODA UNIVERSITY - ACADEMIC STUDY REPOSITORY
+## ${material.title}
+- **Subject:** ${material.subject} (${material.subjectCode})
+- **Semester:** ${material.semester}
+- **Category:** ${material.category}
+- **File Type:** ${material.fileType} (${material.fileSize})
+
+---
+### Document Description:
+${material.description}
+
+### Syllabus & Topics Covered:
+${material.topicsCovered.map((t, idx) => `${idx + 1}. ${t}`).join("\n")}
+
+---
+© ITM SLS Baroda University - Computer Science & Engineering
+`;
+      const blob = new Blob([content], { type: "text/markdown;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `${material.title.replace(/[^a-zA-Z0-9_-]/g, "_")}_Study_Guide.md`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      toast.success(`Downloaded "${material.title}" Study Guide!`);
+    }
   };
 
   return (
@@ -385,6 +422,16 @@ export default function MaterialsPage() {
                 >
                   Close
                 </button>
+                {activePreview.downloadUrl && (
+                  <a
+                    href={activePreview.downloadUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border bg-secondary hover:bg-secondary/80 text-foreground font-semibold"
+                  >
+                    <ExternalLink className="h-4 w-4" /> Open
+                  </a>
+                )}
                 <button
                   onClick={() => {
                     handleDownload(activePreview);

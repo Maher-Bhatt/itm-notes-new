@@ -60,8 +60,8 @@ print("Binary:", bin(decimal_num)) # Output: 0b11001
 print("Octal:", oct(decimal_num))  # Output: 0o31
 print("Hexadecimal:", hex(decimal_num)) # Output: 0x19
 \`\`\`
-`,
-          richContent: `
+\`,
+          richContent: \`
 ### Step-by-Step Trace: Decimal 13 to Binary
 | Step | Operation | Quotient | Remainder |
 |---|---|---|---|
@@ -120,8 +120,8 @@ A floating-point number is normalized if the leading digit of the mantissa is no
 
 > [!WARNING] **TRAP:**
 > Don't confuse the Mantissa length for the whole size. Single precision is 32 bits TOTAL, not a 32-bit mantissa!
-`,
-          richContent: `
+\`,
+          richContent: \`
 ### Example of Floating Point Storage
 Storing $1.23 \\times 10^3$:
 - Sign: Positive (0)
@@ -185,8 +185,8 @@ pct_err = rel_err * 100
 print(f"Absolute Error: {abs_err}") # Output: 0.1999999999999993
 print(f"Percentage Error: {pct_err}%") # Output: 1.999999999999993%
 \`\`\`
-`,
-          richContent: `
+\`,
+          richContent: \`
 ### Step-by-Step Trace
 True = 3.14159, Approx = 3.14
 1. Abs Error = |3.14159 - 3.14| = 0.00159
@@ -234,8 +234,8 @@ If a result is calculated to 10 decimal places, but the input data only had 3 si
 
 > [!TIP] **EXAM TIP:**
 > When doing arithmetic, your final answer should have the same number of significant figures as the input with the *fewest* significant figures.
-`,
-          richContent: `
+\`,
+          richContent: \`
 ### Example Trace
 | Number | Significant Figures | Explanation |
 |---|---|---|
@@ -273,6 +273,21 @@ If a result is calculated to 10 decimal places, but the input data only had 3 si
           simpleExplanation: 'A slow but guaranteed way to find a root by repeatedly cutting an interval in half.',
           detailedExplanation: `
 ## The Bisection Method
+
+### Bisection Method Interval Halving Flowchart
+\`\`\`mermaid
+flowchart TD
+    START(["Start Bisection Method"]) --> GUESS["Find initial interval [a, b] such that\nf(a) * f(b) < 0 (Opposite Signs)"]
+    GUESS --> CALC["c = (a + b) / 2 (Midpoint)"]
+    CALC --> CHECK{"|f(c)| < Tolerance OR (b - a)/2 < Tol?"}
+    CHECK -- Yes --> ROOT(["Root found: x = c"])
+    CHECK -- No --> EVAL{"f(a) * f(c) < 0?"}
+    EVAL -- Yes --> SET_B["b = c (Root lies in left half [a, c])"]
+    EVAL -- No --> SET_A["a = c (Root lies in right half [c, b])"]
+    SET_B --> CALC
+    SET_A --> CALC
+\`\`\`
+
 This method repeatedly halves an interval to find the root.
 
 > [!IMPORTANT] **MEMORIZE:**
@@ -309,8 +324,8 @@ def bisection(a, b, tol):
         else: a = c
     return c
 \`\`\`
-`,
-          richContent: `
+\`,
+          richContent: \`
 ### Step-by-Step Trace for $f(x) = x^2 - 4$
 Target Tolerance: 0.5. Initial $a=0, b=3$.
 | Iter | a | b | c (Mid) | f(c) | New Interval |
@@ -329,6 +344,14 @@ Target Tolerance: 0.5. Initial $a=0, b=3$.
             'Convergence is linear (slow).',
             'Never fails to find a root if one exists.'
           ],
+          theoryQuestions: [
+            {
+              question: 'Explain the Bisection Method with a flowchart. Derive its convergence rate and discuss its limitations.',
+              marks: '7 Marks',
+              answer: 'The Bisection Method finds real roots of continuous functions based on the Intermediate Value Theorem:\n1. Find two initial points $a$ and $b$ such that $f(a) \\cdot f(b) < 0$.\n2. Calculate midpoint $c = \\frac{a + b}{2}$.\n3. If $f(c) = 0$, $c$ is the exact root. If $f(a) \\cdot f(c) < 0$, root lies in $[a, c]$; set $b = c$. Else, set $a = c$.\n4. Repeat until interval $|b - a| < \\epsilon$.\n\n**Convergence:**\nIn each iteration, the interval width is halved: $\\epsilon_{n+1} = \\frac{1}{2} \\epsilon_n$. Hence, the method converges **linearly** with rate 1/2.\n**Limitations:** Convergence is slow compared to Newton-Raphson, and cannot find complex roots or even-multiplicity roots where the function touches the x-axis without crossing.',
+              keyPoints: ['Intermediate value theorem basis.', 'Linear convergence with factor 1/2.', 'Guaranteed convergence vs slow speed.']
+            },
+          ],
           mcqs: [
             { question: 'What is the necessary condition for initial guesses a and b?', options: ['f(a) * f(b) > 0', 'f(a) * f(b) = 0', 'f(a) * f(b) < 0', 'f(a) = f(b)'], correctIndex: 2, explanation: 'Opposite signs guarantee a root.' },
             { question: 'What is the convergence rate of the Bisection method?', options: ['Linear', 'Quadratic', 'Cubic', 'Exponential'], correctIndex: 0, explanation: 'Bisection method has linear convergence.' },
@@ -341,6 +364,19 @@ Target Tolerance: 0.5. Initial $a=0, b=3$.
           simpleExplanation: 'A very fast method that uses the tangent line (derivative) of the function to slide quickly toward the root.',
           detailedExplanation: `
 ## Newton-Raphson Method
+
+### Newton-Raphson Tangent Line Convergence Flowchart
+\`\`\`mermaid
+flowchart TD
+    START(["Start Newton-Raphson Method"]) --> INIT["Choose initial guess x0\nCompute f(x0) and derivative f'(x0)"]
+    INIT --> CHECK_DERIV{"|f'(x0)| == 0?"}
+    CHECK_DERIV -- Yes --> FAIL(["Fails: Horizontal tangent / division by zero! Pick new x0"])
+    CHECK_DERIV -- No --> NEXT["x1 = x0 - f(x0) / f'(x0)"]
+    NEXT --> CONV{"|x1 - x0| < Tolerance?"}
+    CONV -- Yes --> ROOT(["Root found: x = x1\n(Quadratic Order of Convergence: p = 2)"])
+    CONV -- No --> ITER["x0 = x1"] --> NEXT
+\`\`\`
+
 
 > [!IMPORTANT] **MEMORIZE:**
 > Formula: $x_{n+1} = x_n - \\frac{f(x_n)}{f'(x_n)}$
@@ -371,8 +407,8 @@ def newton_raphson(x0, tol):
         if abs(x_new - x) < tol: return x_new
         x = x_new
 \`\`\`
-`,
-          richContent: `
+\`,
+          richContent: \`
 ### Trace for $f(x) = x^2 - 4$, $f'(x) = 2x$, $x_0 = 3$
 | n | $x_n$ | $f(x_n)$ | $f'(x_n)$ | $x_{n+1}$ |
 |---|---|---|---|---|
@@ -389,6 +425,14 @@ def newton_raphson(x0, tol):
             'Needs one initial guess (Open method).',
             'Quadratic convergence rate.',
             'Fails if tangent is horizontal.'
+          ],
+          theoryQuestions: [
+            {
+              question: 'Derive the Newton-Raphson iteration formula using Taylor series. Prove that its order of convergence is quadratic (p = 2).',
+              marks: '7 Marks',
+              answer: "**Derivation:**\nExpanding $f(x)$ about guess $x_0$ using Taylor series:\n$$f(x) = f(x_0) + (x - x_0) f'(x_0) + \\frac{(x - x_0)^2}{2!} f''(x_0) + \\dots$$\nNeglecting second and higher order terms and setting $f(x) = 0$ at the root $x_1$:\n$$0 \\approx f(x_0) + (x_1 - x_0) f'(x_0) \\implies \\mathbf{x_{n+1} = x_n - \\frac{f(x_n)}{f'(x_n)}}$$\n\n**Proof of Quadratic Convergence ($p = 2$):**\nLet $x_n = \\alpha + \\epsilon_n$ where $\\alpha$ is the true root ($f(\\alpha) = 0$).\nSubstituting into the iteration formula and expanding around $\\alpha$ yields:\n$$\\epsilon_{n+1} \\approx \\frac{f''(\\alpha)}{2 f'(\\alpha)} \\epsilon_n^2 = C \\cdot \\epsilon_n^2$$\nSince $\\epsilon_{n+1} \\propto \\epsilon_n^2$, the order of convergence is **2 (Quadratic)**.",
+              keyPoints: ['Taylor series 1st order derivation.', "Formula x_{n+1} = x_n - f/f'.", 'Proof showing epsilon_{n+1} proportional to epsilon_n^2.']
+            },
           ],
           mcqs: [
             { question: 'What is the formula for Newton-Raphson?', options: ['x - f(x)/f\'(x)', 'x + f(x)/f\'(x)', 'x - f\'(x)/f(x)', 'f(x) - x/f\'(x)'], correctIndex: 0, explanation: 'Standard formula.' },
@@ -421,8 +465,8 @@ Approximates the derivative using a secant line drawn through two recent points.
 
 > [!TIP] **EXAM TIP:**
 > Be very careful with calculator parentheses here. Calculate the denominator $f(x_n) - f(x_{n-1})$ first, then multiply.
-`,
-          richContent: `
+\`,
+          richContent: \`
 ### Comparison Table
 | Feature | Newton-Raphson | Secant |
 |---|---|---|
@@ -470,8 +514,8 @@ Approximates the derivative using a secant line drawn through two recent points.
 
 > [!TIP] **EXAM TIP:**
 > The formula is essentially identical to the Secant method, but the logic for *updating* the points is identical to the Bisection method.
-`,
-          richContent: `
+\`,
+          richContent: \`
 ### Bracketing Methods Comparison
 | Feature | Bisection | Regula-Falsi |
 |---|---|---|
@@ -520,8 +564,8 @@ Approximates the derivative using a secant line drawn through two recent points.
 
 > [!TIP] **EXAM TIP:**
 > If a question asks you to "show convergence is possible", compute $g'(x)$ and prove that substituting your initial guess gives a value between -1 and 1.
-`,
-          richContent: `
+\`,
+          richContent: \`
 ### Example Rearrangement: $x^2 - x - 2 = 0$
 - **Option 1:** $x = x^2 - 2 \\Rightarrow g'(x) = 2x$. If root is near 2, $|g'(2)| = 4 > 1$. **Diverges.**
 - **Option 2:** $x = \\sqrt{x + 2} \\Rightarrow g'(x) = \\frac{1}{2\\sqrt{x+2}}$. If root is near 2, $|g'(2)| = 1/4 < 1$. **Converges!**
@@ -555,6 +599,22 @@ Approximates the derivative using a secant line drawn through two recent points.
           detailedExplanation: `
 ## Newton's Forward Formula
 
+### Decision Tree for Interpolation Techniques
+\`\`\`mermaid
+flowchart TD
+    DATA["Given Data Points (x0, y0), (x1, y1)... (xn, yn)"] --> SPACING{"Are x-values equally spaced?\n(h = x1 - x0 = x2 - x1)"}
+
+    SPACING -- "Yes (Equispaced)" --> POS{"Where does target x lie?"}
+    POS -- "Near the beginning of table" --> N_FWD["Newton's Forward Difference Formula"]
+    POS -- "Near the end of table" --> N_BWD["Newton's Backward Difference Formula"]
+    POS -- "Near the center of table" --> N_CENT["Central Differences (Gauss, Stirling, Bessel)"]
+
+    SPACING -- "No (Unequally Spaced)" --> UNEQ{"Formula Preference"}
+    UNEQ --> LAGRANGE["Lagrange's Interpolation Formula\n(No difference table required)"]
+    UNEQ --> N_DIV["Newton's Divided Difference Formula\n(Easier to add new data points)"]
+\`\`\`
+
+
 > [!IMPORTANT] **MEMORIZE:**
 > Parameter $u = \\frac{x - x_0}{h}$
 > Formula: $y = y_0 + u \\Delta y_0 + \\frac{u(u-1)}{2!} \\Delta^2 y_0 + ...$
@@ -571,8 +631,8 @@ Approximates the derivative using a secant line drawn through two recent points.
 
 > [!TIP] **EXAM TIP:**
 > Always draw the difference table completely. Even if your formula calculation is wrong, a correct difference table gets you 50% of the marks!
-`,
-          richContent: `
+\`,
+          richContent: \`
 ### Trace: Creating a Difference Table
 | $x$ | $y$ | $\\Delta y$ | $\\Delta^2 y$ |
 |---|---|---|---|
@@ -620,8 +680,8 @@ Works perfectly for **unequally spaced** data points.
 
 > [!TIP] **EXAM TIP:**
 > Write out the fraction structure empty first: $\\frac{()()}{()()} y_0 + ...$ Then fill in the x values. This prevents skipping a term.
-`,
-          richContent: `
+\`,
+          richContent: \`
 ### Comparison Table
 | Feature | Newton Forward | Lagrange |
 |---|---|---|
@@ -658,6 +718,19 @@ Works perfectly for **unequally spaced** data points.
           detailedExplanation: `
 ## Numerical Integration
 
+### Numerical Integration Formulas Comparison
+\`\`\`mermaid
+flowchart TD
+    INTEG["Numerical Integration: Integral a to b of f(x) dx\nDivide interval [a, b] into n equal subintervals of width h = (b - a)/n"]
+
+    INTEG --> TRAP["Trapezoidal Rule (n can be any integer)\nApproximates curve by straight line chords (1st-degree polynomial)\nFormula: (h/2) * [ (y0 + yn) + 2*(y1 + y2 + ... + yn-1) ]"]
+
+    INTEG --> SIMP13["Simpson's 1/3 Rule (n MUST be EVEN)\nApproximates curve by parabolic arcs (2nd-degree polynomial)\nFormula: (h/3) * [ (y0 + yn) + 4*(odd y) + 2*(even y) ]"]
+
+    INTEG --> SIMP38["Simpson's 3/8 Rule (n MUST be MULTIPLE OF 3)\nApproximates curve by 3rd-degree cubic polynomial\nFormula: (3h/8) * [ (y0 + yn) + 3*(y1+y2+y4...) + 2*(y3+y6...) ]"]
+\`\`\`
+
+
 > [!IMPORTANT] **MEMORIZE:**
 > Formula: $\\frac{h}{2} [ (First + Last) + 2(Sum \\; of \\; Rest) ]$
 
@@ -673,8 +746,8 @@ Works perfectly for **unequally spaced** data points.
 
 > [!TIP] **EXAM TIP:**
 > $n$ represents the number of intervals, not the number of points. Number of points is always $n + 1$.
-`,
-          richContent: `
+\`,
+          richContent: \`
 ### Step-by-Step Trace
 $h = 1$. Points: $y_0=10, y_1=20, y_2=30$
 1. First + Last = 10 + 30 = 40
@@ -718,8 +791,8 @@ Because the multiplier in front is $h/3$.
 
 > [!TIP] **EXAM TIP:**
 > Check $n$ before applying. If a question gives you 6 data points, $n = 5$ (odd). You cannot use Simpson's 1/3 for the whole thing! (You'd use Simpson's 3/8, or combine methods).
-`,
-          richContent: `
+\`,
+          richContent: \`
 ### Integration Comparison Table
 | Method | Curve Used | Multipliers | n Requirement |
 |---|---|---|---|
@@ -756,6 +829,17 @@ Because the multiplier in front is $h/3$.
           detailedExplanation: `
 ## Gauss Elimination
 
+### Gauss Elimination Algorithm Flowchart
+\`\`\`mermaid
+flowchart TD
+    START(["Start with System: A * X = B"]) --> AUG["Form Augmented Matrix [ A | B ]"]
+    AUG --> FWD["Forward Elimination:\nApply elementary row operations to eliminate\nelements below the main diagonal"]
+    FWD --> TRIANG["Upper Triangular Matrix Form:\n[ U | B' ] where all a_ij = 0 for i > j"]
+    TRIANG --> BACK["Back Substitution:\n1. Solve for x_n = b'_n / u_nn\n2. Substitute x_n backwards to solve for x_n-1, x_n-2 ... x_1"]
+    BACK --> DONE(["Unique Solution Vector X Obtained"])
+\`\`\`
+
+
 > [!IMPORTANT] **MEMORIZE:**
 > Step 1: Forward Elimination (Make Upper Triangular Matrix)
 > Step 2: Back Substitution (Solve z, then y, then x)
@@ -771,8 +855,8 @@ Use row operations to make all numbers below the main diagonal zero.
 
 > [!TIP] **EXAM TIP:**
 > Write out your row operations explicitly (e.g., $R_2 \\rightarrow R_2 - 2R_1$). If you make a math error, the examiner will see your logic was correct.
-`,
-          richContent: `
+\`,
+          richContent: \`
 ### Step-by-Step Triangle Formation
 Start:
 $[2, 1, -1]$
@@ -824,8 +908,8 @@ $[0, 0, X]$
 
 > [!TIP] **EXAM TIP:**
 > Create a neat table: Iteration | x | y | z. Circle the updated values in your calculation to prove you used the immediate update property.
-`,
-          richContent: `
+\`,
+          richContent: \`
 ### Comparison Table
 | Feature | Jacobi | Gauss-Seidel |
 |---|---|---|
@@ -877,8 +961,8 @@ Assume the slope stays constant for a very small step $h$, and draw a straight l
 
 > [!TIP] **EXAM TIP:**
 > Write $f(x_n, y_n)$ explicitly as your differential equation. If the ODE is $dy/dx = x+y$, then slope $= x_n + y_n$.
-`,
-          richContent: `
+\`,
+          richContent: \`
 ### Step-by-Step Trace
 $dy/dx = x+y$. Start (0,1), $h=0.1$.
 1. Slope at (0,1) = 0 + 1 = 1
@@ -908,6 +992,18 @@ $dy/dx = x+y$. Start (0,1), $h=0.1$.
           detailedExplanation: `
 ## Runge-Kutta 4th Order (RK4)
 
+### Runge-Kutta 4th Order (RK4) 4-Slope Architecture
+\`\`\`mermaid
+flowchart TD
+    START(["Initial Condition: (x0, y0), Step size h"]) --> S1["Slope k1 = h * f(x0, y0)\n(Slope at beginning of interval)"]
+    S1 --> S2["Slope k2 = h * f(x0 + h/2, y0 + k1/2)\n(Slope at midpoint using k1)"]
+    S2 --> S3["Slope k3 = h * f(x0 + h/2, y0 + k2/2)\n(Improved slope at midpoint using k2)"]
+    S3 --> S4["Slope k4 = h * f(x0 + h, y0 + k3)\n(Slope at end of interval using k3)"]
+    S4 --> AVG["Weighted Average of 4 Slopes:\nk = (k1 + 2*k2 + 2*k3 + k4) / 6"]
+    AVG --> NEXT["y1 = y0 + k\nx1 = x0 + h\n(High-accuracy O(h^4) step without calculating derivatives!)"]
+\`\`\`
+
+
 > [!IMPORTANT] **MEMORIZE:**
 > $y_{n+1} = y_n + \\frac{1}{6}(k_1 + 2k_2 + 2k_3 + k_4)$
 
@@ -925,8 +1021,8 @@ $dy/dx = x+y$. Start (0,1), $h=0.1$.
 
 > [!TIP] **EXAM TIP:**
 > Calculate $k_1, k_2, k_3, k_4$ separately and clearly. The examiner looks for these 4 values before looking at your final answer.
-`,
-          richContent: `
+\`,
+          richContent: \`
 ### Comparison Table
 | Feature | Euler | RK4 |
 |---|---|---|

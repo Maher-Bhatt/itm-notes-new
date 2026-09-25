@@ -7,7 +7,7 @@ import { useTopic, useSubject } from "@/hooks/useAcademicData";
 import { MCQQuiz } from "@/components/MCQQuiz";
 import { TestMe } from "@/components/TestMe";
 import { MarkdownRenderer, extractTOC } from "@/components/MarkdownRenderer";
-import { Bookmark, CheckCircle, BookOpen, ChevronLeft, ChevronRight, Menu, X, Copy, Check, Maximize2, Minimize2, Loader2 } from "lucide-react";
+import { Bookmark, CheckCircle, BookOpen, ChevronLeft, ChevronRight, Menu, X, Copy, Check, Maximize2, Minimize2, Loader2, HelpCircle } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { SearchDialog } from "@/components/SearchDialog";
@@ -430,6 +430,61 @@ export default function TopicPage() {
                           <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[12px] font-bold shrink-0 mt-0.5">{i + 1}</span>
                           <span className="text-[16px] text-foreground/90 leading-relaxed font-medium">{point}</span>
                         </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {topic.theoryQuestions && topic.theoryQuestions.length > 0 && (
+                  <div className="mt-16">
+                    <div className="flex items-center justify-between pb-3 border-b border-border mb-6">
+                      <h2 className="text-2xl font-extrabold text-foreground flex items-center gap-2.5">
+                        <HelpCircle className="h-6 w-6 text-primary" />
+                        Exam Theory Questions ({topic.theoryQuestions.length})
+                      </h2>
+                      <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-primary/10 text-primary">
+                        University Exam Pattern
+                      </span>
+                    </div>
+                    <div className="space-y-4">
+                      {topic.theoryQuestions.map((tq, i) => (
+                        <details
+                          key={i}
+                          className="group bg-card border border-border/80 rounded-xl p-5 open:bg-secondary/15 open:border-primary/40 transition-colors shadow-sm"
+                        >
+                          <summary className="font-bold text-[15px] sm:text-[16px] text-foreground cursor-pointer flex items-center justify-between gap-4 select-none">
+                            <div className="flex items-start gap-3">
+                              <span className="w-6 h-6 rounded-md bg-primary/10 text-primary text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
+                                Q{i + 1}
+                              </span>
+                              <span>{tq.question}</span>
+                            </div>
+                            <span className={`text-[11px] px-2.5 py-0.5 rounded-full font-bold shrink-0 ${
+                              tq.marks === '2 Marks' || tq.marks === '3 Marks'
+                                ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
+                                : tq.marks === '5 Marks'
+                                ? 'bg-purple-500/10 text-purple-600 dark:text-purple-400'
+                                : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                            }`}>
+                              {tq.marks}
+                            </span>
+                          </summary>
+                          <div className="mt-4 pt-4 border-t border-border/60 text-[15px] leading-relaxed text-foreground/90 rich-content prose-base max-w-none">
+                            <MarkdownRenderer content={tq.answer} />
+                            {tq.keyPoints && tq.keyPoints.length > 0 && (
+                              <div className="mt-4 p-3.5 bg-secondary/30 rounded-lg border border-border/50">
+                                <p className="text-[11px] font-bold text-primary uppercase tracking-wider mb-2">
+                                  Mark-Scoring Key Points:
+                                </p>
+                                <ul className="list-disc pl-5 space-y-1 text-xs text-muted-foreground">
+                                  {tq.keyPoints.map((kp, kIdx) => (
+                                    <li key={kIdx}>{kp}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                          </div>
+                        </details>
                       ))}
                     </div>
                   </div>

@@ -43,7 +43,48 @@ Java is a high-level, class-based, object-oriented programming language designed
 - **Platform Independent:** Java code is compiled into bytecode, which can run on any system with a JVM.
 - **Secured:** No explicit pointers, programs run inside a virtual machine sandbox.
 - **Robust:** Strong memory management, automatic garbage collection, exception handling.
-- **Multithreaded:** Can perform multiple tasks simultaneously.`,
+- **Multithreaded:** Can perform multiple tasks simultaneously.
+
+### JVM Architectural Subsystems Diagram:
+\`\`\`mermaid
+flowchart TD
+    subgraph SRC["Source Code Compilation"]
+        JAVA[".java Source File"] --> JAVAC["javac Compiler"] --> BYTE[".class Bytecode"]
+    end
+
+    subgraph JVM["Java Virtual Machine (JVM Internals)"]
+        direction TB
+        subgraph CL["Class Loader Subsystem"]
+            L1["Loading (Bootstrap, Extension, App)"]
+            L2["Linking (Verify, Prepare, Resolve)"]
+            L3["Initialization (static blocks/vars)"]
+            L1 --> L2 --> L3
+        end
+
+        subgraph MEM["Runtime Data Areas (Memory)"]
+            MA["Method Area (Class Metaspace)"]
+            HA["Heap Area (Objects & Instances)"]
+            JS["Java Thread Stacks (Local Variables)"]
+            PC["PC Registers (Instruction Address)"]
+            NM["Native Method Stack (C/C++)"]
+        end
+
+        subgraph EE["Execution Engine"]
+            INT["Bytecode Interpreter"]
+            JIT["JIT Compiler (HotSpot)"]
+            GC["Garbage Collector (Automatic)"]
+        end
+
+        JNI["Java Native Interface (JNI)"]
+        NL["Native C/C++ Libraries"]
+    end
+
+    BYTE --> CL
+    CL --> MEM
+    MEM --> EE
+    EE <--> JNI <--> NL
+\`\`\`
+`,
           keyPoints: [
             'JDK = JRE + Development Tools',
             'JRE = JVM + Library Classes',
@@ -513,7 +554,34 @@ Java does not support Multiple Inheritance (where Class C extends both Class A a
 If Class A and Class B both have a method named \`msg()\`, and Class C calls \`msg()\`, the compiler will be confused about which method to execute. This ambiguity is removed by simply not supporting multiple inheritance for classes. (Note: It is supported via Interfaces).
 
 ### IS-A Relationship
-Inheritance represents an IS-A relationship. For example, a Dog IS-A Animal.`,
+Inheritance represents an IS-A relationship. For example, a Dog IS-A Animal.
+
+### Inheritance Models & Diamond Problem Resolution:
+\`\`\`mermaid
+flowchart TD
+    subgraph SINGLE["Single Inheritance"]
+        A1["Base Class A"] --> B1["Derived Class B"]
+    end
+
+    subgraph MULTI["Multilevel Inheritance"]
+        A2["Grandparent A"] --> B2["Parent B"] --> C2["Child C"]
+    end
+
+    subgraph HIER["Hierarchical Inheritance"]
+        A3["Parent Base A"]
+        A3 --> B3["Child Class B"]
+        A3 --> C3["Child Class C"]
+    end
+
+    subgraph DIAMOND["Why Multiple Inheritance is Forbidden in Classes"]
+        D1["Super Class A\n(fun() implementation)"]
+        D1 --> D2["Class B (overrides fun)"]
+        D1 --> D3["Class C (overrides fun)"]
+        D2 -.->|"Conflict: Which method to inherit?"| D4["Class D extends B, C (AMBIGUITY ERROR!)"]
+        D3 -.->|"Conflict: Which method to inherit?"| D4
+    end
+\`\`\`
+`,
           keyPoints: [
             'Keyword \`extends\` is used for inheritance.',
             'Promotes Code Reusability and Method Overriding (Run-time Polymorphism).',
@@ -591,7 +659,27 @@ This is the mechanism by which a call to an overridden method is resolved at run
 Parent obj = new Child();
 obj.show(); // Calls Child's show() method
 \`\`\`
-The reference variable is of type Parent, but the object is of type Child. The JVM checks the object type at runtime and executes the Child's method.`,
+The reference variable is of type Parent, but the object is of type Child. The JVM checks the object type at runtime and executes the Child's method.
+
+### Polymorphism Classification & Dynamic Method Dispatch:
+\`\`\`mermaid
+flowchart TD
+    POLY["Polymorphism in Java"]
+    
+    subgraph STATIC["1. Compile-Time Polymorphism (Static Binding)"]
+        POLY --> ST["Method Overloading"]
+        ST --> C1["Same Method Name, Different Signatures"]
+        ST --> C2["Resolved by Compiler at compile-time"]
+    end
+
+    subgraph DYNAMIC["2. Runtime Polymorphism (Dynamic Binding)"]
+        POLY --> DY["Method Overriding & Dynamic Dispatch"]
+        DY --> R1["Superclass Reference: Animal a = new Dog()"]
+        DY --> R2["Overridden method determined at Runtime based on Object"]
+        DY --> R3["Enables Open/Closed Principle"]
+    end
+\`\`\`
+`,
           keyPoints: [
             'Overloading happens in the SAME class; Overriding happens in Parent-Child classes.',
             'Overloading is Compile-time polymorphism; Overriding is Run-time polymorphism.',
@@ -1000,7 +1088,31 @@ An Exception is an abnormal condition that arises during the execution of a prog
 - **catch:** Block of code that handles the exception.
 - **finally:** Block of code that executes *whether an exception occurs or not*. Used for cleanup (closing files, DB connections).
 - **throw:** Used to explicitly throw a single exception from inside a method.
-- **throws:** Used in a method signature to declare that this method might throw an exception.`,
+- **throws:** Used in a method signature to declare that this method might throw an exception.
+
+### Java Exception Hierarchy (Checked vs Unchecked):
+\`\`\`mermaid
+flowchart TD
+    TH["java.lang.Throwable"]
+    TH --> ERR["Error (Unrecoverable System Failures)\n(OutOfMemoryError, StackOverflowError)"]
+    TH --> EXC["Exception (Application can catch & handle)"]
+    
+    subgraph CHECKED["Checked Exceptions (Verified at Compile Time)"]
+        EXC --> CHK["Must use try-catch or throws clause"]
+        CHK --> E1["IOException / FileNotFoundException"]
+        CHK --> E2["SQLException"]
+        CHK --> E3["ClassNotFoundException"]
+    end
+
+    subgraph UNCHECKED["Unchecked Exceptions (Runtime Errors / Bugs)"]
+        EXC --> RUN["RuntimeException"]
+        RUN --> U1["NullPointerException (Invoking method on null)"]
+        RUN --> U2["ArithmeticException (Division by zero)"]
+        RUN --> U3["ArrayIndexOutOfBoundsException"]
+        RUN --> U4["ClassCastException"]
+    end
+\`\`\`
+`,
           keyPoints: [
             'Checked exceptions MUST be handled, Unchecked are optional.',
             '\`finally\` block ALWAYS executes, except if \`System.exit()\` is called.',
@@ -1070,7 +1182,32 @@ A Thread is a lightweight sub-process, the smallest unit of processing. Multithr
 5. **Terminated/Dead:** \`run()\` method has completed execution.
 
 ### Synchronization
-When multiple threads try to access a shared resource simultaneously, it can lead to inconsistent data. **Synchronization** ensures that only one thread can access the resource at a time using the \`synchronized\` keyword.`,
+When multiple threads try to access a shared resource simultaneously, it can lead to inconsistent data. **Synchronization** ensures that only one thread can access the resource at a time using the \`synchronized\` keyword.
+
+### Java Thread Lifecycle & State Transitions:
+\`\`\`mermaid
+stateDiagram-v2
+    [*] --> New : new Thread()
+    New --> Runnable : start()
+    
+    state Runnable {
+        Ready --> Running : Thread Scheduler picks thread
+        Running --> Ready : yield() or quantum expired
+    }
+    
+    Running --> Blocked : Waiting for synchronized monitor lock
+    Blocked --> Ready : Monitor lock acquired
+    
+    Running --> Waiting : wait() / join()
+    Waiting --> Ready : notify() / notifyAll()
+    
+    Running --> TimedWaiting : sleep(ms) / wait(ms)
+    TimedWaiting --> Ready : Timer elapsed
+    
+    Running --> Terminated : run() method finishes or unhandled exception
+    Terminated --> [*]
+\`\`\`
+`,
           keyPoints: [
             'Never call \`run()\` directly. Always call \`start()\` to spawn a new thread.',
             'Implementing Runnable is better design as it leaves room to extend another class.',
@@ -1154,7 +1291,34 @@ A collection that contains NO duplicate elements.
 You can traverse collections using:
 1. Standard \`for\` loop (only for Lists)
 2. Enhanced \`for-each\` loop
-3. \`Iterator\` interface (safe for removing elements during traversal)`,
+3. \`Iterator\` interface (safe for removing elements during traversal)
+
+### Java Collections Framework Hierarchy:
+\`\`\`mermaid
+flowchart TD
+    ITER["Iterable Interface"] --> COLL["Collection Interface"]
+    
+    subgraph LIST_BRANCH["List Interface (Ordered, Indexed, Duplicates Allowed)"]
+        COLL --> L["List"]
+        L --> AL["ArrayList (Fast O(1) Random Access, slow resize)"]
+        L --> LL["LinkedList (Doubly linked, fast node insert/delete)"]
+        L --> VEC["Vector / Stack (Legacy, Synchronized thread-safe)"]
+    end
+
+    subgraph SET_BRANCH["Set Interface (Unique Elements, No Duplicates)"]
+        COLL --> S["Set"]
+        S --> HS["HashSet (Hash table, O(1) lookup, no order)"]
+        S --> LHS["LinkedHashSet (Maintains insertion order)"]
+        S --> SS["SortedSet / TreeSet (Red-Black Tree, sorted O(log n))"]
+    end
+
+    subgraph QUEUE_BRANCH["Queue Interface (FIFO & Priority)"]
+        COLL --> Q["Queue"]
+        Q --> PQ["PriorityQueue (Natural order or Comparator)"]
+        Q --> AD["ArrayDeque (Double-Ended Queue, faster than Stack)"]
+    end
+\`\`\`
+`,
           keyPoints: [
             'Collections only store Objects (Reference types), not primitive types. (Use Integer instead of int).',
             'ArrayList is good for read-heavy operations.',
@@ -1225,7 +1389,23 @@ A Map contains values on the basis of key-value pairs. It does NOT inherit from 
 - \`put(K key, V value)\`: Inserts an entry.
 - \`get(Object key)\`: Returns the value for the key.
 - \`containsKey(Object key)\`: Checks if key exists.
-- \`keySet()\`: Returns a Set view of the keys.`,
+- \`keySet()\`: Returns a Set view of the keys.
+
+### Java Map Interface Hierarchy (Key-Value Pairs):
+\`\`\`mermaid
+flowchart TD
+    MAP["Map Interface (Key -> Value Mapping, Unique Keys)"]
+    
+    MAP --> HM["HashMap (Hash Table, O(1) get/put, allows 1 null key)"]
+    MAP --> LHM["LinkedHashMap (Hash Table + Doubly-linked list, insertion order)"]
+    MAP --> HT["Hashtable (Legacy, Synchronized, No null keys/values)"]
+    
+    MAP --> SM["SortedMap"]
+    SM --> TM["TreeMap (Red-Black Tree, Sorted by Key, O(log n))"]
+    
+    MAP --> CHM["ConcurrentHashMap (Segment locking / CAS, high concurrency)"]
+\`\`\`
+`,
           keyPoints: [
             'Maps store Key-Value pairs.',
             'Keys cannot be duplicated, values can.',
@@ -1383,7 +1563,34 @@ In Java, a \`String\` is an object that represents a sequence of characters.
 - Much faster performance. Default choice for string manipulations in single-threaded scenarios.
 
 ### Common String Methods
-- \`length()\`, \`charAt(int index)\`, \`substring(int begin)\`, \`toLowerCase()\`, \`equals()\`, \`trim()\`.`,
+- \`length()\`, \`charAt(int index)\`, \`substring(int begin)\`, \`toLowerCase()\`, \`equals()\`, \`trim()\`.
+
+### String Constant Pool (SCP) vs Regular Heap Memory:
+\`\`\`mermaid
+flowchart LR
+    subgraph STACK["Thread Stack Memory"]
+        s1["s1 = \"Hello\""]
+        s2["s2 = \"Hello\""]
+        s3["s3 = new String(\"Hello\")"]
+        s4["s4 = new String(\"Hello\")"]
+    end
+
+    subgraph HEAP["Heap Memory"]
+        subgraph SCP["String Constant Pool (Interned Literals)"]
+            literal["\"Hello\" (Reused by s1 & s2)"]
+        end
+        obj1["String Object 1 (@addr1)\nvalue = \"Hello\""]
+        obj2["String Object 2 (@addr2)\nvalue = \"Hello\""]
+    end
+
+    s1 --> literal
+    s2 --> literal
+    s3 --> obj1
+    s4 --> obj2
+    obj1 -.->|"internal char[]"| literal
+    obj2 -.->|"internal char[]"| literal
+\`\`\`
+`,
           keyPoints: [
             'Strings are strictly immutable in Java.',
             '\`==\` checks memory reference (address), \`equals()\` checks actual content.',

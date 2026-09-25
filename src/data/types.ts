@@ -13,6 +13,13 @@ export interface Example {
   output?: string;
 }
 
+export interface TheoryQuestion {
+  question: string;
+  marks: "2 Marks" | "3 Marks" | "5 Marks" | "7 Marks";
+  answer: string;
+  keyPoints?: string[];
+}
+
 export interface Topic {
   id: string;
   title: string;
@@ -22,6 +29,7 @@ export interface Topic {
   shortNotes?: string;
   examples: Example[];
   keyPoints: string[];
+  theoryQuestions?: TheoryQuestion[];
   mcqs: MCQ[];
 }
 
