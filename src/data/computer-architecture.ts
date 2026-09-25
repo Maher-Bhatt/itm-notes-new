@@ -4,7 +4,7 @@ export const computerArchitecture: Subject = {
   id: "ca-101",
   name: "Computer Architecture",
   code: "CS401",
-  semester: 4,
+  semester: 3,
   description: "Computer Architecture and Organization (MST Survival Notes)",
   color: "bg-blue-500",
   icon: "cpu",

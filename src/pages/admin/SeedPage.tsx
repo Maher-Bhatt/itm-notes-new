@@ -53,33 +53,39 @@ export default function SeedPage() {
       if (branchError) throw branchError;
       addLog(`Created Branch: ${branch.id}`);
 
-      // 2. Iterate subjects to seed content
+      // 2. Pre-create all 8 semesters for the branch
+      const semesterMap = new Map<number, string>();
+      for (let semNum = 1; semNum <= 8; semNum++) {
+        const { data: newSem, error: semError } = await supabase
+          .from('semesters')
+          .insert({ branch_id: branch.id, number: semNum })
+          .select()
+          .single();
+
+        if (semError) {
+          const { data: existingSem } = await supabase
+            .from('semesters')
+            .select('id')
+            .eq('branch_id', branch.id)
+            .eq('number', semNum)
+            .maybeSingle();
+          if (existingSem) semesterMap.set(semNum, existingSem.id);
+        } else if (newSem) {
+          semesterMap.set(semNum, newSem.id);
+          addLog(`Created Semester ${semNum}`);
+        }
+      }
+
+      // 3. Iterate subjects to seed content
       for (const [sIndex, subject] of subjects.entries()) {
         addLog(`Processing subject: ${subject.name}`);
-        
-        // Find or create semester
-        let { data: semester } = await supabase
-          .from('semesters')
-          .select('id')
-          .eq('branch_id', branch.id)
-          .eq('number', subject.semester)
-          .maybeSingle();
-
-        if (!semester) {
-          const { data: newSem, error: semError } = await supabase
-            .from('semesters')
-            .insert({ branch_id: branch.id, number: subject.semester })
-            .select().single();
-          if (semError) throw semError;
-          semester = newSem;
-          addLog(`Created Semester: ${subject.semester}`);
-        }
+        const semId = semesterMap.get(subject.semester || 3) || Array.from(semesterMap.values())[0];
 
         // Insert subject
         const { data: dbSubject, error: subError } = await supabase
           .from('subjects')
           .insert({
-            semester_id: semester.id,
+            semester_id: semId,
             name: subject.name,
             code: subject.code,
             color: subject.color,
