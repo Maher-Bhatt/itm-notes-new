@@ -182,3 +182,83 @@ CREATE POLICY "Admins manage topics" ON public.topics FOR ALL USING (public.has_
 CREATE POLICY "Admins manage examples" ON public.examples FOR ALL USING (public.has_role(auth.uid(), 'admin'));
 CREATE POLICY "Admins manage key_points" ON public.key_points FOR ALL USING (public.has_role(auth.uid(), 'admin'));
 CREATE POLICY "Admins manage mcqs" ON public.mcqs FOR ALL USING (public.has_role(auth.uid(), 'admin'));
+-- 5. ADVANCED ACADEMIC FEATURES (Mock Tests, Flashcards, Coding)
+
+CREATE TABLE public.mock_tests (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  subject_id UUID NOT NULL REFERENCES public.subjects(id) ON DELETE CASCADE,
+  title TEXT NOT NULL,
+  description TEXT,
+  duration_minutes INTEGER NOT NULL DEFAULT 180,
+  total_marks INTEGER NOT NULL DEFAULT 100,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE public.test_questions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  test_id UUID NOT NULL REFERENCES public.mock_tests(id) ON DELETE CASCADE,
+  section TEXT NOT NULL,
+  question TEXT NOT NULL,
+  marks INTEGER NOT NULL,
+  expected_answer TEXT,
+  order_index INTEGER NOT NULL DEFAULT 0,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE public.flashcards (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  subject_id UUID NOT NULL REFERENCES public.subjects(id) ON DELETE CASCADE,
+  topic_id UUID REFERENCES public.topics(id) ON DELETE CASCADE,
+  front TEXT NOT NULL,
+  back TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE public.coding_problems (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  subject_id UUID NOT NULL REFERENCES public.subjects(id) ON DELETE CASCADE,
+  title TEXT NOT NULL,
+  description TEXT NOT NULL,
+  difficulty TEXT NOT NULL,
+  starter_code TEXT,
+  solution_code TEXT,
+  test_cases JSONB,
+  time_complexity TEXT,
+  space_complexity TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE public.user_progress (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  item_type TEXT NOT NULL,
+  item_id UUID NOT NULL,
+  status TEXT NOT NULL,
+  score INTEGER,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  UNIQUE(user_id, item_type, item_id)
+);
+
+-- Enable RLS for new tables
+ALTER TABLE public.mock_tests ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.test_questions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.flashcards ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.coding_problems ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.user_progress ENABLE ROW LEVEL SECURITY;
+
+-- Read access
+CREATE POLICY "Viewable by everyone" ON public.mock_tests FOR SELECT USING (true);
+CREATE POLICY "Viewable by everyone" ON public.test_questions FOR SELECT USING (true);
+CREATE POLICY "Viewable by everyone" ON public.flashcards FOR SELECT USING (true);
+CREATE POLICY "Viewable by everyone" ON public.coding_problems FOR SELECT USING (true);
+
+-- User progress access
+CREATE POLICY "Users view own progress" ON public.user_progress FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Users update own progress" ON public.user_progress FOR ALL USING (auth.uid() = user_id);
+
+-- Admin write access
+CREATE POLICY "Admins manage mock_tests" ON public.mock_tests FOR ALL USING (public.has_role(auth.uid(), 'admin'));
+CREATE POLICY "Admins manage test_questions" ON public.test_questions FOR ALL USING (public.has_role(auth.uid(), 'admin'));
+CREATE POLICY "Admins manage flashcards" ON public.flashcards FOR ALL USING (public.has_role(auth.uid(), 'admin'));
+CREATE POLICY "Admins manage coding_problems" ON public.coding_problems FOR ALL USING (public.has_role(auth.uid(), 'admin'));

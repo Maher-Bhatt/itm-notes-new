@@ -1,10 +1,12 @@
 import { Subject } from './types';
 import { computerArchitecture } from './computer-architecture';
 import { sem3DetailedSubjects } from './sem3-detailed';
+import { sem3JavaMaster } from './sem3-java-master';
 
 export const subjects: Subject[] = [
   computerArchitecture,
-  ...sem3DetailedSubjects
+  sem3JavaMaster,
+  ...sem3DetailedSubjects.filter(s => s.code !== 'JAVA303')
 ];
 
 export function getSubject(id: string): Subject | undefined {

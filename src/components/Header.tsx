@@ -131,3 +131,4 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
     </header>
   );
 }
+

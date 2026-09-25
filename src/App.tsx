@@ -20,6 +20,7 @@ import OnboardingPage from "./pages/OnboardingPage";
 import BookmarksPage from "./pages/BookmarksPage";
 import MaterialsPage from "./pages/MaterialsPage";
 import QuizPage from "./pages/QuizPage";
+import CodingLabPage from "./pages/CodingLabPage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import SeedPage from "./pages/admin/SeedPage";
 import { ProtectedRoute } from "./components/ProtectedRoute";
@@ -47,6 +48,7 @@ const App = () => (
                   <Route path="/bookmarks" element={<ProtectedRoute><BookmarksPage /></ProtectedRoute>} />
                   <Route path="/materials" element={<ProtectedRoute><MaterialsPage /></ProtectedRoute>} />
                   <Route path="/quiz" element={<QuizPage />} />
+                    <Route path="/coding-lab" element={<ProtectedRoute><CodingLabPage /></ProtectedRoute>} />
                   <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminDashboard /></ProtectedRoute>} />
                   <Route path="/admin/seed" element={<ProtectedRoute requireAdmin><SeedPage /></ProtectedRoute>} />
                   <Route path="/imp-questions" element={<ImpQuestionsSubjectsPage />} />
@@ -64,3 +66,4 @@ const App = () => (
 );
 
 export default App;
+
