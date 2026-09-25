@@ -2,6 +2,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { getTopic, getAdjacentTopics, getSubject } from "@/data/subjects";
 import { Subject } from "@/data/types";
 import { useProgress } from "@/hooks/useProgress";
+import { useGamification } from "@/hooks/useGamification";
 import { useTopic, useSubject } from "@/hooks/useAcademicData";
 import { MCQQuiz } from "@/components/MCQQuiz";
 import { TestMe } from "@/components/TestMe";
@@ -155,6 +156,15 @@ export default function TopicPage() {
   }, [subject, resolvedTopic]);
 
   const { isCompleted, isBookmarked, toggleComplete, toggleBookmark, saveMcqScore } = useProgress();
+  const { recordTopicCompleted, recordQuizCompleted, unlockAchievement, checkDailyStreak } = useGamification();
+
+  // Check daily streak when user visits topic & unlock MST Survivor for CA
+  useEffect(() => {
+    checkDailyStreak();
+    if (subjectId === 'ca-101') {
+      unlockAchievement('mst-survivor');
+    }
+  }, [subjectId, checkDailyStreak, unlockAchievement]);
 
   // Keyboard shortcut: F to toggle focus mode
   useEffect(() => {
@@ -229,6 +239,9 @@ export default function TopicPage() {
   const hasRichContent = true;
 
   const handleComplete = () => {
+    if (!completed) {
+      recordTopicCompleted();
+    }
     toggleComplete(topic.id);
   };
 
@@ -423,8 +436,15 @@ export default function TopicPage() {
                 )}
 
                 <div className="mt-16 mb-8">
-                  <h2 className="text-2xl font-extrabold mb-6 pb-3 border-b border-border text-foreground">Quiz ({topic.mcqs.length} MCQs)</h2>
-                  <MCQQuiz mcqs={topic.mcqs} topicId={topic.id} onComplete={(score, total) => saveMcqScore(topic.id, score, total)} />
+                  <h2 className="text-2xl font-extrabold mb-6 pb-3 border-b border-border text-foreground">Practice Quiz ({topic.mcqs.length} MCQs)</h2>
+                  <MCQQuiz
+                    mcqs={topic.mcqs}
+                    topicId={topic.id}
+                    onComplete={(score, total) => {
+                      saveMcqScore(topic.id, score, total);
+                      recordQuizCompleted(score, total);
+                    }}
+                  />
                 </div>
               </div>
 

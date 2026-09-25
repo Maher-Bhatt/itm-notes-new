@@ -3,7 +3,8 @@ import { getSubject, getAllTopicIds } from "@/data/subjects";
 import { Subject } from "@/data/types";
 import { useProgress } from "@/hooks/useProgress";
 import { useSubject } from "@/hooks/useAcademicData";
-import { CheckCircle, BookOpen, Bookmark, ChevronRight, ChevronDown, Loader2 } from "lucide-react";
+import { CheckCircle, BookOpen, Bookmark, ChevronRight, ChevronDown, Loader2, HelpCircle, FolderDown } from "lucide-react";
+import { SUBJECT_IMP_DATA } from "@/data/impQuestionsData";
 import { useState, useMemo } from "react";
 import { SearchDialog } from "@/components/SearchDialog";
 import { Header } from "@/components/Header";
@@ -133,6 +134,43 @@ export default function SubjectDashboard() {
               <span className="absolute inset-0 flex items-center justify-center text-xs font-semibold">{progress}%</span>
             </div>
           </div>
+        </div>
+
+        {/* Quick Exam Resources Toolbar */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
+          {SUBJECT_IMP_DATA[subject.id] && (
+            <button
+              onClick={() => navigate(`/imp-questions/${subject.id}`)}
+              className="p-3.5 rounded-xl border border-primary/20 bg-primary/5 hover:bg-primary/10 transition-colors flex items-center justify-between text-left apple-press group"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                  <HelpCircle className="h-5 w-5" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold text-foreground">Exam IMP Questions</h4>
+                  <p className="text-xs text-muted-foreground">3, 5, 7 Marks with Solutions</p>
+                </div>
+              </div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
+            </button>
+          )}
+
+          <button
+            onClick={() => navigate(`/materials?subject=${subject.id}`)}
+            className="p-3.5 rounded-xl border border-border bg-card hover:bg-secondary/50 transition-colors flex items-center justify-between text-left apple-press group"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-500 flex items-center justify-center shrink-0">
+                <FolderDown className="h-5 w-5" />
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-foreground">College Materials</h4>
+                <p className="text-xs text-muted-foreground">PDFs, Syllabus & Lab Manuals</p>
+              </div>
+            </div>
+            <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors shrink-0" />
+          </button>
         </div>
 
         {/* Units — iOS inset grouped list */}

@@ -24,6 +24,7 @@ import CodingLabPage from "./pages/CodingLabPage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import SeedPage from "./pages/admin/SeedPage";
 import SubjectImpQuestionsPage from "./pages/SubjectImpQuestionsPage";
+import ProfilePage from "./pages/ProfilePage";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
@@ -47,7 +48,8 @@ const App = () => (
                   <Route path="/subject/:subjectId" element={<SubjectDashboard />} />
                   <Route path="/subject/:subjectId/topic/:topicId" element={<TopicPage />} />
                   <Route path="/bookmarks" element={<ProtectedRoute><BookmarksPage /></ProtectedRoute>} />
-                  <Route path="/materials" element={<ProtectedRoute><MaterialsPage /></ProtectedRoute>} />
+                  <Route path="/profile" element={<ProfilePage />} />
+                  <Route path="/materials" element={<MaterialsPage />} />
                   <Route path="/quiz" element={<QuizPage />} />
                     <Route path="/coding-lab" element={<ProtectedRoute><CodingLabPage /></ProtectedRoute>} />
                   <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminDashboard /></ProtectedRoute>} />

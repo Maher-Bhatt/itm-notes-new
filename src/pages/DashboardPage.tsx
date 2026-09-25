@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useProgress } from "@/hooks/useProgress";
+import { useGamification } from "@/hooks/useGamification";
 import { ArrowRight, ChevronRight, Bookmark, BookOpen, TrendingUp, Search, Sparkles } from "lucide-react";
 import { useState, useMemo } from "react";
 import { SearchDialog } from "@/components/SearchDialog";
@@ -32,6 +33,7 @@ export default function DashboardPage() {
   const { semesterId } = useAcademic();
   const { data: dbSubjects, isLoading } = useSubjects(undefined);
   const { progress } = useProgress();
+  const gamification = useGamification();
   const [searchOpen, setSearchOpen] = useState(false);
   const [filterSem, setFilterSem] = useState<number | 'all'>('all');
   const navigate = useNavigate();
@@ -241,6 +243,45 @@ export default function DashboardPage() {
 
           {/* Sidebar */}
           <div className="space-y-6">
+            {/* Gamification Rank & Streak Widget */}
+            <div className="surface-elevated rounded-xl p-5 border border-primary/20 bg-gradient-to-br from-primary/5 via-card to-background shadow-sm">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-xl shadow-inner">
+                    ⚡
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-sm text-foreground leading-tight">{gamification.levelInfo.title}</h3>
+                    <p className="text-xs text-muted-foreground">Level {gamification.state.level} • {gamification.state.xp} XP</p>
+                  </div>
+                </div>
+                <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">
+                  🔥 {gamification.state.streakDays}d
+                </span>
+              </div>
+              
+              <div className="space-y-1.5 mb-3.5">
+                <div className="flex justify-between text-[11px] text-muted-foreground font-medium">
+                  <span>Level Progress</span>
+                  <span>{gamification.levelInfo.progressPercent}%</span>
+                </div>
+                <div className="w-full bg-secondary h-2 rounded-full overflow-hidden">
+                  <div 
+                    className="bg-primary h-full transition-all duration-700 ease-out" 
+                    style={{ width: `${gamification.levelInfo.progressPercent}%` }} 
+                  />
+                </div>
+              </div>
+
+              <button 
+                onClick={() => navigate('/profile')}
+                className="w-full text-xs font-semibold text-primary hover:text-primary/80 transition-colors flex items-center justify-between pt-2 border-t border-border/60"
+              >
+                <span>View Daily Quests & Focus Timer</span>
+                <ChevronRight className="h-3.5 w-3.5" />
+              </button>
+            </div>
+
             <div className="surface-elevated rounded-xl p-5">
               <h3 className="font-semibold mb-4">Overall Progress</h3>
               <OverallProgressBar progress={overallProgress} />

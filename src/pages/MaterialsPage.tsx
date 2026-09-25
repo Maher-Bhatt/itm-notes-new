@@ -18,10 +18,23 @@ import {
   X
 } from "lucide-react";
 import { toast } from "sonner";
+import { useSearchParams } from "react-router-dom";
 
 export default function MaterialsPage() {
+  const [searchParams] = useSearchParams();
+  const subjectParam = searchParams.get("subject");
+
+  // Determine initial selected subject based on query param
+  const initialSubject = useMemo(() => {
+    if (!subjectParam) return "All";
+    const found = REAL_STUDY_MATERIALS.find(
+      (m) => m.subjectId === subjectParam || m.subject.toLowerCase() === subjectParam.toLowerCase()
+    );
+    return found ? found.subject : "All";
+  }, [subjectParam]);
+
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedSubject, setSelectedSubject] = useState("All");
+  const [selectedSubject, setSelectedSubject] = useState(initialSubject);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedSemester, setSelectedSemester] = useState("All");
   const [activePreview, setActivePreview] = useState<StudyMaterial | null>(null);

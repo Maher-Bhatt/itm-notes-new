@@ -5,6 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Code, Play, CheckCircle, XCircle, Trophy } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { useGamification } from '@/hooks/useGamification';
 
 const MOCK_PROBLEM = {
   title: "Reverse an Array",
@@ -29,6 +30,7 @@ export default function CodingLabPage() {
   const [code, setCode] = useState(MOCK_PROBLEM.starterCode);
   const [output, setOutput] = useState<string | null>(null);
   const [status, setStatus] = useState<'idle' | 'running' | 'success' | 'failed'>('idle');
+  const { addXp, unlockAchievement } = useGamification();
 
   const handleRun = () => {
     setStatus('running');
@@ -40,6 +42,8 @@ export default function CodingLabPage() {
       if (code.includes('arr[i]') || code.includes('arr[left]')) {
         setOutput("5 4 3 2 1 \n\n[Process completed successfully]");
         setStatus('success');
+        addXp(50, 'Coding Challenge Solved');
+        unlockAchievement('code-ninja');
       } else {
         setOutput("1 2 3 4 5 \n\n[Process completed successfully - Incorrect Output]");
         setStatus('failed');

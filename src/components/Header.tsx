@@ -1,7 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Search, ChevronLeft, HelpCircle, User, LogOut, Shield } from "lucide-react";
+import { Search, ChevronLeft, HelpCircle, User, LogOut, Shield, Flame, BookOpen, Trophy } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { useAuth } from "@/contexts/AuthContext";
+import { useGamification } from "@/hooks/useGamification";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import {
   DropdownMenu,
@@ -20,10 +21,11 @@ interface HeaderProps {
 export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
   const navigate = useNavigate();
   const { user, profile, role, signOut } = useAuth();
+  const { state: game, levelInfo } = useGamification();
 
   return (
     <header className="sticky top-0 z-50 apple-vibrancy border-b">
-      <div className="max-w-6xl mx-auto px-6 h-12 flex items-center justify-between">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-12 flex items-center justify-between">
         <div className="flex items-center gap-2">
           {showBack && (
             <button onClick={() => navigate(backTo || "/")} className="apple-press p-1.5 rounded hover:bg-secondary">
@@ -39,24 +41,35 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
           </Link>
         </div>
         <div className="flex items-center gap-1.5">
-          {user && (
-            <>
-              <button
-                onClick={() => navigate("/materials")}
-                title="Materials Library"
-                className="apple-press hidden md:inline-flex items-center gap-1.5 h-8 px-2.5 rounded text-sm text-muted-foreground hover:bg-secondary transition-colors"
-              >
-                <span>Materials</span>
-              </button>
-              <button
-                onClick={() => navigate("/quiz")}
-                title="Practice Quiz"
-                className="apple-press hidden md:inline-flex items-center gap-1.5 h-8 px-2.5 rounded text-sm text-muted-foreground hover:bg-secondary transition-colors"
-              >
-                <span>Quiz</span>
-              </button>
-            </>
-          )}
+          {/* Daily Streak Indicator */}
+          <button
+            onClick={() => navigate("/profile")}
+            title={`${game.streakDays} Day Study Streak! Level ${levelInfo.level} ${levelInfo.title}`}
+            className="apple-press inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 transition-all border border-amber-500/20 mr-1"
+          >
+            <Flame className="h-3.5 w-3.5 fill-amber-500 text-amber-500" />
+            <span>{game.streakDays}</span>
+            <span className="hidden sm:inline text-[10px] text-muted-foreground font-medium">({game.xp} XP)</span>
+          </button>
+
+          {/* Materials Navigation */}
+          <button
+            onClick={() => navigate("/materials")}
+            title="Academic Materials Library"
+            className="apple-press inline-flex items-center gap-1.5 h-8 px-2.5 rounded text-xs sm:text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+          >
+            <BookOpen className="h-4 w-4 sm:hidden text-primary" />
+            <span className="hidden sm:inline">Materials</span>
+          </button>
+
+          {/* Practice Quiz */}
+          <button
+            onClick={() => navigate("/quiz")}
+            title="Practice Quiz"
+            className="apple-press hidden md:inline-flex items-center gap-1.5 h-8 px-2.5 rounded text-xs sm:text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+          >
+            <span>Quiz</span>
+          </button>
           <button
             onClick={() => navigate("/imp-questions")}
             title="IMP Questions"
@@ -108,6 +121,10 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
                     <DropdownMenuSeparator />
                   </>
                 )}
+                <DropdownMenuItem onClick={() => navigate("/profile")}>
+                  <Trophy className="mr-2 h-4 w-4 text-amber-500" />
+                  <span>My Profile & Rank</span>
+                </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/dashboard")}>
                   <User className="mr-2 h-4 w-4" />
                   <span>My Dashboard</span>
