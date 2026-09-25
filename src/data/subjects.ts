@@ -24,6 +24,7 @@ function injectRichContent(subject: Subject, contentMap: Record<string, string>)
 const enrichedDE = injectRichContent(digitalElectronicsSubject, deRichContent);
 const enrichedPSR = injectRichContent(probabilityStatsSubject, psrRichContent);
 
+import { extraSubjects } from './extra-subjects';
 export const subjects: Subject[] = [
   pythonSubject,
   cLanguageSubject,
@@ -31,6 +32,7 @@ export const subjects: Subject[] = [
   enrichedPSR,
   financialAccountingSubject,
   computerArchitecture,
+  ...extraSubjects,
 ];
 
 export function getSubject(id: string): Subject | undefined {
