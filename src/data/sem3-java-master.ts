@@ -66,19 +66,19 @@ Java is a high-level, class-based, object-oriented programming language designed
             {
               question: 'Which component is responsible for converting bytecode into machine-specific code?',
               options: ['JDK', 'JRE', 'JVM', 'JIT'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'The JVM (Java Virtual Machine) interprets the compiled bytecode into machine code for the specific platform.'
             },
             {
               question: 'What does WORA stand for in Java?',
               options: ['Write Once, Run Anywhere', 'Write Object, Read Array', 'Wait Or Run Away', 'None of the above'],
-              correctAnswer: 0,
+              correctIndex: 0,
               explanation: 'WORA stands for Write Once, Run Anywhere, highlighting Java\'s platform independence.'
             },
             {
               question: 'Which of the following is required only to RUN a Java program, not develop it?',
               options: ['JDK', 'JRE', 'Compiler', 'Debugger'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'JRE provides the runtime environment and libraries necessary to run Java applications.'
             }
           ]
@@ -145,19 +145,19 @@ A variable is a named memory location.
             {
               question: 'What is the size of the `int` data type in Java?',
               options: ['2 bytes', '4 bytes', '8 bytes', 'Depends on OS'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'In Java, an `int` is always 4 bytes (32 bits), regardless of the operating system.'
             },
             {
               question: 'Which of these is NOT a primitive data type in Java?',
               options: ['boolean', 'byte', 'String', 'char'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'String is a reference data type (a class), not a primitive.'
             },
             {
               question: 'What is the default value of a local variable?',
               options: ['0', 'null', 'false', 'No default value, gives compilation error if used uninitialized'],
-              correctAnswer: 3,
+              correctIndex: 3,
               explanation: 'Local variables are not assigned default values in Java. They must be initialized before use.'
             }
           ]
@@ -220,19 +220,19 @@ Control flow statements direct the order in which code executes in a Java progra
             {
               question: 'Which loop guarantees at least one execution of its body?',
               options: ['for loop', 'while loop', 'do-while loop', 'enhanced for loop'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'The do-while loop evaluates its condition at the bottom, so the code block runs at least once.'
             },
             {
               question: 'Which statement is used to exit a loop prematurely?',
               options: ['continue', 'break', 'exit', 'return'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'The break statement immediately terminates the loop or switch it is inside.'
             },
             {
               question: 'Can we use a String in a switch case in Java?',
               options: ['Yes, always', 'No, never', 'Yes, since Java 7', 'Yes, only in Java 8 and above'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'String support in switch statements was introduced in Java 7.'
             }
           ]
@@ -305,19 +305,19 @@ If you try to access an index that is negative or greater than or equal to the s
             {
               question: 'What is a jagged array?',
               options: ['An array with negative indices', 'A multidimensional array where rows have different lengths', 'An array that resizes dynamically', 'An array containing mixed data types'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'A jagged array is an array of arrays where each sub-array can have a different length.'
             },
             {
               question: 'How do you find the length of an array named `arr`?',
               options: ['arr.length()', 'arr.size', 'arr.length', 'arr.size()'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'In Java, arrays have a property named `length` (no parentheses).'
             },
             {
               question: 'What exception is thrown if you access an invalid array index?',
               options: ['NullPointerException', 'IndexNotFoundException', 'ArrayMismatchException', 'ArrayIndexOutOfBoundsException'],
-              correctAnswer: 3,
+              correctIndex: 3,
               explanation: 'Java throws an ArrayIndexOutOfBoundsException when trying to access an invalid index.'
             }
           ]
@@ -386,19 +386,19 @@ public class Main {
             {
               question: 'Where is memory allocated for objects in Java?',
               options: ['Stack', 'Heap', 'Method Area', 'ROM'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'Objects are always created on the Heap memory in Java.'
             },
             {
               question: 'Which keyword is used to allocate memory for an object?',
               options: ['alloc', 'create', 'new', 'instance'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'The `new` keyword is used for memory allocation and object creation.'
             },
             {
               question: 'A class is a _______ entity, while an object is a ________ entity.',
               options: ['physical, logical', 'logical, physical', 'static, dynamic', 'dynamic, static'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'A class is a blueprint (logical), while an object actually takes up memory space (physical).'
             }
           ]
@@ -476,19 +476,19 @@ public class Main {
             {
               question: 'Which access modifier restricts access the most?',
               options: ['public', 'protected', 'default', 'private'],
-              correctAnswer: 3,
+              correctIndex: 3,
               explanation: 'private restricts access to only within the same class.'
             },
             {
               question: 'What is the primary benefit of Encapsulation?',
               options: ['Code reusability', 'Data hiding and security', 'Faster execution', 'Multiple inheritance'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'Encapsulation hides the internal state of objects, protecting data from unauthorized access or modification.'
             },
             {
               question: 'If a class has only getter methods and no setters, the class is:',
               options: ['Write-only', 'Read-only', 'Abstract', 'Invalid'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'Without setters, the properties cannot be modified from outside, making the class read-only.'
             }
           ]
@@ -550,19 +550,19 @@ public class Main {
             {
               question: 'Which keyword is used to inherit a class?',
               options: ['implements', 'inherits', 'extends', 'super'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'The `extends` keyword is used for class inheritance in Java.'
             },
             {
               question: 'Which type of inheritance is NOT supported by Java classes?',
               options: ['Single', 'Multilevel', 'Hierarchical', 'Multiple'],
-              correctAnswer: 3,
+              correctIndex: 3,
               explanation: 'Java does not support Multiple Inheritance with classes to avoid the Diamond Problem (ambiguity).'
             },
             {
               question: 'Are constructors inherited by subclasses?',
               options: ['Yes', 'No', 'Only default constructors', 'Only parameterized constructors'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'Constructors are not members of a class, so they are not inherited. However, the superclass constructor is called when a subclass object is created.'
             }
           ]
@@ -635,19 +635,19 @@ public class Main {
             {
               question: 'Method Overloading is an example of:',
               options: ['Run-time Polymorphism', 'Compile-time Polymorphism', 'Encapsulation', 'Abstraction'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'The compiler determines which overloaded method to call based on the arguments passed, hence compile-time.'
             },
             {
               question: 'Which methods cannot be overridden?',
               options: ['public', 'protected', 'static', 'default'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'Static methods belong to the class, not the object, so they cannot be overridden (they can be hidden).'
             },
             {
               question: 'What is Dynamic Method Dispatch?',
               options: ['Resolving method calls at compile time', 'Resolving an overridden method call at runtime', 'Throwing an exception for missing methods', 'None of the above'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'It is the mechanism by which a call to an overridden method is resolved at runtime based on the actual object type.'
             }
           ]
@@ -722,19 +722,19 @@ public class Main {
             {
               question: 'Can you create an object of an abstract class?',
               options: ['Yes', 'No', 'Only if it has no abstract methods', 'Only inside the same package'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'Abstract classes are incomplete and cannot be instantiated directly.'
             },
             {
               question: 'Variables declared in an interface are implicitly:',
               options: ['private and final', 'public static final', 'protected static', 'default'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'By default, interface variables are constants (public static final).'
             },
             {
               question: 'Which keyword is used by a class to use an interface?',
               options: ['extends', 'inherits', 'implements', 'uses'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'A class `implements` an interface to define its abstract methods.'
             }
           ]
@@ -806,19 +806,19 @@ public class Main {
             {
               question: 'Which of the following is true about constructors?',
               options: ['They can have a return type.', 'They can be declared static.', 'They have the same name as the class.', 'They must be private.'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'A constructor must have the exact same name as the class it belongs to.'
             },
             {
               question: 'What happens if you don\'t define any constructor in a class?',
               options: ['Compilation error', 'Runtime exception', 'Compiler generates a default no-argument constructor', 'The class cannot be instantiated'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'If no constructors are defined, the Java compiler automatically inserts a default no-arg constructor.'
             },
             {
               question: 'What is used to call another constructor in the SAME class?',
               options: ['super()', 'this()', 'new()', 'parent()'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: '`this()` is used for constructor chaining within the same class.'
             }
           ]
@@ -887,19 +887,19 @@ public class Main {
             {
               question: 'Which keyword is used to access an overridden method of the parent class?',
               options: ['this', 'super', 'parent', 'base'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: '`super.methodName()` allows you to call the parent\'s version of an overridden method.'
             },
             {
               question: 'Where must `super()` or `this()` be placed inside a constructor?',
               options: ['Anywhere', 'Last line', 'First line', 'Outside the constructor'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'Calls to `this()` or `super()` must be the very first statement in a constructor.'
             },
             {
               question: 'Can `this` be used inside a static method?',
               options: ['Yes', 'No', 'Only if the class is public', 'Only in Java 8+'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'Static methods belong to the class, not instances. `this` refers to an instance, so it cannot be used in a static context.'
             }
           ]
@@ -955,19 +955,19 @@ public class Main {
             {
               question: 'How many times is memory allocated for a static variable?',
               options: ['Once per object', 'Once per class load', 'Every time a method is called', 'Never'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'Static variables get memory only once in the class area when the class is loaded into memory.'
             },
             {
               question: 'What happens if you try to inherit a final class?',
               options: ['It compiles fine', 'It throws a runtime exception', 'It causes a compile-time error', 'It becomes an abstract class'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'A final class cannot be subclassed, so trying to extend it results in a compile-time error.'
             },
             {
               question: 'Which block executes first during class loading?',
               options: ['Constructor', 'Instance Initialization Block', 'Static Block', 'Main Method'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'Static blocks are executed first, exactly once, when the class is loaded into memory.'
             }
           ]
@@ -1031,19 +1031,19 @@ An Exception is an abnormal condition that arises during the execution of a prog
             {
               question: 'Which of these is a Checked Exception?',
               options: ['NullPointerException', 'ArithmeticException', 'IOException', 'ArrayIndexOutOfBoundsException'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'IOException is checked at compile-time. The others are RuntimeExceptions (unchecked).'
             },
             {
               question: 'Which block is ALWAYS executed regardless of whether an exception is thrown?',
               options: ['try', 'catch', 'finally', 'throw'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'The finally block contains crucial cleanup code and is guaranteed to run.'
             },
             {
               question: 'What is the keyword used to explicitly generate an exception?',
               options: ['throw', 'throws', 'catch', 'finally'],
-              correctAnswer: 0,
+              correctIndex: 0,
               explanation: 'The `throw` keyword is used to explicitly throw a specific exception object.'
             }
           ]
@@ -1108,19 +1108,19 @@ public class Main {
             {
               question: 'Which method must be implemented when using the Runnable interface?',
               options: ['start()', 'run()', 'stop()', 'execute()'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'The Runnable interface has a single abstract method named `run()`.'
             },
             {
               question: 'What happens if you call `run()` directly instead of `start()`?',
               options: ['Compilation error', 'Runtime exception', 'It behaves like a normal method call, no new thread is created', 'It works the same way'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'Calling `run()` directly executes it on the current thread, defeating the purpose of multithreading.'
             },
             {
               question: 'Which keyword prevents multiple threads from accessing a block of code simultaneously?',
               options: ['volatile', 'synchronized', 'lock', 'static'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'The `synchronized` keyword acts as a lock, ensuring thread safety.'
             }
           ]
@@ -1189,19 +1189,19 @@ public class Main {
             {
               question: 'Which Collection maintains insertion order and allows duplicates?',
               options: ['HashSet', 'TreeSet', 'ArrayList', 'HashMap'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'ArrayList implements the List interface, which allows duplicates and maintains order.'
             },
             {
               question: 'Which Set implementation keeps elements in ascending sorted order?',
               options: ['HashSet', 'LinkedHashSet', 'TreeSet', 'SortedArray'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'TreeSet implements SortedSet and automatically sorts elements.'
             },
             {
               question: 'Can a Collection store primitive types like `int`?',
               options: ['Yes', 'No', 'Only in Java 8+', 'Only Lists can'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'Collections can only store Objects. Primitives are automatically converted to their Wrapper classes (Autoboxing) e.g., int to Integer.'
             }
           ]
@@ -1259,19 +1259,19 @@ public class Main {
             {
               question: 'Does the Map interface extend the Collection interface?',
               options: ['Yes', 'No', 'Only in Java 8', 'It implements Collection'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'Map is a separate branch in the Collections Framework hierarchy; it does not extend Collection.'
             },
             {
               question: 'What happens if you use `put()` with an existing key in a HashMap?',
               options: ['It throws an exception', 'It creates a duplicate entry', 'It ignores the new entry', 'It replaces the old value with the new value'],
-              correctAnswer: 3,
+              correctIndex: 3,
               explanation: 'Maps do not allow duplicate keys. The existing value is overwritten.'
             },
             {
               question: 'Which Map maintains the keys in sorted order?',
               options: ['HashMap', 'TreeMap', 'LinkedHashMap', 'SortedMapSet'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'TreeMap sorts the entries based on the natural ordering of keys.'
             }
           ]
@@ -1336,19 +1336,19 @@ public class Main {
             {
               question: 'Which class is best suited for reading text files line-by-line?',
               options: ['FileInputStream', 'FileReader', 'BufferedReader', 'ScannerStream'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'BufferedReader has a handy `readLine()` method and provides performance improvements via buffering.'
             },
             {
               question: 'Which stream should be used to read an image file?',
               options: ['FileReader', 'FileInputStream', 'StringReader', 'ImageReader'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'Images are binary data, so Byte Streams (FileInputStream) should be used.'
             },
             {
               question: 'What happens if you do not close a file stream?',
               options: ['The file deletes itself', 'Nothing happens', 'It causes a memory leak and file lock issues', 'Compilation error'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'Unclosed streams hold OS resources and locks, leading to memory leaks and inability to move/delete the file.'
             }
           ]
@@ -1414,19 +1414,19 @@ In Java, a \`String\` is an object that represents a sequence of characters.
             {
               question: 'Why are Strings immutable in Java?',
               options: ['To allow multithreading', 'For security, caching (String Pool), and performance', 'Because arrays are immutable', 'To save disk space'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'Immutability allows String pooling (caching), makes them safe for hash keys, and inherently thread-safe.'
             },
             {
               question: 'What is the main difference between StringBuilder and StringBuffer?',
               options: ['StringBuilder is immutable', 'StringBuffer is faster', 'StringBuffer is synchronized (thread-safe)', 'There is no difference'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'StringBuffer is synchronized, making it thread-safe but slower. StringBuilder is unsynchronized and faster.'
             },
             {
               question: 'Which operator/method compares the ACTUAL text content of two Strings?',
               options: ['==', '=', 'equals()', 'compareTo()'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'The `equals()` method compares the character sequence. The `==` operator compares memory addresses.'
             }
           ]
@@ -1486,19 +1486,19 @@ public class Main {
             {
               question: 'How many abstract methods can a Functional Interface have?',
               options: ['Zero', 'Exactly One', 'Two', 'Unlimited'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'A functional interface must have exactly one abstract method.'
             },
             {
               question: 'What is the syntax for a lambda expression?',
               options: ['parameters => body', 'parameters -> body', 'parameters >> body', 'body -> parameters'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'Java uses the arrow `->` for lambda expressions.'
             },
             {
               question: 'Which of the following is a Terminal Operation in the Stream API?',
               options: ['filter()', 'map()', 'sorted()', 'collect()'],
-              correctAnswer: 3,
+              correctIndex: 3,
               explanation: '`collect()` produces a final result (like a List), while the others return another Stream (Intermediate).'
             }
           ]

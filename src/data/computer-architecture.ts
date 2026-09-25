@@ -75,19 +75,19 @@ To translate an RTL statement like \`P: R2 <- R1\` into physical hardware, logic
             {
               question: 'In RTL, what does the arrow (<-) signify?',
               options: ['Data deletion', 'Data transfer from source to destination', 'Comparison of registers', 'Addition'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'The arrow shows the direction of data copying, from the right side (source) to the left side (destination).'
             },
             {
               question: 'What happens to the source register after a transfer like R2 <- R1?',
               options: ['It becomes zero', 'It is deleted', 'Its contents remain unchanged', 'It is moved to memory'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'RTL transfers are copy operations; the source data is non-destructively read.'
             },
             {
               question: 'Which symbol is used to separate two simultaneous micro-operations?',
               options: ['Colon (:)', 'Semicolon (;)', 'Comma (,)', 'Plus (+)'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'A comma is used in RTL to indicate that two operations occur in the same clock cycle.'
             }
           ]
@@ -152,19 +152,19 @@ In RTL, we use the symbol **M[Address]** to denote the memory word located at a 
             {
               question: 'Why do we use a common bus system in CPU design?',
               options: ['To increase memory capacity', 'To reduce the number of interconnecting wires between registers', 'To make the system clock tick faster', 'To add more registers'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'A common bus provides a shared data path, drastically reducing the physical wiring needed compared to connecting every register point-to-point.'
             },
             {
               question: 'Which logic component is commonly used to construct a bus system by selecting one of many inputs?',
               options: ['Decoders', 'Multiplexers', 'Adders', 'Flip-flops'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'Multiplexers (MUX) act as selectors to choose one of many register outputs to place onto the common bus.'
             },
             {
               question: 'What does the third state (High-Z) in a tri-state buffer represent?',
               options: ['Logical 1', 'Logical 0', 'High voltage', 'High impedance (disconnected state)'],
-              correctAnswer: 3,
+              correctIndex: 3,
               explanation: 'High-Z means high impedance, which electrically disconnects the output from the bus so it does not interfere with other signals.'
             }
           ]
@@ -230,13 +230,13 @@ All these operations are physically carried out in a centralized component of th
             {
               question: 'Which of the following is NOT classified as a basic arithmetic micro-operation?',
               options: ['Increment', 'Addition', 'Division', 'Decrement'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'Division is a complex sequential operation made up of multiple shifts and subtractions, it cannot be done in a single clock cycle like a basic micro-operation.'
             },
             {
               question: 'What does the apostrophe (R1\') represent in RTL notation?',
               options: ['Negative R1', 'R1 + 1', '1s complement of R1', 'Logical shift right'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'An apostrophe (R1\') or a bar over the register denotes the 1s complement, meaning every bit is inverted.'
             }
           ]
@@ -295,19 +295,19 @@ While indirect addressing is slightly slower because it mandates two separate tr
             {
               question: 'In a basic 16-bit instruction format, what does the 15th bit typically represent?',
               options: ['Opcode', 'Operand', 'Addressing Mode (Direct/Indirect)', 'Parity bit'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'The leftmost bit (bit 15) is usually the Mode bit (I), determining whether direct or indirect addressing is used.'
             },
             {
               question: 'If a memory instruction uses Indirect Addressing, how many memory accesses are required to fetch the actual operand?',
               options: ['Zero', 'One', 'Two', 'Three'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'One access to read the effective address (pointer), and a second access to read the actual data at that effective address.'
             },
             {
               question: 'What is the primary purpose of the Opcode field?',
               options: ['To specify where data is stored', 'To specify what operation to perform', 'To store the computational result', 'To check for transmission errors'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'Opcode stands for Operation Code, which instructs the Control Unit and ALU which operation (e.g., add, subtract, AND) to execute.'
             }
           ]
@@ -361,19 +361,19 @@ Handle communication with external peripheral devices like keyboards and monitor
             {
               question: 'Which register keeps track of the next instruction to be executed by the CPU?',
               options: ['Instruction Register (IR)', 'Program Counter (PC)', 'Accumulator (AC)', 'Address Register (AR)'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'The Program Counter (PC) stores the address of the next instruction and increments automatically during the fetch phase.'
             },
             {
               question: 'Why does the Address Register (AR) only have 12 bits while the Data Register (DR) has 16 bits?',
               options: ['To save power', 'Memory size is limited to 4096 words (2^12)', 'It was a design flaw', 'Data bits are larger than address bits'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'In this basic computer model, 12 bits can uniquely address 4096 memory locations, which is the maximum memory size, while the data words themselves are 16-bit.'
             },
             {
               question: 'Where is the result of an arithmetic operation typically stored in a basic computer architecture?',
               options: ['Program Counter', 'Temporary Register', 'Accumulator (AC)', 'Instruction Register'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'The Accumulator (AC) "accumulates" results from the ALU, serving as the primary destination for data manipulation.'
             }
           ]
@@ -434,19 +434,19 @@ The CPU uses a Sequence Counter to keep track of timing states (T0, T1, T2...). 
             {
               question: 'During the Fetch phase, which register is used to supply the memory address?',
               options: ['Instruction Register (IR)', 'Program Counter (PC)', 'Accumulator (AC)', 'Data Register (DR)'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'The PC holds the address of the next instruction and gives it to AR to access memory.'
             },
             {
               question: 'What happens to the Program Counter (PC) during the Fetch phase?',
               options: ['It is cleared to 0', 'It receives the instruction opcode', 'It is incremented by 1', 'It is moved to the Accumulator'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'The PC is incremented so it is ready to point to the next instruction in the following cycle.'
             },
             {
               question: 'When is the Sequence Counter (SC) cleared to 0?',
               options: ['At the start of the Fetch phase', 'At the end of the Execute phase', 'During the Decode phase', 'Never'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'Clearing SC to 0 resets the timing signals back to T0, restarting the fetch cycle for the next instruction.'
             }
           ]
@@ -505,19 +505,19 @@ When a microinstruction is read from Control Memory, it is placed into the **Con
             {
               question: 'What type of memory is typically used for Control Memory?',
               options: ['RAM', 'ROM', 'Cache', 'Virtual Memory'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'Control Memory uses ROM because microprograms define the CPU architecture and should not be modified by user software.'
             },
             {
               question: 'Which register holds the address of the next microinstruction to be fetched?',
               options: ['Program Counter (PC)', 'Instruction Register (IR)', 'Control Address Register (CAR)', 'Address Register (AR)'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'The CAR acts like the PC, but specifically for Control Memory rather than main memory.'
             },
             {
               question: 'What is a sequence of microinstructions called?',
               options: ['A macro', 'A microprogram', 'An operating system', 'A compiler'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'A sequence of microinstructions that executes a specific machine instruction is called a microprogram.'
             }
           ]
@@ -572,19 +572,19 @@ When a subroutine is called, the current CAR value is saved into a special regis
             {
               question: 'Which process converts a machine instruction opcode into a Control Memory address?',
               options: ['Branching', 'Incrementing', 'Mapping', 'Decoding'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'Mapping logic translates the opcode into a starting address to locate the correct microprogram.'
             },
             {
               question: 'What is the function of the Subroutine Register (SBR) in address sequencing?',
               options: ['To hold data from main memory', 'To store the return address during a micro-subroutine call', 'To hold the opcode', 'To store ALU flags'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'The SBR acts like a stack, saving the return address so the microprogram can resume after the subroutine.'
             },
             {
               question: 'If a microprogram condition is NOT met during a conditional branch, what happens to the CAR?',
               options: ['It resets to 0', 'It jumps to the branch address', 'It is incremented by 1', 'It crashes'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'If the branch condition is false, the sequence simply continues to the next microinstruction by incrementing the CAR.'
             }
           ]
@@ -640,19 +640,19 @@ In a microprogrammed control unit, control signals are generated by executing a 
             {
               question: 'Which control unit design is generally faster?',
               options: ['Microprogrammed', 'Hardwired', 'They are identical in speed', 'Virtual Control'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'Hardwired is faster because signals are generated instantly through logic gates without needing to fetch from a memory unit.'
             },
             {
               question: 'If you need to add a new instruction to an existing CPU design, which approach makes it easier?',
               options: ['Hardwired', 'Microprogrammed', 'Both are equally difficult', 'Neither allows changes'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'Microprogrammed control allows you to simply add a new microprogram to the ROM, without changing the physical logic circuits.'
             },
             {
               question: 'Which architecture typically employs Hardwired control?',
               options: ['CISC', 'RISC', 'Both', 'Neither'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'RISC (Reduced Instruction Set Computer) relies on simple, fast instructions, making Hardwired control ideal.'
             }
           ]
@@ -719,19 +719,19 @@ The stack is just a designated portion of the main RAM.
             {
               question: 'Which principle does a Stack data structure follow?',
               options: ['FIFO', 'LIFO', 'FILO', 'Random Access'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'Stacks use Last In, First Out (LIFO). The last item pushed is the first one popped.'
             },
             {
               question: 'What register is exclusively used to keep track of the top of the stack?',
               options: ['Instruction Register (IR)', 'Program Counter (PC)', 'Stack Pointer (SP)', 'Accumulator (AC)'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'The Stack Pointer (SP) holds the address or index of the top item on the stack.'
             },
             {
               question: 'If a memory stack grows downwards (from high to low addresses), what happens to the SP during a PUSH operation?',
               options: ['It is incremented', 'It is decremented', 'It remains unchanged', 'It is cleared to 0'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'If it grows downwards, pushing a new item requires subtracting 1 from the SP to point to the next available lower address.'
             }
           ]
@@ -796,19 +796,19 @@ The effective address is calculated by adding the address field to a special **I
             {
               question: 'Which addressing mode contains the actual operand value within the instruction itself?',
               options: ['Direct', 'Immediate', 'Indirect', 'Register'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'Immediate mode provides the data directly (e.g., ADD #5), so no memory address is needed.'
             },
             {
               question: 'Which addressing mode is most suitable for iterating through elements of an array?',
               options: ['Indexed addressing', 'Implied addressing', 'Immediate addressing', 'Direct addressing'],
-              correctAnswer: 0,
+              correctIndex: 0,
               explanation: 'Indexed addressing adds an index register to a base address, making it perfect for looping through contiguous array elements.'
             },
             {
               question: 'In Relative Addressing mode, the effective address is calculated relative to which register?',
               options: ['Accumulator (AC)', 'Stack Pointer (SP)', 'Program Counter (PC)', 'Index Register (XR)'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'Relative addressing adds an offset to the Program Counter (PC) to branch to nearby instructions.'
             }
           ]
@@ -867,19 +867,19 @@ The goal of RISC is raw execution speed.
             {
               question: 'Which architecture is characterized by having a Load/Store architecture where memory can only be accessed by specific instructions?',
               options: ['CISC', 'RISC', 'Both', 'Neither'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'RISC architectures restrict memory access to only LOAD and STORE commands to keep execution pipelines fast and simple.'
             },
             {
               question: 'Which of the following processors is a classic example of CISC architecture?',
               options: ['ARM Cortex', 'Apple M1', 'Intel x86', 'MIPS'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'Intel x86 processors have historically used CISC, featuring highly complex and variable-length instructions.'
             },
             {
               question: 'What is a primary advantage of RISC architecture over CISC?',
               options: ['Shorter assembly code programs', 'Most instructions execute in a single clock cycle', 'Does not require registers', 'Can perform math directly on memory addresses'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'By keeping instructions simple, RISC CPUs can usually execute one instruction per clock cycle, allowing for highly efficient pipelining.'
             }
           ]
@@ -943,19 +943,19 @@ Booth's algorithm looks at the multiplier bits in pairs, specifically the curren
             {
               question: 'What is the primary advantage of Booth\'s Algorithm?',
               options: ['It divides numbers faster', 'It multiplies signed 2s complement numbers directly', 'It uses less memory', 'It doesn\'t require an ALU'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'Booth\'s algorithm handles positive and negative numbers uniformly in 2s complement without needing pre-conversion.'
             },
             {
               question: 'In Booth\'s algorithm, what action is taken when the current bit is 1 and the previous bit is 0 (the 10 combination)?',
               options: ['Add multiplicand and shift', 'Subtract multiplicand and shift', 'Shift only', 'Stop execution'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'A 10 transition signifies the start of a block of 1s, which dictates a subtraction of the multiplicand followed by a shift.'
             },
             {
               question: 'Which type of shift operation is used repeatedly in Booth\'s Algorithm?',
               options: ['Logical Shift Left', 'Circular Shift Right', 'Arithmetic Shift Right', 'Logical Shift Right'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'Arithmetic Shift Right (ASHR) is used to ensure the sign bit of the partial product is preserved during shifts.'
             }
           ]
@@ -1016,19 +1016,19 @@ You cannot just add two floating-point numbers directly if their exponents are d
             {
               question: 'In the IEEE 754 single-precision format, how many bits are allocated for the Exponent?',
               options: ['1 bit', '8 bits', '23 bits', '32 bits'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: '8 bits are used for the biased exponent, 23 for the mantissa, and 1 for the sign, totaling 32 bits.'
             },
             {
               question: 'What is the purpose of adding a bias (127) to the exponent?',
               options: ['To allow storage of negative exponents as positive integers', 'To increase the mantissa precision', 'To make the number positive', 'To avoid division by zero'],
-              correctAnswer: 0,
+              correctIndex: 0,
               explanation: 'Biasing shifts the range of exponents so that both negative and positive exponents can be stored and compared easily as unsigned binary numbers.'
             },
             {
               question: 'What must be done before adding two floating-point numbers?',
               options: ['Multiply their mantissas', 'Align their mantissas by matching their exponents', 'Normalize them to 0', 'Add their biases'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'Just like in scientific notation, you cannot add mantissas unless the numbers share the exact same power of 2 (exponent).'
             }
           ]
@@ -1084,19 +1084,19 @@ The CLA uses a complex network of AND/OR gates to compute these formulas simulta
             {
               question: 'What is the primary drawback of a Ripple Carry Adder?',
               options: ['It uses too much power', 'It cannot add negative numbers', 'It suffers from propagation delay due to rippling carries', 'It requires too many logic gates'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'In a ripple carry adder, higher-order bits cannot be computed until the carry from lower-order bits has propagated through the circuit.'
             },
             {
               question: 'In a CLA, what does the Carry Generate (G) signal indicate?',
               options: ['The sum is 0', 'The previous stage produced a carry', 'The current stage inputs will absolutely produce a carry', 'The circuit has overheated'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'G occurs when A and B are both 1. This guarantees a carry out, independent of the carry in.'
             },
             {
               question: 'How is the Carry Propagate (P) calculated for inputs A and B?',
               options: ['A AND B', 'A XOR B', 'A OR B', 'NOT A'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'Propagate is typically calculated as A XOR B (or sometimes A OR B), meaning the stage will pass an incoming carry to the next stage.'
             }
           ]
@@ -1167,19 +1167,19 @@ The cache is divided into "sets" (e.g., a set containing 2 or 4 lines). A memory
             {
               question: 'Which principle suggests that if a memory location is accessed, nearby locations will be accessed soon?',
               options: ['Temporal Locality', 'Spatial Locality', 'Direct Mapping', 'Virtual Memory'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'Spatial locality refers to the tendency of execution to involve memory addresses that are clustered together, like arrays.'
             },
             {
               question: 'In which cache mapping technique can a memory block be placed in ANY cache line?',
               options: ['Direct Mapping', 'Associative Mapping', 'Set-Associative Mapping', 'Virtual Mapping'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'Associative mapping provides full flexibility by allowing any block to occupy any cache line, requiring complex search hardware.'
             },
             {
               question: 'What is a major disadvantage of Direct Mapping?',
               options: ['It is too slow to search', 'It is very complex to build', 'It suffers from thrashing if blocks map to the same line', 'It cannot hold data from main memory'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'Since a memory block has only one valid location in cache, multiple active blocks competing for that same spot will cause continuous evictions (thrashing).'
             }
           ]
@@ -1238,19 +1238,19 @@ To solve this, hardware engineers added a specialized cache inside the MMU calle
             {
               question: 'What is the purpose of the Page Table in Virtual Memory?',
               options: ['To store cache data', 'To translate logical page numbers to physical frame numbers', 'To format the hard drive', 'To execute microinstructions'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'The Page Table holds the mapping information required by the MMU to convert virtual addresses into real physical RAM addresses.'
             },
             {
               question: 'What happens when a CPU requests a memory page that is currently located on the hard disk?',
               options: ['Cache hit', 'System crash', 'Page fault', 'TLB hit'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'A page fault is an interrupt that tells the OS to halt the program temporarily and retrieve the required page from secondary storage.'
             },
             {
               question: 'Why is the TLB (Translation Lookaside Buffer) necessary?',
               options: ['To increase hard drive speed', 'To prevent the CPU from accessing main memory twice for every read/write', 'To cool down the CPU', 'To store floating point numbers'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'Without a TLB, every memory reference requires one RAM access for the page table and another for the data. The TLB caches translations to eliminate the first access.'
             }
           ]
@@ -1308,19 +1308,19 @@ For high-speed bulk transfers, we use a **DMA Controller**.
             {
               question: 'Which I/O transfer method completely occupies the CPU by forcing it to repeatedly check a status bit?',
               options: ['Direct Memory Access', 'Interrupt-driven I/O', 'Programmed I/O (Polling)', 'Daisy Chaining'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'In Programmed I/O, the CPU remains trapped in a polling loop waiting for the device, severely degrading performance.'
             },
             {
               question: 'What is the primary function of a DMA Controller?',
               options: ['To manage virtual memory', 'To allow high-speed data transfer between peripherals and memory without CPU intervention', 'To increase CPU clock speed', 'To execute microinstructions'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'The DMA controller temporarily takes control of the system bus to stream data directly into RAM, freeing the CPU.'
             },
             {
               question: 'In a Daisy Chain priority system, how is the priority of a device determined?',
               options: ['By its software assigned ID', 'By the size of its data', 'By its physical electrical proximity to the CPU', 'By a parallel priority encoder chip'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'Devices physically wired closer to the CPU on the daisy chain receive the acknowledge signal first, giving them higher priority.'
             }
           ]

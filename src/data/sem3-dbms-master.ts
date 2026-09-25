@@ -56,19 +56,19 @@ A Database Management System (DBMS) is a specialized software application design
             {
               question: 'Which of the following is NOT an advantage of a DBMS over a file system?',
               options: ['Data redundancy', 'Data integrity', 'Data security', 'Concurrent access'],
-              correctAnswer: 0,
+              correctIndex: 0,
               explanation: 'DBMS reduces data redundancy, it is not an advantage to have it.'
             },
             {
               question: 'Data independence in DBMS means:',
               options: ['Data is independent of the hardware', 'Data can be accessed without a network', 'Programs are immune to changes in the physical storage structure', 'Data cannot be shared'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'Data independence means the application logic is decoupled from physical data storage details.'
             },
             {
               question: 'Which component of DBMS is responsible for enforcing security?',
               options: ['Hardware', 'Software', 'Data', 'Procedures'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'The DBMS software enforces security, user access, and authorization.'
             }
           ]
@@ -122,19 +122,19 @@ This is the most common architecture for modern web applications. It introduces 
             {
               question: 'Which architecture has an intermediate application server?',
               options: ['1-tier', '2-tier', '3-tier', 'N-tier'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: '3-tier architecture places an application server between the client and the database.'
             },
             {
               question: 'In a 2-tier architecture, where does the business logic usually reside?',
               options: ['Database Server', 'Client Application', 'Application Server', 'Web Server'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'In 2-tier, the client application (fat client) typically contains the business logic and UI.'
             },
             {
               question: 'Which architecture is least secure for a public-facing application?',
               options: ['1-tier', '2-tier', '3-tier', 'They are equally secure'],
-              correctAnswer: 0,
+              correctIndex: 0,
               explanation: '1-tier directly exposes the database to the user application, making it unsuitable for public networks.'
             }
           ]
@@ -185,19 +185,19 @@ Cardinality defines the maximum number of relationship instances an entity can p
             {
               question: 'In an ER diagram, a derived attribute is represented by:',
               options: ['Solid oval', 'Dashed oval', 'Double oval', 'Rectangle'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'Dashed ovals represent derived attributes, such as age calculated from birthdate.'
             },
             {
               question: 'Which cardinality ratio describes a scenario where one employee belongs to one department, and a department can have many employees?',
               options: ['1:1', '1:N', 'M:N', 'N:N'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'One department has many employees, so it is a One-to-Many (1:N) relationship.'
             },
             {
               question: 'What symbol is used for a weak entity?',
               options: ['Diamond', 'Double diamond', 'Double rectangle', 'Oval'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'A weak entity is represented by a double rectangle in an ER diagram.'
             }
           ]
@@ -268,19 +268,19 @@ DELETE FROM Students WHERE ID = 1;`
             {
               question: 'Which SQL statement is used to modify existing data in a database?',
               options: ['MODIFY', 'CHANGE', 'UPDATE', 'ALTER'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'UPDATE is the standard DML command to modify existing records.'
             },
             {
               question: 'What happens if you run a DELETE statement without a WHERE clause?',
               options: ['An error is thrown', 'The first row is deleted', 'All rows in the table are deleted', 'The table structure is dropped'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'Without a WHERE clause, the DELETE command applies to all rows in the table.'
             },
             {
               question: 'Which command is NOT a DML command?',
               options: ['INSERT', 'CREATE', 'SELECT', 'DELETE'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'CREATE is a Data Definition Language (DDL) command.'
             }
           ]
@@ -328,19 +328,19 @@ INNER JOIN Courses ON Enrollments.CourseID = Courses.ID;`
             {
               question: 'Which join returns all rows from both tables, with NULLs where there is no match?',
               options: ['INNER JOIN', 'LEFT JOIN', 'CROSS JOIN', 'FULL OUTER JOIN'],
-              correctAnswer: 3,
+              correctIndex: 3,
               explanation: 'FULL OUTER JOIN combines the results of both LEFT and RIGHT joins.'
             },
             {
               question: 'If Table A has 5 rows and Table B has 10 rows, a CROSS JOIN will result in how many rows?',
               options: ['15', '50', '5', '10'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'A CROSS JOIN produces a Cartesian product: 5 * 10 = 50 rows.'
             },
             {
               question: 'Which join is used to find records in the left table that have NO match in the right table?',
               options: ['INNER JOIN', 'LEFT JOIN with a WHERE clause checking for NULL', 'RIGHT JOIN', 'NATURAL JOIN'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'You use a LEFT JOIN and add a WHERE right_table.id IS NULL to find unmatched left rows.'
             }
           ]
@@ -396,19 +396,19 @@ Normalization is the process of structuring a relational database in accordance 
             {
               question: 'Which normal form prohibits partial dependencies?',
               options: ['1NF', '2NF', '3NF', 'BCNF'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: '2NF requires that all non-key attributes are fully dependent on the entire primary key.'
             },
             {
               question: 'A table is in 3NF if it is in 2NF and has no:',
               options: ['Atomic values', 'Partial dependencies', 'Transitive dependencies', 'Multi-valued dependencies'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: '3NF specifically eliminates transitive dependencies (non-key depending on non-key).'
             },
             {
               question: 'Which form ensures that every determinant is a candidate key?',
               options: ['1NF', '2NF', '3NF', 'BCNF'],
-              correctAnswer: 3,
+              correctIndex: 3,
               explanation: 'BCNF states that for every functional dependency X -> Y, X must be a superkey (or candidate key).'
             }
           ]
@@ -467,19 +467,19 @@ COMMIT;`
             {
               question: 'Which property ensures that a transaction is completely executed or completely rolled back?',
               options: ['Atomicity', 'Consistency', 'Isolation', 'Durability'],
-              correctAnswer: 0,
+              correctIndex: 0,
               explanation: 'Atomicity is the all-or-nothing property.'
             },
             {
               question: 'Which property ensures that changes made by committed transactions are permanent?',
               options: ['Atomicity', 'Consistency', 'Isolation', 'Durability'],
-              correctAnswer: 3,
+              correctIndex: 3,
               explanation: 'Durability ensures data survives system crashes once committed.'
             },
             {
               question: 'If two users modify the same record simultaneously, which property prevents data corruption?',
               options: ['Atomicity', 'Consistency', 'Isolation', 'Durability'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'Isolation handles concurrent access control.'
             }
           ]
@@ -532,19 +532,19 @@ SELECT * FROM Students WHERE Email = 'test@example.com';`
             {
               question: 'How many clustered (primary) indexes can a table have?',
               options: ['0', '1', 'Many', 'Depends on the DBMS'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'Data can only be physically sorted in one way, so a table can have only 1 clustered index.'
             },
             {
               question: 'In which tree structure are data records stored ONLY in the leaf nodes?',
               options: ['Binary Search Tree', 'B-Tree', 'B+ Tree', 'AVL Tree'],
-              correctAnswer: 2,
+              correctIndex: 2,
               explanation: 'B+ Trees store all actual data pointers in leaf nodes and link them for fast sequential access.'
             },
             {
               question: 'What is the main disadvantage of having too many indexes on a table?',
               options: ['Slows down SELECT queries', 'Slows down INSERT/UPDATE/DELETE operations', 'Causes data corruption', 'Violates ACID properties'],
-              correctAnswer: 1,
+              correctIndex: 1,
               explanation: 'Every time data is modified, all relevant indexes must also be updated, which slows down write operations.'
             }
           ]

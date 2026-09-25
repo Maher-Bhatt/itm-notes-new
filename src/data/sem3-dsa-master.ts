@@ -65,7 +65,7 @@ struct Node {
             {
               question: 'Which of the following is a linear data structure?',
               options: ['Tree', 'Graph', 'Array', 'None'],
-              correctAnswer: 'Array',
+              correctIndex: 2,
               explanation: 'Arrays store data in a linear sequence.'
             }
           ]
@@ -126,7 +126,7 @@ Analyzing loops, recursions, and data structure operations using these notations
             {
               question: 'What does Big-O notation describe?',
               options: ['Best case', 'Average case', 'Worst case', 'Memory limit'],
-              correctAnswer: 'Worst case',
+              correctIndex: 2,
               explanation: 'Big-O represents the upper bound or worst-case scenario of an algorithm.'
             }
           ]
@@ -178,7 +178,7 @@ Often, you can reduce the time complexity of an algorithm by using more space (e
             {
               question: 'What does auxiliary space refer to?',
               options: ['Total memory used', 'Extra space used by the algorithm temporarily', 'Memory for the code', 'Memory for the input'],
-              correctAnswer: 'Extra space used by the algorithm temporarily',
+              correctIndex: 1,
               explanation: 'Auxiliary space is the temporary or extra space used by an algorithm excluding the input data.'
             }
           ]
@@ -227,7 +227,7 @@ When a recursive function is called, its execution state (variables, parameters,
             {
               question: 'What happens if a recursive function lacks a base case?',
               options: ['It runs faster', 'It returns 0', 'It causes a Stack Overflow', 'It converts to iteration'],
-              correctAnswer: 'It causes a Stack Overflow',
+              correctIndex: 2,
               explanation: 'Without a base case, recursion continues infinitely, exhausting the call stack memory.'
             }
           ]
@@ -290,7 +290,7 @@ for(int i=0; i<2; i++) {
             {
               question: 'What is the time complexity of accessing an element in an array by its index?',
               options: ['O(1)', 'O(n)', 'O(log n)', 'O(n^2)'],
-              correctAnswer: 'O(1)',
+              correctIndex: 0,
               explanation: 'Arrays allow direct random access using index arithmetic, which takes constant time.'
             }
           ]
@@ -351,7 +351,7 @@ Pattern matching (or string searching) involves finding the occurrences of a "pa
             {
               question: 'Which algorithm uses hashing for string matching?',
               options: ['KMP', 'Naive', 'Rabin-Karp', 'Boyer-Moore'],
-              correctAnswer: 'Rabin-Karp',
+              correctIndex: 2,
               explanation: 'Rabin-Karp uses rolling hash functions to match the pattern with substrings of the text.'
             }
           ]
@@ -418,7 +418,7 @@ void push(struct Node** head_ref, int new_data) {
             {
               question: 'What is the time complexity to insert a node at the beginning of a singly linked list?',
               options: ['O(1)', 'O(n)', 'O(log n)', 'O(n^2)'],
-              correctAnswer: 'O(1)',
+              correctIndex: 0,
               explanation: 'Only the new node and the head pointer need to be updated, which takes constant time.'
             }
           ]
@@ -470,7 +470,7 @@ A DLL node contains:
             {
               question: 'What is an advantage of a Doubly Linked List over a Singly Linked List?',
               options: ['Uses less memory', 'Can traverse backward', 'Faster random access', 'No pointers needed'],
-              correctAnswer: 'Can traverse backward',
+              correctIndex: 1,
               explanation: 'The prev pointer allows traversal in the backward direction.'
             }
           ]
@@ -520,7 +520,7 @@ When traversing, the condition to stop is not reaching \`NULL\`, but returning t
             {
               question: 'In a Circular Singly Linked List, where does the next pointer of the last node point?',
               options: ['NULL', 'The previous node', 'The first node (head)', 'Itself'],
-              correctAnswer: 'The first node (head)',
+              correctIndex: 2,
               explanation: 'To form a circle, the end connects back to the beginning.'
             }
           ]
@@ -585,7 +585,7 @@ We use a singly linked list. The head of the list acts as the top of the stack.
             {
               question: 'Which principle does a Stack follow?',
               options: ['FIFO', 'LIFO', 'Random Access', 'None'],
-              correctAnswer: 'LIFO',
+              correctIndex: 1,
               explanation: 'Stack follows Last-In-First-Out.'
             }
           ]
@@ -646,7 +646,7 @@ push(val2 + val1); // push 5`,
             {
               question: 'In postfix notation, the operator is placed:',
               options: ['Before operands', 'Between operands', 'After operands', 'Anywhere'],
-              correctAnswer: 'After operands',
+              correctIndex: 2,
               explanation: 'Postfix means the operator comes after its operands.'
             }
           ]
@@ -702,7 +702,7 @@ In a priority queue, every element is associated with a priority. Elements are d
             {
               question: 'Which problem of a simple array queue does a circular queue solve?',
               options: ['Slow access time', 'Memory wastage at the front', 'Lack of priority', 'Infinite loops'],
-              correctAnswer: 'Memory wastage at the front',
+              correctIndex: 1,
               explanation: 'In simple queues, dequeued spaces cannot be reused. Circular queues wrap around to use them.'
             }
           ]
@@ -753,7 +753,7 @@ deleteLast();    // [5, 10, 20, 30]`,
             {
               question: 'In an input-restricted deque, insertions are allowed at:',
               options: ['Both ends', 'Only one end', 'Any position', 'None of the above'],
-              correctAnswer: 'Only one end',
+              correctIndex: 1,
               explanation: 'Input-restricted means input (insertion) is limited to one end, while deletion can happen at both.'
             }
           ]
@@ -812,7 +812,7 @@ A Tree is a hierarchical non-linear data structure. A **Binary Tree** is a speci
             {
               question: 'What is the maximum number of nodes at level 3 of a binary tree? (Root is level 0)',
               options: ['4', '8', '16', '3'],
-              correctAnswer: '8',
+              correctIndex: 1,
               explanation: 'Max nodes at level l = 2^l. For level 3, 2^3 = 8.'
             }
           ]
@@ -876,7 +876,7 @@ BSTs allow for fast lookup, addition, and removal of items, bridging the gap bet
             {
               question: 'Which traversal of a BST produces a sorted sequence?',
               options: ['Preorder', 'Inorder', 'Postorder', 'Level-order'],
-              correctAnswer: 'Inorder',
+              correctIndex: 1,
               explanation: 'Inorder traversal visits Left -> Root -> Right, perfectly aligning with BST sorted properties.'
             }
           ]
@@ -992,7 +992,7 @@ Building a heap from an unsorted array takes **O(n)** time.
             {
               question: 'In an array-based Max-Heap starting at index 0, what is the index of the left child of node i?',
               options: ['2i', '2i + 1', '2i + 2', 'i / 2'],
-              correctAnswer: '2i + 1',
+              correctIndex: 1,
               explanation: 'Using 0-based indexing, the left child is at 2i + 1.'
             }
           ]
@@ -1051,7 +1051,7 @@ DFS goes as deep as possible into a subtree before returning. The three types de
             {
               question: 'Which traversal method is best for deleting all nodes in a tree?',
               options: ['Inorder', 'Preorder', 'Postorder', 'Level-order'],
-              correctAnswer: 'Postorder',
+              correctIndex: 2,
               explanation: 'Postorder visits children before the parent, allowing safe deletion of child nodes before the parent node.'
             }
           ]
@@ -1112,7 +1112,7 @@ matrix[1][0] = 1;`,
             {
               question: 'Which representation is most space-efficient for a sparse graph?',
               options: ['Adjacency Matrix', 'Adjacency List', 'Edge List', '2D Array'],
-              correctAnswer: 'Adjacency List',
+              correctIndex: 1,
               explanation: 'Adjacency lists only store existing edges, avoiding the wasted space of O(V^2) zeros in matrices.'
             }
           ]
@@ -1178,7 +1178,7 @@ For both algorithms, the time complexity is **O(V + E)** when using an adjacency
             {
               question: 'Which data structure is fundamentally used for Breadth-First Search?',
               options: ['Stack', 'Queue', 'Tree', 'Hash Map'],
-              correctAnswer: 'Queue',
+              correctIndex: 1,
               explanation: 'BFS uses a Queue to maintain the FIFO order of exploring neighbors level by level.'
             }
           ]
@@ -1233,7 +1233,7 @@ It fails if the graph has negative edge weights because it assumes that once a n
             {
               question: 'Dijkstra\'s algorithm will fail if the graph contains:',
               options: ['Cycles', 'Directed edges', 'Negative edge weights', 'Multiple components'],
-              correctAnswer: 'Negative edge weights',
+              correctIndex: 2,
               explanation: 'The greedy approach assumes path costs only increase. Negative weights break this assumption.'
             }
           ]
@@ -1293,7 +1293,7 @@ Prim's algorithm builds the MST by growing it from a starting vertex, similar to
             {
               question: 'How many edges are in a Minimum Spanning Tree of a graph with V vertices?',
               options: ['V', 'V - 1', 'V + 1', 'E - 1'],
-              correctAnswer: 'V - 1',
+              correctIndex: 1,
               explanation: 'A tree connecting V nodes without cycles always has exactly V - 1 edges.'
             }
           ]
@@ -1359,7 +1359,7 @@ While Binary Search is drastically faster for large datasets (e.g., searching 1 
             {
               question: 'What is a mandatory requirement for binary search to work?',
               options: ['Array must contain integers', 'Array must be sorted', 'Array must have even length', 'Array must be dynamic'],
-              correctAnswer: 'Array must be sorted',
+              correctIndex: 1,
               explanation: 'Binary search relies on the array being sorted to know which half to discard.'
             }
           ]
@@ -1414,7 +1414,7 @@ These three algorithms are considered "comparison sorts" with an O(n²) average 
             {
               question: 'Which sorting algorithm behaves like sorting a hand of playing cards?',
               options: ['Bubble Sort', 'Selection Sort', 'Insertion Sort', 'Merge Sort'],
-              correctAnswer: 'Insertion Sort',
+              correctIndex: 2,
               explanation: 'Insertion sort takes one item at a time and places it in the correct position among already sorted items.'
             }
           ]
@@ -1472,7 +1472,7 @@ For large datasets, O(n²) algorithms are too slow. Merge Sort and Quick Sort us
             {
               question: 'What is the worst-case time complexity of Quick Sort?',
               options: ['O(n)', 'O(n log n)', 'O(n^2)', 'O(log n)'],
-              correctAnswer: 'O(n^2)',
+              correctIndex: 2,
               explanation: 'If the worst pivot is chosen repeatedly (like on an already sorted array), it degrades to O(n²).'
             }
           ]
@@ -1534,7 +1534,7 @@ hashTable[index] = key;`,
             {
               question: 'In hashing, what is "Chaining"?',
               options: ['Linking hash tables together', 'Using linked lists to store colliding elements', 'Using multiple hash functions', 'Searching the next array slot'],
-              correctAnswer: 'Using linked lists to store colliding elements',
+              correctIndex: 1,
               explanation: 'Chaining makes each array element the head of a linked list to store multiple items at the same hash index.'
             }
           ]
