@@ -26,9 +26,9 @@ Micro-operation: An elementary operation performed on data stored in registers d
 ### RTL Hardware Implementation Architecture
 \`\`\`mermaid
 flowchart LR
-    R1["Source Register (R1)\n[Flip-Flop Group]"] -->|"16-Bit Data Lines"| R2["Destination Register (R2)\n[Flip-Flop Group]"]
+    R1["Source Register R1 (Flip-Flop Group)"] -->|"16-Bit Data Lines"| R2["Destination Register R2 (Flip-Flop Group)"]
     P["Control Variable (P = 1)"] -->|"Load Enable Signal"| LD["LOAD Pin"]
-    CLK["Master Clock Pulse\n(Rising Edge)"] -->|"CLK"| R2
+    CLK["Master Clock Pulse (Rising Edge)"] -->|"CLK"| R2
     LD --> R2
 \`\`\`
 
@@ -673,14 +673,14 @@ flowchart TD
 \`\`\`mermaid
 flowchart TD
     subgraph DirectAccess["Direct Addressing (I = 0)"]
-        I0["Inst: ADD 457 (I=0)"] -->|"Address 457"| LOC457["Mem[457] = OPERAND (35)"]
-        LOC457 --> AC0["AC <- AC + 35"]
+        I0["Inst: ADD 457 (I=0)"] -->|"Address 457"| LOC457["Mem(457) = OPERAND 35"]
+        LOC457 --> AC0["AC ← AC + 35"]
     end
 
     subgraph IndirectAccess["Indirect Addressing (I = 1)"]
-        I1["Inst: ADD 300 (I=1)"] -->|"Address 300"| LOC300["Mem[300] = 1350 (Pointer)"]
-        LOC300 -->|"Pointer 1350"| LOC1350["Mem[1350] = OPERAND (82)"]
-        LOC1350 --> AC1["AC <- AC + 82"]
+        I1["Inst: ADD 300 (I=1)"] -->|"Address 300"| LOC300["Mem(300) = 1350 (Pointer)"]
+        LOC300 -->|"Pointer 1350"| LOC1350["Mem(1350) = OPERAND 82"]
+        LOC1350 --> AC1["AC ← AC + 82"]
     end
 \`\`\``,
           shortNotes: 'Instruction format: I (bit 15), Opcode (bits 12-14), Address (bits 0-11). Direct (I=0) EA=Address. Indirect (I=1) EA=M[Address].',
@@ -844,9 +844,9 @@ The instruction cycle consists of four continuous phases:
 ### Master Instruction Cycle Flowchart (Question Bank Q3 & Q20)
 \`\`\`mermaid
 flowchart TD
-    START(["Instruction Cycle Start"]) --> T0["T0: AR <- PC"]
-    T0 --> T1["T1: IR <- M[AR], PC <- PC + 1"]
-    T1 --> T2["T2: Decode Opcode in IR(12-14)\nAR <- IR(0-11), I <- IR(15)"]
+    START(["Instruction Cycle Start"]) --> T0["T0: AR ← PC"]
+    T0 --> T1["T1: IR ← Memory(AR), PC ← PC + 1"]
+    T1 --> T2["T2: Decode Opcode in IR(12-14)\nAR ← IR(0-11), I ← IR(15)"]
     T2 --> CHECK{"Opcode = 111 (7)?"}
 
     CHECK -- Yes --> D7{"I bit = ?"}
@@ -855,16 +855,16 @@ flowchart TD
 
     CHECK -- No --> MEMINST{"I bit = ? (Memory-Reference)"}
     MEMINST -- I = 0 (Direct) --> DIRECT["T3: Nothing\n(AR already holds Effective Address)"]
-    MEMINST -- I = 1 (Indirect) --> INDIRECT["T3: AR <- M[AR]\n(Fetch Effective Address from Memory)"]
+    MEMINST -- I = 1 (Indirect) --> INDIRECT["T3: AR ← Memory(AR)\n(Fetch Effective Address from Memory)"]
 
     DIRECT --> EXEC["Execute Memory-Reference (T4, T5, T6)\nAND, ADD, LDA, STA, BUN, BSA, ISZ"]
     INDIRECT --> EXEC
 
-    REGINST --> SC0["SC <- 0 (Instruction Complete)"]
+    REGINST --> SC0["SC ← 0 (Instruction Complete)"]
     IOINST --> SC0
     EXEC --> SC0
     SC0 --> INT{"Interrupt Enable (IEN) && (FGI || FGO)?"}
-    INT -- Yes --> INTCYCLE["Interrupt Cycle: Save PC at M[0], PC <- 1"]
+    INT -- Yes --> INTCYCLE["Interrupt Cycle: Save PC at Memory(0), PC ← 1"]
     INT -- No --> T0
     INTCYCLE --> T0
 \`\`\`
@@ -946,14 +946,14 @@ flowchart TD
         PC_VAL["Current PC = 21 (Next instruction to return to)"]
         AR_VAL["Target SUB Label = Location 100"]
 
-        T4["T4: M[100] <- 21 (Save PC)\nAR <- 101"]
-        T5["T5: PC <- 101 (Jump to Subroutine Body)"]
+        T4["T4: Memory(100) ← 21 (Save PC)\nAR ← 101"]
+        T5["T5: PC ← 101 (Jump to Subroutine Body)"]
 
         PC_VAL & AR_VAL --> T4 --> T5
     end
 
     subgraph Return_Operation["Subroutine Return: BUN SUB I"]
-        RET["BUN 100 I\nReads address stored at 100 (which is 21!)\nPC <- 21 (Clean Return to Main Program)"]
+        RET["BUN 100 I\nReads address stored at 100 (which is 21!)\nPC ← 21 (Clean Return to Main Program)"]
     end
 
     T5 --> RET
@@ -1014,9 +1014,9 @@ flowchart TD
 ### Interrupt Cycle Flowchart & RTL (Question Bank Q5 & Q21)
 \`\`\`mermaid
 flowchart TD
-    START(["Interrupt Check (R = 1)"]) --> T0["T0: AR <- 0, TR <- PC"]
-    T0 --> T1["T1: M[AR] <- TR, PC <- 0"]
-    T1 --> T2["T2: PC <- PC + 1, IEN <- 0, R <- 0, SC <- 0"]
+    START(["Interrupt Check (R = 1)"]) --> T0["T0: AR ← 0, TR ← PC"]
+    T0 --> T1["T1: Memory(AR) ← TR, PC ← 0"]
+    T1 --> T2["T2: PC ← PC + 1, IEN ← 0, R ← 0, SC ← 0"]
     T2 --> ISR["Execution jumps to Memory Location 1\n(Address of Interrupt Service Routine)"]
 \`\`\`
 
@@ -1519,20 +1519,20 @@ flowchart TD
 \`\`\`mermaid
 flowchart TD
     subgraph StackHw["64-Word Register Stack Hardware"]
-        SP["Stack Pointer (SP: 6 Bits: 0..63)"]
+        SP["Stack Pointer SP: 6 Bits (0..63)"]
         MEM["Stack Storage (64 Words)"]
         FULL["FULL Flip-Flop (1 when SP = 0 after push)"]
         EMPTY["EMPTY Flip-Flop (1 when SP = 0 after pop)"]
     end
 
     subgraph PushOp["PUSH Micro-operations"]
-        P1["SP <- SP + 1"] --> P2["M[SP] <- DR"]
-        P2 --> P3["if (SP == 0) FULL <- 1\nEMPTY <- 0"]
+        P1["SP ← SP + 1"] --> P2["Memory(SP) ← DR"]
+        P2 --> P3["if (SP == 0) FULL ← 1\nEMPTY ← 0"]
     end
 
     subgraph PopOp["POP Micro-operations"]
-        PO1["DR <- M[SP]"] --> PO2["SP <- SP - 1"]
-        PO2 --> PO3["if (SP == 0) EMPTY <- 1\nFULL <- 0"]
+        PO1["DR ← Memory(SP)"] --> PO2["SP ← SP - 1"]
+        PO2 --> PO3["if (SP == 0) EMPTY ← 1\nFULL ← 0"]
     end
 \`\`\`
 
@@ -1599,11 +1599,11 @@ Convert: $(A + B) \\times [C \\times (D + E) + F]$
 ### Comprehensive Addressing Modes Architecture
 \`\`\`mermaid
 flowchart TD
-    INSTR["Instruction Word: [ Mode | Opcode | Address / Offset Field ]"]
+    INSTR["Instruction Word: Mode | Opcode | Address / Offset Field"]
 
     INSTR --> IMM["1. Immediate Mode\nOperand is the address field value itself"]
     INSTR --> DIR["2. Direct Mode\nEffective Address EA = Address Field"]
-    INSTR --> IND["3. Indirect Mode\nEA = M[ Address Field ] (Pointer)"]
+    INSTR --> IND["3. Indirect Mode\nEA = Memory(Address Field) (Pointer)"]
     INSTR --> REG["4. Register Mode\nOperand is inside selected CPU register"]
     INSTR --> REGIND["5. Register Indirect Mode\nEA = Content of selected CPU register"]
     INSTR --> REL["6. Relative Addressing Mode\nEA = PC + Address Field (Offset)"]
@@ -1789,19 +1789,19 @@ Booth's algorithm observes that a block of consecutive 1's (e.g., $011110 = 30$)
 \`\`\`mermaid
 flowchart TD
     START(["Start Booth's Multiplication"]) --> INIT["Initialize:\nAC = 0, Qn+1 = 0\nBR = Multiplicand\nQR = Multiplier\nSC = Number of Bits (n)"]
-    INIT --> CHECK{"Test [Qn, Qn+1]"}
+    INIT --> CHECK{"Test (Qn, Qn+1)"}
 
-    CHECK -- "10" --> SUB["AC <- AC - BR\n(or AC <- AC + BR' + 1)"]
-    CHECK -- "01" --> ADD["AC <- AC + BR"]
+    CHECK -- "10" --> SUB["AC ← AC - BR\n(or AC ← AC + BR' + 1)"]
+    CHECK -- "01" --> ADD["AC ← AC + BR"]
     CHECK -- "00 or 11" --> ASHR
 
-    SUB --> ASHR["Arithmetic Shift Right (ashr):\n[AC, QR, Qn+1]\n(Preserve sign bit in AC!)"]
+    SUB --> ASHR["Arithmetic Shift Right (ashr):\n(AC, QR, Qn+1)\nPreserve sign bit in AC!"]
     ADD --> ASHR
 
-    ASHR --> DEC["SC <- SC - 1"]
+    ASHR --> DEC["SC ← SC - 1"]
     DEC --> LOOP{"SC == 0?"}
     LOOP -- No --> CHECK
-    LOOP -- Yes --> DONE(["Done: Product is in [AC, QR]"])
+    LOOP -- Yes --> DONE(["Done: Product is in (AC, QR)"])
 \`\`\`
 
 ### Worked Numerical: Multiply $(-9) \\times (-13)$ using 5-bit Booth's
@@ -2035,7 +2035,7 @@ flowchart TD
 ### 3. Direct Memory Access (DMA) Controller Architecture
 \`\`\`mermaid
 flowchart TD
-    CPU["CPU"] <-->|"Bus Request (BR) / Bus Grant (BG)"| DMA["DMA Controller\n[Address Reg, Word Count Reg, Control]"]
+    CPU["CPU"] <-->|"Bus Request (BR) / Bus Grant (BG)"| DMA["DMA Controller\n(Address Reg, Word Count Reg, Control)"]
     DMA <-->|"Direct Memory Transfer (No CPU overhead!)"| RAM["Main Memory (RAM)"]
     DEV["High-Speed I/O Device\n(Disk Drive / Network Card)"] <-->|"DMA Request / Ack"| DMA
 \`\`\`

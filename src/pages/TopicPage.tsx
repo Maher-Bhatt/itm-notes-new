@@ -289,6 +289,50 @@ export default function TopicPage() {
 
   const allUnits = subject?.units || [];
 
+  // Comprehensive audio script including title, overview, exam points, in-depth lecture notes, examples, and revision
+  const fullAudioLectureScript = useMemo(() => {
+    if (!topic) return "";
+    const sections: string[] = [];
+
+    sections.push(`Topic: ${topic.title}. From unit: ${unitTitle}. Subject: ${subject?.name || ""}.`);
+
+    if (topic.simpleExplanation) {
+      sections.push(`High level summary: ${topic.simpleExplanation}`);
+    }
+
+    if (topic.keyPoints && topic.keyPoints.length > 0) {
+      sections.push(`Key exam scoring points to remember: ${topic.keyPoints.join(". ")}.`);
+    }
+
+    const detailRaw = topic.richContent || topic.detailedExplanation || "";
+    if (detailRaw) {
+      const cleanedDetail = detailRaw
+        .replace(/```[\s\S]*?```/g, "")
+        .replace(/<[^>]*>/g, "")
+        .replace(/#{1,6}\s+/g, "")
+        .replace(/\[([^\]]+)\]\([^\)]+\)/g, "$1")
+        .replace(/[*_~`]/g, "")
+        .replace(/\|[^\n]+\|/g, "")
+        .trim();
+      if (cleanedDetail) {
+        sections.push(`In-depth lecture notes: ${cleanedDetail}`);
+      }
+    }
+
+    if (topic.examples && topic.examples.length > 0) {
+      const examplesSummary = topic.examples
+        .map((ex, i) => `Example ${i + 1}: ${ex.title}. ${ex.problem}. Solution explanation: ${ex.explanation}`)
+        .join(". ");
+      sections.push(`Worked practical examples: ${examplesSummary}`);
+    }
+
+    if (topic.shortNotes) {
+      sections.push(`Quick revision recap: ${topic.shortNotes}`);
+    }
+
+    return sections.join(" ");
+  }, [topic, unitTitle, subject]);
+
   return (
     <div className={`min-h-screen bg-background flex flex-col ${focusMode ? "focus-mode" : ""}`}>
       <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
@@ -446,10 +490,10 @@ export default function TopicPage() {
                 <p className="text-xs text-gray-700">{subject?.name} ({subject?.code}) · {unitTitle}</p>
               </div>
 
-              {/* Audio Notes Player (Listen to Notes) */}
+              {/* Audio Notes Player (Listen to Complete Notes) */}
               <AudioNotesPlayer
                 title={topic.title}
-                textToRead={`${topic.title}. ${topic.simpleExplanation}. Key exam scoring points: ${topic.keyPoints.join('. ')}`}
+                textToRead={fullAudioLectureScript}
               />
 
               {/* ── Rich Content Mode ── */}

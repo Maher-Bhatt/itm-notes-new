@@ -27,6 +27,7 @@ import SubjectImpQuestionsPage from "./pages/SubjectImpQuestionsPage";
 import ProfilePage from "./pages/ProfilePage";
 import GpaCalculatorPage from "./pages/GpaCalculatorPage";
 import SubjectCheatSheetPage from "./pages/SubjectCheatSheetPage";
+import CommunityPage from "./pages/CommunityPage";
 import { PomodoroProvider } from "@/contexts/PomodoroContext";
 import { PomodoroFloatingWidget } from "@/components/PomodoroFloatingWidget";
 import { AchievementCelebrationModal } from "@/components/AchievementCelebrationModal";
@@ -63,7 +64,9 @@ const App = () => (
                   <Route path="/gpa-calculator" element={<GpaCalculatorPage />} />
                   <Route path="/quiz" element={<QuizPage />} />
                     <Route path="/coding-lab" element={<CodingLabPage />} />
-                  <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminDashboard /></ProtectedRoute>} />
+                    <Route path="/community" element={<CommunityPage />} />
+                    <Route path="/social" element={<CommunityPage />} />
+                    <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminDashboard /></ProtectedRoute>} />
                   <Route path="/admin/seed" element={<ProtectedRoute requireAdmin><SeedPage /></ProtectedRoute>} />
                   <Route path="/imp-questions" element={<ImpQuestionsSubjectsPage />} />
                   <Route path="/imp-questions/c-programming" element={<CProgrammingImpQuestionsPage />} />

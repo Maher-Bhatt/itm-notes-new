@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, ChevronLeft, HelpCircle, User, LogOut, Shield, Flame, BookOpen, Trophy, Clock, Calculator, Code, Menu, X } from "lucide-react";
+import { Search, ChevronLeft, HelpCircle, User, LogOut, Shield, Flame, BookOpen, Trophy, Clock, Calculator, Code, Menu, X, MessageSquare } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { useAuth } from "@/contexts/AuthContext";
 import { useGamification } from "@/hooks/useGamification";
@@ -123,6 +123,16 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
               <span>Coding Lab</span>
             </button>
 
+            {/* Campus Social Feed - Desktop */}
+            <button
+              onClick={() => navigate("/community")}
+              title="Campus Social Feed & Confessions"
+              className="apple-press hidden lg:inline-flex items-center gap-1.5 h-8 px-2.5 rounded text-sm font-medium text-purple-600 dark:text-purple-400 hover:text-foreground hover:bg-secondary transition-colors"
+            >
+              <MessageSquare className="h-4 w-4 text-purple-500" />
+              <span>Social</span>
+            </button>
+
             {/* IMP Questions - Tablet/Desktop */}
             <button
               onClick={() => navigate("/imp-questions")}
@@ -184,6 +194,10 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
                   <DropdownMenuItem onClick={() => navigate("/profile")}>
                     <Trophy className="mr-2 h-4 w-4 text-amber-500" />
                     <span>My Profile & Rank</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/community")}>
+                    <MessageSquare className="mr-2 h-4 w-4 text-purple-500" />
+                    <span>Campus Social & Confessions</span>
                   </DropdownMenuItem>
                   {/* Tablet visibility fallbacks for nav items hidden in header */}
                   <DropdownMenuItem onClick={() => navigate("/quiz")} className="lg:hidden">
@@ -269,8 +283,16 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
           )}
           
           <div className="px-3 pt-2 pb-1 text-xs font-bold text-muted-foreground uppercase tracking-wider">
-            Resources
+            Resources & Community
           </div>
+
+          <button onClick={() => { navigate("/community"); setIsDrawerOpen(false); }} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-secondary text-left transition-colors text-purple-600 dark:text-purple-400">
+            <MessageSquare className="h-5 w-5 text-purple-500" />
+            <div className="flex items-center justify-between w-full">
+              <span>Campus Social & Mask</span>
+              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-purple-500/10 font-bold border border-purple-500/20">Live</span>
+            </div>
+          </button>
           
           <button onClick={() => { navigate("/materials"); setIsDrawerOpen(false); }} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-secondary text-left transition-colors">
             <BookOpen className="h-5 w-5 text-primary" />
