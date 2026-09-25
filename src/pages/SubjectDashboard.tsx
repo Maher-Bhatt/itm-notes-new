@@ -1,5 +1,6 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { getSubject, getAllTopicIds, Subject } from "@/data/subjects";
+import { getSubject, getAllTopicIds } from "@/data/subjects";
+import { Subject } from "@/data/types";
 import { useProgress } from "@/hooks/useProgress";
 import { useSubject } from "@/hooks/useAcademicData";
 import { CheckCircle, BookOpen, Bookmark, ChevronRight, ChevronDown, Loader2 } from "lucide-react";
@@ -48,21 +49,22 @@ export default function SubjectDashboard() {
   const subject: Subject | undefined = useMemo(() => {
     if (staticSubject) return staticSubject;
     if (!dbSubject) return undefined;
+    const dbSub = dbSubject as any;
 
     // Check if the DB subject matches any static subject by code or name
-    const match = getSubject(dbSubject.code) || getSubject(dbSubject.name);
+    const match = getSubject(dbSub.code) || getSubject(dbSub.name);
     if (match) return match;
 
     // Otherwise, construct from database record
     return {
-      id: dbSubject.id,
-      name: dbSubject.name,
-      code: dbSubject.code || "",
-      color: dbSubject.color || "bg-primary",
-      icon: dbSubject.icon || "book-open",
-      description: dbSubject.description || "",
+      id: dbSub.id,
+      name: dbSub.name,
+      code: dbSub.code || "",
+      color: dbSub.color || "bg-primary",
+      icon: dbSub.icon || "book-open",
+      description: dbSub.description || "",
       semester: 3,
-      units: (dbSubject.units || []).map((u: any) => ({
+      units: (dbSub.units || []).map((u: any) => ({
         id: u.id,
         title: u.title,
         description: u.description || "",

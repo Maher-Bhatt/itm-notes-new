@@ -23,24 +23,29 @@ export default function OnboardingPage() {
   const { data: branches, isLoading: branchLoading } = useBranches(selectedProg);
   const { data: semesters, isLoading: semLoading } = useSemesters(selectedBranch);
 
+  const unis = (universities as any[]) || [];
+  const progs = (programs as any[]) || [];
+  const brs = (branches as any[]) || [];
+  const sems = (semesters as any[]) || [];
+
   // Auto-select if only 1 option available (e.g. ITM SLS Baroda University -> B.Tech -> Computer Science)
   useEffect(() => {
-    if (universities && universities.length === 1 && !selectedUni) {
-      setSelectedUni(universities[0].id);
+    if (unis.length === 1 && !selectedUni) {
+      setSelectedUni(unis[0].id);
     }
-  }, [universities, selectedUni]);
+  }, [unis, selectedUni]);
 
   useEffect(() => {
-    if (programs && programs.length === 1 && !selectedProg) {
-      setSelectedProg(programs[0].id);
+    if (progs.length === 1 && !selectedProg) {
+      setSelectedProg(progs[0].id);
     }
-  }, [programs, selectedProg]);
+  }, [progs, selectedProg]);
 
   useEffect(() => {
-    if (branches && branches.length === 1 && !selectedBranch) {
-      setSelectedBranch(branches[0].id);
+    if (brs.length === 1 && !selectedBranch) {
+      setSelectedBranch(brs[0].id);
     }
-  }, [branches, selectedBranch]);
+  }, [brs, selectedBranch]);
 
   const handleComplete = async () => {
     setIsSubmitting(true);
@@ -48,14 +53,14 @@ export default function OnboardingPage() {
 
     // Check if the selected semester exists in the database
     const semNum = Number(selectedSem.replace("sem-", ""));
-    const matchingDbSem = semesters?.find((s) => s.id === selectedSem || s.number === semNum);
+    const matchingDbSem = sems.find((s: any) => s.id === selectedSem || s.number === semNum);
 
     if (matchingDbSem) {
       finalSemId = matchingDbSem.id;
     } else if (selectedBranch && !isNaN(semNum)) {
       // Auto-create semester in database if missing
       try {
-        const { data: createdSem } = await supabase
+        const { data: createdSem } = await (supabase as any)
           .from("semesters")
           .insert({ branch_id: selectedBranch, number: semNum })
           .select()
@@ -109,7 +114,7 @@ export default function OnboardingPage() {
                 }}
               >
                 <option value="">Select University</option>
-                {universities?.map((u) => (
+                {unis.map((u: any) => (
                   <option key={u.id} value={u.id}>
                     {u.name}
                   </option>
@@ -130,7 +135,7 @@ export default function OnboardingPage() {
               disabled={!selectedUni || progLoading}
             >
               <option value="">Select Program</option>
-              {programs?.map((p) => (
+              {progs.map((p: any) => (
                 <option key={p.id} value={p.id}>
                   {p.name}
                 </option>
@@ -147,7 +152,7 @@ export default function OnboardingPage() {
               disabled={!selectedProg || branchLoading}
             >
               <option value="">Select Branch</option>
-              {branches?.map((b) => (
+              {brs.map((b: any) => (
                 <option key={b.id} value={b.id}>
                   {b.name}
                 </option>
@@ -164,7 +169,7 @@ export default function OnboardingPage() {
             >
               <option value="">Select Semester</option>
               {[1, 2, 3, 4, 5, 6, 7, 8].map((semNum) => {
-                const dbSem = semesters?.find((s) => s.number === semNum);
+                const dbSem = sems.find((s: any) => s.number === semNum);
                 const val = dbSem ? dbSem.id : `sem-${semNum}`;
                 return (
                   <option key={semNum} value={val}>

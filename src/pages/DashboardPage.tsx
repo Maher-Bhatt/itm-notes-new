@@ -8,6 +8,7 @@ import { Footer } from "@/components/Footer";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAcademic } from "@/contexts/AcademicContext";
 import { useSubjects } from "@/hooks/useAcademicData";
+import { subjects } from "@/data/subjects";
 
 function OverallProgressBar({ progress }: { progress: number }) {
   return (

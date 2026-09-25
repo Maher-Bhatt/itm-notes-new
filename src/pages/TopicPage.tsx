@@ -1,5 +1,6 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { getTopic, getAdjacentTopics, getSubject, Subject } from "@/data/subjects";
+import { getTopic, getAdjacentTopics, getSubject } from "@/data/subjects";
+import { Subject } from "@/data/types";
 import { useProgress } from "@/hooks/useProgress";
 import { useTopic, useSubject } from "@/hooks/useAcademicData";
 import { MCQQuiz } from "@/components/MCQQuiz";
@@ -89,17 +90,18 @@ export default function TopicPage() {
     if (staticSubject) return staticSubject;
     if (staticResult?.subject) return staticResult.subject;
     if (!dbSubject) return undefined;
-    const match = getSubject(dbSubject.code) || getSubject(dbSubject.name);
+    const dbSub = dbSubject as any;
+    const match = getSubject(dbSub.code) || getSubject(dbSub.name);
     if (match) return match;
     return {
-      id: dbSubject.id,
-      name: dbSubject.name,
-      code: dbSubject.code || "",
-      color: dbSubject.color || "bg-primary",
-      icon: dbSubject.icon || "book-open",
-      description: dbSubject.description || "",
+      id: dbSub.id,
+      name: dbSub.name,
+      code: dbSub.code || "",
+      color: dbSub.color || "bg-primary",
+      icon: dbSub.icon || "book-open",
+      description: dbSub.description || "",
       semester: 3,
-      units: (dbSubject.units || []).map((u: any) => ({
+      units: (dbSub.units || []).map((u: any) => ({
         id: u.id,
         title: u.title,
         description: u.description || "",
@@ -122,18 +124,19 @@ export default function TopicPage() {
       return { topic: staticResult.topic, unitTitle: staticResult.unitTitle };
     }
     if (!dbTopic) return undefined;
+    const dbTop = dbTopic as any;
 
     return {
       topic: {
-        id: dbTopic.id,
-        title: dbTopic.title,
-        simpleExplanation: dbTopic.simple_explanation || "",
-        detailedExplanation: dbTopic.detailed_explanation || "",
-        richContent: dbTopic.rich_content || undefined,
-        shortNotes: dbTopic.short_notes || undefined,
-        examples: dbTopic.examples || [],
-        keyPoints: (dbTopic.key_points || []).map((kp: any) => kp.point),
-        mcqs: (dbTopic.mcqs || []).map((m: any) => ({
+        id: dbTop.id,
+        title: dbTop.title,
+        simpleExplanation: dbTop.simple_explanation || "",
+        detailedExplanation: dbTop.detailed_explanation || "",
+        richContent: dbTop.rich_content || undefined,
+        shortNotes: dbTop.short_notes || undefined,
+        examples: dbTop.examples || [],
+        keyPoints: (dbTop.key_points || []).map((kp: any) => kp.point),
+        mcqs: (dbTop.mcqs || []).map((m: any) => ({
           question: m.question,
           options: m.options,
           correctIndex: m.correct_index,
