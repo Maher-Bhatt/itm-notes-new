@@ -23,6 +23,7 @@ import QuizPage from "./pages/QuizPage";
 import CodingLabPage from "./pages/CodingLabPage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import SeedPage from "./pages/admin/SeedPage";
+import SubjectImpQuestionsPage from "./pages/SubjectImpQuestionsPage";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
@@ -54,6 +55,7 @@ const App = () => (
                   <Route path="/imp-questions" element={<ImpQuestionsSubjectsPage />} />
                   <Route path="/imp-questions/c-programming" element={<CProgrammingImpQuestionsPage />} />
                   <Route path="/imp-questions/python" element={<PythonImpQuestionsPage />} />
+                  <Route path="/imp-questions/:subjectId" element={<SubjectImpQuestionsPage />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </ErrorBoundary>

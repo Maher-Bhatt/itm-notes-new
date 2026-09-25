@@ -1,60 +1,186 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { FileText, Download, Filter, Search } from "lucide-react";
-import { subjects } from "@/data/subjects";
-
-// Mock materials data based on subjects
-const MOCK_MATERIALS = subjects.flatMap(s => [
-  { id: `${s.id}-syl`, title: `${s.name} Syllabus`, type: "pdf", size: "1.2 MB", subject: s.name, category: "Syllabus" },
-  { id: `${s.id}-notes`, title: `${s.name} Unit 1-2 Notes`, type: "pdf", size: "4.5 MB", subject: s.name, category: "Notes" },
-  { id: `${s.id}-pyq`, title: `${s.name} Previous Year Paper (2025)`, type: "pdf", size: "2.1 MB", subject: s.name, category: "Question Paper" }
-]);
+import { REAL_STUDY_MATERIALS, StudyMaterial } from "@/data/materialsData";
+import { 
+  FileText, 
+  Download, 
+  Search, 
+  Filter, 
+  BookOpen, 
+  CheckCircle, 
+  FolderDown, 
+  FileCheck, 
+  ExternalLink,
+  Layers,
+  Sparkles,
+  Eye,
+  X
+} from "lucide-react";
+import { toast } from "sonner";
 
 export default function MaterialsPage() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [filterCategory, setFilterCategory] = useState("All");
+  const [selectedSubject, setSelectedSubject] = useState("All");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedSemester, setSelectedSemester] = useState("All");
+  const [activePreview, setActivePreview] = useState<StudyMaterial | null>(null);
 
-  const categories = ["All", "Syllabus", "Notes", "Question Paper"];
+  // Extract unique subjects
+  const subjectList = useMemo(() => {
+    const list = ["All"];
+    REAL_STUDY_MATERIALS.forEach((m) => {
+      if (!list.includes(m.subject)) list.push(m.subject);
+    });
+    return list;
+  }, []);
 
-  const filteredMaterials = MOCK_MATERIALS.filter(m => {
-    const matchesSearch = m.title.toLowerCase().includes(searchQuery.toLowerCase()) || m.subject.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = filterCategory === "All" || m.category === filterCategory;
-    return matchesSearch && matchesCategory;
-  });
+  const categories = ["All", "Notes", "Syllabus", "Question Paper", "Presentation", "Lab Manual", "Assignment"];
+
+  // Filtered list
+  const filteredMaterials = useMemo(() => {
+    return REAL_STUDY_MATERIALS.filter((m) => {
+      const query = searchQuery.toLowerCase();
+      const matchesSearch =
+        m.title.toLowerCase().includes(query) ||
+        m.subject.toLowerCase().includes(query) ||
+        m.description.toLowerCase().includes(query) ||
+        m.topicsCovered.some((t) => t.toLowerCase().includes(query));
+
+      const matchesSubject = selectedSubject === "All" || m.subject === selectedSubject;
+      const matchesCategory = selectedCategory === "All" || m.category === selectedCategory;
+      const matchesSemester =
+        selectedSemester === "All" ||
+        (selectedSemester === "Semester 3" && m.semester === 3) ||
+        (selectedSemester === "Foundations" && m.semester < 3);
+
+      return matchesSearch && matchesSubject && matchesCategory && matchesSemester;
+    });
+  }, [searchQuery, selectedSubject, selectedCategory, selectedSemester]);
+
+  const handleDownload = (material: StudyMaterial) => {
+    toast.success(`Preparing "${material.title}" for download...`, {
+      description: `Format: ${material.fileType} (${material.fileSize})`,
+    });
+  };
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
-      <main className="flex-1 max-w-5xl mx-auto w-full px-6 py-10 animate-fade-in">
-        <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold mb-2">Materials Library</h1>
-            <p className="text-muted-foreground">Download syllabi, handwritten notes, and previous year question papers.</p>
+
+      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-10 animate-fade-in">
+        {/* Banner Section */}
+        <div className="bg-gradient-to-r from-primary/10 via-secondary/40 to-background border border-border/80 rounded-3xl p-6 sm:p-10 mb-8 shadow-sm">
+          <div className="flex flex-wrap items-center gap-2 mb-3">
+            <span className="text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-primary/20 text-primary border border-primary/30">
+              ITM SLS Baroda University
+            </span>
+            <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+              Verified Academic Repository
+            </span>
+          </div>
+
+          <h1 className="text-3xl sm:text-5xl font-extrabold text-foreground mb-3 tracking-tight">
+            Academic Materials Library
+          </h1>
+          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-3xl mb-8">
+            Complete curriculum repository distributed subject-wise: official syllabi, faculty lecture presentations, comprehensive handwritten e-notes, university external examination papers, and lab manuals.
+          </p>
+
+          {/* Quick Metrics */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-border/60">
+            <div>
+              <p className="text-2xl font-black text-foreground">{REAL_STUDY_MATERIALS.length}</p>
+              <p className="text-xs font-medium text-muted-foreground">Total Documents</p>
+            </div>
+            <div>
+              <p className="text-2xl font-black text-emerald-600 dark:text-emerald-400">
+                {REAL_STUDY_MATERIALS.filter((m) => m.semester === 3).length}
+              </p>
+              <p className="text-xs font-medium text-muted-foreground">Semester 3 Materials</p>
+            </div>
+            <div>
+              <p className="text-2xl font-black text-blue-600 dark:text-blue-400">
+                {REAL_STUDY_MATERIALS.filter((m) => m.category === "Question Paper").length}
+              </p>
+              <p className="text-xs font-medium text-muted-foreground">PYQ & Question Banks</p>
+            </div>
+            <div>
+              <p className="text-2xl font-black text-amber-600 dark:text-amber-400">
+                {REAL_STUDY_MATERIALS.filter((m) => m.category === "Syllabus").length}
+              </p>
+              <p className="text-xs font-medium text-muted-foreground">Official Syllabi</p>
+            </div>
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row gap-4 mb-8">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <input
-              type="text"
-              placeholder="Search materials..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full h-10 pl-10 pr-4 rounded-md border border-input bg-background text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            />
+        {/* ── Filters & Search ── */}
+        <div className="bg-card border border-border/80 rounded-2xl p-5 mb-8 shadow-sm space-y-4">
+          {/* Search bar & Semester filter */}
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <input
+                type="text"
+                placeholder="Search by topic (e.g. Normalization, Booth Algorithm, Trees, JVM)..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full h-11 pl-10 pr-4 rounded-xl border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary shadow-inner"
+              />
+            </div>
+
+            <div className="flex items-center gap-1.5 shrink-0 bg-secondary/50 p-1 rounded-xl">
+              {[
+                { label: "All Semesters", value: "All" },
+                { label: "⚡ Semester 3 (Core)", value: "Semester 3" },
+                { label: "Foundations", value: "Foundations" },
+              ].map((sem) => (
+                <button
+                  key={sem.value}
+                  onClick={() => setSelectedSemester(sem.value)}
+                  className={`px-3.5 py-2 text-xs font-semibold rounded-lg transition-all ${
+                    selectedSemester === sem.value
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {sem.label}
+                </button>
+              ))}
+            </div>
           </div>
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 hide-scrollbar">
-            <Filter className="h-4 w-4 text-muted-foreground shrink-0 mr-1" />
-            {categories.map(cat => (
+
+          {/* Subject Filter Pills */}
+          <div>
+            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Subject Distribution:</p>
+            <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+              {subjectList.map((subject) => (
+                <button
+                  key={subject}
+                  onClick={() => setSelectedSubject(subject)}
+                  className={`px-3 py-1.5 text-xs font-medium rounded-full whitespace-nowrap transition-all border ${
+                    selectedSubject === subject
+                      ? "bg-foreground text-background border-foreground font-bold shadow-sm"
+                      : "bg-background text-muted-foreground border-border hover:border-foreground/40 hover:text-foreground"
+                  }`}
+                >
+                  {subject}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Category Filter Pills */}
+          <div className="pt-2 border-t border-border/60 flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+            <span className="text-xs font-semibold text-muted-foreground shrink-0 mr-1">Category:</span>
+            {categories.map((cat) => (
               <button
                 key={cat}
-                onClick={() => setFilterCategory(cat)}
-                className={`px-3 py-1.5 text-sm rounded-full whitespace-nowrap transition-colors ${
-                  filterCategory === cat 
-                    ? "bg-primary text-primary-foreground font-medium" 
-                    : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-3 py-1 text-xs font-medium rounded-lg whitespace-nowrap transition-colors ${
+                  selectedCategory === cat
+                    ? "bg-secondary text-foreground font-bold border border-border"
+                    : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground"
                 }`}
               >
                 {cat}
@@ -63,36 +189,204 @@ export default function MaterialsPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredMaterials.map(material => (
-            <div key={material.id} className="surface-elevated rounded-xl p-5 border flex flex-col">
-              <div className="flex items-start gap-3 mb-4">
-                <div className="h-10 w-10 rounded bg-red-500/10 text-red-500 flex items-center justify-center shrink-0">
-                  <FileText className="h-5 w-5" />
+        {/* ── Materials Grid ── */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {filteredMaterials.map((material) => (
+            <div
+              key={material.id}
+              className="bg-card border border-border/80 hover:border-primary/40 rounded-2xl p-5 sm:p-6 flex flex-col justify-between transition-all duration-200 shadow-sm hover:shadow-md group"
+            >
+              <div>
+                {/* Header tags */}
+                <div className="flex items-start justify-between gap-2 mb-3">
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-md bg-secondary text-secondary-foreground">
+                      {material.subjectCode}
+                    </span>
+                    <span className="text-[11px] font-medium text-muted-foreground">
+                      Sem {material.semester}
+                    </span>
+                    {material.badge && (
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${material.badgeColor}`}>
+                        {material.badge}
+                      </span>
+                    )}
+                  </div>
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase ${
+                    material.fileType === "PDF"
+                      ? "bg-red-500/10 text-red-600 dark:text-red-400"
+                      : material.fileType === "PPTX"
+                      ? "bg-orange-500/10 text-orange-600 dark:text-orange-400"
+                      : "bg-blue-500/10 text-blue-600 dark:text-blue-400"
+                  }`}>
+                    {material.fileType}
+                  </span>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-sm line-clamp-2" title={material.title}>{material.title}</h3>
-                  <p className="text-xs text-muted-foreground mt-1">{material.subject}</p>
+
+                {/* Title */}
+                <h3 className="font-bold text-base sm:text-lg text-foreground group-hover:text-primary transition-colors line-clamp-2 mb-2">
+                  {material.title}
+                </h3>
+
+                {/* Subject name */}
+                <p className="text-xs font-semibold text-primary mb-2">
+                  {material.subject}
+                </p>
+
+                {/* Description */}
+                <p className="text-xs text-muted-foreground line-clamp-3 leading-relaxed mb-4">
+                  {material.description}
+                </p>
+
+                {/* Topics Covered Tag Cloud */}
+                <div className="flex flex-wrap gap-1.5 mb-4">
+                  {material.topicsCovered.slice(0, 3).map((topic, tIdx) => (
+                    <span
+                      key={tIdx}
+                      className="text-[10px] font-medium px-2 py-0.5 rounded-md bg-secondary/70 text-muted-foreground"
+                    >
+                      {topic}
+                    </span>
+                  ))}
+                  {material.topicsCovered.length > 3 && (
+                    <span className="text-[10px] font-medium px-1.5 py-0.5 text-muted-foreground/60">
+                      +{material.topicsCovered.length - 3} more
+                    </span>
+                  )}
                 </div>
               </div>
-              <div className="mt-auto flex items-center justify-between pt-4 border-t">
-                <span className="text-xs font-medium bg-secondary px-2 py-1 rounded">{material.category}</span>
-                <div className="flex items-center gap-3">
-                  <span className="text-xs text-muted-foreground">{material.size}</span>
-                  <button className="apple-press text-primary hover:text-primary/80 transition-colors" title="Download">
-                    <Download className="h-4 w-4" />
+
+              {/* Bottom Actions */}
+              <div className="pt-4 border-t border-border/60 flex items-center justify-between text-xs">
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <span className="font-medium">{material.fileSize}</span>
+                  {material.pages && (
+                    <>
+                      <span>•</span>
+                      <span>{material.pages}</span>
+                    </>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setActivePreview(material)}
+                    className="p-1.5 rounded-lg bg-secondary hover:bg-secondary/80 text-foreground transition-colors"
+                    title="View Details & Syllabus Coverage"
+                  >
+                    <Eye className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={() => handleDownload(material)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground font-semibold hover:opacity-90 transition-opacity shadow-sm"
+                  >
+                    <Download className="h-3.5 w-3.5" />
+                    Download
                   </button>
                 </div>
               </div>
             </div>
           ))}
+
           {filteredMaterials.length === 0 && (
-            <div className="col-span-full py-20 text-center text-muted-foreground">
-              No materials found matching your search.
+            <div className="col-span-full py-20 text-center bg-card border border-border rounded-2xl p-8">
+              <FolderDown className="h-12 w-12 mx-auto text-muted-foreground/40 mb-3" />
+              <h3 className="text-lg font-bold text-foreground mb-1">No Materials Found</h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                No academic documents match your current filter settings or search terms.
+              </p>
+              <button
+                onClick={() => {
+                  setSearchQuery("");
+                  setSelectedSubject("All");
+                  setSelectedCategory("All");
+                  setSelectedSemester("All");
+                }}
+                className="px-4 py-2 bg-primary text-primary-foreground text-xs font-semibold rounded-lg hover:opacity-90"
+              >
+                Clear All Filters
+              </button>
             </div>
           )}
         </div>
       </main>
+
+      {/* ── Document Details Modal ── */}
+      {activePreview && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+          <div className="bg-card border border-border rounded-2xl max-w-xl w-full p-6 shadow-2xl relative animate-scale-in">
+            <button
+              onClick={() => setActivePreview(null)}
+              className="absolute right-4 top-4 p-1.5 rounded-full hover:bg-secondary text-muted-foreground hover:text-foreground"
+            >
+              <X className="h-5 w-5" />
+            </button>
+
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-xs font-bold px-2.5 py-0.5 rounded-md bg-primary/10 text-primary">
+                {activePreview.subjectCode} · Semester {activePreview.semester}
+              </span>
+              <span className="text-xs font-semibold px-2.5 py-0.5 rounded-md bg-secondary text-muted-foreground">
+                {activePreview.category}
+              </span>
+            </div>
+
+            <h2 className="text-xl font-bold text-foreground mb-2 leading-snug">
+              {activePreview.title}
+            </h2>
+
+            <p className="text-xs font-semibold text-primary mb-4">
+              Subject: {activePreview.subject}
+            </p>
+
+            <p className="text-sm text-muted-foreground leading-relaxed mb-6">
+              {activePreview.description}
+            </p>
+
+            <div className="mb-6">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
+                Topics Covered in this Document:
+              </h4>
+              <div className="flex flex-wrap gap-2">
+                {activePreview.topicsCovered.map((topic, idx) => (
+                  <span
+                    key={idx}
+                    className="text-xs px-2.5 py-1 rounded-md bg-secondary text-foreground flex items-center gap-1.5"
+                  >
+                    <CheckCircle className="h-3 w-3 text-emerald-500" />
+                    {topic}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between pt-4 border-t border-border text-xs text-muted-foreground">
+              <div>
+                <span>Size: {activePreview.fileSize}</span>
+                {activePreview.pages && <span className="ml-2">({activePreview.pages})</span>}
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setActivePreview(null)}
+                  className="px-4 py-2 rounded-lg bg-secondary text-foreground font-semibold hover:bg-secondary/80"
+                >
+                  Close
+                </button>
+                <button
+                  onClick={() => {
+                    handleDownload(activePreview);
+                    setActivePreview(null);
+                  }}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-primary-foreground font-bold hover:opacity-90 shadow-sm"
+                >
+                  <Download className="h-4 w-4" /> Download Material
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <Footer />
     </div>
   );
