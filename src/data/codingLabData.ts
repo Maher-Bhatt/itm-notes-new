@@ -1,11 +1,11 @@
 export interface CodingProblem {
   id: string;
   title: string;
-  category: 'dsa' | 'java' | 'python';
+  category: 'dsa' | 'dbms' | 'java' | 'python';
   subjectName: string;
   difficulty: 'Easy' | 'Medium' | 'Hard';
   marks: string;
-  language: 'c' | 'java' | 'python';
+  language: 'c' | 'java' | 'python' | 'sql';
   fileName: string;
   description: string;
   constraints: string[];
@@ -1649,8 +1649,12 @@ export const PYTHON_PROBLEMS: CodingProblem[] = [
   }
 ];
 
-// Combine all 94 problems
+import { DBMS_PROBLEMS } from './dbmsPracticalsData';
+export { DBMS_PROBLEMS };
+
+// Combine all 126 problems (32 DBMS + 32 DSA + 31 Java + 31 Python)
 export const ALL_CODING_PROBLEMS: CodingProblem[] = [
+  ...DBMS_PROBLEMS,
   ...DSA_PROBLEMS,
   ...JAVA_PROBLEMS,
   ...PYTHON_PROBLEMS,

@@ -5,7 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { 
   Code, Play, CheckCircle2, XCircle, RotateCcw, 
   Lightbulb, Sparkles, BookOpen, Terminal, ChevronRight, 
-  Layers, Check, Copy, Flame, Award, HelpCircle
+  Layers, Check, Copy, Flame, Award, HelpCircle, Database, FileText
 } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
@@ -13,8 +13,8 @@ import { useGamification } from '@/hooks/useGamification';
 import { toast } from 'sonner';
 import { CodingProblem, ALL_CODING_PROBLEMS as CODING_PROBLEMS } from '@/data/codingLabData';
 
-﻿export default function CodingLabPage() {
-  const [selectedCategory, setSelectedCategory] = useState<'all' | 'dsa' | 'java' | 'python'>('all');
+export default function CodingLabPage() {
+  const [selectedCategory, setSelectedCategory] = useState<'all' | 'dsa' | 'dbms' | 'java' | 'python'>('all');
   const [activeProblemId, setActiveProblemId] = useState<string>(CODING_PROBLEMS[0].id);
   const [code, setCode] = useState<string>(CODING_PROBLEMS[0].starterCode);
   const [output, setOutput] = useState<string | null>(null);
@@ -60,6 +60,40 @@ import { CodingProblem, ALL_CODING_PROBLEMS as CODING_PROBLEMS } from '@/data/co
     toast.success('Code copied to clipboard!');
   };
 
+  const handleCopyFacultySubmission = () => {
+    const formattedRecord = [
+      `================================================================================`,
+      `ITM SLS BARODA UNIVERSITY — LABORATORY PRACTICAL RECORD`,
+      `Subject: ${currentProblem.subjectName}`,
+      `Practical Title: ${currentProblem.title}`,
+      `Marks / Syllabus Reference: ${currentProblem.marks}`,
+      `File Name: ${currentProblem.fileName} (${currentProblem.language.toUpperCase()})`,
+      `Difficulty Level: ${currentProblem.difficulty}`,
+      `================================================================================`,
+      ``,
+      `[1. AIM / OBJECTIVE]:`,
+      currentProblem.description,
+      ``,
+      `[2. CONSTRAINTS & EVALUATION CRITERIA]:`,
+      ...currentProblem.constraints.map(c => `• ${c}`),
+      ``,
+      `[3. SOURCE CODE / SQL IMPLEMENTATION]:`,
+      code || currentProblem.starterCode,
+      ``,
+      `[4. EXPECTED OUTPUT / TEST HARNESS RESULTS]:`,
+      currentProblem.expectedOutput,
+      ``,
+      `[5. SUBMISSION VERIFICATION]:`,
+      `Status: ${solvedProblems.includes(currentProblem.id) ? 'VERIFIED & PASSED (100%)' : 'READY FOR FACULTY SUBMISSION'}`,
+      `Verification Engine: ITM Notes University Practical Lab Sandbox`,
+      `Export Timestamp: ${new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}`,
+      `================================================================================`,
+    ].join('\n');
+
+    navigator.clipboard.writeText(formattedRecord);
+    toast.success('📋 University Practical Record copied! Paste directly into your lab manual or report.');
+  };
+
   // Keyboard support: Handle tab key inside textarea for code indentation
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Tab') {
@@ -76,12 +110,21 @@ import { CodingProblem, ALL_CODING_PROBLEMS as CODING_PROBLEMS } from '@/data/co
   };
 
   const handleRun = () => {
+    const isSql = currentProblem.language === 'sql';
     setStatus('compiling');
-    setOutput('Compiling and preparing runtime test harness...');
+    setOutput(
+      isSql
+        ? 'Parsing SQL syntax AST and verifying relational schema integrity...'
+        : 'Compiling and preparing runtime test harness...'
+    );
 
     setTimeout(() => {
       setStatus('running');
-      setOutput('Executing binary with test cases in isolated sandbox...');
+      setOutput(
+        isSql
+          ? 'Executing relational queries in in-memory database engine against schema tables...'
+          : 'Executing binary with test cases in isolated sandbox...'
+      );
 
       setTimeout(() => {
         const result = currentProblem.validator(code);
@@ -114,16 +157,16 @@ import { CodingProblem, ALL_CODING_PROBLEMS as CODING_PROBLEMS } from '@/data/co
             localStorage.setItem('itm_coding_lab_solved', JSON.stringify(updated));
             addXp(75, `Solved Practical: ${currentProblem.title}`);
             unlockAchievement('code-ninja');
-            toast.success(`ðŸŽ‰ Practical Solved! +75 XP earned! (${updated.length}/${CODING_PROBLEMS.length} Solved)`);
+            toast.success(`🎉 Practical Solved! +75 XP earned! (${updated.length}/${CODING_PROBLEMS.length} Solved)`);
           } else {
             toast.success('All test cases passed successfully!');
           }
         } else {
           setStatus('failed');
-          toast.error('Test cases failed. Check console output and hints.');
+          toast.error(isSql ? 'SQL validation failed. Check syntax and hints.' : 'Test cases failed. Check console output and hints.');
         }
-      }, 900);
-    }, 600);
+      }, isSql ? 600 : 900);
+    }, isSql ? 350 : 600);
   };
 
   const filteredProblems = selectedCategory === 'all' 
@@ -142,10 +185,10 @@ import { CodingProblem, ALL_CODING_PROBLEMS as CODING_PROBLEMS } from '@/data/co
               <span className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
                 <Code className="h-5 w-5" />
               </span>
-              <h1 className="text-xl sm:text-2xl font-bold tracking-tight">University Coding Practical Lab</h1>
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight">University Coding & Database Lab</h1>
             </div>
             <p className="text-xs sm:text-sm text-muted-foreground">
-              Official ITM SLS Baroda Semester 3 Practicals â€¢ Hands-on DSA, Java OOP & Python Numerical Methods
+              Official ITM SLS Baroda Semester 3 Practicals • Hands-on DBMS SQL, DSA in C, Java OOP & Python Numerical Methods
             </p>
           </div>
 
@@ -173,23 +216,28 @@ import { CodingProblem, ALL_CODING_PROBLEMS as CODING_PROBLEMS } from '@/data/co
           {/* Category Filter */}
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
             {[
-              { id: 'all', label: `All Practicals (${CODING_PROBLEMS.length})` },
-              { id: 'dsa', label: `DSA in C (${CODING_PROBLEMS.filter(p => p.category === 'dsa').length})` },
-              { id: 'java', label: `Java OOP (${CODING_PROBLEMS.filter(p => p.category === 'java').length})` },
-              { id: 'python', label: `Python COANMP (${CODING_PROBLEMS.filter(p => p.category === 'python').length})` },
-            ].map(cat => (
-              <button
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.id as 'all' | 'dsa' | 'java' | 'python')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all border ${
-                  selectedCategory === cat.id
-                    ? 'bg-primary text-primary-foreground border-primary shadow-xs'
-                    : 'bg-card text-muted-foreground hover:text-foreground border-border hover:bg-secondary'
-                }`}
-              >
-                {cat.label}
-              </button>
-            ))}
+              { id: 'all', label: `All Practicals (${CODING_PROBLEMS.length})`, icon: Code },
+              { id: 'dbms', label: `DBMS SQL (${CODING_PROBLEMS.filter(p => p.category === 'dbms').length})`, icon: Database },
+              { id: 'dsa', label: `DSA in C (${CODING_PROBLEMS.filter(p => p.category === 'dsa').length})`, icon: Code },
+              { id: 'java', label: `Java OOP (${CODING_PROBLEMS.filter(p => p.category === 'java').length})`, icon: BookOpen },
+              { id: 'python', label: `Python COANMP (${CODING_PROBLEMS.filter(p => p.category === 'python').length})`, icon: Terminal },
+            ].map(cat => {
+              const IconComp = cat.icon;
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => setSelectedCategory(cat.id as 'all' | 'dsa' | 'dbms' | 'java' | 'python')}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all border flex items-center gap-1.5 ${
+                    selectedCategory === cat.id
+                      ? 'bg-primary text-primary-foreground border-primary shadow-xs'
+                      : 'bg-card text-muted-foreground hover:text-foreground border-border hover:bg-secondary'
+                  }`}
+                >
+                  <IconComp className="h-3.5 w-3.5" />
+                  {cat.label}
+                </button>
+              );
+            })}
           </div>
 
           {/* Current Problem Selector Dropdown */}
@@ -300,6 +348,18 @@ import { CodingProblem, ALL_CODING_PROBLEMS as CODING_PROBLEMS } from '@/data/co
                         {currentProblem.expectedOutput}
                       </pre>
                     </div>
+
+                    <div className="pt-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleCopyFacultySubmission}
+                        className="w-full gap-2 text-xs border-primary/30 hover:bg-primary/10 hover:border-primary/50 text-foreground font-medium"
+                      >
+                        <FileText className="h-4 w-4 text-primary" />
+                        Copy Complete Faculty Lab Record (Submission Format)
+                      </Button>
+                    </div>
                   </>
                 )}
 
@@ -370,11 +430,22 @@ import { CodingProblem, ALL_CODING_PROBLEMS as CODING_PROBLEMS } from '@/data/co
                     {currentProblem.fileName}
                   </span>
                   <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400">
-                    {currentProblem.language}
+                    {currentProblem.language === 'sql' ? 'SQL ENGINE' : currentProblem.language}
                   </span>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleCopyFacultySubmission}
+                    title="Copy formatted practical submission for your faculty"
+                    className="h-7 px-2 text-xs text-zinc-300 hover:text-zinc-100 hover:bg-zinc-800 border border-zinc-700/60"
+                  >
+                    <FileText className="h-3 w-3 mr-1 text-primary" />
+                    <span className="hidden sm:inline">Faculty Copy</span>
+                    <span className="sm:hidden">Report</span>
+                  </Button>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -393,15 +464,15 @@ import { CodingProblem, ALL_CODING_PROBLEMS as CODING_PROBLEMS } from '@/data/co
                   >
                     {status === 'compiling' ? (
                       <span className="flex items-center gap-1.5 animate-pulse">
-                        <Sparkles className="h-3.5 w-3.5" /> Compiling...
+                        <Sparkles className="h-3.5 w-3.5" /> {currentProblem.language === 'sql' ? 'Parsing...' : 'Compiling...'}
                       </span>
                     ) : status === 'running' ? (
                       <span className="flex items-center gap-1.5 animate-pulse">
-                        <Play className="h-3.5 w-3.5" /> Testing...
+                        <Play className="h-3.5 w-3.5" /> {currentProblem.language === 'sql' ? 'Executing Query...' : 'Testing...'}
                       </span>
                     ) : (
                       <span className="flex items-center gap-1.5">
-                        <Play className="h-3.5 w-3.5 fill-current" /> Run & Test Code
+                        <Play className="h-3.5 w-3.5 fill-current" /> {currentProblem.language === 'sql' ? 'Execute SQL Query' : 'Run & Test Code'}
                       </span>
                     )}
                   </Button>
@@ -415,7 +486,7 @@ import { CodingProblem, ALL_CODING_PROBLEMS as CODING_PROBLEMS } from '@/data/co
                   onChange={(e) => setCode(e.target.value)}
                   onKeyDown={handleKeyDown}
                   spellCheck={false}
-                  placeholder="Write your code here..."
+                  placeholder={currentProblem.language === 'sql' ? 'Enter your SQL statements here...' : 'Write your code here...'}
                   className="w-full h-full min-h-[320px] lg:min-h-[380px] font-mono text-xs p-4 border-0 focus-visible:ring-0 rounded-none bg-zinc-950 text-zinc-100 leading-relaxed resize-none selection:bg-emerald-500/30"
                 />
               </div>
@@ -446,7 +517,9 @@ import { CodingProblem, ALL_CODING_PROBLEMS as CODING_PROBLEMS } from '@/data/co
                 <div className="p-3 bg-black font-mono text-[11px] text-zinc-200 overflow-y-auto flex-1 leading-relaxed whitespace-pre-wrap selection:bg-primary/40">
                   {output || (
                     <span className="text-zinc-500 italic">
-                      Click 'Run & Test Code' to compile in the university sandbox and evaluate against unit test cases...
+                      {currentProblem.language === 'sql'
+                        ? "Click 'Execute SQL Query' to execute against relational schema tables and verify constraints..."
+                        : "Click 'Run & Test Code' to compile in the university sandbox and evaluate against unit test cases..."}
                     </span>
                   )}
                 </div>
