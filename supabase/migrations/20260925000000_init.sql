@@ -1,6 +1,53 @@
--- Academic Hierarchy
+-- ==========================================
+-- ITM NOTES 2.0 INITIALIZATION SCRIPT
+-- ==========================================
 
--- Universities
+-- 1. UTILITIES & ROLES
+CREATE TYPE public.app_role AS ENUM ('admin', 'moderator', 'user');
+
+CREATE TABLE public.user_roles (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  role public.app_role NOT NULL DEFAULT 'user',
+  UNIQUE (user_id, role)
+);
+
+CREATE OR REPLACE FUNCTION public.has_role(user_id UUID, check_role public.app_role)
+RETURNS BOOLEAN AS $$
+BEGIN
+  RETURN EXISTS (
+    SELECT 1 FROM public.user_roles ur
+    WHERE ur.user_id = has_role.user_id AND ur.role = check_role
+  );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- 2. AUTO-ASSIGN ADMIN TRIGGER
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  -- Everyone gets 'user'
+  INSERT INTO public.user_roles (user_id, role)
+  VALUES (NEW.id, 'user')
+  ON CONFLICT (user_id, role) DO NOTHING;
+
+  -- specific email gets 'admin'
+  IF NEW.email = 'maherbhatt01@gmail.com' THEN
+    INSERT INTO public.user_roles (user_id, role)
+    VALUES (NEW.id, 'admin')
+    ON CONFLICT (user_id, role) DO NOTHING;
+  END IF;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+-- 3. ACADEMIC HIERARCHY
+
 CREATE TABLE public.universities (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
@@ -8,7 +55,6 @@ CREATE TABLE public.universities (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- Programs (e.g. B.Tech)
 CREATE TABLE public.programs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   university_id UUID NOT NULL REFERENCES public.universities(id) ON DELETE CASCADE,
@@ -16,7 +62,6 @@ CREATE TABLE public.programs (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- Branches (e.g. IT, CSE)
 CREATE TABLE public.branches (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   program_id UUID NOT NULL REFERENCES public.programs(id) ON DELETE CASCADE,
@@ -24,7 +69,6 @@ CREATE TABLE public.branches (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- Semesters
 CREATE TABLE public.semesters (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   branch_id UUID NOT NULL REFERENCES public.branches(id) ON DELETE CASCADE,
@@ -32,7 +76,6 @@ CREATE TABLE public.semesters (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- Subjects
 CREATE TABLE public.subjects (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   semester_id UUID NOT NULL REFERENCES public.semesters(id) ON DELETE CASCADE,
@@ -46,7 +89,6 @@ CREATE TABLE public.subjects (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- Units
 CREATE TABLE public.units (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   subject_id UUID NOT NULL REFERENCES public.subjects(id) ON DELETE CASCADE,
@@ -57,7 +99,6 @@ CREATE TABLE public.units (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- Topics
 CREATE TABLE public.topics (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   unit_id UUID NOT NULL REFERENCES public.units(id) ON DELETE CASCADE,
@@ -71,7 +112,6 @@ CREATE TABLE public.topics (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- Examples
 CREATE TABLE public.examples (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   topic_id UUID NOT NULL REFERENCES public.topics(id) ON DELETE CASCADE,
@@ -84,7 +124,6 @@ CREATE TABLE public.examples (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- Key Points
 CREATE TABLE public.key_points (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   topic_id UUID NOT NULL REFERENCES public.topics(id) ON DELETE CASCADE,
@@ -93,7 +132,6 @@ CREATE TABLE public.key_points (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- MCQs
 CREATE TABLE public.mcqs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   topic_id UUID NOT NULL REFERENCES public.topics(id) ON DELETE CASCADE,
@@ -105,7 +143,9 @@ CREATE TABLE public.mcqs (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- Add RLS for all new tables
+-- 4. ROW LEVEL SECURITY (RLS)
+
+ALTER TABLE public.user_roles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.universities ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.programs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.branches ENABLE ROW LEVEL SECURITY;
@@ -117,7 +157,7 @@ ALTER TABLE public.examples ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.key_points ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.mcqs ENABLE ROW LEVEL SECURITY;
 
--- Read access for all (using anon, authenticated)
+-- Read access for everyone
 CREATE POLICY "Viewable by everyone" ON public.universities FOR SELECT USING (true);
 CREATE POLICY "Viewable by everyone" ON public.programs FOR SELECT USING (true);
 CREATE POLICY "Viewable by everyone" ON public.branches FOR SELECT USING (true);
@@ -128,15 +168,17 @@ CREATE POLICY "Viewable by everyone" ON public.topics FOR SELECT USING (true);
 CREATE POLICY "Viewable by everyone" ON public.examples FOR SELECT USING (true);
 CREATE POLICY "Viewable by everyone" ON public.key_points FOR SELECT USING (true);
 CREATE POLICY "Viewable by everyone" ON public.mcqs FOR SELECT USING (true);
+CREATE POLICY "Users view own role" ON public.user_roles FOR SELECT USING (auth.uid() = user_id);
 
--- Write access for admins
-CREATE POLICY "Admins can manage universities" ON public.universities FOR ALL USING (public.has_role(auth.uid(), 'admin'));
-CREATE POLICY "Admins can manage programs" ON public.programs FOR ALL USING (public.has_role(auth.uid(), 'admin'));
-CREATE POLICY "Admins can manage branches" ON public.branches FOR ALL USING (public.has_role(auth.uid(), 'admin'));
-CREATE POLICY "Admins can manage semesters" ON public.semesters FOR ALL USING (public.has_role(auth.uid(), 'admin'));
-CREATE POLICY "Admins can manage subjects" ON public.subjects FOR ALL USING (public.has_role(auth.uid(), 'admin'));
-CREATE POLICY "Admins can manage units" ON public.units FOR ALL USING (public.has_role(auth.uid(), 'admin'));
-CREATE POLICY "Admins can manage topics" ON public.topics FOR ALL USING (public.has_role(auth.uid(), 'admin'));
-CREATE POLICY "Admins can manage examples" ON public.examples FOR ALL USING (public.has_role(auth.uid(), 'admin'));
-CREATE POLICY "Admins can manage key_points" ON public.key_points FOR ALL USING (public.has_role(auth.uid(), 'admin'));
-CREATE POLICY "Admins can manage mcqs" ON public.mcqs FOR ALL USING (public.has_role(auth.uid(), 'admin'));
+-- Admin write access
+CREATE POLICY "Admins manage roles" ON public.user_roles FOR ALL USING (public.has_role(auth.uid(), 'admin'));
+CREATE POLICY "Admins manage universities" ON public.universities FOR ALL USING (public.has_role(auth.uid(), 'admin'));
+CREATE POLICY "Admins manage programs" ON public.programs FOR ALL USING (public.has_role(auth.uid(), 'admin'));
+CREATE POLICY "Admins manage branches" ON public.branches FOR ALL USING (public.has_role(auth.uid(), 'admin'));
+CREATE POLICY "Admins manage semesters" ON public.semesters FOR ALL USING (public.has_role(auth.uid(), 'admin'));
+CREATE POLICY "Admins manage subjects" ON public.subjects FOR ALL USING (public.has_role(auth.uid(), 'admin'));
+CREATE POLICY "Admins manage units" ON public.units FOR ALL USING (public.has_role(auth.uid(), 'admin'));
+CREATE POLICY "Admins manage topics" ON public.topics FOR ALL USING (public.has_role(auth.uid(), 'admin'));
+CREATE POLICY "Admins manage examples" ON public.examples FOR ALL USING (public.has_role(auth.uid(), 'admin'));
+CREATE POLICY "Admins manage key_points" ON public.key_points FOR ALL USING (public.has_role(auth.uid(), 'admin'));
+CREATE POLICY "Admins manage mcqs" ON public.mcqs FOR ALL USING (public.has_role(auth.uid(), 'admin'));
