@@ -28,15 +28,26 @@ export default function AuthPage() {
 
     try {
       if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
         if (error) throw error;
+
+        // Ensure user profile is registered in Supabase
+        if (data?.user?.id) {
+          const fallbackName = data.user.user_metadata?.display_name || email.split("@")[0];
+          await supabase.from("profiles").upsert({
+            user_id: data.user.id,
+            email: data.user.email,
+            display_name: fallbackName,
+          }, { onConflict: "user_id" });
+        }
+
         toast.success("Successfully logged in!");
         navigate("/");
       } else {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -46,6 +57,20 @@ export default function AuthPage() {
           },
         });
         if (error) throw error;
+
+        // Immediately upsert into profiles so Admin and Social see the real student
+        if (data?.user?.id) {
+          try {
+            await supabase.from("profiles").upsert({
+              user_id: data.user.id,
+              email: email,
+              display_name: displayName,
+              role: email.toLowerCase() === "maherbhatt01@gmail.com" ? "admin" : "student",
+              branch: "B.Tech CSE '26",
+            }, { onConflict: "user_id" });
+          } catch {}
+        }
+
         toast.success("Registration successful! You can now log in.");
         setIsLogin(true);
       }

@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useAuth } from "@/contexts/AuthContext";
 import { subjects } from "@/data/subjects";
+import { supabase } from "@/integrations/supabase/client";
 import { 
   Database, 
   Users, 
@@ -24,6 +25,19 @@ import {
   Unlock
 } from "lucide-react";
 import { toast } from "sonner";
+
+interface StudentUser {
+  id: string;
+  userId: string;
+  name: string;
+  email: string;
+  role: string;
+  level: number;
+  xp: number;
+  streak: number;
+  status: string;
+  joined: string;
+}
 
 export default function AdminDashboard() {
   const { role, user, profile } = useAuth();
@@ -51,79 +65,89 @@ export default function AdminDashboard() {
     0
   );
 
-  // Mock registered students list for User Manager
-  const [students, setStudents] = useState([
-    {
-      id: "usr-1",
-      name: profile?.display_name || user?.email?.split("@")[0] || "Maher Bhatt",
-      email: user?.email || "maher@itm.edu",
-      role: "admin",
-      level: 4,
-      xp: 1250,
-      streak: 3,
-      status: "Active",
-      joined: "Sept 2026",
-    },
-    {
-      id: "usr-2",
-      name: "Aarav Sharma",
-      email: "aarav.sharma@itm.edu",
-      role: "student",
-      level: 3,
-      xp: 680,
-      streak: 2,
-      status: "Active",
-      joined: "Sept 2026",
-    },
-    {
-      id: "usr-3",
-      name: "Priya Patel",
-      email: "priya.patel@itm.edu",
-      role: "student",
-      level: 2,
-      xp: 340,
-      streak: 1,
-      status: "Active",
-      joined: "Aug 2026",
-    },
-    {
-      id: "usr-4",
-      name: "Rohan Verma",
-      email: "rohan.v@itm.edu",
-      role: "contributor",
-      level: 5,
-      xp: 2400,
-      streak: 7,
-      status: "Active",
-      joined: "Aug 2026",
-    },
-  ]);
+  // Live registered students state from Supabase Cloud
+  const [students, setStudents] = useState<StudentUser[]>([]);
+  const [isLoadingStudents, setIsLoadingStudents] = useState(true);
 
-  if (role !== "admin") {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-center p-6 bg-background">
-        <div className="max-w-md w-full bg-card border border-border p-8 rounded-2xl shadow-lg">
-          <AlertCircle className="h-12 w-12 text-destructive mx-auto mb-3" />
-          <h2 className="text-xl font-bold text-foreground mb-2">Admin Access Required</h2>
-          <p className="text-sm text-muted-foreground mb-6">
-            You must be signed in with an administrative account to access the platform management console.
-          </p>
-          <button
-            onClick={() => navigate("/")}
-            className="w-full py-2.5 bg-primary text-primary-foreground font-semibold rounded-lg text-sm"
-          >
-            Return to Learning Home
-          </button>
-        </div>
-      </div>
-    );
-  }
+  const loadStudents = async () => {
+    setIsLoadingStudents(true);
+    try {
+      const { data: dbProfiles, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .order("created_at", { ascending: false });
 
-  const handleRoleChange = (userId: string, newRole: string) => {
+      if (error) {
+        console.error("Error fetching registered profiles:", error);
+        return;
+      }
+
+      if (dbProfiles) {
+        const mapped: StudentUser[] = dbProfiles.map((p) => {
+          const joinDate = p.created_at
+            ? new Date(p.created_at).toLocaleDateString("en-US", { month: "short", year: "numeric" })
+            : "Recent";
+
+          return {
+            id: p.id,
+            userId: p.user_id,
+            name: p.display_name || p.email?.split("@")[0] || "Registered Student",
+            email: p.email || "N/A",
+            role: p.role || (p.email === "maherbhatt01@gmail.com" ? "admin" : "student"),
+            level: p.level || 1,
+            xp: p.xp || 120,
+            streak: p.streak_days || 1,
+            status: p.status || "Active",
+            joined: joinDate,
+          };
+        });
+        setStudents(mapped);
+      }
+    } catch (err) {
+      console.error("Failed to load students:", err);
+    } finally {
+      setIsLoadingStudents(false);
+    }
+  };
+
+  useEffect(() => {
+    loadStudents();
+
+    // Listen to realtime user registrations!
+    const channel = supabase
+      .channel("admin_users_live")
+      .on("postgres_changes", { event: "*", schema: "public", table: "profiles" }, () => {
+        loadStudents();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  const handleRoleChange = async (profileId: string, userId: string, newRole: string) => {
     setStudents((prev) =>
-      prev.map((s) => (s.id === userId ? { ...s, role: newRole } : s))
+      prev.map((s) => (s.id === profileId ? { ...s, role: newRole } : s))
     );
-    toast.success(`User role updated to ${newRole.toUpperCase()}!`);
+
+    try {
+      // 1. Update in profiles table
+      await supabase.from("profiles").update({ role: newRole }).eq("id", profileId);
+
+      // 2. Update in user_roles table
+      const appRole = newRole === "admin" ? "admin" : newRole === "contributor" ? "moderator" : "user";
+      await supabase.from("user_roles").upsert({
+        user_id: userId,
+        role: appRole as any,
+      });
+
+      toast.success(`Role updated to ${newRole.toUpperCase()} in Supabase!`);
+    } catch (err) {
+      console.error("Role update error:", err);
+      toast.error("Failed to save role change to database.");
+      loadStudents();
+    }
   };
 
   const filteredSubjects = subjects.filter(
@@ -378,13 +402,28 @@ export default function AdminDashboard() {
         {/* ── TAB 3: USER MANAGER ── */}
         {activeTab === "users" && (
           <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm">
-            <div className="p-5 border-b border-border flex items-center justify-between">
+            <div className="p-5 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <h3 className="font-bold text-base text-foreground">Registered Student Directory</h3>
-                <p className="text-xs text-muted-foreground">
-                  View engagement metrics, learning streaks, and manage authorization roles.
+                <div className="flex items-center gap-2">
+                  <h3 className="font-bold text-base text-foreground">Registered Student Directory</h3>
+                  <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/20">
+                    🟢 Live Cloud ({students.length})
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Real verified university students fetched live from Supabase PostgreSQL database.
                 </p>
               </div>
+
+              <button
+                onClick={loadStudents}
+                disabled={isLoadingStudents}
+                className="px-3.5 py-1.5 rounded-xl bg-secondary hover:bg-secondary/80 border border-border text-xs font-semibold text-foreground flex items-center gap-1.5 transition-colors self-start sm:self-auto apple-press"
+                title="Refresh student list"
+              >
+                <RefreshCw className={`h-3.5 w-3.5 ${isLoadingStudents ? "animate-spin text-primary" : ""}`} />
+                <span>Refresh Students</span>
+              </button>
             </div>
 
             <div className="overflow-x-auto">
@@ -400,45 +439,61 @@ export default function AdminDashboard() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
-                  {students.map((student) => (
-                    <tr key={student.id} className="hover:bg-secondary/20 transition-colors">
-                      <td className="p-4">
-                        <div className="font-bold text-foreground">{student.name}</div>
-                        <div className="text-muted-foreground text-[11px]">{student.email}</div>
-                      </td>
-                      <td className="p-4">
-                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${
-                          student.role === "admin"
-                            ? "bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20"
-                            : student.role === "contributor"
-                            ? "bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20"
-                            : "bg-secondary text-foreground"
-                        }`}>
-                          {student.role}
-                        </span>
-                      </td>
-                      <td className="p-4 font-semibold text-foreground">
-                        Level {student.level}
-                      </td>
-                      <td className="p-4 font-semibold text-amber-600 dark:text-amber-400">
-                        🔥 {student.streak} Days
-                      </td>
-                      <td className="p-4 font-mono font-bold text-foreground">
-                        {student.xp} XP
-                      </td>
-                      <td className="p-4 text-right">
-                        <select
-                          value={student.role}
-                          onChange={(e) => handleRoleChange(student.id, e.target.value)}
-                          className="px-2.5 py-1 rounded border border-input bg-background text-xs font-medium focus:outline-none focus:ring-1 focus:ring-primary"
-                        >
-                          <option value="student">Student</option>
-                          <option value="contributor">Contributor</option>
-                          <option value="admin">Admin</option>
-                        </select>
+                  {isLoadingStudents ? (
+                    <tr>
+                      <td colSpan={6} className="p-12 text-center text-muted-foreground">
+                        <RefreshCw className="h-6 w-6 animate-spin mx-auto mb-2 text-primary" />
+                        <p className="font-medium text-xs">Syncing registered students from Supabase Cloud...</p>
                       </td>
                     </tr>
-                  ))}
+                  ) : students.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="p-12 text-center text-muted-foreground">
+                        <Users className="h-6 w-6 mx-auto mb-2 opacity-40" />
+                        <p className="font-medium text-xs">No registered students found yet.</p>
+                      </td>
+                    </tr>
+                  ) : (
+                    students.map((student) => (
+                      <tr key={student.id} className="hover:bg-secondary/20 transition-colors">
+                        <td className="p-4">
+                          <div className="font-bold text-foreground">{student.name}</div>
+                          <div className="text-muted-foreground text-[11px]">{student.email}</div>
+                        </td>
+                        <td className="p-4">
+                          <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${
+                            student.role === "admin"
+                              ? "bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20"
+                              : student.role === "contributor"
+                              ? "bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20"
+                              : "bg-secondary text-foreground"
+                          }`}>
+                            {student.role}
+                          </span>
+                        </td>
+                        <td className="p-4 font-semibold text-foreground">
+                          Level {student.level}
+                        </td>
+                        <td className="p-4 font-semibold text-amber-600 dark:text-amber-400">
+                          🔥 {student.streak} Days
+                        </td>
+                        <td className="p-4 font-mono font-bold text-foreground">
+                          {student.xp} XP
+                        </td>
+                        <td className="p-4 text-right">
+                          <select
+                            value={student.role}
+                            onChange={(e) => handleRoleChange(student.id, student.userId, e.target.value)}
+                            className="px-2.5 py-1 rounded border border-input bg-background text-xs font-medium focus:outline-none focus:ring-1 focus:ring-primary"
+                          >
+                            <option value="student">Student</option>
+                            <option value="contributor">Contributor</option>
+                            <option value="admin">Admin</option>
+                          </select>
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>

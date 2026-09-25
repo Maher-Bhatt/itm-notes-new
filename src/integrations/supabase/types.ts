@@ -15,6 +15,13 @@ export interface Database {
           user_id: string
           display_name: string | null
           avatar_url: string | null
+          email: string | null
+          branch: string | null
+          role: string | null
+          xp: number | null
+          level: number | null
+          streak_days: number | null
+          status: string | null
           created_at: string
           updated_at: string
         }
@@ -23,6 +30,13 @@ export interface Database {
           user_id: string
           display_name?: string | null
           avatar_url?: string | null
+          email?: string | null
+          branch?: string | null
+          role?: string | null
+          xp?: number | null
+          level?: number | null
+          streak_days?: number | null
+          status?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -31,6 +45,13 @@ export interface Database {
           user_id?: string
           display_name?: string | null
           avatar_url?: string | null
+          email?: string | null
+          branch?: string | null
+          role?: string | null
+          xp?: number | null
+          level?: number | null
+          streak_days?: number | null
+          status?: string | null
           created_at?: string
           updated_at?: string
         }

@@ -48,6 +48,7 @@ import {
   toggleFriendInDb,
   subscribeToCommunityFeed,
 } from '@/services/communityService';
+import { supabase } from '@/integrations/supabase/client';
 import { FriendComparisonModal } from '@/components/FriendComparisonModal';
 import { SharePostModal } from '@/components/SharePostModal';
 
@@ -108,18 +109,68 @@ export default function CommunityPage() {
     return INITIAL_CLASSMATES;
   });
 
-  useEffect(() => {
+  const loadRealClassmates = async () => {
     try {
-      localStorage.setItem('itm_user_classmates_network', JSON.stringify(classmates));
-    } catch {}
-  }, [classmates]);
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (data && data.length > 0) {
+        const realClassmates: ClassmateProfile[] = data.map((p) => {
+          const defaultQuote = p.role === 'admin' 
+            ? 'Platform Admin & Founder. Happy learning!' 
+            : `B.Tech CSE student preparing on ITM Notes!`;
+
+          return {
+            id: p.user_id,
+            name: p.display_name || p.email?.split('@')[0] || 'ITM Student',
+            email: p.email || `${(p.display_name || 'student').toLowerCase().replace(/\s+/g, '')}@itm.ac.in`,
+            avatar: p.avatar_url || undefined,
+            branch: p.branch || "B.Tech CSE '26",
+            level: p.level || 1,
+            levelTitle: (p.level || 1) > 4 ? 'Algorithm Archmage' : (p.level || 1) > 2 ? 'Binary Explorer' : 'Study Peer',
+            xp: p.xp || 120,
+            streakDays: p.streak_days || 1,
+            attendancePercent: 86,
+            topicsCompleted: 16,
+            quizzesTaken: 6,
+            badgesCount: 5,
+            statusQuote: defaultQuote,
+          };
+        });
+        setClassmates(realClassmates);
+        try {
+          localStorage.setItem('itm_user_classmates_network', JSON.stringify(realClassmates));
+        } catch {}
+      }
+    } catch (err) {
+      console.error('Failed to load real classmates from Supabase:', err);
+    }
+  };
+
+  useEffect(() => {
+    loadRealClassmates();
+
+    // Listen for new student registrations in realtime!
+    const channel = supabase
+      .channel('community_classmates_realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, () => {
+        loadRealClassmates();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   const [friendIds, setFriendIds] = useState<string[]>(() => {
     try {
       const raw = localStorage.getItem('itm_user_friends_ids');
       if (raw) return JSON.parse(raw);
     } catch {}
-    return ['student-1', 'student-2'];
+    return [];
   });
 
   useEffect(() => {
@@ -128,7 +179,7 @@ export default function CommunityPage() {
     } catch {}
   }, [friendIds]);
 
-  const [classmateTab, setClassmateTab] = useState<'friends' | 'all'>('friends');
+  const [classmateTab, setClassmateTab] = useState<'friends' | 'all'>('all');
   const [classmateSearch, setClassmateSearch] = useState('');
   const [isAddFriendModalOpen, setIsAddFriendModalOpen] = useState(false);
   const [newFriendName, setNewFriendName] = useState('');
