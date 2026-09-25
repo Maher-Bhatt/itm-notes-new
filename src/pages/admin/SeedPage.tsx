@@ -157,7 +157,7 @@ export default function SeedPage() {
                 topic_id: dbTopic.id,
                 question: mcq.question,
                 options: mcq.options, // jsonb
-                correct_index: mcq.correctIndex,
+                correct_index: typeof mcq.correctIndex === 'number' && !isNaN(mcq.correctIndex) ? mcq.correctIndex : 0,
                 explanation: mcq.explanation,
                 order_index: mIndex
               }));
