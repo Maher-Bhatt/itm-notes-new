@@ -2,8 +2,8 @@ import type { Subject } from "./types";
 
 export const pythonSubject: Subject = {
   id: "python",
-  name: "Python Programming",
-  code: "PY",
+  name: "Python Programming 2",
+  code: "PY201",
   color: "221 83% 53%",
   icon: "🐍",
   description: "Complete Python Semester 2 — OOP, Exceptions, Regex, Files, NumPy, Pandas, System Interaction & Testing",

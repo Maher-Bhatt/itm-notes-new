@@ -12,6 +12,13 @@ import { deRichContent } from './rich-content-de';
 import { psrRichContent } from './rich-content-psr';
 import { extraSubjects } from './extra-subjects';
 
+// Semester 1 Subjects
+import { sem1Python1Subject } from './sem1-python1';
+import { sem1PhysicsSubject } from './sem1-physics';
+import { sem1ClaSubject } from './sem1-cla';
+import { sem1TcsSubject } from './sem1-tcs';
+import { sem1WtSubject } from './sem1-wt';
+
 function injectRichContent(subject: Subject, contentMap: Record<string, string>): Subject {
   return {
     ...subject,
@@ -29,20 +36,33 @@ const enrichedDE = injectRichContent(digitalElectronicsSubject, deRichContent);
 const enrichedPSR = injectRichContent(probabilityStatsSubject, psrRichContent);
 
 export const subjects: Subject[] = [
-  // Semester 3 Core & High Priority
+  // Semester 3 (Core)
   computerArchitecture,
   sem3JavaMaster,
   sem3CoanmpMaster,
   sem3DbmsMaster,
   sem3DsaMaster,
-  
-  // All University Semesters & Engineering Subjects
+
+  // Semester 2
   pythonSubject,
   cLanguageSubject,
   enrichedDE,
   enrichedPSR,
   financialAccountingSubject,
-  ...extraSubjects.filter((es) => !['sub-dsa', 'sub-dbms', 'sem3-dbms', 'sem3-java', 'sub-coanmp'].includes(es.id)),
+
+  // Semester 1
+  sem1Python1Subject,
+  sem1PhysicsSubject,
+  sem1ClaSubject,
+  sem1TcsSubject,
+  sem1WtSubject,
+
+  // Additional subjects (only those with content)
+  ...extraSubjects.filter(
+    (es) =>
+      !['sub-dsa', 'sub-dbms', 'sem3-dbms', 'sem3-java', 'sub-coanmp', 'sem2-cg', 'sem2-dsa'].includes(es.id) &&
+      es.units.some((u) => u.topics.length > 0)
+  ),
 ];
 
 export function getSubject(id: string): Subject | undefined {

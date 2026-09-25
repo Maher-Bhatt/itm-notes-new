@@ -64,8 +64,9 @@ export default function MaterialsPage() {
       const matchesCategory = selectedCategory === "All" || m.category === selectedCategory;
       const matchesSemester =
         selectedSemester === "All" ||
-        (selectedSemester === "Semester 3" && m.semester === 3) ||
-        (selectedSemester === "Foundations" && m.semester < 3);
+        (selectedSemester === "Semester 1" && m.semester === 1) ||
+        (selectedSemester === "Semester 2" && m.semester === 2) ||
+        (selectedSemester === "Semester 3" && m.semester === 3);
 
       return matchesSearch && matchesSubject && matchesCategory && matchesSemester;
     });
@@ -179,16 +180,17 @@ ${material.topicsCovered.map((t, idx) => `${idx + 1}. ${t}`).join("\n")}
               />
             </div>
 
-            <div className="flex items-center gap-1.5 shrink-0 bg-secondary/50 p-1 rounded-xl">
+            <div className="flex items-center gap-1.5 shrink-0 bg-secondary/50 p-1 rounded-xl overflow-x-auto">
               {[
                 { label: "All Semesters", value: "All" },
-                { label: "⚡ Semester 3 (Core)", value: "Semester 3" },
-                { label: "Foundations", value: "Foundations" },
+                { label: "Sem 1", value: "Semester 1" },
+                { label: "Sem 2", value: "Semester 2" },
+                { label: "⚡ Sem 3 (Core)", value: "Semester 3" },
               ].map((sem) => (
                 <button
                   key={sem.value}
                   onClick={() => setSelectedSemester(sem.value)}
-                  className={`px-3.5 py-2 text-xs font-semibold rounded-lg transition-all ${
+                  className={`px-3.5 py-2 text-xs font-semibold rounded-lg transition-all whitespace-nowrap ${
                     selectedSemester === sem.value
                       ? "bg-primary text-primary-foreground shadow-sm"
                       : "text-muted-foreground hover:text-foreground"
@@ -244,7 +246,8 @@ ${material.topicsCovered.map((t, idx) => `${idx + 1}. ${t}`).join("\n")}
           {filteredMaterials.map((material) => (
             <div
               key={material.id}
-              className="bg-card border border-border/80 hover:border-primary/40 rounded-2xl p-5 sm:p-6 flex flex-col justify-between transition-all duration-200 shadow-sm hover:shadow-md group"
+              onClick={() => setActivePreview(material)}
+              className="bg-card border border-border/80 hover:border-primary/40 rounded-2xl p-5 sm:p-6 flex flex-col justify-between transition-all duration-200 shadow-sm hover:shadow-md group cursor-pointer"
             >
               <div>
                 {/* Header tags */}
@@ -320,14 +323,14 @@ ${material.topicsCovered.map((t, idx) => `${idx + 1}. ${t}`).join("\n")}
 
                 <div className="flex items-center gap-2">
                   <button
-                    onClick={() => setActivePreview(material)}
+                    onClick={(e) => { e.stopPropagation(); setActivePreview(material); }}
                     className="p-1.5 rounded-lg bg-secondary hover:bg-secondary/80 text-foreground transition-colors"
                     title="View Details & Syllabus Coverage"
                   >
                     <Eye className="h-4 w-4" />
                   </button>
                   <button
-                    onClick={() => handleDownload(material)}
+                    onClick={(e) => { e.stopPropagation(); handleDownload(material); }}
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground font-semibold hover:opacity-90 transition-opacity shadow-sm"
                   >
                     <Download className="h-3.5 w-3.5" />

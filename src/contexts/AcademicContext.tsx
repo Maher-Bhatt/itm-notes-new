@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useMemo } from "react";
 import { useAuth } from "./AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -7,6 +7,7 @@ interface AcademicContextType {
   programId: string | null;
   branchId: string | null;
   semesterId: string | null;
+  semesterNumber: number;
   setAcademicContext: (context: {
     universityId?: string;
     programId?: string;
@@ -25,6 +26,21 @@ export function AcademicProvider({ children }: { children: React.ReactNode }) {
   const [branchId, setBranchId] = useState<string | null>(null);
   const [semesterId, setSemesterId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Derive semester number from semesterId (handles both "sem-3" format and UUID format)
+  const semesterNumber = useMemo(() => {
+    if (!semesterId) return 3; // Default to Semester 3
+    // If it's in "sem-N" format
+    if (semesterId.startsWith("sem-")) {
+      const num = parseInt(semesterId.replace("sem-", ""), 10);
+      return isNaN(num) ? 3 : num;
+    }
+    // If it's just a plain number string like "3"
+    const parsed = parseInt(semesterId, 10);
+    if (!isNaN(parsed) && parsed >= 1 && parsed <= 8) return parsed;
+    // Otherwise it's probably a UUID — default to 3
+    return 3;
+  }, [semesterId]);
 
   // Future enhancement: fetch saved academic context from a user_preferences table
   useEffect(() => {
@@ -70,6 +86,7 @@ export function AcademicProvider({ children }: { children: React.ReactNode }) {
         programId,
         branchId,
         semesterId,
+        semesterNumber,
         setAcademicContext,
         isLoading,
       }}

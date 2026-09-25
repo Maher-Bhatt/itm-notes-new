@@ -192,7 +192,33 @@ export default function ProfilePage() {
 
                 <p className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1.5 mb-2 font-medium">
                   <GraduationCap className="h-4 w-4 text-primary" />
-                  ITM SLS Baroda University · B.Tech CSE · Semester 3
+                  ITM SLS Baroda University · B.Tech CSE · 
+                  <select
+                    value={(() => {
+                      try {
+                        const stored = localStorage.getItem("academic_context");
+                        if (stored) {
+                          const parsed = JSON.parse(stored);
+                          const sid = parsed.semesterId;
+                          if (sid?.startsWith("sem-")) return sid;
+                          const num = parseInt(sid, 10);
+                          if (!isNaN(num) && num >= 1 && num <= 8) return `sem-${num}`;
+                        }
+                      } catch {}
+                      return "sem-3";
+                    })()}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      const existing = JSON.parse(localStorage.getItem("academic_context") || "{}");
+                      localStorage.setItem("academic_context", JSON.stringify({ ...existing, semesterId: val }));
+                      toast.success(`Semester updated to ${val.replace("sem-", "Semester ")}! Refresh to see changes.`);
+                    }}
+                    className="bg-secondary border border-border rounded-lg px-2 py-0.5 text-xs font-bold text-primary cursor-pointer focus:ring-2 focus:ring-primary focus:outline-none"
+                  >
+                    {[1,2,3,4,5,6,7,8].map(num => (
+                      <option key={num} value={`sem-${num}`}>Semester {num}</option>
+                    ))}
+                  </select>
                 </p>
 
                 <p className="text-xs text-muted-foreground max-w-lg leading-relaxed">

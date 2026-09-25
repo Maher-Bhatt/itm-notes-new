@@ -65,7 +65,25 @@ export default function Index() {
   const { state: game, levelInfo } = useGamification();
   const { user, profile } = useAuth();
   const [searchOpen, setSearchOpen] = useState(false);
+  const [semesterFilter, setSemesterFilter] = useState<number | 'all'>('all');
   const navigate = useNavigate();
+
+  // Import semester context for dynamic filtering
+  let currentSemester = 3;
+  try {
+    const stored = localStorage.getItem("academic_context");
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      const sid = parsed.semesterId;
+      if (sid?.startsWith("sem-")) {
+        const num = parseInt(sid.replace("sem-", ""), 10);
+        if (!isNaN(num)) currentSemester = num;
+      } else if (sid && !isNaN(parseInt(sid, 10))) {
+        const num = parseInt(sid, 10);
+        if (num >= 1 && num <= 8) currentSemester = num;
+      }
+    }
+  } catch { /* ignore */ }
 
   const totalTopics = subjects.reduce((sum, s) => sum + getAllTopicIds(s.id).length, 0);
   const allTopicIds = subjects.flatMap((s) => getAllTopicIds(s.id));
@@ -103,7 +121,7 @@ export default function Index() {
             <GraduationCap className="h-4 w-4 text-primary" />
             <span>ITM SLS Baroda University</span>
             <span className="text-muted-foreground/40">•</span>
-            <span className="text-primary font-bold">B.Tech CSE Semester 3</span>
+            <span className="text-primary font-bold">B.Tech CSE Semester {currentSemester}</span>
           </div>
 
           {user ? (
@@ -596,18 +614,50 @@ export default function Index() {
         </section>
       )}
 
-      {/* ── 6. PROMOTE: Semester 3 Curricula & Audio Notes ── */}
+      {/* ── 6. PROMOTE: Multi-Semester Curricula & Audio Notes ── */}
       <section id="subjects" className="max-w-5xl mx-auto px-4 sm:px-6 py-14 flex-1 w-full">
-        <div className="flex items-center justify-between mb-6 pb-2 border-b border-border">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 pb-2 border-b border-border gap-3">
           <div>
-            <h2 className="text-xl sm:text-2xl font-black text-foreground">Semester 3 Master Curricula</h2>
+            <h2 className="text-xl sm:text-2xl font-black text-foreground">Course Curricula</h2>
             <p className="text-xs sm:text-sm text-muted-foreground">Select a course module to start studying notes and listening to audio lectures.</p>
           </div>
           <ReadingTimeEstimate topicCount={totalTopics} />
         </div>
 
+        {/* Semester Filter Tabs */}
+        <div className="flex items-center gap-1.5 mb-5 overflow-x-auto pb-1 scrollbar-none">
+          {[
+            { label: 'All Semesters', value: 'all' as const },
+            { label: `Semester 1`, value: 1 as const },
+            { label: `Semester 2`, value: 2 as const },
+            { label: `Semester 3`, value: 3 as const },
+          ].map((tab) => (
+            <button
+              key={String(tab.value)}
+              onClick={() => setSemesterFilter(tab.value)}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all border ${
+                semesterFilter === tab.value
+                  ? 'bg-primary text-primary-foreground border-primary shadow-xs'
+                  : 'bg-card text-muted-foreground hover:text-foreground border-border hover:bg-secondary'
+              }`}
+            >
+              {tab.label}
+              {tab.value !== 'all' && (
+                <span className="ml-1.5 text-[10px] opacity-70">
+                  ({subjects.filter(s => s.semester === tab.value).length})
+                </span>
+              )}
+              {tab.value === currentSemester && tab.value !== 'all' && (
+                <span className="ml-1 text-[10px]">⭐</span>
+              )}
+            </button>
+          ))}
+        </div>
+
         <div className="space-y-3">
-          {subjects.map((subject) => {
+          {subjects
+            .filter(s => semesterFilter === 'all' || s.semester === semesterFilter)
+            .map((subject) => {
             const topicIds = getAllTopicIds(subject.id);
             const subProgress = getSubjectProgress(topicIds);
             const completedInSub = Math.round((subProgress / 100) * topicIds.length);
@@ -666,6 +716,14 @@ export default function Index() {
               </div>
             );
           })}
+
+          {subjects.filter(s => semesterFilter === 'all' || s.semester === semesterFilter).length === 0 && (
+            <div className="text-center py-12 text-muted-foreground">
+              <BookOpen className="h-8 w-8 mx-auto mb-3 opacity-50" />
+              <p className="font-semibold text-sm">No subjects available for this semester yet.</p>
+              <p className="text-xs mt-1">Content is being prepared — check back soon!</p>
+            </div>
+          )}
         </div>
       </section>
 
