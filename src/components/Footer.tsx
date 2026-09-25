@@ -1,6 +1,5 @@
 import { Globe } from "lucide-react";
 import { Link } from "react-router-dom";
-import { subjects } from "@/data/subjects";
 import logo from "@/assets/logo.png";
 
 export function Footer() {
@@ -30,20 +29,25 @@ export function Footer() {
             </a>
           </div>
 
-          {/* Subjects */}
+          {/* Features */}
           <div>
-            <h4 className="font-semibold text-sm mb-3 text-foreground">Subjects</h4>
+            <h4 className="font-semibold text-sm mb-3 text-foreground">Features</h4>
             <ul className="space-y-2">
-              {subjects.map(s => (
-                <li key={s.id}>
-                  <Link
-                    to={`/subject/${s.id}`}
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    {s.name}
-                  </Link>
-                </li>
-              ))}
+              <li>
+                <Link to="/dashboard" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  My Subjects
+                </Link>
+              </li>
+              <li>
+                <Link to="/quiz" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  Practice Quizzes
+                </Link>
+              </li>
+              <li>
+                <Link to="/bookmarks" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  Bookmarks
+                </Link>
+              </li>
             </ul>
           </div>
 
