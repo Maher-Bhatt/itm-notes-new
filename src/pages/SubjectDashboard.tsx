@@ -121,13 +121,13 @@ export default function SubjectDashboard() {
       <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
       <Header onSearchOpen={() => setSearchOpen(true)} showBack backTo="/" />
 
-      <div className="max-w-3xl mx-auto px-6 py-8 flex-1 w-full">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex-1 w-full">
         {/* Subject header */}
-        <div className="mb-8 animate-slide-up">
-          <div className="flex items-center gap-4 mb-2">
+        <div className="mb-6 sm:mb-8 animate-slide-up">
+          <div className="flex items-center gap-3 sm:gap-4 mb-2">
             <div className="flex-1">
-              <h1 className="text-2xl font-bold">{subject.name}</h1>
-              <p className="text-sm text-muted-foreground mt-1">{subject.description}</p>
+              <h1 className="text-xl sm:text-2xl font-bold">{subject.name}</h1>
+              <p className="text-xs sm:text-sm text-muted-foreground mt-1">{subject.description}</p>
             </div>
             <div className="relative shrink-0">
               <ProgressRing progress={progress} size={48} strokeWidth={3.5} />
@@ -222,8 +222,8 @@ export default function SubjectDashboard() {
                             {completed ? <CheckCircle className="h-3.5 w-3.5" /> : <BookOpen className="h-3.5 w-3.5" />}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <h3 className="font-medium text-[15px]">{topic.title}</h3>
-                            <p className="text-[13px] text-muted-foreground truncate">
+                            <h3 className="font-medium text-[13px] sm:text-[15px]">{topic.title}</h3>
+                            <p className="text-[11px] sm:text-[13px] text-muted-foreground truncate">
                               {mcqCount > 0 ? `${mcqCount} MCQs` : "Lecture Notes & Explanations"}
                             </p>
                           </div>

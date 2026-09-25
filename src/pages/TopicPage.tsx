@@ -311,10 +311,10 @@ export default function TopicPage() {
               <span className="text-foreground truncate max-w-[250px]">{topic.title}</span>
             </nav>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             <button
               onClick={handleComplete}
-              className={`h-9 px-4 rounded-md text-[13px] font-semibold inline-flex items-center gap-2 transition-all ${
+              className={`h-8 sm:h-9 px-2.5 sm:px-4 rounded-md text-[12px] sm:text-[13px] font-semibold inline-flex items-center gap-1.5 sm:gap-2 transition-all ${
                 completed ? "bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20" : "bg-secondary hover:bg-secondary/80 text-foreground"
               }`}
             >
@@ -331,47 +331,47 @@ export default function TopicPage() {
                 }
               }}
               title={isPomodoroRunning ? `Focus session active: ${Math.floor(pomodoroTimeLeft / 60)}m left` : "Start 25m Focus Sprint directly"}
-              className={`h-9 px-3 rounded-md text-[13px] font-semibold inline-flex items-center gap-1.5 transition-all ${
+              className={`hidden sm:inline-flex h-8 sm:h-9 px-2.5 sm:px-3 rounded-md text-[12px] sm:text-[13px] font-semibold items-center gap-1.5 transition-all ${
                 isPomodoroRunning
-                  ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 animate-pulse"
+                  ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 animate-pulse !inline-flex"
                   : "bg-secondary hover:bg-secondary/80 text-foreground"
               }`}
             >
               <Clock className={`h-4 w-4 ${isPomodoroRunning ? "text-emerald-500" : "text-primary"}`} />
-              <span className="hidden sm:inline font-mono">
+              <span className="hidden md:inline font-mono">
                 {isPomodoroRunning
                   ? `${String(Math.floor(pomodoroTimeLeft / 60)).padStart(2, '0')}:${String(pomodoroTimeLeft % 60).padStart(2, '0')}`
                   : "Focus 25m"}
               </span>
             </button>
-            {/* Flashcards Trigger */}
+            {/* Flashcards Trigger - hidden on very small screens */}
             <button
               onClick={() => setFlashcardsOpen(true)}
               title="Active Recall Flashcards"
-              className="h-9 px-3 rounded-md text-[13px] font-semibold inline-flex items-center gap-1.5 bg-secondary hover:bg-secondary/80 text-foreground transition-all apple-press"
+              className="hidden md:inline-flex h-8 sm:h-9 px-2.5 sm:px-3 rounded-md text-[12px] sm:text-[13px] font-semibold items-center gap-1.5 bg-secondary hover:bg-secondary/80 text-foreground transition-all apple-press"
             >
               <Layers className="h-4 w-4 text-amber-500" />
               <span className="hidden lg:inline">Flashcards</span>
             </button>
 
-            {/* Print / Save to PDF */}
+            {/* Print / Save to PDF - hidden on mobile */}
             <button
               onClick={() => window.print()}
               title="Save Topic as PDF / Print Exam Guide"
-              className="p-2 rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+              className="hidden sm:inline-flex p-1.5 sm:p-2 rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
             >
-              <Printer className="h-5 w-5" />
+              <Printer className="h-4 w-4 sm:h-5 sm:w-5" />
             </button>
 
             <button
               onClick={() => setFocusMode(!focusMode)}
               title={focusMode ? "Exit Focus Mode (F)" : "Focus Mode (F)"}
-              className="p-2 rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+              className="hidden sm:inline-flex p-1.5 sm:p-2 rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
             >
-              {focusMode ? <Minimize2 className="h-5 w-5" /> : <Maximize2 className="h-5 w-5" />}
+              {focusMode ? <Minimize2 className="h-4 w-4 sm:h-5 sm:w-5" /> : <Maximize2 className="h-4 w-4 sm:h-5 sm:w-5" />}
             </button>
-            <button onClick={() => toggleBookmark(topic.id)} className="p-2 rounded-md hover:bg-secondary transition-colors">
-              <Bookmark className={`h-5 w-5 ${bookmarked ? "fill-amber-500 text-amber-500" : "text-muted-foreground hover:text-foreground"}`} />
+            <button onClick={() => toggleBookmark(topic.id)} className="p-1.5 sm:p-2 rounded-md hover:bg-secondary transition-colors">
+              <Bookmark className={`h-4 w-4 sm:h-5 sm:w-5 ${bookmarked ? "fill-amber-500 text-amber-500" : "text-muted-foreground hover:text-foreground"}`} />
             </button>
           </div>
         </div>
@@ -432,9 +432,9 @@ export default function TopicPage() {
 
           <div className={`flex gap-0 ${focusMode ? "" : ""}`}>
             {/* Reading column */}
-            <div className={`${focusMode ? "max-w-4xl mx-auto" : "flex-1 min-w-0"} px-6 md:px-12 py-10 transition-all duration-300`}>
-              <p className="text-[13px] text-primary font-bold uppercase tracking-widest mb-4">{unitTitle}</p>
-              <h1 className="text-4xl md:text-5xl font-extrabold mb-4 leading-tight text-foreground tracking-tight">{topic.title}</h1>
+            <div className={`${focusMode ? "max-w-4xl mx-auto" : "flex-1 min-w-0"} px-4 sm:px-6 md:px-12 py-6 sm:py-10 transition-all duration-300`}>
+              <p className="text-[11px] sm:text-[13px] text-primary font-bold uppercase tracking-widest mb-3 sm:mb-4">{unitTitle}</p>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold mb-3 sm:mb-4 leading-tight text-foreground tracking-tight">{topic.title}</h1>
 
               {/* Print Only Official Document Header */}
               <div className="hidden print-header mb-6">
@@ -455,9 +455,9 @@ export default function TopicPage() {
               {/* ── Rich Content Mode ── */}
               <div className="topic-rich-content-wrapper max-w-[900px]">
                 <Tabs defaultValue="detailed" className="w-full">
-                  <TabsList className="mb-8 w-full max-w-[400px] h-12 p-1 bg-secondary/50 rounded-lg">
-                    <TabsTrigger value="detailed" className="text-[14px] font-medium rounded-md h-full data-[state=active]:shadow-sm">Detailed Notes</TabsTrigger>
-                    <TabsTrigger value="revision" className="text-[14px] font-medium rounded-md h-full data-[state=active]:shadow-sm">Quick Revision</TabsTrigger>
+                  <TabsList className="mb-6 sm:mb-8 w-full max-w-[400px] h-10 sm:h-12 p-1 bg-secondary/50 rounded-lg">
+                    <TabsTrigger value="detailed" className="text-[12px] sm:text-[14px] font-medium rounded-md h-full data-[state=active]:shadow-sm">Detailed Notes</TabsTrigger>
+                    <TabsTrigger value="revision" className="text-[12px] sm:text-[14px] font-medium rounded-md h-full data-[state=active]:shadow-sm">Quick Revision</TabsTrigger>
                   </TabsList>
                   
                   <TabsContent value="detailed" className="mt-0 focus-visible:outline-none">
@@ -482,11 +482,11 @@ export default function TopicPage() {
                         </button>
                       )}
                     </div>
-                    <div className="mb-10 bg-secondary/30 rounded-xl p-6 border border-border/50">
-                      <p className="text-[12px] font-bold text-primary uppercase tracking-widest mb-3 flex items-center gap-2">
+                    <div className="mb-6 sm:mb-10 bg-secondary/30 rounded-xl p-4 sm:p-6 border border-border/50">
+                      <p className="text-[11px] sm:text-[12px] font-bold text-primary uppercase tracking-widest mb-2 sm:mb-3 flex items-center gap-2">
                         <BookOpen className="h-4 w-4" /> Quick Summary
                       </p>
-                      <p className="text-[16px] leading-[1.8] text-foreground/90 font-medium">{topic.simpleExplanation}</p>
+                      <p className="text-[14px] sm:text-[16px] leading-[1.7] sm:leading-[1.8] text-foreground/90 font-medium">{topic.simpleExplanation}</p>
                     </div>
                     <div className="rich-content prose-lg max-w-none">
                       <MarkdownRenderer content={topic.richContent || topic.detailedExplanation} />

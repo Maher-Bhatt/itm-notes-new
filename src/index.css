@@ -115,6 +115,45 @@
 
   html {
     scroll-behavior: smooth;
+    /* Support for iPhone safe area insets */
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+}
+
+/* Mobile responsive overrides */
+@media (max-width: 639px) {
+  /* Prevent any horizontal overflow on mobile */
+  body {
+    overflow-x: hidden;
+  }
+  
+  /* Ensure tables don't break mobile layouts */
+  table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Ensure code blocks scroll horizontally instead of breaking layout */
+  pre {
+    max-width: calc(100vw - 2rem);
+  }
+  
+  /* Make all images responsive */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  /* Reduce heading sizes globally on mobile */
+  .rich-content h1 { font-size: 1.5rem !important; }
+  .rich-content h2 { font-size: 1.25rem !important; }
+  .rich-content h3 { font-size: 1.125rem !important; }
+
+  /* Mermaid diagrams should scroll on mobile */
+  .mermaid-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 }
 

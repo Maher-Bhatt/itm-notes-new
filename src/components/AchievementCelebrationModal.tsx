@@ -280,12 +280,12 @@ export function AchievementCelebrationModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md animate-fade-in overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80 backdrop-blur-md animate-fade-in overflow-y-auto">
       {/* Full-screen Confetti Canvas */}
       <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-10 w-full h-full" />
 
       {/* Main Luxury Modal Card */}
-      <div className="relative z-20 w-full max-w-xl bg-gradient-to-b from-zinc-900 via-zinc-950 to-black border border-amber-500/40 rounded-3xl p-5 sm:p-7 shadow-[0_0_60px_rgba(245,158,11,0.25)] flex flex-col gap-5 text-center my-auto">
+      <div className="relative z-20 w-full max-w-[calc(100vw-1rem)] sm:max-w-xl bg-gradient-to-b from-zinc-900 via-zinc-950 to-black border border-amber-500/40 rounded-3xl p-4 sm:p-6 lg:p-7 shadow-[0_0_60px_rgba(245,158,11,0.25)] flex flex-col gap-5 text-center my-auto">
         {/* Close Button */}
         <button
           onClick={() => setActiveAchievement(null)}
@@ -302,7 +302,7 @@ export function AchievementCelebrationModal() {
             <span>Achievement Unlocked</span>
           </div>
 
-          <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-white tracking-tight">
             Academic Triumph!
           </h2>
           <p className="text-xs sm:text-sm text-zinc-400 mt-0.5">
@@ -311,7 +311,7 @@ export function AchievementCelebrationModal() {
         </div>
 
         {/* The "Most Beautiful Card" Showcase Preview */}
-        <div className="relative mx-auto w-full max-w-[340px] sm:max-w-[360px] rounded-2xl overflow-hidden border-2 border-amber-500/50 shadow-2xl bg-zinc-900 aspect-[9/14] flex flex-col items-center justify-between p-5 text-white">
+        <div className="relative mx-auto w-full max-w-[280px] sm:max-w-[340px] lg:max-w-[360px] rounded-2xl overflow-hidden border-2 border-amber-500/50 shadow-2xl bg-zinc-900 aspect-[9/14] flex flex-col items-center justify-between p-3 sm:p-5 text-white">
           {/* Ambient Card Background Glows */}
           <div className="absolute -top-16 -left-16 w-44 h-44 bg-amber-500/20 rounded-full blur-3xl pointer-events-none" />
           <div className="absolute -bottom-16 -right-16 w-44 h-44 bg-blue-500/20 rounded-full blur-3xl pointer-events-none" />
@@ -367,11 +367,11 @@ export function AchievementCelebrationModal() {
             </span>
 
             {/* Giant Icon */}
-            <div className="text-6xl sm:text-7xl mb-2 animate-bounce drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)]">
+            <div className="text-5xl sm:text-6xl lg:text-7xl mb-2 animate-bounce drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)]">
               {activeAchievement.icon}
             </div>
 
-            <h3 className="text-lg sm:text-xl font-black text-white leading-tight mb-1">
+            <h3 className="text-base sm:text-lg lg:text-xl font-black text-white leading-tight mb-1">
               {activeAchievement.title}
             </h3>
 

@@ -77,11 +77,11 @@ export default function Index() {
       <Header onSearchOpen={() => setSearchOpen(true)} />
 
       {/* Hero */}
-      <section className="min-h-[80vh] flex items-center justify-center px-6">
+      <section className="min-h-[50vh] md:min-h-[60vh] lg:min-h-[80vh] flex items-center justify-center px-4 sm:px-6">
         <div className="max-w-3xl mx-auto text-center animate-slide-up">
           {hasStartedLearning ? (
             <>
-              <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight mb-4 leading-[1.1] text-foreground">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight mb-4 leading-[1.1] text-foreground">
                 Welcome back.
               </h1>
               <p className="text-lg text-muted-foreground mb-10 leading-relaxed max-w-xl mx-auto">
@@ -89,7 +89,7 @@ export default function Index() {
               </p>
 
               {/* Progress card */}
-              <div className="max-w-sm mx-auto surface-elevated rounded p-6 mb-8 text-left">
+              <div className="w-full max-w-sm mx-auto surface-elevated rounded p-6 mb-8 text-left">
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-sm font-semibold">Your Progress</span>
                   <div className="flex items-center gap-1 text-xs text-muted-foreground">
@@ -98,7 +98,7 @@ export default function Index() {
                   </div>
                 </div>
                 <OverallProgressBar progress={overallProgress} />
-                <div className="grid grid-cols-3 gap-3 mt-6">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-6">
                   {subjects.slice(0, 3).map((s) => {
                     const ids = getAllTopicIds(s.id);
                     const p = getSubjectProgress(ids);
@@ -122,7 +122,7 @@ export default function Index() {
               <div className="flex justify-center">
                 <button
                   onClick={() => document.getElementById("subjects")?.scrollIntoView({ behavior: "smooth" })}
-                  className="pill-button apple-press bg-primary text-primary-foreground h-11 px-8 text-base inline-flex items-center gap-2 transition-all duration-200 hover:opacity-90"
+                  className="pill-button apple-press bg-primary text-primary-foreground h-11 px-8 text-base w-full sm:w-auto inline-flex justify-center items-center gap-2 transition-all duration-200 hover:opacity-90"
                 >
                   Resume Studying <ArrowRight className="h-4 w-4" />
                 </button>
@@ -130,7 +130,7 @@ export default function Index() {
             </>
           ) : (
             <>
-              <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight mb-5 leading-[1.1] text-foreground">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight mb-5 leading-[1.1] text-foreground">
                 Learn the fundamentals.
               </h1>
               <p className="text-lg text-muted-foreground mb-10 leading-relaxed max-w-xl mx-auto">
@@ -139,7 +139,7 @@ export default function Index() {
               <div className="flex flex-wrap justify-center gap-3">
                 <button
                   onClick={() => document.getElementById("subjects")?.scrollIntoView({ behavior: "smooth" })}
-                  className="pill-button apple-press bg-primary text-primary-foreground h-11 px-8 text-base inline-flex items-center gap-2 transition-all duration-200 hover:opacity-90"
+                  className="pill-button apple-press bg-primary text-primary-foreground h-11 px-8 text-base w-full sm:w-auto inline-flex justify-center items-center gap-2 transition-all duration-200 hover:opacity-90"
                 >
                   Start Learning <ArrowRight className="h-4 w-4" />
                 </button>
@@ -151,7 +151,7 @@ export default function Index() {
 
       {/* Bookmarked Topics - Quick Access */}
       {bookmarkedTopics.length > 0 && (
-        <section className="max-w-3xl mx-auto px-6 pb-8 w-full">
+        <section className="max-w-3xl mx-auto px-4 sm:px-6 pb-8 w-full">
           <div className="flex items-center gap-2 mb-3 px-1">
             <Bookmark className="h-4 w-4 text-warning fill-warning" />
             <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Bookmarked</h2>
@@ -175,7 +175,7 @@ export default function Index() {
       )}
 
       {/* Subjects */}
-      <section id="subjects" className="max-w-3xl mx-auto px-6 pb-16 flex-1 w-full">
+      <section id="subjects" className="max-w-3xl mx-auto px-4 sm:px-6 pb-16 flex-1 w-full">
         <div className="flex items-center justify-between mb-4 px-1">
           <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">{subjects.length} Subjects</h2>
           <ReadingTimeEstimate topicCount={totalTopics} />
@@ -190,11 +190,11 @@ export default function Index() {
               <button
                 key={subject.id}
                 onClick={() => navigate(`/subject/${subject.id}`)}
-                className="group w-full surface-elevated rounded p-4 flex items-center gap-4 text-left hover:bg-secondary transition-all duration-150 apple-press"
+                className="group w-full surface-elevated rounded p-3 sm:p-4 flex items-center gap-4 text-left hover:bg-secondary transition-all duration-150 apple-press"
               >
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-1">
-                    <h3 className="font-semibold text-base truncate pr-2">{subject.name}</h3>
+                    <h3 className="font-semibold text-sm sm:text-base truncate pr-2">{subject.name}</h3>
                     {subProgress > 0 && (
                       <span className="text-xs font-semibold text-primary tabular-nums shrink-0">{subProgress}%</span>
                     )}

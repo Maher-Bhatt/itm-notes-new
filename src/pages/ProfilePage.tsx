@@ -134,9 +134,9 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
 
-      <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-10 animate-fade-in">
+      <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-10 animate-fade-in">
         {/* ── Top Hero Profile Card ── */}
-        <div className="bg-gradient-to-br from-primary/10 via-secondary/40 to-background border border-border/80 rounded-3xl p-6 sm:p-8 mb-8 shadow-sm">
+        <div className="bg-gradient-to-br from-primary/10 via-secondary/40 to-background border border-border/80 rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 mb-8 shadow-sm">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
               {/* Avatar Photo with Change Camera overlay */}
@@ -145,10 +145,10 @@ export default function ProfilePage() {
                   <img
                     src={profile?.avatar_url || avatarUrl || ''}
                     alt={displayName}
-                    className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover shadow-md border-2 border-primary/50"
+                    className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-2xl object-cover shadow-md border-2 border-primary/50"
                   />
                 ) : (
-                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-tr from-primary to-blue-600 text-primary-foreground flex items-center justify-center font-black text-3xl sm:text-4xl shadow-md border-2 border-background">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-2xl bg-gradient-to-tr from-primary to-blue-600 text-primary-foreground flex items-center justify-center font-black text-3xl sm:text-4xl shadow-md border-2 border-background">
                     {displayName.charAt(0).toUpperCase()}
                   </div>
                 )}
@@ -170,7 +170,7 @@ export default function ProfilePage() {
               {/* Student Details */}
               <div>
                 <div className="flex flex-wrap items-center gap-2 mb-1.5">
-                  <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground">
+                  <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-foreground">
                     {displayName}
                   </h1>
                   <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-primary/20 text-primary border border-primary/30">
@@ -227,53 +227,53 @@ export default function ProfilePage() {
         </div>
 
         {/* ── Gamification Stat Cards ── */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div className="bg-card border border-border/80 rounded-2xl p-4 sm:p-5 shadow-sm">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center">
                 <Flame className="h-5 w-5" />
               </div>
               <div>
-                <p className="text-2xl font-black text-foreground">{game.streakDays} Days</p>
+                <p className="text-xl sm:text-2xl font-black text-foreground">{game.streakDays} Days</p>
                 <p className="text-xs text-muted-foreground font-medium">Daily Study Streak</p>
               </div>
             </div>
             <p className="text-[11px] text-amber-600 dark:text-amber-400 font-medium">Active today 🔥</p>
           </div>
 
-          <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-sm">
+          <div className="bg-card border border-border/80 rounded-2xl p-4 sm:p-5 shadow-sm">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center">
                 <Clock className="h-5 w-5" />
               </div>
               <div>
-                <p className="text-2xl font-black text-foreground">{Math.round((game.totalStudyMinutes / 60) * 10) / 10}h</p>
+                <p className="text-xl sm:text-2xl font-black text-foreground">{Math.round((game.totalStudyMinutes / 60) * 10) / 10}h</p>
                 <p className="text-xs text-muted-foreground font-medium">Total Focus Time</p>
               </div>
             </div>
             <p className="text-[11px] text-muted-foreground">{game.totalStudyMinutes} minutes spent</p>
           </div>
 
-          <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-sm">
+          <div className="bg-card border border-border/80 rounded-2xl p-4 sm:p-5 shadow-sm">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
                 <CheckCircle className="h-5 w-5" />
               </div>
               <div>
-                <p className="text-2xl font-black text-foreground">{progress.completedTopics.length}</p>
+                <p className="text-xl sm:text-2xl font-black text-foreground">{progress.completedTopics.length}</p>
                 <p className="text-xs text-muted-foreground font-medium">Completed Topics</p>
               </div>
             </div>
             <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">Syllabus mastering</p>
           </div>
 
-          <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-sm">
+          <div className="bg-card border border-border/80 rounded-2xl p-4 sm:p-5 shadow-sm">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center">
                 <Award className="h-5 w-5" />
               </div>
               <div>
-                <p className="text-2xl font-black text-foreground">{unlockedCount} / {game.achievements.length}</p>
+                <p className="text-xl sm:text-2xl font-black text-foreground">{unlockedCount} / {game.achievements.length}</p>
                 <p className="text-xs text-muted-foreground font-medium">Badges Unlocked</p>
               </div>
             </div>
@@ -365,7 +365,7 @@ export default function ProfilePage() {
               </div>
 
               {/* Tier Filter Tabs */}
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-2 mb-4 text-xs font-semibold">
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-2 mb-4 text-xs font-semibold -mx-4 px-4 sm:mx-0 sm:px-0">
                 {[
                   { id: 'all', label: `All (${game.achievements.length})` },
                   { id: 'unlocked', label: `Unlocked (${unlockedCount})` },
