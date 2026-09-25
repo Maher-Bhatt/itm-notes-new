@@ -1,3 +1,4 @@
+import { computerArchitecture } from './computer-architecture';
 import type { Subject, Topic } from "./types";
 import { pythonSubject } from "./python";
 import { cLanguageSubject } from "./c-language";
@@ -29,6 +30,7 @@ export const subjects: Subject[] = [
   enrichedDE,
   enrichedPSR,
   financialAccountingSubject,
+  computerArchitecture,
 ];
 
 export function getSubject(id: string): Subject | undefined {

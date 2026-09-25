@@ -1,13 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { useProgress } from "@/hooks/useProgress";
 import { ArrowRight, ChevronRight, Bookmark, BookOpen, TrendingUp, Search } from "lucide-react";
-import { useState, useMemo, useEffect } from "react";
+import { useState } from "react";
 import { SearchDialog } from "@/components/SearchDialog";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAcademic } from "@/contexts/AcademicContext";
-import { subjects, getAllTopicIds } from "@/data/subjects"; // Temporary fallback
+import { useSubjects } from "@/hooks/useAcademicData";
 
 function OverallProgressBar({ progress }: { progress: number }) {
   return (
@@ -29,35 +29,19 @@ function OverallProgressBar({ progress }: { progress: number }) {
 export default function DashboardPage() {
   const { user, profile } = useAuth();
   const { semesterId } = useAcademic();
-  const { getSubjectProgress, isBookmarked, progress } = useProgress();
+  const { data: dbSubjects, isLoading } = useSubjects(semesterId || undefined);
+  const { progress } = useProgress();
   const [searchOpen, setSearchOpen] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!semesterId) {
-      navigate("/onboarding");
-    }
-  }, [semesterId, navigate]);
-
-  // In a real database scenario, this would use useAcademicContext and fetch dynamically
-  const totalTopics = subjects.reduce((sum, s) => sum + getAllTopicIds(s.id).length, 0);
-  const allTopicIds = subjects.flatMap((s) => getAllTopicIds(s.id));
-  const overallProgress = getSubjectProgress(allTopicIds);
+  const dbSubjectsToRender = dbSubjects || [];
+  
+  // Calculate dynamic stats from dbSubjects
+  const totalTopics = dbSubjectsToRender.reduce((sum, s) => sum + (s.units?.reduce((uSum: number, u: any) => uSum + (u.topics?.length || 0), 0) || 0), 0) || 1;
   const completedCount = progress.completedTopics.length;
+  const overallProgress = Math.min(100, Math.round((completedCount / totalTopics) * 100));
 
-  const bookmarkedTopics = useMemo(() => {
-    const items: Array<{ subjectId: string; subjectName: string; topicId: string; topicTitle: string }> = [];
-    for (const subject of subjects) {
-      for (const unit of subject.units) {
-        for (const topic of unit.topics) {
-          if (isBookmarked(topic.id)) {
-            items.push({ subjectId: subject.id, subjectName: subject.name, topicId: topic.id, topicTitle: topic.title });
-          }
-        }
-      }
-    }
-    return items;
-  }, [isBookmarked, progress.bookmarkedTopics]);
+  const bookmarkedCount = progress.bookmarkedTopics.length;
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -121,11 +105,17 @@ export default function DashboardPage() {
             <section>
               <h2 className="text-lg font-semibold mb-4">Your Subjects</h2>
               <div className="space-y-3">
-                {subjects.map((subject) => {
-                  const topicIds = getAllTopicIds(subject.id);
-                  const subProgress = getSubjectProgress(topicIds);
-                  const count = Math.round((subProgress / 100) * topicIds.length);
-
+                {isLoading ? (
+                   <div className="animate-pulse space-y-3">
+                    <div className="h-20 bg-secondary/50 rounded-xl w-full"></div>
+                    <div className="h-20 bg-secondary/50 rounded-xl w-full"></div>
+                  </div>
+                ) : dbSubjectsToRender.length === 0 ? (
+                  <div className="text-center p-8 border border-dashed rounded-xl border-border">
+                    <p className="text-muted-foreground">No subjects found for your current semester.</p>
+                  </div>
+                ) : (
+                  dbSubjectsToRender.map((subject) => {
                   return (
                     <button
                       key={subject.id}
@@ -135,25 +125,15 @@ export default function DashboardPage() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between mb-1">
                           <h3 className="font-semibold text-base truncate pr-2">{subject.name}</h3>
-                          {subProgress > 0 && (
-                            <span className="text-xs font-semibold text-primary tabular-nums shrink-0">{subProgress}%</span>
-                          )}
                         </div>
                         <p className="text-xs text-muted-foreground mb-2">
-                          {topicIds.length} topics · Semester {subject.semester}
-                          {subProgress > 0 && ` · ${count} completed`}
+                          Semester {semesterId || 'Any' }
                         </p>
-                        <div className="h-1.5 rounded-full bg-secondary overflow-hidden">
-                          <div
-                            className="h-full bg-primary transition-all duration-500"
-                            style={{ width: `${subProgress}%` }}
-                          />
-                        </div>
                       </div>
                       <ChevronRight className="h-4 w-4 text-muted-foreground/50 group-hover:text-muted-foreground/80 transition-colors shrink-0" />
                     </button>
                   );
-                })}
+                }))}
               </div>
             </section>
           </div>
@@ -165,37 +145,21 @@ export default function DashboardPage() {
               <OverallProgressBar progress={overallProgress} />
               <div className="mt-4 pt-4 border-t text-sm flex justify-between text-muted-foreground">
                 <span>Completed Topics</span>
-                <span className="font-medium text-foreground">{completedCount} / {totalTopics}</span>
+                <span className="font-medium text-foreground">{completedCount}</span>
               </div>
             </div>
 
-            {bookmarkedTopics.length > 0 && (
+            {bookmarkedCount > 0 && (
               <div className="surface-elevated rounded-xl p-5">
-                <div className="flex items-center gap-2 mb-4">
-                  <Bookmark className="h-4 w-4 text-warning fill-warning" />
-                  <h3 className="font-semibold">Bookmarks</h3>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <Bookmark className="h-4 w-4 text-warning fill-warning" />
+                    <h3 className="font-semibold">Bookmarks ({bookmarkedCount})</h3>
+                  </div>
                 </div>
-                <div className="space-y-3">
-                  {bookmarkedTopics.slice(0, 5).map((item) => (
-                    <button
-                      key={item.topicId}
-                      onClick={() => navigate(`/subject/${item.subjectId}/topic/${item.topicId}`)}
-                      className="w-full text-left group apple-press"
-                    >
-                      <p className="text-sm font-medium group-hover:text-primary transition-colors truncate">
-                        {item.topicTitle}
-                      </p>
-                      <p className="text-xs text-muted-foreground truncate">
-                        {item.subjectName}
-                      </p>
-                    </button>
-                  ))}
-                  {bookmarkedTopics.length > 5 && (
-                    <button onClick={() => navigate("/bookmarks")} className="text-sm text-primary font-medium hover:underline pt-2 block w-full text-left">
-                      View all {bookmarkedTopics.length} bookmarks →
-                    </button>
-                  )}
-                </div>
+                <button onClick={() => navigate("/bookmarks")} className="text-sm text-primary font-medium hover:underline pt-2 block w-full text-left">
+                  View all your bookmarks &rarr;
+                </button>
               </div>
             )}
           </div>

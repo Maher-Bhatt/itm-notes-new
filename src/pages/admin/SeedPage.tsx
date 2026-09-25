@@ -30,7 +30,7 @@ export default function SeedPage() {
       // 1. Create base university structure
       const { data: uni, error: uniError } = await supabase
         .from('universities')
-        .insert({ name: 'ITM University' })
+        .insert({ name: 'ITM (SLS) Baroda University' })
         .select().single();
       if (uniError) throw uniError;
       addLog(`Created University: ${uni.id}`);
