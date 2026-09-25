@@ -226,7 +226,7 @@ export default function TopicPage() {
   const { topic, unitTitle } = resolvedTopic;
   const completed = isCompleted(topic.id);
   const bookmarked = isBookmarked(topic.id);
-  const hasRichContent = !!topic.richContent;
+  const hasRichContent = true;
 
   const handleComplete = () => {
     toggleComplete(topic.id);
@@ -239,43 +239,43 @@ export default function TopicPage() {
       <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
 
       {/* Header */}
-      <header className={`sticky top-0 z-50 apple-vibrancy border-b transition-all duration-300 ${focusMode ? "opacity-0 pointer-events-none -translate-y-full" : ""}`}>
-        <div className="max-w-[1400px] mx-auto px-4 h-12 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <button onClick={() => setSidebarOpen(!sidebarOpen)} className="lg:hidden apple-press p-1.5 rounded hover:bg-secondary">
-              {sidebarOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+      <header className={`sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b transition-all duration-300 ${focusMode ? "opacity-0 pointer-events-none -translate-y-full" : ""}`}>
+        <div className="max-w-[1400px] mx-auto px-4 h-14 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <button onClick={() => setSidebarOpen(!sidebarOpen)} className="lg:hidden p-2 -ml-2 rounded-md hover:bg-secondary text-foreground">
+              {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
-            <button onClick={() => navigate(`/subject/${subjectId}`)} className="apple-press p-1.5 rounded hover:bg-secondary">
-              <ChevronLeft className="h-4 w-4" />
+            <button onClick={() => navigate(`/subject/${subjectId}`)} className="p-1.5 -ml-1.5 rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors">
+              <ChevronLeft className="h-5 w-5" />
             </button>
-            <nav className="hidden sm:flex items-center gap-1 text-[13px] text-muted-foreground">
+            <nav className="hidden sm:flex items-center gap-2 text-[14px] text-muted-foreground font-medium">
               <Link to="/" className="hover:text-foreground transition-colors">Home</Link>
-              <ChevronRight className="h-3 w-3 opacity-40" />
+              <ChevronRight className="h-4 w-4 opacity-40" />
               <Link to={`/subject/${subjectId}`} className="hover:text-foreground transition-colors">{subject?.name}</Link>
-              <ChevronRight className="h-3 w-3 opacity-40" />
-              <span className="text-foreground font-medium truncate max-w-[200px]">{topic.title}</span>
+              <ChevronRight className="h-4 w-4 opacity-40" />
+              <span className="text-foreground truncate max-w-[250px]">{topic.title}</span>
             </nav>
           </div>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
             <button
               onClick={handleComplete}
-              className={`apple-press h-8 px-3 rounded text-[13px] font-medium inline-flex items-center gap-1.5 transition-colors ${
-                completed ? "bg-success/12 text-success" : "hover:bg-secondary text-muted-foreground"
+              className={`h-9 px-4 rounded-md text-[13px] font-semibold inline-flex items-center gap-2 transition-all ${
+                completed ? "bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20" : "bg-secondary hover:bg-secondary/80 text-foreground"
               }`}
             >
-              <CheckCircle className="h-3.5 w-3.5" />
+              <CheckCircle className="h-4 w-4" />
               <span className="hidden sm:inline">{completed ? "Completed" : "Mark Complete"}</span>
             </button>
             <TestMe mcqs={topic.mcqs} topicId={topic.id} topicTitle={topic.title} />
             <button
               onClick={() => setFocusMode(!focusMode)}
               title={focusMode ? "Exit Focus Mode (F)" : "Focus Mode (F)"}
-              className="apple-press p-1.5 rounded hover:bg-secondary text-muted-foreground"
+              className="p-2 rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
             >
-              {focusMode ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+              {focusMode ? <Minimize2 className="h-5 w-5" /> : <Maximize2 className="h-5 w-5" />}
             </button>
-            <button onClick={() => toggleBookmark(topic.id)} className="apple-press p-1.5 rounded hover:bg-secondary">
-              <Bookmark className={`h-4 w-4 transition-colors ${bookmarked ? "fill-warning text-warning" : "text-muted-foreground"}`} />
+            <button onClick={() => toggleBookmark(topic.id)} className="p-2 rounded-md hover:bg-secondary transition-colors">
+              <Bookmark className={`h-5 w-5 ${bookmarked ? "fill-amber-500 text-amber-500" : "text-muted-foreground hover:text-foreground"}`} />
             </button>
           </div>
         </div>
@@ -283,14 +283,14 @@ export default function TopicPage() {
 
       <div className="flex flex-1 max-w-[1400px] mx-auto w-full">
         {/* Left sidebar — topic navigation */}
-        <aside className={`${focusMode ? "hidden" : ""} ${sidebarOpen ? "fixed inset-0 z-40 lg:relative" : "hidden lg:block"} lg:w-64 lg:shrink-0`}>
-          {sidebarOpen && <div className="fixed inset-0 bg-black/50 lg:hidden z-40" onClick={() => setSidebarOpen(false)} />}
-          <div className={`${sidebarOpen ? "fixed left-0 top-12 bottom-0 w-64 z-50" : ""} lg:sticky lg:top-12 lg:h-[calc(100vh-3rem)] overflow-y-auto apple-vibrancy border-r border p-3`}>
-            <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-3 px-2">Contents</p>
+        <aside className={`${focusMode ? "hidden" : ""} ${sidebarOpen ? "fixed inset-0 z-40 lg:relative" : "hidden lg:block"} lg:w-72 lg:shrink-0`}>
+          {sidebarOpen && <div className="fixed inset-0 bg-black/40 backdrop-blur-sm lg:hidden z-40" onClick={() => setSidebarOpen(false)} />}
+          <div className={`${sidebarOpen ? "fixed left-0 top-14 bottom-0 w-72 z-50 bg-background shadow-xl" : ""} lg:sticky lg:top-14 lg:h-[calc(100vh-3.5rem)] overflow-y-auto border-r border-border p-4 custom-scrollbar`}>
+            <p className="text-[12px] font-bold text-muted-foreground uppercase tracking-widest mb-4 px-2">Table of Contents</p>
             {allUnits.map((unit) => (
-              <div key={unit.id} className="mb-4">
-                <p className="text-[11px] font-semibold text-muted-foreground/60 px-2 mb-1">{unit.title}</p>
-                <div className="space-y-0.5">
+              <div key={unit.id} className="mb-6">
+                <p className="text-[13px] font-bold text-foreground/80 px-2 mb-2 leading-tight">{unit.title}</p>
+                <div className="space-y-1">
                   {unit.topics.map((t) => {
                     const isCurrent = t.id === topic.id;
                     const tCompleted = isCompleted(t.id);
@@ -298,16 +298,16 @@ export default function TopicPage() {
                       <button
                         key={t.id}
                         onClick={() => { navigate(`/subject/${subjectId}/topic/${t.id}`); setSidebarOpen(false); }}
-                        className={`apple-press w-full text-left px-2.5 py-1.5 rounded text-[13px] flex items-center gap-2 transition-colors ${
-                          isCurrent ? "bg-primary/12 text-primary font-medium" : "text-muted-foreground hover:bg-secondary"
+                        className={`w-full text-left px-3 py-2 rounded-md text-[14px] flex items-start gap-3 transition-all ${
+                          isCurrent ? "bg-primary text-primary-foreground font-medium shadow-sm" : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground"
                         }`}
                       >
                         {tCompleted ? (
-                          <CheckCircle className="h-3 w-3 text-success shrink-0" />
+                          <CheckCircle className={`h-4 w-4 shrink-0 mt-0.5 ${isCurrent ? "text-primary-foreground/90" : "text-emerald-500"}`} />
                         ) : (
-                          <BookOpen className="h-3 w-3 shrink-0 opacity-30" />
+                          <BookOpen className={`h-4 w-4 shrink-0 mt-0.5 ${isCurrent ? "text-primary-foreground/70" : "opacity-40"}`} />
                         )}
-                        <span className="truncate">{t.title}</span>
+                        <span className="leading-snug">{t.title}</span>
                       </button>
                     );
                   })}
@@ -318,16 +318,16 @@ export default function TopicPage() {
         </aside>
 
         {/* Main reading area */}
-        <main className="flex-1 min-w-0 animate-fade-in">
+        <main className="flex-1 min-w-0 animate-fade-in pb-20">
           {/* Focus Mode floating toolbar */}
           {focusMode && (
-            <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 apple-vibrancy border border rounded-full px-4 py-2 shadow-2xl animate-fade-in">
-              <Minimize2 className="h-3.5 w-3.5 text-muted-foreground" />
-              <span className="text-[12px] text-muted-foreground">Focus Mode</span>
-              <span className="text-[11px] text-muted-foreground/50 mx-1">·</span>
+            <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 bg-background/90 backdrop-blur-md border border-border rounded-full px-5 py-2.5 shadow-2xl animate-fade-in">
+              <Minimize2 className="h-4 w-4 text-muted-foreground" />
+              <span className="text-[13px] font-medium text-foreground">Focus Mode</span>
+              <span className="text-[12px] text-muted-foreground/50 mx-1">·</span>
               <button
                 onClick={() => setFocusMode(false)}
-                className="text-[12px] text-primary font-medium hover:underline apple-press"
+                className="text-[13px] text-primary font-bold hover:underline"
               >
                 Exit (Esc)
               </button>
@@ -336,152 +336,97 @@ export default function TopicPage() {
 
           <div className={`flex gap-0 ${focusMode ? "" : ""}`}>
             {/* Reading column */}
-            <div className={`${focusMode ? "max-w-3xl mx-auto" : hasRichContent ? "flex-1 min-w-0" : "max-w-2xl mx-auto"} px-6 py-10 transition-all duration-300`}>
-              <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-semibold mb-3">{unitTitle}</p>
-              <h1 className="text-3xl font-bold mb-8 leading-tight">{topic.title}</h1>
+            <div className={`${focusMode ? "max-w-4xl mx-auto" : "flex-1 min-w-0"} px-6 md:px-12 py-10 transition-all duration-300`}>
+              <p className="text-[13px] text-primary font-bold uppercase tracking-widest mb-4">{unitTitle}</p>
+              <h1 className="text-4xl md:text-5xl font-extrabold mb-10 leading-tight text-foreground tracking-tight">{topic.title}</h1>
 
               {/* ── Rich Content Mode ── */}
-              {hasRichContent ? (
-                <div className="topic-rich-content-wrapper">
-                  <Tabs defaultValue="detailed" className="w-full">
-                    <TabsList className="mb-6 grid w-full max-w-[400px] grid-cols-2">
-                      <TabsTrigger value="detailed">Detailed Notes</TabsTrigger>
-                      <TabsTrigger value="revision">Quick Revision</TabsTrigger>
-                    </TabsList>
-                    
-                    <TabsContent value="detailed" className="mt-0">
-                      <div className="mb-8 surface-elevated rounded p-5 border-l-2 border-l-primary">
-                        <p className="text-[11px] font-semibold text-primary uppercase tracking-wider mb-2">Quick Summary</p>
-                        <p className="text-[15px] leading-[1.85] text-muted-foreground">{topic.simpleExplanation}</p>
-                      </div>
-                      <div className="rich-content">
-                        <MarkdownRenderer content={topic.richContent!} />
-                      </div>
-                    </TabsContent>
-
-                    <TabsContent value="revision" className="mt-0">
-                      <div className="surface-elevated rounded-xl p-6 border-l-4 border-l-warning">
-                        <h2 className="text-xl font-bold mb-4">Revision Notes</h2>
-                        {topic.shortNotes ? (
-                          <div className="rich-content">
-                            <MarkdownRenderer content={topic.shortNotes} />
-                          </div>
-                        ) : (
-                          <div className="space-y-4">
-                            <p className="text-muted-foreground text-sm">Key formulas and definitions to remember before an exam.</p>
-                            <ul className="list-disc pl-5 space-y-2 text-sm">
-                              {topic.keyPoints.map((kp, idx) => (
-                                <li key={idx}>{kp}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-                      </div>
-                    </TabsContent>
-                  </Tabs>
-
-                  {topic.examples.length > 0 && (
-                    <div className="mt-12">
-                      <h2 className="text-xl font-bold mb-6 pb-2 border-b border text-foreground">Worked Examples</h2>
-                      <div className="space-y-6">
-                        {topic.examples.map((ex, i) => (
-                          <div key={i} className="surface-elevated rounded overflow-hidden">
-                            <div className="px-5 py-3.5 border-b border">
-                              <h4 className="font-semibold text-[15px]">{ex.title}</h4>
-                              <p className="text-[13px] text-muted-foreground mt-0.5">{ex.problem}</p>
-                            </div>
-                            <div className="p-5 space-y-4">
-                              <p className="text-[14px] text-muted-foreground leading-relaxed">{ex.explanation}</p>
-                              {ex.code && <XcodeBlock code={ex.code} />}
-                              {ex.output && <XcodeBlock code={ex.output} variant="output" />}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
+              <div className="topic-rich-content-wrapper max-w-[900px]">
+                <Tabs defaultValue="detailed" className="w-full">
+                  <TabsList className="mb-8 w-full max-w-[400px] h-12 p-1 bg-secondary/50 rounded-lg">
+                    <TabsTrigger value="detailed" className="text-[14px] font-medium rounded-md h-full data-[state=active]:shadow-sm">Detailed Notes</TabsTrigger>
+                    <TabsTrigger value="revision" className="text-[14px] font-medium rounded-md h-full data-[state=active]:shadow-sm">Quick Revision</TabsTrigger>
+                  </TabsList>
+                  
+                  <TabsContent value="detailed" className="mt-0 focus-visible:outline-none">
+                    <div className="mb-10 bg-secondary/30 rounded-xl p-6 border border-border/50">
+                      <p className="text-[12px] font-bold text-primary uppercase tracking-widest mb-3 flex items-center gap-2">
+                        <BookOpen className="h-4 w-4" /> Quick Summary
+                      </p>
+                      <p className="text-[16px] leading-[1.8] text-foreground/90 font-medium">{topic.simpleExplanation}</p>
                     </div>
-                  )}
-
-                  {topic.keyPoints.length > 0 && (
-                    <div className="mt-12">
-                      <h2 className="text-xl font-bold mb-4 pb-2 border-b border text-foreground">Key Points</h2>
-                      <div className="space-y-1.5">
-                        {topic.keyPoints.map((point, i) => (
-                          <div key={i} className="flex items-start gap-3 py-2.5 px-1">
-                            <span className="w-5 h-5 rounded-md bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">{i + 1}</span>
-                            <span className="text-[14px] text-muted-foreground leading-relaxed">{point}</span>
-                          </div>
-                        ))}
-                      </div>
+                    <div className="rich-content prose-lg max-w-none">
+                      <MarkdownRenderer content={topic.richContent || topic.detailedExplanation} />
                     </div>
-                  )}
+                  </TabsContent>
 
-                  <div className="mt-12">
-                    <h2 className="text-xl font-bold mb-6 pb-2 border-b border text-foreground">Quiz ({topic.mcqs.length} MCQs)</h2>
-                    <MCQQuiz mcqs={topic.mcqs} topicId={topic.id} onComplete={(score, total) => saveMcqScore(topic.id, score, total)} />
+                  <TabsContent value="revision" className="mt-0 focus-visible:outline-none">
+                    <div className="bg-amber-500/10 rounded-2xl p-8 border border-amber-500/20">
+                      <h2 className="text-2xl font-bold mb-6 text-amber-600 dark:text-amber-500 flex items-center gap-3">
+                        <CheckCircle className="h-6 w-6" />
+                        Revision Notes
+                      </h2>
+                      {topic.shortNotes ? (
+                        <div className="rich-content prose-lg max-w-none prose-amber">
+                          <MarkdownRenderer content={topic.shortNotes} />
+                        </div>
+                      ) : (
+                        <div className="space-y-5">
+                          <p className="text-amber-700/80 dark:text-amber-400/80 font-medium">Key formulas and definitions to remember before an exam.</p>
+                          <ul className="space-y-3">
+                            {topic.keyPoints.map((kp, idx) => (
+                              <li key={idx} className="flex items-start gap-3">
+                                <span className="text-amber-500 mt-1.5">•</span>
+                                <span className="text-[16px] leading-relaxed text-amber-900 dark:text-amber-100">{kp}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  </TabsContent>
+                </Tabs>
+
+                {topic.examples.length > 0 && (
+                  <div className="mt-16">
+                    <h2 className="text-2xl font-extrabold mb-8 pb-3 border-b border-border text-foreground">Worked Examples</h2>
+                    <div className="space-y-8">
+                      {topic.examples.map((ex, i) => (
+                        <div key={i} className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
+                          <div className="px-6 py-4 bg-secondary/30 border-b border-border">
+                            <h4 className="font-bold text-[16px] text-foreground">{ex.title}</h4>
+                            <p className="text-[14px] text-muted-foreground mt-1">{ex.problem}</p>
+                          </div>
+                          <div className="p-6 space-y-5">
+                            <p className="text-[15px] text-foreground/90 leading-relaxed">{ex.explanation}</p>
+                            {ex.code && <XcodeBlock code={ex.code} />}
+                            {ex.output && <XcodeBlock code={ex.output} variant="output" />}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
+                )}
+
+                {topic.keyPoints.length > 0 && (
+                  <div className="mt-16">
+                    <h2 className="text-2xl font-extrabold mb-6 pb-3 border-b border-border text-foreground">Key Points</h2>
+                    <div className="space-y-3 bg-secondary/20 rounded-xl p-6 border border-border/50">
+                      {topic.keyPoints.map((point, i) => (
+                        <div key={i} className="flex items-start gap-4">
+                          <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[12px] font-bold shrink-0 mt-0.5">{i + 1}</span>
+                          <span className="text-[16px] text-foreground/90 leading-relaxed font-medium">{point}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="mt-16 mb-8">
+                  <h2 className="text-2xl font-extrabold mb-6 pb-3 border-b border-border text-foreground">Quiz ({topic.mcqs.length} MCQs)</h2>
+                  <MCQQuiz mcqs={topic.mcqs} topicId={topic.id} onComplete={(score, total) => saveMcqScore(topic.id, score, total)} />
                 </div>
-              ) : (
-                /* ── Legacy Accordion Mode ── */
-                <Accordion type="multiple" defaultValue={["simple", "detailed", "examples", "keypoints", "mcqs"]}>
-                  <AccordionItem value="simple" className="border">
-                    <AccordionTrigger className="text-[15px] font-semibold hover:no-underline">Simple Explanation</AccordionTrigger>
-                    <AccordionContent>
-                      <p className="text-[15px] leading-[1.85] text-muted-foreground whitespace-pre-line">{topic.simpleExplanation}</p>
-                    </AccordionContent>
-                  </AccordionItem>
-
-                  <AccordionItem value="detailed" className="border">
-                    <AccordionTrigger className="text-[15px] font-semibold hover:no-underline">Detailed Explanation</AccordionTrigger>
-                    <AccordionContent>
-                      <div className="rich-content">
-                        <MarkdownRenderer content={topic.detailedExplanation} />
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-
-                  <AccordionItem value="examples" className="border">
-                    <AccordionTrigger className="text-[15px] font-semibold hover:no-underline">Examples ({topic.examples.length})</AccordionTrigger>
-                    <AccordionContent>
-                      <div className="space-y-6">
-                        {topic.examples.map((ex, i) => (
-                          <div key={i} className="surface-elevated rounded overflow-hidden">
-                            <div className="px-5 py-3.5 border-b border">
-                              <h4 className="font-semibold text-[15px]">{ex.title}</h4>
-                              <p className="text-[13px] text-muted-foreground mt-0.5">{ex.problem}</p>
-                            </div>
-                            <div className="p-5 space-y-4">
-                              <p className="text-[14px] text-muted-foreground leading-relaxed">{ex.explanation}</p>
-                              {ex.code && <XcodeBlock code={ex.code} />}
-                              {ex.output && <XcodeBlock code={ex.output} variant="output" />}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-
-                  <AccordionItem value="keypoints" className="border">
-                    <AccordionTrigger className="text-[15px] font-semibold hover:no-underline">Key Points ({topic.keyPoints.length})</AccordionTrigger>
-                    <AccordionContent>
-                      <div className="space-y-1.5">
-                        {topic.keyPoints.map((point, i) => (
-                          <div key={i} className="flex items-start gap-3 py-2.5 px-1">
-                            <span className="w-5 h-5 rounded-md bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">{i + 1}</span>
-                            <span className="text-[14px] text-muted-foreground leading-relaxed">{point}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-
-                  <AccordionItem value="mcqs" className="border">
-                    <AccordionTrigger className="text-[15px] font-semibold hover:no-underline">Quiz ({topic.mcqs.length} MCQs)</AccordionTrigger>
-                    <AccordionContent>
-                      <MCQQuiz mcqs={topic.mcqs} topicId={topic.id} onComplete={(score, total) => saveMcqScore(topic.id, score, total)} />
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
-              )}
+              </div>
 
               {/* Nav */}
               <div className="flex items-center justify-between mt-12 pt-8 border-t border">
