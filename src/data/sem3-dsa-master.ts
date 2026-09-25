@@ -1240,7 +1240,7 @@ Because the tree is always strictly balanced, search, insertion, and deletion al
             {
               question: 'In an AVL tree, what is the allowed range for a node\'s balance factor?',
               options: ['-2, -1, 0', '-1, 0, 1', '0, 1, 2', 'It can be any integer'],
-              correctAnswer: '-1, 0, 1',
+              correctIndex: 1,
               explanation: 'The height difference between left and right subtrees cannot exceed 1.'
             }
           ]

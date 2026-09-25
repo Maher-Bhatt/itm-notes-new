@@ -87,9 +87,9 @@ Read remainders bottom-up: **1101**
             'Python provides built-in functions like bin(), oct(), and hex() for conversions.'
           ],
           mcqs: [
-            { question: 'Which base is used for Hexadecimal numbers?', options: ['2', '8', '10', '16'], correctOptionIndex: 3, explanation: 'Hexadecimal uses base 16.' },
-            { question: 'What is the binary representation of decimal 5?', options: ['101', '111', '100', '110'], correctOptionIndex: 0, explanation: '5/2=2 rem 1, 2/2=1 rem 0, 1/2=0 rem 1 -> 101' },
-            { question: 'Which symbol represents 14 in Hexadecimal?', options: ['C', 'D', 'E', 'F'], correctOptionIndex: 2, explanation: 'A=10, B=11, C=12, D=13, E=14.' }
+            { question: 'Which base is used for Hexadecimal numbers?', options: ['2', '8', '10', '16'], correctIndex: 3, explanation: 'Hexadecimal uses base 16.' },
+            { question: 'What is the binary representation of decimal 5?', options: ['101', '111', '100', '110'], correctIndex: 0, explanation: '5/2=2 rem 1, 2/2=1 rem 0, 1/2=0 rem 1 -> 101' },
+            { question: 'Which symbol represents 14 in Hexadecimal?', options: ['C', 'D', 'E', 'F'], correctIndex: 2, explanation: 'A=10, B=11, C=12, D=13, E=14.' }
           ]
         },
         {
@@ -139,9 +139,9 @@ Storing $1.23 \\times 10^3$:
             'IEEE 754 standard defines single and double precision.'
           ],
           mcqs: [
-            { question: 'In floating-point representation, what part holds the actual digits of the number?', options: ['Sign', 'Exponent', 'Mantissa', 'Base'], correctOptionIndex: 2, explanation: 'The mantissa holds the significant digits.' },
-            { question: 'How many bits are used for the exponent in single precision IEEE 754?', options: ['8', '11', '23', '52'], correctOptionIndex: 0, explanation: 'Single precision uses 8 bits for the exponent.' },
-            { question: 'What is the purpose of normalization?', options: ['Save memory', 'Maximize precision', 'Increase speed', 'None'], correctOptionIndex: 1, explanation: 'Normalization maximizes the number of significant digits stored.' }
+            { question: 'In floating-point representation, what part holds the actual digits of the number?', options: ['Sign', 'Exponent', 'Mantissa', 'Base'], correctIndex: 2, explanation: 'The mantissa holds the significant digits.' },
+            { question: 'How many bits are used for the exponent in single precision IEEE 754?', options: ['8', '11', '23', '52'], correctIndex: 0, explanation: 'Single precision uses 8 bits for the exponent.' },
+            { question: 'What is the purpose of normalization?', options: ['Save memory', 'Maximize precision', 'Increase speed', 'None'], correctIndex: 1, explanation: 'Normalization maximizes the number of significant digits stored.' }
           ]
         },
         {
@@ -204,9 +204,9 @@ True = 3.14159, Approx = 3.14
             'Truncation happens when cutting mathematical formulas short.'
           ],
           mcqs: [
-            { question: 'Which error occurs when an infinite series is approximated by a finite number of terms?', options: ['Round-off error', 'Truncation error', 'Absolute error', 'Relative error'], correctOptionIndex: 1, explanation: 'Truncation error arises from cutting off an infinite process.' },
-            { question: 'What is the formula for Relative Error?', options: ['|True - Approx|', '|True - Approx| / |Approx|', '|True - Approx| / |True|', 'True / Approx'], correctOptionIndex: 2, explanation: 'Relative error is Absolute Error divided by True Value.' },
-            { question: 'If True Value is 10 and Approx Value is 9, what is the Percentage Error?', options: ['1%', '10%', '0.1%', '90%'], correctOptionIndex: 1, explanation: 'Absolute = 1. Relative = 1/10 = 0.1. Percentage = 10%.' }
+            { question: 'Which error occurs when an infinite series is approximated by a finite number of terms?', options: ['Round-off error', 'Truncation error', 'Absolute error', 'Relative error'], correctIndex: 1, explanation: 'Truncation error arises from cutting off an infinite process.' },
+            { question: 'What is the formula for Relative Error?', options: ['|True - Approx|', '|True - Approx| / |Approx|', '|True - Approx| / |True|', 'True / Approx'], correctIndex: 2, explanation: 'Relative error is Absolute Error divided by True Value.' },
+            { question: 'If True Value is 10 and Approx Value is 9, what is the Percentage Error?', options: ['1%', '10%', '0.1%', '90%'], correctIndex: 1, explanation: 'Absolute = 1. Relative = 1/10 = 0.1. Percentage = 10%.' }
           ]
         },
         {
@@ -255,9 +255,9 @@ If a result is calculated to 10 decimal places, but the input data only had 3 si
             'Trailing zeros after a decimal point indicate precision.'
           ],
           mcqs: [
-            { question: 'How many significant figures are in the number 0.004050?', options: ['3', '4', '6', '7'], correctOptionIndex: 1, explanation: 'Leading zeros are not significant. 4, 0, 5, 0 are significant.' },
-            { question: 'How many significant figures are in 1002.0?', options: ['2', '4', '5', '6'], correctOptionIndex: 2, explanation: 'All non-zeros and trapped zeros are significant. Trailing zero after decimal is significant.' },
-            { question: 'Which of the following numbers has exactly 3 significant figures?', options: ['0.03', '300', '3.00', '0.30'], correctOptionIndex: 2, explanation: '3.00 has three significant figures due to trailing zeros after decimal.' }
+            { question: 'How many significant figures are in the number 0.004050?', options: ['3', '4', '6', '7'], correctIndex: 1, explanation: 'Leading zeros are not significant. 4, 0, 5, 0 are significant.' },
+            { question: 'How many significant figures are in 1002.0?', options: ['2', '4', '5', '6'], correctIndex: 2, explanation: 'All non-zeros and trapped zeros are significant. Trailing zero after decimal is significant.' },
+            { question: 'Which of the following numbers has exactly 3 significant figures?', options: ['0.03', '300', '3.00', '0.30'], correctIndex: 2, explanation: '3.00 has three significant figures due to trailing zeros after decimal.' }
           ]
         }
       ]
@@ -330,9 +330,9 @@ Target Tolerance: 0.5. Initial $a=0, b=3$.
             'Never fails to find a root if one exists.'
           ],
           mcqs: [
-            { question: 'What is the necessary condition for initial guesses a and b?', options: ['f(a) * f(b) > 0', 'f(a) * f(b) = 0', 'f(a) * f(b) < 0', 'f(a) = f(b)'], correctOptionIndex: 2, explanation: 'Opposite signs guarantee a root.' },
-            { question: 'What is the convergence rate of the Bisection method?', options: ['Linear', 'Quadratic', 'Cubic', 'Exponential'], correctOptionIndex: 0, explanation: 'Bisection method has linear convergence.' },
-            { question: 'How is the next point calculated?', options: ['c = a - b', 'c = (a * b) / 2', 'c = a + b', 'c = (a + b) / 2'], correctOptionIndex: 3, explanation: 'Midpoint.' }
+            { question: 'What is the necessary condition for initial guesses a and b?', options: ['f(a) * f(b) > 0', 'f(a) * f(b) = 0', 'f(a) * f(b) < 0', 'f(a) = f(b)'], correctIndex: 2, explanation: 'Opposite signs guarantee a root.' },
+            { question: 'What is the convergence rate of the Bisection method?', options: ['Linear', 'Quadratic', 'Cubic', 'Exponential'], correctIndex: 0, explanation: 'Bisection method has linear convergence.' },
+            { question: 'How is the next point calculated?', options: ['c = a - b', 'c = (a * b) / 2', 'c = a + b', 'c = (a + b) / 2'], correctIndex: 3, explanation: 'Midpoint.' }
           ]
         },
         {
@@ -391,9 +391,9 @@ def newton_raphson(x0, tol):
             'Fails if tangent is horizontal.'
           ],
           mcqs: [
-            { question: 'What is the formula for Newton-Raphson?', options: ['x - f(x)/f\'(x)', 'x + f(x)/f\'(x)', 'x - f\'(x)/f(x)', 'f(x) - x/f\'(x)'], correctOptionIndex: 0, explanation: 'Standard formula.' },
-            { question: 'What is the convergence order?', options: ['Linear', 'Quadratic', 'Cubic', 'Exponential'], correctOptionIndex: 1, explanation: 'Quadratic.' },
-            { question: 'When will it fail?', options: ['If guess is root', 'If f(x) is negative', 'If f\'(x) is zero', 'If f(x) is polynomial'], correctOptionIndex: 2, explanation: 'Division by zero.' }
+            { question: 'What is the formula for Newton-Raphson?', options: ['x - f(x)/f\'(x)', 'x + f(x)/f\'(x)', 'x - f\'(x)/f(x)', 'f(x) - x/f\'(x)'], correctIndex: 0, explanation: 'Standard formula.' },
+            { question: 'What is the convergence order?', options: ['Linear', 'Quadratic', 'Cubic', 'Exponential'], correctIndex: 1, explanation: 'Quadratic.' },
+            { question: 'When will it fail?', options: ['If guess is root', 'If f(x) is negative', 'If f\'(x) is zero', 'If f(x) is polynomial'], correctIndex: 2, explanation: 'Division by zero.' }
           ]
         },
         {
@@ -441,9 +441,9 @@ Approximates the derivative using a secant line drawn through two recent points.
             'Fails if $f(x_n) = f(x_{n-1})$.'
           ],
           mcqs: [
-            { question: 'Why is Secant often preferred?', options: ['Faster', 'No derivatives needed', 'Guaranteed to converge', 'One guess'], correctOptionIndex: 1, explanation: 'Saves from complex analytical calculus.' },
-            { question: 'How many initial guesses?', options: ['1', '2', '3', 'None'], correctOptionIndex: 1, explanation: 'Requires two points.' },
-            { question: 'Order of convergence?', options: ['1', '1.618', '2', '3'], correctOptionIndex: 1, explanation: '1.618 (Super-linear).' }
+            { question: 'Why is Secant often preferred?', options: ['Faster', 'No derivatives needed', 'Guaranteed to converge', 'One guess'], correctIndex: 1, explanation: 'Saves from complex analytical calculus.' },
+            { question: 'How many initial guesses?', options: ['1', '2', '3', 'None'], correctIndex: 1, explanation: 'Requires two points.' },
+            { question: 'Order of convergence?', options: ['1', '1.618', '2', '3'], correctIndex: 1, explanation: '1.618 (Super-linear).' }
           ]
         },
         {
@@ -490,9 +490,9 @@ Approximates the derivative using a secant line drawn through two recent points.
             'Can suffer slow convergence on one side.'
           ],
           mcqs: [
-            { question: 'Regula-Falsi is similar to which two methods?', options: ['Newton & Secant', 'Bisection & Secant', 'Bisection & Newton', 'Euler & Secant'], correctOptionIndex: 1, explanation: 'Bracketing like Bisection, straight lines like Secant.' },
-            { question: 'Does it guarantee convergence?', options: ['Yes', 'No', 'Only for polynomials', 'Only if f\'>0'], correctOptionIndex: 0, explanation: 'It traps the root.' },
-            { question: 'Primary disadvantage?', options: ['Requires derivatives', 'May diverge', 'One endpoint fixed (slow)', 'Requires 3 guesses'], correctOptionIndex: 2, explanation: 'Endpoint stalling.' }
+            { question: 'Regula-Falsi is similar to which two methods?', options: ['Newton & Secant', 'Bisection & Secant', 'Bisection & Newton', 'Euler & Secant'], correctIndex: 1, explanation: 'Bracketing like Bisection, straight lines like Secant.' },
+            { question: 'Does it guarantee convergence?', options: ['Yes', 'No', 'Only for polynomials', 'Only if f\'>0'], correctIndex: 0, explanation: 'It traps the root.' },
+            { question: 'Primary disadvantage?', options: ['Requires derivatives', 'May diverge', 'One endpoint fixed (slow)', 'Requires 3 guesses'], correctIndex: 2, explanation: 'Endpoint stalling.' }
           ]
         },
         {
@@ -536,9 +536,9 @@ Approximates the derivative using a secant line drawn through two recent points.
             'Simple but can be unstable.'
           ],
           mcqs: [
-            { question: 'Mandatory condition for convergence?', options: ['|g\'(x)| > 1', '|g\'(x)| < 1', 'g\'(x) = 0', 'g(x) < 0'], correctOptionIndex: 1, explanation: 'Derivative strictly less than 1.' },
-            { question: 'How is equation manipulated?', options: ['f\'(x)=0', 'x=f(x)', 'x=g(x)', 'g(x)=0'], correctOptionIndex: 2, explanation: 'Rearranged into x=g(x).' },
-            { question: 'If |g\'(x)| > 1, what happens?', options: ['Converges faster', 'Different root', 'Diverges', 'Loops'], correctOptionIndex: 2, explanation: 'Errors multiply, causing divergence.' }
+            { question: 'Mandatory condition for convergence?', options: ['|g\'(x)| > 1', '|g\'(x)| < 1', 'g\'(x) = 0', 'g(x) < 0'], correctIndex: 1, explanation: 'Derivative strictly less than 1.' },
+            { question: 'How is equation manipulated?', options: ['f\'(x)=0', 'x=f(x)', 'x=g(x)', 'g(x)=0'], correctIndex: 2, explanation: 'Rearranged into x=g(x).' },
+            { question: 'If |g\'(x)| > 1, what happens?', options: ['Converges faster', 'Different root', 'Diverges', 'Loops'], correctIndex: 2, explanation: 'Errors multiply, causing divergence.' }
           ]
         }
       ]
@@ -591,9 +591,9 @@ Use the top row numbers (3 and 3) for the formula!
             'u = (x - x0)/h.'
           ],
           mcqs: [
-            { question: 'When is Newton Forward Interpolation best used?', options: ['Near end', 'Near beginning', 'Unequally spaced', 'Middle'], correctOptionIndex: 1, explanation: 'Best accuracy near the start.' },
-            { question: 'What does h represent?', options: ['Height', 'x,y diff', 'Equal spacing interval', 'First x'], correctOptionIndex: 2, explanation: 'h is step size.' },
-            { question: 'Formula for u?', options: ['(x-xn)/h', '(x0-x)/h', '(x-x0)/h', '(x+x0)/h'], correctOptionIndex: 2, explanation: 'Distance from start divided by step size.' }
+            { question: 'When is Newton Forward Interpolation best used?', options: ['Near end', 'Near beginning', 'Unequally spaced', 'Middle'], correctIndex: 1, explanation: 'Best accuracy near the start.' },
+            { question: 'What does h represent?', options: ['Height', 'x,y diff', 'Equal spacing interval', 'First x'], correctIndex: 2, explanation: 'h is step size.' },
+            { question: 'Formula for u?', options: ['(x-xn)/h', '(x0-x)/h', '(x-x0)/h', '(x+x0)/h'], correctIndex: 2, explanation: 'Distance from start divided by step size.' }
           ]
         },
         {
@@ -639,9 +639,9 @@ Works perfectly for **unequally spaced** data points.
             'Computationally heavy for large n.'
           ],
           mcqs: [
-            { question: 'When MUST you use Lagrange over Newton Forward?', options: ['Equally spaced', 'Unequally spaced', 'Finding roots', 'Finding derivatives'], correctOptionIndex: 1, explanation: 'Perfect for unequal intervals.' },
-            { question: 'Does Lagrange require a difference table?', options: ['Yes', 'No', 'Large datasets', 'Polynomials'], correctOptionIndex: 1, explanation: 'Computes directly.' },
-            { question: 'What happens to numerator term corresponding to y_i?', options: ['Includes (x-xi)', 'Skips (x-xi)', 'Squared', 'Zero'], correctOptionIndex: 1, explanation: 'Skipped to avoid making term 0.' }
+            { question: 'When MUST you use Lagrange over Newton Forward?', options: ['Equally spaced', 'Unequally spaced', 'Finding roots', 'Finding derivatives'], correctIndex: 1, explanation: 'Perfect for unequal intervals.' },
+            { question: 'Does Lagrange require a difference table?', options: ['Yes', 'No', 'Large datasets', 'Polynomials'], correctIndex: 1, explanation: 'Computes directly.' },
+            { question: 'What happens to numerator term corresponding to y_i?', options: ['Includes (x-xi)', 'Skips (x-xi)', 'Squared', 'Zero'], correctIndex: 1, explanation: 'Skipped to avoid making term 0.' }
           ]
         }
       ]
@@ -691,9 +691,9 @@ $h = 1$. Points: $y_0=10, y_1=20, y_2=30$
             'Error proportional to h^2.'
           ],
           mcqs: [
-            { question: 'Trapezoidal rule approximates the curve using:', options: ['Parabolas', 'Straight lines', 'Cubic', 'Circles'], correctOptionIndex: 1, explanation: 'Draws straight line forming trapezoid.' },
-            { question: 'Which values multiplied by 2?', options: ['First/last', 'All', 'Intermediate', 'None'], correctOptionIndex: 2, explanation: 'Intermediate values only.' },
-            { question: 'Restriction on intervals (n)?', options: ['Even', 'Multiple 3', 'Odd', 'No restriction'], correctOptionIndex: 3, explanation: 'Can be applied to any n.' }
+            { question: 'Trapezoidal rule approximates the curve using:', options: ['Parabolas', 'Straight lines', 'Cubic', 'Circles'], correctIndex: 1, explanation: 'Draws straight line forming trapezoid.' },
+            { question: 'Which values multiplied by 2?', options: ['First/last', 'All', 'Intermediate', 'None'], correctIndex: 2, explanation: 'Intermediate values only.' },
+            { question: 'Restriction on intervals (n)?', options: ['Even', 'Multiple 3', 'Odd', 'No restriction'], correctIndex: 3, explanation: 'Can be applied to any n.' }
           ]
         },
         {
@@ -737,9 +737,9 @@ Because the multiplier in front is $h/3$.
             'Multiplier pattern: 1, 4, 2, 4, 2... 4, 1.'
           ],
           mcqs: [
-            { question: 'Assumes curve is a:', options: ['Line', 'Parabola', 'Cubic', 'Circle'], correctOptionIndex: 1, explanation: 'Uses quadratic interpolation.' },
-            { question: 'Restriction on n?', options: ['Odd', 'Multiple 3', 'Even', 'No restriction'], correctOptionIndex: 2, explanation: 'Requires pairs of intervals.' },
-            { question: 'Odd-indexed terms multiplied by?', options: ['2', '3', '4', '1'], correctOptionIndex: 2, explanation: 'y_1, y_3 get 4.' }
+            { question: 'Assumes curve is a:', options: ['Line', 'Parabola', 'Cubic', 'Circle'], correctIndex: 1, explanation: 'Uses quadratic interpolation.' },
+            { question: 'Restriction on n?', options: ['Odd', 'Multiple 3', 'Even', 'No restriction'], correctIndex: 2, explanation: 'Requires pairs of intervals.' },
+            { question: 'Odd-indexed terms multiplied by?', options: ['2', '3', '4', '1'], correctIndex: 2, explanation: 'y_1, y_3 get 4.' }
           ]
         }
       ]
@@ -795,9 +795,9 @@ $[0, 0, X]$
             'Back substitution.'
           ],
           mcqs: [
-            { question: 'Goal of forward elimination?', options: ['Identity', 'Lower Triangular', 'Upper Triangular', 'Diagonal'], correctOptionIndex: 2, explanation: 'Zeroes below diagonal.' },
-            { question: 'Process used after?', options: ['Forward sub', 'Back sub', 'Integration', 'Iteration'], correctOptionIndex: 1, explanation: 'Solve bottom-up.' },
-            { question: 'Direct or iterative?', options: ['Iterative', 'Direct', 'Graphical', 'Randomized'], correctOptionIndex: 1, explanation: 'Fixed algorithmic steps.' }
+            { question: 'Goal of forward elimination?', options: ['Identity', 'Lower Triangular', 'Upper Triangular', 'Diagonal'], correctIndex: 2, explanation: 'Zeroes below diagonal.' },
+            { question: 'Process used after?', options: ['Forward sub', 'Back sub', 'Integration', 'Iteration'], correctIndex: 1, explanation: 'Solve bottom-up.' },
+            { question: 'Direct or iterative?', options: ['Iterative', 'Direct', 'Graphical', 'Randomized'], correctIndex: 1, explanation: 'Fixed algorithmic steps.' }
           ]
         },
         {
@@ -843,9 +843,9 @@ $[0, 0, X]$
             'Must be diagonally dominant.'
           ],
           mcqs: [
-            { question: 'Difference between Seidel and Jacobi?', options: ['Direct', 'Uses updated values immediately', 'No initial guess', 'Difference table'], correctOptionIndex: 1, explanation: 'Instantly uses new variables.' },
-            { question: 'Condition for convergence?', options: ['Symmetric', 'Diagonal dominance', 'Identity', 'Zero'], correctOptionIndex: 1, explanation: 'Diagonal > sum of others.' },
-            { question: 'Which converges faster?', options: ['Jacobi', 'Gauss-Seidel', 'Equal', 'Bisection'], correctOptionIndex: 1, explanation: 'Uses fresher data.' }
+            { question: 'Difference between Seidel and Jacobi?', options: ['Direct', 'Uses updated values immediately', 'No initial guess', 'Difference table'], correctIndex: 1, explanation: 'Instantly uses new variables.' },
+            { question: 'Condition for convergence?', options: ['Symmetric', 'Diagonal dominance', 'Identity', 'Zero'], correctIndex: 1, explanation: 'Diagonal > sum of others.' },
+            { question: 'Which converges faster?', options: ['Jacobi', 'Gauss-Seidel', 'Equal', 'Bisection'], correctIndex: 1, explanation: 'Uses fresher data.' }
           ]
         }
       ]
@@ -896,9 +896,9 @@ $dy/dx = x+y$. Start (0,1), $h=0.1$.
             'Basis for advanced methods.'
           ],
           mcqs: [
-            { question: 'Euler method used for:', options: ['Roots', 'Integrals', 'ODEs', 'Linear Systems'], correctOptionIndex: 2, explanation: 'Steps through ODE.' },
-            { question: 'What does f(x,y) represent?', options: ['Area', 'Slope (dy/dx)', 'Second derivative', 'Step size'], correctOptionIndex: 1, explanation: 'Slope of tangent.' },
-            { question: 'Increase accuracy by:', options: ['Increase h', 'Decrease h', 'Negative h', 'Always accurate'], correctOptionIndex: 1, explanation: 'Smaller step size = shorter tangent approximation.' }
+            { question: 'Euler method used for:', options: ['Roots', 'Integrals', 'ODEs', 'Linear Systems'], correctIndex: 2, explanation: 'Steps through ODE.' },
+            { question: 'What does f(x,y) represent?', options: ['Area', 'Slope (dy/dx)', 'Second derivative', 'Step size'], correctIndex: 1, explanation: 'Slope of tangent.' },
+            { question: 'Increase accuracy by:', options: ['Increase h', 'Decrease h', 'Negative h', 'Always accurate'], correctIndex: 1, explanation: 'Smaller step size = shorter tangent approximation.' }
           ]
         },
         {
@@ -945,9 +945,9 @@ $dy/dx = x+y$. Start (0,1), $h=0.1$.
             'Industry standard.'
           ],
           mcqs: [
-            { question: 'Evaluations per step in RK4?', options: ['1', '2', '3', '4'], correctOptionIndex: 3, explanation: 'Calculates k1,k2,k3,k4.' },
-            { question: 'Which slopes given double weight?', options: ['k1, k4', 'k2, k3', 'k1, k2', 'None'], correctOptionIndex: 1, explanation: 'Midpoint slopes multiplied by 2.' },
-            { question: 'Why preferred over Euler?', options: ['Fewer calculations', 'Much more accurate', 'Direct', 'No h'], correctOptionIndex: 1, explanation: 'Averages slopes, lower error.' }
+            { question: 'Evaluations per step in RK4?', options: ['1', '2', '3', '4'], correctIndex: 3, explanation: 'Calculates k1,k2,k3,k4.' },
+            { question: 'Which slopes given double weight?', options: ['k1, k4', 'k2, k3', 'k1, k2', 'None'], correctIndex: 1, explanation: 'Midpoint slopes multiplied by 2.' },
+            { question: 'Why preferred over Euler?', options: ['Fewer calculations', 'Much more accurate', 'Direct', 'No h'], correctIndex: 1, explanation: 'Averages slopes, lower error.' }
           ]
         }
       ]
