@@ -74,10 +74,6 @@ export function Footer() {
                 <span className="font-medium text-foreground block">Maher Bhatt</span>
                 <span className="text-xs">Founder & Developer</span>
               </li>
-              <li>
-                <span className="font-medium text-foreground block">Anurag Pandey</span>
-                <span className="text-xs">Co-Founder & Designer</span>
-              </li>
             </ul>
           </div>
         </div>
