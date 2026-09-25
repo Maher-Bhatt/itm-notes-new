@@ -340,6 +340,7 @@ export const LEVEL_TITLES = [
   { level: 6, title: 'Semester Master', minXp: 2500, maxXp: 4000 },
   { level: 7, title: 'Dean’s Scholar', minXp: 4000, maxXp: 6500 },
   { level: 8, title: 'University Legend', minXp: 6500, maxXp: 10000 },
+  { level: 9, title: 'The Architect', minXp: 10000, maxXp: 25000 },
 ];
 
 const STORAGE_KEY = 'itm_notes_gamification_v2';
@@ -375,6 +376,13 @@ export function useGamification() {
         } else {
           parsed.achievements = INITIAL_ACHIEVEMENTS;
         }
+
+        // Auto-correct level in case of past bugs where xp grew without level updates
+        let correctLevel = 1;
+        for (const lvl of LEVEL_TITLES) {
+          if (parsed.xp >= lvl.minXp) correctLevel = lvl.level;
+        }
+        parsed.level = correctLevel;
 
         return parsed;
       }
@@ -460,10 +468,17 @@ export function useGamification() {
         description: `${ach.description} (+${ach.xpReward} XP)`,
       });
 
+      const newXp = prev.xp + ach.xpReward;
+      let newLevel = prev.level;
+      for (const lvl of LEVEL_TITLES) {
+        if (newXp >= lvl.minXp) newLevel = lvl.level;
+      }
+
       return {
         ...prev,
         achievements: updated,
-        xp: prev.xp + ach.xpReward,
+        xp: newXp,
+        level: newLevel,
       };
     });
   }, []);
@@ -493,11 +508,18 @@ export function useGamification() {
       if (newStreak >= 14) unlockAchievement('streak-14');
       if (newStreak >= 30) unlockAchievement('streak-30');
 
+      const newXp = prev.xp + 20;
+      let newLevel = prev.level;
+      for (const lvl of LEVEL_TITLES) {
+        if (newXp >= lvl.minXp) newLevel = lvl.level;
+      }
+
       return {
         ...prev,
         streakDays: newStreak,
         lastActiveDate: today,
-        xp: prev.xp + 20,
+        xp: newXp,
+        level: newLevel,
       };
     });
   }, [unlockAchievement]);
