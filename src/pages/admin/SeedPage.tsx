@@ -27,6 +27,10 @@ export default function SeedPage() {
     try {
       addLog("Starting seeding process...");
 
+      // 0. Wipe existing data to prevent duplicates (Cascade delete handles everything)
+      addLog("Cleaning old curriculum data...");
+      await supabase.from('universities').delete().eq('name', 'ITM (SLS) Baroda University');
+
       // 1. Create base university structure
       const { data: uni, error: uniError } = await supabase
         .from('universities')
@@ -197,3 +201,4 @@ export default function SeedPage() {
     </div>
   );
 }
+
