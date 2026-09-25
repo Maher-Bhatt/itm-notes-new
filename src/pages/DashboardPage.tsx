@@ -29,7 +29,7 @@ function OverallProgressBar({ progress }: { progress: number }) {
 export default function DashboardPage() {
   const { user, profile } = useAuth();
   const { semesterId } = useAcademic();
-  const { data: dbSubjects, isLoading } = useSubjects(semesterId || undefined);
+  const { data: dbSubjects, isLoading } = useSubjects(undefined);
   const { progress } = useProgress();
   const [searchOpen, setSearchOpen] = useState(false);
   const navigate = useNavigate();
@@ -112,7 +112,7 @@ export default function DashboardPage() {
                   </div>
                 ) : dbSubjectsToRender.length === 0 ? (
                   <div className="text-center p-8 border border-dashed rounded-xl border-border">
-                    <p className="text-muted-foreground">No subjects found for your current semester.</p>
+                    <p className="text-muted-foreground">No subjects found in the database. Please seed the database from the Admin panel.</p>
                   </div>
                 ) : (
                   dbSubjectsToRender.map((subject) => {
@@ -127,7 +127,7 @@ export default function DashboardPage() {
                           <h3 className="font-semibold text-base truncate pr-2">{subject.name}</h3>
                         </div>
                         <p className="text-xs text-muted-foreground mb-2">
-                          Semester {semesterId || 'Any' }
+                          {subject.description || 'Deep research notes & examples'}
                         </p>
                       </div>
                       <ChevronRight className="h-4 w-4 text-muted-foreground/50 group-hover:text-muted-foreground/80 transition-colors shrink-0" />

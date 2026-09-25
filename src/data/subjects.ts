@@ -1,45 +1,17 @@
+import { Subject } from './types';
 import { computerArchitecture } from './computer-architecture';
-import type { Subject, Topic } from "./types";
-import { pythonSubject } from "./python";
-import { cLanguageSubject } from "./c-language";
-import { digitalElectronicsSubject } from "./digital-electronics";
-import { probabilityStatsSubject, financialAccountingSubject } from "./other-subjects";
-import { deRichContent } from "./rich-content-de";
-import { psrRichContent } from "./rich-content-psr";
+import { sem3DetailedSubjects } from './sem3-detailed';
 
-// Inject rich content into topics
-function injectRichContent(subject: Subject, contentMap: Record<string, string>): Subject {
-  return {
-    ...subject,
-    units: subject.units.map((unit) => ({
-      ...unit,
-      topics: unit.topics.map((topic) => ({
-        ...topic,
-        richContent: contentMap[topic.id] || topic.richContent,
-      })),
-    })),
-  };
-}
-
-const enrichedDE = injectRichContent(digitalElectronicsSubject, deRichContent);
-const enrichedPSR = injectRichContent(probabilityStatsSubject, psrRichContent);
-
-import { extraSubjects } from './extra-subjects';
 export const subjects: Subject[] = [
-  pythonSubject,
-  cLanguageSubject,
-  enrichedDE,
-  enrichedPSR,
-  financialAccountingSubject,
   computerArchitecture,
-  ...extraSubjects,
+  ...sem3DetailedSubjects
 ];
 
 export function getSubject(id: string): Subject | undefined {
   return subjects.find((s) => s.id === id);
 }
 
-export function getTopic(subjectId: string, topicId: string): { subject: Subject; topic: Topic; unitTitle: string } | undefined {
+export function getTopic(subjectId: string, topicId: string) {
   const subject = getSubject(subjectId);
   if (!subject) return undefined;
   for (const unit of subject.units) {
@@ -55,7 +27,7 @@ export function getAllTopicIds(subjectId: string): string[] {
   return subject.units.flatMap((u) => u.topics.map((t) => t.id));
 }
 
-export function getAdjacentTopics(subjectId: string, topicId: string): { prev: Topic | null; next: Topic | null } {
+export function getAdjacentTopics(subjectId: string, topicId: string) {
   const subject = getSubject(subjectId);
   if (!subject) return { prev: null, next: null };
   const allTopics = subject.units.flatMap((u) => u.topics);
@@ -66,10 +38,10 @@ export function getAdjacentTopics(subjectId: string, topicId: string): { prev: T
   };
 }
 
-export function searchTopics(query: string): Array<{ subject: Subject; topic: Topic }> {
+export function searchTopics(query: string) {
   const q = query.toLowerCase().trim();
   if (!q) return [];
-  const results: Array<{ subject: Subject; topic: Topic }> = [];
+  const results = [];
   for (const subject of subjects) {
     for (const unit of subject.units) {
       for (const topic of unit.topics) {
