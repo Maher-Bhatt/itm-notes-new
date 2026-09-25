@@ -7,7 +7,8 @@ import { useTopic, useSubject } from "@/hooks/useAcademicData";
 import { MCQQuiz } from "@/components/MCQQuiz";
 import { TestMe } from "@/components/TestMe";
 import { MarkdownRenderer, extractTOC } from "@/components/MarkdownRenderer";
-import { Bookmark, CheckCircle, BookOpen, ChevronLeft, ChevronRight, Menu, X, Copy, Check, Maximize2, Minimize2, Loader2, HelpCircle } from "lucide-react";
+import { Bookmark, CheckCircle, BookOpen, ChevronLeft, ChevronRight, Menu, X, Copy, Check, Maximize2, Minimize2, Loader2, HelpCircle, Clock } from "lucide-react";
+import { usePomodoro } from "@/contexts/PomodoroContext";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { SearchDialog } from "@/components/SearchDialog";
@@ -157,6 +158,7 @@ export default function TopicPage() {
 
   const { isCompleted, isBookmarked, toggleComplete, toggleBookmark, saveMcqScore } = useProgress();
   const { recordTopicCompleted, recordQuizCompleted, unlockAchievement, checkDailyStreak } = useGamification();
+  const { timeLeft: pomodoroTimeLeft, isRunning: isPomodoroRunning, startTimer: startPomodoro, setIsModalOpen: setIsPomodoroModalOpen } = usePomodoro();
 
   // Check daily streak when user visits topic & unlock MST Survivor for CA
   useEffect(() => {
@@ -281,6 +283,28 @@ export default function TopicPage() {
             </button>
             <TestMe mcqs={topic.mcqs} topicId={topic.id} topicTitle={topic.title} />
             <button
+              onClick={() => {
+                if (!isPomodoroRunning) {
+                  startPomodoro();
+                } else {
+                  setIsPomodoroModalOpen(true);
+                }
+              }}
+              title={isPomodoroRunning ? `Focus session active: ${Math.floor(pomodoroTimeLeft / 60)}m left` : "Start 25m Focus Sprint directly"}
+              className={`h-9 px-3 rounded-md text-[13px] font-semibold inline-flex items-center gap-1.5 transition-all ${
+                isPomodoroRunning
+                  ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 animate-pulse"
+                  : "bg-secondary hover:bg-secondary/80 text-foreground"
+              }`}
+            >
+              <Clock className={`h-4 w-4 ${isPomodoroRunning ? "text-emerald-500" : "text-primary"}`} />
+              <span className="hidden sm:inline font-mono">
+                {isPomodoroRunning
+                  ? `${String(Math.floor(pomodoroTimeLeft / 60)).padStart(2, '0')}:${String(pomodoroTimeLeft % 60).padStart(2, '0')}`
+                  : "Focus 25m"}
+              </span>
+            </button>
+            <button
               onClick={() => setFocusMode(!focusMode)}
               title={focusMode ? "Exit Focus Mode (F)" : "Focus Mode (F)"}
               className="p-2 rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
@@ -362,6 +386,27 @@ export default function TopicPage() {
                   </TabsList>
                   
                   <TabsContent value="detailed" className="mt-0 focus-visible:outline-none">
+                    <div className="flex flex-wrap items-center justify-between gap-3 mb-6 p-3 rounded-xl bg-primary/5 border border-primary/20">
+                      <div className="flex items-center gap-2 text-xs font-medium text-foreground">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span>Estimated Study Time: ~15 mins</span>
+                      </div>
+                      {!isPomodoroRunning ? (
+                        <button
+                          onClick={startPomodoro}
+                          className="px-3 py-1.5 rounded-lg bg-primary text-primary-foreground font-bold text-xs inline-flex items-center gap-1.5 hover:opacity-90 apple-press shadow-sm"
+                        >
+                          <Clock className="h-3.5 w-3.5" /> Start 25m Focus Sprint (+50 XP)
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => setIsPomodoroModalOpen(true)}
+                          className="px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 font-bold text-xs inline-flex items-center gap-1.5"
+                        >
+                          <Clock className="h-3.5 w-3.5 text-emerald-500" /> Focus Active: {Math.floor(pomodoroTimeLeft / 60)}m left
+                        </button>
+                      )}
+                    </div>
                     <div className="mb-10 bg-secondary/30 rounded-xl p-6 border border-border/50">
                       <p className="text-[12px] font-bold text-primary uppercase tracking-widest mb-3 flex items-center gap-2">
                         <BookOpen className="h-4 w-4" /> Quick Summary

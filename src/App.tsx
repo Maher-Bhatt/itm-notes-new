@@ -25,6 +25,8 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import SeedPage from "./pages/admin/SeedPage";
 import SubjectImpQuestionsPage from "./pages/SubjectImpQuestionsPage";
 import ProfilePage from "./pages/ProfilePage";
+import { PomodoroProvider } from "@/contexts/PomodoroContext";
+import { PomodoroFloatingWidget } from "@/components/PomodoroFloatingWidget";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
@@ -34,12 +36,14 @@ const App = () => (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <AcademicProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <ErrorBoundary>
-                <Routes>
+          <PomodoroProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <ErrorBoundary>
+                  <PomodoroFloatingWidget />
+                  <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/auth" element={<AuthPage />} />
                   <Route path="/onboarding" element={<ProtectedRoute><OnboardingPage /></ProtectedRoute>} />
@@ -63,7 +67,8 @@ const App = () => (
               </ErrorBoundary>
             </BrowserRouter>
           </TooltipProvider>
-        </AcademicProvider>
+        </PomodoroProvider>
+      </AcademicProvider>
       </AuthProvider>
     </QueryClientProvider>
   </ThemeProvider>

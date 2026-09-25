@@ -1,8 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Search, ChevronLeft, HelpCircle, User, LogOut, Shield, Flame, BookOpen, Trophy } from "lucide-react";
+import { Search, ChevronLeft, HelpCircle, User, LogOut, Shield, Flame, BookOpen, Trophy, Clock } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { useAuth } from "@/contexts/AuthContext";
 import { useGamification } from "@/hooks/useGamification";
+import { usePomodoro } from "@/contexts/PomodoroContext";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import {
   DropdownMenu,
@@ -22,6 +23,7 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
   const navigate = useNavigate();
   const { user, profile, role, signOut } = useAuth();
   const { state: game, levelInfo } = useGamification();
+  const { timeLeft, isRunning, setIsModalOpen } = usePomodoro();
 
   return (
     <header className="sticky top-0 z-50 apple-vibrancy border-b">
@@ -45,11 +47,29 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
           <button
             onClick={() => navigate("/profile")}
             title={`${game.streakDays} Day Study Streak! Level ${levelInfo.level} ${levelInfo.title}`}
-            className="apple-press inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 transition-all border border-amber-500/20 mr-1"
+            className="apple-press inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 transition-all border border-amber-500/20 mr-0.5"
           >
             <Flame className="h-3.5 w-3.5 fill-amber-500 text-amber-500" />
             <span>{game.streakDays}</span>
             <span className="hidden sm:inline text-[10px] text-muted-foreground font-medium">({game.xp} XP)</span>
+          </button>
+
+          {/* Global Pomodoro Focus Trigger */}
+          <button
+            onClick={() => setIsModalOpen(true)}
+            title={isRunning ? `Focus session active: ${Math.floor(timeLeft / 60)}m left` : "Start Pomodoro Study Focus"}
+            className={`apple-press inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold transition-all border mr-1 ${
+              isRunning
+                ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 animate-pulse"
+                : "bg-secondary/80 text-muted-foreground hover:text-foreground border-border/80"
+            }`}
+          >
+            <Clock className={`h-3.5 w-3.5 ${isRunning ? "text-emerald-500" : "text-primary"}`} />
+            <span className="font-mono text-[11px] font-bold">
+              {isRunning
+                ? `${String(Math.floor(timeLeft / 60)).padStart(2, '0')}:${String(timeLeft % 60).padStart(2, '0')}`
+                : "Focus"}
+            </span>
           </button>
 
           {/* Materials Navigation */}
