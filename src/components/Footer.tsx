@@ -1,8 +1,16 @@
-import { Globe } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Globe, UserCheck, LogOut, LayoutDashboard, User } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "@/assets/logo.png";
+import { useAuth } from "@/contexts/AuthContext";
 
 export function Footer() {
+  const { user, profile, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/");
+  };
   return (
     <footer className="border-t mt-auto">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
@@ -55,14 +63,47 @@ export function Footer() {
           <div>
             <h4 className="font-semibold text-sm mb-3 text-foreground">Platform</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>
-                <Link to="/auth" className="hover:text-foreground transition-colors">Sign In / Register</Link>
-              </li>
-              <li className="pt-3 border-t">
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  Sign in to track progress, bookmark topics, and leave reviews.
-                </p>
-              </li>
+              {user ? (
+                <>
+                  <li>
+                    <Link to="/profile" className="flex items-center gap-1.5 hover:text-foreground transition-colors font-medium text-primary">
+                      <User className="h-3.5 w-3.5" />
+                      <span>{profile?.display_name || user.email?.split('@')[0]}</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/dashboard" className="flex items-center gap-1.5 hover:text-foreground transition-colors">
+                      <LayoutDashboard className="h-3.5 w-3.5" />
+                      <span>My Dashboard</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <button
+                      onClick={handleSignOut}
+                      className="flex items-center gap-1.5 text-xs text-destructive hover:underline pt-1"
+                    >
+                      <LogOut className="h-3 w-3" />
+                      <span>Sign Out</span>
+                    </button>
+                  </li>
+                  <li className="pt-2 border-t text-[11px] text-muted-foreground">
+                    Connected to ITM SLS Baroda Student Cloud
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li>
+                    <Link to="/auth" className="hover:text-foreground transition-colors font-medium text-primary">
+                      Sign In / Register
+                    </Link>
+                  </li>
+                  <li className="pt-3 border-t">
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      Sign in to track progress, bookmark topics, and unlock achievements.
+                    </p>
+                  </li>
+                </>
+              )}
             </ul>
           </div>
 

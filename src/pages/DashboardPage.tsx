@@ -43,10 +43,27 @@ export default function DashboardPage() {
     const list: any[] = [];
     const seen = new Set<string>();
 
-    // 1. Add DB subjects first
+    // 1. Add DB subjects first, enriched with static metadata (units, semester)
     if (dbSubjects && dbSubjects.length > 0) {
       for (const s of dbSubjects) {
-        list.push(s);
+        const matchingStatic = subjects.find(
+          (stat) =>
+            stat.id.toLowerCase() === s.id.toLowerCase() ||
+            (s.code && stat.code?.toLowerCase() === s.code.toLowerCase()) ||
+            (s.name && stat.name.toLowerCase() === s.name.toLowerCase())
+        );
+        const resolvedSemester = Number(s.semester || matchingStatic?.semester || 3);
+        const resolvedUnits = (matchingStatic?.units && matchingStatic.units.length > 0)
+          ? matchingStatic.units
+          : (s.units || []);
+
+        list.push({
+          ...s,
+          semester: resolvedSemester,
+          units: resolvedUnits,
+          description: s.description || matchingStatic?.description,
+          icon: s.icon || matchingStatic?.icon || 'book-open',
+        });
         seen.add(s.id.toLowerCase());
         if (s.code) seen.add(s.code.toLowerCase());
         if (s.name) seen.add(s.name.toLowerCase());
@@ -61,7 +78,10 @@ export default function DashboardPage() {
         seen.has(s.name.toLowerCase());
 
       if (!isKnown) {
-        list.push(s);
+        list.push({
+          ...s,
+          semester: Number(s.semester || 3),
+        });
         seen.add(s.id.toLowerCase());
         if (s.code) seen.add(s.code.toLowerCase());
         seen.add(s.name.toLowerCase());
@@ -79,14 +99,18 @@ export default function DashboardPage() {
 
   const filteredSubjects = useMemo(() => {
     if (filterSem === 'all') return allSubjectsToRender;
-    return allSubjectsToRender.filter((s) => s.semester === filterSem);
+    return allSubjectsToRender.filter((s) => Number(s.semester) === Number(filterSem));
   }, [allSubjectsToRender, filterSem]);
 
   // Calculate dynamic stats
-  const totalTopics = allSubjectsToRender.reduce(
-    (sum, s) => sum + (s.units?.reduce((uSum: number, u: any) => uSum + (u.topics?.length || 0), 0) || 0),
-    0
-  ) || 1;
+  const totalTopics = useMemo(() => {
+    const sum = allSubjectsToRender.reduce(
+      (acc, s) => acc + (s.units?.reduce((uSum: number, u: any) => uSum + (u.topics?.length || 0), 0) || 0),
+      0
+    );
+    return sum > 0 ? sum : 85;
+  }, [allSubjectsToRender]);
+
   const completedCount = progress.completedTopics.length;
   const overallProgress = Math.min(100, Math.round((completedCount / totalTopics) * 100));
 
