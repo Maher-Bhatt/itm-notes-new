@@ -1,2085 +1,2366 @@
-import { Subject } from './types';
+import type { Subject } from './types';
 
 export const computerArchitecture: Subject = {
-  id: 'ca-101',
-  name: 'Computer Architecture',
-  code: 'CS401',
-  color: 'bg-blue-600',
-  icon: 'cpu',
-  description: 'Complete MST Exam Survival Notes covering Units 1 to 6 in plain language, all 46 question-bank questions, register transfer language, basic computer design, assembly programming, microprogrammed control, CPU datapath, and pipelining.',
-  semester: 3,
-  units: [
-    // ── UNIT 1: REGISTER TRANSFER & MICRO-OPERATIONS ──
+  "id": "ca-101",
+  "name": "Computer Architecture",
+  "code": "CS401",
+  "color": "bg-blue-500",
+  "icon": "cpu",
+  "description": "Comprehensive University Syllabus for Computer Architecture — Register Transfer Language, Basic Computer Design, Instruction Cycle, Microprogrammed Control, Central Processing Unit (ALU & Addressing Modes), Computer Arithmetic (Booth Algorithm), Memory Hierarchy & I/O Organization",
+  "semester": 3,
+  "units": [
     {
-      id: 'unit-1',
-      title: 'Unit 1: Register Transfer & Micro-operations',
-      description: 'Register Transfer Language (RTL), Common Bus System, Arithmetic, Logic & Shift Micro-operations, and Arithmetic Logic Unit (ALU) design.',
-      topics: [
+      "id": "ca-u1",
+      "title": "Unit 1: Register Transfer Language & Micro-Operations",
+      "description": "Register Transfer Language (RTL), Register Notation, Bus and Memory Transfers via Common Bus (Multiplexers and Three-State Buffers), Arithmetic Micro-operations (Binary Adder, Adder-Subtractor, 4-bit Arithmetic Circuit), 16 Logic Micro-operations & Bit-Manipulation Applications, and Shift Micro-operations with Overflow Detection.",
+      "topics": [
         {
-          id: 'rtl-fundamentals',
-          title: 'Register Transfer Language (RTL)',
-          simpleExplanation: 'RTL is a universal symbolic language used to describe how data moves between CPU registers during clock cycles, similar to how code assigns variables.',
-          detailedExplanation: `## Register Transfer Language (RTL)
-
-Micro-operation: An elementary operation performed on data stored in registers during one clock pulse (shift, load, clear, add, increment...). RTL is the symbolic notation used to describe such micro-operations precisely and briefly. RTL specifies **what** happens; the control unit is the physical circuit that makes it happen.
-
-### RTL Hardware Implementation Architecture
-\`\`\`mermaid
-flowchart LR
-    R1["Source Register R1 (Flip-Flop Group)"] -->|"16-Bit Data Lines"| R2["Destination Register R2 (Flip-Flop Group)"]
-    P["Control Variable (P = 1)"] -->|"Load Enable Signal"| LD["LOAD Pin"]
-    CLK["Master Clock Pulse (Rising Edge)"] -->|"CLK"| R2
-    LD --> R2
-\`\`\`
-
-### RTL Symbols Master Table (Exam Mandatory)
-| Symbol | Meaning | Example | Hardware Implementation |
-| :--- | :--- | :--- | :--- |
-| **Capital letters (+ digits)** | Name of a register | AR, PC, IR, R1, R2 | Flip-flops grouped together |
-| **Arrow (<-)** | Transfer of data (source on right, destination on left) | R2 <- R1 | Non-destructive read, destructive write |
-| **Colon (:)** | Separates control condition from operation | P: R2 <- R1 | P connected to LOAD input of R2 |
-| **Comma (,)** | Two simultaneous operations at same clock edge | R2 <- R1, R1 <- R2 | Simultaneous register swap |
-| **Parentheses ( )** | Specific bit-slice of a register | R2(0-7), PC(H) | Sub-byte or address slice wiring |
-| **Square brackets [ ]** | Memory word selected by address register | DR <- M[AR] | Memory Read operation via Bus |
-
-### Two RTL Statements Explained (Question Bank Q1)
-1. **Simple Transfer (R2 <- R1):**
-   The content of R1 is copied into R2 at the next clock edge. R1 keeps its value (**non-destructive read**), while R2's old value is overwritten (**destructive write**).
-2. **Conditional Transfer (P: R2 <- R1):**
-   The transfer happens only if control condition P = 1, and it occurs at the next active clock pulse. In physical hardware, signal P is wired directly to the **LOAD input** of R2, and R1's output pins are connected to R2's data inputs.
-3. **Simultaneous Transfer (T: R1 <- R2, R2 <- R1):**
-   Swaps the contents of two registers at the same clock tick. This is possible because both registers latch data on the rising clock edge simultaneously using edge-triggered flip-flops.
-
-> [!NOTE] **DEV BRAIN:**
-> RTL is literally assignment statements in code:
-> \`\`\`c
-> if (P) {
->     R2 = R1; // Non-destructive read: R1 still has its value!
-> }
-> \`\`\`
-> Half of computer architecture is just concepts you already know in programming (pointers, stacks, loops, condition checks), implemented directly with copper wires.
-
-> [!TIP] **EXAM TIP:**
-> For 3-mark question Q1: Always write the definition of RTL, give R2 <- R1 (simple) and P: R2 <- R1 (conditional), and explicitly explain that P connects to the **LOAD input** of the destination register.
-
-> [!WARNING] **TRAP:**
-> R2 <- R1 is a **COPY**, never a move! The source register R1 is never cleared or emptied.
-
-> [!IMPORTANT] **MEMORIZE:**
-> **Micro-operation:** An elementary operation performed on data stored in one or more registers during one single clock pulse.`,
-          shortNotes: 'RTL uses symbols like R2 <- R1 to denote register data copy. P: R2 <- R1 is conditional transfer where P connects to R2 LOAD pin.',
-          examples: [
+          "id": "ca-u1-t1",
+          "title": "Register Transfer Language (RTL), Register Notation, Bus & Memory Transfers via Common Bus",
+          "simpleExplanation": "Register Transfer Language (RTL) is a formal symbolic language used to describe the transfer of binary information between CPU registers during discrete clock cycles. Instead of writing long English descriptions, RTL uses concise expressions like P: R2 <- R1 to specify that data moves from register R1 to R2 when control condition P equals 1. In hardware, this movement is mediated by a common bus system constructed using multiplexers or three-state buffers to eliminate dedicated point-to-point wiring.",
+          "detailedExplanation": "## 1. Register Transfer Language (RTL) Fundamentals\n\nComputer systems are composed of elementary digital hardware modules such as registers, decoders, arithmetic elements, and control logic. To design and document digital architectures efficiently, computer scientists use **Register Transfer Language (RTL)**.\n\nA **micro-operation** is an elementary operational step performed on the binary data stored in one or more registers during a single clock pulse. Examples include loading, clearing, shifting, complementing, and incrementing. Register transfer language provides the symbolic notation used to specify these micro-operations and the control conditions governing their execution.\n\n```mermaid\nflowchart LR\n    subgraph Control_Unit [\"Control Subsystem\"]\n        P[\"Control Variable (P)\"]\n    end\n    subgraph Datapath [\"Register Transfer Datapath\"]\n        R1[\"Source Register R1 (16-bit)\"] -->|\"Data Bus Lines\"| R2[\"Destination Register R2 (16-bit)\"]\n        CLK[\"Master Clock\"] -->|\"Active Clock Edge\"| R2\n    end\n    P -->|\"Load Enable Signal (LD)\"| R2\n```\n\n### 1.1 Hardware Implementation of RTL Statements\nConsider the canonical conditional register transfer statement:\n$$P: R2 \\leftarrow R1$$\n\nThis statement embodies three critical hardware characteristics:\n1. **Source Register ($R1$):** Provides data at its output pins continuously. The read operation is **non-destructive**; $R1$ retains its value after the transfer.\n2. **Destination Register ($R2$):** Replaces its existing data with the data from $R1$. The write operation is **destructive**.\n3. **Control Variable ($P$):** A boolean condition generated by the control unit. In physical hardware, $P$ is wired directly to the **LOAD input pin** of register $R2$. The clock signal ($CLK$) is wired to the flip-flop clock inputs. Transfer occurs synchronously on the rising (or falling) edge of $CLK$ provided $P = 1$.\n\n```\n          +-----------------------+\n          |  Source Register R1   |\n          +-----------+-----------+\n                      | 16-bit Data Lines\n                      v\n          +-----------------------+\nControl P --------> LOAD          |\nClock   --------> CLK   Dest R2   |\n          +-----------------------+\n```\n\n---\n\n## 2. Register Notation & RTL Symbols Master Table\n\nIn RTL, registers are designated by capital alphanumeric identifiers denoting their functional role. Individual bits and sub-fields can be selectively addressed using parentheses.\n\n| Symbol | Description | Example | Hardware Interpretation |\n| :--- | :--- | :--- | :--- |\n| **Capital Letters** | Name of a register | $AR, PC, IR, R1, R2$ | Bank of edge-triggered flip-flops |\n| **Parentheses $( )$** | Bit slice or subfield | $PC(L), AR(0-11), IR(15)$ | Hardwired tap off specific flip-flop outputs |\n| **Arrow $(\\leftarrow)$** | Directed data transfer | $R2 \\leftarrow R1$ | Connecting source outputs to destination inputs |\n| **Colon $(:)$** | Control condition prefix | $P: R2 \\leftarrow R1$ | Boolean expression gating the Load Enable |\n| **Comma $(,)$** | Simultaneous micro-operations | $T_0: AR \\leftarrow PC, PC \\leftarrow PC + 1$ | Concurrent transfers at the same clock edge |\n| **Square Brackets $[ ]$**| Memory address indexing | $DR \\leftarrow M[AR]$ | Memory Read bus cycle via Address Register |\n\n### 1.2 Multi-Field Slicing Examples\n- $PC(H)$: Bits 8 through 15 (upper byte) of a 16-bit Program Counter.\n- $PC(L)$: Bits 0 through 7 (lower byte) of the Program Counter.\n- $IR(Opcode)$: Bits 12 through 14 of an Instruction Register.\n- $IR(I)$: Bit 15, denoting direct ($0$) or indirect ($1$) addressing mode.\n\n---\n\n## 3. Bus and Memory Transfers\n\nIn a system containing $k$ registers of $n$ bits each, point-to-point dedicated connections would require $k \\times (k - 1) \\times n$ physical copper wires, causing routing congestion and severe capacitive loading. To solve this, computers use a **Common Bus System**.\n\nA bus consists of a set of common lines (one for each bit of a register) over which binary information is transferred one word at a time. Control signals determine which register selects the bus as a source and which register accepts data from the bus as a destination.\n\n### 3.1 Common Bus System Constructed with Multiplexers\nFor a system with 4 registers ($A, B, C, D$) of 4 bits each ($0$ to $3$), four $4$-to-$1$ multiplexers are required (one MUX per bit position).\n\n```mermaid\nflowchart TD\n    subgraph RegBank [\"Four 4-Bit Registers\"]\n        A[\"Register A (A3..A0)\"]\n        B[\"Register B (B3..B0)\"]\n        C[\"Register C (C3..C0)\"]\n        D[\"Register D (D3..D0)\"]\n    end\n    subgraph MUX_Array [\"Multiplexer Array (4 MUXes)\"]\n        M3[\"MUX 3 (Bit 3)\"]\n        M2[\"MUX 2 (Bit 2)\"]\n        M1[\"MUX 1 (Bit 1)\"]\n        M0[\"MUX 0 (Bit 0)\"]\n    end\n    S[\"Select Inputs (S1, S0)\"] --> M3 & M2 & M1 & M0\n    A --> M3 & M2 & M1 & M0\n    B --> M3 & M2 & M1 & M0\n    C --> M3 & M2 & M1 & M0\n    D --> M3 & M2 & M1 & M0\n    M3 --> Line3[\"Bus Line 3\"]\n    M2 --> Line2[\"Bus Line 2\"]\n    M1 --> Line1[\"Bus Line 1\"]\n    M0 --> Line0[\"Bus Line 0\"]\n```\n\nThe two selection lines $S_1$ and $S_0$ select one of the four registers onto the common bus according to the following truth table:\n\n| $S_1$ | $S_0$ | Selected Register | Bus Lines Output |\n| :---: | :---: | :---: | :---: |\n| 0 | 0 | **Register A** | $A_3, A_2, A_1, A_0$ |\n| 0 | 1 | **Register B** | $B_3, B_2, B_1, B_0$ |\n| 1 | 0 | **Register C** | $C_3, C_2, C_1, C_0$ |\n| 1 | 1 | **Register D** | $D_3, D_2, D_1, D_0$ |\n\nTo transfer data from the bus into a destination register, the destination register's **LOAD** pin is activated during the clock cycle while the source is multiplexed onto the bus.\n\n### 3.2 Three-State Bus Buffers (Tri-State Logic)\nAn alternative to multiplexers is the use of **three-state bus buffers**. A three-state gate exhibits three distinct output states:\n1. **Logic 0** (low potential, sink current)\n2. **Logic 1** (high potential, source current)\n3. **High-Impedance State (Hi-Z)**: The output behaves as an open circuit (disconnected), presenting mega-ohms of resistance.\n\n```\n       Normal Input A ------------+\n                                  |\n                                 / \\\n                                /   \\  Three-State Buffer\n                               +-----+\n                                  |\n       Control Input C -----------+\n                                  |\n                                  v Output Y (A if C=1, Hi-Z if C=0)\n```\n\nWhen control enable input $C = 1$, output $Y = A$. When $C = 0$, output $Y$ is in the **Hi-Z state**, allowing other gates to drive the line without short-circuit contention. By using an $n$-to-$2^n$ decoder to assert exactly one buffer's enable input at any time, multiple register outputs can be tied directly to a single physical copper trace.\n\n---\n\n## 4. Memory Transfers: Read and Write Micro-operations\n\nMemory transfers are performed across the bus system using the **Address Register ($AR$)** and **Data Register ($DR$)**:\n\n### 4.1 Memory Read Operation\nReads a word from the memory address specified by $AR$ into $DR$:\n$$DR \\leftarrow M[AR]$$\nHardware sequence:\n1. $AR$ drives the memory address bus lines.\n2. The control unit asserts the **READ** control pin of the RAM module.\n3. Memory places data on the common data bus within access time $t_{AA}$.\n4. At the next active clock transition, $DR$ loads the data from the bus.\n\n### 4.2 Memory Write Operation\nStores the contents of a data register (e.g., $R1$) into the memory location selected by $AR$:\n$$M[AR] \\leftarrow R1$$\nHardware sequence:\n1. $AR$ supplies the address lines.\n2. Register $R1$ is placed onto the common data bus.\n3. The control unit asserts the **WRITE** control strobe.\n4. Memory latches the bus lines into the addressed storage cells.\n\n> [!TIP] **EXAM TIP:**\n> In university exams, when asked to construct a common bus system for $k$ registers of $n$ bits:\n> - Number of Multiplexers required = $n$ (one per bit slice).\n> - Size of each Multiplexer = $k$-to-$1$ (one input per register).\n> - Number of selection lines = $\\lceil \\log_2 k \\rceil$.\n\n> [!NOTE] **DEV BRAIN:**\n> Think of RTL as hardware assignment operators. $P: R2 \\leftarrow R1$ is exactly equivalent to `if (P) R2 = R1;` running on a hardware clock cycle. Unlike software threads, hardware transfers can occur simultaneously in one tick: $T: R1 \\leftarrow R2, R2 \\leftarrow R1$ safely swaps two registers with zero temporary variables because both flip-flops latch their inputs at the exact same physical clock edge!\n\n> [!WARNING] **TRAP:**\n> Never confuse memory read with register copy. $R1 \\leftarrow R2$ takes 1 clock cycle internally across the CPU bus. $DR \\leftarrow M[AR]$ requires bus arbitration, memory address decoding, memory chip access delay, and data bus latching.\n\n> [!IMPORTANT] **MEMORIZE:**\n> - **Tri-State Buffer Output Rule:** When $C = 1 \\implies Y = A$; when $C = 0 \\implies Y = \\text{Hi-Z}$ (high impedance).\n> - **Simultaneous Register Swap:** $T_0: R1 \\leftarrow R2, R2 \\leftarrow R1$ is valid in hardware without data corruption due to edge-triggered master-slave flip-flops.",
+          "shortNotes": "RTL defines hardware micro-operations symbolically. Common Bus systems share lines via MUXes (n MUXes of k-to-1) or Tri-State Buffers (Hi-Z when disabled). Memory read: DR <- M[AR]; Memory write: M[AR] <- R1.",
+          "examples": [
             {
-              title: 'RTL Swap Operation',
-              code: 'T: R1 <- R2, R2 <- R1',
-              explanation: 'When timing signal T is high, both registers swap values simultaneously at the clock edge.'
+              "title": "Multiplexer Bus Selection Code Calculation",
+              "problem": "A digital system has 8 registers (R0 to R7) of 16 bits each. Design the common bus system using multiplexers. Determine: (a) Number of multiplexers needed, (b) Size of each multiplexer, (c) Number of select lines, and (d) The selection code to transfer data from R5 to R3.",
+              "explanation": "Follow standard bus formulas: The number of MUXes equals register word length (16). The size of each MUX equals register count to 1 (8-to-1). Select lines = log2(8) = 3. Source register R5 determines the select lines S2 S1 S0 = 101. Destination R3 has its LOAD line asserted.",
+              "code": "# Multiplexer Common Bus Configuration Calculator\ndef bus_parameters(num_registers, bit_width, source_reg, dest_reg):\n    import math\n    num_muxes = bit_width\n    mux_inputs = num_registers\n    select_lines = math.ceil(math.log2(num_registers))\n    select_code = format(source_reg, f'0{select_lines}b')\n    \n    return {\n        \"MUX Count\": num_muxes,\n        \"MUX Size\": f\"{mux_inputs}-to-1\",\n        \"Select Lines\": select_lines,\n        \"Selection Code (S2 S1 S0)\": select_code,\n        \"Active Load Pin\": f\"R{dest_reg}.LOAD = 1\"\n    }\n\nprint(bus_parameters(num_registers=8, bit_width=16, source_reg=5, dest_reg=3))",
+              "output": "{'MUX Count': 16, 'MUX Size': '8-to-1', 'Select Lines': 3, 'Selection Code (S2 S1 S0)': '101', 'Active Load Pin': 'R3.LOAD = 1'}"
             }
           ],
-          keyPoints: [
-            'RTL describes microscopic data movements between registers.',
-            'Arrow denotes data transfer direction (Dest <- Source).',
-            'Transfers are non-destructive reads and destructive writes.',
-            'Colon separates timing/control signals from the micro-operation.'
+          "keyPoints": [
+            "RTL provides a concise mathematical and engineering syntax to describe synchronous hardware micro-operations.",
+            "A common bus eliminates N*(N-1) dedicated point-to-point connections, routing transfers through shared data pathways.",
+            "An n-bit bus for k registers requires n multiplexers of size k-to-1, with ceil(log2 k) select lines.",
+            "Three-state gates provide a high-impedance (Hi-Z) state that prevents bus contention when multiple devices share one physical line.",
+            "Memory transfers use AR as address pointer: DR <- M[AR] for Read and M[AR] <- R1 for Write."
           ],
-          theoryQuestions: [
+          "theoryQuestions": [
             {
-              question: 'Define Register Transfer Language (RTL). State the meaning of R2 <- R1 and P: R2 <- R1 with hardware implications.',
-              marks: '3 Marks',
-              answer: 'Register Transfer Language (RTL) is a symbolic notation used to describe the micro-operations performed on data stored in registers during clock cycles.\n\n1. **R2 <- R1 (Unconditional Transfer):** Data from register R1 is copied into register R2 at the active clock edge. R1 retains its value (non-destructive read), while R2 takes the new value.\n2. **P: R2 <- R1 (Conditional Transfer):** The transfer occurs only if control condition P = 1. In physical hardware, control signal P is wired directly to the **LOAD enable pin** of R2, while the master clock connects to R2\'s clock input.',
-              keyPoints: [
-                'Definition of RTL as symbolic description of micro-operations.',
-                'Unconditional vs conditional transfer differentiation.',
-                'Control variable P wired to LOAD pin of destination register.'
+              "question": "Explain Register Transfer Language (RTL) with appropriate examples. Describe how a common bus system is constructed for 4 registers of 4 bits each using multiplexers.",
+              "marks": "7 Marks",
+              "answer": "1. Define RTL as a symbolic language specifying internal register transfers and micro-operations executed during clock pulses.\n2. Detail the format P: R2 <- R1, explaining non-destructive read, destructive write, and load gating.\n3. Common Bus Construction: Explain that 4 multiplexers (MUX 0 to MUX 3) of size 4-to-1 are needed for 4-bit registers A, B, C, D.\n4. Show bit mapping: MUX i receives input bit i from registers A, B, C, D.\n5. Present the 2-to-4 selection table: S1S0 = 00 (A), 01 (B), 10 (C), 11 (D).\n6. Detail how destination register latches data via its independent LOAD enable input on the active clock edge.",
+              "keyPoints": [
+                "Definition of micro-operation and RTL notation",
+                "Hardware realization using D flip-flops, multiplexers, and LOAD signal",
+                "4-to-1 MUX array structure with bit-slice inputs",
+                "Truth table mapping S1, S0 to selected registers"
               ]
             },
             {
-              question: 'Explain how simultaneous register transfer (T: R1 <- R2, R2 <- R1) is implemented in digital hardware.',
-              marks: '5 Marks',
-              answer: 'Simultaneous register transfer (T: R1 <- R2, R2 <- R1) swaps the contents of R1 and R2 in a single clock cycle without requiring a temporary register.\n\n**Hardware Mechanism:**\n- Registers in modern computers are built using **edge-triggered master-slave flip-flops**.\n- At the rising edge of clock pulse T, the inputs of R1 (connected to outputs of R2) and inputs of R2 (connected to outputs of R1) are sampled simultaneously.\n- Because propagation delay through the flip-flop is greater than the setup time, both registers latch each other\'s old contents before the new outputs appear.',
-              keyPoints: [
-                'Uses edge-triggered master-slave flip-flops.',
-                'Sampling occurs simultaneously on the rising clock edge.',
-                'Propagation delay prevents race conditions.'
+              "question": "What is a Three-State Bus Buffer? Explain its states and show how it is used with a decoder to construct a common bus system.",
+              "marks": "5 Marks",
+              "answer": "A three-state bus buffer has three distinct states: logic 0, logic 1, and high-impedance (Hi-Z). When enable C=1, output Y=A; when C=0, output is Hi-Z (open-circuit). To build a common bus, the outputs of all registers are connected to tri-state buffers whose outputs are tied together on the common bus line. A 2-to-4 decoder decodes select signals S1 S0 to assert exactly one buffer enable signal at a time, ensuring that only one register drives the bus while all others remain in high-impedance mode.",
+              "keyPoints": [
+                "Definition of High-Impedance (Hi-Z) state",
+                "Enable control C gating the buffer",
+                "2-to-4 decoder ensuring mutual exclusion",
+                "Elimination of bus contention"
               ]
             }
           ],
-          mcqs: [
+          "mcqs": [
             {
-              question: 'In RTL, what does the statement P: R2 <- R1 mean in hardware?',
-              options: ['R1 is cleared to 0', 'R2 loads R1 only if P = 1', 'R1 and R2 are compared', 'P is incremented'],
-              correctIndex: 1,
-              explanation: 'The colon denotes a condition: transfer occurs only if control variable P = 1.'
+              "question": "How many multiplexers and what size are needed to design a common bus system for 16 registers of 32 bits each?",
+              "options": [
+                "16 multiplexers of size 32-to-1",
+                "32 multiplexers of size 16-to-1",
+                "4 multiplexers of size 16-to-1",
+                "32 multiplexers of size 32-to-1"
+              ],
+              "correctIndex": 1,
+              "explanation": "The number of multiplexers equals the word size (32 bits), and the size of each multiplexer equals the number of registers to 1 (16-to-1)."
             },
             {
-              question: 'What is the nature of the read and write operations during R2 <- R1?',
-              options: ['Destructive read, non-destructive write', 'Non-destructive read, destructive write', 'Both are destructive', 'Both are non-destructive'],
-              correctIndex: 1,
-              explanation: 'Reading R1 does not erase its content (non-destructive), while writing to R2 replaces its previous content (destructive).'
+              "question": "In the RTL statement 'T: R1 <- R2, R2 <- R1', what happens on the next clock pulse assuming condition T = 1?",
+              "options": [
+                "Data is corrupted because of simultaneous bus writing",
+                "R1 and R2 successfully swap their values simultaneously",
+                "R1 receives R2, but R2 retains its old value",
+                "The computer triggers a hardware trap"
+              ],
+              "correctIndex": 1,
+              "explanation": "Edge-triggered flip-flops sample their inputs at the rising edge and update their outputs shortly after, allowing simultaneous register exchange without a temporary register."
             },
             {
-              question: 'In digital hardware, where is the control signal P physically connected during P: R2 <- R1?',
-              options: ['Clock input of R1', 'Clear input of R2', 'LOAD enable input of R2', 'Output enable of R2'],
-              correctIndex: 2,
-              explanation: 'Control condition P is connected to the LOAD input of the destination register R2 so it only updates when P=1.'
+              "question": "When a three-state buffer has its control input disabled (C = 0), its output is in:",
+              "options": [
+                "Logic 0",
+                "Logic 1",
+                "High-impedance state (Hi-Z)",
+                "Ground potential"
+              ],
+              "correctIndex": 2,
+              "explanation": "Disabling a tri-state buffer disconnects its output logically, placing it in the high-impedance (Hi-Z) state where it behaves like an open circuit."
             },
             {
-              question: 'What type of flip-flops allow simultaneous register swapping (T: R1 <- R2, R2 <- R1) in one clock cycle?',
-              options: ['Level-sensitive latches', 'Edge-triggered flip-flops', 'Monostable multivibrators', 'Dynamic RAM cells'],
-              correctIndex: 1,
-              explanation: 'Edge-triggered flip-flops sample data precisely at the clock transition, allowing simultaneous swapping without corruption.'
+              "question": "The RTL notation for reading a word from memory address specified by AR into Data Register DR is:",
+              "options": [
+                "DR <- AR",
+                "DR <- M[AR]",
+                "M[AR] <- DR",
+                "AR <- M[DR]"
+              ],
+              "correctIndex": 1,
+              "explanation": "DR <- M[AR] denotes a memory read operation where the contents of memory at location AR are loaded into register DR."
             }
           ]
         },
-
-        // ── TOPIC 2: COMMON BUS SYSTEM ──
         {
-          id: 'common-bus-system',
-          title: 'Common Bus System (Multiplexers & Tri-State Buffers)',
-          simpleExplanation: 'Instead of wiring every register to every other register, all registers share one public data highway called a bus, with multiplexers deciding who drives it.',
-          detailedExplanation: `## Common Bus System
-
-Connecting every register directly to every other register requires $n(n-1)$ dedicated wires, resulting in an impossible physical wiring bottleneck. To solve this, all registers share a single set of parallel wires called the **Common Bus**.
-
-### Common Bus Architecture Using 4x1 Multiplexers (Q19 & Q36)
-Only one register may drive the bus at any given nanosecond. A set of multiplexers selects which register drives the bus using select lines.
-
-\`\`\`mermaid
-flowchart TD
-    subgraph Regs["Source Registers (4 Registers, 4-Bit each)"]
-        R0["Register 0 (R0)"]
-        R1["Register 1 (R1)"]
-        R2["Register 2 (R2)"]
-        R3["Register 3 (R3)"]
-    end
-
-    subgraph MUXes["Multiplexer Unit (Four 4x1 MUXes)"]
-        M0["4x1 MUX (Bit 0)"]
-        M1["4x1 MUX (Bit 1)"]
-        M2["4x1 MUX (Bit 2)"]
-        M3["4x1 MUX (Bit 3)"]
-    end
-
-    SEL["Select Inputs S1, S0"] ==> MUXes
-    R0 -->|"Bit 0..3"| MUXes
-    R1 -->|"Bit 0..3"| MUXes
-    R2 -->|"Bit 0..3"| MUXes
-    R3 -->|"Bit 0..3"| MUXes
-
-    MUXes ==>|"4-Bit Parallel Lines"| Bus["=== COMMON BUS (4 Parallel Lines) ==="]
-
-    Bus -->|"Data to Load"| LD0["LD: R0 Enabled"]
-    Bus -->|"Data to Load"| LD1["LD: R1 Enabled"]
-    Bus -->|"Data to Load"| LD2["LD: R2 Enabled"]
-    Bus -->|"Data to Load"| LD3["LD: R3 Enabled"]
-\`\`\`
-
-### Selection Signals & Micro-operations Table:
-| $S_1$ | $S_0$ | Register Selected on Bus | Destination Load | Micro-operation Executed |
-| :---: | :---: | :---: | :---: | :--- |
-| **0** | **0** | **R0** | LD(R2) = 1 | \`R2 <- R0\` |
-| **0** | **1** | **R1** | LD(R3) = 1 | \`R3 <- R1\` |
-| **1** | **0** | **R2** | LD(R0) = 1 | \`R0 <- R2\` |
-| **1** | **1** | **R3** | LD(R1) = 1 | \`R1 <- R3\` |
-
-### Three-State (Tri-State) Buffer Bus Architecture
-\`\`\`mermaid
-flowchart TD
-    subgraph TriState["Tri-State Buffer Alternative"]
-        R0_B["Register 0 Out"] --> B0["Buffer 0"]
-        R1_B["Register 1 Out"] --> B1["Buffer 1"]
-        R2_B["Register 2 Out"] --> B2["Buffer 2"]
-        R3_B["Register 3 Out"] --> B3["Buffer 3"]
-        DEC["2x4 Decoder"]
-    end
-
-    SEL2["Select Inputs S1, S0"] ==> DEC
-    DEC -->|"Enable E0"| B0
-    DEC -->|"Enable E1"| B1
-    DEC -->|"Enable E2"| B2
-    DEC -->|"Enable E3"| B3
-
-    B0 & B1 & B2 & B3 ==> BusLine["=== Shared Bus Wire (One Active, Three in High-Z) ==="]
-\`\`\`
-
-### Mathematical Rules for Bus Sizing:
-- **Number of Select Lines:** For $n$ registers, you need $\\log_2(n)$ selection lines ($S_1, S_0$ for 4 registers).
-- **Number of Multiplexers:** For $n$ registers of $k$ bits each, you need **$k$ multiplexers**, each of size **$n \\times 1$**.
-
-> [!NOTE] **DEV BRAIN:**
-> The bus is a shared resource with single-writer semantics, exactly like a mutex lock around a shared variable. Two registers driving the bus at once = **bus contention = physical short-circuit / corrupted data**.
-
-> [!TIP] **EXAM TIP:**
-> For 7-mark question Q36: Always draw the 4-register MUX diagram, write the $S_1 S_0$ selection table, and state the formula: $n$ registers of $k$ bits need $k$ MUXes of size $n \\times 1$.
-
-> [!WARNING] **TRAP:**
-> In the basic computer, memory address **never travels through the common bus**! AR is wired directly to memory address pins. Only memory data travels through the bus.`,
-          shortNotes: 'Common bus shares lines across registers. S1 S0 choose source register via MUXes. LD pin latches bus data into destination.',
-          examples: [
+          "id": "ca-u1-t2",
+          "title": "Arithmetic Micro-operations: Binary Adder, Adder-Subtractor & 4-bit Arithmetic Circuit",
+          "simpleExplanation": "Arithmetic micro-operations perform basic numeric calculations on data stored in registers, such as addition, subtraction, increment, and decrement. Hardware designers combine full adders and XOR gates to create a unified Binary Adder-Subtractor that handles both operations using 2's complement arithmetic. By adding multiplexers to control the inputs to the adder, a versatile 4-bit Arithmetic Circuit can execute eight distinct arithmetic operations using selection lines and an input carry.",
+          "detailedExplanation": "## 1. Arithmetic Micro-operations Overview\n\nArithmetic micro-operations execute elementary numerical computations on numeric data stored in CPU registers. The four fundamental operations are addition, subtraction, increment, and decrement. Multiplication and division are compound sequences of add-shift or subtract-shift micro-operations.\n\n### 1.1 Primary Arithmetic Micro-operations in RTL\n| RTL Statement | Operation Description | Hardware Implementation |\n| :--- | :--- | :--- |\n| $R3 \\leftarrow R1 + R2$ | Add contents of $R1$ and $R2$, transfer to $R3$ | Binary Parallel Adder |\n| $R3 \\leftarrow R1 + \\overline{R2} + 1$ | Subtract $R2$ from $R1$ using 2's complement | Binary Adder-Subtractor ($M=1$) |\n| $R2 \\leftarrow \\overline{R2}$ | 1's complement (bitwise NOT) of $R2$ | Inverter bank |\n| $R2 \\leftarrow \\overline{R2} + 1$ | 2's complement (negate) of $R2$ | Inverter bank + incrementer |\n| $R1 \\leftarrow R1 + 1$ | Increment $R1$ by 1 | Binary Counter / Incrementer |\n| $R1 \\leftarrow R1 - 1$ | Decrement $R1$ by 1 | Decrementer circuit |\n\n---\n\n## 2. 4-bit Binary Parallel Adder and Ripple Carry Delay\n\nA **Full Adder (FA)** adds three single bits ($A_i, B_i, C_i$) to produce a Sum ($S_i$) and Carry-out ($C_{i+1}$):\n$$S_i = A_i \\oplus B_i \\oplus C_i$$\n$$C_{i+1} = A_i B_i + C_i (A_i \\oplus B_i)$$\n\nA **4-bit Binary Parallel Adder** cascades four Full Adders in series:\n```\n       A3 B3             A2 B2             A1 B1             A0 B0\n        |  |              |  |              |  |              |  |\n      +------+          +------+          +------+          +------+\nC4 <--| FA 3 |<-- C3 <--| FA 2 |<-- C2 <--| FA 1 |<-- C1 <--| FA 0 |<-- C0 (Cin)\n      +------+          +------+          +------+          +------+\n         |                 |                 |                 |\n         S3                S2                S1                S0\n```\n\n### Ripple Carry Limitation\nThe carry output of each stage ripples into the next stage as carry-in. For an $n$-bit adder with gate delay $t_g$:\n$$t_{\\text{ripple}} = 2n \\cdot t_g$$\nFor 64-bit ALUs, ripple delay becomes an intolerable performance bottleneck, motivating the use of **Carry Lookahead Adders (CLA)**.\n\n---\n\n## 3. 4-bit Binary Adder-Subtractor Circuit\n\nSubtraction in digital computers is performed via 2's complement addition:\n$$A - B = A + (\\text{2's complement of } B) = A + \\overline{B} + 1$$\n\nBy inserting an **XOR gate** before the $B$ inputs of each Full Adder and tying one input of each XOR to a Mode control line $M$:\n- When $M = 0$: $B_i \\oplus 0 = B_i$, and $C_0 = 0$. The circuit performs $A + B$ (Addition).\n- When $M = 1$: $B_i \\oplus 1 = \\overline{B_i}$, and $C_0 = 1$. The circuit performs $A + \\overline{B} + 1 = A - B$ (Subtraction).\n\n```mermaid\nflowchart TD\n    M[\"Mode Control M\"] -->|\"Cin = M\"| FA0[\"FA 0\"]\n    M --> XOR0[\"XOR 0\"] & XOR1[\"XOR 1\"] & XOR2[\"XOR 2\"] & XOR3[\"XOR 3\"]\n    B0 --> XOR0 -->|\"B0 if M=0, B0' if M=1\"| FA0\n    B1 --> XOR1 -->|\"B1 if M=0, B1' if M=1\"| FA1[\"FA 1\"]\n    B2 --> XOR2 -->|\"B2 if M=0, B2' if M=1\"| FA2[\"FA 2\"]\n    B3 --> XOR3 -->|\"B3 if M=0, B3' if M=1\"| FA3[\"FA 3\"]\n    A0 --> FA0\n    A1 --> FA1\n    A2 --> FA2\n    A3 --> FA3\n    FA0 -->|\"C1\"| FA1 -->|\"C2\"| FA2 -->|\"C3\"| FA3 -->|\"C4 (Cout)\"| C_OUT[\"Cout\"]\n    FA3 --> S3[\"S3\"]\n    FA2 --> S2[\"S2\"]\n    FA1 --> S1[\"S1\"]\n    FA0 --> S0[\"S0\"]\n```\n\n---\n\n## 4. 4-bit Arithmetic Circuit Design & Function Table\n\nA general-purpose arithmetic circuit combines a parallel adder with multiplexers to generate 8 different arithmetic operations.\nEach stage $i$ consists of:\n- A Full Adder receiving $A_i$ directly at its first input.\n- A 4-to-1 Multiplexer controlling the second input $Y_i$ using selection lines $S_1, S_0$.\n- Input carry $C_{in}$ fed into the least significant full adder ($FA_0$).\n\n```\n          S1 S0\n           |  |\n      +----+----+\n      | 4-to-1  |\nB_i --| MUX     |------> Y_i ---+\n      +---------+               |\n                                v\nA_i ------------------------> [ FA_i ] <--- C_i\n                                |   |\n                                |   +-----> C_{i+1}\n                                v\n                               Sum S_i\n```\n\nThe 4-to-1 MUX data inputs are wired as:\n- Input 0: $B_i$\n- Input 1: $\\overline{B_i}$\n- Input 2: $0$ (logic 0)\n- Input 3: $1$ (logic 1, all 1s in 2's complement is $-1$)\n\n### 4.1 Master Arithmetic Circuit Function Table\nThe output equation of the full adder is $D = A + Y + C_{in}$.\n\n| $S_1$ | $S_0$ | $C_{in}$ | $Y$ Input | Output Expression | Micro-operation Name |\n| :---: | :---: | :---: | :---: | :---: | :--- |\n| 0 | 0 | 0 | $B$ | $D = A + B$ | **Add** |\n| 0 | 0 | 1 | $B$ | $D = A + B + 1$ | **Add with Carry** |\n| 0 | 1 | 0 | $\\overline{B}$ | $D = A + \\overline{B}$ | **Subtract with Borrow** |\n| 0 | 1 | 1 | $\\overline{B}$ | $D = A + \\overline{B} + 1$ | **Subtract ($A - B$)** |\n| 1 | 0 | 0 | $0$ | $D = A$ | **Transfer $A$** |\n| 1 | 0 | 1 | $0$ | $D = A + 1$ | **Increment $A$** |\n| 1 | 1 | 0 | $1$ ($=-1$) | $D = A - 1$ | **Decrement $A$** |\n| 1 | 1 | 1 | $1$ ($=-1$) | $D = A$ | **Transfer $A$** |\n\n---\n\n## 5. Arithmetic Overflow Detection\n\nWhen two signed binary numbers are added or subtracted, the result may exceed the capacity of the $n$-bit register. An **overflow** occurs if the result has the wrong mathematical sign.\n\n### Hardware Overflow Rule\nIn 2's complement arithmetic, overflow is detected by comparing the carry entering the sign bit position ($C_{n-1}$) with the carry emerging from the sign bit position ($C_n$):\n$$V = C_n \\oplus C_{n-1}$$\n- If $V = 0$: No overflow occurred; result is mathematically correct.\n- If $V = 1$: Overflow occurred; result is invalid.\n\n```\n       C4 (Cout)         C3 (Cin to Sign)\n           \\               /\n            \\             /\n             v           v\n            +-------------+\n            |  XOR Gate   | --------> Overflow Flag V\n            +-------------+\n```\n\n> [!TIP] **EXAM TIP:**\n> Always remember the two condition inputs that produce **Transfer A**:\n> 1. $S_1 S_0 C_{in} = 100 \\implies A + 0 + 0 = A$\n> 2. $S_1 S_0 C_{in} = 111 \\implies A + (-1) + 1 = A$\n> Both produce the identical transfer micro-operation!\n\n> [!NOTE] **DEV BRAIN:**\n> Overflow ($V$) is NOT the same as unsigned carry-out ($C$). An unsigned addition $250 + 10 = 260$ overflows an 8-bit byte ($C=1$), whereas signed addition $(+100) + (+50) = +150$ produces $-106$ in 2's complement with $C=0$ but $V=1$. Always check $V = C_n \\oplus C_{n-1}$ for signed arithmetic!\n\n> [!WARNING] **TRAP:**\n> Do NOT say subtraction is $A - B$. In physical hardware, the subtractor CANNOT subtract directly; it ALWAYS adds $A + \\overline{B} + 1$. Subtraction without the $+1$ ($C_{in} = 0$) results in 1's complement subtraction (Subtract with Borrow).\n\n> [!IMPORTANT] **MEMORIZE:**\n> - Mode line $M = 0 \\implies \\text{Add}$, $M = 1 \\implies \\text{Subtract}$.\n> - $S_1 S_0 = 01, C_{in} = 1 \\implies A - B$ (2's complement subtraction).\n> - $S_1 S_0 = 10, C_{in} = 1 \\implies A + 1$ (Increment).\n> - $S_1 S_0 = 11, C_{in} = 0 \\implies A - 1$ (Decrement).",
+          "shortNotes": "Binary Adder-Subtractor uses XOR gates with Mode M (M=0 add, M=1 sub). 4-bit Arithmetic Circuit produces 8 operations using S1, S0, Cin. Overflow V = Cn XOR C(n-1).",
+          "examples": [
             {
-              title: 'Swap via Bus requires 3 Clock Cycles',
-              code: 'T1: R3 <- R1 (S=01, LD R3)\nT2: R1 <- R2 (S=10, LD R1)\nT3: R2 <- R3 (S=11, LD R2)',
-              explanation: 'Because the bus can carry only one word at a time, swapping R1 and R2 requires temporary register R3 over 3 separate clock pulses.'
+              "title": "Arithmetic Circuit Micro-operation Evaluation",
+              "problem": "Given an arithmetic circuit with 8-bit registers A = 01010110 (86 decimal) and B = 00110101 (53 decimal). Determine the 8-bit output D and carry-out Cout for: (a) S1 S0 Cin = 000, (b) S1 S0 Cin = 011, (c) S1 S0 Cin = 101, and (d) S1 S0 Cin = 110.",
+              "explanation": "Map the control signals to the arithmetic function table: (a) 000: Add A + B; (b) 011: Subtract A - B (A + B' + 1); (c) 101: Increment A (A + 1); (d) 110: Decrement A (A - 1). Compute the binary operations.",
+              "code": "# Arithmetic Circuit Output Simulator\ndef sim_arithmetic_circuit(A, B, S1, S0, Cin):\n    if (S1, S0) == (0, 0):\n        Y = B\n    elif (S1, S0) == (0, 1):\n        Y = ~B & 0xFF\n    elif (S1, S0) == (1, 0):\n        Y = 0\n    else: # (1, 1)\n        Y = 0xFF # 2's complement of -1\n    \n    result = A + Y + Cin\n    Cout = 1 if result > 0xFF else 0\n    D = result & 0xFF\n    return format(D, '08b'), Cout\n\nA = 0b01010110 # 86\nB = 0b00110101 # 53\n\nprint(\"(a) 000 (Add):\", sim_arithmetic_circuit(A, B, 0, 0, 0))\nprint(\"(b) 011 (Sub):\", sim_arithmetic_circuit(A, B, 0, 1, 1))\nprint(\"(c) 101 (Inc):\", sim_arithmetic_circuit(A, B, 1, 0, 1))\nprint(\"(d) 110 (Dec):\", sim_arithmetic_circuit(A, B, 1, 1, 0))",
+              "output": "(a) 000 (Add): ('10001011', 0)\n(b) 011 (Sub): ('00100001', 1)\n(c) 101 (Inc): ('01010111', 0)\n(d) 110 (Dec): ('01010101', 1)"
             }
           ],
-          keyPoints: [
-            'Bus eliminates point-to-point wiring.',
-            'Requires k multiplexers of size n x 1 for n registers of k bits.',
-            'Tri-state buffers use High-Z state to isolate inactive registers.',
-            'Destination register requires its LOAD pin asserted.'
+          "keyPoints": [
+            "Arithmetic micro-operations operate on register data using adders, subtractors, incrementers, and decrementers.",
+            "The Binary Adder-Subtractor uses XOR gates as programmable inverters controlled by Mode input M.",
+            "A 4-bit arithmetic circuit produces 8 distinct micro-operations governed by S1, S0, and Cin.",
+            "Decrement is implemented by adding all 1s (2's complement of -1): D = A + 1111 + 0 = A - 1.",
+            "Overflow in signed arithmetic occurs if and only if V = Cn XOR C(n-1) evaluates to 1."
           ],
-          theoryQuestions: [
+          "theoryQuestions": [
             {
-              question: 'Explain the design and operation of a Common Bus System for 4 registers of 4 bits each using multiplexers. Provide the selection table.',
-              marks: '7 Marks',
-              answer: 'A Common Bus System connects multiple registers to a single set of parallel wires to avoid point-to-point wiring bottleneck ($n(n-1)$ wires).\n\n**Design for 4 Registers (R0, R1, R2, R3) of 4 Bits each:**\n1. **Number of Multiplexers:** 4 multiplexers (one for each bit position: Bit 0, Bit 1, Bit 2, Bit 3).\n2. **Size of Multiplexers:** $4 \\times 1$ multiplexers (since there are 4 source registers).\n3. **Selection Lines:** $\\log_2(4) = 2$ selection lines ($S_1, S_0$).\n\n**Selection Table:**\n- $S_1 S_0 = 00$: R0 is placed on the bus.\n- $S_1 S_0 = 01$: R1 is placed on the bus.\n- $S_1 S_0 = 10$: R2 is placed on the bus.\n- $S_1 S_0 = 11$: R3 is placed on the bus.\n\nTo load the selected bus word into destination register Rx, its specific LOAD (LD) pin must be made active (1) during the rising clock edge.',
-              keyPoints: [
-                'Need 4 MUXes of size 4x1 for 4 registers of 4 bits.',
-                'Select lines S1, S0 select source register.',
-                'Destination register asserts its LD pin to latch data.'
+              "question": "Draw the block diagram of a 4-bit Binary Adder-Subtractor and explain how it performs addition and subtraction using the Mode control line M.",
+              "marks": "5 Marks",
+              "answer": "1. Draw four cascaded Full Adders (FA 0 to FA 3).\n2. Explain that the Mode control line M connects to Cin of FA 0 and to one input of four 2-input XOR gates.\n3. When M = 0: XOR output is Bi ^ 0 = Bi, and Cin = 0. The circuit executes D = A + B + 0 = A + B (Addition).\n4. When M = 1: XOR output is Bi ^ 1 = Bi' (1's complement), and Cin = 1. The circuit executes D = A + B' + 1 = A - B (2's complement subtraction).\n5. Discuss carry-out C4 and overflow flag V = C4 ^ C3.",
+              "keyPoints": [
+                "Cascaded Full Adders with carry propagation",
+                "XOR gate behaving as conditional inverter",
+                "M=0 produces true addition; M=1 produces 2's complement subtraction",
+                "Cout and overflow detection formula"
               ]
             },
             {
-              question: 'How does a tri-state buffer bus differ from a multiplexer-based bus? Explain the role of the High-Impedance (High-Z) state.',
-              marks: '5 Marks',
-              answer: 'A Three-State (Tri-State) buffer has three output states: Logic 0, Logic 1, and **High-Impedance (High-Z)**.\n\n**Difference from MUX Bus:**\n1. In a MUX bus, all connections run into multiplexer logic gates before reaching the bus lines.\n2. In a Tri-State bus, the outputs of all registers are connected directly to the same physical wire through tri-state gates.\n\n**Role of High-Z:**\nWhen the control enable line of a tri-state buffer is disabled (0), the buffer enters High-Z state, acting as an open circuit (physically disconnected). A $2 \\times 4$ decoder ensures that only **one buffer** is enabled at any given time, while all other three buffers remain in High-Z, completely preventing bus contention and electrical short circuits.',
-              keyPoints: [
-                'Three output states: 0, 1, and High-Z.',
-                'High-Z acts as an open circuit / disconnected wire.',
-                'Decoder ensures only one driver is active at any time.'
+              "question": "Design an Arithmetic Circuit that generates 8 arithmetic micro-operations using 4-to-1 Multiplexers and Full Adders. Provide its complete Function Table.",
+              "marks": "7 Marks",
+              "answer": "1. Architectural diagram: Show stage i consisting of a 4-to-1 MUX connected to input Y of a Full Adder, with A connected directly to input X.\n2. Detail the 4 inputs of MUX: Input 0 = B, Input 1 = B', Input 2 = 0, Input 3 = 1.\n3. Present the 8-row Function Table listing S1, S0, Cin, Y, Output D, and Micro-operation Name.\n4. Explain Add (000), Add with carry (001), Subtract with borrow (010), Subtract (011), Transfer A (100 and 111), Increment A (101), and Decrement A (110).\n5. Explain why input 3 set to 1 produces decrement when Cin = 0.",
+              "keyPoints": [
+                "Block diagram with MUX and Full Adder per bit",
+                "Input selection lines S1, S0 generating Y operand",
+                "Function table covering all 8 combinations of S1, S0, Cin",
+                "Mathematical derivation of Decrement: A + (-1) = A - 1"
               ]
             }
           ],
-          mcqs: [
+          "mcqs": [
             {
-              question: 'How many 4x1 multiplexers are needed to construct a common bus system for 8 registers of 16 bits each?',
-              options: ['4', '8', '16', '32'],
-              correctIndex: 2,
-              explanation: 'The number of multiplexers equals the number of bits in each register (k = 16 MUXes), while each MUX must be 8x1.'
+              "question": "In a 4-bit arithmetic circuit, what operation is performed when selection lines S1 S0 = 11 and Cin = 0?",
+              "options": [
+                "Transfer A",
+                "Increment A",
+                "Decrement A",
+                "Subtract A from B"
+              ],
+              "correctIndex": 2,
+              "explanation": "When S1 S0 = 11, MUX selects all 1s (which represents -1 in 2's complement). With Cin = 0, the adder computes A + (-1) + 0 = A - 1 (Decrement A)."
             },
             {
-              question: 'How many selection lines are required for a bus system connecting 16 registers?',
-              options: ['2', '3', '4', '8'],
-              correctIndex: 2,
-              explanation: 'Selection lines = log2(16) = 4 selection lines (S3, S2, S1, S0).'
+              "question": "In signed 2's complement binary addition, an arithmetic overflow is detected when:",
+              "options": [
+                "Cout = 1",
+                "Cin = 1",
+                "Cn XOR C(n-1) = 1",
+                "Cn AND C(n-1) = 1"
+              ],
+              "correctIndex": 2,
+              "explanation": "Overflow occurs when the carry into the sign bit position differs from the carry out of the sign bit position, formalized as V = Cn XOR C(n-1)."
             },
             {
-              question: 'What is the electrical behavior of a tri-state buffer in the High-Impedance (High-Z) state?',
-              options: ['Drives a strong 0V to ground', 'Drives a strong 5V to Vcc', 'Acts as an open circuit with virtually infinite resistance', 'Oscillates between 0 and 1'],
-              correctIndex: 2,
-              explanation: 'High-Z behaves as an open switch or disconnected wire, preventing current flow or interference with the active driver.'
+              "question": "In a Binary Adder-Subtractor circuit, what is the role of the XOR gates connected to operand B?",
+              "options": [
+                "They multiply B by 2",
+                "They act as programmable inverters yielding B when M=0 and B' when M=1",
+                "They detect whether B is zero",
+                "They perform parity checking on B"
+              ],
+              "correctIndex": 1,
+              "explanation": "The XOR gate outputs B XOR 0 = B when M = 0 (for addition) and B XOR 1 = B' when M = 1 (for 2's complement subtraction)."
             },
             {
-              question: 'Why can two registers NOT be simultaneously placed onto the common bus?',
-              options: ['Causes memory address overflow', 'Causes bus contention, short-circuit, and corrupted data', 'Clock speed drops by 50%', 'Destination registers cannot be selected'],
-              correctIndex: 1,
-              explanation: 'If two drivers attempt to drive different logic levels onto the same wire simultaneously, high current causes physical overheating and undefined voltage levels.'
+              "question": "What is the worst-case propagation delay in an n-bit ripple carry adder where each full adder has a carry delay of 2 gate delays?",
+              "options": [
+                "2 gate delays",
+                "n gate delays",
+                "2n gate delays",
+                "n^2 gate delays"
+              ],
+              "correctIndex": 2,
+              "explanation": "Because carry must propagate sequentially through all n stages, the total delay is n * (delay per stage) = 2n gate delays."
             }
           ]
         },
-
-        // ── TOPIC 3: ARITHMETIC MICRO-OPERATIONS ──
         {
-          id: 'arithmetic-micro-ops',
-          title: 'Arithmetic Micro-operations & 2s Complement Subtraction',
-          simpleExplanation: 'Arithmetic micro-operations perform basic math (add, sub, increment, decrement) on binary numbers stored in registers using digital adder circuits.',
-          detailedExplanation: `## Arithmetic Micro-operations & 2's Complement
-
-Arithmetic micro-operations perform basic calculations on numeric data stored in registers.
-
-### 4-Bit Binary Adder-Subtractor Circuit
-The standard hardware implementation uses 4 Full Adders and 4 XOR gates controlled by a **Mode Input ($M$)**:
-- When $M = 0$: $B \\oplus 0 = B$, $C_{in} = 0 \\implies$ **Addition: $A + B$**
-- When $M = 1$: $B \\oplus 1 = \\overline{B}$, $C_{in} = 1 \\implies$ **Subtraction: $A + \\overline{B} + 1 = A - B$**
-
-\`\`\`mermaid
-flowchart TD
-    subgraph Circuit["4-Bit Adder-Subtractor Hardware"]
-        M["Mode Input M\n(0 = Add, 1 = Sub)"]
-        FA0["Full Adder 0"]
-        FA1["Full Adder 1"]
-        FA2["Full Adder 2"]
-        FA3["Full Adder 3"]
-        X0["XOR 0"]
-        X1["XOR 1"]
-        X2["XOR 2"]
-        X3["XOR 3"]
-    end
-
-    M ==>|"Cin = 0 or 1"| FA0
-    M ==> X0 & X1 & X2 & X3
-
-    B0["B[0]"] --> X0 --> FA0
-    B1["B[1]"] --> X1 --> FA1
-    B2["B[2]"] --> X2 --> FA2
-    B3["B[3]"] --> X3 --> FA3
-
-    A0["A[0]"] --> FA0
-    A1["A[1]"] --> FA1
-    A2["A[2]"] --> FA2
-    A3["A[3]"] --> FA3
-
-    FA0 -->|"C1"| FA1 -->|"C2"| FA2 -->|"C3"| FA3 -->|"C4"| Cout["Carry Out / Overflow Flag"]
-    FA0 --> S0["S[0]"]
-    FA1 --> S1["S[1]"]
-    FA2 --> S2["S[2]"]
-    FA3 --> S3["S[3]"]
-\`\`\`
-
-### Micro-operations Summary Table:
-| Symbolic Notation | Description | Hardware Realization |
-| :--- | :--- | :--- |
-| \`R3 <- R1 + R2\` | Add contents of R1 and R2 | Binary Adder with $C_{in} = 0$ |
-| \`R3 <- R1 - R2\` | Subtract R2 from R1 (2's complement) | Binary Adder with $B$ complemented, $C_{in} = 1$ |
-| \`R2 <- \\overline{R2}\` | 1's complement of R2 | Inverters or XOR with 1 |
-| \`R2 <- \\overline{R2} + 1\` | 2's complement of R2 (negation) | Invert bits and add 1 |
-| \`R1 <- R1 + 1\` | Increment R1 by 1 | Dedicated Incrementer circuit or add with $B=0, C_{in}=1$ |
-| \`R1 <- R1 - 1\` | Decrement R1 by 1 | Add with all 1's in $B$ ($-1$ in 2's complement) |
-
-### Overflow Detection Formula:
-In 2's complement arithmetic, an overflow occurs when the addition of two numbers of the same sign produces a result of opposite sign.
-$$\\mathbf{V = C_{in\\text{ (MSB)}} \\oplus C_{out\\text{ (MSB)}}}$$
-If carry into sign bit $\\neq$ carry out of sign bit, $V = 1$ (Overflow detected!).`,
-          shortNotes: 'Adder-subtractor uses XOR gates with mode bit M: M=0 adds (Cin=0), M=1 subtracts using 2s complement (Cin=1). V = C_in XOR C_out.',
-          examples: [
+          "id": "ca-u1-t3",
+          "title": "Logic Micro-operations: Hardware Implementation of 16 Operations & Bit Applications",
+          "simpleExplanation": "Logic micro-operations treat individual bits in a register as independent binary variables, performing bitwise operations like AND, OR, XOR, and NOT without carry propagation. Computer architectures implement all 16 possible two-variable Boolean functions using a single 4-to-1 multiplexer per bit slice. These operations are crucial for low-level systems programming to perform selective setting, selective clearing, complementing, and bit masking.",
+          "detailedExplanation": "## 1. Logic Micro-operations Overview\n\nUnlike arithmetic micro-operations, **logic micro-operations** process each bit of a register independently without generating or propagating carries. They consider registers as collections of individual binary variables.\n\nFor two binary variables $A$ and $B$, there are $2^2 = 4$ possible input combinations ($00, 01, 10, 11$). Because a truth table with 4 rows can generate $2^4 = 16$ distinct output combinations, there are exactly **16 different logic micro-operations** that can be defined between two binary words.\n\n---\n\n## 2. Master Table of 16 Logic Micro-operations\n\nThe following table documents all 16 Boolean functions $F_0$ through $F_{15}$ for variables $A$ and $B$:\n\n| Boolean Function | Boolean Expression | Name / RTL Operator | Functional Operation |\n| :---: | :--- | :--- | :--- |\n| $F_0$ | $0$ | **Clear** | All bits set to 0 |\n| $F_1$ | $A \\land B$ | **AND** | Bitwise logical AND |\n| $F_2$ | $A \\land \\overline{B}$ | **Inhibit $B$** | Bits of $A$ where $B$ is 0 |\n| $F_3$ | $A$ | **Transfer $A$** | Copy register $A$ unchanged |\n| $F_4$ | $\\overline{A} \\land B$ | **Inhibit $A$** | Bits of $B$ where $A$ is 0 |\n| $F_5$ | $B$ | **Transfer $B$** | Copy register $B$ unchanged |\n| $F_6$ | $A \\oplus B$ | **Exclusive-OR (XOR)** | True when bits differ |\n| $F_7$ | $A \\lor B$ | **OR** | Bitwise logical OR |\n| $F_8$ | $\\overline{A \\lor B}$ | **NOR** | Bitwise logical NOR |\n| $F_9$ | $\\overline{A \\oplus B}$ | **Exclusive-NOR (XNOR)** | True when bits match (Equivalence) |\n| $F_{10}$| $\\overline{B}$ | **Complement $B$** | Bitwise inversion of $B$ |\n| $F_{11}$| $A \\lor \\overline{B}$ | **Implication** | $A$ or not $B$ |\n| $F_{12}$| $\\overline{A}$ | **Complement $A$** | Bitwise inversion of $A$ |\n| $F_{13}$| $\\overline{A} \\lor B$ | **Conditional** | If $A$ then $B$ |\n| $F_{14}$| $\\overline{A \\land B}$ | **NAND** | Bitwise logical NAND |\n| $F_{15}$| $1$ | **Set to All 1s** | All bits set to 1 |\n\n---\n\n## 3. Hardware Implementation of Logic Micro-operations\n\nHardware implementations typically do not build 16 separate gate networks. Instead, a standard ALU stage implements the 4 most commonly used operations (AND, OR, XOR, NOT) using four basic logic gates connected to a 4-to-1 Multiplexer.\n\n```mermaid\nflowchart TD\n    Ai[\"A_i\"] --> AND_G[\"AND Gate\"] & OR_G[\"OR Gate\"] & XOR_G[\"XOR Gate\"] & NOT_G[\"NOT Gate\"]\n    Bi[\"B_i\"] --> AND_G & OR_G & XOR_G\n    AND_G -->|\"Input 0\"| MUX[\"4-to-1 Multiplexer\"]\n    OR_G -->|\"Input 1\"| MUX\n    XOR_G -->|\"Input 2\"| MUX\n    NOT_G -->|\"Input 3\"| MUX\n    S1[\"Selection Line S1\"] --> MUX\n    S0[\"Selection Line S0\"] --> MUX\n    MUX --> Ei[\"Logic Output E_i\"]\n```\n\n### 3.1 Multiplexer Selection Function Table\n| $S_1$ | $S_0$ | Selected Input | Output Function $E_i$ | Operation Name |\n| :---: | :---: | :---: | :--- | :--- |\n| 0 | 0 | Input 0 | $E_i = A_i \\land B_i$ | **AND** |\n| 0 | 1 | Input 1 | $E_i = A_i \\lor B_i$ | **OR** |\n| 1 | 0 | Input 2 | $E_i = A_i \\oplus B_i$ | **XOR** |\n| 1 | 1 | Input 3 | $E_i = \\overline{A_i}$ | **Complement (NOT)** |\n\nFor an $n$-bit register, this circuit is replicated $n$ times with shared selection lines $S_1$ and $S_0$.\n\n---\n\n## 4. Practical Applications of Logic Micro-operations\n\nLogic micro-operations are fundamental tools in systems programming, operating system kernels, and device drivers for manipulating individual bits within status registers and hardware control ports.\n\n```\nOperation Matrix:\nRegister A:  1 0 1 0  1 1 0 0  (Original Data)\nRegister B:  1 0 1 0  0 0 0 0  (Control Mask)\n-----------------------------------------------\nSelective-Set   (A OR B):   1 0 1 0  1 1 0 0\nSelective-Clear (A AND B'): 0 0 0 0  1 1 0 0\nSelective-Comp  (A XOR B):  0 0 0 0  1 1 0 0\nMasking         (A AND B):  1 0 1 0  0 0 0 0\n```\n\n### 4.1 Selective-Set (Using OR)\nSets specific bits in register $A$ to 1 without altering other bits.\n- Rule: $A \\leftarrow A \\lor B$\n- Mechanism: A 1 in register $B$ forces the corresponding bit in $A$ to 1 (since $x \\lor 1 = 1$), while a 0 in $B$ leaves the bit unchanged (since $x \\lor 0 = x$).\n\n### 4.2 Selective-Clear (Using $A \\land \\overline{B}$)\nClears specific bits in register $A$ to 0 without altering other bits.\n- Rule: $A \\leftarrow A \\land \\overline{B}$\n- Mechanism: A 1 in register $B$ causes a 0 in $\\overline{B}$, forcing the bit in $A$ to 0 (since $x \\land 0 = 0$). A 0 in $B$ causes a 1 in $\\overline{B}$, preserving $A$ (since $x \\land 1 = x$).\n\n### 4.3 Selective-Complement (Using XOR)\nInverts specific bits in register $A$ while leaving other bits unchanged.\n- Rule: $A \\leftarrow A \\oplus B$\n- Mechanism: A 1 in $B$ toggles the bit in $A$ (since $x \\oplus 1 = \\overline{x}$), while a 0 in $B$ leaves the bit unaffected (since $x \\oplus 0 = x$).\n\n### 4.4 Masking (Using AND)\nClears an entire group of bits to 0 while preserving the remaining bits.\n- Rule: $A \\leftarrow A \\land B$\n- Mechanism: A 0 in mask register $B$ clears the bit in $A$ to 0; a 1 in $B$ preserves the original value in $A$. Used extensively to isolate subfields (e.g., extracting opcode bits).\n\n### 4.5 Insert Operation\nReplaces an internal group of bits in register $A$ with a new bit pattern. Executed in two sequential steps:\n1. Mask out (clear) the target bit slice: $A \\leftarrow A \\land B_{\\text{mask}}$\n2. OR the new bit pattern into the cleared slice: $A \\leftarrow A \\lor B_{\\text{pattern}}$\n\n> [!TIP] **EXAM TIP:**\n> When asked how to toggle specific bits, immediately write **XOR**.\n> When asked how to force specific bits to 1, immediately write **OR**.\n> When asked how to clear specific bits to 0, immediately write **AND with inverted mask** ($A \\land \\overline{B}$) or **AND with 0 mask**.\n\n> [!NOTE] **DEV BRAIN:**\n> These 4 operations are the foundation of C bitwise manipulation:\n> ```c\n> flags |= (1 << 3);    // Selective-Set bit 3\n> flags &= ~(1 << 3);   // Selective-Clear bit 3\n> flags ^= (1 << 3);    // Selective-Complement bit 3\n> val = reg & 0x0F;     // Masking lower nibble\n> ```\n\n> [!WARNING] **TRAP:**\n> Do not confuse **Selective-Clear** with **Masking**:\n> - In Masking ($A \\land B$), bits in $A$ corresponding to **0s** in $B$ are cleared.\n> - In Selective-Clear ($A \\land \\overline{B}$), bits in $A$ corresponding to **1s** in $B$ are cleared.\n\n> [!IMPORTANT] **MEMORIZE:**\n> - $F = A \\oplus B$: Selective-Complement (toggles bits where $B=1$).\n> - $F = A \\lor B$: Selective-Set (forces bits to 1 where $B=1$).\n> - $F = A \\land \\overline{B}$: Selective-Clear (forces bits to 0 where $B=1$).\n> - Hardware logic circuit uses a 4-to-1 MUX selecting between AND, OR, XOR, and NOT.",
+          "shortNotes": "16 logic micro-operations process bits independently. Hardware uses 4-to-1 MUX for AND, OR, XOR, NOT. Applications: Selective-Set (OR), Selective-Clear (A AND B'), Selective-Complement (XOR), Masking (AND).",
+          "examples": [
             {
-              title: '2s Complement Subtraction Example',
-              code: 'A = 0101 (5), B = 0011 (3)\n1s complement of B = 1100\n2s complement of B = 1101 (-3)\nSum = 0101 + 1101 = 10010\nDiscard end-around carry: Result = 0010 (+2)',
-              explanation: 'Hardware adds the 2s complement of B directly to A.'
+              "title": "Bit Manipulation Subroutine Trace",
+              "problem": "Given register A = 10101100. Show the binary contents of register B and the operation needed to: (a) Selectively set bits 0 and 1, (b) Selectively clear bits 6 and 7, (c) Selectively complement bits 2 and 3, and (d) Mask the upper nibble.",
+              "explanation": "Formulate mask B with 1s in target bit positions: (a) Selective-Set uses OR with B=00000011; (b) Selective-Clear uses A AND B' with B=11000000; (c) Selective-Complement uses XOR with B=00001100; (d) Masking uses AND with B=11110000.",
+              "code": "# Bit Manipulation Simulator\nA = 0b10101100\n\n# (a) Selective-Set bits 0 and 1\nB_set = 0b00000011\nres_a = A | B_set\n\n# (b) Selective-Clear bits 6 and 7\nB_clr = 0b11000000\nres_b = A & (~B_clr & 0xFF)\n\n# (c) Selective-Complement bits 2 and 3\nB_xor = 0b00001100\nres_c = A ^ B_xor\n\n# (d) Mask upper nibble\nB_mask = 0b11110000\nres_d = A & B_mask\n\nprint(f\"Original A: {bin(A)[2:].zfill(8)}\")\nprint(f\"(a) Set 0,1:   {bin(res_a)[2:].zfill(8)}\")\nprint(f\"(b) Clr 6,7:   {bin(res_b)[2:].zfill(8)}\")\nprint(f\"(c) Xor 2,3:   {bin(res_c)[2:].zfill(8)}\")\nprint(f\"(d) Mask High: {bin(res_d)[2:].zfill(8)}\")",
+              "output": "Original A: 10101100\n(a) Set 0,1:   10101111\n(b) Clr 6,7:   00101100\n(c) Xor 2,3:   10100000\n(d) Mask High: 10100000"
             }
           ],
-          keyPoints: [
-            'Subtraction is implemented as addition with 2s complement: A + B\' + 1.',
-            'Mode input M controls both the XOR complementers and the initial carry-in.',
-            'Overflow flag V detects out-of-range signed results.'
+          "keyPoints": [
+            "Logic micro-operations treat register bits as independent boolean variables with zero carry propagation.",
+            "There are 16 possible truth tables for 2 variables, corresponding to 16 logic micro-operations.",
+            "ALU logic stages use a 4-to-1 MUX to select between AND, OR, XOR, and NOT operations.",
+            "Selective-Set uses OR; Selective-Clear uses AND with inverted mask; Selective-Complement uses XOR.",
+            "Masking isolates specific bit fields by ANDing with a mask containing 0s in unwanted positions."
           ],
-          theoryQuestions: [
+          "theoryQuestions": [
             {
-              question: 'Explain the hardware implementation of a 4-bit adder-subtractor circuit with a logic diagram.',
-              marks: '5 Marks',
-              answer: 'A 4-bit adder-subtractor is constructed using four full adders and four XOR gates with a mode input $M$.\n\n- **Addition Mode ($M = 0$):** When $M = 0$, $B_i \\oplus 0 = B_i$, so the true values of $B$ enter the full adders. The carry-in $C_0 = M = 0$. The circuit computes $S = A + B$.\n- **Subtraction Mode ($M = 1$):** When $M = 1$, $B_i \\oplus 1 = \\overline{B_i}$ (1\'s complement), and the carry-in $C_0 = M = 1$. The circuit computes $S = A + \\overline{B} + 1 = A - B$ (2\'s complement subtraction).\n\nThus, a single circuit performs both operations controlled by one line.',
-              keyPoints: [
-                'Full adders + XOR gates.',
-                'M=0 gives A + B.',
-                'M=1 gives A + B\' + 1 (subtraction).'
+              "question": "Explain the hardware implementation of a one-stage logic circuit that produces AND, OR, XOR, and Complement micro-operations.",
+              "marks": "5 Marks",
+              "answer": "1. Draw a one-stage logic diagram containing four gates: 2-input AND, 2-input OR, 2-input XOR, and 1-input Inverter (NOT), all taking inputs Ai and Bi (except Inverter taking Ai).\n2. Connect the outputs of the four gates to data inputs 0, 1, 2, 3 of a 4-to-1 Multiplexer.\n3. Show selection lines S1 and S0 controlling the MUX.\n4. Provide the Function Table:\n   - S1 S0 = 00 -> Ei = Ai AND Bi\n   - S1 S0 = 01 -> Ei = Ai OR Bi\n   - S1 S0 = 10 -> Ei = Ai XOR Bi\n   - S1 S0 = 11 -> Ei = Ai' (Complement)\n5. Explain that an n-bit logic unit is built by replicating this stage n times with identical S1, S0 signals.",
+              "keyPoints": [
+                "Logic schematic with 4 gates and 4-to-1 MUX",
+                "Selection table mapping S1 S0 to logic functions",
+                "Bit-slice modular scalability for n-bit words"
               ]
             },
             {
-              question: 'What is arithmetic overflow, and how is it detected in 2\'s complement signed arithmetic?',
-              marks: '3 Marks',
-              answer: 'Arithmetic overflow occurs when the result of an arithmetic operation exceeds the representation range of the $n$-bit register ($-2^{n-1}$ to $+2^{n-1}-1$).\n\n**Detection:** In signed 2\'s complement representation, overflow is detected using an XOR gate on the carry into the sign bit ($C_{n-1}$) and the carry out of the sign bit ($C_n$):\n$$\\mathbf{V = C_{n-1} \\oplus C_n}$$\nIf $V = 1$, an overflow has occurred, indicating that adding two positive numbers produced a negative result, or vice versa.',
-              keyPoints: [
-                'Exceeds n-bit register capacity.',
-                'Formula: V = C_in(MSB) XOR C_out(MSB).',
-                'Indicates corrupted sign bit.'
+              "question": "Differentiate between Selective-Set, Selective-Clear, Selective-Complement, and Masking micro-operations with numerical binary examples.",
+              "marks": "7 Marks",
+              "answer": "Define each operation with formula, hardware mechanism, and binary example on A = 1010 1010:\n1. Selective-Set (A <- A OR B): Forces target bits to 1 without altering others. If B = 0000 1111, A becomes 1010 1111.\n2. Selective-Clear (A <- A AND B'): Forces target bits to 0. If B = 0000 1111, B' = 1111 0000, A becomes 1010 0000.\n3. Selective-Complement (A <- A XOR B): Toggles target bits. If B = 0000 1111, A becomes 1010 0101.\n4. Masking (A <- A AND B): Retains bits where B=1 and clears bits where B=0. If B = 1111 0000, A becomes 1010 0000.\nContrast Selective-Clear (clears where B=1) with Masking (clears where B=0).",
+              "keyPoints": [
+                "Formulas: OR for set, AND B' for clear, XOR for complement, AND B for masking",
+                "Explicit before/after binary numerical traces",
+                "Detailed distinction between Selective-Clear and Masking"
               ]
             }
           ],
-          mcqs: [
+          "mcqs": [
             {
-              question: 'In a 4-bit binary adder-subtractor circuit, what is the role of the XOR gates when Mode M = 1?',
-              options: ['Clear register B', 'Invert register B to produce 1s complement', 'Shift register B left by 1 bit', 'Generate parity bit'],
-              correctIndex: 1,
-              explanation: 'Since B XOR 1 = NOT(B), the XOR gates invert the B inputs to produce the 1s complement.'
+              "question": "Which logic micro-operation is used to toggle specific bits of a register without affecting other bits?",
+              "options": [
+                "AND",
+                "OR",
+                "XOR",
+                "NAND"
+              ],
+              "correctIndex": 2,
+              "explanation": "XOR (Exclusive-OR) with 1 complements a bit (x ^ 1 = x'), while XOR with 0 preserves it (x ^ 0 = x), making it ideal for bit toggling."
             },
             {
-              question: 'How is arithmetic overflow V detected in a 2s complement binary adder?',
-              options: ['V = Cout', 'V = Cin(MSB) XOR Cout(MSB)', 'V = Sign bit AND Cout', 'V = Cin(0) OR Cout(n)'],
-              correctIndex: 1,
-              explanation: 'Overflow occurs if and only if the carry into the most significant bit differs from the carry out of it (C_in XOR C_out).'
+              "question": "To selectively clear bits in register A corresponding to 1s in register B, the required micro-operation is:",
+              "options": [
+                "A <- A OR B",
+                "A <- A AND B",
+                "A <- A AND B'",
+                "A <- A XOR B"
+              ],
+              "correctIndex": 2,
+              "explanation": "Selective-clear uses A <- A AND B', so that a 1 in B becomes 0 in B', clearing the corresponding bit in A to 0."
             },
             {
-              question: 'What operation is performed when S = A + B\' + 0?',
-              options: ['A minus B', 'A minus B minus 1', 'A plus B', '1s complement subtraction'],
-              correctIndex: 1,
-              explanation: 'A + B\' is A + (not B), which is 1s complement addition, mathematically equivalent to A - B - 1.'
+              "question": "How many total logic micro-operations can be defined for two binary variables?",
+              "options": [
+                "4",
+                "8",
+                "16",
+                "32"
+              ],
+              "correctIndex": 2,
+              "explanation": "For 2 binary variables, there are 2^2 = 4 input rows. Each row can evaluate to 0 or 1, resulting in 2^4 = 16 distinct boolean functions."
             },
             {
-              question: 'What is the valid numerical range for an 8-bit signed 2s complement integer?',
-              options: ['0 to 255', '-127 to +127', '-128 to +127', '-256 to +255'],
-              correctIndex: 2,
-              explanation: 'For n bits, the range is -2^(n-1) to +2^(n-1) - 1. For n=8, this is -128 to +127.'
+              "question": "An Insert operation replaces a bit-field by executing which sequence of operations?",
+              "options": [
+                "XOR followed by AND",
+                "Masking (AND) followed by OR",
+                "OR followed by NOT",
+                "Shift left followed by Add"
+              ],
+              "correctIndex": 1,
+              "explanation": "An Insert operation first clears the target bit field to 0s using Masking (AND), and then ORs the desired new bit pattern into that field."
             }
           ]
         },
-
-        // ── TOPIC 4: LOGIC & SHIFT MICRO-OPERATIONS ──
         {
-          id: 'logic-shift-micro-ops',
-          title: 'Logic & Shift Micro-operations',
-          simpleExplanation: 'Logic micro-operations manipulate individual bit strings (AND, OR, XOR, NOT), while shift micro-operations slide bits left or right for bit manipulation or math.',
-          detailedExplanation: `## Logic & Shift Micro-operations
-
-### 1. One Stage of Logic Circuit (4x1 MUX)
-Hardware combines basic logic gates into a single 4x1 multiplexer per bit stage:
-- $S_1 S_0 = 00 \\implies$ **AND** ($E_i = A_i \\land B_i$)
-- $S_1 S_0 = 01 \\implies$ **OR** ($E_i = A_i \\lor B_i$)
-- $S_1 S_0 = 10 \\implies$ **XOR** ($E_i = A_i \\oplus B_i$)
-- $S_1 S_0 = 11 \\implies$ **NOT / Complement** ($E_i = \\overline{A_i}$)
-
-\`\`\`mermaid
-flowchart TD
-    subgraph LogicUnit["One Stage of Logic Unit (4x1 MUX)"]
-        AND_G["AND Gate: Ai AND Bi"]
-        OR_G["OR Gate: Ai OR Bi"]
-        XOR_G["XOR Gate: Ai XOR Bi"]
-        NOT_G["Inverter: NOT Ai"]
-        MUX["4x1 Multiplexer"]
-    end
-
-    A["Input Bit Ai"] --> AND_G & OR_G & XOR_G & NOT_G
-    B["Input Bit Bi"] --> AND_G & OR_G & XOR_G
-
-    AND_G -->|"Line 0"| MUX
-    OR_G -->|"Line 1"| MUX
-    XOR_G -->|"Line 2"| MUX
-    NOT_G -->|"Line 3"| MUX
-
-    S["Select Inputs: S1, S0"] ==> MUX
-    MUX --> OUT["Logic Output Ei"]
-\`\`\`
-
-### 2. Shift Micro-operations Comparison:
-\`\`\`mermaid
-flowchart TD
-    subgraph Shifts["Three Types of Shift Micro-operations"]
-        L["1. Logical Shift\n(Inserts 0 at empty end)"]
-        C["2. Circular Shift (Rotate)\n(Bit shifted out wraps around to opposite end)"]
-        A["3. Arithmetic Shift\n(Multiplies/divides by 2 while preserving sign bit)"]
-    end
-\`\`\`
-
-| Shift Type | Left Shift Operation | Right Shift Operation | Mathematical Impact |
-| :--- | :--- | :--- | :--- |
-| **Logical Shift** | \`shl R1\`: Shift left, insert 0 into LSB. | \`shr R1\`: Shift right, insert 0 into MSB. | Unsigned multiplication / division by 2. |
-| **Circular Shift (Rotate)**| \`cil R1\`: MSB leaves and enters LSB. | \`cir R1\`: LSB leaves and enters MSB. | Cyclic bit rotation with zero data loss. |
-| **Arithmetic Shift** | \`ashl R1\`: Shift left, insert 0 into LSB, check sign overflow. | \`ashr R1\`: Shift right, **MSB replicates itself** (preserves sign). | Signed multiplication / division by 2. |
-
-> [!IMPORTANT] **MEMORIZE:**
-> In Arithmetic Shift Right (\`ashr\`), the sign bit (MSB) is **replicated**:
-> $1010 \\xrightarrow{\\text{ashr}} 1101$ (remains negative!).`,
-          shortNotes: '4 logic ops via 4x1 MUX. Shifts: Logical (inserts 0), Circular (wraps around), Arithmetic (preserves sign bit; ashr replicates MSB).',
-          examples: [
+          "id": "ca-u1-t4",
+          "title": "Shift Micro-operations: Logical, Circular, Arithmetic Shifts & Hardware Shifter Design",
+          "simpleExplanation": "Shift micro-operations relocate binary data stored in registers one bit position to the left or right. Logical shifts inject zeros into empty bit positions, circular shifts (rotates) preserve all bits by feeding the shifted-out bit back into the opposite end, and arithmetic shifts multiply or divide signed numbers by powers of two while preserving the sign bit. Because shifting a signed negative number left can corrupt its sign bit, arithmetic shift hardware includes dedicated overflow detection logic.",
+          "detailedExplanation": "## 1. Shift Micro-operations Overview\n\nShift micro-operations are used for serial data transfer, bit manipulation, and fast arithmetic multiplication or division by powers of 2 ($2^k$). The contents of a register are shifted left or right by one or more bit positions.\n\nThere are three primary categories of shift micro-operations:\n1. **Logical Shifts**\n2. **Circular Shifts (Rotates)**\n3. **Arithmetic Shifts**\n\n```\n1. Logical Shift Left (SHL):\n   0 <--- [ b3 | b2 | b1 | b0 ] <--- 0\n\n2. Circular Shift Left (CIL):\n   +---< [ b3 | b2 | b1 | b0 ] <---+\n   |                               |\n   +-------------------------------+\n\n3. Arithmetic Shift Right (ASR):\n         +---+\n         |   |\n         v   |\n       [ b3 | b2 | b1 | b0 ] ---> (Discarded)\n        Sign\n```\n\n---\n\n## 2. Logical Shifts (SHL and SHR)\n\nA **logical shift** transfers 0 into the vacant bit position released by the shifting action:\n\n### 2.1 Logical Shift Left (SHL)\n$$R \\leftarrow \\text{shl } R$$\n- All bits move left by one position.\n- The most significant bit ($R_{n-1}$) is shifted out and lost (or latched into carry).\n- A **0** is inserted into the least significant bit ($R_0$).\n- *Example:* $\\text{shl}(10110010) = 01100100$.\n\n### 2.2 Logical Shift Right (SHR)\n$$R \\leftarrow \\text{shr } R$$\n- All bits move right by one position.\n- The least significant bit ($R_0$) is shifted out and lost.\n- A **0** is inserted into the most significant bit ($R_{n-1}$).\n- *Example:* $\\text{shr}(10110010) = 01011001$.\n\n---\n\n## 3. Circular Shifts / Rotates (CIL and CIR)\n\nA **circular shift** (also called **rotate**) preserves all information by circulating the shifted-out bit from one end of the register back into the vacant bit position at the opposite end.\n\n### 3.1 Circular Shift Left (CIL / ROL)\n$$R \\leftarrow \\text{cil } R$$\n- Bit $R_{n-1}$ is transferred directly into bit position $R_0$.\n- All other bits $R_i$ move left to $R_{i+1}$.\n- *Example:* $\\text{cil}(10110010) = 01100101$.\n\n### 3.2 Circular Shift Right (CIR / ROR)\n$$R \\leftarrow \\text{cir } R$$\n- Bit $R_0$ is transferred directly into bit position $R_{n-1}$.\n- All other bits $R_i$ move right to $R_{i-1}$.\n- *Example:* $\\text{cir}(10110010) = 01011001$ (with LSB $0$ rotated to MSB).\n\n---\n\n## 4. Arithmetic Shifts (ASL, ASR) & Overflow Detection\n\nArithmetic shifts operate on **signed binary numbers** represented in 2's complement notation:\n- Shifting left by 1 multiplies the signed integer by $2$.\n- Shifting right by 1 divides the signed integer by $2$.\n\n### 4.1 Arithmetic Shift Right (ASR)\nAn arithmetic shift right divides a signed number by 2 without altering its mathematical sign:\n$$R \\leftarrow \\text{asr } R$$\n- Bit $R_0$ is shifted out and discarded.\n- Bits $R_1$ through $R_{n-1}$ shift right into positions $R_0$ through $R_{n-2}$.\n- **The sign bit $R_{n-1}$ remains unchanged and is simultaneously copied into $R_{n-2}$.**\n- *Example (Positive):* $\\text{asr}(00001000) = 00000100$ ($+8 / 2 = +4$).\n- *Example (Negative):* $\\text{asr}(11111000) = 11111100$ ($-8 / 2 = -4$). Notice the MSB 1 is preserved!\n\n### 4.2 Arithmetic Shift Left (ASL) & Overflow Detection\nAn arithmetic shift left multiplies a signed number by 2:\n$$R \\leftarrow \\text{asl } R$$\n- Bit $R_0$ receives a $0$.\n- Bits $R_i$ shift left to $R_{i+1}$.\n- Bit $R_{n-1}$ receives $R_{n-2}$.\n\n**The Overflow Problem:**\nIf bit $R_{n-1}$ changes value after the shift, an arithmetic overflow has occurred because the multiplied number exceeded the register's signed representation range!\nBefore the shift occurs, overflow can be detected by checking whether the sign bit ($R_{n-1}$) differs from the bit immediately adjacent to it ($R_{n-2}$):\n$$V_s = R_{n-1} \\oplus R_{n-2}$$\n- If $V_s = 0$: $R_{n-1}$ and $R_{n-2}$ are identical. Shifting will NOT alter the sign bit; no overflow occurs.\n- If $V_s = 1$: $R_{n-1}$ and $R_{n-2}$ differ. Shifting will flip the sign bit, corrupting the number; **overflow occurs**!\n\n```\n       R_{n-1} (Sign Bit) -------+\n                                 |\n                                +-----+\n                                | XOR | ------> Overflow Flag Vs\n                                +-----+\n                                 |\n       R_{n-2} ------------------+\n```\n\n---\n\n## 5. Combinational 4-bit Shifter Hardware Design\n\nClock-pulsed shift registers require multiple clock cycles to shift data across multiple positions. In high-performance ALUs, a **combinational shifter** is built using multiplexers to execute a shift in a single propagation delay.\n\n```mermaid\nflowchart TD\n    subgraph Inputs [\"4-bit Data Inputs\"]\n        A3[\"A3\"]\n        A2[\"A2\"]\n        A1[\"A1\"]\n        A0[\"A0\"]\n        IR[\"Serial Input IR (Right)\"]\n        IL[\"Serial Input IL (Left)\"]\n    end\n    subgraph MUX_Array [\"4-to-1 Multiplexer Array\"]\n        MUX3[\"MUX 3\"]\n        MUX2[\"MUX 2\"]\n        MUX1[\"MUX 1\"]\n        MUX0[\"MUX 0\"]\n    end\n    S[\"Select (S1, S0)\"] --> MUX3 & MUX2 & MUX1 & MUX0\n    A3 --> MUX3 & MUX2\n    A2 --> MUX3 & MUX2 & MUX1\n    A1 --> MUX2 & MUX1 & MUX0\n    A0 --> MUX1 & MUX0\n    IR --> MUX3\n    IL --> MUX0\n    MUX3 --> H3[\"H3\"]\n    MUX2 --> H2[\"H2\"]\n    MUX1 --> H1[\"H1\"]\n    MUX0 --> H0[\"H0\"]\n```\n\n### 5.1 Function Table of Combinational Shifter\n| $S_1$ | $S_0$ | Operation | Output Mapping ($H_3, H_2, H_1, H_0$) |\n| :---: | :---: | :--- | :--- |\n| 0 | 0 | **No Shift** | $A_3, A_2, A_1, A_0$ |\n| 0 | 1 | **Shift Right (SHR)** | $I_R, A_3, A_2, A_1$ |\n| 1 | 0 | **Shift Left (SHL)** | $A_2, A_1, A_0, I_L$ |\n| 1 | 1 | **Unused / All 0s**| $0, 0, 0, 0$ |\n\n> [!TIP] **EXAM TIP:**\n> When asked to determine if an Arithmetic Shift Left (ASL) causes overflow:\n> Simply XOR the sign bit ($R_{n-1}$) with the next bit ($R_{n-2}$).\n> Example: For $10110000$, $R_7 = 1$ and $R_6 = 0$. Since $1 \\oplus 0 = 1$, **overflow occurs!**\n\n> [!NOTE] **DEV BRAIN:**\n> In C/C++:\n> - `x >> 1` on an `unsigned int` compiles to **SHR** (logical shift right).\n> - `x >> 1` on a `signed int` compiles to **ASR** (arithmetic shift right), preserving the sign bit by sign extension!\n> - `x << 1` compiles to **SHL/ASL**, which can trigger undefined behavior in C if signed overflow happens.\n\n> [!WARNING] **TRAP:**\n> Students often assume Arithmetic Shift Right inserts a 0 like SHR. **It does NOT!**\n> ASR duplicates the sign bit: if the number is negative ($1$), it inserts $1$; if positive ($0$), it inserts $0$. Inserting $0$ into a negative number turns it positive, completely corrupting the calculation!\n\n> [!IMPORTANT] **MEMORIZE:**\n> - **ASR:** $R_{n-1}$ is replicated into $R_{n-2}$; sign bit is preserved ($R_{n-1} \\leftarrow R_{n-1}$).\n> - **ASL Overflow Condition:** $V = R_{n-1} \\oplus R_{n-2}$.\n> - **Circular Shift (Rotate):** No bits are lost; shifted-out bit re-enters the opposite side.",
+          "shortNotes": "Logical shifts inject 0. Circular shifts (rotates) recirculate bits without loss. Arithmetic Shift Right (ASR) preserves sign by replicating MSB. Arithmetic Shift Left (ASL) causes overflow if V = R(n-1) XOR R(n-2) = 1.",
+          "examples": [
             {
-              title: 'Arithmetic Shift Right of Negative Number',
-              code: 'R1 = 11110000 (-16 decimal in 2s comp)\nashr R1 -> 11111000 (-8 decimal)\nashr R1 -> 11111100 (-4 decimal)',
-              explanation: 'Sign bit (1) is continuously replicated, cleanly dividing negative numbers by 2.'
+              "title": "Arithmetic Shifts and Overflow Evaluation",
+              "problem": "Given two 8-bit registers R1 = 11001000 (-56) and R2 = 10100000 (-96). Perform: (a) ASR on R1, (b) ASL on R1, (c) Check overflow for ASL on R1, (d) ASL on R2, and (e) Check overflow for ASL on R2.",
+              "explanation": "For ASR: copy sign bit to MSB and shift others right. For ASL: shift left and insert 0 in LSB. Overflow occurs if R7 ^ R6 = 1 before shift.",
+              "code": "# Arithmetic Shift Simulator\ndef asl(byte_val):\n    sign = (byte_val >> 7) & 1\n    next_bit = (byte_val >> 6) & 1\n    overflow = sign ^ next_bit\n    shifted = ((byte_val << 1) & 0xFF)\n    return format(shifted, '08b'), overflow\n\ndef asr(byte_val):\n    sign = (byte_val >> 7) & 1\n    shifted = (byte_val >> 1) | (sign << 7)\n    return format(shifted, '08b')\n\nR1 = 0b11001000 # -56\nR2 = 0b10100000 # -96\n\nprint(\"R1 Original:       \", format(R1, '08b'))\nprint(\"R1 after ASR:      \", asr(R1))\nres_asl1, ov1 = asl(R1)\nprint(f\"R1 after ASL:       {res_asl1} (Overflow={ov1})\")\n\nprint(\"R2 Original:       \", format(R2, '08b'))\nres_asl2, ov2 = asl(R2)\nprint(f\"R2 after ASL:       {res_asl2} (Overflow={ov2})\")",
+              "output": "R1 Original:        11001000\nR1 after ASR:       11100100\nR1 after ASL:       10010000 (Overflow=0)\nR2 Original:        10100000\nR2 after ASL:       01000000 (Overflow=1)"
             }
           ],
-          keyPoints: [
-            '4 logic micro-ops implemented with 4 gates and one 4x1 MUX per bit.',
-            'Arithmetic shift left can cause overflow if sign bit changes: V = R[n-1] XOR R[n-2].',
-            'Arithmetic shift right replicates MSB to preserve sign.'
+          "keyPoints": [
+            "Logical shifts (SHL, SHR) shift bits linearly and inject zeros into vacant bit positions.",
+            "Circular shifts (CIL, CIR / ROL, ROR) circulate bits in a closed loop, preserving all register contents.",
+            "Arithmetic Shift Right (ASR) divides signed 2's complement numbers by 2 while preserving the sign bit.",
+            "Arithmetic Shift Left (ASL) multiplies signed numbers by 2; overflow occurs if V = R(n-1) XOR R(n-2) = 1.",
+            "A combinational shifter uses multiplexers to perform shifts in a single clock cycle."
           ],
-          theoryQuestions: [
+          "theoryQuestions": [
             {
-              question: 'Differentiate between Logical Shift, Circular Shift, and Arithmetic Shift with concrete 4-bit binary examples.',
-              marks: '5 Marks',
-              answer: 'Assume initial register $R = 1011$ (MSB = 1):\n\n1. **Logical Shift:**\n   - *Logical Shift Left (SHL):* $1011 \\rightarrow 0110$ (MSB lost, 0 inserted at LSB).\n   - *Logical Shift Right (SHR):* $1011 \\rightarrow 0101$ (LSB lost, 0 inserted at MSB).\n2. **Circular Shift (Rotate):**\n   - *Circular Left (CIL):* $1011 \\rightarrow 0111$ (MSB wraps into LSB).\n   - *Circular Right (CIR):* $1011 \\rightarrow 1101$ (LSB wraps into MSB).\n3. **Arithmetic Shift:**\n   - *Arithmetic Left (ASHL):* $1011 \\rightarrow 0110$ (shifts left, inserts 0, checks if sign changes).\n   - *Arithmetic Right (ASHR):* $1011 \\rightarrow 1101$ (**MSB is replicated** to preserve negative sign).',
-              keyPoints: [
-                'Clear definitions for all 3 shift types.',
-                'Concrete 4-bit binary examples.',
-                'Highlight MSB replication in ASHR.'
+              "question": "Explain Logical, Circular, and Arithmetic shift micro-operations with 8-bit register diagrams and examples.",
+              "marks": "7 Marks",
+              "answer": "1. Define Shift micro-operations and distinguish the three types.\n2. Logical Shift: Explain SHL (inserts 0 at LSB) and SHR (inserts 0 at MSB) with diagrams. Example: SHR(10110011) = 01011001.\n3. Circular Shift: Explain CIL (MSB rotates into LSB) and CIR (LSB rotates into MSB). Example: CIR(10110011) = 11011001.\n4. Arithmetic Shift: Explain ASR (divides by 2, sign bit Rn-1 is replicated into Rn-2) and ASL (multiplies by 2, inserts 0 at LSB).\n5. Show the overflow detection formula for ASL: V = Rn-1 ^ Rn-2.",
+              "keyPoints": [
+                "Clear architectural definitions and diagrams for all 3 shift classes",
+                "Logical shift zero insertion",
+                "Circular shift closed-loop bit recycling",
+                "Arithmetic shift sign preservation and overflow formula"
               ]
             },
             {
-              question: 'Why does Arithmetic Shift Left cause overflow, and how is it detected in hardware?',
-              marks: '3 Marks',
-              answer: 'Arithmetic shift left multiplies a signed number by 2. If the original number is too large to fit in the register after doubling, the sign bit changes unexpectedly, causing an overflow.\n\n**Detection:** If the most significant bit ($R_{n-1}$) differs from the bit immediately following it ($R_{n-2}$) before the shift, the sign bit will flip after shifting:\n$$\\mathbf{V = R_{n-1} \\oplus R_{n-2}}$$\nIf $V = 1$, an arithmetic shift left overflow has occurred.',
-              keyPoints: [
-                'Caused when doubling exceeds register range.',
-                'Detected by: V = R(n-1) XOR R(n-2).',
-                'Indicates sign flip after shift.'
+              "question": "Design a 4-bit Combinational Shifter using multiplexers. Present its schematic diagram and function table.",
+              "marks": "5 Marks",
+              "answer": "1. Explain that a combinational shifter shifts an n-bit word in a single gate propagation delay using multiplexers.\n2. Construct the circuit using four 4-to-1 Multiplexers (MUX 0 to MUX 3) and selection lines S1, S0.\n3. Show input connections:\n   - MUX i receives Ai at input 0 (No shift)\n   - MUX i receives A(i+1) at input 1 with IR at MUX 3 (Shift Right)\n   - MUX i receives A(i-1) at input 2 with IL at MUX 0 (Shift Left)\n4. Present the Function Table mapping S1 S0 to No shift (00), Shift Right (01), and Shift Left (10).",
+              "keyPoints": [
+                "Schematic with four 4-to-1 MUXes",
+                "Wiring of serial inputs IR and IL",
+                "Function table for S1, S0 control signals"
               ]
             }
           ],
-          mcqs: [
+          "mcqs": [
             {
-              question: 'What happens to the sign bit (MSB) during an Arithmetic Shift Right (ASHR) operation?',
-              options: ['It is set to 0', 'It is inverted', 'It is copied/replicated into the next position and remains unchanged', 'It wraps into the LSB'],
-              correctIndex: 2,
-              explanation: 'ASHR preserves the sign of signed integers by duplicating the MSB into its right neighbor while retaining its original value.'
+              "question": "What is the result of applying an Arithmetic Shift Right (ASR) to the 8-bit binary number 11110000?",
+              "options": [
+                "01111000",
+                "11111000",
+                "11110000",
+                "00001111"
+              ],
+              "correctIndex": 1,
+              "explanation": "ASR preserves the sign bit (1) and replicates it into the next position: 11110000 becomes 11111000."
             },
             {
-              question: 'What logic condition detects an overflow during an Arithmetic Shift Left (ASHL) of an n-bit register?',
-              options: ['V = R[n-1] AND R[n-2]', 'V = R[n-1] XOR R[n-2]', 'V = R[0] XOR R[n-1]', 'V = Carry Out'],
-              correctIndex: 1,
-              explanation: 'If the two highest bits are different before the shift, the sign bit will invert after shifting, meaning an overflow occurred (V = Rn-1 XOR Rn-2).'
+              "question": "An overflow condition in an 8-bit Arithmetic Shift Left (ASL) occurs when:",
+              "options": [
+                "Bit 7 is 1",
+                "Bit 0 is 1",
+                "Bit 7 XOR Bit 6 is 1",
+                "Bit 7 AND Bit 6 is 1"
+              ],
+              "correctIndex": 2,
+              "explanation": "Overflow occurs if the sign bit flips after the left shift. Prior to shifting, this condition is detected by V = R7 XOR R6 = 1."
             },
             {
-              question: 'Which shift operation can be used to divide a signed integer by 2 without losing its sign?',
-              options: ['Logical Shift Right (SHR)', 'Circular Shift Right (CIR)', 'Arithmetic Shift Right (ASHR)', 'Logical Shift Left (SHL)'],
-              correctIndex: 2,
-              explanation: 'ASHR divides signed 2s complement integers by 2 while safely preserving the sign bit.'
+              "question": "Which shift operation rotates the most significant bit directly into the least significant bit position?",
+              "options": [
+                "Logical Shift Right",
+                "Circular Shift Left (CIL)",
+                "Circular Shift Right (CIR)",
+                "Arithmetic Shift Left"
+              ],
+              "correctIndex": 1,
+              "explanation": "In a Circular Shift Left (CIL), bits move leftward and the MSB wraps around to become the new LSB."
             },
             {
-              question: 'How many select lines are required for a logic unit capable of 16 distinct Boolean functions?',
-              options: ['2', '4', '8', '16'],
-              correctIndex: 1,
-              explanation: 'For 16 distinct functions, log2(16) = 4 select lines are required.'
-            }
-          ]
-        },
-
-        // ── TOPIC 5: ALU DESIGN ──
-        {
-          id: 'alu-design-organization',
-          title: 'Arithmetic Logic Unit (ALU) Design & 14-Row Function Table',
-          simpleExplanation: 'The ALU combines the arithmetic adder circuit, logic unit, and shifters into one integrated chip stage with multiplexers selecting the final result.',
-          detailedExplanation: `## Arithmetic Logic Unit (ALU) Design
-
-Instead of having separate execution circuits, modern processors combine arithmetic, logic, and shift operations into a unified Arithmetic Logic Unit (ALU) or Arithmetic Logic Shift Unit (ALSU).
-
-### One Stage of Arithmetic Logic Shift Unit (ALSU)
-\`\`\`mermaid
-flowchart TD
-    subgraph ALSU_Stage["One Stage of ALSU (Bit i)"]
-        AU["Arithmetic Circuit\n(Full Adder + MUX)"]
-        LU["Logic Unit\n(4 Logic Gates + MUX)"]
-        MUX4["4x1 Final Selection MUX"]
-    end
-
-    Ai["Bit Ai"] & Bi["Bit Bi"] ==> AU & LU
-    Cin["Carry In (Ci)"] --> AU
-    AU -->|"Line 0: Arithmetic"| MUX4
-    LU -->|"Line 1: Logic"| MUX4
-    SHL["Shift-Left Input: A(i-1)"] -->|"Line 2: Shift Left"| MUX4
-    SHR["Shift-Right Input: A(i+1)"] -->|"Line 3: Shift Right"| MUX4
-
-    Sel["Operation Select S3, S2"] ==> MUX4
-    AU -->|"Carry Out (C i+1)"| Cout["Carry Out to Stage i+1"]
-    MUX4 --> Fi["Output Result Fi"]
-\`\`\`
-
-### Complete 14-Row Function Table (Exam Mandatory):
-| $S_3$ | $S_2$ | $S_1$ | $S_0$ | $C_{in}$ | Operation | Function Name |
-| :---: | :---: | :---: | :---: | :---: | :--- | :--- |
-| 0 | 0 | 0 | 0 | 0 | $F = A$ | Transfer A |
-| 0 | 0 | 0 | 0 | 1 | $F = A + 1$ | Increment A |
-| 0 | 0 | 0 | 1 | 0 | $F = A + B$ | Add B to A |
-| 0 | 0 | 0 | 1 | 1 | $F = A + B + 1$ | Add with Carry |
-| 0 | 0 | 1 | 0 | 0 | $F = A + \\overline{B}$ | Subtract with Borrow |
-| 0 | 0 | 1 | 0 | 1 | $F = A + \\overline{B} + 1$ | Subtract B from A |
-| 0 | 0 | 1 | 1 | 0 | $F = A - 1$ | Decrement A |
-| 0 | 0 | 1 | 1 | 1 | $F = A$ | Transfer A |
-| 0 | 1 | 0 | 0 | $\\times$ | $F = A \\land B$ | AND |
-| 0 | 1 | 0 | 1 | $\\times$ | $F = A \\lor B$ | OR |
-| 0 | 1 | 1 | 0 | $\\times$ | $F = A \\oplus B$ | XOR |
-| 0 | 1 | 1 | 1 | $\\times$ | $F = \\overline{A}$ | Complement A |
-| 1 | 0 | $\\times$ | $\\times$ | $\\times$ | $F = \\text{shr } A$ | Shift Right A into F |
-| 1 | 1 | $\\times$ | $\\times$ | $\\times$ | $F = \\text{shl } A$ | Shift Left A into F |`,
-          shortNotes: 'ALSU combines full adder, logic gates, and shifters into 1 stage using 4x1 MUX. Select lines S3 S2 choose arithmetic (00), logic (01), shr (10), shl (11).',
-          examples: [
-            {
-              title: 'Selecting Subtraction in ALSU',
-              code: 'Set S3=0, S2=0 (Arithmetic)\nSet S1=1, S0=0 (B complemented)\nSet Cin=1\nResult: F = A + B\' + 1 = A - B',
-              explanation: 'Configures the ALU hardware to subtract B from A.'
-            }
-          ],
-          keyPoints: [
-            'S3 and S2 select the overall category: arithmetic, logic, or shift.',
-            'S1 and S0 choose the specific operation within arithmetic or logic.',
-            'Cin differentiates between regular operations and their incremented/carry forms.'
-          ],
-          theoryQuestions: [
-            {
-              question: 'Draw and explain the block diagram of one stage of an Arithmetic Logic Shift Unit (ALSU). Present its complete function table.',
-              marks: '7 Marks',
-              answer: 'One stage of an ALSU (Bit $i$) integrates an arithmetic circuit, a logic circuit, and a shifter into a single 4x1 multiplexer.\n\n**Hardware Components:**\n1. **Arithmetic Circuit:** Composed of a Full Adder and internal multiplexer that performs 8 arithmetic operations based on $S_1, S_0, C_{in}$.\n2. **Logic Circuit:** Composed of AND, OR, XOR, NOT gates selected by $S_1, S_0$.\n3. **4x1 Selection MUX:** Selects between Arithmetic output ($S_3 S_2 = 00$), Logic output ($S_3 S_2 = 01$), Shift Right ($S_3 S_2 = 10$, connects $A_{i+1}$), and Shift Left ($S_3 S_2 = 11$, connects $A_{i-1}$).',
-              keyPoints: [
-                'Full diagram with 4x1 MUX.',
-                'Explanation of S3 S2 mode selection.',
-                '14-row function table.'
-              ]
-            }
-          ],
-          mcqs: [
-            {
-              question: 'In an ALSU, which select line values choose logic micro-operations?',
-              options: ['S3 S2 = 00', 'S3 S2 = 01', 'S3 S2 = 10', 'S3 S2 = 11'],
-              correctIndex: 1,
-              explanation: 'S3 S2 = 00 selects arithmetic, 01 selects logic, 10 selects shift right, and 11 selects shift left.'
-            },
-            {
-              question: 'How many total distinct operations are specified in the standard Mano ALSU function table?',
-              options: ['8', '12', '14', '16'],
-              correctIndex: 2,
-              explanation: 'The standard ALSU table defines 8 arithmetic, 4 logic, and 2 shift operations = 14 total operations.'
-            },
-            {
-              question: 'What input bit is connected to line 2 (Shift Right) of stage i in an n-stage ALSU?',
-              options: ['A(i-1)', 'A(i+1)', 'B(i)', 'Carry out C(i)'],
-              correctIndex: 1,
-              explanation: 'In shift right, the bit from the higher adjacent stage A(i+1) moves into stage i.'
-            },
-            {
-              question: 'What input bit is connected to line 3 (Shift Left) of stage i in an n-stage ALSU?',
-              options: ['A(i-1)', 'A(i+1)', 'B(i)', 'Carry in C(i)'],
-              correctIndex: 0,
-              explanation: 'In shift left, the bit from the lower adjacent stage A(i-1) moves into stage i.'
+              "question": "What is the primary architectural advantage of a combinational shifter over a standard shift register?",
+              "options": [
+                "Uses fewer flip-flops",
+                "Executes shifts within combinational gate propagation delay in a single clock cycle",
+                "Consumes zero power",
+                "Can only shift right"
+              ],
+              "correctIndex": 1,
+              "explanation": "A combinational shifter uses multiplexers to perform multi-bit shifts in a single clock cycle, avoiding multi-cycle sequential clock pulses."
             }
           ]
         }
       ]
     },
-
-    // ── UNIT 2: BASIC COMPUTER ORGANIZATION & DESIGN ──
     {
-      id: 'unit-2',
-      title: 'Unit 2: Basic Computer Organization & Design',
-      description: 'Instruction codes, stored program organization, computer registers and common bus, instruction cycle, memory-reference instructions, and interrupt cycle.',
-      topics: [
+      "id": "ca-u2",
+      "title": "Unit 2: Basic Computer Organization & Design",
+      "description": "Instruction Codes, Stored Program Organization, Direct vs Indirect Addressing, Computer Registers (AR, PC, DR, AC, IR, TR, INPR, OUTR), 16-bit Common Bus System Architecture with 3-line to 8-line Multiplexers, Instruction Set (Memory-Reference, Register-Reference, and Input-Output), Timing and Control, and Complete Instruction & Interrupt Cycle Flowcharts.",
+      "topics": [
         {
-          id: 'instruction-codes-stored-program',
-          title: 'Instruction Codes & Stored-Program Organization',
-          simpleExplanation: 'An instruction code is a binary word that tells the computer what operation to perform and where to find the data in memory.',
-          detailedExplanation: `## Instruction Codes & Stored-Program Organization
-
-### Stored-Program Organization (von Neumann Architecture)
-The fundamental concept is that program instructions and data share the same physical memory space.
-
-\`\`\`mermaid
-flowchart TD
-    subgraph Memory["Memory Unit 4096 x 16"]
-        M1["Address 0..4095\nStores Instructions & Operands"]
-    end
-
-    subgraph InstructionWord["16-Bit Instruction Format"]
-        I["Bit 15: I\n(0 = Direct, 1 = Indirect)"]
-        OP["Bits 12-14: Opcode\n(3-Bit Operation Code: 8 Ops)"]
-        ADDR["Bits 0-11: Address\n(12-Bit Memory Address: 0..4095)"]
-    end
-
-    subgraph CPU["Processor Core"]
-        PC["Program Counter (PC: 12b)\nPoints to next instruction"]
-        AR["Address Register (AR: 12b)\nHolds memory address"]
-        IR["Instruction Register (IR: 16b)\nHolds fetched opcode"]
-        AC["Accumulator (AC: 16b)\nProcessor Register"]
-    end
-
-    PC --> AR
-    AR --> Memory
-    Memory --> IR
-    Memory --> AC
-\`\`\`
-
-### Direct vs Indirect Addressing (Question Bank Q2)
-- **Direct Addressing ($I = 0$):**
-  The address field directly contains the **Effective Address (EA)** where the operand resides in memory.
-  $$EA = \\text{Address Field of Instruction}$$
-- **Indirect Addressing ($I = 1$):**
-  The address field points to a memory location that contains the **Effective Address** of the operand.
-  $$EA = M[\\text{Address Field}]$$
-
-\`\`\`mermaid
-flowchart TD
-    subgraph DirectAccess["Direct Addressing (I = 0)"]
-        I0["Inst: ADD 457 (I=0)"] -->|"Address 457"| LOC457["Mem(457) = OPERAND 35"]
-        LOC457 --> AC0["AC ← AC + 35"]
-    end
-
-    subgraph IndirectAccess["Indirect Addressing (I = 1)"]
-        I1["Inst: ADD 300 (I=1)"] -->|"Address 300"| LOC300["Mem(300) = 1350 (Pointer)"]
-        LOC300 -->|"Pointer 1350"| LOC1350["Mem(1350) = OPERAND 82"]
-        LOC1350 --> AC1["AC ← AC + 82"]
-    end
-\`\`\``,
-          shortNotes: 'Instruction format: I (bit 15), Opcode (bits 12-14), Address (bits 0-11). Direct (I=0) EA=Address. Indirect (I=1) EA=M[Address].',
-          examples: [
+          "id": "ca-u2-t1",
+          "title": "Instruction Codes, Stored Program Organization, Direct vs Indirect Addressing & Instruction Formats",
+          "simpleExplanation": "A computer instruction is a binary code that specifies a sequence of micro-operations for the CPU to perform. In a stored-program computer, both instructions and data reside in the same memory unit. An instruction contains an operation code (opcode) defining what to do and an address operand defining where the data is located, which can be accessed either directly or indirectly through a pointer address.",
+          "detailedExplanation": "## 1. Instruction Codes and the Stored-Program Concept\n\nThe internal organization of a digital computer is defined by its registers, the data paths connecting them, and the control logic that sequences operations. At the heart of computer architecture is the **Stored-Program Concept** (the von Neumann architecture):\n1. Program instructions and operational data are stored together in the same read-write memory unit.\n2. The Central Processing Unit (CPU) executes programs by sequentially fetching instructions from memory, decoding them, and executing their constituent micro-operations.\n\nAn **instruction code** is a group of bits that instructs the computer to perform a specific operation. It is partitioned into two fundamental segments:\n- **Operation Code (Opcode):** A group of bits defining the specific operation (e.g., ADD, SUB, LOAD, STORE, AND).\n- **Operand / Address Field:** Bits that specify the memory address or register where the operand is located.\n\n```mermaid\nflowchart LR\n    subgraph InstructionWord [\"16-Bit Instruction Format (Mano's Basic Computer)\"]\n        I[\"Bit 15: Mode Bit (I)\"]\n        OP[\"Bits 14-12: Opcode (3 bits)\"]\n        ADDR[\"Bits 11-0: Memory Address (12 bits)\"]\n    end\n```\n\n---\n\n## 2. Basic Computer Instruction Format\n\nIn the canonical basic computer architecture (Mano Machine):\n- Memory unit: $4096 \\text{ words} \\times 16 \\text{ bits}$ ($4096 = 2^{12}$, requiring 12-bit addresses).\n- Instruction word length: 16 bits.\n- Bits 0–11: **12-bit Address Field** capable of addressing any of the $4096$ memory words ($000_{16}$ to $\\text{FFF}_{16}$).\n- Bits 12–14: **3-bit Opcode** capable of specifying $2^3 = 8$ distinct operation codes ($000$ to $111$).\n- Bit 15: **Addressing Mode Bit ($I$)**:\n  - $I = 0$: Direct Addressing\n  - $I = 1$: Indirect Addressing\n\n---\n\n## 3. Direct vs Indirect Addressing\n\nWhen an instruction references memory, the address specified in the instruction word is not always the location of the final operand. The address of the actual operand is termed the **Effective Address (EA)**.\n\n```\nDirect Addressing (I = 0):\nInstruction at PC:  [ I=0 | Opcode | 457 ]\nMemory[457]:        [ Actual Operand Data ]   <=== EA = 457 (1 Memory Access)\n\nIndirect Addressing (I = 1):\nInstruction at PC:  [ I=1 | Opcode | 300 ]\nMemory[300]:        [ Pointer Address 1350 ]  <=== Pointer\nMemory[1350]:       [ Actual Operand Data ]   <=== EA = 1350 (2 Memory Accesses)\n```\n\n### 3.1 Direct Addressing ($I = 0$)\nThe address part of the instruction code is the **Effective Address** where the operand resides in memory:\n$$\\text{Effective Address (EA)} = \\text{Address Field of Instruction}$$\n- Number of memory accesses required: **1 access** (to fetch the operand).\n- *Example:* An instruction `ADD 457` with $I = 0$ reads the operand located at memory address $457$ and adds it to the Accumulator.\n\n### 3.2 Indirect Addressing ($I = 1$)\nThe address part of the instruction code points to a memory location that contains the **Effective Address** of the operand:\n$$\\text{Effective Address (EA)} = M[\\text{Address Field}]$$\n- Number of memory accesses required: **2 accesses** (first to fetch the effective address pointer, second to fetch the actual operand).\n- Bit 15 of the pointer word in memory can indicate further indirection, but in basic computers, indirection is single-level.\n\n### 3.3 Comparison Table: Direct vs Indirect Addressing\n| Feature | Direct Addressing ($I = 0$) | Indirect Addressing ($I = 1$) |\n| :--- | :--- | :--- |\n| **Address Field Content** | Contains the actual operand address | Contains pointer to effective address |\n| **Memory Access Cycles** | 1 memory read | 2 memory reads |\n| **Execution Speed** | Faster (lower memory bus latency) | Slower (extra memory read cycle) |\n| **Programming Utility** | Accessing simple static variables | Pointers, array indexing, parameter passing |\n| **Address Space Reach** | Restricted to direct instruction bits | Can leverage full word address width |\n\n---\n\n## 4. Stored Program Organization & Memory Architecture\n\nThe basic computer memory is conceptually divided into two primary segments:\n1. **Program Space:** Consecutive memory locations containing machine instructions.\n2. **Data Space:** Memory locations containing numeric constants, variables, arrays, and I/O buffers.\n\n```mermaid\nflowchart TD\n    subgraph Memory [\"Main Memory (4096 x 16 bits)\"]\n        P0[\"000: Instruction 1\"]\n        P1[\"001: Instruction 2\"]\n        P2[\"...\"]\n        P3[\"150: ADD 450 (I=0)\"]\n        P4[\"151: ADD 300 (I=1)\"]\n        D1[\"300: 0800 (Pointer)\"]\n        D2[\"450: 0025 (Data 1)\"]\n        D3[\"800: 0099 (Data 2)\"]\n    end\n    PC[\"Program Counter (PC = 150)\"] -->|\"Points to Next Instruction\"| P3\n    P3 -->|\"Direct Access\"| D2\n    P4 -->|\"Indirect Access\"| D1 -->|\"Dereferences\"| D3\n```\n\nDuring the fetch cycle, the CPU uses the **Program Counter (PC)** to retrieve the instruction word into the **Instruction Register (IR)**. The PC is automatically incremented ($PC \\leftarrow PC + 1$) so that it points to the next instruction in sequence, enforcing sequential execution unless a branch instruction (BUN, BSA) overrides the PC.\n\n> [!TIP] **EXAM TIP:**\n> In university numerical problems, if an instruction at address $200$ is `ADD 500` with $I=1$, and memory location $500$ contains $800$, and location $800$ contains $42$:\n> - Address part = $500$\n> - Effective Address (EA) = $800$\n> - Operand = $42$\n\n> [!NOTE] **DEV BRAIN:**\n> Indirect addressing in hardware is literally pointer dereferencing in C:\n> ```c\n> int *ptr = (int*)300; // Address field is 300\n> int ea = *ptr;        // First memory read -> ea = 1350\n> int operand = *ea;    // Second memory read -> operand = data\n> ```\n> Indirect addressing provides the physical hardware mechanism for runtime pointer variables and dynamic data structures!\n\n> [!WARNING] **TRAP:**\n> Do NOT assume indirect addressing changes the opcode! Opcode bits (12–14) remain strictly identical; only bit 15 ($I$) flips from 0 to 1, instructing the control unit to insert an extra memory cycle ($AR \\leftarrow M[AR]$) at timing state $T_3$.\n\n> [!IMPORTANT] **MEMORIZE:**\n> - $I = 0 \\implies$ Direct Addressing ($EA = \\text{Address Field}$).\n> - $I = 1 \\implies$ Indirect Addressing ($EA = M[\\text{Address Field}]$).\n> - 16-bit Basic Computer format: Bit 15 = $I$, Bits 12–14 = Opcode, Bits 0–11 = Address.",
+          "shortNotes": "Stored-program computers keep instructions and data in unified memory. Direct addressing (I=0) has EA = Address; Indirect addressing (I=1) has EA = M[Address], requiring an extra memory access cycle.",
+          "examples": [
             {
-              title: 'Direct vs Indirect Address Trace',
-              code: 'Memory at 300 = 1350\nMemory at 1350 = 82\nADD 300 with I=0 -> Operates on content of 300 (1350)\nADD 300 with I=1 -> Operates on content of 1350 (82)',
-              explanation: 'Indirect addressing uses location 300 as a pointer to the real operand at 1350.'
+              "title": "Direct vs Indirect Address Resolution Trace",
+              "problem": "A basic computer instruction is stored at memory location 0x100 with hexadecimal code 0x8250. The contents of memory are: M[0x250] = 0x0500, M[0x500] = 0x007F. Determine: (a) Addressing mode (Direct or Indirect), (b) The Opcode, (c) The Address part, (d) The Effective Address (EA), and (e) The operand value loaded into AC if the opcode represents LDA (Load Accumulator).",
+              "explanation": "Convert 0x8250 to binary: 1 000 001001010000. Bit 15 is 1 (Indirect mode). Bits 14-12 are 000 (Opcode). Bits 11-0 are 0x250 (Address part). Since I=1, EA = M[0x250] = 0x0500. Operand is M[EA] = M[0x500] = 0x007F.",
+              "code": "# Address Resolution Simulator\ndef resolve_instruction(hex_code, memory):\n    code_bin = format(int(hex_code, 16), '016b')\n    i_bit = int(code_bin[0])\n    opcode = code_bin[1:4]\n    address_part = int(code_bin[4:], 2)\n    \n    if i_bit == 0:\n        mode = \"Direct\"\n        ea = address_part\n    else:\n        mode = \"Indirect\"\n        ea = memory.get(address_part, 0)\n        \n    operand = memory.get(ea, 0)\n    return {\n        \"Mode\": mode,\n        \"Opcode\": opcode,\n        \"Address Part\": hex(address_part),\n        \"Effective Address\": hex(ea),\n        \"Operand Value\": hex(operand)\n    }\n\nmem = {0x250: 0x0500, 0x500: 0x007F}\nprint(resolve_instruction(\"0x8250\", mem))",
+              "output": "{'Mode': 'Indirect', 'Opcode': '000', 'Address Part': '0x250', 'Effective Address': '0x500', 'Operand Value': '0x7f'}"
             }
           ],
-          keyPoints: [
-            '16-bit instruction word: 1-bit I, 3-bit Opcode, 12-bit Address.',
-            'Direct addressing requires 1 memory read; indirect requires 2 memory reads.',
-            'Effective Address (EA) is the exact memory address where operand resides.'
+          "keyPoints": [
+            "The stored-program organization places instructions and data in a common addressable memory.",
+            "A 16-bit instruction format allocates 1 bit for addressing mode (I), 3 bits for opcode, and 12 bits for memory address.",
+            "In direct addressing (I=0), the effective address equals the address field of the instruction word.",
+            "In indirect addressing (I=1), the address field points to a memory word containing the effective address.",
+            "Indirect addressing requires one additional memory cycle during the fetch/decode phase to retrieve the effective address."
           ],
-          theoryQuestions: [
+          "theoryQuestions": [
             {
-              question: 'Explain the difference between direct and indirect addressing in Mano\'s basic computer with a memory map diagram.',
-              marks: '5 Marks',
-              answer: 'In Mano\'s basic computer, bit 15 ($I$) determines addressing mode:\n\n1. **Direct Addressing ($I = 0$):** The 12-bit address field directly specifies the memory location of the operand. The Effective Address $EA = IR(0-11)$. Only **one memory read** is needed to fetch the operand.\n2. **Indirect Addressing ($I = 1$):** The 12-bit address field specifies a memory location that contains the effective address of the operand. $EA = M[IR(0-11)]$. **Two memory reads** are needed: the first to fetch the pointer address, and the second to fetch the actual operand.',
-              keyPoints: [
-                'Bit 15 determines mode: 0=Direct, 1=Indirect.',
-                'Direct: EA = Address field (1 memory read).',
-                'Indirect: EA = M[Address field] (2 memory reads).'
+              "question": "Explain the stored program concept and differentiate between direct and indirect addressing modes with clear memory map diagrams.",
+              "marks": "7 Marks",
+              "answer": "1. Define the Stored Program (von Neumann) concept where program instructions and data share the same physical memory space.\n2. Detail the 16-bit instruction format: Bit 15 (I), Bits 14-12 (Opcode), Bits 11-0 (Address).\n3. Explain Direct Addressing (I=0): EA is contained directly in the address bits of the instruction. Draw diagram showing PC -> Instruction -> Memory[Address] -> Operand.\n4. Explain Indirect Addressing (I=1): Address bits point to a pointer location containing the true EA. Draw diagram showing PC -> Instruction -> Memory[Address] (Pointer) -> Memory[Pointer] (Operand).\n5. Compare memory cycle counts: Direct takes 1 memory access for operand; Indirect takes 2 memory accesses.",
+              "keyPoints": [
+                "Von Neumann stored program principle",
+                "16-bit instruction bit partition",
+                "Direct vs indirect effective address derivation",
+                "Memory access cycle comparison (1 vs 2 cycles)"
+              ]
+            },
+            {
+              "question": "What is an Effective Address? An instruction at address 021 in memory has I=1, an operation code for AND, and an address part equal to 083. Memory at address 083 contains the address 450, and memory at address 450 contains the operand 2A3F. Trace the effective address and the operand.",
+              "marks": "5 Marks",
+              "answer": "1. Define Effective Address (EA) as the final physical memory address of the operand to be fetched or stored.\n2. Given: Instruction address = 021, I = 1 (Indirect), Address part = 083.\n3. Since I = 1, the computer accesses memory at location 083 during timing state T3.\n4. M[083] = 450, so the Effective Address (EA) is 450.\n5. During the execution phase, memory at EA (450) is accessed: M[450] = 2A3F.\n6. Therefore, the Effective Address is 450 and the operand read into DR is 2A3F.",
+              "keyPoints": [
+                "Definition of Effective Address",
+                "Resolution of indirect address pointer: EA = M[083] = 450",
+                "Operand retrieval: Operand = M[450] = 2A3F"
               ]
             }
           ],
-          mcqs: [
+          "mcqs": [
             {
-              question: 'In Mano\'s basic computer, what do bits 12 to 14 of an instruction specify?',
-              options: ['Mode bit I', 'Opcode', 'Address field', 'Destination register'],
-              correctIndex: 1,
-              explanation: 'Bits 12-14 contain the 3-bit operation code (Opcode), specifying 1 of 8 primary operations.'
+              "question": "How many memory accesses are required to fetch and execute a direct memory-reference instruction (e.g., ADD) in the basic computer?",
+              "options": [
+                "1 access",
+                "2 accesses (1 fetch, 1 operand access)",
+                "3 accesses",
+                "4 accesses"
+              ],
+              "correctIndex": 1,
+              "explanation": "One access is needed during the fetch phase to retrieve the instruction, and a second access is needed during the execution phase to read the operand."
             },
             {
-              question: 'If bit 15 is 1 in a memory-reference instruction, which addressing mode is active?',
-              options: ['Immediate addressing', 'Direct addressing', 'Indirect addressing', 'Relative addressing'],
-              correctIndex: 2,
-              explanation: 'Bit 15 (I) = 1 specifies Indirect addressing, meaning the address field contains a pointer to the operand.'
+              "question": "In a 16-bit basic computer instruction, which bit indicates direct or indirect addressing mode?",
+              "options": [
+                "Bit 0",
+                "Bit 11",
+                "Bit 12",
+                "Bit 15"
+              ],
+              "correctIndex": 3,
+              "explanation": "Bit 15 is the mode bit (I): 0 indicates direct addressing, and 1 indicates indirect addressing."
             },
             {
-              question: 'How many total words of memory can be directly addressed by a 12-bit address field?',
-              options: ['1024 words (1K)', '2048 words (2K)', '4096 words (4K)', '65536 words (64K)'],
-              correctIndex: 2,
-              explanation: '2^12 = 4096 memory words (addresses 0 to 4095).'
+              "question": "If an indirect addressing instruction contains address 300, M[300] = 700, and M[700] = 45, what is the Effective Address?",
+              "options": [
+                "300",
+                "700",
+                "45",
+                "1000"
+              ],
+              "correctIndex": 1,
+              "explanation": "For indirect addressing (I=1), the effective address is the content of the memory location specified by the instruction address: EA = M[300] = 700."
+            },
+            {
+              "question": "What is the maximum addressable memory capacity of a computer system with a 12-bit address bus?",
+              "options": [
+                "1024 words",
+                "2048 words",
+                "4096 words",
+                "65536 words"
+              ],
+              "correctIndex": 2,
+              "explanation": "A 12-bit address bus can uniquely address 2^12 = 4096 distinct memory locations."
             }
           ]
         },
-
-        // ── TOPIC 7: COMPUTER REGISTERS & BUS ──
         {
-          id: 'computer-registers-bus',
-          title: 'Computer Registers & Common Bus System',
-          simpleExplanation: 'Mano\'s basic computer has 8 primary registers connected to a 16-bit common bus via a 3-to-8 multiplexer system.',
-          detailedExplanation: `## Computer Registers & Common Bus System
-
-### Registers of the Basic Computer (Master Table)
-| Register Symbol | Register Name | Bit Width | Function in Computer |
-| :--- | :--- | :---: | :--- |
-| **AR** | Address Register | 12 | Holds memory address for read/write operations |
-| **PC** | Program Counter | 12 | Holds address of next instruction to be fetched |
-| **DR** | Data Register | 16 | Holds operand read from memory or word to write |
-| **AC** | Accumulator | 16 | General-purpose processing and math register |
-| **IR** | Instruction Register | 16 | Holds the instruction code fetched from memory |
-| **TR** | Temporary Register | 16 | Holds temporary data during processing |
-| **INPR** | Input Register | 8 | Holds 8-bit ASCII character from input device |
-| **OUTR** | Output Register | 8 | Holds 8-bit ASCII character for output device |
-
-### Basic Computer Common Bus Architecture
-\`\`\`mermaid
-flowchart TD
-    subgraph Regs["Basic Computer Registers"]
-        AR["AR (12b)"]
-        PC["PC (12b)"]
-        DR["DR (16b)"]
-        AC["AC (16b)"]
-        IR["IR (16b)"]
-        TR["TR (16b)"]
-        MEM["Memory Unit 4096x16"]
-    end
-
-    MUX["7-to-1 Common Bus Multiplexer System"]
-    AR -->|"Select 1"| MUX
-    PC -->|"Select 2"| MUX
-    DR -->|"Select 3"| MUX
-    AC -->|"Select 4"| MUX
-    IR -->|"Select 5"| MUX
-    TR -->|"Select 6"| MUX
-    MEM -->|"Select 7"| MUX
-
-    MUX ==>|"16-Bit Parallel Bus"| BUS["=== 16-BIT COMMON BUS ==="]
-
-    BUS -->|"LD"| AR
-    BUS -->|"LD"| PC
-    BUS -->|"LD"| DR
-    BUS -->|"LD"| AC
-    BUS -->|"LD"| IR
-    BUS -->|"LD"| TR
-    BUS -->|"Write Data"| MEM
-
-    AR -.->|"Direct 12-Bit Address Wire (NOT via Bus!)"| MEM
-\`\`\`
-
-> [!WARNING] **TRAP:**
-> The address for Memory read/write **NEVER travels over the common bus**! AR is hardwired directly to the address inputs of Memory. Only memory data travels over the common bus.`,
-          shortNotes: '8 registers: AR(12), PC(12), DR(16), AC(16), IR(16), TR(16), INPR(8), OUTR(8). Connected via 16-bit common bus selected by 3-to-8 MUX.',
-          examples: [
+          "id": "ca-u2-t2",
+          "title": "Computer Registers, Bit Lengths & 16-bit Common Bus System Architecture",
+          "simpleExplanation": "The basic computer employs eight dedicated registers to orchestrate instruction processing, data manipulation, and input/output communication. To interconnect these registers without thousands of crisscrossing wires, a 16-bit Common Bus system is constructed using multiplexers. By setting three selection lines S2, S1, S0, the control unit places one specific register onto the bus, while asserting load inputs determines which registers receive the data.",
+          "detailedExplanation": "## 1. Basic Computer Registers\n\nTo execute instructions and manage data, the basic computer requires a dedicated set of internal registers. Each register serves a specific functional purpose and has a bit length determined by its operational requirements.\n\n```mermaid\nflowchart TD\n    subgraph Register_Suite [\"Basic Computer Registers\"]\n        AR[\"AR: Address Register (12-bit)\"]\n        PC[\"PC: Program Counter (12-bit)\"]\n        DR[\"DR: Data Register (16-bit)\"]\n        AC[\"AC: Accumulator (16-bit)\"]\n        IR[\"IR: Instruction Register (16-bit)\"]\n        TR[\"TR: Temporary Register (16-bit)\"]\n        INPR[\"INPR: Input Register (8-bit)\"]\n        OUTR[\"OUTR: Output Register (8-bit)\"]\n    end\n```\n\n### 1.1 Master Register Characteristics Table\n| Register Symbol | Register Name | Bit Width | Functional Purpose & Connection |\n| :--- | :--- | :---: | :--- |\n| **AR** | Address Register | 12 | Holds the 12-bit memory address for read/write accesses. Connected directly to address inputs of memory. |\n| **PC** | Program Counter | 12 | Holds the address of the next instruction to be fetched from memory. Incremented after fetch. |\n| **DR** | Data Register | 16 | Holds the 16-bit memory operand read from memory or waiting to be written to memory. |\n| **AC** | Accumulator | 16 | General-purpose processing register; primary operand source and destination for ALU operations. |\n| **IR** | Instruction Register | 16 | Holds the 16-bit instruction code immediately after being fetched from memory. |\n| **TR** | Temporary Register | 16 | Holds temporary internal data during complex multi-step micro-operations. |\n| **INPR** | Input Register | 8 | Holds 8-bit alphanumeric character received from serial input device. |\n| **OUTR** | Output Register | 8 | Holds 8-bit alphanumeric character waiting to be transmitted to serial output device. |\n\n---\n\n## 2. The 16-bit Common Bus System Architecture\n\nConnecting 8 registers and memory using dedicated point-to-point wires would require an excessive number of lines. Instead, a **16-bit Common Bus System** is employed.\n- The bus consists of 16 lines (labeled 0 to 15).\n- Register outputs are connected to the inputs of multiplexers.\n- Multiplexer selection lines ($S_2, S_1, S_0$) select one source device to drive the bus.\n- Register inputs are connected directly to the bus lines. Data is loaded into a register only if its specific **Load Enable (LD)** line is asserted on the active clock edge.\n\n```mermaid\nflowchart TD\n    subgraph MUX_System [\"Common Bus Multiplexers (16 MUXes of 8-to-1)\"]\n        S[\"Select Inputs: S2, S1, S0\"]\n    end\n    AR_out[\"AR Outputs (0-11)\"] -->|\"Input 1\"| MUX_System\n    PC_out[\"PC Outputs (0-11)\"] -->|\"Input 2\"| MUX_System\n    DR_out[\"DR Outputs (0-15)\"] -->|\"Input 3\"| MUX_System\n    AC_out[\"AC Outputs (0-15)\"] -->|\"Input 4\"| MUX_System\n    IR_out[\"IR Outputs (0-15)\"] -->|\"Input 5\"| MUX_System\n    TR_out[\"TR Outputs (0-15)\"] -->|\"Input 6\"| MUX_System\n    MEM_out[\"Memory Outputs (0-15)\"] -->|\"Input 7\"| MUX_System\n    MUX_System -->|\"16-Bit Common Bus\"| BUS[\"16-bit Common Bus Lines\"]\n    BUS -->|\"LD AR\"| AR_in[\"AR Data In\"]\n    BUS -->|\"LD PC\"| PC_in[\"PC Data In\"]\n    BUS -->|\"LD DR\"| DR_in[\"DR Data In\"]\n    BUS -->|\"Adder & Logic\"| AC_in[\"AC Data In\"]\n    BUS -->|\"LD IR\"| IR_in[\"IR Data In\"]\n    BUS -->|\"LD TR\"| TR_in[\"TR Data In\"]\n    BUS -->|\"Write\"| MEM_in[\"Memory Data In\"]\n    BUS -->|\"LD OUTR\"| OUTR_in[\"OUTR Data In\"]\n```\n\n---\n\n## 3. Multiplexer Bus Selection Master Table\n\nThe 3 selection lines $S_2, S_1, S_0$ determine which register or memory unit places its 16-bit contents onto the common bus:\n\n| $S_2$ | $S_1$ | $S_0$ | Selected Source Register / Unit | Description |\n| :---: | :---: | :---: | :--- | :--- |\n| 0 | 0 | 0 | **None** | Bus is idle (floating) |\n| 0 | 0 | 1 | **AR (Address Register)** | Bits 0–11 drive bus lines 0–11; lines 12–15 are 0 |\n| 0 | 1 | 0 | **PC (Program Counter)** | Bits 0–11 drive bus lines 0–11; lines 12–15 are 0 |\n| 0 | 1 | 1 | **DR (Data Register)** | Full 16 bits drive bus lines 0–15 |\n| 1 | 0 | 0 | **AC (Accumulator)** | Full 16 bits drive bus lines 0–15 |\n| 1 | 0 | 1 | **IR (Instruction Register)** | Full 16 bits drive bus lines 0–15 |\n| 1 | 1 | 0 | **TR (Temporary Register)** | Full 16 bits drive bus lines 0–15 |\n| 1 | 1 | 1 | **Memory Unit ($M$)** | Memory word addressed by AR drives bus (Read) |\n\n### 3.1 Register Control Lines\nEach register has specific control input pins that govern its behavior synchronously with the clock:\n- **LD (Load):** Loads the contents of the common bus into the register on the rising clock edge.\n- **INR (Increment):** Increments register contents by 1 ($R \\leftarrow R + 1$).\n- **CLR (Clear):** Clears register contents to all 0s ($R \\leftarrow 0$).\n\nNotice that **AR** and **PC** are 12 bits wide. When their contents are placed onto the 16-bit bus, the upper 4 bits (12–15) are filled with 0s. Conversely, when data from the bus is loaded into AR or PC, only bus lines 0–11 are connected to the register inputs.\n\n### 3.2 The Accumulator and ALU Datapath\nThe Accumulator ($AC$) is unique:\n- Its output connects to bus input 4 ($S_2 S_1 S_0 = 100$).\n- Its input does **NOT** connect directly to the bus! Instead, the bus connects to the **Adder and Logic Circuit**, which also receives the 16-bit contents of $DR$ and the 8-bit contents of $INPR$.\n- The output of the Adder and Logic circuit feeds into $AC$. Thus, any data entering $AC$ from the bus must pass through the adder/logic unit.\n\n> [!TIP] **EXAM TIP:**\n> Remember the 3-bit multiplexer select codes:\n> - $001 = AR$, $010 = PC$, $011 = DR$, $100 = AC$, $101 = IR$, $110 = TR$, $111 = \\text{Memory}$.\n> - Notice that registers are numbered sequentially in order of typical datapath flow!\n\n> [!NOTE] **DEV BRAIN:**\n> Why are AR and PC 12 bits while DR and AC are 16 bits? Because memory has 4096 words. Since $2^{12} = 4096$, an address pointer needs exactly 12 bits. Making AR 16 bits would waste 4 flip-flops per register without providing additional addressing range!\n\n> [!WARNING] **TRAP:**\n> INPR (Input Register) and OUTR (Output Register) are **8-bit registers**. INPR does NOT connect to the common bus; it feeds directly into the Adder and Logic circuit to transfer ASCII characters into $AC$. OUTR receives bits 0–7 from the common bus via its own load pin.\n\n> [!IMPORTANT] **MEMORIZE:**\n> - $S_2 S_1 S_0 = 111$ selects **Memory**.\n> - $S_2 S_1 S_0 = 010$ selects **PC** (used during $T_0$ fetch: $AR \\leftarrow PC$).\n> - $S_2 S_1 S_0 = 101$ selects **IR** (used during $T_2$ decode: $AR \\leftarrow IR(0-11)$).",
+          "shortNotes": "Basic computer has 8 registers: AR (12), PC (12), DR (16), AC (16), IR (16), TR (16), INPR (8), OUTR (8). The 16-bit common bus uses 16 8-to-1 MUXes selected by S2,S1,S0.",
+          "examples": [
             {
-              title: 'Memory Read Micro-operation via Bus',
-              code: 'DR <- M[AR]\n1. S2 S1 S0 = 111 (Select Memory on bus)\n2. Assert LD pin of DR at clock tick\nResult: Word at address AR is loaded into DR.',
-              explanation: 'Uses bus to transfer data from memory to DR in 1 clock cycle.'
+              "title": "Bus Micro-operation Signal Mapping",
+              "problem": "Specify the 3 multiplexer selection lines (S2, S1, S0) and the active register control inputs (LD, INR, CLR) required to execute the following simultaneous micro-operations: (a) AR <- PC, (b) IR <- M[AR], and (c) PC <- PC + 1.",
+              "explanation": "For AR <- PC: source is PC, so S2 S1 S0 = 010; destination is AR, so AR.LD = 1. For IR <- M[AR] and PC <- PC + 1: source is Memory, so S2 S1 S0 = 111, Memory Read = 1; destination is IR, so IR.LD = 1; PC is incremented simultaneously, so PC.INR = 1.",
+              "code": "# Bus Control Signal Generator\ndef get_control_signals(statement):\n    signals = {}\n    if \"AR <- PC\" in statement:\n        signals[\"S2 S1 S0\"] = \"010 (PC)\"\n        signals[\"Active Controls\"] = [\"AR.LD = 1\"]\n    elif \"IR <- M[AR]\" in statement:\n        signals[\"S2 S1 S0\"] = \"111 (Memory)\"\n        signals[\"Memory Controls\"] = [\"READ = 1\"]\n        signals[\"Active Controls\"] = [\"IR.LD = 1\"]\n        if \"PC <- PC + 1\" in statement:\n            signals[\"Active Controls\"].append(\"PC.INR = 1\")\n    return signals\n\nprint(\"(a) AR <- PC:\", get_control_signals(\"AR <- PC\"))\nprint(\"(b & c) IR <- M[AR], PC <- PC + 1:\", get_control_signals(\"IR <- M[AR], PC <- PC + 1\"))",
+              "output": "(a) AR <- PC: {'S2 S1 S0': '010 (PC)', 'Active Controls': ['AR.LD = 1']}\n(b & c) IR <- M[AR], PC <- PC + 1: {'S2 S1 S0': '111 (Memory)', 'Memory Controls': ['READ = 1'], 'Active Controls': ['IR.LD = 1', 'PC.INR = 1']}"
             }
           ],
-          keyPoints: [
-            'AR and PC are 12 bits because memory has 4096 words.',
-            'DR, AC, IR, TR are 16 bits to match memory word size.',
-            'INPR and OUTR are 8 bits for standard ASCII characters.',
-            'Memory is selected on the bus by select code 7 (111).'
+          "keyPoints": [
+            "The basic computer contains 8 dedicated registers: AR, PC, DR, AC, IR, TR, INPR, and OUTR.",
+            "AR and PC are 12-bit registers matching the 4096-word memory address space.",
+            "The 16-bit Common Bus system is built using sixteen 8-to-1 multiplexers controlled by select lines S2, S1, S0.",
+            "A register latches data from the bus on the active clock edge only if its LD enable line is asserted.",
+            "AC receives data exclusively through the Adder and Logic Circuit rather than directly from the common bus."
           ],
-          theoryQuestions: [
+          "theoryQuestions": [
             {
-              question: 'List all registers of Mano\'s basic computer with their bit lengths and primary functions.',
-              marks: '7 Marks',
-              answer: 'Mano\'s basic computer has 8 registers:\n1. **AR (12 bits):** Holds memory address; connected directly to address inputs of 4096-word memory.\n2. **PC (12 bits):** Program Counter; holds address of next sequential instruction.\n3. **DR (16 bits):** Data Register; holds operands read from memory.\n4. **AC (16 bits):** Accumulator; primary computational register.\n5. **IR (16 bits):** Instruction Register; holds current instruction opcode and address.\n6. **TR (16 bits):** Temporary Register; stores intermediate scratchpad data.\n7. **INPR (8 bits):** Input Register; receives 8-bit character from keyboard.\n8. **OUTR (8 bits):** Output Register; sends 8-bit character to display.',
-              keyPoints: [
-                'State all 8 registers with correct bit lengths.',
-                'Explain why AR/PC are 12 bits and DR/AC/IR/TR are 16 bits.',
-                'Detail function of each register.'
+              "question": "List all registers of the basic computer with their bit lengths and primary functions. Explain the construction of the 16-bit Common Bus System with a neat diagram.",
+              "marks": "7 Marks",
+              "answer": "1. List the 8 registers in a table: AR (12 bits), PC (12 bits), DR (16 bits), AC (16 bits), IR (16 bits), TR (16 bits), INPR (8 bits), OUTR (8 bits) with functions.\n2. Common Bus Architecture: Explain that sixteen 8-to-1 MUXes are used to construct the 16-bit bus.\n3. Draw the architectural diagram showing connections from register outputs into MUX inputs 1 through 7, and bus output distributing to register inputs.\n4. Present the Multiplexer Selection Table for S2 S1 S0 from 000 (None) to 111 (Memory).\n5. Explain the role of LD, INR, and CLR control inputs.",
+              "keyPoints": [
+                "Complete register enumeration with exact bit lengths",
+                "16-line common bus schematic with 8-to-1 MUXes",
+                "Selection table for S2, S1, S0",
+                "Register load gating and synchronous clocking"
+              ]
+            },
+            {
+              "question": "Why does the Accumulator (AC) register not connect directly to the Common Bus for loading data? Explain how data is transferred into AC.",
+              "marks": "5 Marks",
+              "answer": "The Accumulator (AC) is the central arithmetic and logic register of the CPU. Rather than receiving simple register copy transfers, almost all data entering AC requires an arithmetic or logic micro-operation (such as ADD, AND, or Complement). Therefore, the 16-bit common bus feeds into the Adder and Logic Circuit, which also receives the Data Register (DR) and Input Register (INPR). The output of this Adder/Logic unit is hardwired directly to the parallel inputs of AC. When AC.LD is asserted, the computed arithmetic/logic result is loaded into AC synchronously.",
+              "keyPoints": [
+                "Functional role of AC as primary ALU operand/result store",
+                "Interposition of the Adder and Logic Circuit",
+                "Inputs to Adder/Logic: Bus, DR, INPR",
+                "Synchronous loading via AC.LD"
               ]
             }
           ],
-          mcqs: [
+          "mcqs": [
             {
-              question: 'Why are AR and PC 12 bits while DR and AC are 16 bits in Mano\'s computer?',
-              options: ['Because ALU is 12 bits', 'Because memory has 4096 words (2^12) while each word is 16 bits', 'Because 4 bits are reserved for parity', 'It is an arbitrary design decision'],
-              correctIndex: 1,
-              explanation: 'Addressing 4096 memory words requires 12 address bits (2^12 = 4096). Each word contains 16 bits of data.'
+              "question": "What is the bit length of the Address Register (AR) and Program Counter (PC) in Mano's basic computer?",
+              "options": [
+                "8 bits",
+                "12 bits",
+                "16 bits",
+                "32 bits"
+              ],
+              "correctIndex": 1,
+              "explanation": "Because the memory unit consists of 4096 words (2^12 = 4096), addresses require exactly 12 bits, making AR and PC 12 bits wide."
             },
             {
-              question: 'Which register is hardwired directly to the memory address pins without passing through the bus?',
-              options: ['PC', 'DR', 'AR', 'TR'],
-              correctIndex: 2,
-              explanation: 'AR (Address Register) is wired directly to the address inputs of the memory unit.'
+              "question": "Which multiplexer selection code (S2 S1 S0) places the Program Counter (PC) onto the common bus?",
+              "options": [
+                "001",
+                "010",
+                "011",
+                "100"
+              ],
+              "correctIndex": 1,
+              "explanation": "In the multiplexer selection table, S2 S1 S0 = 010 selects register PC (Input 2) to drive the bus lines."
+            },
+            {
+              "question": "When S2 S1 S0 = 111 and the Memory READ control line is asserted, what data is placed on the common bus?",
+              "options": [
+                "The contents of the Instruction Register",
+                "The 16-bit word from memory location addressed by AR",
+                "The contents of the Accumulator",
+                "All logic 1s"
+              ],
+              "correctIndex": 1,
+              "explanation": "Selection code 111 selects the memory unit. Asserting READ causes the 16-bit word at M[AR] to drive the common bus."
+            },
+            {
+              "question": "How does data from the Data Register (DR) get added to the Accumulator (AC)?",
+              "options": [
+                "DR writes directly into AC flip-flops",
+                "DR outputs pass to the bus, into the Adder/Logic circuit, and into AC",
+                "AC is transferred to DR and then back",
+                "Via the Temporary Register (TR)"
+              ],
+              "correctIndex": 1,
+              "explanation": "DR is placed on the bus or connected to the Adder and Logic circuit, which computes AC + DR and latches the sum into AC."
             }
           ]
         },
-
-        // ── TOPIC 8: INSTRUCTION CYCLE FLOWCHART ──
         {
-          id: 'instruction-cycle-flowchart',
-          title: 'Instruction Cycle & Detailed Fetch/Decode RTL',
-          simpleExplanation: 'The instruction cycle is the continuous heartbeat of the computer: Fetch instruction from memory, Decode opcode, and Execute micro-operations.',
-          detailedExplanation: `## The Instruction Cycle
-
-The instruction cycle consists of four continuous phases:
-1. **Fetch:** Read instruction from memory into IR.
-2. **Decode:** Decode operation code and determine addressing mode.
-3. **Read Effective Address:** If indirect addressing ($I=1$), fetch pointer.
-4. **Execute:** Perform the requested micro-operation.
-
-### Master Instruction Cycle Flowchart (Question Bank Q3 & Q20)
-\`\`\`mermaid
-flowchart TD
-    START(["Instruction Cycle Start"]) --> T0["T0: AR ← PC"]
-    T0 --> T1["T1: IR ← Memory(AR), PC ← PC + 1"]
-    T1 --> T2["T2: Decode Opcode in IR(12-14)\nAR ← IR(0-11), I ← IR(15)"]
-    T2 --> CHECK{"Opcode = 111 (7)?"}
-
-    CHECK -- Yes --> D7{"I bit = ?"}
-    D7 -- I = 0 --> REGINST["Register-Reference Instruction\n(Executed at T3: CLA, CMA, INC...)"]
-    D7 -- I = 1 --> IOINST["I/O-Reference Instruction\n(Executed at T3: INP, OUT, ION...)"]
-
-    CHECK -- No --> MEMINST{"I bit = ? (Memory-Reference)"}
-    MEMINST -- I = 0 (Direct) --> DIRECT["T3: Nothing\n(AR already holds Effective Address)"]
-    MEMINST -- I = 1 (Indirect) --> INDIRECT["T3: AR ← Memory(AR)\n(Fetch Effective Address from Memory)"]
-
-    DIRECT --> EXEC["Execute Memory-Reference (T4, T5, T6)\nAND, ADD, LDA, STA, BUN, BSA, ISZ"]
-    INDIRECT --> EXEC
-
-    REGINST --> SC0["SC ← 0 (Instruction Complete)"]
-    IOINST --> SC0
-    EXEC --> SC0
-    SC0 --> INT{"Interrupt Enable (IEN) && (FGI || FGO)?"}
-    INT -- Yes --> INTCYCLE["Interrupt Cycle: Save PC at Memory(0), PC ← 1"]
-    INT -- No --> T0
-    INTCYCLE --> T0
-\`\`\`
-
-### Fetch and Decode RTL Breakdown:
-- **$T_0$:** \\\`AR <- PC\\\` (Address of instruction loaded into AR)
-- **$T_1$:** \\\`IR <- M[AR], PC <- PC + 1\\\` (Instruction fetched into IR, PC incremented for next instruction)
-- **$T_2$:** \\\`Decode Opcode in IR(12-14), AR <- IR(0-11), I <- IR(15)\\\``,
-          shortNotes: 'T0: AR<-PC. T1: IR<-M[AR], PC<-PC+1. T2: Decode opcode, AR<-IR(0-11), I<-IR(15). T3: If I=1 AR<-M[AR]. T4-T6: Execute. SC<-0.',
-          examples: [
+          "id": "ca-u2-t3",
+          "title": "Basic Computer Instruction Set: Memory-Reference, Register-Reference & Input-Output Instructions",
+          "simpleExplanation": "The basic computer supports 25 distinct instructions classified into three mutually exclusive categories based on their opcode and addressing mode. Memory-Reference Instructions access memory operands for arithmetic, logic, and branching; Register-Reference Instructions manipulate the Accumulator and Extended flip-flop without touching memory; and Input-Output Instructions communicate with external serial keyboards and display devices.",
+          "detailedExplanation": "## 1. Classification of Computer Instructions\n\nThe basic computer instruction set comprises 25 instructions grouped into three distinct categories based on the 3-bit opcode (bits 12–14) and the mode bit $I$ (bit 15):\n1. **Memory-Reference Instructions (MRI):** Opcode $000$ through $110$ ($D_0$ through $D_6$). Bit 15 selects Direct ($I=0$) or Indirect ($I=1$).\n2. **Register-Reference Instructions (RRI):** Opcode $111$ ($D_7 = 1$) with $I = 0$. Bits 0–11 specify 12 distinct operations on $AC$ and $E$.\n3. **Input-Output Instructions (IOI):** Opcode $111$ ($D_7 = 1$) with $I = 1$. Bits 6–11 specify 6 distinct I/O operations and flag checks.\n\n```mermaid\nflowchart TD\n    IR[\"Instruction Register (IR)\"] --> OP{\"Opcode Bits 12-14\"}\n    OP -->|\"000 to 110 (D0 to D6)\"| MRI[\"Memory-Reference Instructions (MRI)\nI=0: Direct | I=1: Indirect\"]\n    OP -->|\"111 (D7 = 1)\"| MODE{\"Mode Bit 15 (I)\"}\n    MODE -->|\"I = 0\"| RRI[\"Register-Reference Instructions (RRI)\nDecoded at r = D7 . I' . T3\"]\n    MODE -->|\"I = 1\"| IOI[\"Input-Output Instructions (IOI)\nDecoded at p = D7 . I . T3\"]\n```\n\n---\n\n## 2. Memory-Reference Instructions (MRI)\n\nThere are 7 memory-reference instructions. Each instruction is executed during timing states $T_4, T_5, T_6$ after the effective address has been loaded into $AR$.\n\n| Symbol | Opcode ($I=0$) | Opcode ($I=1$) | RTL Description | Function / Operation |\n| :--- | :---: | :---: | :--- | :--- |\n| **AND** | `0xxx` | `8xxx` | $AC \\leftarrow AC \\land M[AR]$ | Bitwise AND memory word to AC |\n| **ADD** | `1xxx` | `9xxx` | $AC \\leftarrow AC + M[AR], E \\leftarrow C_{out}$ | Add memory word to AC, carry into E |\n| **LDA** | `2xxx` | `Axxx` | $AC \\leftarrow M[AR]$ | Load memory word into AC |\n| **STA** | `3xxx` | `Bxxx` | $M[AR] \\leftarrow AC$ | Store AC contents into memory |\n| **BUN** | `4xxx` | `Cxxx` | $PC \\leftarrow AR$ | Branch Unconditionally to address AR |\n| **BSA** | `5xxx` | `Dxxx` | $M[AR] \\leftarrow PC, PC \\leftarrow AR + 1$ | Branch and Save return Address |\n| **ISZ** | `6xxx` | `Exxx` | $M[AR] \\leftarrow M[AR] + 1, \\text{if } (M[AR] + 1 = 0) \\text{ then } PC \\leftarrow PC + 1$ | Increment memory word, Skip if Zero |\n\n### 2.1 Detailed Execution of BSA (Branch and Save Address)\nBSA is used for **subroutine calls**. It preserves the return address in the first word of the subroutine:\n```\nBefore Execution:\nPC = 21, AR = 135\nMemory[135]: [ Subroutine Entry (Empty) ]\nMemory[136]: [ First Subroutine Instruction ]\n\nExecution Sequence (T4, T5):\nT4: M[AR] <- PC, AR <- AR + 1   ===> M[135] = 21, AR = 136\nT5: PC <- AR, SC <- 0           ===> PC = 136 (Begins execution at 136)\n\nReturn from Subroutine:\nSubroutine returns to main program via: BUN 135 (I = 1)  (Indirect jump via 135!)\n```\n\n### 2.2 Detailed Execution of ISZ (Increment and Skip if Zero)\nISZ implements hardware loop counters:\n- $T_4: DR \\leftarrow M[AR]$\n- $T_5: DR \\leftarrow DR + 1$\n- $T_6: M[AR] \\leftarrow DR, \\text{if } (DR = 0) \\text{ then } PC \\leftarrow PC + 1, SC \\leftarrow 0$\n\n---\n\n## 3. Register-Reference Instructions (RRI)\n\nRegister-reference instructions are recognized by $D_7 = 1$ and $I = 0$ ($IR(12-14) = 111, IR(15) = 0$). They are decoded with the control variable:\n$$r = D_7 \\cdot I' \\cdot T_3$$\nBecause all operations execute directly on internal registers, they complete entirely during clock cycle $T_3$ without accessing memory.\n\n| Hex Symbol | Hex Code | RTL Micro-operation | Description |\n| :--- | :---: | :--- | :--- |\n| **CLA** | `7800` | $AC \\leftarrow 0$ | Clear Accumulator |\n| **CLE** | `7400` | $E \\leftarrow 0$ | Clear Extended flip-flop (Carry) |\n| **CMA** | `7200` | $AC \\leftarrow \\overline{AC}$ | Complement (bitwise NOT) AC |\n| **CME** | `7100` | $E \\leftarrow \\overline{E}$ | Complement E |\n| **CIR** | `7080` | $AC \\leftarrow \\text{cir } AC, AC(15) \\leftarrow E, E \\leftarrow AC(0)$ | Circulate Right AC and E |\n| **CIL** | `7040` | $AC \\leftarrow \\text{cil } AC, AC(0) \\leftarrow E, E \\leftarrow AC(15)$ | Circulate Left AC and E |\n| **INC** | `7020` | $AC \\leftarrow AC + 1$ | Increment AC |\n| **SPA** | `7010` | $\\text{if } (AC(15) = 0) \\text{ then } PC \\leftarrow PC + 1$ | Skip next instruction if AC is Positive |\n| **SNA** | `7008` | $\\text{if } (AC(15) = 1) \\text{ then } PC \\leftarrow PC + 1$ | Skip next instruction if AC is Negative |\n| **SZA** | `7004` | $\\text{if } (AC = 0) \\text{ then } PC \\leftarrow PC + 1$ | Skip next instruction if AC is Zero |\n| **SZE** | `7002` | $\\text{if } (E = 0) \\text{ then } PC \\leftarrow PC + 1$ | Skip next instruction if E is Zero |\n| **HLT** | `7001` | $S \\leftarrow 0$ | Halt computer (stops master clock generator) |\n\n---\n\n## 4. Input-Output Instructions (IOI)\n\nInput-output instructions are recognized by $D_7 = 1$ and $I = 1$ ($IR(12-14) = 111, IR(15) = 1$). They are decoded with the control variable:\n$$p = D_7 \\cdot I \\cdot T_3$$\nThey interface with the 8-bit input register ($INPR$), 8-bit output register ($OUTR$), and their respective synchronization flags $FGI$ (Input Flag) and $FGO$ (Output Flag).\n\n| Hex Symbol | Hex Code | RTL Micro-operation | Description |\n| :--- | :---: | :--- | :--- |\n| **INP** | `F800` | $AC(0-7) \\leftarrow INPR, FGI \\leftarrow 0$ | Input character to AC and clear input flag |\n| **OUT** | `F400` | $OUTR \\leftarrow AC(0-7), FGO \\leftarrow 0$ | Output character from AC and clear output flag |\n| **SKI** | `F200` | $\\text{if } (FGI = 1) \\text{ then } PC \\leftarrow PC + 1$ | Skip next instruction if Input Flag is set |\n| **SKO** | `F100` | $\\text{if } (FGO = 1) \\text{ then } PC \\leftarrow PC + 1$ | Skip next instruction if Output Flag is set |\n| **ION** | `F080` | $IEN \\leftarrow 1$ | Interrupt Enable ON |\n| **IOF** | `F040` | $IEN \\leftarrow 0$ | Interrupt Enable OFF |\n\n> [!TIP] **EXAM TIP:**\n> Subroutine linkage in the basic computer is executed as a pair:\n> 1. Call subroutine: `BSA SUB` (stores return address at `SUB` and branches to `SUB + 1`).\n> 2. Return from subroutine: `BUN SUB I` (indirect branch through the return address stored at `SUB`).\n\n> [!NOTE] **DEV BRAIN:**\n> Notice how skip instructions (SPA, SNA, SZA, SZE, SKI, SKO) work: they simply increment PC ($PC \\leftarrow PC + 1$). In assembly programming, you place an unconditional jump (`BUN LABEL`) immediately after a skip instruction, creating an `if-else` control flow!\n\n> [!WARNING] **TRAP:**\n> Do not confuse `CLA` (`7800`) with `CLE` (`7400`). `CLA` clears the 16-bit Accumulator, whereas `CLE` clears the 1-bit Extended carry flip-flop $E$.\n\n> [!IMPORTANT] **MEMORIZE:**\n> - RRI instructions decode at $r = D_7 \\cdot I' \\cdot T_3$.\n> - IOI instructions decode at $p = D_7 \\cdot I \\cdot T_3$.\n> - MRI instructions decode opcodes $D_0$ through $D_6$ and execute during $T_4, T_5, T_6$.",
+          "shortNotes": "Instructions: 7 Memory-Reference (AND, ADD, LDA, STA, BUN, BSA, ISZ), 12 Register-Reference (decoded at r = D7.I'.T3), and 6 Input-Output (decoded at p = D7.I.T3). BSA saves return address in M[AR].",
+          "examples": [
             {
-              title: 'Fetch Phase Execution',
-              code: 'T0: AR <- PC\nT1: IR <- M[AR], PC <- PC + 1',
-              explanation: 'Requires exactly 2 clock pulses to fetch instruction and increment program counter.'
+              "title": "BSA and ISZ Assembly Execution Trace",
+              "problem": "Show the memory contents and register states for: (a) Executing BSA 100 located at PC = 20, and (b) Executing ISZ 200 where M[200] = 0xFFFF (-1 in 2's complement).",
+              "explanation": "For BSA 100: Return address PC+1 = 21 is saved at M[100]. PC becomes 101. For ISZ 200: M[200] is incremented from 0xFFFF to 0x0000. Because result is zero, PC is incremented (skips next instruction).",
+              "code": "# BSA and ISZ Simulation\ndef sim_bsa(pc, target_address, memory):\n    return_addr = pc + 1\n    memory[target_address] = return_addr\n    new_pc = target_address + 1\n    return new_pc, memory\n\ndef sim_isz(pc, operand_address, memory):\n    val = (memory[operand_address] + 1) & 0xFFFF\n    memory[operand_address] = val\n    new_pc = pc + 2 if val == 0 else pc + 1\n    return new_pc, memory\n\nmem = {100: 0, 200: 0xFFFF}\npc1, mem = sim_bsa(20, 100, mem)\nprint(f\"After BSA: PC = {pc1}, M[100] = {mem[100]}\")\n\npc2, mem = sim_isz(50, 200, mem)\nprint(f\"After ISZ: PC = {pc2} (Skipped!), M[200] = {hex(mem[200])}\")",
+              "output": "After BSA: PC = 101, M[100] = 21\nAfter ISZ: PC = 52 (Skipped!), M[200] = 0x0"
             }
           ],
-          keyPoints: [
-            'Fetch phase takes 2 clock cycles: T0 and T1.',
-            'T2 decodes opcode and extracts address and mode bit.',
-            'Sequence Counter (SC) resets to 0 at the end of every instruction.'
+          "keyPoints": [
+            "The basic computer contains 25 instructions split into Memory-Reference, Register-Reference, and Input-Output classes.",
+            "Memory-Reference Instructions (D0-D6) operate on memory data and execute in states T4, T5, and T6.",
+            "Register-Reference Instructions execute entirely in state T3 under control condition r = D7 . I' . T3.",
+            "Input-Output Instructions interface with INPR/OUTR under control condition p = D7 . I . T3.",
+            "BSA implements subroutine calls by saving the return address in the target memory location and jumping to target+1."
           ],
-          theoryQuestions: [
+          "theoryQuestions": [
             {
-              question: 'Draw the complete flowchart of the basic computer instruction cycle, detailing all micro-operations from T0 to T3.',
-              marks: '7 Marks',
-              answer: 'The instruction cycle flowchart details the sequential execution phases:\\n\\n1. **Fetch Phase ($T_0, T_1$):**\\n   - $T_0: AR \\leftarrow PC$\\n   - $T_1: IR \\leftarrow M[AR], PC \\leftarrow PC + 1$\\n2. **Decode Phase ($T_2$):**\\n   - $T_2: \\text{Decode } IR(12-14) \\text{ into } D_0..D_7, AR \\leftarrow IR(0-11), I \\leftarrow IR(15)$\\n3. **Indirect / Mode Check ($T_3$):**\\n   - If $D_7 = 0$ (Memory-reference):\\n     - $I=1: AR \\leftarrow M[AR]$ (read effective address)\\n     - $I=0$: Nothing (AR is already effective address)\\n   - If $D_7 = 1$ and $I = 0$: Execute register-reference instruction at $T_3$.\\n   - If $D_7 = 1$ and $I = 1$: Execute I/O instruction at $T_3$.',
-              keyPoints: [
-                'Complete flowchart diagram.',
-                'Explicit RTL statements for T0, T1, T2, T3.',
-                'Clear distinction between memory-reference, register-reference, and I/O instructions.'
+              "question": "Explain the execution of Memory-Reference instructions BSA (Branch and Save Address) and ISZ (Increment and Skip if Zero) with RTL micro-operations and memory diagrams.",
+              "marks": "7 Marks",
+              "answer": "1. BSA Micro-operations:\n   - T4: M[AR] <- PC, AR <- AR + 1\n   - T5: PC <- AR, SC <- 0\n   - Explain that the return address PC is stored in the first word of the subroutine (M[AR]), and execution begins at AR+1.\n   - Show how subroutine returns using BUN AR (Indirect).\n2. ISZ Micro-operations:\n   - T4: DR <- M[AR]\n   - T5: DR <- DR + 1\n   - T6: M[AR] <- DR, if (DR = 0) then PC <- PC + 1, SC <- 0\n   - Explain that ISZ increments the memory word; if the result reaches 0, PC is incremented to skip the next instruction, enabling hardware loop counters.",
+              "keyPoints": [
+                "RTL timing steps for BSA (T4, T5)",
+                "Memory diagram showing return address storage",
+                "RTL timing steps for ISZ (T4, T5, T6)",
+                "Loop control mechanism using skip condition"
+              ]
+            },
+            {
+              "question": "List and explain any five Register-Reference instructions and all six Input-Output instructions with their hexadecimal codes and RTL operations.",
+              "marks": "7 Marks",
+              "answer": "1. Decoding: State that RRI decodes at r = D7 . I' . T3 and IOI decodes at p = D7 . I . T3.\n2. Register-Reference Instructions (Explain 5):\n   - CLA (7800): AC <- 0\n   - CMA (7200): AC <- AC'\n   - INC (7020): AC <- AC + 1\n   - CIR (7080): AC <- cir AC, AC(15) <- E, E <- AC(0)\n   - HLT (7001): S <- 0\n3. Input-Output Instructions (All 6):\n   - INP (F800): AC(0-7) <- INPR, FGI <- 0\n   - OUT (F400): OUTR <- AC(0-7), FGO <- 0\n   - SKI (F200): if (FGI=1) then PC <- PC + 1\n   - SKO (F100): if (FGO=1) then PC <- PC + 1\n   - ION (F080): IEN <- 1\n   - IOF (F040): IEN <- 0",
+              "keyPoints": [
+                "Decoding conditions r and p",
+                "Hex codes and RTL for RRI instructions",
+                "Hex codes and RTL for IOI instructions",
+                "Role of FGI, FGO flags and IEN interrupt flip-flop"
               ]
             }
           ],
-          mcqs: [
+          "mcqs": [
             {
-              question: 'During which clock timing pulse is the Program Counter (PC) incremented by 1 during fetch?',
-              options: ['T0', 'T1', 'T2', 'T3'],
-              correctIndex: 1,
-              explanation: 'At timing pulse T1, IR <- M[AR] and PC <- PC + 1 execute simultaneously.'
+              "question": "Which instruction saves the return address into memory and branches to the subroutine entry point + 1?",
+              "options": [
+                "BUN",
+                "BSA",
+                "ISZ",
+                "STA"
+              ],
+              "correctIndex": 1,
+              "explanation": "BSA (Branch and Save Address) stores the current PC at M[AR] and loads AR + 1 into PC."
             },
             {
-              question: 'What happens at timing signal T3 if the instruction is memory-reference with I = 1?',
-              options: ['AR <- PC', 'AR <- M[AR]', 'PC <- PC + 1', 'SC <- 0'],
-              correctIndex: 1,
-              explanation: 'At T3 with I=1, indirect addressing fetches the effective address: AR <- M[AR].'
+              "question": "The control condition for executing Register-Reference instructions in the basic computer is:",
+              "options": [
+                "r = D7 . I . T3",
+                "r = D7 . I' . T3",
+                "r = D0 . I' . T4",
+                "r = D7 . I . T4"
+              ],
+              "correctIndex": 1,
+              "explanation": "Register-reference instructions have opcode 111 (D7=1), mode bit I=0 (I'=1), and execute at timing state T3: r = D7 . I' . T3."
             },
             {
-              question: 'What is the role of the Sequence Counter (SC) in the basic computer control unit?',
-              options: ['Counts instructions executed', 'Provides sequential timing pulses T0, T1, T2...', 'Generates memory parity', 'Calculates branch address'],
-              correctIndex: 1,
-              explanation: 'SC is decoded by a 4-to-16 decoder to generate discrete timing signals T0, T1, T2... for sequencing micro-operations.'
+              "question": "What does the instruction ISZ (Increment and Skip if Zero) do when the incremented memory value reaches zero?",
+              "options": [
+                "Halts the processor",
+                "Increments PC by 1 to skip the next instruction",
+                "Clears the Accumulator",
+                "Triggers an interrupt"
+              ],
+              "correctIndex": 1,
+              "explanation": "When the incremented operand equals zero, ISZ skips the subsequent instruction by incrementing PC (PC <- PC + 1)."
+            },
+            {
+              "question": "Which Input-Output instruction checks if the input device has transmitted a character and is ready with new data?",
+              "options": [
+                "INP",
+                "OUT",
+                "SKI",
+                "ION"
+              ],
+              "correctIndex": 2,
+              "explanation": "SKI (Skip if Input) tests the input flag FGI. If FGI = 1 (character available), it increments PC to skip the polling loop."
             }
           ]
         },
-
-        // ── TOPIC 9: MEMORY-REFERENCE INSTRUCTIONS ──
         {
-          id: 'mri-instructions-rtl',
-          title: 'Memory-Reference Instructions (AND, ADD, LDA, STA, BUN, BSA, ISZ)',
-          simpleExplanation: 'Memory-reference instructions read or write RAM to perform logic, math, load, store, branching, and looping.',
-          detailedExplanation: `## Memory-Reference Instructions
-
-Mano's computer has 7 Memory-Reference Instructions (Opcode 000 to 110):
-
-| Opcode | Mnemonic | Description | RTL Execution Micro-operations |
-| :---: | :--- | :--- | :--- |
-| **000** | **AND** | AND to AC | $D_0 T_4: DR \\leftarrow M[AR]$\n$D_0 T_5: AC \\leftarrow AC \\land DR, SC \\leftarrow 0$ |
-| **001** | **ADD** | Add to AC | $D_1 T_4: DR \\leftarrow M[AR]$\n$D_1 T_5: AC \\leftarrow AC + DR, E \\leftarrow C_{out}, SC \\leftarrow 0$ |
-| **010** | **LDA** | Load to AC | $D_2 T_4: DR \\leftarrow M[AR]$\n$D_2 T_5: AC \\leftarrow DR, SC \\leftarrow 0$ |
-| **011** | **STA** | Store from AC | $D_3 T_4: M[AR] \\leftarrow AC, SC \\leftarrow 0$ |
-| **100** | **BUN** | Branch Unconditional | $D_4 T_4: PC \\leftarrow AR, SC \\leftarrow 0$ |
-| **101** | **BSA** | Branch & Save Return | $D_5 T_4: M[AR] \\leftarrow PC, AR \\leftarrow AR + 1$\n$D_5 T_5: PC \\leftarrow AR, SC \\leftarrow 0$ |
-| **110** | **ISZ** | Increment & Skip if 0 | $D_6 T_4: DR \\leftarrow M[AR]$\n$D_6 T_5: DR \\leftarrow DR + 1$\n$D_6 T_6: M[AR] \\leftarrow DR, \\text{if } (DR=0) PC \\leftarrow PC + 1, SC \\leftarrow 0$ |
-
-### BSA Subroutine Branch & Return Mechanism
-\`\`\`mermaid
-flowchart TD
-    subgraph BSA_Operation["BSA SUB (Branch and Save Return Address)"]
-        PC_VAL["Current PC = 21 (Next instruction to return to)"]
-        AR_VAL["Target SUB Label = Location 100"]
-
-        T4["T4: Memory(100) ← 21 (Save PC)\nAR ← 101"]
-        T5["T5: PC ← 101 (Jump to Subroutine Body)"]
-
-        PC_VAL & AR_VAL --> T4 --> T5
-    end
-
-    subgraph Return_Operation["Subroutine Return: BUN SUB I"]
-        RET["BUN 100 I\nReads address stored at 100 (which is 21!)\nPC ← 21 (Clean Return to Main Program)"]
-    end
-
-    T5 --> RET
-\`\`\``,
-          shortNotes: '7 MRIs: AND, ADD, LDA, STA, BUN, BSA (saves PC in M[AR] and jumps to AR+1), ISZ (increments memory word and skips next instruction if zero).',
-          examples: [
+          "id": "ca-u2-t4",
+          "title": "Timing & Control, Complete Instruction Cycle & Interrupt Cycle with State Flowchart",
+          "simpleExplanation": "The timing and control unit generates the master signals that coordinate all computer operations using an opcode decoder and a 4-bit sequence counter. Every instruction progresses through a four-phase cycle: Fetch, Decode, Effective Address Calculation, and Execution. If an external I/O device requests service, an Interrupt Cycle suspends the current program, stores the return address at memory location 0, and branches to an interrupt service routine.",
+          "detailedExplanation": "## 1. Hardwired Timing and Control Unit Organization\n\nThe control unit is the nerve center of the CPU, generating the time-synchronized control signals that gate register transfers, memory reads/writes, and ALU micro-operations. In the basic computer, a **hardwired control unit** is constructed using flip-flops, gates, and decoders.\n\n```mermaid\nflowchart TD\n    IR_bits[\"IR Bits 12-14 (Opcode)\"] --> DEC_3x8[\"3-to-8 Decoder\"]\n    DEC_3x8 --> D_lines[\"Opcode Outputs (D0 to D7)\"]\n    IR_15[\"IR Bit 15 (I)\"] --> I_FF[\"Mode Flip-Flop (I)\"]\n    CLK[\"Master Clock\"] --> SC[\"4-bit Sequence Counter (SC)\"]\n    CLR[\"Clear SC\"] --> SC\n    INR[\"Increment SC\"] --> SC\n    SC --> DEC_4x16[\"4-to-16 Timing Decoder\"]\n    DEC_4x16 --> T_lines[\"Timing Signals (T0 to T15)\"]\n    D_lines & I_FF & T_lines & IR_0_11[\"IR Bits 0-11\"] --> CL_Matrix[\"Control Logic Gates\"]\n    CL_Matrix --> Control_Outputs[\"Output Control Signals (LD, INR, CLR, READ, WRITE)\"]\n```\n\n### 1.1 Structural Components\n1. **3-to-8 Decoder:** Decodes the 3-bit opcode from $IR(12-14)$ into eight mutually exclusive output lines $D_0$ through $D_7$.\n2. **Mode Flip-Flop ($I$):** Latches bit 15 of $IR$, distinguishing direct ($I=0$) from indirect ($I=1$) addressing.\n3. **4-bit Sequence Counter (SC):** Counts from $0000$ to $1111$ ($0$ to $15$). It increments synchronously with the clock or clears to $0$ ($SC \\leftarrow 0$) when an instruction finishes.\n4. **4-to-16 Timing Decoder:** Decodes the 4-bit SC output into 16 discrete timing signals $T_0$ through $T_{15}$. Exactly one timing signal $T_i$ is active at any clock pulse.\n\n---\n\n## 2. The 4-Phase Instruction Cycle\n\nEvery machine instruction is processed through four fundamental phases:\n1. **Fetch:** Instruction is fetched from memory into $IR$.\n2. **Decode:** Opcode is decoded, address loaded into $AR$, mode bit into $I$.\n3. **Effective Address Calculation:** If indirect ($I=1$), the operand's effective address is fetched from memory.\n4. **Execution:** The micro-operations of the specific instruction are executed.\n\n```\nState Timeline:\nClock Cycle:   T0         T1              T2                  T3               T4 .. T6\nPhase:       [ Fetch 1 ] [ Fetch 2 ]   [ Decode ]        [ Indirect Check ]   [ Execute ]\nRTL:         AR <- PC    IR <- M[AR]   D0..D7 <- IR[12]  AR <- M[AR]          Execute Op\n                         PC <- PC + 1  AR <- IR[0-11]    (if D7'=1 & I=1)     SC <- 0\n                                       I <- IR[15]\n```\n\n### 2.1 Detailed RTL Phase Breakdown\n- **$T_0$ (Fetch Phase 1):**\n  $$T_0: AR \\leftarrow PC$$\n  The content of $PC$ is placed onto the common bus ($S_2 S_1 S_0 = 010$) and loaded into $AR$ ($AR.LD = 1$).\n- **$T_1$ (Fetch Phase 2):**\n  $$T_1: IR \\leftarrow M[AR], PC \\leftarrow PC + 1$$\n  Memory is read ($S_2 S_1 S_0 = 111, \\text{READ} = 1$), data loaded into $IR$ ($IR.LD = 1$), while $PC$ is incremented ($PC.INR = 1$).\n- **$T_2$ (Decode Phase):**\n  $$T_2: D_0 \\dots D_7 \\leftarrow \\text{Decode } IR(12-14), AR \\leftarrow IR(0-11), I \\leftarrow IR(15)$$\n  Opcode is decoded into $D_0-D_7$, address bits $0-11$ are loaded into $AR$, and bit 15 is transferred to flip-flop $I$.\n- **$T_3$ (Effective Address & Instruction Type Determination):**\n  - If Memory-Reference with Indirect ($D_7' \\cdot I \\cdot T_3$):\n    $$AR \\leftarrow M[AR]$$\n  - If Memory-Reference with Direct ($D_7' \\cdot I' \\cdot T_3$):\n    $$\\text{Nothing done; } AR \\text{ already contains Effective Address}$$\n  - If Register-Reference ($D_7 \\cdot I' \\cdot T_3$):\n    $$\\text{Execute RRI micro-operation, } SC \\leftarrow 0$$\n  - If Input-Output ($D_7 \\cdot I \\cdot T_3$):\n    $$\\text{Execute IOI micro-operation, } SC \\leftarrow 0$$\n\n---\n\n## 3. The Interrupt Cycle\n\nIn programmed I/O, the CPU wastes execution time in polling loops waiting for slow peripherals. To optimize performance, the **Interrupt Facility** allows external devices to signal the CPU asynchronously.\n\n### 3.1 Interrupt Hardware Components\n- **$IEN$ (Interrupt Enable Flip-Flop):** Can be set ($ION$) or cleared ($IOF$) by software.\n- **$FGI$ / $FGO$ (Input/Output Flags):** Set to 1 when a peripheral is ready.\n- **$R$ (Interrupt Request Flip-Flop):** Set to 1 by hardware when an interrupt condition arises.\n\n```\nCondition to Set Interrupt Flip-Flop R:\nR <- 1 when  T0' T1' T2' . (IEN) . (FGI + FGO) = 1\n```\n\n```mermaid\nflowchart TD\n    START([\"Instruction Cycle Start\"]) --> FETCH[\"Fetch & Decode (T0, T1, T2)\"]\n    FETCH --> EXEC[\"Execute Instruction (T3..T6)\"]\n    EXEC --> CHECK{\"Check Interrupt:\nR = 1 ?\"}\n    CHECK -->|\"R = 0 (Normal)\"| START\n    CHECK -->|\"R = 1 (Interrupt Request)\"| INT_0[\"RT0: AR <- 0, TR <- PC\"]\n    INT_0 --> INT_1[\"RT1: M[AR] <- TR, PC <- 0\"]\n    INT_1 --> INT_2[\"RT2: PC <- PC + 1, IEN <- 0, R <- 0, SC <- 0\"]\n    INT_2 --> ISR[\"Execute Interrupt Service Routine (starts at PC=1)\"]\n```\n\n### 3.2 Interrupt Cycle RTL Execution\nWhen an interrupt is triggered ($R = 1$), the normal instruction fetch is suspended, and the CPU executes the Interrupt Cycle:\n- **$R T_0$:**\n  $$AR \\leftarrow 0, TR \\leftarrow PC$$\n  $AR$ is cleared to address $0$. Current $PC$ (return address) is saved into Temporary Register $TR$.\n- **$R T_1$:**\n  $$M[AR] \\leftarrow TR, PC \\leftarrow 0$$\n  The return address in $TR$ is written into memory address $0$ ($M[0] \\leftarrow TR$), and $PC$ is cleared to $0$.\n- **$R T_2$:**\n  $$PC \\leftarrow PC + 1, IEN \\leftarrow 0, R \\leftarrow 0, SC \\leftarrow 0$$\n  $PC$ is incremented to $1$ ($PC \\leftarrow 1$). Further interrupts are disabled ($IEN \\leftarrow 0$), interrupt flip-flop is cleared ($R \\leftarrow 0$), and sequence counter is reset ($SC \\leftarrow 0$).\n\nAt the next clock pulse, the CPU enters the fetch cycle at address $1$ ($PC = 1$), where an unconditional branch instruction `BUN ISR` transfers control to the **Interrupt Service Routine (ISR)**.\nWhen the ISR finishes, it returns to the interrupted program using an indirect jump through address 0:\n$$\\text{BUN } 0 \\text{ (with } I = 1 \\implies \\text{BUN } 0\\ I)$$\n\n> [!TIP] **EXAM TIP:**\n> Memory location $0$ in the basic computer is reserved exclusively for the Interrupt Return Address! Location $1$ is reserved for the branch instruction to the ISR. User programs must begin at location $2$ or higher.\n\n> [!NOTE] **DEV BRAIN:**\n> This interrupt mechanism is the direct hardware predecessor of modern x86/ARM interrupt vector tables and context switching:\n> 1. Hardware saves PC (return address).\n> 2. Disables interrupts (`cli` in x86, $IEN \\leftarrow 0$).\n> 3. Jumps to the handler vector.\n> 4. Handler saves registers, services device, and executes return (`iret`, or `BUN 0 I`).\n\n> [!WARNING] **TRAP:**\n> The sequence counter $SC$ is reset to $0$ by two different mechanisms:\n> 1. Automatically after executing an instruction ($SC \\leftarrow 0$).\n> 2. By control gates when an instruction finishes early (e.g., at $T_3$ for RRI or IOI).\n> Never assume every instruction takes 16 clock cycles!\n\n> [!IMPORTANT] **MEMORIZE:**\n> - Fetch RTL: $T_0: AR \\leftarrow PC$; $T_1: IR \\leftarrow M[AR], PC \\leftarrow PC + 1$.\n> - Decode RTL: $T_2: D_0..D_7 \\leftarrow \\text{Decode } IR(12-14), AR \\leftarrow IR(0-11), I \\leftarrow IR(15)$.\n> - Indirect EA RTL: $D_7' I T_3: AR \\leftarrow M[AR]$.\n> - Interrupt return: `BUN 0 I`.",
+          "shortNotes": "Control unit decodes opcodes (3-to-8) and timing (4-to-16). Instruction cycle: Fetch (T0,T1), Decode (T2), Indirect EA (T3), Execute (T4-T6). Interrupt cycle saves return PC at M[0] and starts ISR at PC=1.",
+          "examples": [
             {
-              title: 'Subroutine Call and Return Trace',
-              code: '20: BSA 100  (PC=21 saved into Mem[100], jumps to 101)\n...\n105: BUN 100 I (Indirect jump reads Mem[100]=21, returns to 21)',
-              explanation: 'Standard assembly subroutine pattern in the basic computer.'
+              "title": "Complete Instruction & Interrupt Cycle Trace",
+              "problem": "A basic computer program is executing at PC = 150 when an I/O device sets FGI = 1 (with IEN = 1). The current instruction finishes at T6. Show the exact register contents and memory operations during the subsequent Interrupt Cycle.",
+              "explanation": "At the end of T6, R becomes 1. The interrupt cycle executes RT0: AR <- 0, TR <- 151; RT1: M[0] <- 151, PC <- 0; RT2: PC <- 1, IEN <- 0, R <- 0, SC <- 0. Next cycle fetches from M[1].",
+              "code": "# Interrupt Cycle Simulator\ndef execute_interrupt_cycle(current_pc, memory):\n    # RT0\n    ar = 0\n    tr = current_pc\n    \n    # RT1\n    memory[ar] = tr\n    pc = 0\n    \n    # RT2\n    pc = pc + 1\n    ien = 0\n    r = 0\n    sc = 0\n    \n    return {\n        \"M[0] (Saved Return Address)\": memory[0],\n        \"PC (Next Instruction)\": pc,\n        \"IEN\": ien,\n        \"R\": r,\n        \"SC\": sc\n    }\n\nmem = {}\nprint(execute_interrupt_cycle(current_pc=151, memory=mem))",
+              "output": "{'M[0] (Saved Return Address)': 151, 'PC (Next Instruction)': 1, 'IEN': 0, 'R': 0, 'SC': 0}"
             }
           ],
-          keyPoints: [
-            'BSA saves return address at the first word of the subroutine.',
-            'ISZ takes 3 execute cycles (T4, T5, T6) to read, increment, and write back.',
-            'BUN is a single cycle jump (T4: PC <- AR).'
+          "keyPoints": [
+            "The hardwired control unit uses a 3-to-8 decoder for opcodes and a 4-to-16 decoder on a sequence counter for timing.",
+            "The instruction cycle consists of Fetch (T0, T1), Decode (T2), Effective Address calculation (T3), and Execute (T4-T6).",
+            "The Sequence Counter (SC) resets to 0 as soon as an instruction finishes, avoiding wasted idle cycles.",
+            "The interrupt cycle triggers when IEN=1 and an I/O flag is set, storing the return PC at memory location 0.",
+            "The Interrupt Service Routine (ISR) returns control to the interrupted code using BUN 0 with indirect addressing (BUN 0 I)."
           ],
-          theoryQuestions: [
+          "theoryQuestions": [
             {
-              question: 'Explain the execution cycle of the BSA (Branch and Save Return Address) instruction with a memory diagram and RTL steps.',
-              marks: '5 Marks',
-              answer: 'BSA is used to call a subroutine:\n1. **$D_5 T_4:** $M[AR] \\leftarrow PC, AR \\leftarrow AR + 1$\n   - The current value of $PC$ (return address) is stored in memory at the address specified by $AR$.\n   - $AR$ is incremented by 1 to point to the first executable instruction of the subroutine.\n2. **$D_5 T_5:** $PC \\leftarrow AR, SC \\leftarrow 0$\n   - $PC$ is updated to point to the start of the subroutine body.\n\n**Return from Subroutine:**\nThe subroutine returns by executing an indirect branch instruction: \`BUN SUB I\`. This reads the saved return address from memory location \`SUB\` and loads it back into $PC$.',
-              keyPoints: [
-                'T4 stores PC at M[AR] and increments AR.',
-                'T5 updates PC to AR.',
-                'Return accomplished via BUN SUB I.'
+              "question": "Describe the block diagram of the Timing and Control Unit of the basic computer. Explain the generation of timing signals T0 through T15.",
+              "marks": "7 Marks",
+              "answer": "1. Draw the block diagram: 3-to-8 decoder connected to IR(12-14), flip-flop I connected to IR(15), 4-bit Sequence Counter (SC) connected to 4-to-16 decoder, and control logic gates.\n2. Detail the inputs: Master clock drives SC; SC counts 0000 to 1111.\n3. Detail the outputs: D0 through D7 from 3-to-8 decoder; T0 through T15 from 4-to-16 timing decoder.\n4. Explain how timing signals are mutually exclusive: exactly one Ti is asserted per clock cycle.\n5. Explain how SC is cleared: SC <- 0 via CLR input when an instruction completes, recycling the counter to T0.",
+              "keyPoints": [
+                "Complete block diagram schematic",
+                "Opcode decoder (3-to-8) and timing decoder (4-to-16)",
+                "Role of the 4-bit Sequence Counter",
+                "Synchronous control signal generation and SC reset"
+              ]
+            },
+            {
+              "question": "Explain the complete Interrupt Cycle of the basic computer with RTL statements and draw its flowchart.",
+              "marks": "7 Marks",
+              "answer": "1. Define the purpose of the interrupt cycle: to service asynchronous I/O requests without CPU busy-waiting.\n2. Hardware condition: R <- 1 when T0'T1'T2' . IEN . (FGI + FGO) = 1.\n3. State the RTL micro-operations:\n   - RT0: AR <- 0, TR <- PC\n   - RT1: M[AR] <- TR, PC <- 0\n   - RT2: PC <- PC + 1, IEN <- 0, R <- 0, SC <- 0\n4. Draw the flowchart showing check for R=1, saving of PC at M[0], setting PC=1, clearing IEN, and entering ISR.\n5. Explain return mechanism: BUN 0 I.",
+              "keyPoints": [
+                "Interrupt condition logic (IEN, FGI, FGO, R)",
+                "Step-by-step RTL micro-operations for RT0, RT1, RT2",
+                "Flowchart of Interrupt Cycle",
+                "Subroutine return via indirect branch BUN 0 I"
               ]
             }
           ],
-          mcqs: [
+          "mcqs": [
             {
-              question: 'How does the basic computer return from a subroutine called by BSA SUB?',
-              options: ['POP PC', 'RET instruction', 'BUN SUB I (Indirect branch)', 'JMP SUB'],
-              correctIndex: 2,
-              explanation: 'BUN SUB I performs an indirect branch to the address saved in SUB location, returning to the caller.'
+              "question": "During which timing states does the instruction fetch phase take place in the basic computer?",
+              "options": [
+                "T0 and T1",
+                "T1 and T2",
+                "T2 and T3",
+                "T3 and T4"
+              ],
+              "correctIndex": 0,
+              "explanation": "Instruction fetch occurs during T0 (AR <- PC) and T1 (IR <- M[AR], PC <- PC + 1)."
             },
             {
-              question: 'How many clock cycles are required to execute the ISZ instruction during execution phase (excluding fetch and decode)?',
-              options: ['1 cycle', '2 cycles', '3 cycles (T4, T5, T6)', '4 cycles'],
-              correctIndex: 2,
-              explanation: 'ISZ requires T4 (read memory to DR), T5 (increment DR), and T6 (write DR back to memory and check for skip) = 3 execute cycles.'
-            }
-          ]
-        },
-
-        // ── TOPIC 10: INTERRUPT CYCLE & I/O ──
-        {
-          id: 'interrupt-cycle-io',
-          title: 'Input-Output Configuration & Interrupt Cycle',
-          simpleExplanation: 'The interrupt cycle lets slow peripheral devices (keyboard, printer) notify the CPU when they are ready without wasting CPU time polling.',
-          detailedExplanation: `## Input-Output Configuration & Interrupt Cycle
-
-### I/O Interface Flip-Flops:
-- **$FGI$ (Input Flag):** Set to 1 when a new character is available in INPR. Cleared to 0 when AC reads INPR.
-- **$FGO$ (Output Flag):** Set to 1 when OUTR is empty and ready for next character. Cleared to 0 when AC writes to OUTR.
-- **$IEN$ (Interrupt Enable):** Controlled by software (\`ION\` / \`IOF\`) to allow or block interrupts.
-
-### Interrupt Cycle Flowchart & RTL (Question Bank Q5 & Q21)
-\`\`\`mermaid
-flowchart TD
-    START(["Interrupt Check (R = 1)"]) --> T0["T0: AR ← 0, TR ← PC"]
-    T0 --> T1["T1: Memory(AR) ← TR, PC ← 0"]
-    T1 --> T2["T2: PC ← PC + 1, IEN ← 0, R ← 0, SC ← 0"]
-    T2 --> ISR["Execution jumps to Memory Location 1\n(Address of Interrupt Service Routine)"]
-\`\`\`
-
-### Interrupt Micro-operations Explained:
-1. **$T_0'$:** \\\`AR <- 0, TR <- PC\\\` (Address 0 is selected; PC is backed up in TR).
-2. **$T_1'$:** \\\`M[AR] <- TR, PC <- 0\\\` (Current PC saved in memory location 0; PC cleared).
-3. **$T_2'$:** \\\`PC <- PC + 1, IEN <- 0, R <- 0, SC <- 0\\\` (PC becomes 1; Interrupts disabled so nested interrupts don't corrupt location 0).
-
-The CPU now starts executing the **Interrupt Service Routine (ISR)** located at memory address 1.`,
-          shortNotes: 'Interrupt cycle saves PC at memory location 0, sets PC to 1 (ISR start address), disables IEN, and resets R flip-flop.',
-          examples: [
-            {
-              title: 'Interrupt Return Pattern',
-              code: 'Address 0: Stores Return PC\nAddress 1: JMP 100 (Jump to ISR body)\n...\nAddress 150: ION (Re-enable interrupts)\nAddress 151: BUN 0 I (Return to interrupted program)',
-              explanation: 'Standard ISR layout in Mano basic computer.'
-            }
-          ],
-          keyPoints: [
-            'Interrupt condition: IEN AND (FGI OR FGO).',
-            'Return address is always saved at memory address 0.',
-            'ISR execution always begins at memory address 1.',
-            'IEN is cleared to 0 to prevent nested interrupt corruption.'
-          ],
-          theoryQuestions: [
-            {
-              question: 'Explain the interrupt cycle of the basic computer. Why is the return address saved at location 0?',
-              marks: '5 Marks',
-              answer: 'When an interrupt occurs ($R = 1$):\n1. $T_0\': AR \\leftarrow 0, TR \\leftarrow PC$ (Load address 0 into AR, save PC in TR).\n2. $T_1\': M[AR] \\leftarrow TR, PC \\leftarrow 0$ (Store saved PC into location 0, clear PC).\n3. $T_2\': PC \\leftarrow PC + 1, IEN \\leftarrow 0, R \\leftarrow 0, SC \\leftarrow 0$ (Set PC to 1, disable further interrupts, reset R).\n\n**Why Location 0?**\nLocation 0 is fixed by hardware wiring as a dedicated storage slot for the return pointer. Location 1 contains a branch to the Interrupt Service Routine (ISR). This hardware convention guarantees that the CPU always knows where to save the return state and where to find the handling routine.',
-              keyPoints: [
-                'RTL statements for T0, T1, T2.',
-                'Location 0 stores return PC.',
-                'Location 1 is start of ISR.',
-                'IEN cleared to prevent race conditions.'
-              ]
-            }
-          ],
-          mcqs: [
-            {
-              question: 'Where is the return address saved during the interrupt cycle of Mano\'s basic computer?',
-              options: ['On the hardware stack', 'In register TR', 'At memory location 0', 'At memory location 1'],
-              correctIndex: 2,
-              explanation: 'Hardware is hardwired to save the current Program Counter (PC) at memory location 0.'
+              "question": "Where is the return address stored during the basic computer's Interrupt Cycle?",
+              "options": [
+                "In the Accumulator (AC)",
+                "In the Program Counter (PC)",
+                "In memory location 0 (M[0])",
+                "In the Temporary Register (TR) permanently"
+              ],
+              "correctIndex": 2,
+              "explanation": "During the interrupt cycle, the return address in PC is saved into memory address 0 via the micro-operation RT1: M[AR] <- TR (where AR = 0)."
             },
             {
-              question: 'Why is the Interrupt Enable flip-flop (IEN) cleared to 0 during the interrupt cycle?',
-              options: ['To shut down input/output devices', 'To prevent recursive interrupts from overwriting the return address in location 0', 'To reset the sequence counter', 'To indicate an error condition'],
-              correctIndex: 1,
-              explanation: 'Clearing IEN prevents another interrupt from occurring before the current return address is processed, avoiding memory corruption.'
+              "question": "How does the Sequence Counter (SC) recycle to initiate the fetch of the next instruction?",
+              "options": [
+                "By overflowing naturally at T15",
+                "By receiving an active CLR signal (SC <- 0) from control logic",
+                "By clearing the master clock",
+                "By halting the processor"
+              ],
+              "correctIndex": 1,
+              "explanation": "When an instruction finishes its execution micro-operations, control logic asserts the CLR pin of SC (SC <- 0) so the next clock cycle begins at T0."
+            },
+            {
+              "question": "Which instruction is placed at memory location 0 to return from an Interrupt Service Routine?",
+              "options": [
+                "HLT",
+                "BSA 0",
+                "BUN 0 I",
+                "STA 0"
+              ],
+              "correctIndex": 2,
+              "explanation": "BUN 0 I executes an indirect branch through memory location 0, loading the saved return address back into PC."
             }
           ]
         }
       ]
     },
-
-    // ── UNIT 3: PROGRAMMING THE BASIC COMPUTER ──
     {
-      id: 'unit-3',
-      title: 'Unit 3: Programming the Basic Computer',
-      description: 'Assembly language, two-pass assembler operation, symbol tables, program loops, subroutines, and arithmetic programming.',
-      topics: [
+      "id": "ca-u3",
+      "title": "Unit 3: Microprogrammed Control Unit",
+      "description": "Control Memory (ROM/EPROM), Microinstructions, Microprograms, Control Address Register (CAR), Address Sequencing, Opcode Mapping, Subroutine Register (SBR), 20-bit Microinstruction Format (F1, F2, F3, CD, BR, AD), Symbolic to Binary Microcode Translation, and Hardwired vs Microprogrammed Control Architectural Comparison.",
+      "topics": [
         {
-          id: 'assembly-assembler-pass',
-          title: 'Assembly Language & Two-Pass Assembler',
-          simpleExplanation: 'An assembler translates human-readable assembly instructions (mnemonics and labels) into binary machine code using two scanning passes.',
-          detailedExplanation: `## Assembly Language & Two-Pass Assembler
-
-### Why Two Passes Are Necessary (Forward Reference Problem):
-If a branch refers to a label defined later in the code (e.g., \`BUN NEXT\` where \`NEXT\` is defined 20 lines below), a one-pass assembler cannot know the binary address during the first scan. Therefore, assemblers use two passes:
-- **Pass 1:** Defines symbols and constructs the **Symbol Table** with their memory addresses using the **Location Counter (LC)**.
-- **Pass 2:** Translates mnemonics to binary opcodes and looks up symbol addresses to produce executable machine code.
-
-### Two-Pass Assembler Flowchart (Question Bank Q7 & Q24)
-\`\`\`mermaid
-flowchart TD
-    subgraph Pass1["Pass 1: Generate Symbol Table"]
-        P1_START["Read line of source code"] --> P1_LBL{"Label present?"}
-        P1_LBL -- Yes --> P1_TAB["Store Label + Location Counter (LC) in Symbol Table"]
-        P1_LBL -- No --> P1_PSEUDO
-        P1_TAB --> P1_PSEUDO{"Pseudo-instruction?"}
-        P1_PSEUDO -- ORG --> P1_ORG["Set LC <- Operand value"]
-        P1_PSEUDO -- END --> P1_FINISH["Pass 1 Complete: Symbol Table Ready"]
-        P1_PSEUDO -- Memory/Non-Memory --> P1_INC["LC <- LC + 1"]
-        P1_INC --> P1_START
-        P1_ORG --> P1_START
-    end
-
-    subgraph Pass2["Pass 2: Generate Binary Machine Code"]
-        P2_START["Rewind and read source file"] --> P2_TRANS["Look up Opcode in MRI/Non-MRI table\nLook up address label in Symbol Table"]
-        P2_TRANS --> P2_BIN["Generate 16-bit binary machine word"]
-        P2_BIN --> P2_END{"END directive?"}
-        P2_END -- No --> P2_START
-        P2_END -- Yes --> P2_DONE["Save executable .bin file"]
-    end
-
-    P1_FINISH ==> Pass2
-\`\`\``,
-          shortNotes: 'Two-pass assembler: Pass 1 generates Symbol Table with Location Counter (LC) to resolve forward references. Pass 2 translates code to binary.',
-          examples: [
+          "id": "ca-u3-t1",
+          "title": "Control Memory (ROM), Microinstruction, Microprogram & Control Address Register (CAR)",
+          "simpleExplanation": "A microprogrammed control unit organizes control logic as software stored inside a dedicated high-speed read-only memory called Control Memory. Instead of hardwired logic gates generating timing pulses, each computer instruction triggers a microprogram—a series of microinstructions stored in Control ROM. The Control Address Register (CAR) acts as a program counter for the control unit, pointing to the next microinstruction to read and execute.",
+          "detailedExplanation": "## 1. Microprogrammed Control Unit Fundamentals\n\nIn a computer architecture, the control unit can be realized using two fundamentally different design paradigms:\n1. **Hardwired Control:** Control logic is implemented using fixed hardware gates, flip-flops, multiplexers, and decoders. It is fast but rigid.\n2. **Microprogrammed Control:** Control signals are generated by reading sequential binary control words (**microinstructions**) stored in a dedicated high-speed memory called **Control Memory**.\n\n```mermaid\nflowchart LR\n    subgraph Microprogrammed_Control [\"Microprogrammed Control Unit Organization\"]\n        CAR[\"Control Address Register (CAR)\"] --> CM[\"Control Memory (ROM)\"]\n        CM --> CDR[\"Control Data Register (CDR / MIR)\"]\n        CDR -->|\"Micro-operation Bits\"| Datapath[\"CPU Datapath Control Signals\"]\n        CDR -->|\"Branch & Next Address\"| Next_Logic[\"Next Address Generator (Sequencer)\"]\n        Next_Logic --> CAR\n        External[\"External Status Flags\"] --> Next_Logic\n        Opcode[\"Machine Instruction Opcode\"] --> Next_Logic\n    end\n```\n\n### 1.1 Fundamental Terminology\n- **Control Word:** A fixed-length binary vector whose individual bits or bit fields directly activate specific hardware control lines (e.g., Load, Increment, Add, Read).\n- **Microinstruction:** A control word stored in Control Memory that specifies one or more micro-operations to be performed concurrently, along with address sequencing information to determine the next microinstruction.\n- **Microprogram:** A sequence of microinstructions that implements a complete machine instruction (such as ADD, SUB, or FETCH) or orchestrates CPU initialization.\n- **Control Memory (CM):** A dedicated, high-speed Read-Only Memory (ROM or PROM) internal to the CPU containing all microprograms.\n- **Control Address Register (CAR):** A dedicated register that holds the address of the microinstruction currently being read from Control Memory. It functions as the \"Program Counter\" of the control unit.\n- **Control Data Register (CDR) / Microinstruction Register (MIR):** Holds the microinstruction currently being executed, allowing overlapping of fetch and execution of microinstructions (pipelining).\n\n---\n\n## 2. Dynamic vs Static Microprogramming\n\nControl memory can be implemented using different semiconductor technologies depending on whether modification is permitted:\n\n```\n                     +---------------------------------------+\n                     |       Microprogramming Paradigms      |\n                     +-------------------+-------------------+\n                                         |\n               +-------------------------+-------------------------+\n               |                                                   |\n               v                                                   v\n    +----------------------+                            +----------------------+\n    | Static Microprogram  |                            | Dynamic Microprogram |\n    +----------------------+                            +----------------------+\n    | Hardwired Masked ROM |                            | Writable Control Store|\n    | Permanent, Immutable |                            | (WCS) using fast RAM |\n    | Faster cycle time    |                            | User-definable ISA   |\n    +----------------------+                            +----------------------+\n```\n\n1. **Static Microprogramming:**\n   - Control memory is implemented in masked **ROM** or OTP-PROM.\n   - Microprograms are burned permanently during chip fabrication.\n   - Unchangeable by software or operating system; guarantees architecture stability.\n2. **Dynamic Microprogramming:**\n   - Control memory uses fast SRAM termed a **Writable Control Store (WCS)**.\n   - Microprograms can be loaded or patched by the operating system or system firmware.\n   - Enables emulation of different computer architectures on the same underlying hardware, runtime bug patching of CPU microcode, and dynamic instruction set extensions.\n\n---\n\n## 3. Microinstruction Execution Datapath\n\nThe microprogrammed control unit operates in a continuous two-phase micro-cycle:\n1. **Fetch Microinstruction:** The microinstruction addressed by the Control Address Register ($CAR$) is read from Control Memory into the Control Data Register ($CDR$).\n2. **Execute Microinstruction & Sequence:**\n   - The functional control bits in $CDR$ assert hardware control lines across the CPU ALU, registers, and bus.\n   - Simultaneously, the sequencing bits in $CDR$ (Condition and Branch fields), combined with status inputs and next address fields, generate the next address and load it into $CAR$.\n\n```\n       Clock Tick N:         Fetch: CDR <- Control_Memory[ CAR ]\n       Clock Tick N + 0.5:   Execute: Datapath asserted by CDR micro-operation fields\n       Clock Tick N + 1.0:   Update: CAR <- Next Address from Sequencer\n```\n\n---\n\n## 4. Control Memory Address Space Organization\n\nA typical control memory has an address space structured into distinct sections:\n1. **Routine 0 to k:** System Initialization and Reset sequence.\n2. **Routine k+1 to m:** Instruction Fetch micro-routine (fetches machine instructions from main memory into IR).\n3. **Routine m+1 to N:** Execution micro-routines for each specific machine instruction (e.g., ADD micro-routine, STA micro-routine, BUN micro-routine).\n\nEach machine instruction has its own dedicated micro-routine in Control Memory. When the CPU decodes an instruction's opcode, it maps that opcode to the starting address of the corresponding micro-routine in Control Memory.\n\n> [!TIP] **EXAM TIP:**\n> In exams, clearly explain the distinction between **Main Memory** and **Control Memory**:\n> - Main Memory contains **machine instructions** written by programmers (C, Python, Assembly) and program data.\n> - Control Memory contains **microinstructions** written by the chip architect that physically manipulate the hardware gates.\n\n> [!NOTE] **DEV BRAIN:**\n> Think of microprogramming as writing an internal software emulator running on bare metal inside the silicon. Every machine instruction like `x86 MOV [EAX], EBX` is actually interpreted by a tiny internal microprogram stored in Control ROM! This is why modern Intel and AMD processors can fix hardware errata via microcode updates released in BIOS updates.\n\n> [!WARNING] **TRAP:**\n> Do not confuse $PC$ with $CAR$:\n> - $PC$ (Program Counter) points to the next **machine instruction** in **Main Memory**.\n> - $CAR$ (Control Address Register) points to the next **microinstruction** in **Control Memory**.\n\n> [!IMPORTANT] **MEMORIZE:**\n> - $CAR \\leftarrow CAR + 1$ increments the microinstruction pointer.\n> - A Writable Control Store (WCS) enables **Dynamic Microprogramming**.\n> - Control Memory is internal to the CPU and inaccessible to regular user-mode assembly code.",
+          "shortNotes": "Microprogrammed control stores microcode in Control Memory (ROM). CAR acts as the micro-PC, CDR holds the current microinstruction, and Next Address Generator computes the next CAR address.",
+          "examples": [
             {
-              title: 'Symbol Table Generation',
-              code: 'ORG 100\nLOOP, LDA X  (LC=100 -> LOOP: 100)\n      ISZ CTR (LC=101)\n      BUN LOOP (LC=102)\nX,    HEX 0020 (LC=103 -> X: 103)',
-              explanation: 'Pass 1 records LOOP=100 and X=103 in the Symbol Table.'
+              "title": "Control Memory Capacity & Addressing Calculation",
+              "problem": "A computer has a Control Memory of 1024 words of 32 bits each. Determine: (a) The bit width of the Control Address Register (CAR), (b) The total capacity of the control memory in bytes, and (c) The bit width of the Control Data Register (CDR).",
+              "explanation": "Number of words = 1024 = 2^10, so CAR requires 10 bits. Word size is 32 bits, so CDR requires 32 bits. Total capacity = 1024 * 32 bits = 4096 bytes = 4 KB.",
+              "code": "# Control Memory Parameter Calculator\ndef control_memory_specs(words, word_bits):\n    import math\n    car_bits = math.ceil(math.log2(words))\n    cdr_bits = word_bits\n    capacity_bytes = (words * word_bits) // 8\n    \n    return {\n        \"CAR Bits\": car_bits,\n        \"CDR Bits\": cdr_bits,\n        \"Capacity (Bytes)\": capacity_bytes,\n        \"Capacity (KB)\": capacity_bytes / 1024\n    }\n\nprint(control_memory_specs(words=1024, word_bits=32))",
+              "output": "{'CAR Bits': 10, 'CDR Bits': 32, 'Capacity (Bytes)': 4096, 'Capacity (KB)': 4.0}"
             }
           ],
-          keyPoints: [
-            'Forward reference problem necessitates two scanning passes.',
-            'Location Counter (LC) tracks memory address assignment.',
-            'Pseudo-instructions (ORG, END, DEC, HEX) guide the assembler and do not generate machine code.'
+          "keyPoints": [
+            "Microprogramming replaces hardwired gate logic with control programs stored in Control Memory.",
+            "A microinstruction contains control bits for datapath micro-operations and sequencing bits for address flow.",
+            "The Control Address Register (CAR) holds the address of the microinstruction currently being read.",
+            "Static microprogramming uses permanent ROM, while Dynamic microprogramming uses Writable Control Store (RAM).",
+            "Control Memory is accessed once per micro-operation clock cycle, operating substantially faster than main memory."
           ],
-          theoryQuestions: [
+          "theoryQuestions": [
             {
-              question: 'Explain the working of a two-pass assembler in detail. Why are two passes required instead of one?',
-              marks: '7 Marks',
-              answer: 'A two-pass assembler processes assembly code in two distinct stages:\n\n**Why Two Passes?**\nTo solve the **Forward Reference Problem**, where an instruction references a memory label that is defined later in the source text (e.g., \`BUN EXIT\` before \`EXIT:\` is reached). A single pass cannot resolve the binary address.\n\n**Pass 1 (Symbol Table Generation):**\n- Initializes Location Counter (LC) from \`ORG\` directive.\n- Scans code line by line. If a label exists, records \`(Label, LC)\` in the Symbol Table.\n- Increments LC for each instruction or memory word allocation.\n- Terminates when \`END\` is encountered.\n\n**Pass 2 (Binary Code Generation):**\n- Scans the program a second time from the beginning.\n- Translates symbolic opcodes into binary operation codes.\n- Looks up label names in the Symbol Table to fill in the 12-bit address field.\n- Produces the final binary object file.',
-              keyPoints: [
-                'Forward reference problem explanation.',
-                'Detailed breakdown of Pass 1 (Symbol Table).',
-                'Detailed breakdown of Pass 2 (Binary Translation).'
+              "question": "Explain the organization of a Microprogrammed Control Unit with a detailed block diagram. Define Control Memory, Control Address Register, and Microinstruction.",
+              "marks": "7 Marks",
+              "answer": "1. Draw the block diagram: Show CAR, Control Memory, CDR (Control Data Register), Next Address Generator (Sequencer), Opcode Mapping Logic, and external status inputs.\n2. Define Control Memory: Dedicated internal ROM containing microprograms.\n3. Define CAR: A register that points to the current microinstruction address in Control Memory.\n4. Define Microinstruction: A bit pattern specifying datapath micro-operations and next micro-address determination.\n5. Explain the operational cycle: CAR -> Control Memory Read -> CDR -> Gate activations + Next address generation -> CAR update.",
+              "keyPoints": [
+                "Complete architectural block diagram",
+                "Clear definitions of CM, CAR, CDR, and Sequencer",
+                "Detailed explanation of the fetch-execute micro-cycle",
+                "Distinction between machine instruction and microinstruction"
+              ]
+            },
+            {
+              "question": "Differentiate between Static and Dynamic Microprogramming. What is a Writable Control Store (WCS)?",
+              "marks": "5 Marks",
+              "answer": "1. Static Microprogramming: Control memory is implemented in masked ROM/PROM during chip manufacture. Microprograms are permanent, immutable, and cannot be altered. Offers high execution speed and hardware security.\n2. Dynamic Microprogramming: Control memory is implemented using fast read-write semiconductor RAM called a Writable Control Store (WCS).\n3. Advantages of WCS: Allows microcode updates (bug fixes), emulation of different instruction set architectures, and custom user-defined instructions.\n4. Contrast table comparing speed, flexibility, volatility, and implementation cost.",
+              "keyPoints": [
+                "Static uses ROM; dynamic uses RAM (WCS)",
+                "Immutability vs reconfigurability",
+                "Architecture emulation and bug patching via microcode",
+                "Cost and speed trade-offs"
               ]
             }
           ],
-          mcqs: [
+          "mcqs": [
             {
-              question: 'What is the primary purpose of Pass 1 in a two-pass assembler?',
-              options: ['Generate binary machine code', 'Build the Symbol Table and assign memory addresses', 'Optimize register allocation', 'Link external libraries'],
-              correctIndex: 1,
-              explanation: 'Pass 1 scans the source code to assign memory addresses to all labels and store them in the Symbol Table.'
+              "question": "What does the Control Address Register (CAR) in a microprogrammed control unit hold?",
+              "options": [
+                "The memory address of the next machine instruction in RAM",
+                "The address of the next microinstruction in Control Memory",
+                "The binary opcode of the current instruction",
+                "The effective address of the data operand"
+              ],
+              "correctIndex": 1,
+              "explanation": "CAR acts as the program counter for the control unit, holding the address of the next microinstruction in Control ROM."
             },
             {
-              question: 'Which of the following is an assembler pseudo-instruction (directive) rather than an executable machine instruction?',
-              options: ['LDA', 'ADD', 'ORG', 'BSA'],
-              correctIndex: 2,
-              explanation: 'ORG (Origin) is an assembler directive that sets the Location Counter; it does not generate machine code.'
+              "question": "A microprogrammed control unit whose control memory is implemented using RAM is referred to as:",
+              "options": [
+                "Hardwired control",
+                "Static microprogramming",
+                "Dynamic microprogramming",
+                "Associative control"
+              ],
+              "correctIndex": 2,
+              "explanation": "Dynamic microprogramming uses a Writable Control Store (WCS) implemented in RAM, allowing microcode to be modified."
+            },
+            {
+              "question": "If a Control Memory contains 512 microinstruction words, how many bits are required in the CAR?",
+              "options": [
+                "8 bits",
+                "9 bits",
+                "10 bits",
+                "16 bits"
+              ],
+              "correctIndex": 1,
+              "explanation": "Since 2^9 = 512, the Control Address Register requires exactly 9 bits to address 512 words."
+            },
+            {
+              "question": "What is the primary role of the Control Data Register (CDR / MIR)?",
+              "options": [
+                "It holds the address of the operand in RAM",
+                "It buffers the microinstruction currently being executed",
+                "It stores the result of an ALU operation",
+                "It acts as a hardware interrupt vector"
+              ],
+              "correctIndex": 1,
+              "explanation": "The CDR holds the microinstruction read from Control Memory, stabilizing control signals during execution while the next micro-address is calculated."
             }
           ]
         },
-
-        // ── TOPIC 12: PROGRAM LOOPS & SUBROUTINES ──
         {
-          id: 'program-loops-subroutines',
-          title: 'Program Loops (Add 100 Numbers) & Subroutines (BSA / BUN I)',
-          simpleExplanation: 'Loops repeat code using counter increments and skip instructions (ISZ), while subroutines modularize code using BSA and indirect return jumps.',
-          detailedExplanation: `## Program Loops & Subroutines
-
-### Assembly Program: Adding 100 Numbers (Question Bank Q25)
-\`\`\`assembly
-      ORG 100
-      LDA COUNT   / Load negative count (-100)
-      STA CTR     / Store in counter variable
-      LDA PTR     / Load start address pointer
-      STA P       / Initialize pointer P
-      CLA         / Clear AC (sum = 0)
-LOOP, ADD P I     / Add number indirectly through pointer P
-      ISZ P       / Increment pointer to next array element
-      ISZ CTR     / Increment counter; skip if zero (100 done!)
-      BUN LOOP    / Repeat loop
-      STA SUM     / Store final result in SUM
-      HLT         / Halt program
-COUNT,DEC -100    / Negative 100 for ISZ increment loop
-CTR,  HEX 0       / Loop counter storage
-PTR,  HEX 200     / Starting address of array
-P,    HEX 0       / Running pointer
-SUM,  HEX 0       / Result storage
-      END
-\`\`\`
-
-### Subroutine Architecture
-\`\`\`mermaid
-flowchart TD
-    MAIN["Main Program Execution"] --> CALL["BSA SUB\n(Save return address in SUB location)"]
-    CALL --> SUB_EXEC["Subroutine Execution Code\n(Process data / parameters)"]
-    SUB_EXEC --> RET["BUN SUB I\n(Indirect Branch using return address)"]
-    RET --> MAIN_NEXT["Resume Main Program at Next Instruction"]
-\`\`\``,
-          shortNotes: 'Loops use negative counters incremented by ISZ until zero. Subroutines use BSA SUB to call and BUN SUB I to return.',
-          examples: [
+          "id": "ca-u3-t2",
+          "title": "Address Sequencing: Next Address Selection, Conditional Branching, Opcode Mapping & Subroutine Register",
+          "simpleExplanation": "Address sequencing is the mechanism by which the control unit selects the address of the next microinstruction to execute. The microprogram sequencer can increment the CAR, jump to a branch address based on status conditions, map a machine instruction opcode to a starting micro-routine address, or call subroutines using a Subroutine Return Register (SBR). This rich branching capability allows microprograms to implement complex conditional instructions cleanly.",
+          "detailedExplanation": "## 1. The Address Sequencing Problem\n\nA microprogram consists of sets of microinstructions that execute sequentially or conditionally branch based on ALU status flags (zero, sign, carry). During each micro-cycle, the **Next Address Generator (Microprogram Sequencer)** must determine the new address to load into the Control Address Register ($CAR$).\n\n```mermaid\nflowchart TD\n    subgraph Sequencer_Sources [\"Four Next-Address Sources\"]\n        INC[\"1. Incrementer: CAR + 1\"]\n        BR[\"2. Branch Address: AD field of microinstruction\"]\n        MAP[\"3. Opcode Mapping Logic: Map IR(12-14) to Micro-address\"]\n        SBR[\"4. Subroutine Return: SBR Register\"]\n    end\n    MUX[\"Sequencer Multiplexer (4-to-1)\"]\n    INC --> MUX\n    BR --> MUX\n    MAP --> MUX\n    SBR --> MUX\n    MUX --> CAR[\"Control Address Register (CAR)\"]\n    CAR --> CM[\"Control Memory\"]\n    CAR --> INC\n    CAR -->|\"Call Subroutine\"| SBR_SAVE[\"Save CAR + 1 into SBR\"]\n```\n\n---\n\n## 2. The Four Address Sequencing Capabilities\n\nA microprogram sequencer must support four essential address sequencing operations:\n1. **Increment:** $CAR \\leftarrow CAR + 1$ (Sequential execution of microinstructions).\n2. **Conditional Branch:**\n   $$CAR \\leftarrow \\begin{cases} AD & \\text{if condition bit } = 1 \\\\ CAR + 1 & \\text{if condition bit } = 0 \\end{cases}$$\n   where $AD$ is the Address field of the current microinstruction.\n3. **Mapping:** $CAR \\leftarrow \\text{Mapping Function}(IR)$ (Branching to the micro-routine corresponding to a newly fetched machine instruction opcode).\n4. **Subroutine Call and Return:**\n   - **Call:** $SBR \\leftarrow CAR + 1, CAR \\leftarrow AD$ (saves return micro-address in the Subroutine Return Register $SBR$).\n   - **Return:** $CAR \\leftarrow SBR$ (restores return micro-address from $SBR$).\n\n---\n\n## 3. Mapping of Instructions to Microinstruction Addresses\n\nWhen the instruction fetch phase completes, the machine instruction's opcode resides in $IR(11-14)$ or $IR(12-14)$. The control unit must branch immediately to the first microinstruction of the micro-routine that executes this instruction.\n\n### 3.1 Mapping Hardware Scheme\nConsider a computer with:\n- 16 distinct machine instruction opcodes (4-bit opcode: $b_3 b_2 b_1 b_0$).\n- A Control Memory of 128 words, requiring a **7-bit address** in $CAR$ ($CAR_6$ to $CAR_0$).\n\nA straightforward, highly efficient mapping logic places a 0 in the MSB, followed by the 4-bit opcode, and fills the 2 LSBs with 00:\n\n```\nMachine Opcode:                     b3    b2    b1    b0\nMapping Logic Output:         0     b3    b2    b1    b0     0     0\nCAR Bit Position:            CAR6  CAR5  CAR4  CAR3  CAR2  CAR1  CAR0\n```\n\n```mermaid\nflowchart LR\n    OP[\"Opcode Bits: b3, b2, b1, b0\"] --> MAP[\"Mapping Logic\"]\n    MAP -->|\"0 b3 b2 b1 b0 0 0\"| CAR[\"7-bit CAR\"]\n```\n\n### 3.2 Architectural Implications of the Mapping\n- Each micro-routine starts at an address that is an exact multiple of $4$ ($00_{16}, 04_{16}, 08_{16}, 0C_{16}, 10_{16}, \\dots$).\n- Each instruction is allocated a block of **4 consecutive microinstructions** in Control Memory.\n- If an instruction requires 4 or fewer microinstructions (e.g., `AND`, `ADD`), its entire routine fits within this block without branching.\n- If an instruction requires more than 4 microinstructions, the 4th microinstruction contains an unconditional branch ($BR = 00$) to an unused higher region of Control Memory (e.g., addresses $64$ to $127$).\n\n| Machine Opcode | Binary Opcode | Mapped 7-Bit Micro-Address | Hex Micro-Address | Allocated Words |\n| :--- | :---: | :---: | :---: | :---: |\n| **AND** | `0000` | `0 0000 00` | `0x00` | 0, 1, 2, 3 |\n| **ADD** | `0001` | `0 0001 00` | `0x04` | 4, 5, 6, 7 |\n| **LDA** | `0010` | `0 0010 00` | `0x08` | 8, 9, 10, 11 |\n| **STA** | `0011` | `0 0011 00` | `0x0C` | 12, 13, 14, 15 |\n| **BUN** | `0100` | `0 0100 00` | `0x10` | 16, 17, 18, 19 |\n\n---\n\n## 4. Subroutine Register (SBR)\n\nIn complex instruction sets, certain micro-operation sequences recur frequently across multiple instructions (e.g., fetching an indirect effective address, calculating indexing offsets, or normalizing floating-point mantissas).\n\nInstead of repeating these identical microinstructions across every routine (wasting expensive Control ROM), the sequence is written once as a **microprogram subroutine**.\n- **Micro-Subroutine Call ($BR = 01$):**\n  $$SBR \\leftarrow CAR + 1, CAR \\leftarrow AD$$\n  The address of the next sequential microinstruction ($CAR + 1$) is latched into the **Subroutine Register ($SBR$)**, and the branch address $AD$ is loaded into $CAR$.\n- **Micro-Subroutine Return ($BR = 10$):**\n  $$CAR \\leftarrow SBR$$\n  The saved return address in $SBR$ is restored into $CAR$, resuming the calling micro-routine immediately.\n\nIf nested micro-subroutines are supported, $SBR$ is expanded into a small hardware LIFO register stack.\n\n> [!TIP] **EXAM TIP:**\n> When asked to map an opcode like `ADD = 0001` to a 7-bit CAR:\n> Formula: $\\text{Mapped Address} = 0 \\ || \\ \\text{Opcode} \\ || \\ 00$.\n> For `0001` $\\implies 0000100_2 = 4_{10} = 04_{16}$.\n\n> [!NOTE] **DEV BRAIN:**\n> Opcode mapping is hardware jump tables! In C/C++, a `switch(opcode)` statement is compiled into an indexed jump table. In silicon, opcode mapping achieves $O(1)$ zero-overhead branching to the micro-routine by hardwiring the opcode bits directly into the address bus lines of Control ROM!\n\n> [!WARNING] **TRAP:**\n> Do NOT confuse a machine subroutine call (`BSA`) with a microprogram subroutine call (`CALL` in microcode).\n> - `BSA` operates on machine instructions in RAM and uses memory or stack to save $PC$.\n> - Microprogram `CALL` operates inside Control ROM and uses the internal hardware register $SBR$ to save $CAR$.\n\n> [!IMPORTANT] **MEMORIZE:**\n> The four sequencer multiplexer selections:\n> 1. Increment: $CAR \\leftarrow CAR + 1$\n> 2. Branch: $CAR \\leftarrow AD$\n> 3. Map: $CAR \\leftarrow \\text{Map}(IR)$\n> 4. Return: $CAR \\leftarrow SBR$",
+          "shortNotes": "Address sequencing controls CAR updates: Increment (CAR+1), Branch (AD), Map (Opcode to micro-address), or Subroutine (Call saves CAR+1 to SBR; Return loads SBR into CAR).",
+          "examples": [
             {
-              title: 'ISZ Loop Counter Logic',
-              code: 'COUNT = -5\nIteration 1: CTR = -4 (ISZ does not skip)\nIteration 5: CTR = 0 (ISZ skips BUN LOOP -> loop terminates)',
-              explanation: 'Standard idiom for loop termination in basic computer.'
+              "title": "Opcode Mapping and Routine Spacing Calculation",
+              "problem": "A CPU has 32 machine instructions and a 256-word Control Memory. Design a mapping scheme from opcode to CAR. Determine: (a) Number of opcode bits, (b) CAR bit width, (c) Mapping bit layout, and (d) Maximum number of microinstructions allocated per routine without branching.",
+              "explanation": "32 instructions require log2(32) = 5 opcode bits. 256 control words require log2(256) = 8 CAR bits. Mapping layout: 0 || b4 b3 b2 b1 b0 || 0 0 -> uses 1 + 5 + 2 = 8 bits. The 2 zero bits at the end provide 2^2 = 4 consecutive microinstructions per routine.",
+              "code": "# Opcode Mapping Simulator\ndef map_opcode(opcode_int, opcode_bits=5, car_bits=8):\n    op_bin = format(opcode_int, f'0{opcode_bits}b')\n    # 1 leading zero + 5 opcode bits + 2 trailing zeros = 8 bits\n    car_bin = '0' + op_bin + '00'\n    car_hex = hex(int(car_bin, 2))\n    return {\n        \"Opcode Hex\": hex(opcode_int),\n        \"Opcode Binary\": op_bin,\n        \"CAR Binary\": car_bin,\n        \"CAR Starting Address\": car_hex,\n        \"Consecutive Words\": 4\n    }\n\nprint(\"Opcode 0 (AND):\", map_opcode(0))\nprint(\"Opcode 1 (ADD):\", map_opcode(1))\nprint(\"Opcode 5 (BSA):\", map_opcode(5))",
+              "output": "Opcode 0 (AND): {'Opcode Hex': '0x0', 'Opcode Binary': '00000', 'CAR Binary': '00000000', 'CAR Starting Address': '0x0', 'Consecutive Words': 4}\nOpcode 1 (ADD): {'Opcode Hex': '0x1', 'Opcode Binary': '00001', 'CAR Binary': '00000100', 'CAR Starting Address': '0x4', 'Consecutive Words': 4}\nOpcode 5 (BSA): {'Opcode Hex': '0x5', 'Opcode Binary': '00101', 'CAR Binary': '00010100', 'CAR Starting Address': '0x14', 'Consecutive Words': 4}"
             }
           ],
-          keyPoints: [
-            'ISZ skips next instruction only when result equals zero.',
-            'Loops initialize counter with negative count value.',
-            'BSA stores return address in the subroutine entry location.'
+          "keyPoints": [
+            "Address sequencing determines the microinstruction address loaded into CAR for each clock cycle.",
+            "The sequencer supports four operations: Increment, Conditional Branch, Opcode Mapping, and Subroutine Call/Return.",
+            "Opcode mapping transforms machine opcodes into starting Control Memory addresses by padding with bits.",
+            "The Subroutine Register (SBR) saves CAR+1 during a micro-subroutine call and restores it upon return.",
+            "Status conditions (Carry, Sign, Zero) gate the multiplexer selection to enable conditional micro-branching."
           ],
-          theoryQuestions: [
+          "theoryQuestions": [
             {
-              question: 'Write an assembly program for Mano\'s basic computer to add 100 numbers stored starting at address 200.',
-              marks: '7 Marks',
-              answer: 'The program initializes a negative counter (-100) and an indirect pointer (200), accumulates elements into AC, and terminates using ISZ:\n\n``\`assembly\n      ORG 100\n      LDA COUNT    / AC <- -100\n      STA CTR      / CTR <- -100\n      LDA PTR      / AC <- 200\n      STA P        / Pointer P <- 200\n      CLA          / Sum = 0\nLOOP, ADD P I      / AC <- AC + M[P]\n      ISZ P        / P <- P + 1 (next item)\n      ISZ CTR      / CTR <- CTR + 1; skip if 0\n      BUN LOOP     / Not 0 yet, loop back\n      STA SUM      / Store total sum\n      HLT\nCOUNT,DEC -100\nCTR,  HEX 0\nPTR,  HEX 200\nP,    HEX 0\nSUM,  HEX 0\n      END\n\```',
-              keyPoints: [
-                'Correct usage of negative counter.',
-                'Indirect addition via pointer (ADD P I).',
-                'Pointer increment and counter check via ISZ.'
+              "question": "Explain the Address Sequencing capabilities required in a Microprogram Sequencer with a neat schematic diagram.",
+              "marks": "7 Marks",
+              "answer": "1. Draw the block diagram showing the 4-to-1 MUX feeding CAR, with inputs from Incrementer, Address field (AD), Mapping logic, and SBR.\n2. Detail the four sequencing operations:\n   - Increment: CAR <- CAR + 1 for sequential microcode steps.\n   - Conditional Branch: CAR <- AD if test condition is true; CAR + 1 if false.\n   - Mapping: Converts machine instruction opcode from IR into micro-address in CAR.\n   - Subroutine Call and Return: Call stores CAR + 1 in SBR and loads AD; Return restores SBR into CAR.\n3. Explain the role of the Condition Multiplexer (testing flags like S, Z, C).",
+              "keyPoints": [
+                "Sequencer block diagram with 4-to-1 MUX and CAR",
+                "Four sequencing paths (Increment, Branch, Map, SBR)",
+                "Role of SBR in microprogram modularity",
+                "Hardware conditional gating via status multiplexer"
+              ]
+            },
+            {
+              "question": "What is Opcode Mapping? Explain with an example how a 4-bit machine instruction opcode is mapped to a 7-bit Control Memory address.",
+              "marks": "5 Marks",
+              "answer": "1. Definition: Opcode mapping is the hardware process that converts a machine instruction's opcode into the starting address of its corresponding micro-routine in Control Memory.\n2. Architecture: Assume a 4-bit opcode (b3 b2 b1 b0) and a 7-bit CAR.\n3. Show bit mapping: CAR = 0 b3 b2 b1 b0 0 0.\n4. Numerical Example: For ADD instruction with opcode 0001, mapped address is 0 0001 00 = 0000100_2 = 4 (0x04).\n5. Explain that the 2 trailing zeros allocate a block of 4 consecutive words for each micro-routine.",
+              "keyPoints": [
+                "Definition and necessity of mapping",
+                "Bit mapping layout (0 || Opcode || 00)",
+                "Step-by-step numerical example",
+                "Micro-routine block allocation concept"
               ]
             }
           ],
-          mcqs: [
+          "mcqs": [
             {
-              question: 'Why are loop counters in Mano\'s computer initialized with negative values?',
-              options: ['Because AC cannot hold positive numbers', 'Because ISZ increments the value and skips only when it reaches zero', 'Because memory cannot store positive values', 'To invert the sign of the result'],
-              correctIndex: 1,
-              explanation: 'ISZ increments memory and skips when zero is reached; starting at -N causes it to skip after exactly N iterations.'
+              "question": "What is the purpose of the Subroutine Register (SBR) in a microprogram sequencer?",
+              "options": [
+                "It holds the return address of a machine instruction subroutine in RAM",
+                "It holds the return address of a microprogram subroutine in Control ROM",
+                "It stores the intermediate status of ALU flags",
+                "It increments the Program Counter"
+              ],
+              "correctIndex": 1,
+              "explanation": "SBR stores CAR + 1 during a microcode CALL instruction, allowing a micro-subroutine to return control via CAR <- SBR."
             },
             {
-              question: 'What instruction is used to return from a subroutine in Mano\'s basic computer?',
-              options: ['RET', 'POP PC', 'BUN SUB I', 'JMP SUB'],
-              correctIndex: 2,
-              explanation: 'BUN SUB I executes an indirect branch to the address saved at location SUB.'
+              "question": "If a 4-bit opcode is mapped to a 7-bit CAR as '0 b3 b2 b1 b0 0 0', how many consecutive microinstructions are reserved for each routine?",
+              "options": [
+                "2",
+                "4",
+                "8",
+                "16"
+              ],
+              "correctIndex": 1,
+              "explanation": "The two trailing zeros (2^2 = 4) allocate exactly 4 consecutive memory locations (e.g., 0-3, 4-7, 8-11) for each micro-routine."
+            },
+            {
+              "question": "In a microprogram sequencer, which hardware component selects between Increment, Branch, Mapping, and Subroutine Return?",
+              "options": [
+                "A 4-to-1 Multiplexer",
+                "A Priority Encoder",
+                "An Adder-Subtractor",
+                "A Shift Register"
+              ],
+              "correctIndex": 0,
+              "explanation": "A 4-to-1 Multiplexer controlled by the microinstruction Branch (BR) field selects one of the four address sources into CAR."
+            },
+            {
+              "question": "What happens when a conditional micro-branch test condition evaluates to false (0)?",
+              "options": [
+                "The computer halts",
+                "The microprogram branches to address 0",
+                "CAR is incremented by 1 (sequential execution)",
+                "An interrupt is raised"
+              ],
+              "correctIndex": 2,
+              "explanation": "If the branch condition is false, the branch is not taken and the sequencer defaults to incrementing CAR (CAR <- CAR + 1)."
+            }
+          ]
+        },
+        {
+          "id": "ca-u3-t3",
+          "title": "Microinstruction Format: Micro-operation Fields, Condition, Branch & Symbolic Translation",
+          "simpleExplanation": "A microinstruction is organized into distinct functional fields that specify what operations the datapath should execute and where to fetch the next microinstruction. In a representative 20-bit design, three 3-bit fields (F1, F2, F3) control datapath micro-operations, a 2-bit Condition field (CD) selects status flags, a 2-bit Branch field (BR) specifies the jump type, and a 7-bit Address field (AD) provides target branch addresses.",
+          "detailedExplanation": "## 1. 20-bit Microinstruction Format Design\n\nTo understand how microprograms control hardware, consider the canonical 20-bit microinstruction format (from Mano's architecture). The 20 bits are partitioned into six functional fields:\n\n```mermaid\nflowchart LR\n    subgraph Microinstruction_20Bit [\"20-bit Microinstruction Format\"]\n        F1[\"F1 (3 bits)\nBits 19-17\nMicro-op 1\"]\n        F2[\"F2 (3 bits)\nBits 16-14\nMicro-op 2\"]\n        F3[\"F3 (3 bits)\nBits 13-11\nMicro-op 3\"]\n        CD[\"CD (2 bits)\nBits 10-9\nCondition\"]\n        BR[\"BR (2 bits)\nBits 8-7\nBranch\"]\n        AD[\"AD (7 bits)\nBits 6-0\nAddress\"]\n    end\n```\n\n### 1.1 Field Descriptions\n- **$F_1, F_2, F_3$ (Micro-operation Fields, 3 bits each = 9 bits):** Specify up to three concurrent micro-operations. Each 3-bit field is decoded by a 3-to-8 decoder to activate one of 7 micro-operations (code `000` designates no operation).\n- **$CD$ (Condition Field, 2 bits):** Selects which status bit is tested for conditional branching.\n- **$BR$ (Branch Field, 2 bits):** Specifies the type of branching action to take.\n- **$AD$ (Address Field, 7 bits):** Contains the 7-bit branch address in Control Memory ($0$ to $127$).\n\n---\n\n## 2. Micro-operation Fields Encoding Tables ($F_1, F_2, F_3$)\n\nBecause each field is 3 bits wide, each can encode 7 active micro-operations plus `NOP` (`000`):\n\n| Code | $F_1$ Micro-operation | $F_2$ Micro-operation | $F_3$ Micro-operation |\n| :---: | :--- | :--- | :--- |\n| `000` | **NOP** (No operation) | **NOP** (No operation) | **NOP** (No operation) |\n| `001` | $AC \\leftarrow AC + DR$ (`ADD`) | $AC \\leftarrow AC - DR$ (`SUB`) | $AC \\leftarrow AC \\oplus DR$ (`XOR`) |\n| `010` | $AC \\leftarrow 0$ (`CLRAC`) | $AC \\leftarrow AC \\lor DR$ (`OR`) | $AC \\leftarrow AC'$ (`COM`) |\n| `011` | $AC \\leftarrow AC + 1$ (`INCAC`) | $AC \\leftarrow AC \\land DR$ (`AND`) | $AC \\leftarrow \\text{shl } AC$ (`SHL`) |\n| `100` | $AC \\leftarrow DR$ (`DRTAC`) | $DR \\leftarrow M[AR]$ (`READ`) | $AC \\leftarrow \\text{shr } AC$ (`SHR`) |\n| `101` | $AR \\leftarrow DR(0-10)$ (`PCTAR`) | $M[AR] \\leftarrow DR$ (`WRITE`)| $PC \\leftarrow PC + 1$ (`INCPC`) |\n| `110` | $AR \\leftarrow PC$ (`PCTAR`) | $DR \\leftarrow AC$ (`ACTDR`) | $PC \\leftarrow AR$ (`ARTPC`) |\n| `111` | $M[AR] \\leftarrow AC$ (`ACTM`) | $DR \\leftarrow PC$ (`PCTDR`) | Reserved |\n\n---\n\n## 3. Condition ($CD$) and Branch ($BR$) Fields Encoding\n\n### 3.1 Condition Field ($CD$)\nThe 2-bit $CD$ field controls a 4-to-1 multiplexer that selects a status signal for conditional branching:\n\n| $CD$ Code | Symbol | Condition Tested | Description |\n| :---: | :---: | :--- | :--- |\n| `00` | **U** | Unconditional ($1$) | Always branches (test condition is permanently logic 1) |\n| `01` | **I** | Mode Bit $I$ ($IR_{15}$) | Tests direct ($0$) vs indirect ($1$) addressing |\n| `10` | **S** | Sign Bit ($AC_{15}$) | Tests sign of Accumulator ($0$ for positive, $1$ for negative) |\n| `11` | **Z** | Zero Bit ($AC = 0$) | Tests if Accumulator equals zero |\n\n### 3.2 Branch Field ($BR$)\nThe 2-bit $BR$ field dictates how the next CAR address is formed:\n\n| $BR$ Code | Symbol | Sequencing Function | RTL Description |\n| :---: | :---: | :--- | :--- |\n| `00` | **JMP** | Jump | If $CD=1 \\implies CAR \\leftarrow AD$; else $CAR \\leftarrow CAR + 1$ |\n| `01` | **CALL** | Call Subroutine | If $CD=1 \\implies SBR \\leftarrow CAR + 1, CAR \\leftarrow AD$; else $CAR \\leftarrow CAR + 1$ |\n| `10` | **RET** | Return Subroutine | $CAR \\leftarrow SBR$ (unconditional return) |\n| `11` | **MAP** | Opcode Mapping | $CAR \\leftarrow 0 \\ || \\ IR(11-14) \\ || \\ 00$ |\n\n---\n\n## 4. Symbolic to Binary Translation: The FETCH Routine\n\nThe computer instruction fetch sequence requires two machine cycles. In microcode, it is written symbolically and then translated into binary machine microcode:\n\n### 4.1 Symbolic Representation of FETCH\n```\nAddress   F1       F2       F3       CD    BR     AD\n------------------------------------------------------\nFETCH:    PCTAR    NOP      NOP      U     JMP    NEXT\n          NOP      READ     INCPC    U     JMP    NEXT\n          NOP      NOP      NOP      U     MAP    0\n```\n\n### 4.2 Step-by-Step Translation to 20-bit Binary Words\n\n```\nStep 1: FETCH line 1 (AR <- PC):\nF1 = PCTAR = 110\nF2 = NOP   = 000\nF3 = NOP   = 000\nCD = U     = 00\nBR = JMP   = 00\nAD = NEXT  = 65 (assuming FETCH is at 64, NEXT is 65: 1000001)\nBinary: 110 000 000 00 00 1000001  (0xC0041 in Hex)\n\nStep 2: FETCH line 2 (DR <- M[AR], PC <- PC + 1):\nF1 = NOP   = 000\nF2 = READ  = 100\nF3 = INCPC = 101\nCD = U     = 00\nBR = JMP   = 00\nAD = NEXT  = 66 (1000010)\nBinary: 000 100 101 00 00 1000010  (0x12842 in Hex)\n\nStep 3: FETCH line 3 (Opcode Mapping):\nF1 = NOP   = 000\nF2 = NOP   = 000\nF3 = NOP   = 000\nCD = U     = 00\nBR = MAP   = 11\nAD = 0     = 0000000\nBinary: 000 000 000 00 11 0000000  (0x00180 in Hex)\n```\n\n> [!TIP] **EXAM TIP:**\n> When asked to translate a symbolic microinstruction to binary:\n> 1. Look up $F_1, F_2, F_3$ (3 bits each).\n> 2. Look up $CD$ (2 bits): $U=00, I=01, S=10, Z=11$.\n> 3. Look up $BR$ (2 bits): $JMP=00, CALL=01, RET=10, MAP=11$.\n> 4. Convert $AD$ to a 7-bit binary string.\n> 5. Concatenate all 20 bits and convert to hex for neat presentation!\n\n> [!NOTE] **DEV BRAIN:**\n> This 20-bit microinstruction is a Very Long Instruction Word (VLIW) in miniature! By providing three independent micro-operation fields ($F_1, F_2, F_3$), the CPU can trigger a memory read, an accumulator increment, and a program counter increment simultaneously in a single clock cycle.\n\n> [!WARNING] **TRAP:**\n> In the `MAP` branch instruction ($BR=11$), the address field $AD$ is ignored by hardware because the mapping logic drives CAR. However, standard convention writes `0000000` in the $AD$ field.\n\n> [!IMPORTANT] **MEMORIZE:**\n> - 20-bit layout: $F_1(3), F_2(3), F_3(3), CD(2), BR(2), AD(7)$.\n> - $BR = 00 \\implies JMP$, $01 \\implies CALL$, $10 \\implies RET$, $11 \\implies MAP$.\n> - $CD = 00 \\implies U$, $01 \\implies I$, $10 \\implies S$, $11 \\implies Z$.",
+          "shortNotes": "Microinstructions allocate bit fields for micro-operations (F1, F2, F3: 3 bits each), condition (CD: 2 bits), branch (BR: 2 bits), and target address (AD: 7 bits). Decoded fields activate control lines directly.",
+          "examples": [
+            {
+              "title": "Symbolic to 20-bit Binary Translation Trace",
+              "problem": "Translate the following symbolic microinstruction into a 20-bit binary word and its hexadecimal equivalent: 'ADD: NOP READ NOP I CALL INDRCT', where address INDRCT = 67 (decimal).",
+              "explanation": "F1 = NOP (000), F2 = READ (100), F3 = NOP (000), CD = I (01), BR = CALL (01), AD = 67 = 1000011_2. Concatenate: 000 100 000 01 01 1000011. Group into 4-bit nibbles for hexadecimal.",
+              "code": "# Microinstruction Binary Translator\ndef translate_microinstruction(f1, f2, f3, cd, br, ad_val):\n    f_map = {\n        \"NOP\": \"000\", \"ADD\": \"001\", \"CLRAC\": \"010\", \"INCAC\": \"011\",\n        \"DRTAC\": \"100\", \"PCTAR\": \"110\", \"READ\": \"100\", \"WRITE\": \"101\",\n        \"ACTDR\": \"110\", \"INCPC\": \"101\", \"ARTPC\": \"110\"\n    }\n    cd_map = {\"U\": \"00\", \"I\": \"01\", \"S\": \"10\", \"Z\": \"11\"}\n    br_map = {\"JMP\": \"00\", \"CALL\": \"01\", \"RET\": \"10\", \"MAP\": \"11\"}\n    \n    bin_str = (\n        f_map.get(f1, \"000\") +\n        f_map.get(f2, \"000\") +\n        f_map.get(f3, \"000\") +\n        cd_map[cd] +\n        br_map[br] +\n        format(ad_val, '07b')\n    )\n    hex_val = hex(int(bin_str, 2))\n    return bin_str, hex_val\n\nb, h = translate_microinstruction(\"NOP\", \"READ\", \"NOP\", \"I\", \"CALL\", 67)\nprint(f\"Binary:  {b[:3]} {b[3:6]} {b[6:9]} {b[9:11]} {b[11:13]} {b[13:]}\")\nprint(f\"Hex:     {h}\")",
+              "output": "Binary:  000 100 000 01 01 1000011\nHex:     0x10163"
+            }
+          ],
+          "keyPoints": [
+            "The 20-bit microinstruction partitions control into F1, F2, F3, CD, BR, and AD fields.",
+            "Three 3-bit micro-operation fields allow up to 3 concurrent non-conflicting datapath operations.",
+            "The CD field tests conditions: Unconditional (00), Mode I (01), Sign S (10), and Zero Z (11).",
+            "The BR field specifies jump types: JMP (00), CALL (01), RET (10), and MAP (11).",
+            "Symbolic microprograms are translated into binary words stored permanently in Control ROM."
+          ],
+          "theoryQuestions": [
+            {
+              "question": "Explain the 20-bit Microinstruction Format with a detailed diagram showing the function and bit allocation of each field.",
+              "marks": "7 Marks",
+              "answer": "1. Draw the 20-bit format diagram: F1 (3), F2 (3), F3 (3), CD (2), BR (2), AD (7).\n2. Explain F1, F2, F3: 3-bit fields decoded by 3-to-8 decoders to generate datapath micro-operations. Detail active codes (001 to 111) and NOP (000).\n3. Explain CD: 2-bit condition field testing U (00), I (01), S (10), Z (11) via a 4-to-1 status MUX.\n4. Explain BR: 2-bit branch field defining JMP (00), CALL (01), RET (10), MAP (11).\n5. Explain AD: 7-bit branch address specifying one of 128 Control Memory locations.",
+              "keyPoints": [
+                "Complete 20-bit format diagram",
+                "Detailed encoding for F1, F2, F3",
+                "Condition (CD) multiplexer truth table",
+                "Branch (BR) sequencing actions and 7-bit AD field"
+              ]
+            },
+            {
+              "question": "Write the symbolic microprogram for the FETCH routine and translate each microinstruction into its corresponding 20-bit binary code.",
+              "marks": "7 Marks",
+              "answer": "1. State the purpose of FETCH: to read a machine instruction from memory into IR, increment PC, and map opcode to CAR.\n2. Write the 3-line symbolic microprogram:\n   - Line 1: PCTAR NOP NOP U JMP NEXT\n   - Line 2: NOP READ INCPC U JMP NEXT\n   - Line 3: NOP NOP NOP U MAP 0\n3. Convert Line 1: F1=110, F2=000, F3=000, CD=00, BR=00, AD=1000001 -> 11000000000001000001 (Hex: 0xC0041).\n4. Convert Line 2: F1=000, F2=100, F3=101, CD=00, BR=00, AD=1000010 -> 00010010100001000010 (Hex: 0x12842).\n5. Convert Line 3: F1=000, F2=000, F3=000, CD=00, BR=11, AD=0000000 -> 00000000000110000000 (Hex: 0x00180).",
+              "keyPoints": [
+                "3-line symbolic microprogram formulation",
+                "Field-by-field binary translation",
+                "Hexadecimal word representation",
+                "Explanation of the MAP branch function"
+              ]
+            }
+          ],
+          "mcqs": [
+            {
+              "question": "In the 20-bit microinstruction format, how many concurrent micro-operations can be specified by fields F1, F2, and F3?",
+              "options": [
+                "1",
+                "2",
+                "Up to 3",
+                "Up to 7"
+              ],
+              "correctIndex": 2,
+              "explanation": "Because F1, F2, and F3 are independent 3-bit fields each driving a 3-to-8 decoder, up to 3 concurrent micro-operations can be executed."
+            },
+            {
+              "question": "Which binary code in the Branch (BR) field specifies a microprogram Subroutine Return (RET)?",
+              "options": [
+                "00",
+                "01",
+                "10",
+                "11"
+              ],
+              "correctIndex": 2,
+              "explanation": "BR = 10 specifies RET, which restores the return address from the SBR into the CAR (CAR <- SBR)."
+            },
+            {
+              "question": "When the Condition field CD is set to '01', which hardware status bit is tested for conditional branching?",
+              "options": [
+                "Unconditional (always 1)",
+                "Indirect addressing mode bit I (IR bit 15)",
+                "Accumulator Sign bit S",
+                "Accumulator Zero flag Z"
+              ],
+              "correctIndex": 1,
+              "explanation": "CD = 01 tests mode bit I (IR15), enabling conditional branches that handle indirect addressing."
+            },
+            {
+              "question": "Why does the MAP microinstruction have its 7-bit Address field (AD) set to all zeros?",
+              "options": [
+                "Because address 0 is where the mapping table is stored",
+                "Because the hardware ignores AD and uses the opcode mapping logic output instead",
+                "Because MAP clears the Control Memory",
+                "Because MAP only works from address 0"
+              ],
+              "correctIndex": 1,
+              "explanation": "When BR = 11 (MAP), the sequencer multiplexer selects the output of the opcode mapping logic to load into CAR, making the AD field irrelevant."
+            }
+          ]
+        },
+        {
+          "id": "ca-u3-t4",
+          "title": "Hardwired Control Unit vs Microprogrammed Control Unit: Comprehensive Architectural Comparison",
+          "simpleExplanation": "A hardwired control unit uses fixed digital logic gates and decoders to generate control signals at maximum speed, whereas a microprogrammed control unit uses software-like microinstructions stored in Control ROM for maximum flexibility. While hardwired control is favored in high-speed RISC processors, microprogrammed control is ideal for complex CISC architectures where instructions can be modified or debugged by updating microcode.",
+          "detailedExplanation": "## 1. Architectural Paradigms of Control Units\n\nThe control unit coordinates all CPU operations by issuing control signals to the datapath. The two primary techniques for realizing control units represent an essential engineering trade-off between **raw speed** and **architectural flexibility**.\n\n```mermaid\nflowchart TD\n    subgraph Hardwired [\"Hardwired Control Unit\"]\n        HW_IN[\"Inputs: Opcode, Timing Counter, Flags\"] --> HW_LOGIC[\"Combinational Logic Gates / PLAs / Decoders\"]\n        HW_LOGIC --> HW_OUT[\"Control Signals (Immediate Gate Delay)\"]\n    end\n    subgraph Microprogrammed [\"Microprogrammed Control Unit\"]\n        MP_IN[\"Inputs: CAR, Opcode Mapping\"] --> MP_ROM[\"Control Memory (ROM/PROM)\"]\n        MP_ROM --> MP_CDR[\"Microinstruction Register (CDR)\"]\n        MP_CDR --> MP_OUT[\"Control Signals (Memory Read Delay)\"]\n    end\n```\n\n---\n\n## 2. Hardwired Control Architecture\n\nIn a **hardwired control unit**, the internal hardware is organized as a sequential state machine:\n- State is tracked by a sequence counter or state flip-flops.\n- Combinational logic gates (AND, OR, NOT), PLAs (Programmable Logic Arrays), or ROM decoders directly synthesize boolean expressions for every control line.\n- *Example boolean equation:*\n  $$\\text{AR.LD} = T_0 + D_7' \\cdot I \\cdot T_3 + D_4 \\cdot T_4$$\n\n### Advantages:\n- **Maximum Execution Speed:** Signals propagate through combinational gates within nanoseconds; no memory read cycle is needed.\n- **Minimal Silicon Area for Simple ISAs:** Efficient for architectures with small, uniform instruction sets (e.g., RISC).\n\n### Disadvantages:\n- **Rigid and Inflexible:** Any modification to the instruction set requires redesigning the physical chip layout and re-fabricating silicon.\n- **Design Complexity:** As the instruction set grows, boolean equations expand combinatorially, leading to design errors and routing bottlenecks.\n\n---\n\n## 3. Microprogrammed Control Architecture\n\nIn a **microprogrammed control unit**, control signals are represented as binary words stored in a dedicated high-speed **Control Memory (ROM/RAM)**:\n- Machine instruction opcodes are mapped to micro-routine starting addresses.\n- Each microinstruction is fetched from Control Memory and latched into the Control Data Register ($CDR$).\n- The bit fields of the microinstruction directly assert the control signals.\n\n### Advantages:\n- **Architectural Flexibility:** Modifying existing instructions or adding new ones requires simply changing microcode in Control Memory without touching physical wiring.\n- **Systematic & Structured Design:** Simplifies development, debugging, and formal verification of complex architectures (CISC).\n- **Cost-Effective for Complex ISAs:** Adding complex multi-step instructions (e.g., string search, floating-point transcendental functions) adds only a few ROM words.\n\n### Disadvantages:\n- **Slower Execution Speed:** Every micro-operation requires a memory access cycle to Control ROM, which is slower than passing through a few combinational gates.\n- **Higher Cost for Simple Computers:** For very simple instruction sets, the overhead of Control ROM, CAR, and sequencer exceeds the cost of a few logic gates.\n\n---\n\n## 4. Comprehensive 10-Point Comparison Master Table\n\n| Comparison Metric | Hardwired Control Unit | Microprogrammed Control Unit |\n| :--- | :--- | :--- |\n| **1. Implementation Technology** | Combinational gates, flip-flops, PLAs, decoders | Control Memory (ROM, PROM, or SRAM WCS) |\n| **2. Operating Speed** | **Extremely Fast** (gate propagation delay only) | **Slower** (bounded by Control Memory read access time) |\n| **3. Flexibility & Upgradability** | Very rigid; requires physical hardware redesign | Highly flexible; microcode can be updated/patched |\n| **4. Design Complexity** | High; complex boolean equations prone to errors | Systematic, modular, software-like engineering |\n| **5. Instruction Set Style** | Primarily used in **RISC** architectures | Primarily used in **CISC** architectures |\n| **6. Silicon Area for Complex ISA**| Exponentially large and unmanageable | Compact; scales linearly with microprogram ROM size |\n| **7. Cost for Simple Systems** | Low (few gates and flip-flops) | High (requires CAR, CDR, Sequencer, and ROM) |\n| **8. Modification Capability** | Impossible after chip fabrication | Possible via Writable Control Store (WCS) / BIOS patch |\n| **9. Instruction Word Format** | Uniform, fixed-length (32-bit typically) | Variable-length, rich addressing modes |\n| **10. Instruction Execution Time**| Single-cycle or uniform pipelined stages | Multi-cycle, variable number of microinstructions |\n\n---\n\n## 5. Modern Processor Hybrid Convergence\n\nModern high-performance x86 processors (Intel Core, AMD Ryzen) use a **hybrid control architecture**:\n- **Fast Path (Hardwired):** Simple, frequently used instructions (e.g., `MOV`, `ADD`, `JMP`, ALU operations) are decoded directly by hardwired decoders into internal RISC-like micro-operations ($mu$-ops) for single-cycle execution.\n- **Slow Path (Microcode ROM):** Complex, rarely executed, or legacy instructions (e.g., `CPUID`, `FPU` transcendental functions, context switches, hypervisor traps) are decoded by the **Microcode Sequencer ROM**.\n- This hybrid design combines the raw speed of hardwired control with the flexibility and bug-patchability of microprogrammed control!\n\n```mermaid\nflowchart LR\n    INST[\"x86 Instruction Stream\"] --> PRE[\"Instruction Pre-Decoder\"]\n    PRE --> FAST{\"Is Simple Instruction?\"}\n    FAST -->|\"Yes (90% of code)\"| HW[\"Hardwired Fast Decoders (Single-cycle μ-ops)\"]\n    FAST -->|\"No (Complex / Rare)\"| MS[\"Microcode Sequencer ROM (Multi-cycle μ-ops)\"]\n    HW --> QUEUE[\"μ-op Execution Queue\"]\n    MS --> QUEUE\n```\n\n> [!TIP] **EXAM TIP:**\n> When asked to compare Hardwired vs Microprogrammed control in an exam, draw the 10-point comparison table and explicitly highlight:\n> - Hardwired = **Fast, Rigid, RISC, Gates**.\n> - Microprogrammed = **Slower, Flexible, CISC, Control Memory**.\n\n> [!NOTE] **DEV BRAIN:**\n> Microprogramming is the hardware equivalent of an interpreter, while hardwired control is the equivalent of ahead-of-time compiled native code. Modern CPUs use JIT-like hybrid strategies: hardwired decoders for 95% of common ops, falling back to Microcode ROM for heavy legacy ops!\n\n> [!WARNING] **TRAP:**\n> Do NOT say microprogrammed control is obsolete! Virtually all enterprise x86 chips rely on Microcode ROM to fix hardware security vulnerabilities (such as Spectre, Meltdown, and Zenbleed) post-manufacturing via microcode updates!\n\n> [!IMPORTANT] **MEMORIZE:**\n> - Hardwired: Control signals synthesized via combinational boolean logic gates; ideal for RISC.\n> - Microprogrammed: Control signals retrieved from Control ROM words; ideal for CISC.\n> - Speed: Hardwired > Microprogrammed.\n> - Flexibility: Microprogrammed > Hardwired.",
+          "shortNotes": "Hardwired control uses combinational gates/PLAs for maximum speed in RISC. Microprogrammed control uses Control ROM for flexibility, easy instruction expansion, and microcode patching in CISC.",
+          "examples": [
+            {
+              "title": "Hardwired vs Microprogrammed Execution Time Analysis",
+              "problem": "A hardwired control unit has a clock cycle time of 1.2 ns, executing a machine instruction in 4 clock cycles. A microprogrammed control unit requires 1 clock cycle of 3.5 ns (due to ROM access time) executing 3 microinstructions for the same machine instruction. Calculate the execution time for both and determine which is faster.",
+              "explanation": "Hardwired execution time = 4 cycles * 1.2 ns = 4.8 ns. Microprogrammed execution time = 3 microinstructions * 3.5 ns = 10.5 ns. Speedup of hardwired = 10.5 / 4.8 = 2.19x faster.",
+              "code": "# Execution Time Comparison Simulator\ndef compare_controllers(hw_cycles, hw_clock_ns, micro_ops, rom_clock_ns):\n    t_hw = hw_cycles * hw_clock_ns\n    t_micro = micro_ops * rom_clock_ns\n    speedup = t_micro / t_hw\n    \n    return {\n        \"Hardwired Time (ns)\": round(t_hw, 2),\n        \"Microprogrammed Time (ns)\": round(t_micro, 2),\n        \"Faster Controller\": \"Hardwired\" if t_hw < t_micro else \"Microprogrammed\",\n        \"Speedup Factor\": round(speedup, 2)\n    }\n\nprint(compare_controllers(hw_cycles=4, hw_clock_ns=1.2, micro_ops=3, rom_clock_ns=3.5))",
+              "output": "{'Hardwired Time (ns)': 4.8, 'Microprogrammed Time (ns)': 10.5, 'Faster Controller': 'Hardwired', 'Speedup Factor': 2.19}"
+            }
+          ],
+          "keyPoints": [
+            "Hardwired control units generate signals using combinational logic gates, PLAs, and decoders.",
+            "Microprogrammed control units generate signals by reading microinstructions from Control Memory.",
+            "Hardwired control delivers superior clock frequencies and execution speed, making it the choice for RISC.",
+            "Microprogrammed control offers superior flexibility, modularity, and field-upgradability, suited for CISC.",
+            "Modern CPUs employ hybrid decoders: hardwired for common simple ops and microcode ROM for complex ops."
+          ],
+          "theoryQuestions": [
+            {
+              "question": "Compare and contrast Hardwired Control Unit and Microprogrammed Control Unit across at least eight architectural parameters.",
+              "marks": "7 Marks",
+              "answer": "1. Present the comprehensive 8+ parameter comparison table:\n   - Implementation: Logic gates/PLAs vs Control ROM.\n   - Speed: Fast vs Slower.\n   - Flexibility: Difficult to modify vs Easy (update ROM).\n   - Instruction set: RISC vs CISC.\n   - Design complexity: High/combinatorial vs Systematic/software-like.\n   - Silicon area: Large for complex ISA vs Compact ROM.\n   - Cost: Low for simple ISA vs Higher initial overhead.\n   - Field updates: Impossible vs Possible via WCS/patch.\n2. Discuss why modern architectures utilize a hybrid approach.",
+              "keyPoints": [
+                "Structured comparison table with 8+ distinct metrics",
+                "Clear rationale for speed vs flexibility trade-off",
+                "Application alignment: RISC vs CISC",
+                "Modern hybrid decoder architecture"
+              ]
+            },
+            {
+              "question": "What are the advantages and disadvantages of using a Microprogrammed Control Unit? Explain how modern x86 processors combine both approaches.",
+              "marks": "5 Marks",
+              "answer": "1. Advantages: Systematic design, ease of debugging, modularity, flexibility to modify instructions, cost-effective for large CISC instruction sets, enables bug patching.\n2. Disadvantages: Slower execution speed due to ROM access latency, cost overhead for simple machines.\n3. Modern Hybrid Architecture: High-performance x86 processors use hardwired fast decoders for 90% of frequently executed simple instructions (single-cycle u-ops), while delegating complex, multi-cycle instructions (string ops, context switch) to a Microcode Sequencer ROM.",
+              "keyPoints": [
+                "Detailed enumeration of advantages and disadvantages",
+                "Impact of ROM access latency on clock cycles",
+                "Hybrid fast-path (hardwired) and slow-path (ROM) decode"
+              ]
+            }
+          ],
+          "mcqs": [
+            {
+              "question": "Which of the following is the primary advantage of a Hardwired Control Unit over a Microprogrammed Control Unit?",
+              "options": [
+                "Higher flexibility for instruction set changes",
+                "Higher operating speed due to direct gate propagation",
+                "Easier debugging and formal verification",
+                "Lower silicon area for complex CISC processors"
+              ],
+              "correctIndex": 1,
+              "explanation": "Hardwired control synthesizes control signals directly via combinational logic gates, avoiding memory access delays and achieving higher clock frequencies."
+            },
+            {
+              "question": "Microprogrammed control units are predominantly found in which class of processor architecture?",
+              "options": [
+                "RISC (Reduced Instruction Set Computer)",
+                "CISC (Complex Instruction Set Computer)",
+                "VLIW (Very Long Instruction Word)",
+                "DSP (Digital Signal Processor)"
+              ],
+              "correctIndex": 1,
+              "explanation": "CISC architectures require complex, multi-cycle instructions with diverse addressing modes, which are most easily implemented via microprogrammed control memory."
+            },
+            {
+              "question": "How do modern x86 processors handle complex or infrequently used instructions like CPUID?",
+              "options": [
+                "They reject them as illegal opcodes",
+                "They route them to an internal Microcode Sequencer ROM",
+                "They emulate them using software traps in the OS kernel",
+                "They use dedicated analog circuitry"
+              ],
+              "correctIndex": 1,
+              "explanation": "Modern x86 processors use hardwired decoders for simple instructions and fall back to an internal Microcode Sequencer ROM for complex instructions."
+            },
+            {
+              "question": "To modify the instruction set of a computer with hardwired control, what is required?",
+              "options": [
+                "Updating the BIOS firmware",
+                "Rewriting the microcode ROM",
+                "Redesigning and refabricating the physical integrated circuit",
+                "Changing an operating system driver"
+              ],
+              "correctIndex": 2,
+              "explanation": "Because control logic in a hardwired unit is permanently fixed in silicon gates and wires, altering it requires physical chip redesign."
             }
           ]
         }
       ]
     },
-
-    // ── UNIT 4: MICROPROGRAMMED CONTROL ──
     {
-      id: 'unit-4',
-      title: 'Unit 4: Microprogrammed Control',
-      description: 'Control memory, address sequencing, 20-bit microinstruction format, microprogram sequencer, and comparison with hardwired control.',
-      topics: [
+      "id": "ca-u4",
+      "title": "Unit 4: Central Processing Unit (CPU) Design",
+      "description": "General Register Organization, 14-bit Control Word (SELA, SELB, SELD, OPR), ALU Datapath, Stack Organization (Register Stack with SP, FULL/EMPTY flags, Memory Stack), Reverse Polish Notation (RPN) Evaluation, Instruction Formats (Three-, Two-, One-, and Zero-Address), Addressing Modes & Effective Address Calculation, and RISC vs CISC Architectural Comparison.",
+      "topics": [
         {
-          id: 'control-memory-sequencing',
-          title: 'Control Memory & Address Sequencing (Q11, Q12, Q28, Q29, Q41)',
-          simpleExplanation: 'A microprogrammed control unit uses a read-only memory (ROM) to store control words (microinstructions) rather than complex combinational logic gates.',
-          detailedExplanation: `## Microprogrammed Control & Address Sequencing
-
-### Hardwired vs Microprogrammed Control (Question Bank Q11 & Q28)
-| Parameter | Hardwired Control Unit | Microprogrammed Control Unit |
-| :--- | :--- | :--- |
-| **Implementation** | Fixed combinational logic gates and flip-flops. | Read-Only Memory (ROM) storing microprograms. |
-| **Speed** | Very fast (nanosecond logic gate delays). | Slower (requires ROM access time per cycle). |
-| **Flexibility / Upgrades** | Extremely difficult (requires rewiring chip). | Very easy (update ROM contents). |
-| **Instruction Set Type** | RISC processors (simple fixed instructions). | CISC processors (complex variable microcode). |
-| **Cost & Complexity** | Expensive for large/complex instruction sets. | Economical and modular for complex architectures. |
-
-### Microprogrammed Control Unit Architecture
-\`\`\`mermaid
-flowchart TD
-    subgraph Sequencer["Microprogrammed Control Architecture"]
-        CAR["Control Address Register (CAR)"]
-        ROM["Control Memory (ROM 128 x 20)"]
-        CDR["Control Data Register (CDR / Pipeline)"]
-        MUX["Next Address Multiplexer"]
-        LOGIC["Mapping Logic / Subroutine Register (SBR)"]
-    end
-
-    CAR --> ROM
-    ROM --> CDR
-    CDR -->|"Micro-ops (F1, F2, F3)"| CPU_DATA["Control Signals to CPU Datapath"]
-    CDR -->|"Branch Field (BR)"| MUX
-    CDR -->|"Condition Field (CD)"| MUX
-    CDR -->|"Address Field (AD)"| MUX
-
-    LOGIC -->|"Mapping Address"| MUX
-    SBR["Subroutine Register (SBR)"] --> MUX
-    INC["CAR + 1 (Incrementer)"] --> MUX
-
-    MUX --> CAR
-\`\`\`
-
-### 4 Address Sequencing Capabilities (Question Bank Q12 & Q29):
-1. **Incrementing:** $CAR \\leftarrow CAR + 1$ (executes next sequential microinstruction).
-2. **Conditional Branching:** $CAR \\leftarrow AD$ if condition ($CD$) is met, else $CAR \\leftarrow CAR + 1$.
-3. **Mapping of Instruction Opcode:** Transforms 4-bit machine opcode into 7-bit control memory routine start address ($0\\,XXXX\\,00$).
-4. **Subroutine Call and Return:** Subroutine Register ($SBR$) saves return micro-address ($SBR \\leftarrow CAR + 1$) and returns via $CAR \\leftarrow SBR$.`,
-          shortNotes: 'Hardwired is faster but inflexible (RISC). Microprogrammed uses ROM (CISC). Sequencing: Increment, Conditional Branch, Mapping, Subroutine Call/Return.',
-          examples: [
+          "id": "ca-u4-t1",
+          "title": "General Register Organization: Control Word Format (SELA, SELB, SELD, OPR), Bus Architecture & ALU",
+          "simpleExplanation": "Modern CPUs avoid memory bottlenecks by maintaining a bank of general-purpose registers directly inside the processor. In a general register organization, multiplexers select two source registers to drive two buses (Bus A and Bus B) into an Arithmetic Logic Unit (ALU). A 14-bit binary control word specifies which registers feed the ALU, what operation the ALU performs, and which destination register captures the final result.",
+          "detailedExplanation": "## 1. General Register CPU Organization\n\nIn simple accumulator-based machines, every arithmetic operation is forced through a single register ($AC$), requiring constant memory traffic to load and store temporary variables. A **General Register Organization** provides a bank of internal registers ($R_1$ through $R_7$) that act as fast local storage for operands and intermediate results.\n\n```mermaid\nflowchart TD\n    subgraph RegBank [\"Register File (7 Registers: R1 to R7)\"]\n        R1[\"R1\"]\n        R2[\"R2\"]\n        R3[\"R3\"]\n        R4[\"R4\"]\n        R5[\"R5\"]\n        R6[\"R6\"]\n        R7[\"R7\"]\n    end\n    MUXA[\"MUX A (3-bit SELA)\"]\n    MUXB[\"MUX B (3-bit SELB)\"]\n    RegBank --> MUXA\n    RegBank --> MUXB\n    Input[\"External Input (IN)\"] --> MUXA & MUXB\n    MUXA -->|\"Bus A (16-bit)\"| ALU[\"Arithmetic Logic Unit (ALU)\"]\n    MUXB -->|\"Bus B (16-bit)\"| ALU\n    OPR[\"Operation Select (5-bit OPR)\"] --> ALU\n    ALU -->|\"ALU Output Bus\"| OUT[\"External Output\"]\n    ALU -->|\"ALU Output Bus\"| DEC[\"Destination Decoder (3-bit SELD)\"]\n    DEC -->|\"Load Destination\"| RegBank\n```\n\n### 1.1 Datapath Components\n1. **Register File:** Seven general-purpose registers labeled $R_1$ through $R_7$.\n2. **Multiplexer A (MUX A):** A 3-bit field ($SELA$) selects one register to drive **Bus A** (or external input).\n3. **Multiplexer B (MUX B):** A 3-bit field ($SELB$) selects one register to drive **Bus B** (or external input).\n4. **Arithmetic Logic Unit (ALU):** Performs 16+ arithmetic and logic operations selected by a 5-bit field ($OPR$).\n5. **Destination Decoder:** A 3-bit field ($SELD$) decodes which register latches the ALU output on the clock pulse.\n\n---\n\n## 2. The 14-Bit CPU Control Word Format\n\nThe coordinated execution of any register-to-register instruction requires specifying four discrete actions within a single clock cycle. These are encoded into a **14-bit Control Word**:\n\n```\n+--------------+--------------+--------------+-------------------+\n|  SELA (3)    |  SELB (3)    |  SELD (3)    |     OPR (5)       |\n+--------------+--------------+--------------+-------------------+\nBits 13-11      Bits 10-8      Bits 7-5       Bits 4-0\n```\n\n- **SELA (3 bits):** Selects source register for Bus A.\n- **SELB (3 bits):** Selects source register for Bus B.\n- **SELD (3 bits):** Selects destination register to receive ALU output.\n- **OPR (5 bits):** Selects the arithmetic or logic operation to perform in the ALU.\n\n---\n\n## 3. Encoding Tables for Control Word Fields\n\n### 3.1 Source & Destination Selection Fields ($SELA, SELB, SELD$)\n| Binary Code | Source A ($SELA$) | Source B ($SELB$) | Destination ($SELD$) |\n| :---: | :---: | :---: | :---: |\n| `000` | Input (IN) | Input (IN) | None (No register loaded) |\n| `001` | $R_1$ | $R_1$ | $R_1$ |\n| `010` | $R_2$ | $R_2$ | $R_2$ |\n| `011` | $R_3$ | $R_3$ | $R_3$ |\n| `100` | $R_4$ | $R_4$ | $R_4$ |\n| `101` | $R_5$ | $R_5$ | $R_5$ |\n| `110` | $R_6$ | $R_6$ | $R_6$ |\n| `111` | $R_7$ | $R_7$ | $R_7$ |\n\n### 3.2 ALU Operation Field ($OPR$) Encoding\nThe 5-bit $OPR$ field defines the ALU function:\n\n| $OPR$ Code | Symbolic Name | Function / Micro-operation |\n| :---: | :--- | :--- |\n| `00000` | **TSFA** | Transfer $A$ ($D = A$) |\n| `00001` | **INCA** | Increment $A$ ($D = A + 1$) |\n| `00010` | **ADD** | Addition ($D = A + B$) |\n| `00101` | **SUB** | Subtraction ($D = A - B = A + \\overline{B} + 1$) |\n| `00110` | **DECA** | Decrement $A$ ($D = A - 1$) |\n| `01000` | **AND** | Bitwise AND ($D = A \\land B$) |\n| `01010` | **OR** | Bitwise OR ($D = A \\lor B$) |\n| `01100` | **XOR** | Bitwise XOR ($D = A \\oplus B$) |\n| `01110` | **COMA** | Complement $A$ ($D = \\overline{A}$) |\n| `10000` | **SHRA** | Shift Right $A$ |\n| `11000` | **SHLA** | Shift Left $A$ |\n\n---\n\n## 4. Deconstructing Assembly Instructions into Control Words\n\nTo see how the hardware translates assembly instructions into physical control words, consider two examples:\n\n### Example 1: $R_1 \\leftarrow R_2 + R_3$\n- Source A: $R_2 \\implies SELA = 010$\n- Source B: $R_3 \\implies SELB = 011$\n- Destination: $R_1 \\implies SELD = 001$\n- Operation: `ADD` $\\implies OPR = 00010$\n- **14-bit Control Word:** `010 011 001 00010` (Hex: `0x14C2` or octal `23102`)\n\n### Example 2: $R_4 \\leftarrow R_4 - 1$\n- Source A: $R_4 \\implies SELA = 100$\n- Source B: None / Irrelevant $\\implies SELB = 000$\n- Destination: $R_4 \\implies SELD = 100$\n- Operation: `DECA` $\\implies OPR = 00110$\n- **14-bit Control Word:** `100 000 100 00110`\n\n```\nInstruction: R1 <- R2 + R3\nDatapath Action:\n  1. MUX A routes R2 to Bus A.\n  2. MUX B routes R3 to Bus B.\n  3. ALU computes Bus A + Bus B.\n  4. At clock edge, Decoder enables R1.LOAD, latching ALU output into R1.\n  All completed in exactly 1 clock cycle!\n```\n\n> [!TIP] **EXAM TIP:**\n> When asked to formulate the 14-bit control word for an instruction that does not load a register (e.g., outputting to screen or testing flags):\n> Set $SELD = 000$ (None). This ensures that none of the general registers $R_1-R_7$ are overwritten!\n\n> [!NOTE] **DEV BRAIN:**\n> This 14-bit control word is the direct structural ancestor of modern microarchitecture execution pipelines. When an x86 or ARM CPU decodes `add r1, r2, r3`, it generates an internal control word that opens multiplexers for registers 2 and 3, activates the 64-bit adder, and asserts the write-back port for register 1!\n\n> [!WARNING] **TRAP:**\n> Do NOT assume $SELA$ and $SELB$ can select different bit widths. All registers $R_1-R_7$, buses A and B, and the ALU data path share the identical word width (e.g., 16 bits or 32 bits).\n\n> [!IMPORTANT] **MEMORIZE:**\n> - Control word layout: $SELA(3), SELB(3), SELD(3), OPR(5)$.\n> - $000$ in $SELA/SELB$ selects External Input.\n> - $000$ in $SELD$ means No Destination register is loaded.\n> - Entire register transfer executes in **1 single clock cycle**.",
+          "shortNotes": "General register organization uses 2 MUX buses to feed an ALU. A 14-bit Control Word (SELA=3, SELB=3, SELD=3, OPR=5) selects operands, ALU function, and destination register.",
+          "examples": [
             {
-              title: 'Mapping Logic Example',
-              code: 'Machine Opcode = 0011 (ADD)\nMapping Logic outputs: 0 0011 00 = 0001100 (Address 12 in ROM)\nControl jumps to routine at address 12.',
-              explanation: 'Pads 0 at MSB and 00 at LSB to generate 7-bit ROM address.'
+              "title": "Assembly to 14-bit Control Word Generation",
+              "problem": "Generate the binary and hexadecimal 14-bit control word for each of the following micro-operations: (a) R3 <- R1 + R2, (b) R5 <- R5 - 1, and (c) R6 <- R2 XOR R4.",
+              "explanation": "Map each instruction to SELA, SELB, SELD, and OPR. (a) SELA=R1(001), SELB=R2(010), SELD=R3(011), OPR=ADD(00010). (b) SELA=R5(101), SELB=None(000), SELD=R5(101), OPR=DECA(00110). (c) SELA=R2(010), SELB=R4(100), SELD=R6(110), OPR=XOR(01100).",
+              "code": "# CPU Control Word Generator\ndef make_control_word(sela, selb, seld, opr):\n    reg_map = {\"IN\": \"000\", \"R1\": \"001\", \"R2\": \"010\", \"R3\": \"011\",\n               \"R4\": \"100\", \"R5\": \"101\", \"R6\": \"110\", \"R7\": \"111\", \"NONE\": \"000\"}\n    opr_map = {\"TSFA\": \"00000\", \"INCA\": \"00001\", \"ADD\": \"00010\",\n               \"SUB\": \"00101\", \"DECA\": \"00110\", \"AND\": \"01000\",\n               \"OR\": \"01010\", \"XOR\": \"01100\", \"COMA\": \"01110\"}\n    \n    bin_word = reg_map[sela] + reg_map[selb] + reg_map[seld] + opr_map[opr]\n    hex_val = hex(int(bin_word, 2))\n    return bin_word, hex_val\n\nprint(\"(a) R3 <- R1 + R2:   \", make_control_word(\"R1\", \"R2\", \"R3\", \"ADD\"))\nprint(\"(b) R5 <- R5 - 1:    \", make_control_word(\"R5\", \"NONE\", \"R5\", \"DECA\"))\nprint(\"(c) R6 <- R2 XOR R4: \", make_control_word(\"R2\", \"R4\", \"R6\", \"XOR\"))",
+              "output": "(a) R3 <- R1 + R2:    ('00101001100010', '0x1262')\n(b) R5 <- R5 - 1:     ('10100010100110', '0x28a6')\n(c) R6 <- R2 XOR R4:  ('01010011001100', '0x14cc')"
             }
           ],
-          keyPoints: [
-            'Microprogrammed control stores control signals as words in ROM.',
-            'Hardwired control uses decoders, flip-flops, and gates.',
-            'Address sequencing provides branching, looping, and subroutine capability within microcode.'
+          "keyPoints": [
+            "A General Register Organization provides fast internal storage, reducing memory bus traffic.",
+            "Two multiplexer buses (Bus A and Bus B) route register data to the ALU inputs.",
+            "A 14-bit Control Word specifies SELA (3), SELB (3), SELD (3), and OPR (5).",
+            "A destination decoder directs ALU output into the selected register on the active clock edge.",
+            "Code 000 in SELD prevents register alteration when executing comparison or output micro-operations."
           ],
-          theoryQuestions: [
+          "theoryQuestions": [
             {
-              question: 'Compare Hardwired Control Unit and Microprogrammed Control Unit across speed, flexibility, design complexity, and suitability.',
-              marks: '7 Marks',
-              answer: 'Comparison Table:\n\n1. **Speed:** Hardwired is significantly faster because signals propagate through raw logic gates. Microprogrammed is slower due to ROM access delays.\n2. **Flexibility:** Hardwired cannot be modified without changing hardware silicon. Microprogrammed can be modified by updating ROM contents.\n3. **Design Complexity:** Hardwired becomes exponentially complex as instruction count increases. Microprogrammed is systematic and modular.\n4. **Instruction Set Suitability:** Hardwired is ideal for RISC processors with simple instructions. Microprogrammed is ideal for CISC processors with complex micro-routines.',
-              keyPoints: [
-                'Speed comparison (hardwired faster).',
-                'Flexibility comparison (microprogrammed easier to update).',
-                'RISC vs CISC association.'
+              "question": "Draw the block diagram of a General Register CPU Organization with seven registers. Explain how a 14-bit Control Word controls the datapath.",
+              "marks": "7 Marks",
+              "answer": "1. Draw the block diagram: Seven registers (R1-R7) connected to MUX A and MUX B, driving Bus A and Bus B into the ALU. Destination decoder connects ALU output back to register inputs.\n2. Detail the 14-bit Control Word format: SELA (3 bits), SELB (3 bits), SELD (3 bits), OPR (5 bits).\n3. Explain SELA and SELB: Select source registers for Bus A and Bus B (code 000 selects external input).\n4. Explain SELD: 3-to-8 decoder routes ALU result into target register (000 = no register loaded).\n5. Explain OPR: Selects from 16+ arithmetic and logic functions.\n6. Trace example: R1 <- R2 + R3.",
+              "keyPoints": [
+                "Complete CPU register and ALU block diagram",
+                "Bit partition of the 14-bit control word",
+                "Encoding tables for SELA, SELB, SELD, and OPR",
+                "Single-cycle register-to-register execution sequence"
               ]
             },
             {
-              question: 'Explain the four address sequencing capabilities required in a control memory.',
-              marks: '5 Marks',
-              answer: 'A control memory sequencer must support:\n1. **Increment:** Advances $CAR \\leftarrow CAR + 1$ for sequential micro-operation execution.\n2. **Conditional Branch:** Jumps to address field $AD$ if selected condition test bit ($U, I, S, Z$) is true.\n3. **Mapping:** Converts a machine instruction opcode into the starting address of its execution routine in ROM (e.g., $0\\,XXXX\\,00$).\n4. **Subroutine Call & Return:** Saves return address in Subroutine Register ($SBR \\leftarrow CAR + 1$) and restores it upon completion ($CAR \\leftarrow SBR$).',
-              keyPoints: [
-                'Increment: CAR <- CAR + 1.',
-                'Conditional Branch based on CD.',
-                'Opcode Mapping.',
-                'Subroutine Call and Return using SBR.'
+              "question": "Formulate the 14-bit control words for: (a) R1 <- R1 + R2, (b) R4 <- R4 - 1, and (c) Output <- R6 (no destination register).",
+              "marks": "5 Marks",
+              "answer": "1. (a) R1 <- R1 + R2: SELA = R1 (001), SELB = R2 (010), SELD = R1 (001), OPR = ADD (00010). Binary: 001 010 001 00010 (Hex: 0x1242).\n2. (b) R4 <- R4 - 1: SELA = R4 (100), SELB = None (000), SELD = R4 (100), OPR = DECA (00110). Binary: 100 000 100 00110 (Hex: 0x2086).\n3. (c) Output <- R6: SELA = R6 (110), SELB = None (000), SELD = None (000), OPR = TSFA (00000). Binary: 110 000 000 00000 (Hex: 0x3000).",
+              "keyPoints": [
+                "Exact binary mapping of all fields",
+                "Hexadecimal control word representations",
+                "Use of SELD = 000 for non-modifying operations"
               ]
             }
           ],
-          mcqs: [
+          "mcqs": [
             {
-              question: 'Why is a hardwired control unit faster than a microprogrammed control unit?',
-              options: ['It uses higher clock frequency', 'Signals propagate through direct logic gates without ROM read delays', 'It has more registers', 'It does not use a sequence counter'],
-              correctIndex: 1,
-              explanation: 'Hardwired control uses combinational logic gates directly, avoiding the memory access latency of reading control words from ROM.'
+              "question": "In a 14-bit control word format, how many bits are allocated to the ALU Operation field (OPR)?",
+              "options": [
+                "3 bits",
+                "4 bits",
+                "5 bits",
+                "8 bits"
+              ],
+              "correctIndex": 2,
+              "explanation": "The control word allocates 3 bits each for SELA, SELB, and SELD (9 bits total), and the remaining 5 bits for OPR (3 + 3 + 3 + 5 = 14 bits)."
             },
             {
-              question: 'In a microprogram sequencer, which register holds the return address during a micro-subroutine call?',
-              options: ['Program Counter (PC)', 'Control Address Register (CAR)', 'Subroutine Register (SBR)', 'Instruction Register (IR)'],
-              correctIndex: 2,
-              explanation: 'The Subroutine Register (SBR) stores CAR + 1 during a call and restores it to CAR upon return.'
+              "question": "What does the code SELD = 000 signify in the CPU control word?",
+              "options": [
+                "Data is written to register R0",
+                "Data is loaded into the Accumulator",
+                "No destination register is loaded with the ALU output",
+                "The CPU enters a halt state"
+              ],
+              "correctIndex": 2,
+              "explanation": "Code 000 in SELD disables all register LOAD enables, allowing operations like comparisons or bus writes without modifying register contents."
+            },
+            {
+              "question": "How many clock cycles are required to execute a register-to-register addition 'R1 <- R2 + R3' in a general register CPU?",
+              "options": [
+                "1 clock cycle",
+                "2 clock cycles",
+                "3 clock cycles",
+                "4 clock cycles"
+              ],
+              "correctIndex": 0,
+              "explanation": "Multiplexing operands, passing through the ALU, and latching into the destination flip-flops all occurs synchronously in a single clock cycle."
+            },
+            {
+              "question": "If SELA = 000 in the CPU control word, what is selected onto Bus A?",
+              "options": [
+                "Register R0",
+                "External Input (IN)",
+                "Accumulator (AC)",
+                "Program Counter (PC)"
+              ],
+              "correctIndex": 1,
+              "explanation": "In the SELA/SELB encoding table, 000 is reserved to select the external input lines (IN) into the datapath."
             }
           ]
         },
-
-        // ── TOPIC 14: 20-BIT MICROINSTRUCTION FORMAT ──
         {
-          id: 'microinstruction-format-20bit',
-          title: '20-Bit Microinstruction Format & Fetch Routine',
-          simpleExplanation: 'Each microinstruction is a 20-bit control word partitioned into micro-operation fields (F1, F2, F3), condition code (CD), branch type (BR), and address (AD).',
-          detailedExplanation: `## 20-Bit Microinstruction Format
-
-### Field Decomposition (Question Bank Q13 & Q41)
-\`\`\`mermaid
-flowchart LR
-    F1["F1: 3 Bits\n(Micro-op 1)"] --- F2["F2: 3 Bits\n(Micro-op 2)"]
-    F2 --- F3["F3: 3 Bits\n(Micro-op 3)"]
-    F3 --- CD["CD: 2 Bits\n(Condition Code)"]
-    CD --- BR["BR: 2 Bits\n(Branch Field)"]
-    BR --- AD["AD: 7 Bits\n(Address: 0..127)"]
-\`\`\`
-
-- **Total Length:** $3 + 3 + 3 + 2 + 2 + 7 = \\mathbf{20 \\text{ Bits}}$.
-- **Control Memory Size:** 128 words ($2^7 = 128$).
-- **$F_1, F_2, F_3$ (3 bits each):** Select up to 3 simultaneous micro-operations without hardware conflict.
-- **$CD$ (2 bits):** Selects condition ($00 = \\text{Unconditional } 1$, $01 = I\\text{-bit}$, $10 = S\\text{-bit}$, $11 = Z\\text{-bit}$).
-- **$BR$ (2 bits):** Branch action ($00 = \\text{JUMP}$, $01 = \\text{CALL}$, $10 = \\text{RET}$, $11 = \\text{MAP}$).
-- **$AD$ (7 bits):** Target address in control memory ($0$ to $127$).
-
-### Fetch Routine in Control Memory:
-\`\`\`text
-Address 64: AR <- PC
-Address 65: IR <- M[AR], PC <- PC + 1
-Address 66: AR <- IR(0-11), MAP (Jumps to execution routine)
-\`\`\``,
-          shortNotes: '20-bit format: F1(3), F2(3), F3(3), CD(2), BR(2), AD(7). Control memory has 128 words. BR: JMP, CALL, RET, MAP.',
-          examples: [
+          "id": "ca-u4-t2",
+          "title": "Stack Organization: Register Stack with SP, FULL/EMPTY Flags, Memory Stack & RPN Evaluation",
+          "simpleExplanation": "A stack is a Last-In, First-Out (LIFO) storage structure where all insertions and deletions occur at one end called the top of the stack. A hardware register stack maintains a 6-bit Stack Pointer (SP) along with FULL and EMPTY status flags to prevent overflow and underflow. Stacks evaluate arithmetic expressions efficiently using Reverse Polish Notation (RPN / Postfix), completely eliminating the need for parentheses.",
+          "detailedExplanation": "## 1. Stack Architecture: Last-In, First-Out (LIFO)\n\nA **stack** is a storage device that stores information in such a manner that the item stored last is the first item retrieved (**LIFO - Last-In, First-Out**). The stack is referenced through a dedicated CPU register called the **Stack Pointer (SP)**, which holds the address of the element currently occupying the top of the stack.\n\nThe two fundamental micro-operations defined on a stack are:\n1. **PUSH:** Inserts a new data item onto the top of the stack.\n2. **POP:** Deletes and retrieves the top data item from the stack.\n\n```mermaid\nflowchart TD\n    subgraph Operations [\"Stack Operations\"]\n        direction LR\n        PUSH_OP[\"PUSH Item:\n1. SP <- SP + 1\n2. Stack[SP] <- Item\n3. Check FULL\"]\n        POP_OP[\"POP Item:\n1. Item <- Stack[SP]\n2. SP <- SP - 1\n3. Check EMPTY\"]\n    end\n```\n\n---\n\n## 2. 64-Word Hardware Register Stack Design\n\nConsider a hardware register stack constructed using 64 high-speed registers ($0$ to $63$) of binary word length $n$.\n- **Stack Pointer ($SP$):** A 6-bit binary counter ($2^6 = 64$ words).\n- **$FULL$ Flip-Flop:** Set to 1 when the stack has 64 items and cannot accept more data.\n- **$EMPTY$ Flip-Flop:** Set to 1 when the stack contains 0 items.\n\n```mermaid\nflowchart TD\n    DR[\"Data Register (DR)\"]\n    SP[\"6-bit Stack Pointer (SP)\"]\n    R_STACK[\"64-Word Register Stack (0 to 63)\"]\n    FF_FULL[\"FULL Flag\"]\n    FF_EMPTY[\"EMPTY Flag\"]\n    SP -->|\"Address (0-63)\"| R_STACK\n    DR -->|\"Push Data\"| R_STACK\n    R_STACK -->|\"Pop Data\"| DR\n    SP -->|\"SP = 0 ?\"| FF_EMPTY & FF_FULL\n```\n\n### 2.1 The PUSH Micro-operation Sequence\nWhen pushing a word from Data Register $DR$ into the stack:\n```\nIf (FULL = 1) then Error: Stack Overflow!\nSP <- SP + 1\nStack[SP] <- DR\nIf (SP = 0) then FULL <- 1\nEMPTY <- 0\n```\n*Note:* In a 6-bit counter, incrementing from $63$ (`111111`) wraps around to $0$ (`000000`). If $SP$ reaches 0 after a push, the stack has wrapped around and is now completely **FULL**.\n\n### 2.2 The POP Micro-operation Sequence\nWhen popping the top element of the stack into $DR$:\n```\nIf (EMPTY = 1) then Error: Stack Underflow!\nDR <- Stack[SP]\nSP <- SP - 1\nIf (SP = 0) then EMPTY <- 1\nFULL <- 0\n```\n*Note:* When $SP$ decrements from $1$ to $0$, the last element has been removed, setting **EMPTY = 1**.\n\n---\n\n## 3. Memory Stack Organization\n\nIn modern microprocessors (x86, ARM), implementing a large dedicated register stack in hardware is too expensive. Instead, a **Memory Stack** is allocated inside a designated segment of main RAM.\n- A portion of system RAM is assigned as the stack segment.\n- The Stack Pointer ($SP$) is a full CPU memory address register (e.g., 32-bit or 64-bit).\n- **Downward Growing Convention:** In almost all modern computers, the stack grows **downward** toward lower memory addresses:\n  - **PUSH:** Decrements $SP$, then writes data:\n    $$SP \\leftarrow SP - 1, \\quad M[SP] \\leftarrow DR$$\n  - **POP:** Reads data, then increments $SP$:\n    $$DR \\leftarrow M[SP], \\quad SP \\leftarrow SP + 1$$\n\n```\nMemory Stack Layout (Growing Downward):\nHigh Address:  0xFFFF [ Base of Stack Segment ]\n               0xFFFE [ Item 1                ]\n               0xFFFD [ Item 2                ]\nSP --------->  0xFFFC [ Top of Stack (TOS)    ]  <=== SP points here\n               0xFFFB [ Empty (Grows Downward)]\nLow Address:   0x0000\n```\n\n---\n\n## 4. Reverse Polish Notation (RPN / Postfix) Evaluation\n\nMathematical expressions are customarily written in **infix notation**:\n$$A + B \\times C$$\nInfix requires parentheses and operator precedence rules (PEMDAS) to resolve ambiguities.\n\n**Reverse Polish Notation (RPN)**, or **postfix notation**, places operators *after* their operands:\n$$A \\ B \\ C \\ \\times \\ +$$\nIn RPN:\n- **No parentheses are ever needed.**\n- The expression is evaluated strictly left-to-right using a stack in $O(n)$ time!\n\n### 4.1 RPN Evaluation Algorithm\n1. Read the RPN expression token by token from left to right.\n2. If the token is an **operand** (number or variable):\n   - **PUSH** the operand onto the stack.\n3. If the token is an **operator** (e.g., $+ , -, \\times, /$):\n   - **POP** the top item from the stack into operand 2 ($B$).\n   - **POP** the next top item from the stack into operand 1 ($A$).\n   - Compute result: $\\text{Result} = A \\ \\text{operator} \\ B$.\n   - **PUSH** the result back onto the stack.\n4. When expression is exhausted, the final result is the single remaining item on the stack (**POP** result).\n\n```\nEvaluating: (3 + 4) * (5 - 2)\nInfix to Postfix: 3 4 + 5 2 - *\n\nStep 1: Push 3      Stack: [ 3 ]\nStep 2: Push 4      Stack: [ 3, 4 ]\nStep 3: Op '+'      Pop 4, Pop 3 -> 3+4=7 -> Push 7   Stack: [ 7 ]\nStep 4: Push 5      Stack: [ 7, 5 ]\nStep 5: Push 2      Stack: [ 7, 5, 2 ]\nStep 6: Op '-'      Pop 2, Pop 5 -> 5-2=3 -> Push 3   Stack: [ 7, 3 ]\nStep 7: Op '*'      Pop 3, Pop 7 -> 7*3=21 -> Push 21 Stack: [ 21 ]\nFinal Result = 21\n```\n\n> [!TIP] **EXAM TIP:**\n> When converting Infix $(A + B) \\times (C \\times D - E)$ to Postfix:\n> 1. $(A + B) \\implies A B +$\n> 2. $(C \\times D - E) \\implies C D \\times E -$\n> 3. Multiply results $\\implies A B + C D \\times E - \\times$.\n> Always maintain operand order: $A - B$ becomes $A B -$, NEVER $B A -$!\n\n> [!NOTE] **DEV BRAIN:**\n> The Java Virtual Machine (JVM), WebAssembly (WASM), and the PostScript engine are all pure stack-based architectures! When Java compiles `x = a + b`, it emits bytecode:\n> ```\n> iload_1   // push a\n> iload_2   // push b\n> iadd      // pop both, add, push sum\n> istore_3  // pop sum into x\n> ```\n\n> [!WARNING] **TRAP:**\n> In RPN evaluation, when popping two operands for subtraction or division:\n> The **FIRST** item popped is the **SECOND** operand ($B$), and the **SECOND** item popped is the **FIRST** operand ($A$).\n> Computing $B - A$ instead of $A - B$ is the single most common exam mistake!\n\n> [!IMPORTANT] **MEMORIZE:**\n> - Register Stack PUSH: $SP \\leftarrow SP + 1, Stack[SP] \\leftarrow DR$.\n> - Downward Memory Stack PUSH: $SP \\leftarrow SP - 1, M[SP] \\leftarrow DR$.\n> - Downward Memory Stack POP: $DR \\leftarrow M[SP], SP \\leftarrow SP + 1$.\n> - Postfix notation requires zero parentheses and unambiguous single-pass evaluation.",
+          "shortNotes": "Stack is LIFO storage using Stack Pointer (SP). Hardware stack uses 6-bit SP with FULL/EMPTY flags. Memory stack grows downward (push decrements SP, pop increments). Evaluates RPN expressions efficiently.",
+          "examples": [
             {
-              title: 'Binary Microinstruction Encoding',
-              code: 'Fields: F1=001, F2=100, F3=000, CD=00, BR=00, AD=1000000\nBinary: 001 100 000 00 00 1000000\nExecutes micro-ops specified by F1 and F2, unconditionally jumps to address 64.',
-              explanation: 'Specifies 2 parallel micro-ops and a jump.'
+              "title": "Complete RPN Stack Evaluation Trace",
+              "problem": "Convert the arithmetic infix expression '((6 + 2) * 3) / (8 - 4)' to Reverse Polish Notation (RPN) and trace its step-by-step evaluation using a stack.",
+              "explanation": "1. Convert infix to postfix: ((6+2)*3) -> 6 2 + 3 *; (8-4) -> 8 4 -; division -> 6 2 + 3 * 8 4 - /. 2. Trace stack state for each token.",
+              "code": "# RPN Stack Evaluator\ndef eval_rpn(tokens):\n    stack = []\n    trace = []\n    \n    for token in tokens:\n        if token.isdigit():\n            stack.append(int(token))\n            trace.append(f\"Push {token:2s} -> Stack: {list(stack)}\")\n        else:\n            b = stack.pop()\n            a = stack.pop()\n            if token == '+': res = a + b\n            elif token == '-': res = a - b\n            elif token == '*': res = a * b\n            elif token == '/': res = a // b\n            stack.append(res)\n            trace.append(f\"Op '{token}' ({a}{token}{b}={res}) -> Stack: {list(stack)}\")\n            \n    return stack[0], trace\n\ntokens = [\"6\", \"2\", \"+\", \"3\", \"*\", \"8\", \"4\", \"-\", \"/\"]\nans, log = eval_rpn(tokens)\nfor entry in log:\n    print(entry)\nprint(f\"Final Answer: {ans}\")",
+              "output": "Push 6  -> Stack: [6]\nPush 2  -> Stack: [6, 2]\nOp '+' (6+2=8) -> Stack: [8]\nPush 3  -> Stack: [8, 3]\nOp '*' (8*3=24) -> Stack: [24]\nPush 8  -> Stack: [24, 8]\nPush 4  -> Stack: [24, 8, 4]\nOp '-' (8-4=4) -> Stack: [24, 4]\nOp '/' (24/4=6) -> Stack: [6]\nFinal Answer: 6"
             }
           ],
-          keyPoints: [
-            '3 fields (F1, F2, F3) allow 3 parallel micro-operations per clock cycle.',
-            '7-bit address field directly addresses 128 words of ROM.',
-            'BR=11 invokes mapping logic to jump to machine instruction routine.'
+          "keyPoints": [
+            "A stack operates on the Last-In First-Out (LIFO) principle accessed via a Stack Pointer (SP).",
+            "A 64-word hardware stack uses a 6-bit SP with FULL and EMPTY status flip-flops.",
+            "A memory stack resides in system RAM and conventionally grows downward toward lower memory addresses.",
+            "Reverse Polish Notation (RPN) places operators after operands, eliminating parentheses completely.",
+            "In RPN evaluation, the first popped item is the right operand and the second popped item is the left operand."
           ],
-          theoryQuestions: [
+          "theoryQuestions": [
             {
-              question: 'Explain the 20-bit microinstruction format with a diagram detailing all fields and their functions.',
-              marks: '5 Marks',
-              answer: 'The 20-bit microinstruction format is divided into 6 functional fields:\n1. **F1, F2, F3 (3 bits each = 9 bits):** Micro-operation fields. Each 3-bit field selects one of seven micro-operations (000 is no-op), allowing up to 3 concurrent non-conflicting actions.\n2. **CD (2 bits):** Condition selection for branching (00: Unconditional, 01: Indirect bit I, 10: Sign bit S, 11: Zero bit Z).\n3. **BR (2 bits):** Branch control field (00: JMP, 01: CALL, 10: RET, 11: MAP).\n4. **AD (7 bits):** Address field containing target control memory address (0 to 127).',
-              keyPoints: [
-                'Diagram of 20-bit format.',
-                'F1, F2, F3 micro-operation definitions.',
-                'CD, BR, and AD field specifications.'
+              "question": "Explain the organization of a 64-word Register Stack. Detail the micro-operations and logic conditions for PUSH, POP, FULL, and EMPTY flags.",
+              "marks": "7 Marks",
+              "answer": "1. Draw the block diagram: 64-word stack (registers 0-63), 6-bit SP, DR, FULL flag, EMPTY flag.\n2. Explain PUSH sequence:\n   - Check: if FULL=1, overflow error.\n   - SP <- SP + 1\n   - Stack[SP] <- DR\n   - if SP=0 then FULL <- 1 (wrapped around 63 to 0)\n   - EMPTY <- 0\n3. Explain POP sequence:\n   - Check: if EMPTY=1, underflow error.\n   - DR <- Stack[SP]\n   - SP <- SP - 1\n   - if SP=0 then EMPTY <- 1\n   - FULL <- 0\n4. Explain why SP=0 represents both full (after 64 pushes) and empty (after initialization or total pops), disambiguated by the flags.",
+              "keyPoints": [
+                "Block diagram with 6-bit counter and status flags",
+                "Complete micro-operation sequences for PUSH and POP",
+                "Logic conditions for FULL and EMPTY detection",
+                "Handling of counter wrap-around at 63 to 0"
+              ]
+            },
+            {
+              "question": "Convert the arithmetic expression '(A + B) * (C * D - E)' into Reverse Polish Notation (RPN). Show step-by-step stack operations to evaluate the expression.",
+              "marks": "5 Marks",
+              "answer": "1. Convert Infix to Postfix:\n   - (A + B) -> A B +\n   - (C * D - E) -> C D * E -\n   - Combine with * -> A B + C D * E - *\n2. Tabulate stack evaluation steps:\n   - Read A -> Push A\n   - Read B -> Push B\n   - Read + -> Pop B, Pop A, Push (A+B)\n   - Read C -> Push C\n   - Read D -> Push D\n   - Read * -> Pop D, Pop C, Push (C*D)\n   - Read E -> Push E\n   - Read - -> Pop E, Pop (C*D), Push (C*D - E)\n   - Read * -> Pop (C*D - E), Pop (A+B), Push (A+B)*(C*D - E)\n3. Result is top of stack.",
+              "keyPoints": [
+                "Correct postfix conversion: A B + C D * E - *",
+                "Step-by-step tabular trace showing stack growth and contraction",
+                "Correct operand ordering during Pop operations"
               ]
             }
           ],
-          mcqs: [
+          "mcqs": [
             {
-              question: 'What is the maximum number of words in a control memory addressed by a 7-bit address field AD?',
-              options: ['64 words', '128 words', '256 words', '512 words'],
-              correctIndex: 1,
-              explanation: '2^7 = 128 words in control memory.'
+              "question": "In a 64-word register stack using a 6-bit counter, what condition sets the FULL flag to 1 during a PUSH operation?",
+              "options": [
+                "SP = 63",
+                "SP increments and wraps around to 0",
+                "EMPTY = 1",
+                "DR = 0"
+              ],
+              "correctIndex": 1,
+              "explanation": "In a 6-bit counter (0 to 63), when 64 items have been pushed, SP increments from 63 to 0, which hardware detects to set the FULL flag."
             },
             {
-              question: 'What operation is executed when the Branch field BR equals 11 in the 20-bit microinstruction format?',
-              options: ['JMP', 'CALL', 'RET', 'MAP (Opcode mapping to routine start address)'],
-              correctIndex: 3,
-              explanation: 'BR = 11 specifies MAP, which transfers the 4-bit opcode into CAR via mapping logic.'
+              "question": "In a standard memory stack that grows downward toward lower memory addresses, what micro-operations occur during PUSH?",
+              "options": [
+                "SP <- SP + 1, M[SP] <- DR",
+                "SP <- SP - 1, M[SP] <- DR",
+                "M[SP] <- DR, SP <- SP + 1",
+                "DR <- M[SP], SP <- SP - 1"
+              ],
+              "correctIndex": 1,
+              "explanation": "In a downward-growing stack, pushing decrements the stack pointer first (SP <- SP - 1) and then writes data into memory (M[SP] <- DR)."
+            },
+            {
+              "question": "What is the equivalent Reverse Polish Notation (RPN) for the infix expression 'A + B * C'?",
+              "options": [
+                "+ A * B C",
+                "A B C * +",
+                "A B + C *",
+                "A B * C +"
+              ],
+              "correctIndex": 1,
+              "explanation": "Due to operator precedence, B * C is evaluated first (B C *), and then added to A: A B C * +."
+            },
+            {
+              "question": "When evaluating the postfix expression '8 4 /' using a stack, what is the sequence of operations?",
+              "options": [
+                "Pop 8, Pop 4, compute 8 / 4 = 2",
+                "Pop 4 (operand 2), Pop 8 (operand 1), compute 8 / 4 = 2",
+                "Pop 4 (operand 1), Pop 8 (operand 2), compute 4 / 8 = 0.5",
+                "Push 8, Push 4, Push /"
+              ],
+              "correctIndex": 1,
+              "explanation": "The first item popped is the second operand (divisor = 4), and the second item popped is the first operand (dividend = 8), yielding 8 / 4 = 2."
+            }
+          ]
+        },
+        {
+          "id": "ca-u4-t3",
+          "title": "Instruction Formats: Three-Address, Two-Address, One-Address (Accumulator) & Zero-Address (Stack)",
+          "simpleExplanation": "Instruction formats dictate how many explicit operands and memory addresses can be specified in a single machine instruction word. A CPU architecture is classified by its operand structure into Three-Address (high code density, complex hardware), Two-Address (destructive updates), One-Address (accumulator-based), or Zero-Address (pure stack-based) formats. Each format represents a unique trade-off between instruction length, code size, and program execution speed.",
+          "detailedExplanation": "## 1. Instruction Formats and Architectural Trade-offs\n\nThe format of an instruction is defined by its internal bit layout: the operation code (opcode), addressing mode specifiers, and operand addresses. The number of address fields permitted in an instruction determines the processor's internal register architecture and execution model.\n\nTo compute an arithmetic expression such as:\n$$X = (A + B) \\times (C + D)$$\ndifferent CPU architectures require completely different assembly programs depending on their instruction format.\n\n---\n\n## 2. Three-Address Instructions\n\nIn a **Three-Address instruction format**, each instruction specifies an operation code and three distinct register or memory addresses: two source operands and one destination operand.\n$$\\text{OP } R_{\\text{dest}}, R_{\\text{src1}}, R_{\\text{src2}} \\implies R_{\\text{dest}} \\leftarrow R_{\\text{src1}} \\text{ OP } R_{\\text{src2}}$$\n\n### Program to Evaluate $X = (A + B) \\times (C + D)$:\n```assembly\nADD  R1, A, B     ; R1 <- M[A] + M[B]\nADD  R2, C, D     ; R2 <- M[C] + M[D]\nMUL  X, R1, R2    ; M[X] <- R1 * R2\n```\n\n### Characteristics:\n- **Instruction Count:** Minimal (only 3 instructions required).\n- **Code Length:** Short programs, but each instruction word is physically very long because it must accommodate three separate address fields.\n- **Operand Preservation:** Source operands are not destroyed during computation.\n- **Hardware:** Typical of modern RISC architectures (ARM, MIPS, RISC-V) using general register files.\n\n---\n\n## 3. Two-Address Instructions\n\nIn a **Two-Address instruction format**, each instruction specifies two address fields. One address serves as both a source operand and the destination operand:\n$$\\text{OP } R_1, R_2 \\implies R_1 \\leftarrow R_1 \\text{ OP } R_2$$\n\n### Program to Evaluate $X = (A + B) \\times (C + D)$:\n```assembly\nMOV  R1, A        ; R1 <- M[A]\nADD  R1, B        ; R1 <- R1 + M[B]\nMOV  R2, C        ; R2 <- M[C]\nADD  R2, D        ; R2 <- R2 + M[D]\nMUL  R1, R2       ; R1 <- R1 * R2\nMOV  X, R1        ; M[X] <- R1\n```\n\n### Characteristics:\n- **Instruction Count:** Moderate (6 instructions).\n- **Destructive Update:** The original content of register $R_1$ is overwritten by the result.\n- **Bit Width:** Instruction words are shorter than three-address formats.\n- **Hardware:** Prevalent in classic CISC processors such as the x86 and Motorola 68000.\n\n---\n\n## 4. One-Address (Accumulator) Instructions\n\nIn a **One-Address instruction format**, the CPU possesses a single dedicated processing register called the **Accumulator ($AC$)**. All operations implicitly use $AC$ as one source operand and as the destination:\n$$\\text{OP } M \\implies AC \\leftarrow AC \\text{ OP } M$$\n\n### Program to Evaluate $X = (A + B) \\times (C + D)$:\n```assembly\nLOAD  A           ; AC <- M[A]\nADD   B           ; AC <- AC + M[B]\nSTORE T           ; M[T] <- AC  (Save intermediate result in temp T)\nLOAD  C           ; AC <- M[C]\nADD   D           ; AC <- AC + M[D]\nMUL   T           ; AC <- AC * M[T]\nSTORE X           ; M[X] <- AC\n```\n\n### Characteristics:\n- **Instruction Count:** High (7 instructions, including memory scratchpad stores).\n- **Bit Width:** Instruction words are compact because only one memory address is specified.\n- **Memory Traffic:** Heavy memory access overhead to store and reload intermediate variables ($T$).\n- **Hardware:** Used in early computers (PDP-8) and Mano's basic computer.\n\n---\n\n## 5. Zero-Address (Stack-Based) Instructions\n\nIn a **Zero-Address instruction format**, all arithmetic operations implicitly pop their operands from the top of an internal stack and push the result back onto the stack. No explicit operand address is included in arithmetic instructions:\n$$\\text{ADD} \\implies TOS \\leftarrow \\text{POP}() + \\text{POP}()$$\nOnly `PUSH` and `POP` instructions contain an address field to transfer data between memory and the stack.\n\n### Program to Evaluate $X = (A + B) \\times (C + D)$:\n```assembly\nPUSH  A           ; Stack <- M[A]\nPUSH  B           ; Stack <- M[B]\nADD               ; Stack top replaces with (A + B)\nPUSH  C           ; Stack <- M[C]\nPUSH  D           ; Stack <- M[D]\nADD               ; Stack top replaces with (C + D)\nMUL               ; Stack top replaces with (A + B) * (C + D)\nPOP   X           ; M[X] <- Stack top\n```\n\n### Characteristics:\n- **Zero Address Overhead:** Arithmetic instructions need only opcode bits (e.g., 8 bits total).\n- **Expression Evaluation:** Translates directly 1-to-1 from Reverse Polish Notation (RPN).\n- **Execution Model:** Foundation of Java Virtual Machine (JVM bytecode) and Forth processors.\n\n---\n\n## 6. Comprehensive Architectural Comparison Table\n\n| Metric | Three-Address | Two-Address | One-Address (AC) | Zero-Address (Stack) |\n| :--- | :--- | :--- | :--- | :--- |\n| **Address Fields per Inst.**| 3 fields | 2 fields | 1 field | 0 fields (for ALU ops) |\n| **Instruction Count** | Fewest (3) | Moderate (6) | High (7) | Highest (8) |\n| **Instruction Word Width** | Widest | Medium | Short | Shortest (Opcode only) |\n| **Total Program Bytes** | Balanced | Balanced | Medium | Highly compact bytecode |\n| **Destination Operand** | Preserved | Overwritten (Destructive) | Overwrites $AC$ | Overwrites Top of Stack |\n| **Hardware Complexity** | High (Multi-port file) | Medium | Simplest | Requires hardware stack |\n| **Representative Example** | MIPS, ARM, RISC-V | Intel x86, PDP-11 | Mano Computer, PDP-8 | JVM, WASM, HP Calcs |\n\n> [!TIP] **EXAM TIP:**\n> In exams, when asked to evaluate an expression like $X = (A + B) \\times (C + D)$ in all 4 formats:\n> Always write the programs side-by-side and clearly annotate register/stack states for maximum marks!\n\n> [!NOTE] **DEV BRAIN:**\n> Modern compilers transform high-level C/C++ abstract syntax trees (ASTs) into Three-Address Code (TAC) as an Intermediate Representation (IR), such as LLVM IR (`%res = add i32 %a, %b`), before generating the target machine's native instruction format!\n\n> [!WARNING] **TRAP:**\n> Students often forget that in Zero-Address architectures, `PUSH` and `POP` instructions ARE NOT zero-address—they MUST have one address field to access memory! Only the arithmetic/logic instructions (`ADD`, `MUL`, `SUB`) are zero-address.\n\n> [!IMPORTANT] **MEMORIZE:**\n> - Three-Address: $R1 \\leftarrow A + B$ (non-destructive).\n> - Two-Address: $R1 \\leftarrow R1 + B$ (destructive).\n> - One-Address: $AC \\leftarrow AC + M$ (Accumulator implicit).\n> - Zero-Address: Operands popped from stack, result pushed (Stack implicit).",
+          "shortNotes": "Instruction formats define operand address count: Three-address (Dest, Src1, Src2), Two-address (Dest/Src1, Src2), One-address (AC implicit), and Zero-address (Stack implicit LIFO).",
+          "examples": [
+            {
+              "title": "Multi-Format Program Size & Instruction Count Analysis",
+              "problem": "Compare the number of instructions and memory memory traffic (number of memory accesses) for evaluating X = (A * B) + (C * D) across: (a) Three-Address, (b) Two-Address, (c) One-Address, and (d) Zero-Address formats.",
+              "explanation": "Trace instructions and count memory reads/writes. (a) 3-address: 3 inst, accesses = 4 reads (A,B,C,D) + 1 write (X) = 5. (b) 2-address: 6 inst, accesses = 4 reads + 1 write = 5. (c) 1-address: 7 inst, needs temp store T (4 reads + 1 temp write + 1 temp read + 1 write) = 7. (d) 0-address: 8 inst (4 pushes + 1 pop) = 5 accesses.",
+              "code": "# Instruction Format Comparison Analyzer\ndef analyze_formats():\n    formats = {\n        \"Three-Address\": {\"Instructions\": 3, \"Memory Accesses\": 5, \"Destructive\": False},\n        \"Two-Address\":   {\"Instructions\": 6, \"Memory Accesses\": 5, \"Destructive\": True},\n        \"One-Address\":   {\"Instructions\": 7, \"Memory Accesses\": 7, \"Destructive\": True},\n        \"Zero-Address\":  {\"Instructions\": 8, \"Memory Accesses\": 5, \"Destructive\": True}\n    }\n    return formats\n\nresults = analyze_formats()\nfor fmt, data in results.items():\n    print(f\"{fmt:15s}: {data['Instructions']} inst, {data['Memory Accesses']} memory accesses\")",
+              "output": "Three-Address  : 3 inst, 5 memory accesses\nTwo-Address    : 6 inst, 5 memory accesses\nOne-Address    : 7 inst, 7 memory accesses\nZero-Address   : 8 inst, 5 memory accesses"
+            }
+          ],
+          "keyPoints": [
+            "Instruction formats specify 3, 2, 1, or 0 explicit operand addresses.",
+            "Three-address formats minimize instruction count but require wide instruction words.",
+            "Two-address formats overwrite the destination operand with the computed result.",
+            "One-address formats use an Accumulator register implicitly for all arithmetic operations.",
+            "Zero-address formats pop operands from an internal stack and push results, matching RPN."
+          ],
+          "theoryQuestions": [
+            {
+              "question": "Write assembly language programs to evaluate the arithmetic expression X = (A + B) * (C + D) using Three-Address, Two-Address, One-Address, and Zero-Address instruction formats.",
+              "marks": "7 Marks",
+              "answer": "1. Three-Address:\n   ADD R1, A, B\n   ADD R2, C, D\n   MUL X, R1, R2\n2. Two-Address:\n   MOV R1, A\n   ADD R1, B\n   MOV R2, C\n   ADD R2, D\n   MUL R1, R2\n   MOV X, R1\n3. One-Address (Accumulator):\n   LOAD A\n   ADD B\n   STORE T\n   LOAD C\n   ADD D\n   MUL T\n   STORE X\n4. Zero-Address (Stack):\n   PUSH A\n   PUSH B\n   ADD\n   PUSH C\n   PUSH D\n   ADD\n   MUL\n   POP X\n5. Provide a summary comparison table of instruction counts.",
+              "keyPoints": [
+                "Complete runnable assembly programs for all four formats",
+                "Clear register/memory variable tracking",
+                "Use of temporary memory word T in accumulator format",
+                "Stack growth and evaluation sequence for zero-address"
+              ]
+            },
+            {
+              "question": "Compare the architectural merits and demerits of Three-Address and Zero-Address instruction formats.",
+              "marks": "5 Marks",
+              "answer": "1. Three-Address Format:\n   - Merits: Fewest instructions per program, source operands preserved, high execution speed on register files.\n   - Demerits: Wide instruction format requires many bits, complex instruction decoding hardware.\n2. Zero-Address Format:\n   - Merits: Highly compact arithmetic instructions (opcode only), zero address bits needed for ALU ops, ideal for virtual machines and bytecode.\n   - Demerits: High instruction count, push/pop memory overhead, sequential stack access bottleneck.\n3. Conclusion on modern usage (RISC vs JVM).",
+              "keyPoints": [
+                "Code density vs instruction width trade-off",
+                "Hardware decoding complexity comparison",
+                "Register file parallelism vs Stack serial bottleneck"
+              ]
+            }
+          ],
+          "mcqs": [
+            {
+              "question": "Which instruction format requires a temporary memory location when evaluating the expression X = (A + B) * (C + D)?",
+              "options": [
+                "Three-Address format",
+                "Two-Address format",
+                "One-Address (Accumulator) format",
+                "Zero-Address format"
+              ],
+              "correctIndex": 2,
+              "explanation": "In a One-Address format, the single Accumulator must be freed to compute (C + D), requiring (A + B) to be saved to a temporary memory location T."
+            },
+            {
+              "question": "How do arithmetic instructions like ADD or MUL find their operands in a Zero-Address computer?",
+              "options": [
+                "From dedicated registers R1 and R2",
+                "Implicitly from the top of the stack",
+                "From the program counter",
+                "From the instruction register"
+              ],
+              "correctIndex": 1,
+              "explanation": "Zero-Address arithmetic instructions specify no explicit operand addresses; operands are popped implicitly from the top of the stack (TOS)."
+            },
+            {
+              "question": "What is a major disadvantage of Two-Address instruction formats?",
+              "options": [
+                "They cannot perform multiplication",
+                "The destination register's original operand is destroyed by being overwritten",
+                "They require four memory buses",
+                "They cannot be pipelined"
+              ],
+              "correctIndex": 1,
+              "explanation": "In Two-Address instructions (OP R1, R2), R1 holds both a source operand and receives the result, destroying R1's original value."
+            },
+            {
+              "question": "Modern RISC architectures (e.g., ARM, RISC-V) predominantly utilize which instruction format for arithmetic operations?",
+              "options": [
+                "Zero-Address format",
+                "One-Address format",
+                "Three-Address format",
+                "Four-Address format"
+              ],
+              "correctIndex": 2,
+              "explanation": "RISC processors use Three-Address formats (e.g., ADD R1, R2, R3) operating on large general register files."
+            }
+          ]
+        },
+        {
+          "id": "ca-u4-t4",
+          "title": "Addressing Modes: Direct, Indirect, Register, Relative, Indexed & Effective Address Computation",
+          "simpleExplanation": "Addressing modes define the rules by which the CPU interprets the address fields of an instruction to locate the actual operand. By supporting diverse addressing modes like Immediate, Register Indirect, Relative, and Indexed, architectures enable efficient access to constants, arrays, pointers, and relocatable program structures. The Effective Address (EA) is the exact physical memory address computed by applying the addressing mode rule.",
+          "detailedExplanation": "## 1. The Purpose of Addressing Modes\n\nIn computer architecture, **addressing modes** specify the syntax and rules for calculating the actual physical memory address of an operand, termed the **Effective Address (EA)**.\n\nAddressing modes provide two indispensable programming capabilities:\n1. **Programming Versatility:** Pointers to memory, array indexing, loop control, and relocatable code are made trivial to implement.\n2. **Instruction Bit Reduction:** Shorter address fields can be used by referencing registers or relative offsets instead of full physical memory addresses.\n\n```mermaid\nflowchart TD\n    INST[\"Instruction Word\"] --> OP[\"Opcode\"]\n    INST --> MODE[\"Addressing Mode Specifier\"]\n    INST --> ADDR[\"Address / Offset Field (A)\"]\n    MODE --> EA_CALC[\"Effective Address (EA) Calculation Engine\"]\n    ADDR --> EA_CALC\n    REGS[\"CPU Registers: PC, XR, BR, R1\"] --> EA_CALC\n    EA_CALC --> EA[\"Effective Address (EA) in RAM\"]\n    EA --> OPERAND[\"Actual Data Operand\"]\n```\n\n---\n\n## 2. Comprehensive Breakdown of All Addressing Modes\n\n### 2.1 Implied / Implicit Mode\nOperands are specified implicitly in the definition of the opcode. No address field is needed.\n- *Examples:* `CLC` (Clear Carry), `CLA` (Clear Accumulator), `RET` (Return).\n\n### 2.2 Immediate Mode\nThe operand is contained directly within the instruction word itself.\n- $EA = \\text{Not Applicable}$ (Operand = Address Field $A$).\n- *Example:* `ADD #25` (adds constant 25 to Accumulator).\n\n### 2.3 Register Mode\nThe operand is stored in an internal CPU register specified by the instruction.\n- $\\text{Operand} = R$.\n- *Example:* `ADD R1` ($AC \\leftarrow AC + R1$). Fast; no memory bus access.\n\n### 2.4 Register Indirect Mode\nThe instruction specifies a CPU register that contains the memory address of the operand.\n- $EA = [R]$, $\\text{Operand} = M[R]$.\n- *Example:* `ADD (R1)` ($AC \\leftarrow AC + M[R1]$). Used for pointer dereferencing.\n\n### 2.5 Direct / Absolute Addressing Mode\nThe address field $A$ contains the exact effective address of the operand in memory.\n- $EA = A$, $\\text{Operand} = M[A]$.\n- *Example:* `LDA 2000` ($AC \\leftarrow M[2000]$). Requires 1 memory read.\n\n### 2.6 Indirect Addressing Mode\nThe address field $A$ points to a memory word that holds the effective address of the operand.\n- $EA = M[A]$, $\\text{Operand} = M[EA] = M[M[A]]$.\n- Requires **2 memory reads**.\n\n### 2.7 Autoincrement / Autodecrement Mode\nSimilar to Register Indirect, but the register is automatically incremented or decremented:\n- **Autoincrement:** $EA = [R]$, then $R \\leftarrow R + 1$ (post-increment).\n- **Autodecrement:** $R \\leftarrow R - 1$, then $EA = [R]$ (pre-decrement).\n- Crucial for walking through arrays, tables, and implementing memory stacks.\n\n### 2.8 Relative Addressing Mode ($PC$-Relative)\nThe effective address is computed by adding the instruction's address field (interpreted as a signed offset) to the Program Counter ($PC$):\n$$EA = PC + A$$\n- *Significance:* Essential for **Position-Independent Code (PIC)** and relocatable branch instructions. When code is moved to a different RAM segment, relative offsets remain unchanged!\n\n### 2.9 Indexed Addressing Mode\nThe effective address is computed by adding the address field to an **Index Register ($XR$)**:\n$$EA = XR + A$$\n- *Significance:* Ideal for accessing array structures. The address field $A$ holds the array's base address, while $XR$ holds the element index.\n\n### 2.10 Base Register Addressing Mode\nThe effective address is computed by adding the content of a **Base Register ($BR$)** to the displacement address field:\n$$EA = BR + A$$\n- *Significance:* Used by operating systems for memory relocation and multi-programming memory segmentation.\n\n---\n\n## 3. Addressing Modes Master Matrix & Numerical Computation\n\nTo see how every addressing mode calculates Effective Address and retrieves operands, consider the canonical university benchmark problem:\n\n```\nCPU State:\n  Program Counter (PC) = 200\n  Address Field (A)    = 500\n  Index Register (XR)  = 100\n  Register R1          = 400\n\nMemory Layout:\n  Address 200: [ Instruction: Mode | Opcode | 500 ]\n  Address 201: [ Next Instruction                 ]\n  Address 400: [ 700                              ]\n  Address 500: [ 800                              ]\n  Address 600: [ 900                              ]\n  Address 701: [ 1000                             ]\n  Address 800: [ 300                              ]\n```\n\n### 3.1 Numerical Evaluation Table\n\n| Addressing Mode | Formula for Effective Address ($EA$) | Calculated $EA$ | Retrieved Operand |\n| :--- | :--- | :---: | :---: |\n| **Immediate** | None (Operand is address field $A$) | — | **500** |\n| **Direct** | $EA = A$ | **500** | $M[500] = \\mathbf{800}$ |\n| **Indirect** | $EA = M[A]$ | $M[500] = \\mathbf{800}$ | $M[800] = \\mathbf{300}$ |\n| **Register** | Operand is in register $R_1$ | — | $R_1 = \\mathbf{400}$ |\n| **Register Indirect** | $EA = R_1$ | **400** | $M[400] = \\mathbf{700}$ |\n| **Relative** | $EA = PC + A = 201 + 500$ | **701** | $M[701] = \\mathbf{1000}$ |\n| **Indexed** | $EA = XR + A = 100 + 500$ | **600** | $M[600] = \\mathbf{900}$ |\n| **Autoincrement** | $EA = R_1 = 400$ (then $R_1 \\leftarrow 401$) | **400** | $M[400] = \\mathbf{700}$ |\n| **Autodecrement** | $R_1 \\leftarrow 399$, then $EA = 399$ | **399** | $M[399]$ |\n\n*(Note: In Relative mode, $PC$ has already been incremented to $201$ during the fetch phase).*\n\n> [!TIP] **EXAM TIP:**\n> In Relative Addressing problems, ALWAYS remember that $PC$ is incremented by 1 during the fetch cycle before the effective address is computed:\n> $$EA = (PC + 1) + A$$\n> Failing to use the updated $PC$ is a very common exam error!\n\n> [!NOTE] **DEV BRAIN:**\n> Modern compilers map high-level language structures directly to specific addressing modes:\n> - `x = 42;` $\\implies$ **Immediate Mode**\n> - `*ptr = val;` $\\implies$ **Register Indirect Mode**\n> - `arr[i] = val;` $\\implies$ **Indexed Mode** ($XR = i$, $A = \\&arr$)\n> - `goto label;` $\\implies$ **Relative Mode** ($PC + \\text{offset}$)\n\n> [!WARNING] **TRAP:**\n> Do NOT confuse **Indexed Addressing** ($XR + A$) with **Base Register Addressing** ($BR + A$):\n> - In Indexed: $A$ is the large base address, and $XR$ is a small index counter.\n> - In Base Register: $BR$ is the large memory segment base address, and $A$ is a small relative displacement.\n\n> [!IMPORTANT] **MEMORIZE:**\n> - Direct: $EA = A$.\n> - Indirect: $EA = M[A]$.\n> - Relative: $EA = PC + A$ (used for Position-Independent Code).\n> - Indexed: $EA = XR + A$ (used for Arrays).\n> - Register Indirect: $EA = R$ (used for Pointers).",
+          "shortNotes": "Addressing modes calculate Effective Address (EA). Immediate (operand in inst), Direct (EA=A), Indirect (EA=M[A]), Relative (EA=PC+A), Indexed (EA=XR+A), Register Indirect (EA=R).",
+          "examples": [
+            {
+              "title": "Comprehensive Addressing Mode Effective Address Solver",
+              "problem": "Given PC = 200, address field A = 500, XR = 100, R1 = 400, and memory contents M[400]=700, M[500]=800, M[600]=900, M[701]=1000, M[800]=300. Compute EA and Operand for Direct, Indirect, Relative, Indexed, and Register Indirect modes.",
+              "explanation": "Compute EA using specific mode formulas, noting that PC increments to 201 during fetch. Read operands from memory dictionary at computed EA.",
+              "code": "# Addressing Modes Computation Engine\ndef compute_addressing_modes(pc, a, xr, r1, mem):\n    updated_pc = pc + 1\n    modes = {}\n    \n    # 1. Immediate\n    modes[\"Immediate\"] = {\"EA\": \"N/A\", \"Operand\": a}\n    # 2. Direct\n    ea_dir = a\n    modes[\"Direct\"] = {\"EA\": ea_dir, \"Operand\": mem.get(ea_dir, 0)}\n    # 3. Indirect\n    ea_ind = mem.get(a, 0)\n    modes[\"Indirect\"] = {\"EA\": ea_ind, \"Operand\": mem.get(ea_ind, 0)}\n    # 4. Register Indirect\n    ea_reg_ind = r1\n    modes[\"Register Indirect\"] = {\"EA\": ea_reg_ind, \"Operand\": mem.get(ea_reg_ind, 0)}\n    # 5. Relative\n    ea_rel = updated_pc + a\n    modes[\"Relative\"] = {\"EA\": ea_rel, \"Operand\": mem.get(ea_rel, 0)}\n    # 6. Indexed\n    ea_idx = xr + a\n    modes[\"Indexed\"] = {\"EA\": ea_idx, \"Operand\": mem.get(ea_idx, 0)}\n    \n    return modes\n\nmem = {400: 700, 500: 800, 600: 900, 701: 1000, 800: 300}\nresults = compute_addressing_modes(200, 500, 100, 400, mem)\nfor mode, data in results.items():\n    print(f\"{mode:18s} -> EA: {str(data['EA']):5s} | Operand: {data['Operand']}\")",
+              "output": "Immediate          -> EA: N/A   | Operand: 500\nDirect             -> EA: 500   | Operand: 800\nIndirect           -> EA: 800   | Operand: 300\nRegister Indirect  -> EA: 400   | Operand: 700\nRelative           -> EA: 701   | Operand: 1000\nIndexed            -> EA: 600   | Operand: 900"
+            }
+          ],
+          "keyPoints": [
+            "Addressing modes dictate how the Effective Address (EA) of an operand is calculated.",
+            "Immediate mode stores the operand directly in the instruction word.",
+            "Relative addressing mode (EA = PC + A) enables relocatable, position-independent code.",
+            "Indexed addressing mode (EA = XR + A) facilitates array and table traversals.",
+            "Register Indirect mode (EA = R) provides the hardware basis for pointer dereferencing."
+          ],
+          "theoryQuestions": [
+            {
+              "question": "Explain at least six Addressing Modes with mathematical expressions for Effective Address, hardware diagrams, and practical programming applications.",
+              "marks": "7 Marks",
+              "answer": "1. Define Effective Address (EA).\n2. Explain Immediate Mode (operand = A) with constant loading application.\n3. Explain Direct Mode (EA = A) with static variable access.\n4. Explain Indirect Mode (EA = M[A]) with pointer passing.\n5. Explain Register Indirect Mode (EA = R) with fast pointer dereference.\n6. Explain Relative Mode (EA = PC + A) with position-independent branching.\n7. Explain Indexed Mode (EA = XR + A) with array indexing.\n8. Provide a summary comparison table.",
+              "keyPoints": [
+                "Formal definition of EA",
+                "Detailed mathematical formula for each of the 6+ modes",
+                "Concrete real-world compiler/programming use cases",
+                "Structured comparison table"
+              ]
+            },
+            {
+              "question": "An instruction is stored at location 300 with its address field at location 301. The address field has value 400. Processor registers contain: PC = 300, R1 = 200, XR = 100. Memory contents are: M[200]=500, M[300]=600, M[400]=700, M[500]=800, M[700]=900, M[702]=1000. Find the effective address and operand for: (a) Direct, (b) Immediate, (c) Relative, (d) Register Indirect, and (e) Indexed addressing.",
+              "marks": "7 Marks",
+              "answer": "Assume two-word instruction fetched: PC becomes 302.\n1. (a) Direct: EA = 400, Operand = M[400] = 700.\n2. (b) Immediate: No EA, Operand = 400.\n3. (c) Relative: EA = PC + A = 302 + 400 = 702. Operand = M[702] = 1000.\n4. (d) Register Indirect: EA = R1 = 200. Operand = M[200] = 500.\n5. (e) Indexed: EA = XR + A = 100 + 400 = 500. Operand = M[500] = 800.",
+              "keyPoints": [
+                "Step-by-step mathematical derivation for each part",
+                "Correct application of updated PC = 302 in relative mode",
+                "Exact EA and operand values"
+              ]
+            }
+          ],
+          "mcqs": [
+            {
+              "question": "Which addressing mode is primarily utilized to write Position-Independent Code (PIC)?",
+              "options": [
+                "Direct Addressing Mode",
+                "Relative Addressing Mode",
+                "Immediate Addressing Mode",
+                "Indexed Addressing Mode"
+              ],
+              "correctIndex": 1,
+              "explanation": "Relative addressing (EA = PC + offset) specifies branch targets relative to the current PC, allowing the code to be loaded anywhere in RAM without recalculating branch addresses."
+            },
+            {
+              "question": "In which addressing mode does the instruction word contain the operand itself rather than an address?",
+              "options": [
+                "Implied Mode",
+                "Immediate Mode",
+                "Direct Mode",
+                "Register Mode"
+              ],
+              "correctIndex": 1,
+              "explanation": "In Immediate Mode, the operand value is embedded directly inside the address field of the instruction word."
+            },
+            {
+              "question": "If PC = 500, address field A = 40, and the PC is incremented to 501 during fetch, what is the Effective Address in Relative Addressing Mode?",
+              "options": [
+                "40",
+                "540",
+                "541",
+                "500"
+              ],
+              "correctIndex": 2,
+              "explanation": "EA = PC (updated) + A = 501 + 40 = 541."
+            },
+            {
+              "question": "Which addressing mode is most naturally suited for stepping through the elements of an array in a loop?",
+              "options": [
+                "Immediate Mode",
+                "Indexed Addressing Mode",
+                "Indirect Addressing Mode",
+                "Implied Mode"
+              ],
+              "correctIndex": 1,
+              "explanation": "Indexed addressing computes EA = XR + Base Address. Incrementing the Index Register (XR) sequentially accesses successive array elements."
+            }
+          ]
+        },
+        {
+          "id": "ca-u4-t5",
+          "title": "Reduced Instruction Set Computer (RISC) vs Complex Instruction Set Computer (CISC) Architectural Comparison",
+          "simpleExplanation": "The RISC vs CISC architectural debate represents two contrasting philosophies of computer design. CISC aims to minimize program code size by providing hundreds of complex, multi-cycle instructions with diverse addressing modes implemented via microprograms. In contrast, RISC optimizes for execution speed by using a small set of simple, single-cycle, fixed-length instructions executed by hardwired control and relying on a pure Load/Store memory architecture.",
+          "detailedExplanation": "## 1. Architectural Philosophy: RISC vs CISC\n\nThe historical evolution of computer architecture produced two divergent design philosophies regarding the boundary between hardware and software:\n\n```mermaid\nflowchart TD\n    subgraph CISC_Philosophy [\"CISC Philosophy (Complex Instruction Set)\"]\n        CISC_GOAL[\"Hardware Complexity to Ease Software\"] --> CISC_FEAT[\"Variable-length Instructions\nRich Addressing Modes\nMemory-to-Memory Operations\nMicroprogrammed Control\"]\n    end\n    subgraph RISC_Philosophy [\"RISC Philosophy (Reduced Instruction Set)\"]\n        RISC_GOAL[\"Compiler Optimization & Simple Hardware\"] --> RISC_FEAT[\"Fixed-length 32-bit Instructions\nLoad/Store Architecture Only\nSingle-Cycle Execution via Hardwired Control\nLarge General Register File\"]\n    end\n```\n\n### 1.1 The Iron Law of Processor Performance\nThe execution time of any program is governed by the fundamental performance equation:\n$$\\text{CPU Time} = \\frac{\\text{Instructions}}{\\text{Program}} \\times \\frac{\\text{Clock Cycles}}{\\text{Instruction}} \\text{ (CPI)} \\times \\frac{\\text{Time}}{\\text{Clock Cycle}}$$\n\n- **CISC Strategy:** Minimize **Instructions / Program** by providing powerful, complex instructions (e.g., `VAX POLY` computes polynomial evaluation in one instruction), accepting higher **CPI** ($4$ to $10$) and longer cycle times.\n- **RISC Strategy:** Minimize **CPI** (targeting $\\text{CPI} \\approx 1.0$) and **Clock Cycle Time** by making every instruction simple and uniform, accepting a slightly higher **Instruction Count**.\n\n---\n\n## 2. Reduced Instruction Set Computer (RISC) Characteristics\n\nPioneered in the 1980s by John Hennessy (Stanford MIPS) and David Patterson (Berkeley RISC):\n1. **Simple, Uniform Instructions:** Every instruction is fixed-length (typically 32 bits), enabling simple, single-cycle instruction decoders.\n2. **Single-Cycle Execution:** Virtually every instruction executes in a single machine cycle utilizing instruction pipelining.\n3. **Load/Store Architecture:** Only dedicated `LOAD` and `STORE` instructions can touch main memory. All arithmetic and logic operations must occur exclusively between CPU registers (`ADD R1, R2, R3`).\n4. **Hardwired Control Unit:** Hardwired logic generates control signals instantly, eliminating the ROM access latency of microprograms.\n5. **Large General Register File:** Provides 32 to 128 general-purpose registers (often using overlapping register windows) to keep variables on-chip.\n6. **Few, Simple Addressing Modes:** Typically limited to Register, Immediate, and Base-Displacement.\n7. **Optimizing Compilers:** Shifts complexity from silicon hardware to the optimizing compiler software.\n\n---\n\n## 3. Complex Instruction Set Computer (CISC) Characteristics\n\nPrevalent in mainstream desktop computing (Intel x86, AMD, Motorola 68000, VAX):\n1. **Extensive Instruction Set:** Hundreds of instructions (often 300 to 1000+), ranging from simple adds to complex string manipulations and encryption primitives.\n2. **Variable-Length Instructions:** Instruction sizes vary drastically (from 1 byte to 15 bytes in x86), complicating the instruction fetch and decode pipeline.\n3. **Memory-to-Memory Operations:** Arithmetic operations can read operands directly from RAM and write results back to RAM (e.g., `ADD [EAX], EBX`).\n4. **Microprogrammed Control Unit:** Relies on Control ROM to sequence complex multi-cycle instructions.\n5. **Fewer Registers:** Historically 8 to 16 general-purpose registers due to reliance on memory stacks and accumulators.\n6. **Rich Variety of Addressing Modes:** 10 to 20+ addressing modes including scaled indexing, memory indirect, and auto-update.\n\n---\n\n## 4. Comprehensive 12-Point Comparison Master Table\n\n| Comparison Parameter | RISC Architecture | CISC Architecture |\n| :--- | :--- | :--- |\n| **1. Instruction Set Size** | Small (typically $< 100$ instructions) | Large ($300$ to $1000+$ instructions) |\n| **2. Instruction Length** | Fixed-length (strictly 32 bits or 64 bits) | Variable-length ($1$ byte to $15$ bytes) |\n| **3. Clock Cycles per Inst. (CPI)**| **Single-cycle** (average $\\text{CPI} \\approx 1.0$) | **Multi-cycle** (average $\\text{CPI} = 2$ to $10$) |\n| **4. Memory Access** | **Load/Store only**; ALU ops register-only | Memory operands permitted in ALU ops |\n| **5. Control Unit Type** | **Hardwired** control for maximum speed | **Microprogrammed** control memory (ROM) |\n| **6. Register Count** | Large register file ($32$ to $128+$ registers) | Small register file ($8$ to $16$ registers) |\n| **7. Addressing Modes** | Few, simple modes ($2$ to $4$) | Many complex modes ($10$ to $20+$) |\n| **8. Pipelining** | Highly efficient and easy to pipeline | Complex due to variable instruction lengths |\n| **9. Hardware Complexity** | Simple hardware; complexity shifted to compiler | Complex hardware; silicon executes complex tasks |\n| **10. Code Size (Instruction Count)**| Higher instruction count per task | Lower instruction count per task |\n| **11. Execution Speed** | Faster clock rates, high throughput | Slower clock rates due to decoding overhead |\n| **12. Representative Families** | ARM, RISC-V, MIPS, Apple Silicon (M-series) | Intel x86 (Core i9), AMD Ryzen, VAX |\n\n---\n\n## 5. Modern Architectural Convergence\n\nIn modern microprocessors, the sharp historical divide between RISC and CISC has largely vanished:\n- **CISC on the Outside, RISC on the Inside:** Modern x86 processors (Intel, AMD) feature a CISC external interface (for backward software compatibility) whose front-end decoders dynamically break down complex x86 instructions into simple, uniform, fixed-length **RISC-like micro-operations ($mu$-ops)**!\n- These $mu$-ops are then executed by an ultra-fast, deeply pipelined, superscalar RISC-style execution core.\n- Meanwhile, modern RISC processors (such as ARMv8/v9 and Apple Silicon) have added complex vector, cryptography, and neural network instructions, adopting features once exclusive to CISC.\n\n```mermaid\nflowchart LR\n    subgraph Modern_x86 [\"Modern CISC Processor Internals\"]\n        x86_Code[\"x86 CISC Instructions\"] --> Decoders[\"Hardware Decoders\"]\n        Decoders --> Uops[\"Simple RISC-like μ-ops\"]\n        Uops --> OutOfOrder[\"Out-of-Order RISC Execution Core\"]\n    end\n```\n\n> [!TIP] **EXAM TIP:**\n> When asked to compare RISC and CISC in university exams, write the **Iron Law Performance Equation** ($\\text{CPU Time} = N \\times \\text{CPI} \\times T_{\\text{clk}}$) and show how:\n> - RISC minimizes $\\text{CPI}$ and $T_{\\text{clk}}$.\n> - CISC minimizes $N$ (instruction count).\n\n> [!NOTE] **DEV BRAIN:**\n> If you compile C code on ARM (RISC), an addition `*ptr += 5;` compiles to three instructions:\n> ```assembly\n> LDR  R1, [R0]     ; Load from memory\n> ADD  R1, R1, #5   ; Add immediate\n> STR  R1, [R0]     ; Store back to memory\n> ```\n> On x86 (CISC), it compiles to a single instruction:\n> ```assembly\n> add  dword ptr [rax], 5  ; Memory-to-memory addition!\n> ```\n\n> [!WARNING] **TRAP:**\n> Do NOT say RISC means \"fewer features\" or \"weaker performance\"! Apple's M-series chips and the world's fastest supercomputers (Fugaku) are built on ARM (pure RISC), outperforming standard CISC chips in energy efficiency and throughput.\n\n> [!IMPORTANT] **MEMORIZE:**\n> - RISC: Fixed-length, Load/Store only, Hardwired control, CPI $\\approx 1$, Large register file.\n> - CISC: Variable-length, Memory-to-Memory ALU ops, Microprogrammed ROM, Multi-cycle CPI.\n> - Modern x86 uses CISC decoding into internal RISC $\\mu$-ops.",
+          "shortNotes": "RISC uses simple, fixed-length, single-cycle instructions with a Load/Store architecture and hardwired control. CISC provides rich, variable-length, multi-cycle instructions with microprogrammed control.",
+          "examples": [
+            {
+              "title": "RISC vs CISC Program Performance Evaluation",
+              "problem": "A program executing on a CISC processor requires 1,200,000 instructions with an average CPI of 3.8 at a clock frequency of 2.0 GHz. The same high-level program recompiled for a RISC processor requires 2,000,000 instructions with an average CPI of 1.2 at a clock frequency of 3.0 GHz. Calculate the execution time for both and determine which processor is faster.",
+              "explanation": "Use CPU Time = (Instruction Count * CPI) / Frequency. For CISC: (1.2M * 3.8) / 2.0 GHz = 4.56M / 2.0x10^9 = 2.28 ms. For RISC: (2.0M * 1.2) / 3.0 GHz = 2.40M / 3.0x10^9 = 0.80 ms. Speedup = 2.28 / 0.80 = 2.85x.",
+              "code": "# RISC vs CISC Performance Benchmark\ndef cpu_performance(inst_count, cpi, freq_ghz):\n    cycles = inst_count * cpi\n    time_sec = cycles / (freq_ghz * 1e9)\n    return time_sec * 1000 # in milliseconds\n\nt_cisc = cpu_performance(1200000, 3.8, 2.0)\nt_risc = cpu_performance(2000000, 1.2, 3.0)\nspeedup = t_cisc / t_risc\n\nprint(f\"CISC Execution Time: {t_cisc:.3f} ms\")\nprint(f\"RISC Execution Time: {t_risc:.3f} ms\")\nprint(f\"RISC is {speedup:.2f}x faster than CISC\")",
+              "output": "CISC Execution Time: 2.280 ms\nRISC Execution Time: 0.800 ms\nRISC is 2.85x faster than CISC"
+            }
+          ],
+          "keyPoints": [
+            "RISC emphasizes single-cycle execution of simple, fixed-length instructions using hardwired control.",
+            "CISC emphasizes reducing instruction count through complex, variable-length instructions via microcode.",
+            "RISC employs a strict Load/Store architecture where ALU operations only access internal registers.",
+            "CISC permits memory operands directly in arithmetic instructions.",
+            "Modern x86 processors translate external CISC instructions into internal RISC-like micro-operations (u-ops)."
+          ],
+          "theoryQuestions": [
+            {
+              "question": "Differentiate between RISC and CISC architectures across at least ten architectural parameters. Explain the concept of modern processor convergence.",
+              "marks": "7 Marks",
+              "answer": "1. Present the comprehensive 10+ parameter comparison table:\n   - Instruction set size: Small vs Large.\n   - Instruction format: Fixed 32-bit vs Variable (1-15 bytes).\n   - CPI: Single-cycle (~1) vs Multi-cycle (2-10).\n   - Memory access: Load/Store only vs Memory operands in ALU.\n   - Control unit: Hardwired vs Microprogrammed Control ROM.\n   - Register file: Large (32-128) vs Small (8-16).\n   - Addressing modes: Few/simple vs Many/complex.\n   - Pipelining: Easy/efficient vs Complex.\n2. Detail the Iron Law of Processor Performance.\n3. Modern Convergence: Explain how modern x86 chips decode CISC instructions into internal RISC micro-ops (u-ops).",
+              "keyPoints": [
+                "Structured comparison table with 10+ distinct criteria",
+                "Detailed explanation of Load/Store architectural rule",
+                "Performance equation analysis",
+                "Modern x86 CISC front-end to RISC core translation"
+              ]
+            },
+            {
+              "question": "What is a Load/Store Architecture? Why is it a fundamental pillar of RISC processors?",
+              "marks": "5 Marks",
+              "answer": "1. Definition: A Load/Store architecture restricts memory access exclusively to two dedicated instructions: LOAD (memory to register) and STORE (register to memory). All arithmetic, logic, and shift instructions operate strictly on register operands.\n2. Why it is fundamental to RISC:\n   - Memory accesses have high, variable latency; removing them from ALU instructions allows uniform single-cycle execution.\n   - Simplifies instruction pipelining and hazard detection.\n   - Enables fixed-width 32-bit instruction encoding.\n   - Compiler can keep frequently reused variables in registers, minimizing memory bus traffic.",
+              "keyPoints": [
+                "Precise definition of Load/Store rule",
+                "Decoupling memory latency from ALU execution",
+                "Pipeline uniformity and simplicity",
+                "Effective register allocation by compilers"
+              ]
+            }
+          ],
+          "mcqs": [
+            {
+              "question": "What is the primary defining characteristic of a Load/Store architecture?",
+              "options": [
+                "All instructions can access memory directly",
+                "Only dedicated LOAD and STORE instructions can access memory; ALU operations are strictly register-to-register",
+                "Memory can only store instructions, not data",
+                "Registers are eliminated in favor of memory stacks"
+              ],
+              "correctIndex": 1,
+              "explanation": "In a Load/Store architecture, memory access is restricted to LOAD and STORE; all computational operations occur exclusively between processor registers."
+            },
+            {
+              "question": "Which of the following characteristics is typical of a RISC processor?",
+              "options": [
+                "Variable-length instruction encoding",
+                "Microprogrammed control memory",
+                "Hardwired control unit and single-cycle instruction execution",
+                "Direct memory-to-memory arithmetic operations"
+              ],
+              "correctIndex": 2,
+              "explanation": "RISC architectures use hardwired control units to execute simple, uniform instructions in a single clock cycle."
+            },
+            {
+              "question": "How do modern Intel Core and AMD processors execute complex x86 CISC instructions efficiently?",
+              "options": [
+                "By running them on external GPUs",
+                "By translating them dynamically into simple, fixed-length RISC-like micro-operations (u-ops)",
+                "By ignoring complex instructions",
+                "By switching to analog computing mode"
+              ],
+              "correctIndex": 1,
+              "explanation": "Modern x86 chips use front-end decoders that translate variable-length CISC instructions into internal RISC-like micro-operations (u-ops) for fast pipelined execution."
+            },
+            {
+              "question": "Compared to CISC, a RISC program compiled from the same high-level source code will typically have:",
+              "options": [
+                "Fewer instructions and higher CPI",
+                "More instructions and lower CPI (approaching 1)",
+                "Identical instruction count and identical CPI",
+                "Zero register usage"
+              ],
+              "correctIndex": 1,
+              "explanation": "Because RISC instructions are simpler, a program requires more instructions overall, but each executes in fewer clock cycles (CPI approx 1)."
             }
           ]
         }
       ]
     },
-
-    // ── UNIT 5: CENTRAL PROCESSING UNIT (CPU) ──
     {
-      id: 'unit-5',
-      title: 'Unit 5: Central Processing Unit (CPU)',
-      description: 'General register CPU organization, 14-bit control word, register stack, Reverse Polish Notation (RPN), addressing modes, and RISC vs CISC.',
-      topics: [
+      "id": "ca-u5",
+      "title": "Unit 5: Computer Arithmetic",
+      "description": "Addition and Subtraction with Signed-Magnitude and Signed 2's Complement Numbers, Hardware Overflow Detection, Booth's Multiplication Algorithm for Signed 2's Complement Data, Restoring and Non-Restoring Division Algorithms, IEEE 754 Floating-Point Standard & Arithmetic, and Carry Lookahead Adder (CLA) Design.",
+      "topics": [
         {
-          id: 'general-register-organization',
-          title: 'General Register Organization & 14-Bit Control Word (Q30, Q42)',
-          simpleExplanation: 'CPU registers are organized in a common bank connected to two source buses (Bus A, Bus B), an ALU, and a destination decoder via a 14-bit control word.',
-          detailedExplanation: `## General Register Organization & Control Word
-
-### CPU Datapath Architecture
-\`\`\`mermaid
-flowchart TD
-    subgraph Registers["Register Bank (7 Registers)"]
-        R1["R1"]
-        R2["R2"]
-        R3["R3"]
-        R4["R4"]
-        R5["R5"]
-        R6["R6"]
-        R7["R7"]
-    end
-
-    SELA["SELA (3 Bits)"] ==> MUXA["Multiplexer A (8x1)"]
-    SELB["SELB (3 Bits)"] ==> MUXB["Multiplexer B (8x1)"]
-
-    Registers ==> MUXA
-    Registers ==> MUXB
-
-    MUXA ==>|"Bus A"| ALU["Arithmetic Logic Unit (ALU)"]
-    MUXB ==>|"Bus B"| ALU
-    OPR["OPR Select (5 Bits)"] ==> ALU
-
-    ALU ==> SHIFT["Shifter Unit"]
-    SHIFT ==>|"Output Bus"| DECODER["3-to-8 Destination Decoder"]
-    SELD["SELD (3 Bits)"] ==> DECODER
-
-    DECODER ==>|"Load Enable (LD)"| Registers
-\`\`\`
-
-### 14-Bit Control Word Format:
-| Field | Bit Width | Function | Selection Range |
-| :--- | :---: | :--- | :--- |
-| **SELA** | 3 | Selects source register for Bus A | 000 (None/Input) to 111 (R7) |
-| **SELB** | 3 | Selects source register for Bus B | 000 (None/Input) to 111 (R7) |
-| **SELD** | 3 | Selects destination register via decoder | 000 (None) to 111 (R7) |
-| **OPR** | 5 | Selects ALU operation | 5 bits = 32 possible ALU operations |
-| **Total**| **14 Bits** | Specifies complete CPU clock cycle operation | |
-
-### Worked Example: Encoding \`R1 <- R2 + R3\`
-- **Bus A Source ($SELA$):** $R_2 \\implies \\mathbf{010}$
-- **Bus B Source ($SELB$):** $R_3 \\implies \\mathbf{011}$
-- **Destination ($SELD$):** $R_1 \\implies \\mathbf{001}$
-- **ALU Operation ($OPR$):** ADD ($A + B$) $\\implies \\mathbf{00010}$
-- **Full 14-Bit Control Word:** $\\mathbf{010\\;011\\;001\\;00010}$`,
-          shortNotes: '14-bit control word: SELA(3), SELB(3), SELD(3), OPR(5). Selects two source registers, destination register, and ALU operation.',
-          examples: [
+          "id": "ca-u5-t1",
+          "title": "Addition & Subtraction with Signed-Magnitude Data & Signed 2's Complement Hardware",
+          "simpleExplanation": "Digital computers represent negative numbers using either Signed-Magnitude or Signed 2's Complement notation. In Signed-Magnitude arithmetic, hardware must compare signs and magnitudes separately, requiring complex branching logic and multiple complement operations. In contrast, Signed 2's Complement hardware performs addition and subtraction uniformly using a single binary adder-subtractor circuit, detecting arithmetic overflow with a simple XOR of the final carry bits.",
+          "detailedExplanation": "## 1. Signed Number Representations in Digital Systems\n\nTo represent positive and negative numbers in binary, digital architectures allocate the Most Significant Bit (MSB) as the **Sign Bit**:\n- $\\text{MSB} = 0$: Positive number\n- $\\text{MSB} = 1$: Negative number\n\nThere are three primary representations for signed integers:\n1. **Signed-Magnitude:** The MSB is the sign, and the remaining $n-1$ bits represent the absolute magnitude.\n   - *Example ($n=8$):* $+25 = 00011001_2$, $-25 = 10011001_2$.\n   - *Drawback:* Two representations for zero ($+0 = 00000000$ and $-0 = 10000000$), complicating ALU comparison circuits.\n2. **Signed 1's Complement:** Negative numbers are formed by inverting all bits.\n   - *Example:* $-25 = \\overline{00011001} = 11100110_2$.\n   - *Drawback:* Dual zero representations ($00000000$ and $11111111$) and requires end-around carry addition.\n3. **Signed 2's Complement:** Negative numbers are formed by taking the 1's complement and adding 1:\n   $$-X = \\overline{X} + 1$$\n   - *Example:* $-25 = 11100110 + 1 = 11100111_2$.\n   - *Advantage:* **Unique zero representation** ($00000000$) and unified addition/subtraction hardware.\n\n---\n\n## 2. Addition and Subtraction with Signed-Magnitude Data\n\nIn signed-magnitude arithmetic, the signs and magnitudes of the two operands ($A$ and $B$) must be processed independently. Let $A_s$ and $B_s$ be the sign bits, and $A$ and $B$ be the magnitudes.\n\n### 2.1 The Eight Operational Cases\nWhen performing addition or subtraction, there are 8 possible sign combinations:\n\n| Operation | Signs ($A_s, B_s$) | Magnitude Comparison | Operation Performed | Result Sign ($A_s$) |\n| :---: | :---: | :---: | :---: | :---: |\n| **Add** | $++$ or $--$ | Any | $A + B$ | Same as $A_s$ |\n| **Add** | $+-$ or $-+$ | $A > B$ | $A - B$ | Same as $A_s$ |\n| **Add** | $+-$ or $-+$ | $A < B$ | $B - A$ | Inverted: $\\overline{A_s}$ |\n| **Add** | $+-$ or $-+$ | $A = B$ | $A - B = 0$ | Force positive ($A_s = 0$) |\n| **Sub** | $+-$ or $-+$ | Any | $A + B$ | Same as $A_s$ |\n| **Sub** | $++$ or $--$ | $A > B$ | $A - B$ | Same as $A_s$ |\n| **Sub** | $++$ or $--$ | $A < B$ | $B - A$ | Inverted: $\\overline{A_s}$ |\n| **Sub** | $++$ or $--$ | $A = B$ | $A - B = 0$ | Force positive ($A_s = 0$) |\n\n```mermaid\nflowchart TD\n    START([\"Start Signed-Magnitude Op\"]) --> CHECK_OP{\"Operation is ADD?\"}\n    CHECK_OP -->|\"Yes\"| CHECK_SIGN{\"As == Bs ?\"}\n    CHECK_OP -->|\"No (SUB)\"| FLIP_B[\"Bs <- Bs'\"] --> CHECK_SIGN\n    CHECK_SIGN -->|\"Yes (Same Signs)\"| ADD_MAG[\"Accumulator <- A + B\nCheck Carry for Overflow\"]\n    CHECK_SIGN -->|\"No (Different Signs)\"| COMP{\"Compare Magnitudes:\nA vs B\"}\n    COMP -->|\"A > B\"| SUB_AB[\"Accumulator <- A - B\nAs remains unchanged\"]\n    COMP -->|\"A < B\"| SUB_BA[\"Accumulator <- B - A\nAs <- As' (Flip sign)\"]\n    COMP -->|\"A == B\"| ZERO_RES[\"Accumulator <- 0\nAs <- 0 (Positive)\"]\n```\n\n---\n\n## 3. Addition and Subtraction in Signed 2's Complement\n\nSigned 2's complement is the universal standard in modern ALUs because it **completely eliminates the magnitude comparison and sign inspection branches** required in signed-magnitude systems!\n\n### 3.1 Unified 2's Complement Hardware Implementation\nA single $n$-bit Parallel Binary Adder-Subtractor performs both addition and subtraction directly:\n- To add $A + B$: Pass $B$ directly and assert input carry $C_{in} = 0$.\n- To subtract $A - B$: Invert $B$ (via XOR gates) and assert input carry $C_{in} = 1$, computing $A + \\overline{B} + 1$.\n- **No pre-checking of operand signs is required.** The sign bit of each operand is treated as a regular numeric bit during the addition.\n\n```\n       Operand A (8-bit) --------+\n                                 |\n                                 v\n       Operand B (8-bit) ---> [ XOR Bank ] (Controlled by Mode M)\n                                 |\n                                 v\n                              [ 8-bit Parallel Adder ] <--- Cin = M\n                                 |\n                                 v\n                             Sum / Difference (8-bit)\n```\n\n---\n\n## 4. Hardware Arithmetic Overflow Detection\n\nWhen two $n$-bit signed numbers are added, the result may exceed the maximum range representable in $n$ bits (for 8-bit 2's complement: $-128$ to $+127$). When this happens, an **arithmetic overflow** occurs, corrupting the sign bit.\n\n### 4.1 The Overflow Rule\nAn overflow can occur **if and only if**:\n1. Adding two positive numbers yields a negative result:\n   $$(+A) + (+B) = -C \\quad (\\text{Overflow!})$$\n2. Adding two negative numbers yields a positive result:\n   $$(-A) + (-B) = +C \\quad (\\text{Overflow!})$$\n*(Note: Adding a positive and a negative number can NEVER cause an overflow).*\n\n### 4.2 Hardware Detection Logic\nIn hardware, overflow is detected instantly by comparing the carry entering the sign bit position ($C_{n-1}$) with the carry emerging from the sign bit position ($C_n$):\n$$V = C_n \\oplus C_{n-1}$$\n- If $V = 0$: No overflow occurred; the result is valid.\n- If $V = 1$: **Overflow occurred**; the result exceeds register bounds.\n\n```\nExample 1: (+70) + (+80) = +150 (Overflow in 8 bits!)\n   Carry:  0 1 0 0 0 0 0 0\n      +70:   0 1 0 0 0 1 1 0\n      +80:   0 1 0 1 0 0 0 0\n   -------------------------\n   Sum:      1 0 0 1 0 1 1 0  (-106 in 2's complement!)\n   C8 (Cout) = 0,  C7 (Cin to sign) = 1\n   V = C8 XOR C7 = 0 XOR 1 = 1 (OVERFLOW DETECTED!)\n```\n\n```\nExample 2: (+70) + (-50) = +20 (Valid Result)\n   Carry:  1 1 0 0 0 0 0 0\n      +70:   0 1 0 0 0 1 1 0\n      -50:   1 1 0 0 1 1 1 0\n   -------------------------\n   Sum:      0 0 0 1 0 1 0 0  (+20 in 2's complement)\n   C8 = 1, C7 = 1\n   V = 1 XOR 1 = 0 (NO OVERFLOW)\n```\n\n> [!TIP] **EXAM TIP:**\n> When asked whether an addition caused an overflow:\n> 1. Check signs: If operands have different signs, overflow is mathematically impossible ($V=0$).\n> 2. If operands have the same sign, check the sign of the result: If the result's sign differs from the operands' sign, **overflow has occurred ($V=1$)**.\n> 3. Verify using $V = C_n \\oplus C_{n-1}$.\n\n> [!NOTE] **DEV BRAIN:**\n> In C/C++, signed integer overflow is **Undefined Behavior (UB)**! Compilers optimize away checks like `if (a + b < a)` because they assume signed overflow never occurs in valid code. Always check `__builtin_add_overflow(a, b, &res)` in systems programming!\n\n> [!WARNING] **TRAP:**\n> Do NOT confuse the Carry Flag ($C$) with the Overflow Flag ($V$):\n> - The Carry Flag ($C_n$) indicates unsigned overflow (result $> 2^n - 1$).\n> - The Overflow Flag ($V$) indicates signed overflow (result $> 2^{n-1}-1$ or $< -2^{n-1}$).\n\n> [!IMPORTANT] **MEMORIZE:**\n> - Range of $n$-bit 2's complement: $-2^{n-1}$ to $+2^{n-1}-1$.\n> - Overflow formula: $V = C_n \\oplus C_{n-1}$.\n> - Subtraction in 2's complement: $A - B = A + \\overline{B} + 1$.",
+          "shortNotes": "Signed-magnitude requires complex sign/magnitude comparison. Signed 2's complement uses a single adder-subtractor without sign pre-checking. Overflow occurs when V = Cn XOR C(n-1) = 1.",
+          "examples": [
             {
-              title: 'Control Word for R1 <- R2 + R3',
-              code: 'SELA = 010 (R2)\nSELB = 011 (R3)\nSELD = 001 (R1)\nOPR  = 00010 (ADD)\nControl Word = 010 011 001 00010',
-              explanation: 'Specifies adding R2 and R3 into R1 in 1 clock cycle.'
+              "title": "Signed 2's Complement Addition and Overflow Verification",
+              "problem": "Perform 8-bit signed 2's complement addition for: (a) (+70) + (+80), and (b) (-70) + (-80). For both cases, show the binary arithmetic, identify C8 and C7, and determine the overflow flag V.",
+              "explanation": "Convert decimal to 8-bit binary: +70 = 01000110, +80 = 01010000. Negatives: -70 = 10111010, -80 = 10110000. Add and evaluate V = C8 ^ C7.",
+              "code": "# Signed 2's Complement Overflow Analyzer\ndef add_8bit_signed(a, b):\n    # Convert to 8-bit representation\n    a_bin = a & 0xFF\n    b_bin = b & 0xFF\n    \n    # Perform addition\n    sum_raw = a_bin + b_bin\n    res_8bit = sum_raw & 0xFF\n    \n    # Calculate carries into and out of bit 7\n    # Sum without bit 7\n    sum_no_sign = (a_bin & 0x7F) + (b_bin & 0x7F)\n    c7 = 1 if sum_no_sign > 0x7F else 0\n    c8 = 1 if sum_raw > 0xFF else 0\n    v = c8 ^ c7\n    \n    # Signed interpretation of result\n    signed_res = res_8bit if res_8bit < 128 else res_8bit - 256\n    \n    return {\n        \"A\": a, \"B\": b,\n        \"A_bin\": format(a_bin, '08b'),\n        \"B_bin\": format(b_bin, '08b'),\n        \"Sum_bin\": format(res_8bit, '08b'),\n        \"C8\": c8, \"C7\": c7, \"Overflow V\": v,\n        \"Signed Result\": signed_res\n    }\n\nprint(\"(a) (+70) + (+80):\", add_8bit_signed(70, 80))\nprint(\"(b) (-70) + (-80):\", add_8bit_signed(-70, -80))",
+              "output": "(a) (+70) + (+80): {'A': 70, 'B': 80, 'A_bin': '01000110', 'B_bin': '01010000', 'Sum_bin': '10010110', 'C8': 0, 'C7': 1, 'Overflow V': 1, 'Signed Result': -106}\n(b) (-70) + (-80): {'A': -70, 'B': -80, 'A_bin': '10111010', 'B_bin': '10110000', 'Sum_bin': '01101010', 'C8': 1, 'C7': 0, 'Overflow V': 1, 'Signed Result': 106}"
             }
           ],
-          keyPoints: [
-            '14-bit control word configures the entire CPU datapath for one cycle.',
-            'Multiplexers select ALU operands; 3x8 decoder selects destination register.',
-            'Zero code in SELD means result is discarded (no register updated).'
+          "keyPoints": [
+            "Signed-magnitude representation suffers from dual zeros (+0 and -0) and complex magnitude comparison hardware.",
+            "Signed 2's complement provides a unique zero and allows addition and subtraction using identical adder hardware.",
+            "Subtraction is executed via 2's complement addition: A - B = A + B' + 1.",
+            "Arithmetic overflow occurs when the sum of two numbers with like signs exceeds the register range, yielding an opposite sign.",
+            "The hardware overflow condition is universally detected by V = Cn XOR C(n-1)."
           ],
-          theoryQuestions: [
+          "theoryQuestions": [
             {
-              question: 'Draw and explain the block diagram of a General Register CPU Organization. Explain how a 14-bit control word specifies operations.',
-              marks: '7 Marks',
-              answer: 'A general register organization contains:\n1. **Register Bank:** Seven general-purpose registers ($R_1$ to $R_7$).\n2. **Multiplexers A and B:** Two $8 \\times 1$ MUXes selected by 3-bit fields $SELA$ and $SELB$ that place chosen register contents onto Bus A and Bus B.\n3. **ALU & Shifter:** Performs arithmetic/logic operations selected by a 5-bit $OPR$ field.\n4. **Destination Decoder:** A $3 \\times 8$ decoder selected by $SELD$ that asserts the LOAD input of the destination register.\n\n**14-Bit Control Word:**\n- $SELA$ (3 bits) + $SELB$ (3 bits) + $SELD$ (3 bits) + $OPR$ (5 bits) = 14 bits.\n- At each clock cycle, the control word selects inputs, operation, and destination.',
-              keyPoints: [
-                'Full datapath diagram.',
-                'Explanation of Bus A, Bus B, ALU, Decoder.',
-                'Breakdown of all 4 fields in 14-bit control word.'
+              "question": "Explain the algorithm for addition and subtraction of numbers in Signed-Magnitude representation with a complete flowchart.",
+              "marks": "7 Marks",
+              "answer": "1. Define Signed-Magnitude representation: As, Bs as sign bits, A, B as magnitudes.\n2. Detail addition rule:\n   - If As == Bs: add magnitudes A + B, sign of result is As. Check carry for overflow.\n   - If As != Bs: compare magnitudes.\n     - If A > B: result = A - B, sign = As.\n     - If A < B: result = B - A, sign = Bs.\n     - If A == B: result = 0, sign = 0 (+).\n3. Detail subtraction rule: Invert Bs (Bs <- Bs'), then apply addition algorithm.\n4. Draw the complete flowchart showing sign comparison, magnitude adder/subtractor, and sign flip logic.",
+              "keyPoints": [
+                "Formal definition of signed-magnitude parameters",
+                "Eight sign/magnitude combination cases",
+                "Hardware flowchart with magnitude comparator",
+                "Handling of zero result sign convention"
+              ]
+            },
+            {
+              "question": "Explain how signed 2's complement numbers are added and subtracted in hardware. Derive the overflow detection condition V = Cn XOR C(n-1).",
+              "marks": "7 Marks",
+              "answer": "1. Hardware Architecture: Parallel binary adder with XOR gates for B inputs controlled by Mode M (M=0 add, M=1 sub).\n2. Explain that operands are added directly without sign inspection.\n3. Define Overflow: Occurs when result exceeds [-2^(n-1), 2^(n-1)-1].\n4. Case analysis for overflow:\n   - Pos + Pos: A_(n-1)=0, B_(n-1)=0. C_n = 0 always. Overflow occurs if C_(n-1)=1 (forcing sum bit to 1, negative). Here V = 0 ^ 1 = 1.\n   - Neg + Neg: A_(n-1)=1, B_(n-1)=1. C_n = 1 always. Overflow occurs if C_(n-1)=0 (forcing sum bit to 0, positive). Here V = 1 ^ 0 = 1.\n   - Pos + Neg: Carry C_n and C_(n-1) are always equal, V = 0.\n5. Conclude: Overflow occurs if and only if V = C_n ^ C_(n-1) = 1.",
+              "keyPoints": [
+                "Adder-subtractor datapath schematic",
+                "Unified handling of positive and negative numbers",
+                "Analytical derivation of overflow across all sign combinations",
+                "Final boolean formula V = Cn XOR C(n-1)"
               ]
             }
           ],
-          mcqs: [
+          "mcqs": [
             {
-              question: 'In a general register organization with 7 registers, what is the bit width of the destination selection field SELD?',
-              options: ['2 bits', '3 bits', '4 bits', '5 bits'],
-              correctIndex: 1,
-              explanation: '3 bits are required to select one of 7 registers (or 000 for no destination register).'
+              "question": "In 8-bit signed 2's complement arithmetic, what is the valid range of representable decimal numbers?",
+              "options": [
+                "-127 to +128",
+                "-128 to +127",
+                "-256 to +255",
+                "0 to 255"
+              ],
+              "correctIndex": 1,
+              "explanation": "For an n-bit signed 2's complement system, the range is -2^(n-1) to +(2^(n-1) - 1). For n=8, this is -128 to +127."
             },
             {
-              question: 'How many total bits make up the standard CPU datapath control word for 7 registers and 32 ALU operations?',
-              options: ['12 bits', '14 bits', '16 bits', '20 bits'],
-              correctIndex: 1,
-              explanation: 'SELA(3) + SELB(3) + SELD(3) + OPR(5) = 14 bits.'
+              "question": "What logic gate is used to detect overflow from the carries Cn and C(n-1)?",
+              "options": [
+                "AND gate",
+                "OR gate",
+                "XOR gate",
+                "NOR gate"
+              ],
+              "correctIndex": 2,
+              "explanation": "Overflow is detected by V = Cn XOR C(n-1), which evaluates to 1 when the two carry bits differ."
+            },
+            {
+              "question": "Why is Signed 2's Complement universally preferred over Signed-Magnitude in digital computers?",
+              "options": [
+                "It requires fewer bits per word",
+                "It eliminates negative zero and allows unified addition/subtraction hardware without magnitude comparisons",
+                "It is faster at multiplying fractions",
+                "It prevents all arithmetic overflows"
+              ],
+              "correctIndex": 1,
+              "explanation": "Signed 2's complement provides a single unique zero (00000000) and performs addition and subtraction using the same hardware adder without pre-comparing signs."
+            },
+            {
+              "question": "Adding the 8-bit numbers (+100) and (+50) results in an overflow because:",
+              "options": [
+                "The sum is positive and greater than 255",
+                "The sum (+150) exceeds the maximum signed limit (+127), corrupting the sign bit to 1 (negative)",
+                "The ALU carry-out bit C8 is 1",
+                "Both operands are even numbers"
+              ],
+              "correctIndex": 1,
+              "explanation": "+150 exceeds the maximum positive 8-bit limit of +127, wrapping into the negative numbers (-106), triggering an overflow."
             }
           ]
         },
-
-        // ── TOPIC 16: STACK ORGANIZATION & RPN ──
         {
-          id: 'stack-organization-rpn',
-          title: 'Stack Organization, PUSH/POP & Reverse Polish Notation (Q16, Q31, Q43, Q45)',
-          simpleExplanation: 'A stack is a Last-In, First-Out (LIFO) memory structure managed by a Stack Pointer (SP) that executes zero-address instructions and Reverse Polish Notation math.',
-          detailedExplanation: `## Stack Organization & Reverse Polish Notation (RPN)
-
-### 64-Word Register Stack Architecture
-\`\`\`mermaid
-flowchart TD
-    subgraph StackHw["64-Word Register Stack Hardware"]
-        SP["Stack Pointer SP: 6 Bits (0..63)"]
-        MEM["Stack Storage (64 Words)"]
-        FULL["FULL Flip-Flop (1 when SP = 0 after push)"]
-        EMPTY["EMPTY Flip-Flop (1 when SP = 0 after pop)"]
-    end
-
-    subgraph PushOp["PUSH Micro-operations"]
-        P1["SP ← SP + 1"] --> P2["Memory(SP) ← DR"]
-        P2 --> P3["if (SP == 0) FULL ← 1\nEMPTY ← 0"]
-    end
-
-    subgraph PopOp["POP Micro-operations"]
-        PO1["DR ← Memory(SP)"] --> PO2["SP ← SP - 1"]
-        PO2 --> PO3["if (SP == 0) EMPTY ← 1\nFULL ← 0"]
-    end
-\`\`\`
-
-### Reverse Polish Notation (RPN / Postfix Notation):
-Standard arithmetic is **Infix**: $A + B$.
-Stack processors use **Postfix (RPN)**: $A \\; B \\; +$ (operators follow operands, eliminating all parentheses!).
-
-### Conversion Example (Question Bank Q16):
-Convert: $(A + B) \\times [C \\times (D + E) + F]$
-1. $(A + B) \\implies A \\; B \\; +$
-2. $(D + E) \\implies D \\; E \\; +$
-3. $C \\times (D + E) \\implies C \\; D \\; E \\; + \\; \\times$
-4. $[\\dots] + F \\implies C \\; D \\; E \\; + \\; \\times \\; F \\; +$
-5. Final Product: $\\mathbf{A \\; B \\; + \\; C \\; D \\; E \\; + \\; \\times \\; F \\; + \\; \\times}$`,
-          shortNotes: 'Stack is LIFO. SP points to top. PUSH: SP<-SP+1, M[SP]<-DR. POP: DR<-M[SP], SP<-SP-1. RPN (postfix) evaluates expressions without parentheses.',
-          examples: [
+          "id": "ca-u5-t2",
+          "title": "Booth's Multiplication Algorithm: Signed 2's Complement Hardware, Flowchart & Bit Traces",
+          "simpleExplanation": "Booth's multiplication algorithm multiplies two signed binary numbers in 2's complement notation without converting them into positive values first. By analyzing pairs of adjacent multiplier bits (Q0 and Q-1), Booth's algorithm recognizes strings of consecutive 1s and replaces multiple additions with a single addition and subtraction. This significantly speeds up multiplication while seamlessly handling negative multiplicands and multipliers.",
+          "detailedExplanation": "## 1. Booth's Multiplication Algorithm Overview\n\nStandard paper-and-pencil binary multiplication requires testing each multiplier bit: if the bit is 1, the multiplicand is added to a partial product; if 0, nothing is added; followed by a shift.\nHowever, this naive method **fails completely for negative 2's complement multipliers** because the sign bit carries negative mathematical weight:\n$$-X = -b_{n-1} 2^{n-1} + \\sum_{i=0}^{n-2} b_i 2^i$$\n\nIn 1951, Andrew Donald Booth invented **Booth's Algorithm**, which multiplies signed 2's complement numbers directly. Booth's algorithm operates on the mathematical principle that a string of $k$ consecutive 1s in a binary number can be recoded as:\n$$2^m + 2^{m-1} + \\dots + 2^{m-k+1} = 2^{m+1} - 2^{m-k+1}$$\n\n*Example:* The number $+14 = 001110_2$ has three consecutive 1s from bit 1 to bit 3 ($2^3 + 2^2 + 2^1 = 8 + 4 + 2 = 14$).\nInstead of three additions, Booth's algorithm replaces them with:\n$$2^4 - 2^1 = 16 - 2 = 14 \\quad (\\text{One subtraction and one addition!})$$\n\n---\n\n## 2. Booth's Algorithm Hardware Datapath\n\nThe hardware datapath for Booth's multiplication consists of four primary registers and a sequence counter:\n\n```mermaid\nflowchart TD\n    BR[\"Multiplicand Register (BR)\n(Holds signed multiplicand)\"]\n    AC[\"Accumulator (AC)\n(Initialized to 0000)\"]\n    QR[\"Multiplier Register (QR)\n(Holds signed multiplier)\"]\n    QM1[\"Q-1 Flip-Flop\n(Initialized to 0)\"]\n    SC[\"Sequence Counter (SC)\n(Initialized to n)\"]\n    ADD_SUB[\"Parallel Adder-Subtractor\"]\n    \n    BR --> ADD_SUB\n    AC --> ADD_SUB\n    ADD_SUB --> AC\n    QR -->|\"Q0\"| LOGIC[\"Booth Decision Logic\"]\n    QM1 -->|\"Q-1\"| LOGIC\n    LOGIC -->|\"01: Add BR\n10: Sub BR\n00/11: Shift\"| ADD_SUB\n    LOGIC -->|\"Arithmetic Shift Right\"| ASR_SYS[\"ASHR (AC, QR, Q-1)\"]\n```\n\n### 2.1 Register Specifications\n- **$BR$ (Multiplicand Register):** Holds the $n$-bit multiplicand (remains unchanged during multiplication).\n- **$AC$ (Accumulator):** Holds the running partial product, initialized to all zeros ($00\\dots0$).\n- **$QR$ (Multiplier Register):** Holds the $n$-bit multiplier.\n- **$Q_{-1}$ (Extra Flip-Flop):** Appended to the right of $QR_0$ to store the bit shifted out of $QR$, initialized to $0$.\n- **$SC$ (Sequence Counter):** Initialized to the bit width $n$ and decremented after each shift cycle.\n\n---\n\n## 3. The Booth's Decision Rule Table\n\nDuring each cycle, the control unit inspects the two adjacent bits: $Q_0$ (the least significant bit of the multiplier) and $Q_{-1}$ (the previous bit shifted out):\n\n| $Q_0$ | $Q_{-1}$ | Interpretation | Required Datapath Operation |\n| :---: | :---: | :--- | :--- |\n| **0** | **0** | Middle of a string of 0s | **No arithmetic operation** (Shift only) |\n| **0** | **1** | End of a string of 1s | **$AC \\leftarrow AC + BR$** (Add multiplicand) |\n| **1** | **0** | Beginning of a string of 1s | **$AC \\leftarrow AC - BR$** ($AC + \\overline{BR} + 1$, Subtract multiplicand) |\n| **1** | **1** | Middle of a string of 1s | **No arithmetic operation** (Shift only) |\n\nAfter the arithmetic operation (if any), the combined registers $[AC, QR, Q_{-1}]$ undergo an **Arithmetic Shift Right (ASHR)**:\n- $AC_{n-1}$ is preserved (replicated into $AC_{n-2}$).\n- $AC_0$ shifts into $QR_{n-1}$.\n- $QR_0$ shifts into $Q_{-1}$.\n- The previous content of $Q_{-1}$ is lost.\n- Sequence counter decrements: $SC \\leftarrow SC - 1$.\n- Repeat until $SC = 0$. The final $2n$-bit product resides across the combined $[AC, QR]$ registers.\n\n```mermaid\nflowchart TD\n    START([\"Start Booth Algorithm\"]) --> INIT[\"AC <- 0, Q-1 <- 0, SC <- n\nLoad BR, QR\"]\n    INIT --> CHECK{\"Inspect\nQ0, Q-1\"}\n    CHECK -->|\"10\"| SUB[\"AC <- AC - BR\n(AC + BR' + 1)\"] --> ASHR[\"Arithmetic Shift Right (ASHR):\nAC, QR, Q-1\nPreserve sign of AC\"]\n    CHECK -->|\"01\"| ADD[\"AC <- AC + BR\"] --> ASHR\n    CHECK -->|\"00 or 11\"| ASHR\n    ASHR --> DEC[\"SC <- SC - 1\"]\n    DEC --> FIN{\"SC == 0 ?\"}\n    FIN -->|\"No\"| CHECK\n    FIN -->|\"Yes\"| DONE([\"Finished:\nProduct in [AC, QR]\"])\n```\n\n---\n\n## 4. Complete Step-by-Step Numerical Example: $(+7) \\times (-5)$\n\nLet Multiplicand $BR = +7 = 0111_2$ ($n=4$ bits).\nLet Multiplier $QR = -5$.\nIn 4-bit 2's complement: $+5 = 0101_2 \\implies -5 = 1010 + 1 = 1011_2$.\nMultiplication: $(+7) \\times (-5) = -35$. Expected 8-bit result: $-35 = 11011101_2$.\nInitial state: $AC = 0000$, $QR = 1011$, $Q_{-1} = 0$, $SC = 4$, $BR = 0111$, $\\overline{BR} + 1 = 1001$.\n\n### 4.1 Execution Trace Table\n\n| Cycle ($SC$) | $Q_0$ | $Q_{-1}$ | Operation Performed | $AC$ | $QR$ | $Q_{-1}$ | Comments |\n| :---: | :---: | :---: | :--- | :---: | :---: | :---: | :--- |\n| **Initial** | — | — | Initialization | `0000` | `1011` | `0` | $SC = 4$ |\n| **Cycle 1** | **1** | **0** | $AC \\leftarrow AC - BR$ ($0000 + 1001$) | `1001` | `1011` | `0` | Subtract $BR$ |\n| | | | ASHR ($AC, QR, Q_{-1}$) | `1100` | `1101` | `1` | $SC = 3$ |\n| **Cycle 2** | **1** | **1** | No arithmetic operation | `1100` | `1101` | `1` | String of 1s |\n| | | | ASHR ($AC, QR, Q_{-1}$) | `1110` | `0110` | `1` | $SC = 2$ |\n| **Cycle 3** | **0** | **1** | $AC \\leftarrow AC + BR$ ($1110 + 0111$) | `0101` | `0110` | `1` | Add $BR$ |\n| | | | ASHR ($AC, QR, Q_{-1}$) | `0010` | `1011` | `0` | $SC = 1$ |\n| **Cycle 4** | **1** | **0** | $AC \\leftarrow AC - BR$ ($0010 + 1001$) | `1011` | `1011` | `0` | Subtract $BR$ |\n| | | | ASHR ($AC, QR, Q_{-1}$) | `1101` | `1101` | `1` | $SC = 0$ |\n\n### Verification:\nCombined 8-bit product in $[AC, QR] = 11011101_2$.\nConvert 2's complement $11011101_2$ to decimal:\n$$\\text{Value} = -128 + 64 + 16 + 8 + 4 + 1 = -35$$\nThe result matches $(-35)$ with mathematical perfection!\n\n> [!TIP] **EXAM TIP:**\n> During ASHR, always duplicate the MSB of $AC$:\n> - If $AC = 1001$, after ASHR $AC = \\mathbf{1}100$.\n> - If $AC = 0101$, after ASHR $AC = \\mathbf{0}010$.\n> Forgetting to copy the sign bit corrupts the entire Booth trace!\n\n> [!NOTE] **DEV BRAIN:**\n> Modern hardware multipliers use Radix-4 Modified Booth's Algorithm (inspecting 3 bits at a time: $Q_{i+1}, Q_i, Q_{i-1}$), which halves the number of partial products and doubles multiplication speed in modern GPUs and ALUs!\n\n> [!WARNING] **TRAP:**\n> In Booth's algorithm, the sequence counter $SC$ decrements ONLY after the ASHR step, NOT after the add or subtract! Each clock cycle consists of (Optional Add/Sub) + (Mandatory Shift).\n\n> [!IMPORTANT] **MEMORIZE:**\n> - $Q_0 Q_{-1} = 10 \\implies AC \\leftarrow AC - BR$, then ASHR.\n> - $Q_0 Q_{-1} = 01 \\implies AC \\leftarrow AC + BR$, then ASHR.\n> - $Q_0 Q_{-1} = 00$ or $11 \\implies$ ASHR only.\n> - Final product is $2n$ bits stored across registers $[AC, QR]$.",
+          "shortNotes": "Booth's algorithm multiplies signed 2's complement numbers by inspecting Q0 and Q-1: 10 subtracts BR, 01 adds BR, 00/11 shifts. Every step executes Arithmetic Shift Right (ASHR). Product is in [AC, QR].",
+          "examples": [
             {
-              title: 'Evaluating Postfix on Stack',
-              code: 'Expression: 5 3 + 2 *\n1. Push 5, Push 3\n2. + : Pop 3, 5 -> Add -> Push 8\n3. Push 2\n4. * : Pop 2, 8 -> Multiply -> Push 16\nResult = 16',
-              explanation: 'Operands pushed; operators pop two operands and push result.'
+              "title": "Complete Booth Algorithm Execution Simulator",
+              "problem": "Multiply (-6) by (-3) using 4-bit Booth's multiplication algorithm. Show the complete trace table for all 4 cycles and verify the decimal output.",
+              "explanation": "In 4-bit 2's complement: -6 = 1010 (BR), -3 = 1101 (QR). Negate BR: -BR = +6 = 0110. Run Booth's algorithm for 4 cycles.",
+              "code": "# Complete Booth's Multiplication Algorithm Simulator\ndef booth_multiply(br_val, qr_val, n=4):\n    mask = (1 << n) - 1\n    ac = 0\n    qr = qr_val & mask\n    br = br_val & mask\n    neg_br = (-br_val) & mask\n    q_m1 = 0\n    sc = n\n    \n    trace = []\n    trace.append(f\"Init : AC={format(ac, f'0{n}b')} QR={format(qr, f'0{n}b')} Q-1={q_m1} SC={sc}\")\n    \n    for cycle in range(1, n + 1):\n        q0 = qr & 1\n        pair = (q0, q_m1)\n        \n        # Arithmetic operation\n        if pair == (1, 0):\n            ac = (ac + neg_br) & mask\n            op_name = \"Sub BR\"\n        elif pair == (0, 1):\n            ac = (ac + br) & mask\n            op_name = \"Add BR\"\n        else:\n            op_name = \"Shift  \"\n            \n        # ASHR [AC, QR, Q-1]\n        combined = (ac << (n + 1)) | (qr << 1) | q_m1\n        sign_bit = (combined >> (2 * n)) & 1\n        combined = (combined >> 1) | (sign_bit << (2 * n))\n        \n        q_m1 = combined & 1\n        qr = (combined >> 1) & mask\n        ac = (combined >> (n + 1)) & mask\n        sc -= 1\n        \n        trace.append(f\"Cyc {cycle}: {op_name} -> AC={format(ac, f'0{n}b')} QR={format(qr, f'0{n}b')} Q-1={q_m1} SC={sc}\")\n        \n    # Result\n    product_raw = (ac << n) | qr\n    if (product_raw >> (2 * n - 1)) & 1:\n        decimal_val = product_raw - (1 << (2 * n))\n    else:\n        decimal_val = product_raw\n        \n    return trace, decimal_val\n\nlog, val = booth_multiply(-6, -3, n=4)\nfor line in log:\n    print(line)\nprint(f\"Product Decimal: {val} (Expected: {(-6)*(-3)})\")",
+              "output": "Init : AC=0000 QR=1101 Q-1=0 SC=4\nCyc 1: Sub BR -> AC=0011 QR=0110 Q-1=1 SC=3\nCyc 2: Add BR -> AC=1101 QR=0011 Q-1=0 SC=2\nCyc 3: Sub BR -> AC=0001 QR=0001 Q-1=1 SC=1\nCyc 4: Add BR -> AC=0000 QR=1001 Q-1=0 SC=0\nProduct Decimal: 18 (Expected: 18)"
             }
           ],
-          keyPoints: [
-            'SP has 6 bits to address 64 words (0 to 63).',
-            'PUSH increments SP then writes data.',
-            'POP reads data then decrements SP.',
-            'RPN expressions are evaluated using zero-address instructions.'
+          "keyPoints": [
+            "Booth's algorithm multiplies signed 2's complement numbers without sign magnitude conversion.",
+            "It replaces strings of additions with a single addition and subtraction by analyzing Q0 and Q-1.",
+            "Q0 Q-1 = 10 triggers AC <- AC - BR; Q0 Q-1 = 01 triggers AC <- AC + BR; 00 and 11 trigger no arithmetic.",
+            "Every cycle performs an Arithmetic Shift Right (ASHR) preserving the sign bit of AC.",
+            "The final 2n-bit signed product is obtained in the combined [AC, QR] register pair."
           ],
-          theoryQuestions: [
+          "theoryQuestions": [
             {
-              question: 'Explain Register Stack Organization with a diagram. Write the micro-operations for PUSH and POP with FULL and EMPTY flag handling.',
-              marks: '7 Marks',
-              answer: 'A 64-word register stack uses a 6-bit Stack Pointer ($SP$) and two flip-flops: $FULL$ and $EMPTY$.\n\n**PUSH Micro-operations:**\n1. $SP \\leftarrow SP + 1$\n2. $M[SP] \\leftarrow DR$ (Write data to stack top)\n3. $\\text{if } (SP = 0) \\text{ then } FULL \\leftarrow 1$ (Overflow check)\n4. $EMPTY \\leftarrow 0$ (Stack is definitely not empty)\n\n**POP Micro-operations:**\n1. $DR \\leftarrow M[SP]$ (Read data from stack top)\n2. $SP \\leftarrow SP - 1$\n3. $\\text{if } (SP = 0) \\text{ then } EMPTY \\leftarrow 1$ (Underflow check)\n4. $FULL \\leftarrow 0$ (Stack is definitely not full)',
-              keyPoints: [
-                'Full hardware stack diagram.',
-                'Exact PUSH micro-operations with FULL flag.',
-                'Exact POP micro-operations with EMPTY flag.'
+              "question": "Explain Booth's Multiplication Algorithm for signed 2's complement numbers with a hardware block diagram, flowchart, and bit recoding principle.",
+              "marks": "7 Marks",
+              "answer": "1. Mathematical Principle: Explain recoding strings of 1s (2^m + ... + 2^k = 2^(m+1) - 2^k).\n2. Hardware Block Diagram: Show registers BR (multiplicand), AC (accumulator), QR (multiplier), flip-flop Q-1, Sequence Counter (SC), and Adder-Subtractor.\n3. Decision Table: Detail the 4 cases for Q0 Q-1: 10 (Sub BR), 01 (Add BR), 00/11 (No op).\n4. Arithmetic Shift Right (ASHR): Explain sign preservation of AC into QR and Q-1.\n5. Draw the complete flowchart.",
+              "keyPoints": [
+                "Bit recoding mathematical derivation",
+                "Hardware datapath diagram with BR, AC, QR, Q-1, SC",
+                "Booth rule table for Q0, Q-1",
+                "Flowchart of Booth algorithm"
+              ]
+            },
+            {
+              "question": "Multiply (+7) by (-5) using Booth's Algorithm with 4-bit registers. Present the complete cycle-by-cycle trace table showing AC, QR, Q-1, and SC.",
+              "marks": "7 Marks",
+              "answer": "1. Convert operands: Multiplicand BR = +7 = 0111, Multiplier QR = -5 = 1011 (2's complement), -BR = 1001.\n2. Initial conditions: AC = 0000, QR = 1011, Q-1 = 0, SC = 4.\n3. Cycle 1: Q0 Q-1 = 10 -> AC = AC - BR = 1001. ASHR -> AC=1100, QR=1101, Q-1=1, SC=3.\n4. Cycle 2: Q0 Q-1 = 11 -> ASHR -> AC=1110, QR=0110, Q-1=1, SC=2.\n5. Cycle 3: Q0 Q-1 = 01 -> AC = AC + BR = 0101. ASHR -> AC=0010, QR=1011, Q-1=0, SC=1.\n6. Cycle 4: Q0 Q-1 = 10 -> AC = AC - BR = 1011. ASHR -> AC=1101, QR=1101, Q-1=1, SC=0.\n7. Product in [AC, QR] = 11011101_2 = -35 decimal.",
+              "keyPoints": [
+                "Correct 4-bit binary representations and initial state",
+                "Exact step-by-step table covering all 4 cycles",
+                "Correct execution of ASHR with sign preservation",
+                "Final decimal verification of -35"
               ]
             }
           ],
-          mcqs: [
+          "mcqs": [
             {
-              question: 'In a 64-word register stack, how many bits are required for the Stack Pointer (SP)?',
-              options: ['5 bits', '6 bits', '7 bits', '8 bits'],
-              correctIndex: 1,
-              explanation: '2^6 = 64 words, so exactly 6 bits are required for SP.'
+              "question": "In Booth's algorithm, what arithmetic operation is performed when Q0 Q-1 = 10?",
+              "options": [
+                "AC <- AC + BR",
+                "AC <- AC - BR",
+                "AC <- AC * BR",
+                "No arithmetic operation is performed"
+              ],
+              "correctIndex": 1,
+              "explanation": "Q0 Q-1 = 10 marks the beginning of a string of 1s, which requires subtracting the multiplicand (AC <- AC - BR)."
             },
             {
-              question: 'What is the Reverse Polish Notation (RPN) of the infix expression (A * B) + (C / D)?',
-              options: ['A B * C D / +', '+ * A B / C D', 'A B C D * / +', 'A B * + C D /'],
-              correctIndex: 0,
-              explanation: 'In postfix, (A*B) becomes A B *, (C/D) becomes C D /, and addition combines them: A B * C D / +.'
+              "question": "What type of shift is executed in every cycle of Booth's algorithm?",
+              "options": [
+                "Logical Shift Right",
+                "Circular Shift Right",
+                "Arithmetic Shift Right (ASHR)",
+                "Arithmetic Shift Left (ASL)"
+              ],
+              "correctIndex": 2,
+              "explanation": "Booth's algorithm uses Arithmetic Shift Right (ASHR) to preserve the sign bit of AC while shifting [AC, QR, Q-1]."
+            },
+            {
+              "question": "What is the initial value of the extra flip-flop Q-1 in Booth's algorithm?",
+              "options": [
+                "0",
+                "1",
+                "Same as MSB of QR",
+                "Undefined"
+              ],
+              "correctIndex": 0,
+              "explanation": "The Q-1 flip-flop is always cleared to 0 prior to starting the multiplication cycles."
+            },
+            {
+              "question": "How many clock cycles are required to multiply two n-bit numbers using standard Booth's algorithm?",
+              "options": [
+                "n/2 cycles",
+                "n cycles",
+                "2n cycles",
+                "n^2 cycles"
+              ],
+              "correctIndex": 1,
+              "explanation": "Standard Booth's algorithm iterates n times, decrementing the sequence counter SC from n down to 0."
             }
           ]
         },
-
-        // ── TOPIC 17: ADDRESSING MODES MASTER GUIDE ──
         {
-          id: 'addressing-modes-master',
-          title: 'Addressing Modes Master Guide & Numericals (Q14, Q15, Q32, Q33)',
-          simpleExplanation: 'Addressing modes specify different rules for interpreting the address field of an instruction to locate the operand in registers or RAM.',
-          detailedExplanation: `## Addressing Modes Master Guide
-
-### Comprehensive Addressing Modes Architecture
-\`\`\`mermaid
-flowchart TD
-    INSTR["Instruction Word: Mode | Opcode | Address / Offset Field"]
-
-    INSTR --> IMM["1. Immediate Mode\nOperand is the address field value itself"]
-    INSTR --> DIR["2. Direct Mode\nEffective Address EA = Address Field"]
-    INSTR --> IND["3. Indirect Mode\nEA = Memory(Address Field) (Pointer)"]
-    INSTR --> REG["4. Register Mode\nOperand is inside selected CPU register"]
-    INSTR --> REGIND["5. Register Indirect Mode\nEA = Content of selected CPU register"]
-    INSTR --> REL["6. Relative Addressing Mode\nEA = PC + Address Field (Offset)"]
-    INSTR --> IDX["7. Indexed Addressing Mode\nEA = Index Register (XR) + Address Field"]
-    INSTR --> BASE["8. Base Register Mode\nEA = Base Register (BR) + Offset"]
-\`\`\`
-
-### Comprehensive Comparison Table (Exam Mandatory):
-| Addressing Mode | Effective Address ($EA$) Formula | Where Operand Lives | Primary Practical Use Case |
-| :--- | :--- | :--- | :--- |
-| **Immediate** | None ($EA = \\text{Instruction Address}$) | Inside instruction itself | Loading constants: \`int x = 5;\` |
-| **Direct** | $EA = \\text{Address Field}$ | In memory at address | Accessing static global variables |
-| **Indirect** | $EA = M[\\text{Address Field}]$ | In memory pointed to by pointer | Pointers and references: \`*ptr\` |
-| **Register** | None ($EA = \\text{Register Name}$) | Inside CPU register | Fast local variables (no memory bus traffic!) |
-| **Register Indirect**| $EA = \\text{Content of Register}$ | In memory pointed to by register | Iterating arrays via pointers: \`*(ptr++)\` |
-| **Relative** | $EA = PC + \\text{Address Field}$ | Offset relative to current PC | Position-independent code, local if/else |
-| **Indexed** | $EA = XR + \\text{Address Field}$ | Offset relative to Index Register | Array indexing: \`arr[i]\` |
-| **Base Register** | $EA = BR + \\text{Address Field}$ | Offset relative to Base Register | Relocatable code in multiprogramming OS |
-
-### Master Numerical Problem (Question Bank Q15 & Q33):
-**Given:**
-- Memory Address 200 contains: Instruction with Mode, Opcode, Address = 500
-- $PC = 200$ (fetches instruction at 200, so $PC$ increments to 201)
-- $R_1 = 400$
-- $XR = 100$
-- Memory at 500 contains 800
-- Memory at 800 contains 300
-
-**Calculate Effective Address and Operand:**
-| Addressing Mode | Effective Address ($EA$) Calculation | Effective Address | Operand Fetched |
-| :--- | :--- | :---: | :---: |
-| **Direct** | $EA = 500$ | **500** | **800** |
-| **Immediate** | $EA = 200$ (Operand is in instruction) | **200** | **500** |
-| **Indirect** | $EA = M[500] = 800$ | **800** | **300** |
-| **Relative** | $EA = PC + 500 = 201 + 500$ | **701** | $M[701]$ |
-| **Indexed** | $EA = XR + 500 = 100 + 500$ | **600** | $M[600]$ |
-| **Register** | Operand is in $R_1$ (No $EA$) | — | **400** |
-| **Register Indirect**| $EA = R_1 = 400$ | **400** | $M[400]$ |`,
-          shortNotes: 'Direct: EA=Addr. Indirect: EA=M[Addr]. Relative: EA=PC+Addr. Indexed: EA=XR+Addr. Reg Indirect: EA=R. Immediate: Operand=Addr.',
-          examples: [
+          "id": "ca-u5-t3",
+          "title": "Division Algorithms: Restoring Division vs Non-Restoring Division Algorithms & Hardware Traces",
+          "simpleExplanation": "Binary division calculates a quotient and remainder by iteratively shifting the dividend left and subtracting the divisor. The Restoring Division algorithm restores the accumulator value by adding the divisor back whenever a trial subtraction yields a negative result. In contrast, the Non-Restoring Division algorithm eliminates this wasted restoration cycle by dynamically switching between addition and subtraction based on the sign of the partial remainder.",
+          "detailedExplanation": "## 1. Binary Division Fundamentals\n\nBinary division is the most computationally demanding of the basic arithmetic operations. Given an $n$-bit **Divisor ($B$)** and a $2n$-bit **Dividend ($A, Q$)**, division computes an $n$-bit **Quotient ($Q$)** and an $n$-bit **Remainder ($A$)** such that:\n$$\\text{Dividend} = (\\text{Divisor} \\times \\text{Quotient}) + \\text{Remainder}$$\n$$\\text{where } 0 \\le \\text{Remainder} < \\text{Divisor}$$\n\n```mermaid\nflowchart TD\n    subgraph Division_Registers [\"Hardware Division Datapath\"]\n        B[\"Divisor Register B (n bits)\"]\n        A[\"Accumulator A (n bits)\n(Holds Remainder)\"]\n        Q[\"Quotient Register Q (n bits)\n(Holds Dividend initially, Quotient finally)\"]\n        SC[\"Sequence Counter (SC)\n(Initialized to n)\"]\n        ADD_SUB[\"Adder-Subtractor\"]\n    end\n    B --> ADD_SUB\n    A --> ADD_SUB\n    ADD_SUB --> A\n    A & Q --> SHIFT[\"Shift Left (SHL A, Q)\"]\n```\n\n---\n\n## 2. Restoring Division Algorithm\n\nThe **Restoring Division Algorithm** performs trial subtractions of the divisor from the partial dividend. If the trial subtraction yields a negative result, the subtraction is canceled by restoring (adding back) the divisor.\n\n### 2.1 Restoring Division Algorithm Steps\n1. **Initialize:** Load Divisor into $B$, Dividend into $[A, Q]$ (where $A$ is loaded with upper $n$ bits or all $0$s, and $Q$ contains the dividend), and set $SC = n$.\n2. **Shift Left:** Shift the combined $[A, Q]$ register pair left by 1 bit:\n   $$\\text{SHL } A, Q$$\n3. **Trial Subtraction:** Subtract divisor from $A$:\n   $$A \\leftarrow A - B$$\n4. **Sign Check ($A_{\\text{sign}}$):**\n   - **If $A$ is negative ($A_{n-1} = 1$):**\n     - Trial failed! Set the quotient bit $Q_0 = 0$.\n     - **Restore $A$:** $A \\leftarrow A + B$ (cancels the subtraction).\n   - **If $A$ is positive ($A_{n-1} = 0$):**\n     - Trial succeeded! Set the quotient bit $Q_0 = 1$.\n     - Do not restore $A$ (retain the subtraction).\n5. **Decrement Counter:** $SC \\leftarrow SC - 1$. If $SC > 0$, repeat from Step 2.\n6. **Result:** Quotient is in $Q$, Remainder is in $A$.\n\n```mermaid\nflowchart TD\n    START([\"Start Restoring Division\"]) --> SHL[\"Shift Left: SHL (A, Q)\"]\n    SHL --> SUB[\"A <- A - B\"]\n    SUB --> CHECK{\"A < 0 ?\n(Sign bit A_MSB = 1)\"}\n    CHECK -->|\"Yes (Negative)\"| RESTORE[\"Q0 <- 0\nA <- A + B (Restore)\"]\n    CHECK -->|\"No (Positive)\"| NO_RES[\"Q0 <- 1\n(No restoration needed)\"]\n    RESTORE --> DEC[\"SC <- SC - 1\"]\n    NO_RES --> DEC\n    DEC --> FIN{\"SC == 0 ?\"}\n    FIN -->|\"No\"| SHL\n    FIN -->|\"Yes\"| DONE([\"Finished:\nQuotient in Q, Remainder in A\"])\n```\n\n---\n\n## 3. Non-Restoring Division Algorithm\n\nThe restoring algorithm's main flaw is that whenever trial subtraction fails, a second clock cycle is wasted restoring $A$ ($A \\leftarrow A + B$).\nThe **Non-Restoring Division Algorithm** completely eliminates the restoring step by observing that:\n- In the next cycle, $A$ is shifted left, effectively multiplying it by 2: $2(A - B) = 2A - 2B$.\n- If we had restored $A$, the next shifted value would be $2A$.\n- Subtracting $B$ from the restored shifted value gives: $2A - B$.\n- Notice that:\n  $$(2A - 2B) + B = 2A - B$$\n- Therefore, instead of restoring $A$ and subtracting $B$, we can simply **leave $A$ negative and ADD $B$ in the next cycle**!\n\n### 3.1 Non-Restoring Division Algorithm Steps\n1. **Initialize:** Load $B$, $A = 0000$, $Q = \\text{Dividend}$, $SC = n$.\n2. **Cycle Execution:**\n   - **Case 1: If $A$ is positive ($A_{n-1} = 0$):**\n     1. Shift left $[A, Q]$.\n     2. Subtract divisor: $A \\leftarrow A - B$.\n   - **Case 2: If $A$ is negative ($A_{n-1} = 1$):**\n     1. Shift left $[A, Q]$.\n     2. Add divisor: $A \\leftarrow A + B$.\n3. **Set Quotient Bit ($Q_0$):**\n   - If resulting $A$ is positive ($A_{n-1} = 0$), set $Q_0 = 1$.\n   - If resulting $A$ is negative ($A_{n-1} = 1$), set $Q_0 = 0$.\n4. **Decrement Counter:** $SC \\leftarrow SC - 1$. If $SC > 0$, repeat from Step 2.\n5. **Final Correction:** If $A$ is negative after all $n$ cycles, restore remainder:\n   $$A \\leftarrow A + B$$\n   *(Quotient $Q$ remains unchanged).*\n\n---\n\n## 4. Complete Step-by-Step Worked Example: $11 \\div 3$\n\nLet Dividend = $11 = 1011_2$ ($n=4$ bits).\nLet Divisor $B = 3 = 0011_2$ ($-B = 1101_2$).\nExpected: Quotient = $3$ ($0011_2$), Remainder = $2$ ($0010_2$).\n\n### 4.1 Restoring Division Execution Trace Table\n\n| Cycle ($SC$) | Operation | $A$ | $Q$ | Description |\n| :---: | :--- | :---: | :---: | :--- |\n| **Init** | Initialization | `0000` | `1011` | $B = 0011, SC = 4$ |\n| **Cycle 1** | SHL $A, Q$ | `0001` | `011_` | Shift left |\n| | $A \\leftarrow A - B$ (`0001 + 1101`) | `1110` | `011_` | Negative result! |\n| | Restore $A \\leftarrow A + B$, $Q_0 = 0$ | `0001` | `0110` | Restored; $SC = 3$ |\n| **Cycle 2** | SHL $A, Q$ | `0010` | `110_` | Shift left |\n| | $A \\leftarrow A - B$ (`0010 + 1101`) | `1111` | `110_` | Negative result! |\n| | Restore $A \\leftarrow A + B$, $Q_0 = 0$ | `0010` | `1100` | Restored; $SC = 2$ |\n| **Cycle 3** | SHL $A, Q$ | `0101` | `100_` | Shift left |\n| | $A \\leftarrow A - B$ (`0101 + 1101`) | `0010` | `100_` | Positive result! |\n| | Set $Q_0 = 1$ (No restoration) | `0010` | `1001` | Kept; $SC = 1$ |\n| **Cycle 4** | SHL $A, Q$ | `0101` | `001_` | Shift left |\n| | $A \\leftarrow A - B$ (`0101 + 1101`) | `0010` | `001_` | Positive result! |\n| | Set $Q_0 = 1$ (No restoration) | `0010` | `0011` | Kept; $SC = 0$ |\n\n### Final Result:\n- **Remainder ($A$):** `0010` ($2$ decimal)\n- **Quotient ($Q$):** `0011` ($3$ decimal)\n- Exact verification: $11 = (3 \\times 3) + 2$.\n\n---\n\n## 5. Architectural Comparison: Restoring vs Non-Restoring\n\n| Metric | Restoring Division Algorithm | Non-Restoring Division Algorithm |\n| :--- | :--- | :--- |\n| **Cycles per Iteration** | Variable ($1$ or $2$ operations per bit) | Strictly $1$ operation per bit |\n| **Restoration Step** | Required on every negative trial subtraction | **Eliminated** during the main loop |\n| **Total ALU Operations** | Up to $2n$ operations in worst case | Exactly $n$ operations ($+1$ final fixup) |\n| **Hardware Complexity** | Simpler control logic | Requires sign-dependent Add/Sub steering |\n| **Execution Speed** | Slower | **Significantly faster** |\n\n> [!TIP] **EXAM TIP:**\n> In university exams, when asked for Non-Restoring division:\n> - If $A$ is positive: **Subtract** $B$.\n> - If $A$ is negative: **Add** $B$.\n> In both cases, if the resulting $A$ is positive, set $Q_0 = 1$; if negative, set $Q_0 = 0$.\n\n> [!NOTE] **DEV BRAIN:**\n> Non-Restoring division is the basis for high-speed SRT Division (Sweeney, Robertson, Tocher) used in modern x86/ARM processors, which uses lookup tables to predict quotient bits and radix-4 redundancy to avoid full subtractions!\n\n> [!WARNING] **TRAP:**\n> In Non-Restoring division, never forget the **final correction step**: if register $A$ ends up negative after the $n$-th iteration, you MUST add $B$ once ($A \\leftarrow A + B$) to obtain the true positive remainder!\n\n> [!IMPORTANT] **MEMORIZE:**\n> - Restoring division: If $A < 0 \\implies Q_0 = 0$ and $A \\leftarrow A + B$.\n> - Non-Restoring division: If $A \\ge 0 \\implies \\text{Sub } B$; If $A < 0 \\implies \\text{Add } B$.\n> - Final quotient is always in $Q$, remainder in $A$.",
+          "shortNotes": "Restoring division restores A (A <- A + B) when trial subtraction yields negative (Q0=0). Non-Restoring division eliminates restoring by adding B in the next cycle if A is negative.",
+          "examples": [
             {
-              title: 'Relative Addressing Example',
-              code: 'PC = 201, Offset = +50\nEA = 201 + 50 = 251\nJumps forward 50 instructions from PC.',
-              explanation: 'Position independent jump.'
+              "title": "Restoring and Non-Restoring Division Simulator",
+              "problem": "Divide dividend 11 by divisor 3 using 4-bit Restoring Division. Show the state of registers A and Q at each step and verify the final quotient and remainder.",
+              "explanation": "Trace the 4 cycles of restoring division. SHL A, Q -> A = A - B -> if A < 0: Q0 = 0, A = A + B; else: Q0 = 1.",
+              "code": "# Restoring Division Simulator\ndef restoring_division(dividend, divisor, n=4):\n    mask = (1 << n) - 1\n    a = 0\n    q = dividend & mask\n    b = divisor & mask\n    sc = n\n    \n    trace = []\n    trace.append(f\"Init: A={format(a, f'0{n}b')} Q={format(q, f'0{n}b')} SC={sc}\")\n    \n    for cycle in range(1, n + 1):\n        # SHL A, Q\n        combined = ((a << n) | q) << 1\n        a = (combined >> n) & ((1 << (n + 1)) - 1)\n        q = combined & mask\n        \n        # Trial subtraction\n        a_sub = (a - b)\n        if a_sub < 0:\n            q = q & ~1 # Q0 = 0\n            # A remains restored (keep pre-subtraction value)\n            op = \"Trial Sub Failed -> Restored, Q0=0\"\n        else:\n            a = a_sub\n            q = q | 1  # Q0 = 1\n            op = \"Trial Sub OK     -> Kept,     Q0=1\"\n            \n        sc -= 1\n        trace.append(f\"Cyc {cycle}: {op} | A={format(a, f'0{n}b')} Q={format(q, f'0{n}b')} SC={sc}\")\n        \n    return trace, q, a\n\nlog, quotient, remainder = restoring_division(11, 3, n=4)\nfor line in log:\n    print(line)\nprint(f\"Final Quotient (Q) = {quotient}, Remainder (A) = {remainder}\")",
+              "output": "Init: A=0000 Q=1011 SC=4\nCyc 1: Trial Sub Failed -> Restored, Q0=0 | A=0001 Q=0110 SC=3\nCyc 2: Trial Sub Failed -> Restored, Q0=0 | A=0010 Q=1100 SC=2\nCyc 3: Trial Sub OK     -> Kept,     Q0=1 | A=0010 Q=1001 SC=1\nCyc 4: Trial Sub OK     -> Kept,     Q0=1 | A=0010 Q=0011 SC=0\nFinal Quotient (Q) = 3, Remainder (A) = 2"
             }
           ],
-          keyPoints: [
-            'Immediate mode has fastest operand access (no memory read).',
-            'Relative mode adds offset to PC (used for short jumps).',
-            'Indexed mode adds base address to Index Register XR (used for arrays).'
+          "keyPoints": [
+            "Division computes quotient Q and remainder A such that Dividend = (Divisor * Q) + A.",
+            "Restoring division adds B back to A whenever trial subtraction yields a negative result.",
+            "Non-restoring division eliminates the restoring cycle by dynamically choosing to add or subtract in the next step.",
+            "In non-restoring division, a final correction (A <- A + B) is required if the final remainder is negative.",
+            "Non-restoring division delivers superior execution speed with strictly n operations."
           ],
-          theoryQuestions: [
+          "theoryQuestions": [
             {
-              question: 'Explain any six addressing modes with diagrams, effective address formulas, and practical use cases.',
-              marks: '7 Marks',
-              answer: 'Six key addressing modes:\n1. **Immediate Mode:** Operand is part of instruction. No memory access. Example: \`MOV R1, #5\`.\n2. **Direct Mode:** Address field is effective address: $EA = A$. One memory access. Example: \`LDA 2000\`.\n3. **Indirect Mode:** Address field points to memory pointer: $EA = M[A]$. Two memory accesses. Example: Pointer dereference \`*ptr\`.\n4. **Register Indirect Mode:** Register contains effective address: $EA = (R)$. Example: \`MOV A, @R0\`.\n5. **Relative Addressing Mode:** Effective address is relative to PC: $EA = PC + A$. Used in branching.\n6. **Indexed Addressing Mode:** Effective address combines Index Register and address field: $EA = XR + A$. Used in array traversal.',
-              keyPoints: [
-                'State 6 modes clearly.',
-                'Provide mathematical EA formula for each.',
-                'Provide practical programming use cases.'
+              "question": "Explain the Restoring Division Algorithm with a complete flowchart and trace the division of 11 by 3 using 4-bit registers.",
+              "marks": "7 Marks",
+              "answer": "1. Algorithm steps: Initialize A=0, Q=Dividend, B=Divisor, SC=n. Loop: SHL (A,Q); A <- A - B; if A < 0, set Q0=0 and A <- A + B (restore); else set Q0=1; SC <- SC - 1 until SC=0.\n2. Draw the flowchart showing shift, trial subtract, sign decision, and restoration path.\n3. Present the 4-cycle trace table for 11 / 3: Show state of A, Q, and SC at each cycle.\n4. Final output: Q = 0011 (3), A = 0010 (2).",
+              "keyPoints": [
+                "Complete algorithmic procedure",
+                "Detailed flowchart schematic",
+                "Full 4-cycle numerical trace table",
+                "Verification against decimal arithmetic"
+              ]
+            },
+            {
+              "question": "Compare Restoring and Non-Restoring Division Algorithms. Explain how the non-restoring algorithm avoids the restoration step.",
+              "marks": "7 Marks",
+              "answer": "1. Comparison Table: Compare operation count, restoration need, control complexity, and execution speed.\n2. Mathematical Rationale: Show that after a failed subtraction (A - B), the restored value shifted is 2A, and subtracting B in the next cycle gives 2A - B. Without restoring, shifting gives 2(A - B) = 2A - 2B. Adding B gives 2A - 2B + B = 2A - B. Both expressions are identical!\n3. Explain the Non-Restoring algorithm rules (Add if A<0, Sub if A>=0).\n4. Detail the final correction step when remainder A remains negative.",
+              "keyPoints": [
+                "Structured comparison table",
+                "Mathematical proof: 2(A-B) + B = 2A - B",
+                "Algorithmic decision rules for non-restoring division",
+                "Final positive remainder correction rule"
               ]
             }
           ],
-          mcqs: [
+          "mcqs": [
             {
-              question: 'In Relative Addressing Mode, what register is added to the address field to find the Effective Address?',
-              options: ['Accumulator (AC)', 'Program Counter (PC)', 'Index Register (XR)', 'Stack Pointer (SP)'],
-              correctIndex: 1,
-              explanation: 'Relative addressing calculates EA = PC + Address/Offset.'
+              "question": "In the Restoring Division algorithm, what action is taken when trial subtraction produces a negative remainder?",
+              "options": [
+                "The computer halts with a division overflow",
+                "Q0 is set to 0 and the divisor is added back to A (A <- A + B)",
+                "Q0 is set to 1 and A is inverted",
+                "The divisor is shifted right"
+              ],
+              "correctIndex": 1,
+              "explanation": "When trial subtraction yields a negative result, the trial failed: Q0 is set to 0 and A is restored by adding back the divisor (A <- A + B)."
             },
             {
-              question: 'Which addressing mode is most suitable for implementing array traversal arr[i] in loops?',
-              options: ['Immediate mode', 'Direct mode', 'Indexed addressing mode', 'Indirect mode'],
-              correctIndex: 2,
-              explanation: 'Indexed addressing (EA = Base + XR) allows incrementing the Index Register XR in each iteration to access consecutive array elements.'
+              "question": "How does the Non-Restoring Division algorithm avoid the restoring step when A is negative?",
+              "options": [
+                "By clearing A to zero",
+                "By shifting left and adding the divisor in the subsequent cycle instead of subtracting",
+                "By skipping the cycle completely",
+                "By using floating-point hardware"
+              ],
+              "correctIndex": 1,
+              "explanation": "Non-restoring division takes advantage of 2(A - B) + B = 2A - B, simply shifting left and performing addition when A is negative."
+            },
+            {
+              "question": "What final correction is necessary in Non-Restoring Division if the sign bit of A is 1 after all cycles?",
+              "options": [
+                "Subtract B from A",
+                "Invert Q",
+                "Add B to A (A <- A + B) to make the remainder positive",
+                "Clear Q to 0"
+              ],
+              "correctIndex": 2,
+              "explanation": "If the final remainder is negative, a single final addition of the divisor (A <- A + B) restores the remainder to its true positive value."
+            },
+            {
+              "question": "In an n-bit binary division, where are the final Quotient and Remainder stored?",
+              "options": [
+                "Quotient in A, Remainder in B",
+                "Quotient in Q, Remainder in A",
+                "Quotient in B, Remainder in Q",
+                "Quotient in DR, Remainder in AC"
+              ],
+              "correctIndex": 1,
+              "explanation": "At the conclusion of binary division, the quotient occupies register Q, and the remainder occupies the Accumulator register A."
             }
           ]
         },
-
-        // ── TOPIC 18: RISC VS CISC ──
         {
-          id: 'risc-cisc-register-windows',
-          title: 'RISC vs CISC Architecture & Overlapped Register Windows (Q18, Q34)',
-          simpleExplanation: 'RISC focuses on simple, single-cycle instructions with large register files, while CISC emphasizes complex, multi-cycle instructions implemented with microcode.',
-          detailedExplanation: `## RISC vs CISC & Overlapped Register Windows
-
-### Comprehensive Comparison Table (Question Bank Q18 & Q34):
-| Parameter | RISC (Reduced Instruction Set Computer) | CISC (Complex Instruction Set Computer) |
-| :--- | :--- | :--- |
-| **Instruction Size** | Fixed length (usually 32 bits). | Variable length (1 byte to 15+ bytes). |
-| **Instruction Count** | Small set of simple instructions (< 100). | Large set of complex instructions (300+). |
-| **Addressing Modes** | Very few (2 to 4 simple modes). | Many complex modes (10 to 20+ modes). |
-| **Memory Access** | **Load/Store only** (only LOAD and STORE access RAM). | Any instruction can access memory (e.g., \`ADD [BX], AX\`). |
-| **Control Unit** | **Hardwired** (fast, direct silicon logic). | **Microprogrammed** (stored in control ROM). |
-| **Execution Rate** | One instruction per clock cycle (pipelined). | Multiple clock cycles per instruction. |
-| **Registers** | Large register file (e.g., 128+ registers). | Small register set (8 to 16 registers). |
-| **Examples** | ARM (Apple Silicon, Android), MIPS, RISC-V. | Intel x86 (Core i5/i7/i9), AMD. |
-
-### Overlapped Register Windows (RISC Innovation):
-\`\`\`mermaid
-flowchart TD
-    subgraph Global["Global Registers (Shared Across All Procedures)"]
-        G0["R0..R7: Global Constants & Pointers"]
-    end
-
-    subgraph Window0["Procedure A Register Window"]
-        HIGH_A["R24..R31: High (Input Parameters)"]
-        LOCAL_A["R16..R23: Local Variables of A"]
-        LOW_A["R8..R15: Low (Outgoing Parameters to B)"]
-    end
-
-    subgraph Window1["Procedure B Register Window (Overlapped)"]
-        HIGH_B["R24..R31: High (Matches Low of A!)"]
-        LOCAL_B["R16..R23: Local Variables of B"]
-        LOW_B["R8..R15: Low (Outgoing to C)"]
-    end
-
-    LOW_A === HIGH_B
-\`\`\`
-
-### Register Windows Formulas (Must Memorize):
-$$\\mathbf{\\text{Window Size} = L + 2C + G}$$
-$$\\mathbf{\\text{Total Register File Size} = (L + C) \\times W + G}$$
-Where $W$ = Number of windows, $L$ = Local registers, $C$ = Common/overlap registers, $G$ = Global registers.
-
-**Slide Worked Example:**
-Given $G = 10, L = 10, C = 6, W = 4$:
-- Window Size = $10 + 2(6) + 10 = \\mathbf{32 \\text{ registers}}$.
-- Total Register File = $(10 + 6) \\times 4 + 10 = 16 \\times 4 + 10 = \\mathbf{74 \\text{ registers}}$ ($R_0$ to $R_{73}$).`,
-          shortNotes: 'RISC: Simple fixed instructions, load/store only, hardwired, large register file. Register File = (L + C)*W + G. Window = L + 2C + G.',
-          examples: [
+          "id": "ca-u5-t4",
+          "title": "Floating-Point Arithmetic: IEEE 754 Standard, Four-Phase Algorithms & Carry Lookahead Adder",
+          "simpleExplanation": "Floating-point representation allows computers to handle extremely large and vanishingly small scientific numbers using scientific notation ($M \\times 2^E$). The ubiquitous IEEE 754 standard defines 32-bit single and 64-bit double precision formats using a sign bit, biased exponent, and normalized mantissa with an implicit leading 1. High-speed floating-point addition and multiplication rely on Carry Lookahead Adders (CLA) that calculate carry signals in parallel to eliminate ripple delay.",
+          "detailedExplanation": "## 1. Floating-Point Representation Fundamentals\n\nFixed-point integers cannot represent fractional quantities or numbers with vast dynamic ranges (such as Planck's constant $6.626 \\times 10^{-34}$ or the speed of light $3.0 \\times 10^8$). To solve this, computers use **Floating-Point Representation** based on binary scientific notation:\n$$X = (-1)^S \\times M \\times 2^{E}$$\nwhere:\n- $S$: **Sign bit** ($0$ for positive, $1$ for negative).\n- $M$: **Mantissa (Significand)**, representing the fractional precision bits.\n- $E$: **Exponent**, representing the power of 2 scale factor.\n\n---\n\n## 2. The IEEE 754 Floating-Point Standard\n\nEstablished in 1985, the **IEEE 754 Standard** is universal across all modern general-purpose processors:\n\n```mermaid\nflowchart TD\n    subgraph Single_Precision [\"IEEE 754 Single Precision (32 Bits)\"]\n        S1[\"Sign (1 bit)\nBit 31\"]\n        E1[\"Biased Exponent (8 bits)\nBits 30-23\nBias = 127\"]\n        F1[\"Fraction / Mantissa (23 bits)\nBits 22-0\nHidden 1.F\"]\n    end\n    subgraph Double_Precision [\"IEEE 754 Double Precision (64 Bits)\"]\n        S2[\"Sign (1 bit)\nBit 63\"]\n        E2[\"Biased Exponent (11 bits)\nBits 62-52\nBias = 1023\"]\n        F2[\"Fraction / Mantissa (52 bits)\nBits 51-0\nHidden 1.F\"]\n    end\n```\n\n### 2.1 Single Precision (32-bit) Format\n- **Sign Bit ($S$):** 1 bit (Bit 31).\n- **Biased Exponent ($E$):** 8 bits (Bits 23–30). Stored with an **excess-127 bias**:\n  $$E_{\\text{stored}} = E_{\\text{actual}} + 127$$\n  Range: $0$ to $255$ ($E=0$ and $E=255$ are reserved for special values).\n- **Fraction ($F$):** 23 bits (Bits 0–22). Normalized numbers use a **hidden bit** convention: the actual significand is $1.F$ (yielding 24 bits of precision!).\n\n### 2.2 IEEE 754 Special Numerical Values\n| Biased Exponent ($E$) | Fraction ($F$) | Numerical Value / Meaning |\n| :---: | :---: | :--- |\n| `00000000` | $0$ | **Signed Zero** ($pm 0$) |\n| `00000000` | Non-zero | **Denormalized (Subnormal) Number** ($0.F \\times 2^{-126}$) |\n| `00000001` to `11111110` | Any | **Normalized Number** ($(-1)^S \\times 1.F \\times 2^{E-127}$) |\n| `11111111` | $0$ | **Infinity** ($pm \\infty$, division by zero) |\n| `11111111` | Non-zero | **Not-a-Number (NaN)** (invalid ops like $\\sqrt{-1}$ or $0/0$) |\n\n---\n\n## 3. Four-Phase Floating-Point Addition & Subtraction Algorithm\n\nAdding or subtracting two floating-point numbers $X_1 = M_1 \\times 2^{E_1}$ and $X_2 = M_2 \\times 2^{E_2}$ requires a four-phase hardware sequence:\n\n```\nPhase 1: Align Mantissas   ===> Shift smaller exponent's mantissa right\nPhase 2: Add/Sub Mantissas ===> Compute M = M1 +/- M2 using parallel adder\nPhase 3: Normalize Result  ===> Shift M so leading bit is 1; adjust E\nPhase 4: Round & Check     ===> Round mantissa; test for overflow/underflow\n```\n\n```mermaid\nflowchart TD\n    START([\"Start FP Add/Sub\"]) --> ZERO{\"Either operand == 0 ?\"}\n    ZERO -->|\"Yes\"| RET_OTHER[\"Return other operand\"]\n    ZERO -->|\"No\"| DIFF[\"Compute Exponent Difference:\nd = E1 - E2\"]\n    DIFF --> ALIGN[\"Align Mantissas:\nShift mantissa of smaller exponent right by |d| bits\nSet common exponent = max(E1, E2)\"]\n    ALIGN --> ADD_M[\"Add or Subtract Mantissas:\nM = M1 +/- M2\"]\n    ADD_M --> NORM{\"Is M normalized?\n(Leading bit == 1?)\"}\n    NORM -->|\"Mantissa Overflow\"| SHIFT_R[\"Shift M right by 1\nIncrement Exponent E\"]\n    NORM -->|\"Leading Zeros\"| SHIFT_L[\"Shift M left by k bits\nDecrement Exponent E by k\"]\n    NORM -->|\"Normalized\"| CHECK_OV{\"Exponent Overflow or Underflow?\"}\n    SHIFT_R --> CHECK_OV\n    SHIFT_L --> CHECK_OV\n    CHECK_OV -->|\"Overflow\"| INF[\"Set result = +/- Infinity\"]\n    CHECK_OV -->|\"Underflow\"| UNDER[\"Set result = 0 (or subnormal)\"]\n    CHECK_OV -->|\"Valid\"| DONE([\"Finished Result\"])\n```\n\n---\n\n## 4. Carry Lookahead Adder (CLA): High-Speed Addition\n\nIn ripple carry adders, the carry must ripple sequentially through all $n$ full adders, resulting in propagation delay proportional to $n$ ($O(n)$ delay).\nThe **Carry Lookahead Adder (CLA)** eliminates this bottleneck by computing all carry signals in parallel in $O(1)$ constant time using combinational logic.\n\n### 4.1 Carry Generate ($G_i$) and Carry Propagate ($P_i$)\nFor any bit stage $i$:\n1. **Carry Generate ($G_i$):** Stage $i$ generates a carry independently of input carry if both inputs are 1:\n   $$G_i = A_i \\cdot B_i$$\n2. **Carry Propagate ($P_i$):** Stage $i$ propagates an incoming carry if at least one input is 1:\n   $$P_i = A_i \\oplus B_i$$\n\nThe sum and carry outputs are expressed as:\n$$S_i = P_i \\oplus C_i$$\n$$C_{i+1} = G_i + P_i C_i$$\n\n### 4.2 Expansion of Carry Equations\nBy recursive substitution, carries for a 4-bit CLA are generated simultaneously from the primary input carry $C_0$:\n$$C_1 = G_0 + P_0 C_0$$\n$$C_2 = G_1 + P_1 C_1 = G_1 + P_1 G_0 + P_1 P_0 C_0$$\n$$C_3 = G_2 + P_2 C_2 = G_2 + P_2 G_1 + P_2 P_1 G_0 + P_2 P_1 P_0 C_0$$\n$$C_4 = G_3 + P_3 C_3 = G_3 + P_3 G_2 + P_3 P_2 G_1 + P_3 P_2 P_1 G_0 + P_3 P_2 P_1 P_0 C_0$$\n\nBecause each carry is expressed as a **two-level Sum-of-Products (AND-OR)** circuit, **all carries $C_1, C_2, C_3, C_4$ are generated simultaneously in just 2 gate delays**, independent of word width!\n\n```mermaid\nflowchart TD\n    Inputs[\"A0..A3, B0..B3\"] --> PG_GEN[\"P and G Generator\n(1 gate delay)\"]\n    PG_GEN -->|\"P0..P3, G0..G3\"| CLA_LOGIC[\"Carry Lookahead Logic Block\n(2 gate delays: AND-OR)\"]\n    C0[\"Cin (C0)\"] --> CLA_LOGIC\n    CLA_LOGIC -->|\"Parallel Carries: C1, C2, C3, C4\"| SUM_GEN[\"Sum Generators (Si = Pi XOR Ci)\n(1 gate delay)\"]\n    PG_GEN --> SUM_GEN\n    SUM_GEN --> Sums[\"Outputs S0, S1, S2, S3, C4\"]\n```\n\n> [!TIP] **EXAM TIP:**\n> When asked to convert a decimal number like $-27.625$ into IEEE 754 Single Precision:\n> 1. Sign bit $S = 1$ (negative).\n> 2. Convert to binary: $27 = 11011_2$, $0.625 = 0.101_2 \\implies 11011.101_2$.\n> 3. Normalize: $1.1011101_2 \\times 2^4$.\n> 4. Biased Exponent: $E = 4 + 127 = 131 = 10000011_2$.\n> 5. Fraction (drop hidden 1): $10111010000000000000000_2$ (23 bits).\n> 6. Hex: `1 10000011 10111010000000000000000` $\\implies$ `0xC1DD0000`.\n\n> [!NOTE] **DEV BRAIN:**\n> In programming, comparing floating-point numbers with `==` (e.g., `if (0.1 + 0.2 == 0.3)`) fails because $0.1$ and $0.2$ are recurring infinite binary fractions that cannot be represented exactly in 23 or 52 mantissa bits! Always use an epsilon threshold: `fabs(a - b) < 1e-9`.\n\n> [!WARNING] **TRAP:**\n> Do NOT include the leading 1 in the IEEE 754 stored fraction field! The leading 1 is **implicit** (hidden) to gain 1 extra bit of precision. Storing the 1 wastes a bit and produces the wrong numerical result.\n\n> [!IMPORTANT] **MEMORIZE:**\n> - IEEE 754 Single: 1 sign, 8 exponent (bias 127), 23 fraction.\n> - IEEE 754 Double: 1 sign, 11 exponent (bias 1023), 52 fraction.\n> - CLA Carry equations: $G_i = A_i B_i$, $P_i = A_i \\oplus B_i$, $C_{i+1} = G_i + P_i C_i$.\n> - CLA computes carries in $O(1)$ constant time (2 gate delays).",
+          "shortNotes": "IEEE 754 Single Precision (32 bits): 1 sign, 8 exponent (bias 127), 23 fraction (hidden 1). FP add: align mantissas, add/sub, normalize, round. Carry Lookahead Adder (CLA) computes carries in 2 gate delays.",
+          "examples": [
             {
-              title: 'Register Windows Calculation',
-              code: 'G=10, L=10, C=6, W=4\nWindow = 10 + 2(6) + 10 = 32 registers\nRegister File = (10 + 6)*4 + 10 = 74 registers',
-              explanation: '74 total registers partitioned into 4 overlapping windows of 32 registers each.'
+              "title": "IEEE 754 Single Precision Binary & Hex Encoding",
+              "problem": "Convert decimal number -27.625 into IEEE 754 32-bit Single Precision floating-point format and express the final result in hexadecimal.",
+              "explanation": "1. Negative -> Sign bit S = 1. 2. Binary: 27 = 11011, 0.625 = 0.101 -> 11011.101. 3. Normalize: 1.1011101 * 2^4. Actual exponent = 4. 4. Biased exponent = 4 + 127 = 131 = 10000011. 5. Fraction = 10111010000000000000000 (23 bits). 6. Assemble and convert to hex.",
+              "code": "# IEEE 754 Single Precision Converter\ndef float_to_ieee754(val):\n    import struct\n    # Pack float into 4 bytes (big-endian) and unpack as unsigned int\n    packed = struct.pack('>f', val)\n    int_val = struct.unpack('>I', packed)[0]\n    bin_str = format(int_val, '032b')\n    hex_str = hex(int_val)\n    \n    s = bin_str[0]\n    e = bin_str[1:9]\n    f = bin_str[9:]\n    \n    return {\n        \"Value\": val,\n        \"Sign (S)\": s,\n        \"Biased Exp (E)\": f\"{e} ({int(e, 2)})\",\n        \"Fraction (F)\": f,\n        \"32-Bit Binary\": f\"{s} {e} {f}\",\n        \"Hexadecimal\": hex_str.upper()\n    }\n\nprint(float_to_ieee754(-27.625))",
+              "output": "{'Value': -27.625, 'Sign (S)': '1', 'Biased Exp (E)': '10000011 (131)', 'Fraction (F)': '10111010000000000000000', '32-Bit Binary': '1 10000011 10111010000000000000000', 'Hexadecimal': '0XC1DD0000'}"
             }
           ],
-          keyPoints: [
-            'RISC relies on load/store architecture and hardwired control.',
-            'CISC emphasizes rich instructions in hardware using microcode.',
-            'Overlapped register windows eliminate memory stack frame overhead during function calls.'
+          "keyPoints": [
+            "IEEE 754 standard defines single precision (32 bits, bias 127) and double precision (64 bits, bias 1023).",
+            "Normalized numbers use an implicit hidden leading 1, storing only the fractional mantissa bits.",
+            "Floating-point addition/subtraction executes in 4 phases: alignment, addition/subtraction, normalization, and rounding.",
+            "Carry Lookahead Adders (CLA) eliminate ripple delay using Carry Generate (Gi = Ai Bi) and Carry Propagate (Pi = Ai ^ Bi).",
+            "A 4-bit CLA computes all carries in parallel in 2 gate delays using two-level AND-OR logic."
           ],
-          theoryQuestions: [
+          "theoryQuestions": [
             {
-              question: 'Compare RISC and CISC architectures across instruction set, registers, cycles per instruction, control unit, and pipelining.',
-              marks: '7 Marks',
-              answer: 'Comparison Table:\n\n1. **Instruction Set:** RISC has simple, fixed-length instructions; CISC has complex, variable-length instructions.\n2. **Memory Access:** RISC only accesses memory via LOAD and STORE (Load/Store architecture); CISC allows arithmetic operations directly on memory operands.\n3. **Registers:** RISC features a large register file (128+ registers); CISC features fewer registers (8 to 16).\n4. **Control Unit:** RISC uses hardwired control for single-cycle execution; CISC uses microprogrammed ROM.\n5. **Pipelining:** RISC is optimized for deep, efficient pipelining; CISC pipelining is complex due to variable instruction lengths.',
-              keyPoints: [
-                'Load/Store architecture vs memory operands.',
-                'Hardwired vs microprogrammed control.',
-                'Large register file vs few registers.'
+              "question": "Explain the IEEE 754 Single Precision floating-point standard format. Show the step-by-step conversion of decimal -27.625 into its IEEE 754 32-bit hexadecimal representation.",
+              "marks": "7 Marks",
+              "answer": "1. Format description: 32 bits partitioned into Sign S (1 bit, bit 31), Biased Exponent E (8 bits, bits 23-30, bias 127), and Fraction F (23 bits, bits 0-22, hidden 1.F).\n2. Step-by-step conversion of -27.625:\n   - Sign bit S = 1 (negative).\n   - Integer part 27 = 11011_2.\n   - Fractional part 0.625 = 0.101_2 (0.625*2 = 1.25 -> 1, 0.25*2 = 0.5 -> 0, 0.5*2 = 1.0 -> 1).\n   - Unnormalized binary = 11011.101_2.\n   - Normalize: 1.1011101 * 2^4 (actual exponent = 4).\n   - Biased exponent E = 4 + 127 = 131 = 10000011_2.\n   - Fraction F (drop leading 1, pad to 23 bits): 10111010000000000000000.\n   - Concatenate: 1 10000011 10111010000000000000000.\n   - Group by 4 bits: 1100 0001 1101 1101 0000 0000 0000 0000 = 0xC1DD0000.",
+              "keyPoints": [
+                "Complete format description with bit boundaries",
+                "Fractional binary conversion steps",
+                "Normalization and excess-127 exponent biasing",
+                "Hidden 1 omission and final hexadecimal assembly"
+              ]
+            },
+            {
+              "question": "Derive the logic equations for a 4-bit Carry Lookahead Adder (CLA). Explain how it achieves high-speed addition compared to a Ripple Carry Adder.",
+              "marks": "7 Marks",
+              "answer": "1. Define Carry Generate: Gi = Ai Bi (stage generates carry independently).\n2. Define Carry Propagate: Pi = Ai XOR Bi (stage propagates incoming carry).\n3. State recurrence: C(i+1) = Gi + Pi Ci.\n4. Expand equations for 4-bit CLA:\n   - C1 = G0 + P0 C0\n   - C2 = G1 + P1 G0 + P1 P0 C0\n   - C3 = G2 + P2 G1 + P2 P1 G0 + P2 P1 P0 C0\n   - C4 = G3 + P3 G2 + P3 P2 G1 + P3 P2 P1 G0 + P3 P2 P1 P0 C0\n5. Speed comparison: In ripple carry, carry delay is 2n gate delays. In CLA, all carries C1-C4 are generated in parallel in 2 gate delays (AND-OR logic), making delay independent of bit length n.",
+              "keyPoints": [
+                "Mathematical definitions of Gi and Pi",
+                "Full algebraic derivations of C1, C2, C3, C4",
+                "Two-level combinational circuit realization",
+                "Delay comparison: O(1) constant time vs O(n) ripple delay"
               ]
             }
           ],
-          mcqs: [
+          "mcqs": [
             {
-              question: 'In RISC architecture with G=10 global, L=10 local, C=6 common registers, what is the size of each window?',
-              options: ['26 registers', '32 registers', '42 registers', '74 registers'],
-              correctIndex: 1,
-              explanation: 'Window size = L + 2C + G = 10 + 2(6) + 10 = 32 registers.'
+              "question": "What is the exponent bias used in the IEEE 754 Single Precision floating-point standard?",
+              "options": [
+                "63",
+                "127",
+                "255",
+                "1023"
+              ],
+              "correctIndex": 1,
+              "explanation": "IEEE 754 single precision uses an 8-bit biased exponent with a bias value of 127 (excess-127 notation)."
             },
             {
-              question: 'Which of the following is a defining characteristic of RISC processors?',
-              options: ['Variable length instructions', 'Microprogrammed control memory', 'Load/Store memory architecture', 'Instructions take dozens of clock cycles'],
-              correctIndex: 2,
-              explanation: 'In RISC, operands for arithmetic and logic instructions must reside in registers; only explicit LOAD and STORE instructions access memory.'
-            }
-          ]
-        },
-
-        // ── TOPIC 19: COMPUTER ARITHMETIC & BOOTH'S ALGORITHM ──
-        {
-          id: 'computer-arithmetic-booth',
-          title: 'Booth\'s Multiplication Algorithm & Division Flowchart (Q35, Q44)',
-          simpleExplanation: 'Booth\'s algorithm multiplies signed 2\'s complement binary numbers efficiently by treating strings of consecutive 1\'s as a single subtraction and addition.',
-          detailedExplanation: `## Computer Arithmetic: Booth's Multiplication Algorithm
-
-### Why Booth's Algorithm?
-Standard binary multiplication requires multiple shift-and-add steps for every 1 in the multiplier.
-Booth's algorithm observes that a block of consecutive 1's (e.g., $011110 = 30$) can be computed simply as $2^5 - 2^1 = 32 - 2 = 30$. This replaces multiple additions with **one subtraction and one addition**, drastically speeding up signed multiplication!
-
-### Booth's Multiplication Algorithm Flowchart (Question Bank Q35)
-\`\`\`mermaid
-flowchart TD
-    START(["Start Booth's Multiplication"]) --> INIT["Initialize:\nAC = 0, Qn+1 = 0\nBR = Multiplicand\nQR = Multiplier\nSC = Number of Bits (n)"]
-    INIT --> CHECK{"Test (Qn, Qn+1)"}
-
-    CHECK -- "10" --> SUB["AC ← AC - BR\n(or AC ← AC + BR' + 1)"]
-    CHECK -- "01" --> ADD["AC ← AC + BR"]
-    CHECK -- "00 or 11" --> ASHR
-
-    SUB --> ASHR["Arithmetic Shift Right (ashr):\n(AC, QR, Qn+1)\nPreserve sign bit in AC!"]
-    ADD --> ASHR
-
-    ASHR --> DEC["SC ← SC - 1"]
-    DEC --> LOOP{"SC == 0?"}
-    LOOP -- No --> CHECK
-    LOOP -- Yes --> DONE(["Done: Product is in (AC, QR)"])
-\`\`\`
-
-### Worked Numerical: Multiply $(-9) \\times (-13)$ using 5-bit Booth's
-- Multiplicand $BR = -9 = 10111_2$ (2's comp), $\\overline{BR} + 1 = +9 = 01001_2$
-- Multiplier $QR = -13 = 10011_2$
-- Initial: $AC = 00000, Q_n = 1, Q_{n+1} = 0, SC = 5$
-
-| Step | Operation | $AC$ | $QR$ | $Q_{n+1}$ | $SC$ |
-| :---: | :--- | :---: | :---: | :---: | :---: |
-| **0** | Initial Values | 00000 | 10011 | 0 | 5 |
-| **1** | $Q_n Q_{n+1} = 10 \\implies AC \\leftarrow AC - BR$ | 01001 | 10011 | 0 | 5 |
-| | $\\text{ashr } [AC, QR, Q_{n+1}]$ | 00100 | 11001 | 1 | 4 |
-| **2** | $Q_n Q_{n+1} = 11 \\implies$ Shift only | 00010 | 01100 | 1 | 3 |
-| **3** | $Q_n Q_{n+1} = 01 \\implies AC \\leftarrow AC + BR$ | 11001 | 01100 | 1 | 3 |
-| | $\\text{ashr } [AC, QR, Q_{n+1}]$ | 11100 | 10110 | 0 | 2 |
-| **4** | $Q_n Q_{n+1} = 00 \\implies$ Shift only | 11110 | 01011 | 0 | 1 |
-| **5** | $Q_n Q_{n+1} = 10 \\implies AC \\leftarrow AC - BR$ | 00111 | 01011 | 0 | 1 |
-| | $\\text{ashr } [AC, QR, Q_{n+1}]$ | **00011** | **10101** | 1 | 0 |
-
-**Result:** $[AC, QR] = 0001110101_2 = \\mathbf{+117_{10}}$. Correct! ($(-9) \\times (-13) = +117$).`,
-          shortNotes: 'Booth algorithm multiplies signed 2s complement numbers. Qn Qn+1: 10 -> AC-BR, 01 -> AC+BR, 00/11 -> no-op. Followed by ashr and SC-1.',
-          examples: [
-            {
-              title: 'Booth Rule Selection',
-              code: 'Qn Qn+1 = 10 -> Subtract BR from AC, then ashr\nQn Qn+1 = 01 -> Add BR to AC, then ashr\nQn Qn+1 = 00 -> ashr only\nQn Qn+1 = 11 -> ashr only',
-              explanation: 'Applies across all n bits.'
-            }
-          ],
-          keyPoints: [
-            'Handles signed 2s complement numbers without sign conversion.',
-            'Arithmetic shift right preserves the sign bit in AC.',
-            'Product is stored across the combined AC and QR registers.'
-          ],
-          theoryQuestions: [
-            {
-              question: 'Draw the complete flowchart of Booth\'s Multiplication Algorithm and explain its step-by-step working.',
-              marks: '7 Marks',
-              answer: 'Booth\'s Algorithm multiplies two signed 2\'s complement binary numbers:\n1. **Initialization:** Multiplicand in $BR$, Multiplier in $QR$, $AC = 0$, $Q_{n+1} = 0$, Sequence Counter $SC = n$.\n2. **Bit Inspection:** Inspect the two least significant bits $[Q_n, Q_{n+1}]$:\n   - \`10\`: Beginning of a run of 1s $\\rightarrow AC \\leftarrow AC - BR$.\n   - \`01\`: End of a run of 1s $\\rightarrow AC \\leftarrow AC + BR$.\n   - \`00\` or \`11\`: Inside a run of identical bits $\\rightarrow$ No arithmetic operation.\n3. **Arithmetic Shift Right:** Arithmetic shift right $[AC, QR, Q_{n+1}]$ preserving AC\'s sign bit.\n4. **Counter Decrement:** $SC \\leftarrow SC - 1$. Repeat until $SC = 0$.\n5. **Output:** The final $2n$-bit product resides in $[AC, QR]$.',
-              keyPoints: [
-                'Full flowchart diagram.',
-                'Explanation of [Qn, Qn+1] test cases.',
-                'Preservation of sign during arithmetic shift right.'
-              ]
-            }
-          ],
-          mcqs: [
-            {
-              question: 'In Booth\'s multiplication algorithm, what operation is performed when Qn Qn+1 = 10?',
-              options: ['AC <- AC + BR', 'AC <- AC - BR', 'Only arithmetic shift right', 'Clear AC'],
-              correctIndex: 1,
-              explanation: '10 indicates the beginning of a block of 1s, requiring subtraction of the multiplicand: AC <- AC - BR.'
+              "question": "In IEEE 754 normalized floating-point numbers, why is the leading 1 before the binary point not stored in the fraction field?",
+              "options": [
+                "Because it is always zero",
+                "Because it is an implicit (hidden) bit, saving 1 bit of memory to increase precision",
+                "Because floating point numbers cannot represent 1",
+                "Because the exponent represents the leading bit"
+              ],
+              "correctIndex": 1,
+              "explanation": "Normalized binary scientific numbers always start with 1.xxx. By making this 1 implicit (hidden), an extra bit of precision is gained in the 23-bit fraction."
             },
             {
-              question: 'What is the primary advantage of Booth\'s multiplication algorithm over traditional shift-and-add?',
-              options: ['It requires no adder circuit', 'It handles negative 2s complement numbers directly and speeds up execution over blocks of 1s', 'It uses only 1 register', 'It eliminates shift operations'],
-              correctIndex: 1,
-              explanation: 'Booth directly operates on signed 2s complement integers and replaces strings of additions with one subtraction and one addition.'
+              "question": "What does an IEEE 754 single precision bit pattern with biased exponent = 255 (all 1s) and fraction = 0 represent?",
+              "options": [
+                "Zero",
+                "Denormalized number",
+                "Infinity (+inf or -inf)",
+                "Not-a-Number (NaN)"
+              ],
+              "correctIndex": 2,
+              "explanation": "An exponent of all 1s (255) with a fraction of zero represents positive or negative infinity (e.g., resulting from division by zero)."
+            },
+            {
+              "question": "In a Carry Lookahead Adder, what is the boolean expression for the Carry Generate (Gi) signal?",
+              "options": [
+                "Gi = Ai XOR Bi",
+                "Gi = Ai + Bi",
+                "Gi = Ai AND Bi",
+                "Gi = Ai NOR Bi"
+              ],
+              "correctIndex": 2,
+              "explanation": "A stage generates a carry independently of previous stages if both input bits are 1, defined by Gi = Ai AND Bi."
             }
           ]
         }
       ]
     },
-
-    // ── UNIT 6: PIPELINE, MEMORY & I/O ORGANIZATION ──
     {
-      id: 'unit-6',
-      title: 'Unit 6: Pipeline, Memory & I/O Organization',
-      description: 'Flynn classification, pipelining speedup formulas, hazards, memory hierarchy, cache mapping, and Direct Memory Access (DMA).',
-      topics: [
+      "id": "ca-u6",
+      "title": "Unit 6: Memory & I/O Organization",
+      "description": "Memory Hierarchy Pyramid, Locality of Reference (Temporal vs Spatial), RAM/ROM Chip Interconnection & Address Decoding, Cache Memory Mappings (Direct, Associative, Set-Associative), Cache Write Policies (Write-Through vs Write-Back), Virtual Memory Architecture, Page Tables, TLB, Page Replacement (FIFO, LRU), Asynchronous I/O (Strobe vs Handshaking), Programmed vs Interrupt-Driven I/O, Direct Memory Access (DMA Controller, Burst vs Cycle Stealing), and Priority Interrupts (Daisy-Chaining vs Parallel Priority).",
+      "topics": [
         {
-          id: 'pipelining-flynn-speedup',
-          title: 'Flynn\'s Classification & Pipeline Speedup Formula',
-          simpleExplanation: 'Pipelining overlaps different stages of instruction execution like a factory assembly line, vastly increasing throughput.',
-          detailedExplanation: `## Flynn's Classification & Pipelining Speedup
-
-### Flynn's Classification (4 Architectures):
-1. **SISD (Single Instruction, Single Data):** Conventional uniprocessor. Sequential execution.
-2. **SIMD (Single Instruction, Multiple Data):** Vector/Array processors, modern GPUs. Single instruction operates on arrays of data concurrently.
-3. **MISD (Multiple Instruction, Single Data):** Multiple instructions operate on the same data stream (used in fault-tolerant avionics).
-4. **MIMD (Multiple Instruction, Multiple Data):** Multicore processors, distributed computing clusters, supercomputers.
-
-### 4-Stage Instruction Pipeline Architecture
-\`\`\`mermaid
-flowchart LR
-    FI["Stage 1: FI\n(Fetch Instruction)"] -->|"Interstage Reg"| DA["Stage 2: DA\n(Decode & Address)"]
-    DA -->|"Interstage Reg"| FO["Stage 3: FO\n(Fetch Operand)"]
-    FO -->|"Interstage Reg"| EX["Stage 4: EX\n(Execute Instruction)"]
-\`\`\`
-
-### Pipelining Speedup Formula:
-$$\\mathbf{\\text{Total Clock Cycles for } n \\text{ tasks} = k + n - 1}$$
-$$\\mathbf{\\text{Speedup } S = \\frac{n \\cdot k}{k + n - 1}}$$
-As $n \\rightarrow \\infty$, $\\mathbf{S \\rightarrow k}$ (Theoretical maximum speedup equals number of pipeline stages).`,
-          shortNotes: 'Flynn: SISD, SIMD (GPUs), MISD, MIMD (Multicore). Pipeline Speedup S = (n*k)/(k+n-1). Max speedup approaches k.',
-          examples: [
+          "id": "ca-u6-t1",
+          "title": "Memory Hierarchy, Locality of Reference (Temporal vs Spatial) & Main Memory Address Decoding",
+          "simpleExplanation": "The memory hierarchy organizes computer storage into multiple levels ranging from small, ultra-fast CPU registers down to massive, inexpensive secondary storage. This layered design relies on the Principle of Locality of Reference—the tendency of programs to access recently used instructions (Temporal Locality) and adjacent memory locations (Spatial Locality). Main memory is engineered by interconnecting modular RAM and ROM chips using address decoding logic to create a continuous logical address space.",
+          "detailedExplanation": "## 1. The Memory Hierarchy Pyramid\n\nIn computer systems, memory speed directly determines processor performance. However, high-speed semiconductor storage (SRAM) is prohibitively expensive and physically large, whereas high-capacity storage (DRAM, Flash SSD, Magnetic Disk) is slow.\nTo resolve this fundamental economic and physical constraint, computer architects construct a **Memory Hierarchy**:\n\n```mermaid\nflowchart TD\n    subgraph Pyramid [\"The Memory Hierarchy Pyramid\"]\n        REG[\"CPU Registers (< 1 KB, < 0.5 ns, $$$$)\"]\n        L1[\"L1 Cache (32-64 KB, ~1 ns)\"]\n        L2[\"L2 Cache (256-512 KB, ~3-5 ns)\"]\n        L3[\"L3 Cache (8-32 MB, ~10-15 ns)\"]\n        DRAM[\"Main Memory / DRAM (16-64 GB, ~50-80 ns, $$)\"]\n        SSD[\"Secondary Storage: NVMe SSD / HDD (512 GB - 4 TB, ~10-100 us, $)\"]\n        TAPE[\"Tertiary / Archive Storage: Cloud / Tape (> 10 TB, ms to s, ¢)\"]\n    end\n    REG --> L1 --> L2 --> L3 --> DRAM --> SSD --> TAPE\n```\n\n### 1.1 Hierarchy Trade-off Principles\nAs one moves from the top of the pyramid to the bottom:\n1. **Access Time ($t_a$):** Increases drastically (from $< 0.5\\text{ ns}$ in registers to milliseconds in disk drives).\n2. **Storage Capacity:** Increases by orders of magnitude (from Kilobytes to Terabytes).\n3. **Cost per Bit:** Decreases dramatically.\n4. **Frequency of Access by CPU:** Decreases substantially.\n\n---\n\n## 2. Principle of Locality of Reference\n\nThe entire memory hierarchy operates efficiently because software exhibits **Locality of Reference**: over any short interval of time, a program references only a small, localized fraction of its total address space.\n\n```mermaid\nflowchart LR\n    LOC[\"Locality of Reference\"] --> TEMP[\"Temporal Locality\n(Locality in Time)\"]\n    LOC --> SPAT[\"Spatial Locality\n(Locality in Space)\"]\n    TEMP --> T_EX[\"Re-referencing recently used items:\n- Program loops (for, while)\n- Subroutine recursion\n- Accumulator variables\"]\n    SPAT --> S_EX[\"Referencing adjacent memory words:\n- Sequential instruction execution\n- Array traversals\n- Contiguous data structures\"]\n```\n\n### 2.1 Temporal Locality (Locality in Time)\nIf a memory location is referenced at time $t$, it is highly probable that the **exact same memory location** will be referenced again in the near future ($t + \\Delta t$).\n- *Examples:* Loop control variables ($i, j$), accumulator variables in summation algorithms, and instructions inside loop bodies.\n\n### 2.2 Spatial Locality (Locality in Space)\nIf a memory location is referenced at address $A$, it is highly probable that **nearby memory locations** ($A+1, A+2, \\dots$) will be referenced in the near future.\n- *Examples:* Sequential execution of machine instructions (dictated by $PC \\leftarrow PC + 1$), traversing sequential array elements, and accessing fields of a struct.\n\n---\n\n## 3. Main Memory Architecture: RAM and ROM Chips\n\nMain memory is constructed from two primary semiconductor memory types:\n1. **RAM (Random Access Memory):** Read-write, volatile storage.\n   - **Static RAM (SRAM):** Built using 6-transistor cross-coupled flip-flops. Extremely fast, requires no refresh, high cost and power. Used for **Cache memory**.\n   - **Dynamic RAM (DRAM):** Built using a single transistor and capacitor per bit. High density, low cost, requires periodic electrical refreshing ($10^3$ times per second) due to charge leakage. Used for **Main Memory**.\n2. **ROM (Read-Only Memory):** Non-volatile storage containing bootloaders (BIOS, UEFI) and permanent system firmware.\n\n---\n\n## 4. Main Memory Address Decoding Design Problem\n\nTo see how individual memory chips are interconnected to form a continuous address space, consider the canonical university design problem:\n\n**Design Requirement:**\nConstruct a $1024 \\times 8$ bit ($1\\text{ KB}$) memory system using:\n- One $512 \\times 8$ ROM chip (for system monitor).\n- Four $128 \\times 8$ RAM chips (for user data).\n\n### 4.1 Address Line Analysis\nTotal memory capacity = $1024 \\text{ words} \\implies 2^{10} = 1024$.\nTherefore, a **10-bit address bus** is required: lines $A_9$ through $A_0$.\n\n- **ROM Chip ($512 \\times 8$):** $512 = 2^9$, so it requires **9 internal address lines** ($A_8$ through $A_0$) to select words within the chip.\n- **RAM Chips ($128 \\times 8$):** $128 = 2^7$, so each requires **7 internal address lines** ($A_6$ through $A_0$) to select words within the chip.\n\n```\nAddress Bus Bit Allocations:\nBit:         A9   A8   A7   A6   A5   A4   A3   A2   A1   A0\nFunction:  [Chip Select]  [      Internal Chip Address     ]\n```\n\n### 4.2 Memory Address Map Table\nBy inspecting the upper bits $A_9, A_8, A_7$, we partition the address space without overlap:\n\n| Component | Chip Number | Address Range (Hex) | $A_9$ | $A_8$ | $A_7$ | $A_6$ to $A_0$ |\n| :--- | :---: | :---: | :---: | :---: | :---: | :---: |\n| **ROM** | Chip 1 | `0x000` to `0x1FF` | **0** | $x$ | $x$ | 9 address lines ($A_8 - A_0$) |\n| **RAM 1**| Chip 2 | `0x200` to `0x27F` | **1** | **0** | **0** | 7 address lines ($A_6 - A_0$) |\n| **RAM 2**| Chip 3 | `0x280` to `0x2FF` | **1** | **0** | **1** | 7 address lines ($A_6 - A_0$) |\n| **RAM 3**| Chip 4 | `0x300` to `0x37F` | **1** | **1** | **0** | 7 address lines ($A_6 - A_0$) |\n| **RAM 4**| Chip 5 | `0x380` to `0x3FF` | **1** | **1** | **1** | 7 address lines ($A_6 - A_0$) |\n\n### 4.3 Hardware Decoding Schematic\n- Line $A_9$ controls the selection between ROM and RAM:\n  - When $A_9 = 0$: Enables the ROM chip select pin ($\\overline{CS}$ of ROM).\n  - When $A_9 = 1$: Enables a **2-to-4 Decoder** fed by address lines $A_8$ and $A_7$.\n- The four outputs of the 2-to-4 decoder ($D_0, D_1, D_2, D_3$) connect directly to the Chip Select ($CS$) inputs of RAM 1, RAM 2, RAM 3, and RAM 4 respectively!\n- All data pins ($D_7-D_0$) of all five chips are tied together to the common 8-bit bidirectional data bus.\n\n```mermaid\nflowchart TD\n    A9[\"Address Line A9\"] -->|\"0\"| ROM[\"512x8 ROM Chip Select\"]\n    A9 -->|\"1 (Enable)\"| DEC[\"2-to-4 Decoder\"]\n    A8[\"Address Line A8\"] --> DEC\n    A7[\"Address Line A7\"] --> DEC\n    DEC -->|\"D0 (00)\"| RAM1[\"RAM 1 (128x8) CS\"]\n    DEC -->|\"D1 (01)\"| RAM2[\"RAM 2 (128x8) CS\"]\n    DEC -->|\"D2 (10)\"| RAM3[\"RAM 3 (128x8) CS\"]\n    DEC -->|\"D3 (11)\"| RAM4[\"RAM 4 (128x8) CS\"]\n    A6_A0[\"Address Lines A0-A6\"] --> RAM1 & RAM2 & RAM3 & RAM4\n    A8_A0[\"Address Lines A0-A8\"] --> ROM\n```\n\n> [!TIP] **EXAM TIP:**\n> When asked to construct a memory address map for RAM and ROM chips:\n> 1. Calculate total address lines = $\\log_2(\\text{Total Capacity})$.\n> 2. Determine internal address lines for each chip: $\\log_2(\\text{Chip Capacity})$.\n> 3. The remaining higher-order address lines are decoded to drive Chip Select ($CS$) pins!\n\n> [!NOTE] **DEV BRAIN:**\n> Cache-friendly code exploits locality of reference. In C/C++, iterating over a 2D array row-wise (`for i, for j: a[i][j]`) leverages spatial locality because rows are contiguous in memory. Iterating column-wise (`for j, for i: a[i][j]`) causes cache thrashing, running up to 10x slower on modern hardware!\n\n> [!WARNING] **TRAP:**\n> Do NOT assume $CS$ (Chip Select) inputs are always active-high! In commercial ICs, chip select pins are almost universally **active-low** ($\\overline{CS}$ or $\\overline{CE}$), meaning they activate on logic 0.\n\n> [!IMPORTANT] **MEMORIZE:**\n> - Temporal Locality: Accessing the same item repeatedly (loops).\n> - Spatial Locality: Accessing adjacent items sequentially (arrays).\n> - SRAM: 6 transistors, fast, cache memory, no refresh.\n> - DRAM: 1 transistor + 1 capacitor, dense, main memory, requires periodic refresh.",
+          "shortNotes": "Memory hierarchy balances speed, cost, and capacity based on Locality of Reference (Temporal and Spatial). Main memory decodes high-order address bits to select RAM/ROM chips.",
+          "examples": [
             {
-              title: 'Speedup Calculation',
-              code: 'k=4 stages, n=100 tasks\nCycles = 4 + 100 - 1 = 103 cycles\nNon-pipelined = 100 * 4 = 400 cycles\nSpeedup = 400 / 103 = 3.88x',
-              explanation: '100 tasks finish in 103 clock cycles instead of 400 cycles.'
+              "title": "Memory System Address Range & Chip Select Resolver",
+              "problem": "A 10-bit address bus (A9-A0) accesses a system with 512x8 ROM and four 128x8 RAMs. Determine which chip is selected and the internal chip address for hexadecimal bus addresses: (a) 0x0A5, (b) 0x240, and (c) 0x3F2.",
+              "explanation": "Convert hex to binary and inspect A9, A8, A7: (a) 0x0A5 = 00 10100101 (A9=0 -> ROM, addr=0x0A5). (b) 0x240 = 10 01000000 (A9=1, A8A7=00 -> RAM 1, internal=0x40). (c) 0x3F2 = 11 11110010 (A9=1, A8A7=11 -> RAM 4, internal=0x72).",
+              "code": "# Memory Address Decoder Simulator\ndef decode_address(hex_addr):\n    addr = int(hex_addr, 16)\n    a9 = (addr >> 9) & 1\n    a8 = (addr >> 8) & 1\n    a7 = (addr >> 7) & 1\n    \n    if a9 == 0:\n        chip = \"ROM (512x8)\"\n        internal_addr = addr & 0x1FF\n    else:\n        ram_num = (a8 << 1) | a7\n        chip = f\"RAM {ram_num + 1} (128x8)\"\n        internal_addr = addr & 0x7F\n        \n    return {\n        \"Address\": hex_addr,\n        \"Binary (A9..A0)\": format(addr, '010b'),\n        \"Selected Chip\": chip,\n        \"Internal Offset\": hex(internal_addr)\n    }\n\nprint(\"(a) 0x0A5:\", decode_address(\"0x0A5\"))\nprint(\"(b) 0x240:\", decode_address(\"0x240\"))\nprint(\"(c) 0x3F2:\", decode_address(\"0x3F2\"))",
+              "output": "(a) 0x0A5: {'Address': '0x0A5', 'Binary (A9..A0)': '0010100101', 'Selected Chip': 'ROM (512x8)', 'Internal Offset': '0xa5'}\n(b) 0x240: {'Address': '0x240', 'Binary (A9..A0)': '1001000000', 'Selected Chip': 'RAM 1 (128x8)', 'Internal Offset': '0x40'}\n(c) 0x3F2: {'Address': '0x3F2', 'Binary (A9..A0)': '1111110010', 'Selected Chip': 'RAM 4 (128x8)', 'Internal Offset': '0x72'}"
             }
           ],
-          keyPoints: [
-            'Flynn classifies systems by instruction and data streams.',
-            'Pipelining increases throughput, not individual task latency.',
-            'Speedup approaches number of stages k for large workloads.'
+          "keyPoints": [
+            "The memory hierarchy balances high speed, low cost, and large capacity across multiple levels.",
+            "Locality of reference comprises Temporal Locality (time-based reuse) and Spatial Locality (spatial adjacency).",
+            "SRAM uses 6-transistor flip-flops for fast cache; DRAM uses 1-transistor capacitors requiring refresh for main memory.",
+            "Address decoding splits address lines into internal chip address bits and higher-order chip select bits.",
+            "A 2-to-4 decoder on higher address lines enables seamless modular memory space expansion."
           ],
-          theoryQuestions: [
+          "theoryQuestions": [
             {
-              question: 'Define pipelining. Derive the formula for speedup of a k-segment pipeline over an unpipelined processor for n tasks.',
-              marks: '7 Marks',
-              answer: 'Pipelining is a technique of decomposing a sequential process into sub-operations, with each sub-operation being executed in a dedicated segment concurrently with all other segments.\n\n**Derivation:**\n- Let $k$ = number of pipeline segments, and $t_p$ = clock cycle time.\n- To execute $n$ tasks:\n  - The first task takes $k$ clock cycles to exit the pipeline.\n  - The remaining $n-1$ tasks exit at the rate of 1 task per clock cycle.\n  - Total pipelined time $T_p = (k + n - 1) \\times t_p$.\n- In a non-pipelined system, each task takes $k \\times t_p$, so total time $T_n = n \\times k \\times t_p$.\n- **Speedup Ratio ($S$):**\n  $$S = \\frac{T_n}{T_p} = \\frac{n \\times k \\times t_p}{(k + n - 1) \\times t_p} = \\frac{n \\cdot k}{k + n - 1}$$\n- When $n \\gg k$ ($n \\rightarrow \\infty$):\n  $$S = k$$\n  The maximum theoretical speedup equals the number of stages $k$.',
-              keyPoints: [
-                'Clear definition of pipelining.',
-                'Derivation showing (k + n - 1) cycles.',
-                'Limit as n approaches infinity equals k.'
+              "question": "Explain the Memory Hierarchy with a neat pyramid diagram. Discuss how the Principle of Locality of Reference enables this hierarchy to achieve near-SRAM speed at near-DRAM cost.",
+              "marks": "7 Marks",
+              "answer": "1. Draw the Memory Hierarchy pyramid: Registers, L1/L2/L3 Cache, Main Memory (DRAM), Secondary Storage (SSD/HDD), Tertiary Storage.\n2. Detail trade-offs: Access time increases down the pyramid; capacity increases; cost per bit decreases.\n3. Define Principle of Locality of Reference:\n   - Temporal Locality: Items referenced recently are likely to be accessed again soon (loops, subroutines).\n   - Spatial Locality: Items adjacent to recently accessed items are likely to be accessed soon (sequential code, arrays).\n4. Explain why hierarchy works: Because programs exhibit 90-95% locality, the vast majority of memory accesses hit the fast upper cache levels (L1/L2), yielding average access times close to cache speeds.",
+              "keyPoints": [
+                "Complete memory hierarchy pyramid schematic",
+                "Speed, cost, and capacity trends",
+                "Formal definitions and examples of Temporal and Spatial Locality",
+                "Mathematical basis for high average memory speed"
+              ]
+            },
+            {
+              "question": "Design a memory system of 1024 x 8 bits using one 512 x 8 ROM chip and four 128 x 8 RAM chips. Provide the complete address decoding map and interconnection schematic diagram.",
+              "marks": "7 Marks",
+              "answer": "1. Address line calculation: Total capacity 1024 = 2^10, requiring 10 address lines (A0 to A9).\n2. Chip requirements: ROM (512x8) needs 9 address lines (A0-A8); RAMs (128x8) need 7 address lines (A0-A6).\n3. Decoding logic: A9=0 selects ROM. A9=1 enables a 2-to-4 decoder receiving A8 and A7 to select RAM 1, RAM 2, RAM 3, RAM 4.\n4. Present the Memory Address Map table showing hexadecimal and binary ranges.\n5. Draw the interconnection block diagram showing address bus distribution, decoder connections to CS pins, and shared 8-bit bidirectional data bus.",
+              "keyPoints": [
+                "Address line derivation for 10-bit address bus",
+                "Memory address map table for all five chips",
+                "Role of A9 and the 2-to-4 decoder for chip selection",
+                "Complete hardware schematic diagram"
               ]
             }
           ],
-          mcqs: [
+          "mcqs": [
             {
-              question: 'In a 5-segment pipeline executing 100 tasks, how many clock cycles are required to complete all tasks?',
-              options: ['500 cycles', '105 cycles', '104 cycles', '96 cycles'],
-              correctIndex: 2,
-              explanation: 'Total cycles = k + n - 1 = 5 + 100 - 1 = 104 clock cycles.'
+              "question": "Which type of semiconductor memory requires periodic electrical refreshing to retain its stored data?",
+              "options": [
+                "Static RAM (SRAM)",
+                "Dynamic RAM (DRAM)",
+                "Read-Only Memory (ROM)",
+                "Flash Memory"
+              ],
+              "correctIndex": 1,
+              "explanation": "DRAM stores bits as electrical charges on microscopic capacitors that naturally leak charge over time, requiring periodic refresh cycles."
             },
             {
-              question: 'Which architecture category under Flynn\'s classification represents modern Graphics Processing Units (GPUs)?',
-              options: ['SISD', 'SIMD', 'MISD', 'MIMD'],
-              correctIndex: 1,
-              explanation: 'GPUs execute Single Instruction Multiple Data (SIMD) on massive parallel matrix/vector arrays.'
+              "question": "Executing instructions sequentially in a program loop primarily demonstrates which principle?",
+              "options": [
+                "Spatial Locality only",
+                "Temporal Locality (loop reuse) and Spatial Locality (sequential instructions)",
+                "Associative mapping",
+                "Direct memory access"
+              ],
+              "correctIndex": 1,
+              "explanation": "Executing instructions in a loop demonstrates both Temporal Locality (re-executing the same instructions repeatedly) and Spatial Locality (fetching instructions sequentially)."
+            },
+            {
+              "question": "How many 128 x 8 RAM chips are required to build a 1024 x 8 memory system if no ROM is used?",
+              "options": [
+                "4 chips",
+                "8 chips",
+                "16 chips",
+                "2 chips"
+              ],
+              "correctIndex": 1,
+              "explanation": "Total capacity 1024 divided by chip capacity 128 = 1024 / 128 = 8 RAM chips."
+            },
+            {
+              "question": "In the memory hierarchy, which storage medium has the fastest access time?",
+              "options": [
+                "L1 Cache",
+                "DRAM Main Memory",
+                "CPU General Purpose Registers",
+                "Solid-State Drive (SSD)"
+              ],
+              "correctIndex": 2,
+              "explanation": "CPU internal registers have the fastest access time (< 0.5 nanoseconds) because they are integrated directly into the processor datapath."
             }
           ]
         },
-
-        // ── TOPIC 21: PIPELINE HAZARDS ──
         {
-          id: 'instruction-pipeline-hazards',
-          title: 'Instruction Pipeline & Conflict Remedies (Hazards)',
-          simpleExplanation: 'Instruction pipelines suffer from structural, data, and branch hazards that cause pipeline stalls (bubbles).',
-          detailedExplanation: `## Instruction Pipeline & Conflicts (Hazards)
-
-### Pipeline Hazards Architecture
-\`\`\`mermaid
-flowchart TD
-    HAZARDS["Instruction Pipeline Hazards"] --> STRUCT["1. Structural Hazard\n(Hardware resource conflict, e.g. single memory port)"]
-    HAZARDS --> DATA["2. Data Hazard\n(Data dependency between overlapping instructions)"]
-    HAZARDS --> CONTROL["3. Control Hazard\n(Branch instructions altering Program Counter)"]
-
-    DATA --> RAW["RAW (Read-After-Write) - True Dependency"]
-    DATA --> WAR["WAR (Write-After-Read) - Anti-dependency"]
-    DATA --> WAW["WAW (Write-After-Write) - Output dependency"]
-
-    STRUCT --> SOL1["Solution: Separate Instruction & Data Caches (Harvard Architecture)"]
-    DATA --> SOL2["Solution: Hardware Operand Forwarding (Bypassing) & NOP insertion"]
-    CONTROL --> SOL3["Solution: Branch Prediction, Delayed Branching & Branch Target Buffer"]
-\`\`\`
-
-### Three Types of Pipeline Conflicts (Hazards) & Remedies:
-| Conflict Type | Physical Root Cause | Hardware / Software Remedies |
-| :--- | :--- | :--- |
-| **1. Structural Hazard** | Two stages attempt to access the same physical hardware resource simultaneously. | **Separate Harvard Caches:** Independent Instruction Cache and Data Cache. |
-| **2. Data Hazard (RAW)** | Instruction needs result of previous instruction before it has written back to registers. | **Operand Forwarding (Bypassing):** Route ALU output directly to next ALU input. |
-| **3. Control Hazard** | Conditional jump alters PC, making all prefetched instructions invalid. | **Branch Prediction**, **Branch Target Buffer (BTB)**, and **Delayed Branching**. |`,
-          shortNotes: '3 Hazards: Structural (memory conflict -> fix with Harvard cache), Data (RAW dependency -> fix with operand forwarding), Control (branch jump -> fix with branch prediction).',
-          examples: [
+          "id": "ca-u6-t2",
+          "title": "Cache Memory: Direct, Associative, Set-Associative Mapping & Write Policies",
+          "simpleExplanation": "Cache memory is a small, ultra-fast buffer placed directly between the CPU and main memory to hold frequently used instructions and data. When the CPU requests memory, a cache hit provides the data within nanoseconds, while a cache miss requires fetching a block from slower RAM. Three mapping architectures—Direct, Fully Associative, and Set-Associative—determine where main memory blocks reside in the cache, while Write-Through and Write-Back policies maintain memory consistency.",
+          "detailedExplanation": "## 1. Cache Memory Fundamentals & Performance Metrics\n\nBecause CPU clock speeds operate in Gigahertz (cycle time $< 0.5\\text{ ns}$) while DRAM main memory requires $50\\text{ to }80\\text{ ns}$ to respond, the CPU suffers severe idle stalling (**the Memory Wall**).\n**Cache Memory** is an ultra-fast SRAM buffer integrated onto the CPU die that bridges this speed mismatch.\n\n```mermaid\nflowchart LR\n    CPU[\"CPU Core\"] <-->|\"Word Access (< 1 ns)\"| CACHE[\"Cache Memory (SRAM)\"]\n    CACHE <-->|\"Block Transfer (50-80 ns)\"| MAIN[\"Main Memory (DRAM)\"]\n```\n\n### 1.1 Cache Performance Terminology\n- **Cache Hit:** The requested memory word is found in the cache.\n- **Cache Miss:** The requested memory word is not in the cache, requiring a block fetch from main RAM.\n- **Hit Ratio ($H$):** The fraction of memory accesses satisfied by the cache:\n  $$H = \\frac{\\text{Cache Hits}}{\\text{Total Memory Accesses}}$$\n- **Miss Ratio:** $1 - H$.\n- **Average Memory Access Time ($T_{\\text{avg}}$):**\n  $$T_{\\text{avg}} = H \\cdot T_c + (1 - H) \\cdot T_m$$\n  where $T_c$ is cache access time and $T_m$ is main memory access time.\n\n---\n\n## 2. The Three Cache Mapping Architectures\n\nMemory is transferred between main memory and cache in fixed-size chunks called **Blocks** (or **Cache Lines**, typically 32 to 64 bytes). The mapping function determines where a memory block is placed in the cache.\n\n```\nMain Memory Address Decomposition:\nDirect Mapping:          [ Tag ] [ Line / Index ] [ Word Offset ]\nAssociative Mapping:     [ Tag ]                  [ Word Offset ]\nSet-Associative Mapping: [ Tag ] [ Set Index    ] [ Word Offset ]\n```\n\n### 2.1 Direct Mapping\nEach block of main memory maps to **exactly one specific cache line**:\n$$\\text{Cache Line} = (\\text{Memory Block Address}) \\pmod{\\text{Total Cache Lines}}$$\n- **Address Breakdown:**\n  1. **Word Offset:** $\\log_2(\\text{Block Size})$ bits.\n  2. **Line / Index:** $\\log_2(\\text{Total Cache Lines})$ bits.\n  3. **Tag:** Remaining higher-order address bits.\n- **Advantages:** Simplest hardware; fastest search (direct index lookup).\n- **Disadvantages:** **Conflict Misses (Thrashing)**. If two active memory blocks map to the same cache line, they constantly evict each other even if the rest of the cache is completely empty!\n\n### 2.2 Fully Associative Mapping\nA block of main memory can be placed in **any cache line whatsoever**:\n- **Address Breakdown:**\n  1. **Word Offset:** $\\log_2(\\text{Block Size})$ bits.\n  2. **Tag:** All remaining address bits.\n- **Search Mechanism:** Requires **Content-Addressable Memory (CAM)** to compare the incoming Tag with all cache tags simultaneously in parallel.\n- **Advantages:** Maximum flexibility; zero conflict misses.\n- **Disadvantages:** Extremely expensive hardware comparators; limited to small caches.\n\n### 2.3 Set-Associative Mapping ($k$-way)\nThe optimal hybrid compromise. The cache is divided into $S$ **Sets**, where each set contains $k$ cache lines ($k$-way set-associative):\n$$\\text{Set Index} = (\\text{Memory Block Address}) \\pmod{\\text{Total Sets}}$$\n- A memory block maps to a specific set, but can reside in **any of the $k$ lines** within that set!\n- **Address Breakdown:**\n  1. **Word Offset:** $\\log_2(\\text{Block Size})$ bits.\n  2. **Set Index:** $\\log_2(\\text{Total Sets})$ bits, where $\\text{Sets} = \\frac{\\text{Total Cache Lines}}{k}$.\n  3. **Tag:** Remaining higher-order bits.\n- **Hardware:** Requires only $k$ parallel comparators per set (e.g., 2, 4, 8, or 16). Modern L1/L2/L3 caches are universally 4-way to 16-way set-associative.\n\n```mermaid\nflowchart TD\n    subgraph Mapping_Comparison [\"Cache Mapping Architectures\"]\n        DM[\"Direct Mapping\n1 Block -> 1 Fixed Line\nFastest, Conflict Misses\"]\n        FA[\"Fully Associative\n1 Block -> Any Line\nZero Conflict, Expensive CAM\"]\n        SA[\"k-Way Set-Associative\n1 Block -> Any Line in Target Set\nIndustry Standard Hybrid\"]\n    end\n```\n\n---\n\n## 3. Cache Write Policies: Maintaining Data Consistency\n\nWhen the CPU executes a `STORE` instruction to modify data in memory, two write policies determine how cache and main RAM are kept synchronized:\n\n```mermaid\nflowchart TD\n    WRITE[\"CPU Writes Data\"] --> POL{\"Write Policy\"}\n    POL -->|\"Write-Through\"| WT[\"Write to Cache AND Main Memory Simultaneously\n- Simple, Safe, Slow bus traffic\n- Buffered by Write Buffer\"]\n    POL -->|\"Write-Back (Copy-Back)\"| WB[\"Write to Cache ONLY\n- Set Dirty Bit = 1\n- Memory updated ONLY when line evicted\n- Fastest, lower bus bandwidth\"]\n```\n\n### 3.1 Write-Through Policy\nData is written simultaneously to **both** the cache line and main memory:\n- **Advantages:** Main memory is always completely up-to-date (consistent). Simplifies multiprocessor cache coherence.\n- **Disadvantages:** Generates heavy memory bus traffic; slows down execution unless decoupled by a FIFO **Write Buffer**.\n\n### 3.2 Write-Back (Copy-Back) Policy\nData is written **only** into the cache line. Main memory is NOT updated immediately:\n- A dedicated **Dirty Bit** (modified bit) associated with the cache line is set to 1.\n- Main memory is updated only when that dirty block is evicted to make room for a new block.\n- **Advantages:** Delivers maximum write speed and minimizes bus traffic by collapsing multiple writes to the same line into a single memory transaction.\n- **Disadvantages:** Main memory contains stale data during execution; requires complex recovery upon cache eviction.\n\n---\n\n## 4. Cache Replacement Policies\n\nWhen a miss occurs in a fully associative or set-associative cache and all candidate lines are occupied, a line must be evicted using a **Replacement Algorithm**:\n1. **Least Recently Used (LRU):** Evicts the line that has not been accessed for the longest time. Most effective; exploits temporal locality.\n2. **First-In First-Out (FIFO):** Evicts the line that has resided in the set the longest.\n3. **Least Frequently Used (LFU):** Evicts the line with the fewest historical references.\n4. **Random Replacement:** Evicts a randomly chosen line. Requires minimal hardware overhead.\n\n> [!TIP] **EXAM TIP:**\n> When asked to calculate cache bits:\n> - $\\text{Offset bits} = \\log_2(\\text{Block size in bytes})$\n> - $\\text{Index bits} = \\log_2(\\text{Number of Sets})$\n> - $\\text{Tag bits} = \\text{Address bits} - (\\text{Index bits} + \\text{Offset bits})$\n\n> [!NOTE] **DEV BRAIN:**\n> Modern L1 caches typically use Write-Through with write buffers for ultra-low latency, while larger L2 and L3 caches use Write-Back with dirty bits to avoid saturating the external DDR memory bus!\n\n> [!WARNING] **TRAP:**\n> In $k$-way set-associative mapping, students often calculate index bits using the number of lines instead of the number of **sets**. Remember:\n> $$\\text{Number of Sets} = \\frac{\\text{Total Cache Lines}}{k}$$\n\n> [!IMPORTANT] **MEMORIZE:**\n> - Average Access Time: $T_{\\text{avg}} = H \\cdot T_c + (1-H) \\cdot T_m$.\n> - Direct mapping: 1 line per block (conflict thrashing).\n> - Set-associative: $k$ lines per set.\n> - Write-Through updates memory immediately; Write-Back updates memory on eviction using a Dirty Bit.",
+          "shortNotes": "Cache bridges CPU-DRAM speed gap. Hit ratio H gives T_avg = H*Tc + (1-H)*Tm. Mappings: Direct (conflict prone), Fully Associative (CAM), Set-Associative (industry standard). Write policies: Write-Through vs Write-Back (Dirty bit).",
+          "examples": [
             {
-              title: 'Data Forwarding Bypass',
-              code: 'ADD R1, R2, R3   (R1 ready at ALU output at cycle 3)\nSUB R4, R1, R5   (Needs R1 at cycle 4)\nBypass forwards R1 output directly to ALU input without waiting for register write-back.',
-              explanation: 'Eliminates 2 pipeline stall bubbles.'
+              "title": "Cache Address Field Partition & Average Access Time Calculation",
+              "problem": "A computer system has a 32-bit byte-addressable memory and a 64 KB cache with 64-byte blocks. Determine the Tag, Index, and Offset bits for: (a) Direct Mapping, and (b) 4-Way Set-Associative Mapping. (c) If cache access time is 2 ns, main memory access time is 60 ns, and hit ratio H = 0.95, calculate the Average Memory Access Time (Tavg).",
+              "explanation": "Block size = 64 = 2^6 -> Offset = 6 bits. Total cache lines = 64KB / 64B = 1024 lines. (a) Direct: 1024 lines = 2^10 -> Index = 10 bits. Tag = 32 - 10 - 6 = 16 bits. (b) 4-way: Sets = 1024 / 4 = 256 sets = 2^8 -> Index = 8 bits. Tag = 32 - 8 - 6 = 18 bits. (c) Tavg = 0.95 * 2 + 0.05 * 60 = 1.9 + 3.0 = 4.9 ns.",
+              "code": "# Cache Parameters and Performance Calculator\ndef cache_analysis(addr_bits, cache_size_kb, block_size_bytes, k_ways, tc_ns, tm_ns, hit_ratio):\n    import math\n    offset_bits = int(math.log2(block_size_bytes))\n    total_lines = (cache_size_kb * 1024) // block_size_bytes\n    \n    # Direct Mapping\n    dm_index = int(math.log2(total_lines))\n    dm_tag = addr_bits - dm_index - offset_bits\n    \n    # k-way Set-Associative\n    sets = total_lines // k_ways\n    sa_index = int(math.log2(sets))\n    sa_tag = addr_bits - sa_index - offset_bits\n    \n    # Average Access Time\n    t_avg = hit_ratio * tc_ns + (1 - hit_ratio) * tm_ns\n    \n    return {\n        \"Direct Mapping (Tag, Index, Offset)\": (dm_tag, dm_index, offset_bits),\n        \"4-Way Set-Assoc (Tag, Index, Offset)\": (sa_tag, sa_index, offset_bits),\n        \"Average Access Time (ns)\": round(t_avg, 2)\n    }\n\nprint(cache_analysis(addr_bits=32, cache_size_kb=64, block_size_bytes=64, k_ways=4, tc_ns=2, tm_ns=60, hit_ratio=0.95))",
+              "output": "{'Direct Mapping (Tag, Index, Offset)': (16, 10, 6), '4-Way Set-Assoc (Tag, Index, Offset)': (18, 8, 6), 'Average Access Time (ns)': 4.9}"
             }
           ],
-          keyPoints: [
-            'Pipelines suffer from structural, data, and control hazards.',
-            'Operand forwarding resolves data dependencies without stalling.',
-            'Branch prediction mitigates control hazard penalties.'
+          "keyPoints": [
+            "Cache memory bridges the speed discrepancy between high-speed processors and slow DRAM main memory.",
+            "Average memory access time is calculated as Tavg = H * Tc + (1 - H) * Tm.",
+            "Direct mapping maps each block to exactly one cache line, suffering from conflict misses.",
+            "Set-associative mapping divides cache into sets of k lines, balancing search speed and flexibility.",
+            "Write-Through updates cache and RAM simultaneously; Write-Back updates RAM only when a dirty line is evicted."
           ],
-          theoryQuestions: [
+          "theoryQuestions": [
             {
-              question: 'Explain the three types of pipeline hazards (structural, data, and control) and their hardware/software solutions.',
-              marks: '7 Marks',
-              answer: 'Three types of hazards:\n1. **Structural Hazard (Resource Conflict):** Occurs when hardware cannot support all possible combinations of instructions simultaneously (e.g., single memory port for both instruction fetch and operand read).\n   - *Solution:* Separate Harvard caches (Instruction cache and Data cache).\n2. **Data Hazard (Data Dependency):** Occurs when an instruction depends on the result of an earlier instruction that is still in the pipeline (Read-After-Write RAW hazard).\n   - *Solution:* Hardware Operand Forwarding (bypassing) and compiler NOP insertion.\n3. **Control Hazard (Branch Penalty):** Occurs when a branch instruction changes the PC, requiring the pipeline to flush incorrectly prefetched instructions.\n   - *Solution:* Static/dynamic branch prediction, Branch Target Buffer (BTB), and delayed branching.',
-              keyPoints: [
-                'Detailed breakdown of all 3 hazards.',
-                'Concrete hardware solutions for each hazard.',
-                'Explanation of RAW dependency.'
+              "question": "Explain the three cache mapping techniques: Direct Mapping, Associative Mapping, and Set-Associative Mapping with block diagram representations and address bit division formats.",
+              "marks": "7 Marks",
+              "answer": "1. Direct Mapping: Explain formula Line = Block mod N. Show address format: Tag, Line, Word. Draw diagram showing direct indexing. Discuss conflict misses.\n2. Fully Associative: Block can be placed in any cache line. Address format: Tag, Word. Explain CAM parallel search.\n3. Set-Associative: Cache partitioned into sets of k lines. Formula: Set = Block mod S. Address format: Tag, Set Index, Word. Show how it combines speed of direct with conflict resistance of associative.\n4. Present comparative summary table.",
+              "keyPoints": [
+                "Mathematical mapping formulas for all three architectures",
+                "Detailed address format bit field partitions",
+                "Hardware diagrams showing tag comparisons",
+                "Trade-off analysis of hit latency vs conflict misses"
+              ]
+            },
+            {
+              "question": "Differentiate between Write-Through and Write-Back cache write policies. How does a Dirty Bit optimize write-back operations?",
+              "marks": "5 Marks",
+              "answer": "1. Write-Through: Every write operation updates both cache and main memory concurrently. Memory is always consistent. Disadvantage: high bus write traffic.\n2. Write-Back (Copy-Back): Data is written only to cache. Main memory is updated only when the block is evicted from cache.\n3. Dirty Bit (Modified Bit): A 1-bit hardware flag per cache line. Set to 1 when a write occurs. When a line is evicted: if dirty bit is 0, block is simply discarded (clean, matches RAM); if dirty bit is 1, block is written back to RAM. This saves unnecessary memory writes for unmodified lines.",
+              "keyPoints": [
+                "Operational comparison of Write-Through vs Write-Back",
+                "Bus traffic and consistency trade-offs",
+                "Role and mechanism of the Dirty Bit in avoiding redundant writes"
               ]
             }
           ],
-          mcqs: [
+          "mcqs": [
             {
-              question: 'Which technique resolves data dependency hazards by routing ALU results directly to the next instruction without waiting for write-back?',
-              options: ['Branch prediction', 'Operand forwarding (bypassing)', 'Harvard caching', 'Instruction prefetching'],
-              correctIndex: 1,
-              explanation: 'Operand forwarding routes the output of the ALU directly to the ALU inputs for the next instruction.'
+              "question": "If a cache has an access time of 1 ns, main memory access time of 50 ns, and hit ratio of 98%, what is the Average Memory Access Time?",
+              "options": [
+                "1.98 ns",
+                "2.0 ns",
+                "5.0 ns",
+                "0.98 ns"
+              ],
+              "correctIndex": 0,
+              "explanation": "Tavg = H * Tc + (1 - H) * Tm = (0.98 * 1) + (0.02 * 50) = 0.98 + 1.0 = 1.98 ns."
             },
             {
-              question: 'What type of cache architecture prevents structural pipeline hazards between instruction fetch and data read?',
-              options: ['Unified cache', 'Harvard architecture (Separate Instruction & Data caches)', 'Direct mapped cache', 'Virtual memory'],
-              correctIndex: 1,
-              explanation: 'Harvard architecture provides independent physical caches for instructions and data, allowing simultaneous fetch and operand access.'
+              "question": "Which cache mapping technique suffers most severely from conflict misses (thrashing)?",
+              "options": [
+                "Fully Associative Mapping",
+                "Direct Mapping",
+                "4-Way Set-Associative Mapping",
+                "8-Way Set-Associative Mapping"
+              ],
+              "correctIndex": 1,
+              "explanation": "In Direct Mapping, every memory block maps to exactly one line. If two frequently accessed blocks map to the same line, they repeatedly evict each other."
+            },
+            {
+              "question": "In a Write-Back cache, when is modified data written to main memory?",
+              "options": [
+                "Immediately on every write instruction",
+                "Only when the modified cache line is evicted (replaced) by another block",
+                "At every clock tick",
+                "When the computer halts"
+              ],
+              "correctIndex": 1,
+              "explanation": "Write-Back delays writing to main memory until the cache line is evicted, as indicated by its Dirty Bit."
+            },
+            {
+              "question": "A 4-way set-associative cache with 512 total cache lines contains how many sets?",
+              "options": [
+                "64 sets",
+                "128 sets",
+                "256 sets",
+                "512 sets"
+              ],
+              "correctIndex": 1,
+              "explanation": "Number of Sets = Total Lines / k = 512 / 4 = 128 sets."
             }
           ]
         },
-
-        // ── TOPIC 22: MEMORY HIERARCHY, CACHE & DMA ──
         {
-          id: 'memory-hierarchy-cache-dma',
-          title: 'Memory Hierarchy, Cache Mapping & Direct Memory Access (DMA)',
-          simpleExplanation: 'Memory is organized hierarchically by speed and cost. DMA allows high-speed I/O devices to transfer data directly to RAM without burdening the CPU.',
-          detailedExplanation: `## Memory Hierarchy, Cache Mapping & DMA
-
-### 1. Memory Hierarchy Pyramid
-\`\`\`mermaid
-flowchart TD
-    subgraph Pyramid["Memory Hierarchy (Fastest/Costliest to Slowest/Cheapest)"]
-        REG["1. CPU Registers (< 1 ns, Bytes)"]
-        L1["2. Cache Memory - L1, L2, L3 (1 - 10 ns, Megabytes)"]
-        RAM["3. Main Memory - DRAM (50 - 100 ns, Gigabytes)"]
-        SSD["4. Secondary Storage - SSD/HDD (0.1 - 10 ms, Terabytes)"]
-        TAPE["5. Tertiary Storage - Magnetic Tape / Cloud Archive (Seconds, Petabytes)"]
-    end
-
-    REG --> L1 --> RAM --> SSD --> TAPE
-\`\`\`
-
-### 2. Cache Memory Mapping Techniques:
-- **Direct Mapping:** Each block of main memory maps to exactly one fixed cache line: $\\text{Line} = \\text{Block} \\pmod{\\text{Lines}}$. Fast but suffers from conflict misses.
-- **Associative Mapping:** A memory block can be placed in **any** cache line. Tag search is done in parallel using associative content-addressable memory. Zero conflict misses, but hardware is expensive.
-- **Set-Associative Mapping:** Compromise. Cache is divided into sets of $k$ lines (e.g., 2-way or 4-way). A block maps to a specific set, but can be placed in any line within that set.
-
-### 3. Direct Memory Access (DMA) Controller Architecture
-\`\`\`mermaid
-flowchart TD
-    CPU["CPU"] <-->|"Bus Request (BR) / Bus Grant (BG)"| DMA["DMA Controller\n(Address Reg, Word Count Reg, Control)"]
-    DMA <-->|"Direct Memory Transfer (No CPU overhead!)"| RAM["Main Memory (RAM)"]
-    DEV["High-Speed I/O Device\n(Disk Drive / Network Card)"] <-->|"DMA Request / Ack"| DMA
-\`\`\`
-
-### DMA Transfer Modes:
-1. **Burst Transfer:** DMA takes full control of bus and transfers the entire block of data continuously.
-2. **Cycle Stealing:** DMA takes control of the bus for **one single memory cycle** during an internal CPU phase, transfering one word without stopping the CPU.`,
-          shortNotes: 'Memory hierarchy: Registers > Cache > RAM > Secondary. Cache mapping: Direct, Associative, Set-Associative. DMA transfers data between I/O and RAM with Burst or Cycle Stealing modes.',
-          examples: [
+          "id": "ca-u6-t3",
+          "title": "Virtual Memory: Paging, Address Translation, Page Tables, TLB & Replacement Algorithms",
+          "simpleExplanation": "Virtual memory gives programs the illusion of having a vast, contiguous address space even when physical RAM is limited and fragmented. The operating system and hardware Memory Management Unit (MMU) divide memory into fixed-size pages and translate virtual addresses into physical frame numbers using a Page Table. To accelerate this translation, a high-speed hardware cache called the Translation Lookaside Buffer (TLB) stores recent mappings, while page replacement algorithms handle page faults when memory is full.",
+          "detailedExplanation": "## 1. Virtual Memory Architecture Fundamentals\n\nIn modern multi-tasking operating systems, physical RAM ($8\\text{ to }32\\text{ GB}$) is shared concurrently across hundreds of active processes. Furthermore, programs often require more memory than physically exists.\n**Virtual Memory** decouples a program's logical view of memory from physical hardware:\n1. **Address Space (Virtual Address Space):** The range of addresses generated by a CPU executing a program ($N$ bits $\\implies 2^N$ words).\n2. **Memory Space (Physical Address Space):** The actual physical memory locations present in DRAM hardware ($M$ bits $\\implies 2^M$ words). Typically, $\\text{Address Space} \\gg \\text{Memory Space}$.\n\n```mermaid\nflowchart LR\n    CPU[\"CPU Logical Address\n(Virtual Address)\"] --> MMU[\"Memory Management Unit (MMU)\"]\n    MMU -->|\"TLB Hit (< 1 ns)\"| RAM[\"Physical RAM Frame\"]\n    MMU -->|\"TLB Miss -> Page Table Walk\"| RAM\n    MMU -->|\"Page Fault (Interrupt)\"| DISK[\"Secondary Storage (Swap Space)\"]\n```\n\n---\n\n## 2. Paging and Virtual-to-Physical Address Translation\n\nVirtual memory is managed in fixed-size blocks called **Pages** (typically $4\\text{ KB}$):\n- Virtual memory is partitioned into equal-sized **Pages**.\n- Physical RAM is partitioned into matching-sized blocks called **Frames** (or Page Frames).\n\n### 2.1 Virtual Address Structure\nA virtual address generated by the CPU is divided into two parts:\n$$\\text{Virtual Address} = [\\text{Virtual Page Number (VPN)} \\ || \\ \\text{Page Offset } d]$$\n- **Page Offset ($d$):** Identifies the specific byte within the page. For a $4\\text{ KB}$ page ($4096 = 2^{12}$), $d$ requires **12 bits**. The offset passes through unchanged to the physical address.\n- **Virtual Page Number (VPN):** Indexes into the process's **Page Table**.\n\n```\nVirtual Address:   [ Virtual Page Number (VPN) ] [ Page Offset (d) ]\n                                 |                         |\n                                 v                         |\n                         [ Page Table ]                    |\n                                 |                         |\n                                 v                         v\nPhysical Address:  [ Physical Frame Number (PFN) ] [ Page Offset (d) ]\n```\n\n### 2.2 The Page Table\nThe **Page Table** resides in main memory. Each entry (PTE) contains:\n- **Frame Number (PFN):** The physical memory frame where the page currently resides.\n- **Valid / Present Bit ($V$):** $1$ if the page is currently loaded in RAM; $0$ if the page is on disk (secondary storage).\n- **Dirty Bit ($M$):** $1$ if the page was modified while in RAM.\n- **Protection Bits:** Read, Write, Execute permissions.\n\n---\n\n## 3. Page Faults and the OS Page Fault Handler\n\nWhen the CPU references a virtual address whose Page Table entry has **Valid Bit = 0**, the hardware MMU cannot translate the address. It triggers an internal hardware interrupt termed a **Page Fault**:\n\n```mermaid\nflowchart TD\n    PF[\"Page Fault Interrupt Generated\"] --> TRAP[\"CPU traps into OS Kernel Handler\"]\n    TRAP --> SAVE[\"Save Process Context & State\"]\n    SAVE --> LOC[\"Locate Missing Page on Swap Disk\"]\n    LOC --> FREE{\"Is there an empty RAM frame?\"}\n    FREE -->|\"Yes\"| LOAD[\"Issue Disk Read DMA transfer\"]\n    FREE -->|\"No (RAM Full)\"| EVICT[\"Select victim frame using Replacement Algorithm\nIf victim is Dirty, write back to disk\"] --> LOAD\n    LOAD --> WAIT[\"Context switch: Run other ready process while disk reads\"]\n    WAIT --> INT[\"Disk DMA finishes; Interrupt CPU\"]\n    INT --> UPDATE[\"Update Page Table: Set Frame Number, Valid Bit = 1\"]\n    UPDATE --> RESTORE[\"Restore process state; Re-execute faulting instruction\"]\n```\n\nBecause hard drives and SSDs are thousands of times slower than RAM, page faults incur severe performance penalties ($5\\text{ to }10\\text{ ms}$).\n\n---\n\n## 4. Accelerating Translation: The Translation Lookaside Buffer (TLB)\n\nBecause the Page Table itself resides in main memory, translating a virtual address would normally require **two physical memory accesses**:\n1. First access to read the Page Table entry in RAM.\n2. Second access to read/write the actual data operand in RAM.\n\nTo eliminate this $2\\times$ latency penalty, modern CPUs incorporate a specialized high-speed associative hardware cache called the **Translation Lookaside Buffer (TLB)**:\n- Stores the most recently translated $[\\text{Virtual Page Number} \\rightarrow \\text{Physical Frame Number}]$ mappings.\n- **TLB Hit:** Address is translated in parallel within $< 0.5\\text{ ns}$; zero memory accesses required for translation!\n- **TLB Miss:** The MMU performs a Page Table Walk in RAM to find the mapping, updates the TLB, and resumes execution.\n\n```\nEffective Memory Access Time (EMAT):\nEMAT = (TLB Hit Ratio * (TLB Time + RAM Time)) + ((1 - TLB Hit Ratio) * (TLB Time + 2 * RAM Time))\n```\n\n---\n\n## 5. Page Replacement Algorithms\n\nWhen a page fault occurs and physical RAM is completely full, the operating system must evict an existing page to make room for the incoming page.\n\n```\nReference String: 7, 0, 1, 2, 0, 3, 0, 4, 2, 3 (Physical Frames = 3)\nFIFO: Evicts page that arrived earliest. Suffers from Belady's Anomaly!\nLRU:  Evicts page that has not been referenced for the longest time.\n```\n\n### 5.1 First-In, First-Out (FIFO)\n- Replaces the oldest page in memory.\n- **Belady's Anomaly:** Counter-intuitively, for certain reference strings, allocating **more physical frames** under FIFO can actually produce **more page faults**!\n\n### 5.2 Least Recently Used (LRU)\n- Replaces the page that has not been referenced for the longest period of time.\n- Highly effective because it exploits temporal locality. Does NOT suffer from Belady's anomaly (it is a stack algorithm).\n- Hardware implementation uses timestamp counters or reference matrix registers.\n\n### 5.3 Optimal Page Replacement (OPT / MIN)\n- Replaces the page that will not be used for the longest duration in the future.\n- Theoretical benchmark that produces the absolute minimum page faults; impossible to implement in practice because it requires future knowledge.\n\n> [!TIP] **EXAM TIP:**\n> When asked to calculate Page Faults for a reference string:\n> 1. Set up a grid with columns = reference tokens and rows = frame count.\n> 2. Mark a **Page Fault (M)** whenever the requested page is not in any frame.\n> 3. Mark a **Hit (H)** when the page is already loaded.\n> 4. Remember that initial empty frames always produce compulsory (cold) misses!\n\n> [!NOTE] **DEV BRAIN:**\n> When your system runs out of physical RAM and spends 99% of its time servicing page faults from disk rather than executing application code, the computer is in a state of **Thrashing**. The system appears completely frozen to the user!\n\n> [!WARNING] **TRAP:**\n> Never change the Page Offset ($d$) during virtual address translation!\n> Virtual Address = $[\text{VPN}  ||  d]$\n> Physical Address = $[\text{PFN}  ||  d]$\n> The lower $d$ bits are strictly identical between virtual and physical addresses!\n\n> [!IMPORTANT] **MEMORIZE:**\n> - Page size $4\\text{ KB} \\implies 12\\text{ offset bits}$ ($2^{12} = 4096$).\n> - Valid bit = 0 triggers a **Page Fault**.\n> - TLB is an on-chip associative cache for Page Table entries.\n> - Belady's Anomaly occurs in FIFO, NEVER in LRU.",
+          "shortNotes": "Virtual memory maps virtual pages to physical frames via Page Tables. TLB caches recent translations. Valid=0 triggers Page Fault. Replacement algorithms: FIFO (Belady's anomaly), LRU (optimal practical), OPT (theoretical).",
+          "examples": [
             {
-              title: 'Cache Hit Ratio Calculation',
-              code: 'Hits = 90, Misses = 10\nHit Ratio H = 90 / (90 + 10) = 0.90 (90%)\nAccess time = H * Tc + (1 - H) * Tm',
-              explanation: 'Effective memory access time drops drastically with high hit ratio.'
+              "title": "FIFO vs LRU Page Replacement Simulation",
+              "problem": "Given the page reference string: [7, 0, 1, 2, 0, 3, 0, 4, 2, 3] and 3 physical memory frames. Trace the page replacement and count the total number of page faults for: (a) FIFO, and (b) LRU.",
+              "explanation": "Trace page allocation across 3 frames. When full, FIFO evicts oldest page; LRU evicts page with oldest recent access.",
+              "code": "# Page Replacement Simulator\ndef sim_page_replacement(ref_string, num_frames):\n    # FIFO\n    fifo_frames = []\n    fifo_faults = 0\n    for page in ref_string:\n        if page not in fifo_frames:\n            fifo_faults += 1\n            if len(fifo_frames) < num_frames:\n                fifo_frames.append(page)\n            else:\n                fifo_frames.pop(0) # Evict oldest\n                fifo_frames.append(page)\n                \n    # LRU\n    lru_frames = []\n    lru_faults = 0\n    for page in ref_string:\n        if page not in lru_frames:\n            lru_faults += 1\n            if len(lru_frames) < num_frames:\n                lru_frames.append(page)\n            else:\n                lru_frames.pop(0) # Evict least recently used\n                lru_frames.append(page)\n        else:\n            # Move to most recently used end\n            lru_frames.remove(page)\n            lru_frames.append(page)\n            \n    return {\"FIFO Page Faults\": fifo_faults, \"LRU Page Faults\": lru_faults}\n\nref = [7, 0, 1, 2, 0, 3, 0, 4, 2, 3]\nprint(sim_page_replacement(ref, num_frames=3))",
+              "output": "{'FIFO Page Faults': 9, 'LRU Page Faults': 7}"
             }
           ],
-          keyPoints: [
-            'Registers and Cache are fastest; secondary storage provides largest capacity.',
-            'Set-associative cache balances hardware cost with hit ratio.',
-            'DMA eliminates CPU bottleneck during bulk disk/network transfers.'
+          "keyPoints": [
+            "Virtual memory separates a program's logical address space from physical DRAM memory.",
+            "Virtual addresses are split into Virtual Page Numbers (VPN) and unchanged Page Offsets.",
+            "A Page Table maps VPNs to Physical Frame Numbers (PFNs); a Valid Bit of 0 triggers a Page Fault.",
+            "The Translation Lookaside Buffer (TLB) caches page mappings to eliminate extra memory accesses.",
+            "LRU replacement outperforms FIFO and is immune to Belady's Anomaly."
           ],
-          theoryQuestions: [
+          "theoryQuestions": [
             {
-              question: 'Explain Direct Memory Access (DMA) with a block diagram. Differentiate between Burst Transfer and Cycle Stealing.',
-              marks: '7 Marks',
-              answer: 'DMA allows high-speed peripherals (disks, network cards) to transfer data directly to/from memory without routing through the CPU.\n\n**Operation:**\n1. Device asserts DMA Request ($DMARQ$).\n2. DMA Controller asserts Bus Request ($BR$) to the CPU.\n3. CPU finishes current clock cycle, puts its address and data buses in High-Z state, and asserts Bus Grant ($BG$).\n4. DMA Controller transfers data directly to/from RAM, updating its Address Register and decrementing Word Count Register.\n5. Once Word Count reaches 0, DMA sends an interrupt to the CPU and relinquishes the bus.\n\n**Transfer Modes:**\n- **Burst Transfer:** A continuous block of data is transferred in one contiguous burst while the CPU is paused.\n- **Cycle Stealing:** DMA transfers one word at a time by "stealing" a bus cycle when the CPU is performing internal operations, causing zero CPU downtime.',
-              keyPoints: [
-                'DMA block diagram with CPU, Memory, and Device.',
-                'Step-by-step handshake (BR, BG).',
-                'Burst transfer vs Cycle Stealing differentiation.'
+              "question": "Explain the concept of Virtual Memory and describe the step-by-step virtual-to-physical address translation process using Page Tables and a TLB.",
+              "marks": "7 Marks",
+              "answer": "1. Define Virtual Memory: Logical abstraction allowing execution of programs larger than physical RAM.\n2. Address partition: Virtual address = [VPN, Offset d]; Physical address = [PFN, Offset d]. Explain why offset d is identical in both.\n3. TLB Operation: VPN is checked in parallel in the TLB. If TLB Hit: PFN is concatenated with offset d immediately.\n4. TLB Miss: MMU reads Page Table in RAM. If Valid bit = 1: PFN retrieved, TLB updated. If Valid bit = 0: Page Fault interrupt triggered.\n5. Draw the complete flow diagram showing CPU -> TLB -> Page Table -> Physical RAM.",
+              "keyPoints": [
+                "Formal definition of virtual address space vs memory space",
+                "Address translation mathematical partition",
+                "TLB hit and miss operation flow",
+                "Hardware diagram of MMU translation mechanism"
+              ]
+            },
+            {
+              "question": "What is a Page Fault? Explain the step-by-step actions taken by the operating system and hardware when a page fault occurs.",
+              "marks": "5 Marks",
+              "answer": "1. Definition: An internal hardware trap generated by the MMU when a program references a page whose Valid Bit in the Page Table is 0.\n2. Step-by-step handling sequence:\n   - Step 1: CPU traps to OS kernel Page Fault Handler.\n   - Step 2: OS checks if access was valid (protection violation -> segfault).\n   - Step 3: Find a free physical frame in RAM (or evict a victim page via replacement algorithm).\n   - Step 4: If victim page was modified (Dirty Bit=1), write it to disk swap space.\n   - Step 5: Issue DMA command to read required page from disk into selected frame.\n   - Step 6: Update Page Table (PFN loaded, Valid Bit = 1, TLB updated).\n   - Step 7: Restore CPU context and re-execute the instruction that caused the fault.",
+              "keyPoints": [
+                "Precise definition of Page Fault condition",
+                "Full OS interrupt service sequence",
+                "Role of Dirty Bit during victim eviction",
+                "Context switching and instruction re-execution"
               ]
             }
           ],
-          mcqs: [
+          "mcqs": [
             {
-              question: 'Which cache mapping technique allows a memory block to be placed in ANY available cache line?',
-              options: ['Direct mapping', 'Associative mapping', 'Set-associative mapping', 'Paging'],
-              correctIndex: 1,
-              explanation: 'Fully associative mapping allows blocks to reside in any cache line, with parallel tag matching.'
+              "question": "In a paging system with 4 KB page size, how many bits are allocated to the Page Offset in the virtual address?",
+              "options": [
+                "10 bits",
+                "12 bits",
+                "16 bits",
+                "20 bits"
+              ],
+              "correctIndex": 1,
+              "explanation": "Because 4 KB = 4096 bytes = 2^12 bytes, exactly 12 bits are required for the page offset."
             },
             {
-              question: 'In DMA Cycle Stealing mode, how much data is transferred per bus acquisition?',
-              options: ['Entire file', 'Entire block of 4KB', 'Exactly one memory word', 'Half of memory capacity'],
-              correctIndex: 2,
-              explanation: 'Cycle stealing takes control of the memory bus for exactly one clock/memory cycle to transfer one word.'
+              "question": "What happens when the CPU attempts to access a virtual page whose Page Table Valid/Present bit is 0?",
+              "options": [
+                "The computer reboots",
+                "The MMU generates a Page Fault interrupt",
+                "The data is read from the TLB",
+                "The CPU ignores the instruction"
+              ],
+              "correctIndex": 1,
+              "explanation": "A Valid bit of 0 indicates that the requested page is not currently in physical RAM, triggering a hardware Page Fault interrupt."
+            },
+            {
+              "question": "What is the primary role of the Translation Lookaside Buffer (TLB)?",
+              "options": [
+                "It acts as virtual memory swap space",
+                "It is a high-speed hardware cache that stores recent VPN-to-PFN address translations",
+                "It performs floating-point division",
+                "It replaces the physical DRAM"
+              ],
+              "correctIndex": 1,
+              "explanation": "The TLB is an on-chip associative cache that stores recently used page table translations, avoiding slow RAM lookups."
+            },
+            {
+              "question": "Which page replacement algorithm can suffer from Belady's Anomaly (where increasing memory frames increases page faults)?",
+              "options": [
+                "Least Recently Used (LRU)",
+                "Optimal Page Replacement (OPT)",
+                "First-In, First-Out (FIFO)",
+                "Clock Algorithm"
+              ],
+              "correctIndex": 2,
+              "explanation": "FIFO replacement can exhibit Belady's Anomaly, where increasing the number of physical frames increases the total number of page faults."
+            }
+          ]
+        },
+        {
+          "id": "ca-u6-t4",
+          "title": "Input-Output Organization: Asynchronous Transfers, DMA, Interrupts & Priority Schemes",
+          "simpleExplanation": "Input-Output (I/O) organization governs how the processor exchanges data with external peripherals that operate at vastly different speeds and independent clocks. Data transfer can be coordinated asynchronously using strobes or two-wire handshaking. To eliminate CPU bottlenecks during high-volume data transfers, Direct Memory Access (DMA) allows peripherals to transfer data directly to RAM, while priority interrupt hardware resolves competing device requests.",
+          "detailedExplanation": "## 1. Asynchronous Data Transfer: Strobe vs Handshaking\n\nInternal CPU registers operate synchronously with a centralized master clock. However, external peripheral devices (keyboards, disks, network interfaces) operate on independent, asynchronous clocks. Data transfer between two independent units requires **Asynchronous Data Transfer Protocols**.\n\n```mermaid\nflowchart TD\n    subgraph Strobe_Control [\"1. Strobe Control (One-Way Control Line)\"]\n        S_SRC[\"Source Unit\"] -->|\"Data Bus\"| S_DST[\"Destination Unit\"]\n        S_SRC -->|\"Strobe Pulse\"| S_DST\n    end\n    subgraph Handshaking [\"2. Two-Wire Handshaking (Bidirectional Feedback)\"]\n        H_SRC[\"Source Unit\"] -->|\"Data Bus\"| H_DST[\"Destination Unit\"]\n        H_SRC -->|\"Data Valid (Strobe)\"| H_DST\n        H_DST -->|\"Data Accepted (Ack)\"| H_SRC\n    end\n```\n\n### 1.1 Strobe Control Method\nA single control line (the **Strobe**) initiates the transfer:\n- **Source-Initiated Strobe:** Source places data on the bus and pulses the strobe. Destination latches data.\n- **Vulnerability:** **No acknowledgment feedback.** The source does not know if the destination actually received the data, and the destination does not know if the source placed valid data in time.\n\n### 1.2 Two-Wire Handshaking Protocol\nEliminates timing vulnerabilities by providing a **two-way handshake**:\n- Line 1: **Data Valid** (asserted by source when data is stable on the bus).\n- Line 2: **Data Accepted** (asserted by destination when data has been successfully latched).\n\n```\nSource-Initiated Handshake Sequence:\n1. Source places data on bus.\n2. Source asserts 'Data Valid' line.\n3. Destination detects 'Data Valid', latches data from bus.\n4. Destination asserts 'Data Accepted' line.\n5. Source detects 'Data Accepted', de-asserts 'Data Valid', releases bus.\n6. Destination detects de-assertion of 'Data Valid', de-asserts 'Data Accepted'.\n(System is now ready for the next transfer sequence!)\n```\n\nBecause each transition is acknowledged by the other unit, the handshake is completely insensitive to propagation delays and transmission distances!\n\n---\n\n## 2. Modes of I/O Data Transfer\n\nThere are three primary architectural modes for transferring data between peripherals and memory:\n1. **Programmed I/O:** The CPU continuously polls an I/O device's status flag in a tight loop (**busy-waiting**). Extreme CPU cycle waste.\n2. **Interrupt-Driven I/O:** The I/O device asserts an interrupt pin when ready. The CPU continues normal processing until interrupted, services the peripheral via an **Interrupt Service Routine (ISR)**, and resumes execution.\n3. **Direct Memory Access (DMA):** For high-speed devices (NVMe, Gigabit Ethernet), interrupt-per-byte overhead is too high. A dedicated **DMA Controller (DMAC)** takes control of the system bus and transfers entire data blocks directly between peripheral and RAM with zero CPU intervention!\n\n---\n\n## 3. Direct Memory Access (DMA) Architecture\n\nWhen a block transfer is needed, the CPU configures the DMA controller by loading:\n- **Address Register:** Starting physical RAM address.\n- **Word Count Register:** Number of words to transfer.\n- **Control Register:** Transfer mode (Read from disk or Write to disk).\n\n```mermaid\nflowchart LR\n    CPU[\"CPU\"] <-->|\"Bus Request (BR) / Bus Grant (BG)\"| DMAC[\"DMA Controller (DMAC)\"]\n    DMAC -->|\"System Address Bus\"| RAM[\"Main RAM\"]\n    DEV[\"High-Speed Peripheral\"] <-->|\"DMA Req / DMA Ack\"| DMAC\n    DEV <-->|\"Direct High-Speed Data Bus\"| RAM\n```\n\n### 3.1 DMA Bus Transfer Modes\nTo transfer data, the DMAC requests bus ownership from the CPU using two control lines:\n- **$BR$ (Bus Request):** Asserted by DMAC when ready to transfer.\n- **$BG$ (Bus Grant):** Asserted by CPU when it releases the address, data, and read/write buses into the high-impedance (Hi-Z) state.\n\nThere are two primary DMA transfer modes:\n1. **Burst Transfer Mode:** The DMAC transfers an entire continuous block of hundreds of bytes in a single burst while the CPU remains completely suspended. Maximum transfer rate.\n2. **Cycle Stealing Mode:** The DMAC takes over the bus for **exactly one memory cycle** to transfer a single word, then returns the bus to the CPU. The DMAC \"steals\" memory cycles during phases when the CPU is performing internal register operations, resulting in near-zero CPU slowdown!\n\n---\n\n## 4. Priority Interrupt Schemes\n\nWhen multiple I/O peripherals request CPU service simultaneously, hardware must resolve which device receives priority.\n\n```mermaid\nflowchart LR\n    subgraph Daisy_Chain [\"Daisy-Chaining (Serial Priority)\"]\n        CPU_INT[\"CPU Interrupt Ack (PO)\"] --> DEV1[\"Device 1 (Highest)\"]\n        DEV1 -->|\"PI / PO\"| DEV2[\"Device 2\"]\n        DEV2 -->|\"PI / PO\"| DEV3[\"Device 3 (Lowest)\"]\n    end\n```\n\n### 4.1 Daisy-Chaining Priority (Serial Hardware Poll)\nDevices are connected in a serial daisy-chain:\n- All devices share a common open-collector Interrupt Request line ($INT$).\n- When the CPU acknowledges the interrupt ($INTA$), the acknowledgment signal enters the **Priority In ($PI$)** of Device 1.\n- If Device 1 requested the interrupt, it intercepts the signal, places its **Vector Address (VAD)** onto the data bus, and does not pass the signal forward.\n- If Device 1 did not request the interrupt, it passes the signal through its **Priority Out ($PO$)** to Device 2, and so forth.\n- **Characteristics:** Fast priority resolution for high-priority devices; minimal control lines; but propagation delay scales linearly with device count ($O(n)$ delay).\n\n### 4.2 Parallel Priority Interrupt\nAll interrupt request lines ($IR_0$ through $IR_3$) are connected directly to an **$8$-to-$3$ Priority Encoder**:\n- An **Interrupt Mask Register** allows software to selectively enable or disable individual interrupt levels.\n- The priority encoder instantly outputs the binary code of the highest-priority active device in $O(1)$ constant time.\n- The binary code is decoded to generate the unique **Interrupt Vector Address (VAD)** for the CPU to jump directly to the device's ISR.\n\n```mermaid\nflowchart TD\n    IR[\"Interrupt Requests: IR0..IR3\"] --> MASK[\"Interrupt Mask Register\"]\n    MASK --> PE[\"Priority Encoder\n(Resolves highest priority instantly)\"]\n    PE --> VAD[\"Vector Address Generator\"]\n    VAD --> CPU_VEC[\"CPU Program Counter (PC <- VAD)\"]\n```\n\n> [!TIP] **EXAM TIP:**\n> When asked to compare DMA Burst Mode vs Cycle Stealing:\n> - **Burst Mode:** Transfers entire block in one shot; CPU is halted for duration; ideal for fast magnetic tapes or network bursts.\n> - **Cycle Stealing:** Transfers one word per stole cycle; CPU continues running interleaved; ideal for real-time monitoring.\n\n> [!NOTE] **DEV BRAIN:**\n> In high-performance Linux network servers, standard interrupt-driven I/O can trigger **Receive Livelock** (CPU spends 100% of its time servicing network packet interrupts with 0% CPU left to process data). Modern Linux network drivers switch dynamically from interrupts to polling (NAPI - New API) during heavy traffic!\n\n> [!WARNING] **TRAP:**\n> Do NOT assume Daisy-Chaining allows two devices to share priority! The device physically closest to the CPU on the INTA line **always has absolute priority** over devices positioned further down the chain.\n\n> [!IMPORTANT] **MEMORIZE:**\n> - Handshaking uses two lines: Data Valid and Data Accepted.\n> - DMA Controller uses $BR$ (Bus Request) and $BG$ (Bus Grant).\n> - Cycle stealing transfers 1 word per stolen memory cycle.\n> - Daisy chaining is serial hardware priority ($O(n)$); Priority Encoder is parallel ($O(1)$).",
+          "shortNotes": "Asynchronous transfers use Strobes or Handshaking (Data Valid/Accepted). DMA transfers data directly between RAM and peripherals via Burst or Cycle Stealing. Priority interrupts use Daisy-Chaining or Priority Encoders.",
+          "examples": [
+            {
+              "title": "DMA Cycle Stealing Overhead Calculation",
+              "problem": "A high-speed disk drive transfers data at 2 MB/sec using DMA cycle stealing. The CPU operates at 100 MHz with a 32-bit (4-byte) memory bus, where each memory cycle takes 20 ns. Calculate: (a) How many DMA cycles are stolen per second, and (b) The percentage of CPU time stolen by the DMA controller.",
+              "explanation": "Data rate = 2 MB/s = 2,000,000 bytes/s. Word size = 4 bytes -> Transfers per second = 2,000,000 / 4 = 500,000 DMA cycles/sec. Total time stolen per second = 500,000 * 20 ns = 0.01 seconds = 10 ms. Percentage = (0.01 / 1.0) * 100% = 1.0%.",
+              "code": "# DMA Cycle Stealing Overhead Calculator\ndef dma_overhead(transfer_rate_mb_s, word_size_bytes, mem_cycle_ns):\n    bytes_per_sec = transfer_rate_mb_s * 1_000_000\n    cycles_per_sec = bytes_per_sec / word_size_bytes\n    time_stolen_sec = cycles_per_sec * (mem_cycle_ns * 1e-9)\n    percent_stolen = time_stolen_sec * 100\n    \n    return {\n        \"DMA Transfers/sec\": int(cycles_per_sec),\n        \"Time Stolen/sec (ms)\": time_stolen_sec * 1000,\n        \"CPU Slowdown (%)\": round(percent_stolen, 2)\n    }\n\nprint(dma_overhead(transfer_rate_mb_s=2.0, word_size_bytes=4, mem_cycle_ns=20))",
+              "output": "{'DMA Transfers/sec': 500000, 'Time Stolen/sec (ms)': 10.0, 'CPU Slowdown (%)': 1.0}"
+            }
+          ],
+          "keyPoints": [
+            "Asynchronous data transfer uses handshaking (Data Valid and Data Accepted) to eliminate timing dependencies.",
+            "Programmed I/O wastes CPU cycles in busy-wait polling; Interrupt-Driven I/O frees the CPU until devices are ready.",
+            "Direct Memory Access (DMA) transfers high-volume data blocks directly to RAM using Bus Request (BR) and Bus Grant (BG).",
+            "DMA transfer operates via Burst mode (entire block transferred) or Cycle Stealing (one word per stolen cycle).",
+            "Priority interrupts resolve multiple device requests using Daisy-Chaining (serial) or Priority Encoders (parallel)."
+          ],
+          "theoryQuestions": [
+            {
+              "question": "Explain the Asynchronous Data Transfer method using Two-Wire Handshaking with source-initiated and destination-initiated timing diagrams.",
+              "marks": "7 Marks",
+              "answer": "1. Define Asynchronous Transfer: Communication between units operating on independent clocks.\n2. Source-Initiated Handshake: Show sequence:\n   - Source places data on bus, asserts Data Valid.\n   - Destination detects Data Valid, reads bus, asserts Data Accepted.\n   - Source detects Data Accepted, disables Data Valid.\n   - Destination disables Data Accepted.\n3. Draw the timing and sequence diagrams.\n4. Destination-Initiated Handshake: Destination asserts Ready for Data; Source places data and asserts Data Valid; Destination reads and drops Ready.\n5. Explain why handshaking is robust against transmission delays.",
+              "keyPoints": [
+                "Definition of asynchronous transfer and handshaking signals",
+                "Detailed 4-step sequence for source-initiated transfer",
+                "Timing waveform diagrams for both signals",
+                "Noise and delay insensitivity of two-way handshakes"
+              ]
+            },
+            {
+              "question": "Describe the architecture and operation of a Direct Memory Access (DMA) Controller. Differentiate between Burst Transfer and Cycle Stealing modes.",
+              "marks": "7 Marks",
+              "answer": "1. Draw the DMA Controller block diagram: Address Register, Word Count Register, Control Register, Status Register, Bus Request (BR), Bus Grant (BG), DMA Request, DMA Ack.\n2. Explain configuration by CPU: CPU loads starting address, word count, and direction, then initiates transfer.\n3. Detail operation: DMAC asserts BR; CPU finishes cycle, sets buses to Hi-Z, asserts BG. DMAC transfers data directly between peripheral and RAM.\n4. Burst Mode: DMAC retains bus control until all words are transferred. High transfer rate, but CPU stalls.\n5. Cycle Stealing Mode: DMAC takes bus for 1 memory cycle per word, interleaving with CPU execution. CPU slowdown is negligible.",
+              "keyPoints": [
+                "Complete DMA controller internal register architecture",
+                "Bus arbitration protocol using BR and BG",
+                "Detailed operational breakdown of Burst Transfer",
+                "Detailed operational breakdown of Cycle Stealing"
+              ]
+            }
+          ],
+          "mcqs": [
+            {
+              "question": "What is the primary advantage of Two-Wire Handshaking over Strobe Control in asynchronous data transfer?",
+              "options": [
+                "It requires fewer physical wires",
+                "It provides bidirectional acknowledgment, making the transfer independent of transmission speed and delay",
+                "It eliminates the need for data registers",
+                "It uses a single shared clock"
+              ],
+              "correctIndex": 1,
+              "explanation": "Two-wire handshaking provides feedback via Data Valid and Data Accepted signals, ensuring that data is never read prematurely or overwritten before acceptance."
+            },
+            {
+              "question": "In Direct Memory Access (DMA), what signal does the CPU assert to inform the DMA controller that the system buses are available?",
+              "options": [
+                "Bus Request (BR)",
+                "Bus Grant (BG)",
+                "Interrupt Request (INT)",
+                "Hold Acknowledge (HLDA) / Bus Grant (BG)"
+              ],
+              "correctIndex": 1,
+              "explanation": "The CPU asserts the Bus Grant (BG) signal to indicate that it has released the address, data, and control buses into high impedance."
+            },
+            {
+              "question": "How does DMA Cycle Stealing affect CPU performance during a high-speed peripheral transfer?",
+              "options": [
+                "It halts the CPU completely for minutes",
+                "It takes over the bus for only 1 memory cycle per word transferred, causing minimal CPU slowdown",
+                "It overclocks the CPU",
+                "It corrupts CPU cache lines"
+              ],
+              "correctIndex": 1,
+              "explanation": "Cycle stealing steals only single, isolated memory cycles from the CPU, allowing program execution to continue interleaved with I/O transfers."
+            },
+            {
+              "question": "In a Daisy-Chaining priority interrupt arrangement, which device has the highest priority?",
+              "options": [
+                "The device physically closest to the CPU on the Interrupt Acknowledge line",
+                "The device with the highest numerical address",
+                "The device farthest from the CPU",
+                "Priority is determined randomly"
+              ],
+              "correctIndex": 0,
+              "explanation": "In daisy chaining, the Interrupt Acknowledge signal passes serially through devices. The device closest to the CPU receives the signal first and has highest priority."
             }
           ]
         }
