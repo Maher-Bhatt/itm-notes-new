@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import {
@@ -44,6 +45,7 @@ const CATEGORIES: PostCategory[] = [
 ];
 
 export default function CommunityPage() {
+  const navigate = useNavigate();
   const { user, profile, role } = useAuth();
   const { addXp } = useGamification();
 
@@ -72,12 +74,17 @@ export default function CommunityPage() {
   const [isComparisonOpen, setIsComparisonOpen] = useState(false);
 
   // Author information
-  const currentAuthorName = profile?.display_name || user?.email?.split('@')[0] || 'Maher Bhatt';
-  const currentAuthorEmail = user?.email || 'maher@itm.ac.in';
+  const currentAuthorName = profile?.display_name || user?.email?.split('@')[0] || (user ? 'Student' : 'Guest');
+  const currentAuthorEmail = user?.email || '';
 
   // Handle Create Post
   const handleCreatePost = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) {
+      toast.error('You must sign in with your student account to post.');
+      navigate('/auth');
+      return;
+    }
     if (!postContent.trim()) {
       toast.error('Please enter something to post.');
       return;
@@ -90,7 +97,7 @@ export default function CommunityPage() {
 
     const newPost: CommunityPost = {
       id: `post-${Date.now()}`,
-      authorId: user?.id || `anon-${Date.now()}`,
+      authorId: user.id,
       authorName: currentAuthorName,
       authorEmail: currentAuthorEmail,
       authorAvatar: profile?.avatar_url || undefined,
@@ -143,6 +150,11 @@ export default function CommunityPage() {
 
   // Add Comment to a Post
   const handleAddComment = (postId: string) => {
+    if (!user) {
+      toast.error('You must sign in to comment.');
+      navigate('/auth');
+      return;
+    }
     const content = (commentInputs[postId] || '').trim();
     if (!content) return;
 
@@ -151,7 +163,7 @@ export default function CommunityPage() {
     const newComment = {
       id: `c-${Date.now()}`,
       postId,
-      authorId: user?.id || `user-${Date.now()}`,
+      authorId: user.id,
       authorName: currentAuthorName,
       authorEmail: currentAuthorEmail,
       authorAvatar: profile?.avatar_url || undefined,
@@ -210,7 +222,7 @@ export default function CommunityPage() {
 
       <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-10 animate-fade-in">
         {/* Hero Section */}
-        <div className="relative rounded-3xl p-6 sm:p-10 mb-8 overflow-hidden border border-border bg-gradient-to-br from-primary/10 via-purple-500/5 to-amber-500/10 shadow-sm">
+        <div className="relative rounded-3xl p-6 sm:p-10 mb-8 overflow-hidden border border-border bg-card shadow-sm">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
             <div className="max-w-xl">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold mb-3">
@@ -253,95 +265,115 @@ export default function CommunityPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* ── Left Column: Feed ── */}
           <div className="lg:col-span-8 space-y-6">
-            {/* Post Composer Card */}
-            <div className="rounded-2xl sm:rounded-3xl border border-border/80 bg-card p-5 sm:p-7 shadow-sm">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm border border-primary/20">
-                    {isMasked ? '🎭' : currentAuthorName.charAt(0).toUpperCase()}
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-sm text-foreground">
-                      {isMasked ? 'Posting Anonymously 🎭' : currentAuthorName}
-                    </h3>
-                    <p className="text-[11px] text-muted-foreground">
-                      {isMasked ? 'Public Identity 100% Protected' : "B.Tech CSE '26 · Public Profile"}
-                    </p>
-                  </div>
+            {/* Post Composer Card - Authenticated Gate */}
+            {!user ? (
+              <div className="rounded-2xl sm:rounded-3xl border border-border/80 bg-card p-6 sm:p-8 text-center shadow-sm">
+                <div className="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-3.5 text-primary">
+                  <Lock className="h-6 w-6" />
                 </div>
-
-                {/* THE MASK TOGGLE SWITCH */}
-                <button
-                  type="button"
-                  onClick={() => setIsMasked(!isMasked)}
-                  className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold transition-all apple-press border ${
-                    isMasked
-                      ? 'bg-purple-600 text-white border-purple-500 shadow-md ring-2 ring-purple-500/20'
-                      : 'bg-secondary text-muted-foreground hover:text-foreground border-border'
-                  }`}
-                  title="Toggle anonymous mask"
-                >
-                  {isMasked ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
-                  <span>{isMasked ? '🎭 Mask ON (Anonymous)' : '🎭 Mask OFF'}</span>
-                </button>
-              </div>
-
-              {/* Mask Alert Explanation */}
-              {isMasked && (
-                <div className="mb-4 p-3 rounded-xl bg-purple-500/10 border border-purple-500/30 text-xs text-purple-900 dark:text-purple-200 flex items-start gap-2.5 animate-fade-in">
-                  <Shield className="h-4 w-4 text-purple-600 dark:text-purple-400 shrink-0 mt-0.5" />
-                  <div>
-                    <p className="font-bold">🎭 Campus Mask Shield Enabled</p>
-                    <p className="text-[11px] opacity-90 leading-relaxed mt-0.5">
-                      Your name, email, roll number, and avatar are completely invisible to other students and
-                      the public feed. Honest complaints regarding faculty, canteen, or campus infrastructure
-                      cannot get you caught or targeted. (Stored strictly for System Admin moderation).
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              <form onSubmit={handleCreatePost} className="space-y-4">
-                <textarea
-                  value={postContent}
-                  onChange={(e) => setPostContent(e.target.value)}
-                  placeholder={
-                    isMasked
-                      ? "Share an honest college complaint, confession, or feedback without revealing your identity..."
-                      : "Share an exam tip, ask a subject question, or post a campus update..."
-                  }
-                  rows={3}
-                  className="w-full p-3.5 rounded-xl bg-secondary/30 border border-border/80 focus:border-primary focus:ring-1 focus:ring-primary text-sm text-foreground placeholder:text-muted-foreground/60 resize-none outline-none transition-all"
-                />
-
-                <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-border/50">
-                  {/* Category Pill Selector */}
-                  <div className="flex items-center gap-1.5 flex-wrap">
-                    <span className="text-[11px] font-semibold text-muted-foreground mr-1">Category:</span>
-                    <select
-                      value={postCategory}
-                      onChange={(e) => setPostCategory(e.target.value as PostCategory)}
-                      className="px-2.5 py-1 rounded-lg bg-secondary text-xs font-semibold text-foreground border border-border/80 outline-none cursor-pointer hover:bg-secondary/80 transition-colors"
-                    >
-                      {CATEGORIES.map((cat) => (
-                        <option key={cat} value={cat}>
-                          {cat}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Submit Button */}
-                  <button
-                    type="submit"
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-primary-foreground font-bold text-xs hover:opacity-90 transition-opacity apple-press shadow-sm"
+                <h3 className="text-lg sm:text-xl font-bold text-foreground">Sign In to Post on Campus Pulse</h3>
+                <p className="text-xs sm:text-sm text-muted-foreground max-w-md mx-auto mt-1.5 mb-5 leading-relaxed">
+                  Join verified ITM students. Post academic questions, share exam tips, or enable the <span className="font-semibold text-foreground">Campus Mask Shield</span> to post 100% anonymously.
+                </p>
+                <div className="flex flex-wrap items-center justify-center gap-3">
+                  <Link
+                    to="/auth"
+                    className="pill-button bg-primary text-primary-foreground font-bold text-xs sm:text-sm px-6 py-2.5 shadow-sm hover:opacity-95 transition-all"
                   >
-                    <Send className="h-3.5 w-3.5" />
-                    <span>Post to Campus (+15 XP)</span>
+                    Sign In with Student Account
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <div className="rounded-2xl sm:rounded-3xl border border-border/80 bg-card p-5 sm:p-7 shadow-sm">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm border border-primary/20">
+                      {isMasked ? '🎭' : currentAuthorName.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-sm text-foreground">
+                        {isMasked ? 'Posting Anonymously 🎭' : currentAuthorName}
+                      </h3>
+                      <p className="text-[11px] text-muted-foreground">
+                        {isMasked ? 'Public Identity 100% Protected' : "B.Tech CSE '26 · Public Profile"}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* THE MASK TOGGLE SWITCH */}
+                  <button
+                    type="button"
+                    onClick={() => setIsMasked(!isMasked)}
+                    className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold transition-all apple-press border ${
+                      isMasked
+                        ? 'bg-zinc-900 text-zinc-100 border-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 shadow-md ring-2 ring-primary/20'
+                        : 'bg-secondary text-muted-foreground hover:text-foreground border-border'
+                    }`}
+                    title="Toggle anonymous mask"
+                  >
+                    {isMasked ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                    <span>{isMasked ? '🎭 Mask ON (Anonymous)' : '🎭 Mask OFF'}</span>
                   </button>
                 </div>
-              </form>
-            </div>
+
+                {/* Mask Alert Explanation */}
+                {isMasked && (
+                  <div className="mb-4 p-3.5 rounded-xl bg-secondary/80 border border-border text-xs text-foreground flex items-start gap-2.5 animate-fade-in">
+                    <Shield className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-bold">🎭 Campus Mask Shield Enabled</p>
+                      <p className="text-[11px] text-muted-foreground leading-relaxed mt-0.5">
+                        Your name, email, roll number, and avatar are completely invisible to other students and
+                        the public feed. Honest complaints regarding faculty, canteen, or campus infrastructure
+                        cannot get you caught or targeted. (Stored strictly for System Admin moderation).
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                <form onSubmit={handleCreatePost} className="space-y-4">
+                  <textarea
+                    value={postContent}
+                    onChange={(e) => setPostContent(e.target.value)}
+                    placeholder={
+                      isMasked
+                        ? "Share an honest college complaint, confession, or feedback without revealing your identity..."
+                        : "Share an exam tip, ask a subject question, or post a campus update..."
+                    }
+                    rows={3}
+                    className="w-full p-3.5 rounded-xl bg-secondary/30 border border-border/80 focus:border-primary focus:ring-1 focus:ring-primary text-sm text-foreground placeholder:text-muted-foreground/60 resize-none outline-none transition-all"
+                  />
+
+                  <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-border/50">
+                    {/* Category Pill Selector */}
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className="text-[11px] font-semibold text-muted-foreground mr-1">Category:</span>
+                      <select
+                        value={postCategory}
+                        onChange={(e) => setPostCategory(e.target.value as PostCategory)}
+                        className="px-2.5 py-1 rounded-lg bg-secondary text-xs font-semibold text-foreground border border-border/80 outline-none cursor-pointer hover:bg-secondary/80 transition-colors"
+                      >
+                        {CATEGORIES.map((cat) => (
+                          <option key={cat} value={cat}>
+                            {cat}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Submit Button */}
+                    <button
+                      type="submit"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-primary-foreground font-bold text-xs hover:opacity-90 transition-opacity apple-press shadow-sm"
+                    >
+                      <Send className="h-3.5 w-3.5" />
+                      <span>Post to Campus (+15 XP)</span>
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
 
             {/* Filter Tabs */}
             <div className="flex items-center justify-between gap-2 border-b border-border pb-3 flex-wrap">
@@ -619,52 +651,63 @@ export default function CommunityPage() {
                           )}
 
                           {/* Add Comment Input */}
-                          <div className="flex items-center gap-2 pt-2">
-                            <input
-                              type="text"
-                              value={commentInputs[post.id] || ''}
-                              onChange={(e) =>
-                                setCommentInputs((prev) => ({ ...prev, [post.id]: e.target.value }))
-                              }
-                              placeholder={
-                                commentMasked[post.id]
-                                  ? 'Write an anonymous comment...'
-                                  : 'Write a public comment...'
-                              }
-                              onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
-                                  handleAddComment(post.id);
+                          {user ? (
+                            <div className="flex items-center gap-2 pt-2">
+                              <input
+                                type="text"
+                                value={commentInputs[post.id] || ''}
+                                onChange={(e) =>
+                                  setCommentInputs((prev) => ({ ...prev, [post.id]: e.target.value }))
                                 }
-                              }}
-                              className="flex-1 px-3 py-2 rounded-xl bg-secondary/40 border border-border text-xs text-foreground placeholder:text-muted-foreground/60 outline-none focus:border-primary"
-                            />
+                                placeholder={
+                                  commentMasked[post.id]
+                                    ? 'Write an anonymous comment...'
+                                    : 'Write a public comment...'
+                                }
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') {
+                                    handleAddComment(post.id);
+                                  }
+                                }}
+                                className="flex-1 px-3 py-2 rounded-xl bg-secondary/40 border border-border text-xs text-foreground placeholder:text-muted-foreground/60 outline-none focus:border-primary"
+                              />
 
-                            {/* Mask toggle for comment */}
-                            <button
-                              type="button"
-                              onClick={() =>
-                                setCommentMasked((prev) => ({
-                                  ...prev,
-                                  [post.id]: !prev[post.id],
-                                }))
-                              }
-                              className={`p-2 rounded-xl border text-xs transition-colors ${
-                                commentMasked[post.id]
-                                  ? 'bg-purple-600 text-white border-purple-500'
-                                  : 'bg-secondary text-muted-foreground border-border hover:text-foreground'
-                              }`}
-                              title={commentMasked[post.id] ? 'Mask is ON' : 'Comment anonymously'}
-                            >
-                              🎭
-                            </button>
+                              {/* Mask toggle for comment */}
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setCommentMasked((prev) => ({
+                                    ...prev,
+                                    [post.id]: !prev[post.id],
+                                  }))
+                                }
+                                className={`p-2 rounded-xl border text-xs transition-colors ${
+                                  commentMasked[post.id]
+                                    ? 'bg-zinc-900 text-white border-zinc-700 dark:bg-zinc-100 dark:text-zinc-950'
+                                    : 'bg-secondary text-muted-foreground border-border hover:text-foreground'
+                                }`}
+                                title={commentMasked[post.id] ? 'Mask is ON' : 'Comment anonymously'}
+                              >
+                                🎭
+                              </button>
 
-                            <button
-                              onClick={() => handleAddComment(post.id)}
-                              className="px-3 py-2 rounded-xl bg-primary text-primary-foreground font-bold text-xs hover:opacity-90 apple-press"
-                            >
-                              Reply
-                            </button>
-                          </div>
+                              <button
+                                onClick={() => handleAddComment(post.id)}
+                                className="px-3 py-2 rounded-xl bg-primary text-primary-foreground font-bold text-xs hover:opacity-90 apple-press"
+                              >
+                                Reply
+                              </button>
+                            </div>
+                          ) : (
+                            <div className="pt-2">
+                              <div className="p-3 rounded-xl bg-secondary/30 border border-border text-center text-xs flex items-center justify-between">
+                                <span className="text-muted-foreground">Sign in to join the conversation and reply</span>
+                                <Link to="/auth" className="font-bold text-primary hover:underline">
+                                  Sign In
+                                </Link>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>

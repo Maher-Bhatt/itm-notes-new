@@ -36,13 +36,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch {
       // ignore
     }
-    return {
-      display_name: 'Maher Bhatt',
-      avatar_url: null,
-      bio: 'Passionate engineering student preparing for Semester 3 University Exams at ITM SLS Baroda.',
-      target_cgpa: '8.5+',
-      goal: 'Ace Computer Architecture MST & master DSA Trees',
-    };
+    return null;
   });
   const [role, setRole] = useState<AppRole | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -55,6 +49,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (session?.user) {
         fetchProfileAndRole(session.user.id);
       } else {
+        setProfile(null);
+        localStorage.removeItem('itm_student_profile');
         setIsLoading(false);
       }
     });
@@ -68,6 +64,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (session?.user) {
         fetchProfileAndRole(session.user.id);
       } else {
+        setProfile(null);
+        localStorage.removeItem('itm_student_profile');
         setRole(null);
         setIsLoading(false);
       }

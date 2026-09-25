@@ -95,11 +95,11 @@ export default function Index() {
       <Header onSearchOpen={() => setSearchOpen(true)} />
 
       {/* ── 1. Clean Apple-Style Hero ── */}
-      <section className="relative overflow-hidden pt-10 pb-16 sm:pt-16 sm:pb-24 px-4 sm:px-6 border-b border-border">
+      <section className="relative overflow-hidden pt-8 pb-14 sm:pt-14 sm:pb-20 px-4 sm:px-6 border-b border-border bg-gradient-to-b from-card/80 via-background to-background">
         <div className="max-w-5xl mx-auto text-center relative z-10 animate-slide-up">
           
           {/* Clean University Badge */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-secondary text-foreground text-xs font-semibold mb-6 border border-border">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-secondary text-foreground text-xs font-semibold mb-5 border border-border shadow-2xs">
             <GraduationCap className="h-4 w-4 text-primary" />
             <span>ITM SLS Baroda University</span>
             <span className="text-muted-foreground/40">•</span>
@@ -109,10 +109,10 @@ export default function Index() {
           {user ? (
             /* Logged-In Student Hero */
             <>
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4 text-foreground leading-[1.1]">
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4 text-foreground leading-[1.15]">
                 Welcome back, {studentName}.
               </h1>
-              <p className="text-sm sm:text-lg text-muted-foreground mb-8 leading-relaxed max-w-2xl mx-auto">
+              <p className="text-sm sm:text-base lg:text-lg text-muted-foreground mb-7 leading-relaxed max-w-2xl mx-auto">
                 Keep your momentum going. You are on a{' '}
                 <strong className="text-amber-500 font-bold">{game.streakDays} day study streak</strong> with{' '}
                 <strong className="text-foreground font-bold">{game.xp} XP</strong> (Level {levelInfo.level} · {levelInfo.title}).
@@ -133,28 +133,28 @@ export default function Index() {
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mt-5">
                   <button
                     onClick={() => navigate("/dashboard")}
-                    className="p-3 rounded-xl bg-secondary hover:bg-secondary/80 text-center transition-colors apple-press"
+                    className="p-3 rounded-xl bg-secondary hover:bg-secondary/80 text-center transition-colors apple-press border border-border/50"
                   >
                     <BookOpen className="h-4 w-4 text-primary mx-auto mb-1" />
                     <span className="text-xs font-bold text-foreground block">Dashboard</span>
                   </button>
                   <button
                     onClick={() => navigate("/coding-lab")}
-                    className="p-3 rounded-xl bg-secondary hover:bg-secondary/80 text-center transition-colors apple-press"
+                    className="p-3 rounded-xl bg-secondary hover:bg-secondary/80 text-center transition-colors apple-press border border-border/50"
                   >
                     <Code className="h-4 w-4 text-emerald-500 mx-auto mb-1" />
                     <span className="text-xs font-bold text-foreground block">Coding Lab</span>
                   </button>
                   <button
                     onClick={() => navigate("/calculator")}
-                    className="p-3 rounded-xl bg-secondary hover:bg-secondary/80 text-center transition-colors apple-press"
+                    className="p-3 rounded-xl bg-secondary hover:bg-secondary/80 text-center transition-colors apple-press border border-border/50"
                   >
                     <Calculator className="h-4 w-4 text-blue-500 mx-auto mb-1" />
                     <span className="text-xs font-bold text-foreground block">Attendance</span>
                   </button>
                   <button
                     onClick={() => navigate("/community")}
-                    className="p-3 rounded-xl bg-secondary hover:bg-secondary/80 text-center transition-colors apple-press"
+                    className="p-3 rounded-xl bg-secondary hover:bg-secondary/80 text-center transition-colors apple-press border border-border/50"
                   >
                     <MessageSquare className="h-4 w-4 text-primary mx-auto mb-1" />
                     <span className="text-xs font-bold text-foreground block">Campus Feed</span>
@@ -181,11 +181,11 @@ export default function Index() {
           ) : (
             /* Visitor / Guest Student Hero */
             <>
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight mb-5 text-foreground leading-[1.1]">
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight mb-4 text-foreground leading-[1.15]">
                 The Engineering Student <br className="hidden sm:inline" />
                 Super-Platform.
               </h1>
-              <p className="text-sm sm:text-lg text-muted-foreground mb-8 leading-relaxed max-w-2xl mx-auto">
+              <p className="text-sm sm:text-base lg:text-lg text-muted-foreground mb-8 leading-relaxed max-w-2xl mx-auto">
                 Everything for your semester in one place: <strong className="text-foreground">Anonymous campus social discussions</strong>,{' '}
                 <strong className="text-foreground">75% attendance calculator</strong>, <strong className="text-foreground">94 coding practicals</strong>, and complete university exam notes.
               </p>
@@ -210,50 +210,86 @@ export default function Index() {
                 </button>
               </div>
 
-              {/* Key Platform Pillars Bar */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto pt-6 border-t border-border text-left">
+              {/* Key Platform Pillars Bento Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 max-w-4xl mx-auto pt-6 border-t border-border text-left">
                 <div
                   onClick={() => navigate("/community")}
-                  className="p-3.5 rounded-xl bg-card border border-border hover:border-primary transition-all cursor-pointer apple-press"
+                  className="p-4 rounded-2xl bg-card border border-border hover:border-primary/60 transition-all cursor-pointer apple-press shadow-2xs group"
                 >
-                  <div className="flex items-center gap-2 text-primary font-bold text-sm sm:text-base">
-                    <MessageSquare className="h-4 w-4" />
-                    <span>Campus Social</span>
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="w-8 h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                      <MessageSquare className="h-4 w-4" />
+                    </div>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
+                      Mask 🎭
+                    </span>
                   </div>
-                  <p className="text-[11px] text-muted-foreground mt-0.5">Masked Confessions & Feed</p>
+                  <h3 className="text-sm font-bold text-foreground group-hover:text-primary transition-colors">
+                    Campus Pulse Social
+                  </h3>
+                  <p className="text-[11px] text-muted-foreground mt-0.5 leading-relaxed">
+                    Anonymous mask option for feedback & confessions.
+                  </p>
                 </div>
 
                 <div
                   onClick={() => navigate("/calculator")}
-                  className="p-3.5 rounded-xl bg-card border border-border hover:border-primary transition-all cursor-pointer apple-press"
+                  className="p-4 rounded-2xl bg-card border border-border hover:border-blue-500/60 transition-all cursor-pointer apple-press shadow-2xs group"
                 >
-                  <div className="flex items-center gap-2 text-blue-500 font-bold text-sm sm:text-base">
-                    <Calculator className="h-4 w-4" />
-                    <span>75% Attendance</span>
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center">
+                      <Calculator className="h-4 w-4" />
+                    </div>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                      75% Rule
+                    </span>
                   </div>
-                  <p className="text-[11px] text-muted-foreground mt-0.5">Safe Bunk & SGPA Predictor</p>
+                  <h3 className="text-sm font-bold text-foreground group-hover:text-blue-500 transition-colors">
+                    Attendance & SGPA
+                  </h3>
+                  <p className="text-[11px] text-muted-foreground mt-0.5 leading-relaxed">
+                    Safe bunk calculator & 10-point SGPA forecaster.
+                  </p>
                 </div>
 
                 <div
                   onClick={() => navigate("/coding-lab")}
-                  className="p-3.5 rounded-xl bg-card border border-border hover:border-primary transition-all cursor-pointer apple-press"
+                  className="p-4 rounded-2xl bg-card border border-border hover:border-emerald-500/60 transition-all cursor-pointer apple-press shadow-2xs group"
                 >
-                  <div className="flex items-center gap-2 text-emerald-500 font-bold text-sm sm:text-base">
-                    <Code className="h-4 w-4" />
-                    <span>94 Practicals</span>
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
+                      <Code className="h-4 w-4" />
+                    </div>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                      94 Codes
+                    </span>
                   </div>
-                  <p className="text-[11px] text-muted-foreground mt-0.5">DSA, Java & Python</p>
+                  <h3 className="text-sm font-bold text-foreground group-hover:text-emerald-500 transition-colors">
+                    Coding Practicals
+                  </h3>
+                  <p className="text-[11px] text-muted-foreground mt-0.5 leading-relaxed">
+                    DSA in C, Java OOP & Python with outputs & viva notes.
+                  </p>
                 </div>
 
                 <div
                   onClick={() => document.getElementById("subjects")?.scrollIntoView({ behavior: "smooth" })}
-                  className="p-3.5 rounded-xl bg-card border border-border hover:border-primary transition-all cursor-pointer apple-press"
+                  className="p-4 rounded-2xl bg-card border border-border hover:border-primary/60 transition-all cursor-pointer apple-press shadow-2xs group"
                 >
-                  <div className="flex items-center gap-2 text-foreground font-bold text-sm sm:text-base">
-                    <BookOpen className="h-4 w-4 text-primary" />
-                    <span>5 Subjects</span>
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="w-8 h-8 rounded-xl bg-secondary text-primary flex items-center justify-center border border-border">
+                      <BookOpen className="h-4 w-4" />
+                    </div>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-secondary text-foreground border border-border">
+                      Sem 3
+                    </span>
                   </div>
-                  <p className="text-[11px] text-muted-foreground mt-0.5">Full Semester Curricula</p>
+                  <h3 className="text-sm font-bold text-foreground group-hover:text-primary transition-colors">
+                    5 Master Subjects
+                  </h3>
+                  <p className="text-[11px] text-muted-foreground mt-0.5 leading-relaxed">
+                    Syllabus notes, audio lectures & quick cheat sheets.
+                  </p>
                 </div>
               </div>
             </>

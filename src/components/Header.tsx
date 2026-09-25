@@ -196,7 +196,7 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
                     <span>My Profile & Rank</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate("/community")}>
-                    <MessageSquare className="mr-2 h-4 w-4 text-purple-500" />
+                    <MessageSquare className="mr-2 h-4 w-4 text-primary" />
                     <span>Campus Social & Confessions</span>
                   </DropdownMenuItem>
                   {/* Tablet visibility fallbacks for nav items hidden in header */}
