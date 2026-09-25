@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useProgress } from "@/hooks/useProgress";
-import { ArrowRight, ChevronRight, Bookmark, BookOpen, TrendingUp, Search } from "lucide-react";
-import { useState } from "react";
+import { ArrowRight, ChevronRight, Bookmark, BookOpen, TrendingUp, Search, Sparkles } from "lucide-react";
+import { useState, useMemo } from "react";
 import { SearchDialog } from "@/components/SearchDialog";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -33,12 +33,58 @@ export default function DashboardPage() {
   const { data: dbSubjects, isLoading } = useSubjects(undefined);
   const { progress } = useProgress();
   const [searchOpen, setSearchOpen] = useState(false);
+  const [filterSem, setFilterSem] = useState<number | 'all'>('all');
   const navigate = useNavigate();
 
-  const dbSubjectsToRender = dbSubjects || [];
-  
-  // Calculate dynamic stats from dbSubjects
-  const totalTopics = dbSubjectsToRender.reduce((sum, s) => sum + (s.units?.reduce((uSum: number, u: any) => uSum + (u.topics?.length || 0), 0) || 0), 0) || 1;
+  // Combine database subjects with local static subjects so NO SUBJECT is ever missing!
+  const allSubjectsToRender = useMemo(() => {
+    const list: any[] = [];
+    const seen = new Set<string>();
+
+    // 1. Add DB subjects first
+    if (dbSubjects && dbSubjects.length > 0) {
+      for (const s of dbSubjects) {
+        list.push(s);
+        seen.add(s.id.toLowerCase());
+        if (s.code) seen.add(s.code.toLowerCase());
+        if (s.name) seen.add(s.name.toLowerCase());
+      }
+    }
+
+    // 2. Add static subjects that are not in DB
+    for (const s of subjects) {
+      const isKnown =
+        seen.has(s.id.toLowerCase()) ||
+        (s.code && seen.has(s.code.toLowerCase())) ||
+        seen.has(s.name.toLowerCase());
+
+      if (!isKnown) {
+        list.push(s);
+        seen.add(s.id.toLowerCase());
+        if (s.code) seen.add(s.code.toLowerCase());
+        seen.add(s.name.toLowerCase());
+      }
+    }
+
+    // Sort Semester 3 subjects first, then alphabetically
+    return list.sort((a, b) => {
+      const semA = a.semester === 3 ? 0 : 1;
+      const semB = b.semester === 3 ? 0 : 1;
+      if (semA !== semB) return semA - semB;
+      return (a.name || "").localeCompare(b.name || "");
+    });
+  }, [dbSubjects]);
+
+  const filteredSubjects = useMemo(() => {
+    if (filterSem === 'all') return allSubjectsToRender;
+    return allSubjectsToRender.filter((s) => s.semester === filterSem);
+  }, [allSubjectsToRender, filterSem]);
+
+  // Calculate dynamic stats
+  const totalTopics = allSubjectsToRender.reduce(
+    (sum, s) => sum + (s.units?.reduce((uSum: number, u: any) => uSum + (u.topics?.length || 0), 0) || 0),
+    0
+  ) || 1;
   const completedCount = progress.completedTopics.length;
   const overallProgress = Math.min(100, Math.round((completedCount / totalTopics) * 100));
 
@@ -89,34 +135,66 @@ export default function DashboardPage() {
                 </div>
               </button>
               <button
-                onClick={() => navigate('/imp-questions')}
+                onClick={() => navigate('/coding-lab')}
                 className="surface-elevated p-4 rounded-xl flex items-center gap-3 hover:bg-secondary transition-colors apple-press text-left"
               >
                 <div className="h-10 w-10 rounded-full bg-warning/10 flex items-center justify-center text-warning">
-                  <TrendingUp className="h-5 w-5" />
+                  <Sparkles className="h-5 w-5" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-sm">IMP Questions</h3>
-                  <p className="text-xs text-muted-foreground">Exam revision</p>
+                  <h3 className="font-semibold text-sm">Coding Lab</h3>
+                  <p className="text-xs text-muted-foreground">Interactive practice</p>
                 </div>
               </button>
             </div>
 
             {/* Current Subjects */}
             <section>
-              <h2 className="text-lg font-semibold mb-4">Your Subjects</h2>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                <div>
+                  <h2 className="text-lg font-semibold">Your Subjects</h2>
+                  <p className="text-xs text-muted-foreground">
+                    {filteredSubjects.length} subjects available
+                  </p>
+                </div>
+
+                {/* Filter Pills */}
+                <div className="flex gap-1.5 bg-secondary/50 p-1 rounded-lg self-start sm:self-auto">
+                  <button
+                    onClick={() => setFilterSem('all')}
+                    className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${
+                      filterSem === 'all'
+                        ? 'bg-background text-foreground shadow-sm'
+                        : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    All ({allSubjectsToRender.length})
+                  </button>
+                  <button
+                    onClick={() => setFilterSem(3)}
+                    className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${
+                      filterSem === 3
+                        ? 'bg-background text-foreground shadow-sm'
+                        : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    Semester 3 ⭐
+                  </button>
+                </div>
+              </div>
+
               <div className="space-y-3">
                 {isLoading ? (
-                   <div className="animate-pulse space-y-3">
+                  <div className="animate-pulse space-y-3">
                     <div className="h-20 bg-secondary/50 rounded-xl w-full"></div>
                     <div className="h-20 bg-secondary/50 rounded-xl w-full"></div>
                   </div>
-                ) : dbSubjectsToRender.length === 0 ? (
+                ) : filteredSubjects.length === 0 ? (
                   <div className="text-center p-8 border border-dashed rounded-xl border-border">
-                    <p className="text-muted-foreground">No subjects found in the database. Please seed the database from the Admin panel.</p>
+                    <p className="text-muted-foreground">No subjects found for this selection.</p>
                   </div>
                 ) : (
-                  dbSubjectsToRender.map((subject) => {
+                  filteredSubjects.map((subject) => {
                     const matchingStatic = subjects.find(
                       (s) =>
                         s.id.toLowerCase() === subject.id.toLowerCase() ||
@@ -124,6 +202,8 @@ export default function DashboardPage() {
                         (subject.name && s.name.toLowerCase() === subject.name.toLowerCase())
                     );
                     const targetId = matchingStatic ? matchingStatic.id : subject.id;
+                    const semNumber = subject.semester || matchingStatic?.semester || 3;
+
                     return (
                       <button
                         key={subject.id}
@@ -132,10 +212,22 @@ export default function DashboardPage() {
                       >
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between mb-1">
-                            <h3 className="font-semibold text-base truncate pr-2">{subject.name}</h3>
+                            <div className="flex items-center gap-2 truncate pr-2">
+                              <h3 className="font-semibold text-base truncate">{subject.name}</h3>
+                              {semNumber === 3 && (
+                                <span className="bg-primary/10 text-primary text-[10px] font-semibold px-2 py-0.5 rounded-full shrink-0">
+                                  Sem 3
+                                </span>
+                              )}
+                            </div>
+                            {subject.code && (
+                              <span className="text-xs text-muted-foreground font-mono shrink-0">
+                                {subject.code}
+                              </span>
+                            )}
                           </div>
-                          <p className="text-xs text-muted-foreground mb-2">
-                            {subject.description || 'Deep research notes & examples'}
+                          <p className="text-xs text-muted-foreground line-clamp-1">
+                            {subject.description || 'Deep research notes, diagrams & practice quizzes'}
                           </p>
                         </div>
                         <ChevronRight className="h-4 w-4 text-muted-foreground/50 group-hover:text-muted-foreground/80 transition-colors shrink-0" />
