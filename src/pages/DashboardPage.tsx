@@ -1,0 +1,208 @@
+import { useNavigate } from "react-router-dom";
+import { useProgress } from "@/hooks/useProgress";
+import { ArrowRight, ChevronRight, Bookmark, BookOpen, TrendingUp, Search } from "lucide-react";
+import { useState, useMemo, useEffect } from "react";
+import { SearchDialog } from "@/components/SearchDialog";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
+import { useAuth } from "@/contexts/AuthContext";
+import { useAcademic } from "@/contexts/AcademicContext";
+import { subjects, getAllTopicIds } from "@/data/subjects"; // Temporary fallback
+
+function OverallProgressBar({ progress }: { progress: number }) {
+  return (
+    <div className="w-full">
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-sm text-muted-foreground">Overall progress</span>
+        <span className="text-sm font-semibold text-primary tabular-nums">{progress}%</span>
+      </div>
+      <div className="h-2 rounded bg-secondary overflow-hidden">
+        <div
+          className="h-full bg-primary transition-all duration-700 ease-out"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
+export default function DashboardPage() {
+  const { user, profile } = useAuth();
+  const { semesterId } = useAcademic();
+  const { getSubjectProgress, isBookmarked, progress } = useProgress();
+  const [searchOpen, setSearchOpen] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!semesterId) {
+      navigate("/onboarding");
+    }
+  }, [semesterId, navigate]);
+
+  // In a real database scenario, this would use useAcademicContext and fetch dynamically
+  const totalTopics = subjects.reduce((sum, s) => sum + getAllTopicIds(s.id).length, 0);
+  const allTopicIds = subjects.flatMap((s) => getAllTopicIds(s.id));
+  const overallProgress = getSubjectProgress(allTopicIds);
+  const completedCount = progress.completedTopics.length;
+
+  const bookmarkedTopics = useMemo(() => {
+    const items: Array<{ subjectId: string; subjectName: string; topicId: string; topicTitle: string }> = [];
+    for (const subject of subjects) {
+      for (const unit of subject.units) {
+        for (const topic of unit.topics) {
+          if (isBookmarked(topic.id)) {
+            items.push({ subjectId: subject.id, subjectName: subject.name, topicId: topic.id, topicTitle: topic.title });
+          }
+        }
+      }
+    }
+    return items;
+  }, [isBookmarked, progress.bookmarkedTopics]);
+
+  return (
+    <div className="min-h-screen bg-background flex flex-col">
+      <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
+      <Header onSearchOpen={() => setSearchOpen(true)} />
+
+      <main className="flex-1 max-w-6xl mx-auto px-6 py-8 w-full animate-fade-in">
+        <header className="mb-8">
+          <h1 className="text-3xl font-bold tracking-tight mb-2">
+            Welcome back, {profile?.display_name || user?.email?.split('@')[0]}
+          </h1>
+          <p className="text-muted-foreground">
+            Continue where you left off or explore new subjects.
+          </p>
+        </header>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="md:col-span-2 space-y-6">
+            
+            {/* Quick Actions */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <button
+                onClick={() => setSearchOpen(true)}
+                className="surface-elevated p-4 rounded-xl flex items-center gap-3 hover:bg-secondary transition-colors apple-press text-left"
+              >
+                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                  <Search className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-sm">Quick Search</h3>
+                  <p className="text-xs text-muted-foreground">Find notes & topics</p>
+                </div>
+              </button>
+              <button
+                onClick={() => navigate('/quiz')}
+                className="surface-elevated p-4 rounded-xl flex items-center gap-3 hover:bg-secondary transition-colors apple-press text-left"
+              >
+                <div className="h-10 w-10 rounded-full bg-success/10 flex items-center justify-center text-success">
+                  <BookOpen className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-sm">Practice Quiz</h3>
+                  <p className="text-xs text-muted-foreground">Test your knowledge</p>
+                </div>
+              </button>
+              <button
+                onClick={() => navigate('/imp-questions')}
+                className="surface-elevated p-4 rounded-xl flex items-center gap-3 hover:bg-secondary transition-colors apple-press text-left"
+              >
+                <div className="h-10 w-10 rounded-full bg-warning/10 flex items-center justify-center text-warning">
+                  <TrendingUp className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-sm">IMP Questions</h3>
+                  <p className="text-xs text-muted-foreground">Exam revision</p>
+                </div>
+              </button>
+            </div>
+
+            {/* Current Subjects */}
+            <section>
+              <h2 className="text-lg font-semibold mb-4">Your Subjects</h2>
+              <div className="space-y-3">
+                {subjects.map((subject) => {
+                  const topicIds = getAllTopicIds(subject.id);
+                  const subProgress = getSubjectProgress(topicIds);
+                  const count = Math.round((subProgress / 100) * topicIds.length);
+
+                  return (
+                    <button
+                      key={subject.id}
+                      onClick={() => navigate(`/subject/${subject.id}`)}
+                      className="group w-full surface-elevated rounded-xl p-4 flex items-center gap-4 text-left hover:bg-secondary transition-all duration-150 apple-press"
+                    >
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between mb-1">
+                          <h3 className="font-semibold text-base truncate pr-2">{subject.name}</h3>
+                          {subProgress > 0 && (
+                            <span className="text-xs font-semibold text-primary tabular-nums shrink-0">{subProgress}%</span>
+                          )}
+                        </div>
+                        <p className="text-xs text-muted-foreground mb-2">
+                          {topicIds.length} topics · Semester {subject.semester}
+                          {subProgress > 0 && ` · ${count} completed`}
+                        </p>
+                        <div className="h-1.5 rounded-full bg-secondary overflow-hidden">
+                          <div
+                            className="h-full bg-primary transition-all duration-500"
+                            style={{ width: `${subProgress}%` }}
+                          />
+                        </div>
+                      </div>
+                      <ChevronRight className="h-4 w-4 text-muted-foreground/50 group-hover:text-muted-foreground/80 transition-colors shrink-0" />
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-6">
+            <div className="surface-elevated rounded-xl p-5">
+              <h3 className="font-semibold mb-4">Overall Progress</h3>
+              <OverallProgressBar progress={overallProgress} />
+              <div className="mt-4 pt-4 border-t text-sm flex justify-between text-muted-foreground">
+                <span>Completed Topics</span>
+                <span className="font-medium text-foreground">{completedCount} / {totalTopics}</span>
+              </div>
+            </div>
+
+            {bookmarkedTopics.length > 0 && (
+              <div className="surface-elevated rounded-xl p-5">
+                <div className="flex items-center gap-2 mb-4">
+                  <Bookmark className="h-4 w-4 text-warning fill-warning" />
+                  <h3 className="font-semibold">Bookmarks</h3>
+                </div>
+                <div className="space-y-3">
+                  {bookmarkedTopics.slice(0, 5).map((item) => (
+                    <button
+                      key={item.topicId}
+                      onClick={() => navigate(`/subject/${item.subjectId}/topic/${item.topicId}`)}
+                      className="w-full text-left group apple-press"
+                    >
+                      <p className="text-sm font-medium group-hover:text-primary transition-colors truncate">
+                        {item.topicTitle}
+                      </p>
+                      <p className="text-xs text-muted-foreground truncate">
+                        {item.subjectName}
+                      </p>
+                    </button>
+                  ))}
+                  {bookmarkedTopics.length > 5 && (
+                    <button onClick={() => navigate("/bookmarks")} className="text-sm text-primary font-medium hover:underline pt-2 block w-full text-left">
+                      View all {bookmarkedTopics.length} bookmarks →
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </main>
+
+      <Footer />
+    </div>
+  );
+}
