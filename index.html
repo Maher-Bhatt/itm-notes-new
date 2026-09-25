@@ -3,6 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('theme') || localStorage.getItem('vite-ui-theme');
+          var isDark = saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          if (isDark) {
+            document.documentElement.classList.add('dark');
+            document.documentElement.style.backgroundColor = '#09090b';
+            document.documentElement.style.colorScheme = 'dark';
+          } else {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.style.backgroundColor = '#ffffff';
+            document.documentElement.style.colorScheme = 'light';
+          }
+        } catch (e) {}
+      })();
+    </script>
     <title>ITM Notes — Official Study Portal | ITM SLS Baroda University</title>
     <meta name="description" content="Comprehensive B.Tech CSE Semester 3 study portal for ITM SLS Baroda University students. Complete DSA, DBMS, Java OOP, Computer Architecture, and COANMP notes, interactive Coding Lab, SGPA/Attendance 75% calculator, and university exam question banks." />
     <meta name="keywords" content="ITM SLS Baroda University, ITM Notes, B.Tech CSE Semester 3, Data Structures, DBMS, Java OOP, Computer Architecture, COANMP, Velocity Web, Maher Bhatt, Attendance Calculator, SGPA Calculator, Coding Lab" />

@@ -29,9 +29,12 @@ function sanitizeMermaid(chart: string): string {
 export function MermaidDiagram({ chart }: { chart: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [svg, setSvg] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [hasError, setHasError] = useState<boolean>(false);
 
   useEffect(() => {
+    setIsLoading(true);
+    setHasError(false);
     const isDark = document.documentElement.classList.contains("dark");
     mermaid.initialize({
       startOnLoad: false,
@@ -96,11 +99,13 @@ export function MermaidDiagram({ chart }: { chart: string }) {
         const { svg: rendered } = await mermaid.render(id, sanitized);
         if (!cancelled) {
           setSvg(rendered);
+          setIsLoading(false);
           setHasError(false);
         }
       } catch (err) {
         if (!cancelled) {
           setHasError(true);
+          setIsLoading(false);
           purgeErrorNodes();
         }
       }
@@ -112,10 +117,22 @@ export function MermaidDiagram({ chart }: { chart: string }) {
     };
   }, [chart]);
 
-  if (hasError || (!svg && !hasError)) {
-    // If mermaid fails or is loading, show a neat architecture card fallback rather than a bomb icon or scary error
+  // Loading state: Subtle dark skeleton (prevents white box flash)
+  if (isLoading && !svg) {
     return (
-      <div className="my-6 rounded-xl border border-border/70 bg-secondary/15 p-4 sm:p-5 shadow-sm">
+      <div className="my-6 rounded-xl border border-border/50 bg-secondary/10 p-6 flex flex-col items-center justify-center min-h-[150px] animate-pulse">
+        <div className="w-5 h-5 rounded-full border-2 border-primary/30 border-t-primary animate-spin mb-2" />
+        <span className="text-[11px] font-mono text-muted-foreground/60 tracking-wider">
+          Rendering Architecture Flow...
+        </span>
+      </div>
+    );
+  }
+
+  // Error state: Neat fallback card
+  if (hasError && !svg) {
+    return (
+      <div className="my-6 rounded-xl border border-border/70 bg-secondary/15 p-4 sm:p-5 shadow-sm animate-fade-in">
         <div className="flex items-center justify-between mb-2.5 pb-2 border-b border-border/40">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-primary/60"></span>
@@ -133,7 +150,7 @@ export function MermaidDiagram({ chart }: { chart: string }) {
   }
 
   return (
-    <div className="my-6 rounded-xl border border-border/80 bg-card p-4 sm:p-6 shadow-sm overflow-x-auto">
+    <div className="my-6 rounded-xl border border-border/80 bg-card p-4 sm:p-6 shadow-sm overflow-x-auto animate-fade-in">
       <div
         ref={containerRef}
         className="flex justify-center min-w-[280px] max-w-full [&>svg]:max-w-full [&>svg]:h-auto transition-all"
