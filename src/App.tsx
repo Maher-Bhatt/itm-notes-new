@@ -25,6 +25,8 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import SeedPage from "./pages/admin/SeedPage";
 import SubjectImpQuestionsPage from "./pages/SubjectImpQuestionsPage";
 import ProfilePage from "./pages/ProfilePage";
+import GpaCalculatorPage from "./pages/GpaCalculatorPage";
+import SubjectCheatSheetPage from "./pages/SubjectCheatSheetPage";
 import { PomodoroProvider } from "@/contexts/PomodoroContext";
 import { PomodoroFloatingWidget } from "@/components/PomodoroFloatingWidget";
 import { ProtectedRoute } from "./components/ProtectedRoute";
@@ -50,12 +52,15 @@ const App = () => (
                   <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
                   <Route path="/admin/seed" element={<ProtectedRoute requireAdmin><SeedPage /></ProtectedRoute>} />
                   <Route path="/subject/:subjectId" element={<SubjectDashboard />} />
+                  <Route path="/subject/:subjectId/cheat-sheet" element={<SubjectCheatSheetPage />} />
                   <Route path="/subject/:subjectId/topic/:topicId" element={<TopicPage />} />
                   <Route path="/bookmarks" element={<ProtectedRoute><BookmarksPage /></ProtectedRoute>} />
                   <Route path="/profile" element={<ProfilePage />} />
                   <Route path="/materials" element={<MaterialsPage />} />
+                  <Route path="/calculator" element={<GpaCalculatorPage />} />
+                  <Route path="/gpa-calculator" element={<GpaCalculatorPage />} />
                   <Route path="/quiz" element={<QuizPage />} />
-                    <Route path="/coding-lab" element={<ProtectedRoute><CodingLabPage /></ProtectedRoute>} />
+                    <Route path="/coding-lab" element={<CodingLabPage />} />
                   <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminDashboard /></ProtectedRoute>} />
                   <Route path="/admin/seed" element={<ProtectedRoute requireAdmin><SeedPage /></ProtectedRoute>} />
                   <Route path="/imp-questions" element={<ImpQuestionsSubjectsPage />} />

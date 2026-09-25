@@ -3,7 +3,7 @@ import { getSubject, getAllTopicIds } from "@/data/subjects";
 import { Subject } from "@/data/types";
 import { useProgress } from "@/hooks/useProgress";
 import { useSubject } from "@/hooks/useAcademicData";
-import { CheckCircle, BookOpen, Bookmark, ChevronRight, ChevronDown, Loader2, HelpCircle, FolderDown } from "lucide-react";
+import { CheckCircle, BookOpen, Bookmark, ChevronRight, ChevronDown, Loader2, HelpCircle, FolderDown, Zap } from "lucide-react";
 import { SUBJECT_IMP_DATA } from "@/data/impQuestionsData";
 import { useState, useMemo } from "react";
 import { SearchDialog } from "@/components/SearchDialog";
@@ -137,7 +137,7 @@ export default function SubjectDashboard() {
         </div>
 
         {/* Quick Exam Resources Toolbar */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
           {SUBJECT_IMP_DATA[subject.id] && (
             <button
               onClick={() => navigate(`/imp-questions/${subject.id}`)}
@@ -170,6 +170,22 @@ export default function SubjectDashboard() {
               </div>
             </div>
             <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors shrink-0" />
+          </button>
+
+          <button
+            onClick={() => navigate(`/subject/${subject.id}/cheat-sheet`)}
+            className="p-3.5 rounded-xl border border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/10 transition-colors flex items-center justify-between text-left apple-press group"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-lg bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+                <Zap className="h-5 w-5" />
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-foreground">Last-Night Cheat Sheet</h4>
+                <p className="text-xs text-muted-foreground">Formulas, RTL & Opcode Matrix</p>
+              </div>
+            </div>
+            <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-amber-500 transition-colors shrink-0" />
           </button>
         </div>
 

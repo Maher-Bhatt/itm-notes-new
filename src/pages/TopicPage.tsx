@@ -7,8 +7,10 @@ import { useTopic, useSubject } from "@/hooks/useAcademicData";
 import { MCQQuiz } from "@/components/MCQQuiz";
 import { TestMe } from "@/components/TestMe";
 import { MarkdownRenderer, extractTOC } from "@/components/MarkdownRenderer";
-import { Bookmark, CheckCircle, BookOpen, ChevronLeft, ChevronRight, Menu, X, Copy, Check, Maximize2, Minimize2, Loader2, HelpCircle, Clock } from "lucide-react";
+import { Bookmark, CheckCircle, BookOpen, ChevronLeft, ChevronRight, Menu, X, Copy, Check, Maximize2, Minimize2, Loader2, HelpCircle, Clock, Printer, Layers, Sparkles } from "lucide-react";
 import { usePomodoro } from "@/contexts/PomodoroContext";
+import { AudioNotesPlayer } from "@/components/AudioNotesPlayer";
+import { FlashcardsModal, Flashcard } from "@/components/FlashcardsModal";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { SearchDialog } from "@/components/SearchDialog";
@@ -160,6 +162,44 @@ export default function TopicPage() {
   const { recordTopicCompleted, recordQuizCompleted, unlockAchievement, checkDailyStreak } = useGamification();
   const { timeLeft: pomodoroTimeLeft, isRunning: isPomodoroRunning, startTimer: startPomodoro, setIsModalOpen: setIsPomodoroModalOpen } = usePomodoro();
 
+  const [flashcardsOpen, setFlashcardsOpen] = useState(false);
+
+  const flashcards = useMemo<Flashcard[]>(() => {
+    const list: Flashcard[] = [];
+    if (resolvedTopic?.topic.keyPoints) {
+      resolvedTopic.topic.keyPoints.forEach((kp, idx) => {
+        list.push({
+          id: `kp-${idx}`,
+          category: "Exam Point",
+          front: kp.split(":")[0] || `Key Concept ${idx + 1}`,
+          back: kp.includes(":") ? kp.split(":").slice(1).join(":").trim() : kp,
+        });
+      });
+    }
+    if (resolvedTopic?.topic.theoryQuestions) {
+      resolvedTopic.topic.theoryQuestions.forEach((tq, idx) => {
+        list.push({
+          id: `tq-${idx}`,
+          category: `Theory Question (${tq.marks})`,
+          front: tq.question,
+          back: tq.answer.replace(/```[\s\S]*?```/g, '').slice(0, 300) + (tq.answer.length > 300 ? '...' : ''),
+          hint: tq.keyPoints?.[0],
+        });
+      });
+    }
+    if (resolvedTopic?.topic.mcqs) {
+      resolvedTopic.topic.mcqs.forEach((m, idx) => {
+        list.push({
+          id: `mcq-${idx}`,
+          category: "Practice Problem",
+          front: m.question,
+          back: `Correct Answer: ${m.options[m.correctIndex]}\n\n${m.explanation}`,
+        });
+      });
+    }
+    return list;
+  }, [resolvedTopic]);
+
   // Check daily streak when user visits topic & unlock MST Survivor for CA
   useEffect(() => {
     checkDailyStreak();
@@ -304,6 +344,25 @@ export default function TopicPage() {
                   : "Focus 25m"}
               </span>
             </button>
+            {/* Flashcards Trigger */}
+            <button
+              onClick={() => setFlashcardsOpen(true)}
+              title="Active Recall Flashcards"
+              className="h-9 px-3 rounded-md text-[13px] font-semibold inline-flex items-center gap-1.5 bg-secondary hover:bg-secondary/80 text-foreground transition-all apple-press"
+            >
+              <Layers className="h-4 w-4 text-amber-500" />
+              <span className="hidden lg:inline">Flashcards</span>
+            </button>
+
+            {/* Print / Save to PDF */}
+            <button
+              onClick={() => window.print()}
+              title="Save Topic as PDF / Print Exam Guide"
+              className="p-2 rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <Printer className="h-5 w-5" />
+            </button>
+
             <button
               onClick={() => setFocusMode(!focusMode)}
               title={focusMode ? "Exit Focus Mode (F)" : "Focus Mode (F)"}
@@ -375,7 +434,23 @@ export default function TopicPage() {
             {/* Reading column */}
             <div className={`${focusMode ? "max-w-4xl mx-auto" : "flex-1 min-w-0"} px-6 md:px-12 py-10 transition-all duration-300`}>
               <p className="text-[13px] text-primary font-bold uppercase tracking-widest mb-4">{unitTitle}</p>
-              <h1 className="text-4xl md:text-5xl font-extrabold mb-10 leading-tight text-foreground tracking-tight">{topic.title}</h1>
+              <h1 className="text-4xl md:text-5xl font-extrabold mb-4 leading-tight text-foreground tracking-tight">{topic.title}</h1>
+
+              {/* Print Only Official Document Header */}
+              <div className="hidden print-header mb-6">
+                <div className="flex justify-between items-center mb-1">
+                  <span className="font-extrabold text-lg text-black">ITM SLS BARODA UNIVERSITY</span>
+                  <span className="text-xs text-gray-600 font-semibold">B.Tech CSE · Semester 3</span>
+                </div>
+                <h1 className="text-2xl font-black text-black">{topic.title}</h1>
+                <p className="text-xs text-gray-700">{subject?.name} ({subject?.code}) · {unitTitle}</p>
+              </div>
+
+              {/* Audio Notes Player (Listen to Notes) */}
+              <AudioNotesPlayer
+                title={topic.title}
+                textToRead={`${topic.title}. ${topic.simpleExplanation}. Key exam scoring points: ${topic.keyPoints.join('. ')}`}
+              />
 
               {/* ── Rich Content Mode ── */}
               <div className="topic-rich-content-wrapper max-w-[900px]">
@@ -574,6 +649,14 @@ export default function TopicPage() {
           {!focusMode && <Footer />}
         </main>
       </div>
+
+      {/* Active Recall Flashcards Modal */}
+      <FlashcardsModal
+        isOpen={flashcardsOpen}
+        onClose={() => setFlashcardsOpen(false)}
+        topicTitle={topic.title}
+        cards={flashcards}
+      />
     </div>
   );
 }

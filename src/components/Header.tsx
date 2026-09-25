@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Search, ChevronLeft, HelpCircle, User, LogOut, Shield, Flame, BookOpen, Trophy, Clock } from "lucide-react";
+import { Search, ChevronLeft, HelpCircle, User, LogOut, Shield, Flame, BookOpen, Trophy, Clock, Calculator, Code } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { useAuth } from "@/contexts/AuthContext";
 import { useGamification } from "@/hooks/useGamification";
@@ -90,6 +90,26 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
           >
             <span>Quiz</span>
           </button>
+
+          {/* GPA Predictor */}
+          <button
+            onClick={() => navigate("/calculator")}
+            title="SGPA & CGPA Grade Predictor"
+            className="apple-press hidden lg:inline-flex items-center gap-1.5 h-8 px-2.5 rounded text-xs sm:text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+          >
+            <span>GPA Calc</span>
+          </button>
+
+          {/* Coding Lab */}
+          <button
+            onClick={() => navigate("/coding-lab")}
+            title="Practical Coding Lab"
+            className="apple-press hidden xl:inline-flex items-center gap-1.5 h-8 px-2.5 rounded text-xs sm:text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+          >
+            <Code className="h-4 w-4 text-emerald-500" />
+            <span>Coding Lab</span>
+          </button>
+
           <button
             onClick={() => navigate("/imp-questions")}
             title="IMP Questions"
@@ -144,6 +164,14 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
                 <DropdownMenuItem onClick={() => navigate("/profile")}>
                   <Trophy className="mr-2 h-4 w-4 text-amber-500" />
                   <span>My Profile & Rank</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/calculator")}>
+                  <Calculator className="mr-2 h-4 w-4 text-primary" />
+                  <span>SGPA & CGPA Predictor</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/coding-lab")}>
+                  <Code className="mr-2 h-4 w-4 text-emerald-500" />
+                  <span>Practical Coding Lab</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/dashboard")}>
                   <User className="mr-2 h-4 w-4" />
