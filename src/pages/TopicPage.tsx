@@ -1,10 +1,11 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { getTopic, getAdjacentTopics, getSubject } from "@/data/subjects";
+import { getTopic, getAdjacentTopics, getSubject, Subject } from "@/data/subjects";
 import { useProgress } from "@/hooks/useProgress";
+import { useTopic, useSubject } from "@/hooks/useAcademicData";
 import { MCQQuiz } from "@/components/MCQQuiz";
 import { TestMe } from "@/components/TestMe";
 import { MarkdownRenderer, extractTOC } from "@/components/MarkdownRenderer";
-import { Bookmark, CheckCircle, BookOpen, ChevronLeft, ChevronRight, Menu, X, Copy, Check, Maximize2, Minimize2 } from "lucide-react";
+import { Bookmark, CheckCircle, BookOpen, ChevronLeft, ChevronRight, Menu, X, Copy, Check, Maximize2, Minimize2, Loader2 } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { SearchDialog } from "@/components/SearchDialog";
@@ -66,16 +67,91 @@ function ContentTOC({ markdown, activeId }: { markdown: string; activeId: string
 
 export default function TopicPage() {
   const { subjectId, topicId } = useParams<{ subjectId: string; topicId: string }>();
-  const result = getTopic(subjectId || "", topicId || "");
-  const subject = getSubject(subjectId || "");
-  const adjacent = getAdjacentTopics(subjectId || "", topicId || "");
-  const { isCompleted, isBookmarked, toggleComplete, toggleBookmark, saveMcqScore } = useProgress();
   const navigate = useNavigate();
   const [searchOpen, setSearchOpen] = useState(false);
-
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [focusMode, setFocusMode] = useState(false);
   const [activeTocId, setActiveTocId] = useState("");
+
+  // 1. Static lookup
+  const staticResult = useMemo(() => getTopic(subjectId || "", topicId || ""), [subjectId, topicId]);
+  const staticSubject = useMemo(() => getSubject(subjectId || ""), [subjectId]);
+
+  // 2. Database lookup if UUID
+  const isTopicUuid = topicId && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(topicId);
+  const isSubjectUuid = subjectId && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(subjectId);
+
+  const { data: dbTopic, isLoading: isTopicLoading } = useTopic(!staticResult && isTopicUuid ? topicId : undefined);
+  const { data: dbSubject, isLoading: isSubjectLoading } = useSubject(!staticSubject && isSubjectUuid ? subjectId : undefined);
+
+  // 3. Resolve Subject
+  const subject: Subject | undefined = useMemo(() => {
+    if (staticSubject) return staticSubject;
+    if (staticResult?.subject) return staticResult.subject;
+    if (!dbSubject) return undefined;
+    const match = getSubject(dbSubject.code) || getSubject(dbSubject.name);
+    if (match) return match;
+    return {
+      id: dbSubject.id,
+      name: dbSubject.name,
+      code: dbSubject.code || "",
+      color: dbSubject.color || "bg-primary",
+      icon: dbSubject.icon || "book-open",
+      description: dbSubject.description || "",
+      semester: 3,
+      units: (dbSubject.units || []).map((u: any) => ({
+        id: u.id,
+        title: u.title,
+        description: u.description || "",
+        topics: (u.topics || []).map((t: any) => ({
+          id: t.id,
+          title: t.title,
+          simpleExplanation: "",
+          detailedExplanation: "",
+          keyPoints: [],
+          examples: [],
+          mcqs: [],
+        })),
+      })),
+    };
+  }, [staticSubject, staticResult, dbSubject]);
+
+  // 4. Resolve Topic
+  const resolvedTopic = useMemo(() => {
+    if (staticResult) {
+      return { topic: staticResult.topic, unitTitle: staticResult.unitTitle };
+    }
+    if (!dbTopic) return undefined;
+
+    return {
+      topic: {
+        id: dbTopic.id,
+        title: dbTopic.title,
+        simpleExplanation: dbTopic.simple_explanation || "",
+        detailedExplanation: dbTopic.detailed_explanation || "",
+        richContent: dbTopic.rich_content || undefined,
+        shortNotes: dbTopic.short_notes || undefined,
+        examples: dbTopic.examples || [],
+        keyPoints: (dbTopic.key_points || []).map((kp: any) => kp.point),
+        mcqs: (dbTopic.mcqs || []).map((m: any) => ({
+          question: m.question,
+          options: m.options,
+          correctIndex: m.correct_index,
+          explanation: m.explanation,
+        })),
+      },
+      unitTitle: "Lecture Unit",
+    };
+  }, [staticResult, dbTopic]);
+
+  const adjacent = useMemo(() => {
+    if (subject && resolvedTopic) {
+      return getAdjacentTopics(subject.id, resolvedTopic.topic.id);
+    }
+    return { prev: null, next: null };
+  }, [subject, resolvedTopic]);
+
+  const { isCompleted, isBookmarked, toggleComplete, toggleBookmark, saveMcqScore } = useProgress();
 
   // Keyboard shortcut: F to toggle focus mode
   useEffect(() => {
@@ -91,8 +167,8 @@ export default function TopicPage() {
 
   // Scroll spy for TOC
   useEffect(() => {
-    if (!result?.topic.richContent) return;
-    const toc = extractTOC(result.topic.richContent);
+    if (!resolvedTopic?.topic.richContent) return;
+    const toc = extractTOC(resolvedTopic.topic.richContent);
     if (toc.length < 2) return;
 
     const observer = new IntersectionObserver(
@@ -113,7 +189,7 @@ export default function TopicPage() {
     });
 
     return () => observer.disconnect();
-  }, [result?.topic.richContent, topicId]);
+  }, [resolvedTopic?.topic.richContent, topicId]);
 
   useEffect(() => {
     setSidebarOpen(false);
@@ -121,16 +197,30 @@ export default function TopicPage() {
     window.scrollTo(0, 0);
   }, [topicId]);
 
-  if (!result) return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="text-center animate-fade-in">
-        <h2 className="text-xl font-bold mb-2">Topic not found</h2>
-        <Link to="/" className="text-primary hover:underline text-sm">← Back to home</Link>
+  if (isTopicLoading || isSubjectLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center animate-fade-in flex flex-col items-center gap-3">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="text-sm text-muted-foreground">Loading topic notes...</p>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 
-  const { topic, unitTitle } = result;
+  if (!resolvedTopic) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center animate-fade-in">
+          <h2 className="text-xl font-bold mb-2">Topic not found</h2>
+          <p className="text-sm text-muted-foreground mb-4">We couldn't find the requested topic.</p>
+          <Link to="/" className="text-primary hover:underline text-sm font-medium">← Back to home</Link>
+        </div>
+      </div>
+    );
+  }
+
+  const { topic, unitTitle } = resolvedTopic;
   const completed = isCompleted(topic.id);
   const bookmarked = isBookmarked(topic.id);
   const hasRichContent = !!topic.richContent;

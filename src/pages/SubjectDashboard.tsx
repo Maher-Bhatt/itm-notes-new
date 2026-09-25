@@ -1,8 +1,9 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { getSubject, getAllTopicIds } from "@/data/subjects";
+import { getSubject, getAllTopicIds, Subject } from "@/data/subjects";
 import { useProgress } from "@/hooks/useProgress";
-import { CheckCircle, BookOpen, Bookmark, ChevronRight, ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { useSubject } from "@/hooks/useAcademicData";
+import { CheckCircle, BookOpen, Bookmark, ChevronRight, ChevronDown, Loader2 } from "lucide-react";
+import { useState, useMemo } from "react";
 import { SearchDialog } from "@/components/SearchDialog";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -15,33 +16,100 @@ function ProgressRing({ progress, size = 44, strokeWidth = 3 }: { progress: numb
   return (
     <svg width={size} height={size} className="progress-ring">
       <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="hsl(var(--secondary))" strokeWidth={strokeWidth} />
-      <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="hsl(var(--primary))" strokeWidth={strokeWidth} strokeDasharray={circumference} strokeDashoffset={offset} className="progress-ring-circle" />
+      <circle
+        cx={size / 2}
+        cy={size / 2}
+        r={radius}
+        fill="none"
+        stroke="hsl(var(--primary))"
+        strokeWidth={strokeWidth}
+        strokeDasharray={circumference}
+        strokeDashoffset={offset}
+        className="progress-ring-circle"
+      />
     </svg>
   );
 }
+
 export default function SubjectDashboard() {
   const { subjectId } = useParams<{ subjectId: string }>();
-  const subject = getSubject(subjectId || "");
-  const { isCompleted, isBookmarked, getSubjectProgress } = useProgress();
   const navigate = useNavigate();
   const [searchOpen, setSearchOpen] = useState(false);
   const [collapsedUnits, setCollapsedUnits] = useState<string[]>([]);
 
-  if (!subject) return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="text-center animate-fade-in">
-        <h2 className="text-xl font-bold mb-2">Subject not found</h2>
-        <Link to="/" className="text-primary hover:underline text-sm">← Back to home</Link>
+  // 1. Check if it's already a static subject ID (e.g. "ca-101", "python")
+  const staticSubject = useMemo(() => getSubject(subjectId || ""), [subjectId]);
+
+  // 2. If not found statically (e.g. it's a Supabase UUID), fetch from database
+  const isLikelyUuid = subjectId && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(subjectId);
+  const { data: dbSubject, isLoading: isDbLoading } = useSubject(!staticSubject && isLikelyUuid ? subjectId : undefined);
+
+  // 3. Resolve the subject
+  const subject: Subject | undefined = useMemo(() => {
+    if (staticSubject) return staticSubject;
+    if (!dbSubject) return undefined;
+
+    // Check if the DB subject matches any static subject by code or name
+    const match = getSubject(dbSubject.code) || getSubject(dbSubject.name);
+    if (match) return match;
+
+    // Otherwise, construct from database record
+    return {
+      id: dbSubject.id,
+      name: dbSubject.name,
+      code: dbSubject.code || "",
+      color: dbSubject.color || "bg-primary",
+      icon: dbSubject.icon || "book-open",
+      description: dbSubject.description || "",
+      semester: 3,
+      units: (dbSubject.units || []).map((u: any) => ({
+        id: u.id,
+        title: u.title,
+        description: u.description || "",
+        topics: (u.topics || []).map((t: any) => ({
+          id: t.id,
+          title: t.title,
+          simpleExplanation: "",
+          detailedExplanation: "",
+          keyPoints: [],
+          examples: [],
+          mcqs: [],
+        })),
+      })),
+    };
+  }, [staticSubject, dbSubject]);
+
+  const { isCompleted, isBookmarked, getSubjectProgress } = useProgress();
+
+  if (isDbLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center animate-fade-in flex flex-col items-center gap-3">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="text-sm text-muted-foreground">Loading subject...</p>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
+
+  if (!subject) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center animate-fade-in">
+          <h2 className="text-xl font-bold mb-2">Subject not found</h2>
+          <p className="text-sm text-muted-foreground mb-4">We couldn't find the requested subject notes.</p>
+          <Link to="/" className="text-primary hover:underline text-sm font-medium">← Back to home</Link>
+        </div>
+      </div>
+    );
+  }
 
   const topicIds = getAllTopicIds(subject.id);
   const progress = getSubjectProgress(topicIds);
 
   const toggleUnit = (unitId: string) => {
-    setCollapsedUnits(prev =>
-      prev.includes(unitId) ? prev.filter(id => id !== unitId) : [...prev, unitId]
+    setCollapsedUnits((prev) =>
+      prev.includes(unitId) ? prev.filter((id) => id !== unitId) : [...prev, unitId]
     );
   };
 
@@ -69,7 +137,7 @@ export default function SubjectDashboard() {
         <div className="space-y-6">
           {subject.units.map((unit, unitIdx) => {
             const isCollapsed = collapsedUnits.includes(unit.id);
-            const completedCount = unit.topics.filter(t => isCompleted(t.id)).length;
+            const completedCount = unit.topics.filter((t) => isCompleted(t.id)).length;
 
             return (
               <div key={unit.id} className="animate-fade-in" style={{ animationDelay: `${unitIdx * 60}ms` }}>
@@ -87,6 +155,7 @@ export default function SubjectDashboard() {
                     {unit.topics.map((topic) => {
                       const completed = isCompleted(topic.id);
                       const bookmarked = isBookmarked(topic.id);
+                      const mcqCount = topic.mcqs?.length ?? 0;
                       return (
                         <button
                           key={topic.id}
@@ -98,7 +167,9 @@ export default function SubjectDashboard() {
                           </div>
                           <div className="flex-1 min-w-0">
                             <h3 className="font-medium text-[15px]">{topic.title}</h3>
-                            <p className="text-[13px] text-muted-foreground truncate">{topic.mcqs.length} MCQs</p>
+                            <p className="text-[13px] text-muted-foreground truncate">
+                              {mcqCount > 0 ? `${mcqCount} MCQs` : "Lecture Notes & Explanations"}
+                            </p>
                           </div>
                           <div className="flex items-center gap-2 shrink-0">
                             {bookmarked && <Bookmark className="h-3.5 w-3.5 text-warning fill-warning" />}

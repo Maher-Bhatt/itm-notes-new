@@ -116,24 +116,32 @@ export default function DashboardPage() {
                   </div>
                 ) : (
                   dbSubjectsToRender.map((subject) => {
-                  return (
-                    <button
-                      key={subject.id}
-                      onClick={() => navigate(`/subject/${subject.id}`)}
-                      className="group w-full surface-elevated rounded-xl p-4 flex items-center gap-4 text-left hover:bg-secondary transition-all duration-150 apple-press"
-                    >
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between mb-1">
-                          <h3 className="font-semibold text-base truncate pr-2">{subject.name}</h3>
+                    const matchingStatic = subjects.find(
+                      (s) =>
+                        s.id.toLowerCase() === subject.id.toLowerCase() ||
+                        (subject.code && s.code?.toLowerCase() === subject.code.toLowerCase()) ||
+                        (subject.name && s.name.toLowerCase() === subject.name.toLowerCase())
+                    );
+                    const targetId = matchingStatic ? matchingStatic.id : subject.id;
+                    return (
+                      <button
+                        key={subject.id}
+                        onClick={() => navigate(`/subject/${targetId}`)}
+                        className="group w-full surface-elevated rounded-xl p-4 flex items-center gap-4 text-left hover:bg-secondary transition-all duration-150 apple-press"
+                      >
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between mb-1">
+                            <h3 className="font-semibold text-base truncate pr-2">{subject.name}</h3>
+                          </div>
+                          <p className="text-xs text-muted-foreground mb-2">
+                            {subject.description || 'Deep research notes & examples'}
+                          </p>
                         </div>
-                        <p className="text-xs text-muted-foreground mb-2">
-                          {subject.description || 'Deep research notes & examples'}
-                        </p>
-                      </div>
-                      <ChevronRight className="h-4 w-4 text-muted-foreground/50 group-hover:text-muted-foreground/80 transition-colors shrink-0" />
-                    </button>
-                  );
-                }))}
+                        <ChevronRight className="h-4 w-4 text-muted-foreground/50 group-hover:text-muted-foreground/80 transition-colors shrink-0" />
+                      </button>
+                    );
+                  })
+                )}
               </div>
             </section>
           </div>
