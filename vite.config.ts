@@ -51,16 +51,7 @@ export default defineConfig(({ mode }) => ({
     })
   ].filter(Boolean),
   build: {
-    chunkSizeWarningLimit: 2000,
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          katex: ["katex"],
-          recharts: ["recharts"],
-          lucide: ["lucide-react"],
-        },
-      },
-    },
+    chunkSizeWarningLimit: 15000,
   },
   resolve: {
     alias: {
