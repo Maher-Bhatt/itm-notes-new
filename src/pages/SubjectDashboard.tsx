@@ -9,6 +9,8 @@ import { useState, useMemo } from "react";
 import { SearchDialog } from "@/components/SearchDialog";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { BackToTop } from "@/components/BackToTop";
+import { SubjectDashboardSkeleton } from "@/components/PageSkeletonLoaders";
 
 function ProgressRing({ progress, size = 44, strokeWidth = 3 }: { progress: number; size?: number; strokeWidth?: number }) {
   const radius = (size - strokeWidth) / 2;
@@ -85,14 +87,7 @@ export default function SubjectDashboard() {
   const { isCompleted, isBookmarked, getSubjectProgress } = useProgress();
 
   if (isDbLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center animate-fade-in flex flex-col items-center gap-3">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <p className="text-sm text-muted-foreground">Loading subject...</p>
-        </div>
-      </div>
-    );
+    return <SubjectDashboardSkeleton />;
   }
 
   if (!subject) {
@@ -242,6 +237,7 @@ export default function SubjectDashboard() {
         </div>
       </div>
 
+      <BackToTop />
       <Footer />
     </div>
   );

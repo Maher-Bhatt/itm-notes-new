@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { BackToTop } from '@/components/BackToTop';
 import { 
   Calculator, 
   Sparkles, 
@@ -20,9 +21,21 @@ import {
   Search,
   X,
   RefreshCw,
-  Target
+  Target,
+  BookmarkCheck,
+  Save
 } from 'lucide-react';
 import { toast } from 'sonner';
+import {
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  Legend
+} from 'recharts';
 
 export interface CatalogCourse {
   code: string;
@@ -31,6 +44,28 @@ export interface CatalogCourse {
   type: 'Theory' | 'Lab' | 'Elective';
   defaultClasses: number;
 }
+
+export const ITM_SEM1_CATALOG: CatalogCourse[] = [
+  { code: 'CS101', name: 'Python Programming I', credits: 4, type: 'Theory', defaultClasses: 36 },
+  { code: 'PHY101', name: 'Applied Engineering Physics', credits: 4, type: 'Theory', defaultClasses: 36 },
+  { code: 'MTH101', name: 'Calculus & Linear Algebra', credits: 4, type: 'Theory', defaultClasses: 36 },
+  { code: 'CS102', name: 'Web Technology Fundamentals', credits: 3, type: 'Theory', defaultClasses: 32 },
+  { code: 'ENG101', name: 'Technical Communication Skills', credits: 2, type: 'Theory', defaultClasses: 24 },
+  { code: 'CS101P', name: 'Python Programming Lab', credits: 1, type: 'Lab', defaultClasses: 14 },
+  { code: 'PHY101P', name: 'Physics Laboratory', credits: 1, type: 'Lab', defaultClasses: 14 },
+  { code: 'CS102P', name: 'Web Technology Lab', credits: 1, type: 'Lab', defaultClasses: 14 },
+];
+
+export const ITM_SEM2_CATALOG: CatalogCourse[] = [
+  { code: 'CS201', name: 'Python Programming II', credits: 4, type: 'Theory', defaultClasses: 36 },
+  { code: 'CS202', name: 'C Programming & Problem Solving', credits: 4, type: 'Theory', defaultClasses: 36 },
+  { code: 'EC201', name: 'Digital Electronics', credits: 3, type: 'Theory', defaultClasses: 32 },
+  { code: 'MTH201', name: 'Statistics & Probability', credits: 3, type: 'Theory', defaultClasses: 32 },
+  { code: 'MGT201', name: 'Financial Accounting & Management', credits: 3, type: 'Theory', defaultClasses: 30 },
+  { code: 'CS201P', name: 'Python II Lab', credits: 1, type: 'Lab', defaultClasses: 14 },
+  { code: 'CS202P', name: 'C Programming Lab', credits: 1, type: 'Lab', defaultClasses: 14 },
+  { code: 'EC201P', name: 'Digital Electronics Lab', credits: 1, type: 'Lab', defaultClasses: 14 },
+];
 
 export const ITM_SEM3_CATALOG: CatalogCourse[] = [
   { code: 'CS401', name: 'Computer Architecture', credits: 4, type: 'Theory', defaultClasses: 36 },
@@ -65,6 +100,25 @@ export interface SubjectAttendance {
   absent: number;       // Lectures conducted & missed
   noAttendance: number; // Lectures cancelled / suspended / no attendance taken (not conducted)
 }
+
+export const DEFAULT_SEM1_SUBJECTS: SubjectGrade[] = [
+  { id: 'sem1-py', name: 'Python Programming I', code: 'CS101', credits: 4, type: 'Theory', internalMarks: 0, externalMarks: 0 },
+  { id: 'sem1-phy', name: 'Applied Engineering Physics', code: 'PHY101', credits: 4, type: 'Theory', internalMarks: 0, externalMarks: 0 },
+  { id: 'sem1-cla', name: 'Calculus & Linear Algebra', code: 'MTH101', credits: 4, type: 'Theory', internalMarks: 0, externalMarks: 0 },
+  { id: 'sem1-wt', name: 'Web Technology Fundamentals', code: 'CS102', credits: 3, type: 'Theory', internalMarks: 0, externalMarks: 0 },
+  { id: 'sem1-eng', name: 'Technical Communication Skills', code: 'ENG101', credits: 2, type: 'Theory', internalMarks: 0, externalMarks: 0 },
+  { id: 'sem1-pylab', name: 'Python Programming Lab', code: 'CS101P', credits: 1, type: 'Lab', internalMarks: 0, externalMarks: 0 },
+  { id: 'sem1-phylab', name: 'Physics Laboratory', code: 'PHY101P', credits: 1, type: 'Lab', internalMarks: 0, externalMarks: 0 },
+];
+
+export const DEFAULT_SEM2_SUBJECTS: SubjectGrade[] = [
+  { id: 'sem2-py2', name: 'Python Programming II', code: 'CS201', credits: 4, type: 'Theory', internalMarks: 0, externalMarks: 0 },
+  { id: 'sem2-c', name: 'C Programming & Problem Solving', code: 'CS202', credits: 4, type: 'Theory', internalMarks: 0, externalMarks: 0 },
+  { id: 'sem2-de', name: 'Digital Electronics', code: 'EC201', credits: 3, type: 'Theory', internalMarks: 0, externalMarks: 0 },
+  { id: 'sem2-stat', name: 'Statistics & Probability', code: 'MTH201', credits: 3, type: 'Theory', internalMarks: 0, externalMarks: 0 },
+  { id: 'sem2-mgt', name: 'Financial Accounting & Management', code: 'MGT201', credits: 3, type: 'Theory', internalMarks: 0, externalMarks: 0 },
+  { id: 'sem2-clab', name: 'C Programming Lab', code: 'CS202P', credits: 1, type: 'Lab', internalMarks: 0, externalMarks: 0 },
+];
 
 const DEFAULT_INITIAL_SUBJECTS: SubjectGrade[] = [
   { id: 'ca', name: 'Computer Architecture', code: 'CS401', credits: 4, type: 'Theory', internalMarks: 0, externalMarks: 0 },
@@ -176,11 +230,72 @@ export default function GpaCalculatorPage() {
     } catch {}
   }, [subjectAttendance]);
 
-  // Previous Semesters for Cumulative CGPA
-  const [prevSemesters, setPrevSemesters] = useState([
-    { sem: 1, sgpa: 8.2, credits: 20 },
-    { sem: 2, sgpa: 8.4, credits: 21 },
-  ]);
+  // Selected Semester (1, 2, or 3)
+  const [selectedSemester, setSelectedSemester] = useState<1 | 2 | 3>(3);
+  const [catalogSemester, setCatalogSemester] = useState<1 | 2 | 3>(3);
+
+  // Previous Semesters for Cumulative CGPA with localStorage persistence
+  const [prevSemesters, setPrevSemesters] = useState<{ sem: number; sgpa: number; credits: number }[]>(() => {
+    try {
+      const saved = localStorage.getItem('itm_cgpa_history');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch {}
+    return [
+      { sem: 1, sgpa: 8.2, credits: 20 },
+      { sem: 2, sgpa: 8.4, credits: 21 },
+    ];
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('itm_cgpa_history', JSON.stringify(prevSemesters));
+    } catch {}
+  }, [prevSemesters]);
+
+  const handleSemesterSwitch = (sem: 1 | 2 | 3) => {
+    setSelectedSemester(sem);
+    setCatalogSemester(sem);
+    if (sem === 1) {
+      setSubjects(DEFAULT_SEM1_SUBJECTS);
+    } else if (sem === 2) {
+      setSubjects(DEFAULT_SEM2_SUBJECTS);
+    } else {
+      setSubjects(DEFAULT_INITIAL_SUBJECTS);
+    }
+    toast.success(`Loaded Semester ${sem} curriculum`);
+  };
+
+  const handleSaveSemesterResult = () => {
+    const existingIdx = prevSemesters.findIndex((p) => p.sem === selectedSemester);
+    const newEntry = { sem: selectedSemester, sgpa: result.sgpa, credits: result.totalCredits };
+    let updated: { sem: number; sgpa: number; credits: number }[];
+    if (existingIdx >= 0) {
+      updated = prevSemesters.map((p, i) => (i === existingIdx ? newEntry : p));
+    } else {
+      updated = [...prevSemesters, newEntry].sort((a, b) => a.sem - b.sem);
+    }
+    setPrevSemesters(updated);
+    toast.success(`Saved Semester ${selectedSemester} result (${result.sgpa} SGPA) to CGPA history!`);
+  };
+
+  const cgpaTrendData = useMemo(() => {
+    let runningCredits = 0;
+    let runningWeightedPoints = 0;
+    return prevSemesters.map((item) => {
+      runningCredits += item.credits;
+      runningWeightedPoints += item.sgpa * item.credits;
+      const cgpa = runningCredits > 0 ? (runningWeightedPoints / runningCredits).toFixed(2) : item.sgpa.toFixed(2);
+      return {
+        name: `Sem ${item.sem}`,
+        sgpa: item.sgpa,
+        cgpa: Number(cgpa),
+        credits: item.credits,
+      };
+    });
+  }, [prevSemesters]);
 
   // SGPA Calculation
   const result = useMemo(() => {
@@ -420,7 +535,8 @@ export default function GpaCalculatorPage() {
   };
 
   const filteredCatalog = useMemo(() => {
-    return ITM_SEM3_CATALOG.filter((c) => {
+    const catalog = catalogSemester === 1 ? ITM_SEM1_CATALOG : catalogSemester === 2 ? ITM_SEM2_CATALOG : ITM_SEM3_CATALOG;
+    return catalog.filter((c) => {
       if (catalogFilter !== 'All' && c.type !== catalogFilter) return false;
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
@@ -428,7 +544,7 @@ export default function GpaCalculatorPage() {
       }
       return true;
     });
-  }, [catalogFilter, searchQuery]);
+  }, [catalogSemester, catalogFilter, searchQuery]);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -615,23 +731,46 @@ export default function GpaCalculatorPage() {
         {/* ── SGPA Tab: Course Management & Subject Selector ── */}
         {activeTab === 'sgpa' && (
           <div className="space-y-6 mb-8">
-            {/* Action Bar */}
+            {/* Semester Switcher & Save Result Action Bar */}
             <div className="bg-card border border-border rounded-2xl p-4 sm:p-5 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <h3 className="font-bold text-base text-foreground">Registered Courses & Mark Entry</h3>
-                <p className="text-xs text-muted-foreground mt-0.5">
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="font-bold text-base text-foreground">Registered Courses & Mark Entry</h3>
+                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-primary/10 text-primary">
+                    Semester {selectedSemester} Active
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground">
                   Select your subjects from the curriculum. Enter Internal (MST + Assignment out of 50) and External Exam marks (out of 50).
                 </p>
               </div>
 
               <div className="flex flex-wrap items-center gap-2">
+                <div className="inline-flex rounded-xl bg-secondary/80 p-1 border border-border">
+                  {([1, 2, 3] as const).map((sem) => (
+                    <button
+                      key={sem}
+                      type="button"
+                      onClick={() => handleSemesterSwitch(sem)}
+                      className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
+                        selectedSemester === sem
+                          ? 'bg-primary text-primary-foreground shadow-sm'
+                          : 'text-muted-foreground hover:text-foreground'
+                      }`}
+                    >
+                      Sem {sem}
+                    </button>
+                  ))}
+                </div>
+
                 <button
                   type="button"
-                  onClick={handleLoadSem3Curriculum}
-                  className="px-3 py-1.5 rounded-xl bg-secondary hover:bg-secondary/80 text-foreground font-semibold text-xs transition-colors flex items-center gap-1.5 border border-border"
+                  onClick={handleSaveSemesterResult}
+                  className="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-colors flex items-center gap-1.5 shadow-sm"
+                  title="Save current calculated SGPA to your cumulative CGPA history"
                 >
-                  <RotateCcw className="h-3.5 w-3.5" />
-                  <span>Sem 3 Template</span>
+                  <Save className="h-3.5 w-3.5" />
+                  <span>Save Sem {selectedSemester}</span>
                 </button>
 
                 <button
@@ -685,6 +824,66 @@ export default function GpaCalculatorPage() {
                 ))}
               </div>
             </div>
+
+            {/* "What grade do I need?" Reverse Calculator */}
+            {subjects.length > 0 && (
+              <div className="bg-card border border-border rounded-2xl p-5 shadow-sm">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <Target className="h-4 w-4 text-primary" />
+                    <h4 className="text-sm font-bold text-foreground">"What Grade Do I Need?" — Reverse Exam Calculator</h4>
+                  </div>
+                  <span className="text-xs font-semibold text-muted-foreground">
+                    Target SGPA: <strong className="text-primary">{targetSgpa.toFixed(1)}</strong>
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground mb-4">
+                  Based on each course's internal marks (out of 50), here is the exact minimum external exam score needed to achieve passing and top grades:
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {subjects.map((sub) => {
+                    const internal = Number(sub.internalMarks) || 0;
+                    const needAA = Math.max(0, 85 - internal);
+                    const needAB = Math.max(0, 75 - internal);
+                    const needBB = Math.max(0, 65 - internal);
+                    const needPass = Math.max(0, 35 - internal);
+
+                    const targetThreshold = targetSgpa >= 9.0 ? 85 : targetSgpa >= 8.0 ? 75 : targetSgpa >= 7.0 ? 65 : 55;
+                    const targetGradeName = targetSgpa >= 9.0 ? 'AA' : targetSgpa >= 8.0 ? 'AB' : targetSgpa >= 7.0 ? 'BB' : 'BC';
+                    const needForTarget = Math.max(0, targetThreshold - internal);
+
+                    return (
+                      <div key={sub.id} className="p-3.5 rounded-xl border border-border/80 bg-secondary/20 flex flex-col justify-between">
+                        <div>
+                          <div className="flex items-center justify-between gap-2 mb-1">
+                            <span className="font-bold text-xs text-foreground truncate">{sub.name}</span>
+                            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-secondary text-muted-foreground shrink-0">{sub.code}</span>
+                          </div>
+                          <p className="text-[11px] text-muted-foreground mb-2">
+                            Internal: <strong className="text-foreground">{internal}/50</strong> · {sub.credits} Credits
+                          </p>
+                        </div>
+
+                        <div className="space-y-1.5 pt-2 border-t border-border/40 text-[11px]">
+                          <div className="flex justify-between items-center">
+                            <span className="text-muted-foreground font-medium">To reach {targetGradeName} ({targetSgpa} Goal):</span>
+                            <span className={`font-bold font-mono ${needForTarget > 50 ? 'text-rose-500' : 'text-primary'}`}>
+                              {needForTarget > 50 ? 'Need >50 (Hard)' : `≥ ${needForTarget}/50`}
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-center text-[10px] text-muted-foreground">
+                            <span>AB (9 pts): {needAB > 50 ? '>50' : `${needAB}/50`}</span>
+                            <span>BB (8 pts): {needBB > 50 ? '>50' : `${needBB}/50`}</span>
+                            <span>Pass: {needPass}/50</span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
             {/* Courses Display: Desktop Table & Mobile Cards */}
             {subjects.length === 0 ? (
@@ -1295,56 +1494,134 @@ export default function GpaCalculatorPage() {
 
         {/* ── CGPA Historical Semesters Tab ── */}
         {activeTab === 'cgpa' && (
-          <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-sm mb-8">
-            <h3 className="font-bold text-base text-foreground mb-1">Previous Semester Performance</h3>
-            <p className="text-xs text-muted-foreground mb-6">
-              Enter your official SGPA and total credits from Semester 1 and Semester 2 grade sheets to project your cumulative CGPA.
-            </p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-              {prevSemesters.map((p, idx) => (
-                <div key={p.sem} className="p-4 rounded-xl border border-border bg-secondary/30 space-y-3">
-                  <h4 className="font-bold text-sm text-foreground flex items-center justify-between">
-                    <span>Semester {p.sem}</span>
-                    <span className="text-xs text-primary font-mono font-semibold">{p.credits} Credits</span>
-                  </h4>
-                  <div className="flex gap-3">
-                    <div className="flex-1">
-                      <label className="text-[11px] font-semibold text-muted-foreground block mb-1">SGPA</label>
-                      <input
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        max="10"
-                        value={p.sgpa}
-                        onChange={(e) => {
-                          const val = Number(e.target.value);
-                          setPrevSemesters((prev) =>
-                            prev.map((item, i) => (i === idx ? { ...item, sgpa: val } : item))
-                          );
-                        }}
-                        className="w-full h-9 px-3 rounded-lg border border-input bg-background font-mono text-sm"
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <label className="text-[11px] font-semibold text-muted-foreground block mb-1">Credits</label>
-                      <input
-                        type="number"
-                        min="10"
-                        max="30"
-                        value={p.credits}
-                        onChange={(e) => {
-                          const val = Number(e.target.value);
-                          setPrevSemesters((prev) =>
-                            prev.map((item, i) => (i === idx ? { ...item, credits: val } : item))
-                          );
-                        }}
-                        className="w-full h-9 px-3 rounded-lg border border-input bg-background font-mono text-sm"
-                      />
-                    </div>
+          <div className="space-y-6 mb-8">
+            {/* CGPA Trend Line Chart Card */}
+            {cgpaTrendData.length > 0 && (
+              <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-sm">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                  <div>
+                    <h3 className="font-bold text-base text-foreground">Cumulative CGPA & SGPA Progression Curve</h3>
+                    <p className="text-xs text-muted-foreground">Visual performance tracking across all completed terms</p>
+                  </div>
+                  <div className="flex items-center gap-4 text-xs font-semibold">
+                    <span className="flex items-center gap-1.5 text-indigo-500">
+                      <span className="w-2.5 h-2.5 rounded-full bg-indigo-500 inline-block" /> SGPA
+                    </span>
+                    <span className="flex items-center gap-1.5 text-emerald-500">
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block" /> Cumulative CGPA
+                    </span>
                   </div>
                 </div>
-              ))}
+
+                <div className="h-64 w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={cgpaTrendData} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
+                      <XAxis dataKey="name" stroke="#888888" fontSize={12} />
+                      <YAxis domain={[0, 10]} ticks={[0, 2, 4, 6, 8, 10]} stroke="#888888" fontSize={12} />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: '#18181b',
+                          borderColor: '#27272a',
+                          borderRadius: '12px',
+                          color: '#fff',
+                          fontSize: '12px',
+                        }}
+                      />
+                      <Legend />
+                      <Line type="monotone" dataKey="sgpa" name="Semester SGPA" stroke="#6366f1" strokeWidth={3} dot={{ r: 5 }} activeDot={{ r: 7 }} />
+                      <Line type="monotone" dataKey="cgpa" name="Cumulative CGPA" stroke="#10b981" strokeWidth={3} dot={{ r: 5 }} activeDot={{ r: 7 }} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            )}
+
+            {/* Semester History Table & Editor */}
+            <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-sm">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+                <div>
+                  <h3 className="font-bold text-base text-foreground">Semester Records Breakdown</h3>
+                  <p className="text-xs text-muted-foreground">
+                    Edit SGPA and credits for past terms or add additional semesters to recalculate your cumulative CGPA.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    const nextSem = prevSemesters.length > 0 ? Math.max(...prevSemesters.map((p) => p.sem)) + 1 : 1;
+                    setPrevSemesters([...prevSemesters, { sem: nextSem, sgpa: 8.0, credits: 20 }]);
+                    toast.success(`Added Semester ${nextSem} record`);
+                  }}
+                  className="px-3.5 py-2 rounded-xl bg-primary text-primary-foreground font-bold text-xs flex items-center gap-1.5 shadow-sm hover:opacity-90 transition-opacity"
+                >
+                  <Plus className="h-4 w-4" />
+                  <span>Add Term Record</span>
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {prevSemesters.map((p, idx) => (
+                  <div key={p.sem} className="p-4 rounded-xl border border-border bg-secondary/30 space-y-3 relative group">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-bold text-sm text-foreground">Semester {p.sem}</h4>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-primary font-mono font-semibold">{p.credits} Credits</span>
+                        {prevSemesters.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setPrevSemesters(prevSemesters.filter((_, i) => i !== idx));
+                              toast.info(`Removed Semester ${p.sem}`);
+                            }}
+                            className="p-1 rounded text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                            title="Delete term"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex gap-3">
+                      <div className="flex-1">
+                        <label className="text-[11px] font-semibold text-muted-foreground block mb-1">SGPA</label>
+                        <input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          max="10"
+                          value={p.sgpa}
+                          onChange={(e) => {
+                            const val = Number(e.target.value);
+                            setPrevSemesters((prev) =>
+                              prev.map((item, i) => (i === idx ? { ...item, sgpa: val } : item))
+                            );
+                          }}
+                          className="w-full h-9 px-3 rounded-lg border border-input bg-background font-mono text-sm focus:ring-1 focus:ring-primary"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <label className="text-[11px] font-semibold text-muted-foreground block mb-1">Credits</label>
+                        <input
+                          type="number"
+                          min="1"
+                          max="35"
+                          value={p.credits}
+                          onChange={(e) => {
+                            const val = Number(e.target.value);
+                            setPrevSemesters((prev) =>
+                              prev.map((item, i) => (i === idx ? { ...item, credits: val } : item))
+                            );
+                          }}
+                          className="w-full h-9 px-3 rounded-lg border border-input bg-background font-mono text-sm focus:ring-1 focus:ring-primary"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}
@@ -1399,6 +1676,24 @@ export default function GpaCalculatorPage() {
 
             {/* Filter Tabs & Search */}
             <div className="p-4 border-b border-border/60 bg-secondary/20 space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-muted-foreground mr-1">Semester:</span>
+                {([1, 2, 3] as const).map((sem) => (
+                  <button
+                    key={sem}
+                    type="button"
+                    onClick={() => setCatalogSemester(sem)}
+                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
+                      catalogSemester === sem
+                        ? 'bg-primary text-primary-foreground shadow-sm'
+                        : 'bg-secondary text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    Sem {sem}
+                  </button>
+                ))}
+              </div>
+
               <div className="relative">
                 <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                 <input
@@ -1530,6 +1825,7 @@ export default function GpaCalculatorPage() {
         </div>
       )}
 
+      <BackToTop />
       <Footer />
     </div>
   );

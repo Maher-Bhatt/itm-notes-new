@@ -102,6 +102,20 @@ export default function QuizPage() {
 
   const handleQuizComplete = (score: number, total: number) => {
     recordQuizCompleted(score, total);
+    try {
+      const raw = localStorage.getItem('itm_quiz_scores');
+      const list = raw ? JSON.parse(raw) : [];
+      list.unshift({
+        id: `quiz-${Date.now()}`,
+        subjectId: selectedSubject,
+        subjectName: selectedSubject === 'all-sem3' ? 'All Subjects Mock' : (selectedSubjectObj?.name || selectedSubject),
+        score,
+        total,
+        percentage: Math.round((score / total) * 100),
+        timestamp: new Date().toISOString()
+      });
+      localStorage.setItem('itm_quiz_scores', JSON.stringify(list.slice(0, 30)));
+    } catch {}
     toast.success(`Quiz Completed! You scored ${score} / ${total}`, {
       description: score === total ? "Perfect Score! 🌟 +100 Bonus XP" : "+50 XP awarded to your profile.",
     });

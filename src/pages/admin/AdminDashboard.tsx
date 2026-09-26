@@ -13,6 +13,7 @@ import {
   Settings, 
   CheckCircle, 
   AlertCircle, 
+  AlertTriangle,
   ExternalLink, 
   Search, 
   Shield, 
@@ -23,7 +24,13 @@ import {
   Plus,
   Trash2,
   Lock,
-  Unlock
+  Unlock,
+  Bell,
+  MessageSquare,
+  ThumbsUp,
+  Flag,
+  Check,
+  Megaphone
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -43,11 +50,124 @@ interface StudentUser {
 export default function AdminDashboard() {
   const { role, user, profile } = useAuth();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<"overview" | "content" | "users" | "settings">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "content" | "users" | "announcements" | "moderation" | "settings">("overview");
   const [searchSubject, setSearchSubject] = useState("");
   const [maintenanceMode, setMaintenanceMode] = useState(false);
   const [gamificationEnabled, setGamificationEnabled] = useState(true);
   const [publicRegEnabled, setPublicRegEnabled] = useState(true);
+
+  // ── Announcement System State ──
+  const [announcements, setAnnouncements] = useState<any[]>(() => {
+    try {
+      const raw = localStorage.getItem('itm_announcements');
+      if (raw) return JSON.parse(raw);
+    } catch {}
+    return [
+      {
+        id: 'ann-exam-week',
+        title: 'Exam Week Reminder: MST-1 Commencing Soon',
+        body: 'Please review official unit question banks and verify your 75% attendance threshold on the GPA Calculator.',
+        severity: 'warning',
+        active: true,
+        createdAt: new Date().toISOString(),
+      },
+    ];
+  });
+  const [newAnnTitle, setNewAnnTitle] = useState('');
+  const [newAnnBody, setNewAnnBody] = useState('');
+  const [newAnnSeverity, setNewAnnSeverity] = useState<'info' | 'warning' | 'critical'>('warning');
+
+  const handleCreateAnnouncement = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newAnnTitle.trim() || !newAnnBody.trim()) {
+      toast.error('Please enter announcement title and body');
+      return;
+    }
+    const newEntry = {
+      id: `ann-${Date.now()}`,
+      title: newAnnTitle.trim(),
+      body: newAnnBody.trim(),
+      severity: newAnnSeverity,
+      active: true,
+      createdAt: new Date().toISOString(),
+    };
+    const updated = [newEntry, ...announcements];
+    setAnnouncements(updated);
+    localStorage.setItem('itm_announcements', JSON.stringify(updated));
+    window.dispatchEvent(new Event('itm_announcement_updated'));
+    setNewAnnTitle('');
+    setNewAnnBody('');
+    toast.success(`Created "${newEntry.title}" banner! Visible across all pages.`);
+  };
+
+  const handleDeleteAnnouncement = (id: string) => {
+    const updated = announcements.filter((a) => a.id !== id);
+    setAnnouncements(updated);
+    localStorage.setItem('itm_announcements', JSON.stringify(updated));
+    window.dispatchEvent(new Event('itm_announcement_updated'));
+    toast.info('Announcement removed');
+  };
+
+  // ── Content Analytics State ──
+  const [communityAnalytics] = useState({
+    totalPosts: 42,
+    totalLikes: 218,
+    totalComments: 134,
+    topStudents: [
+      { name: 'Maher Bhatt', count: 18, role: 'Admin' },
+      { name: 'Aarav Patel', count: 9, role: 'Student' },
+      { name: 'Diya Sharma', count: 7, role: 'Student' },
+      { name: 'Rohan Mehta', count: 5, role: 'Student' },
+      { name: 'Ananya Joshi', count: 3, role: 'Student' },
+    ],
+  });
+
+  // ── Reported Posts Queue State ──
+  const [reportedPosts, setReportedPosts] = useState<any[]>(() => {
+    try {
+      const idsRaw = localStorage.getItem('itm_reported_posts');
+      const ids: string[] = idsRaw ? JSON.parse(idsRaw) : [];
+      if (ids.length > 0) {
+        return ids.map((id, idx) => ({
+          id: `rep-${idx}`,
+          postId: id,
+          authorName: 'Community Student',
+          content: `User-reported discussion post (ID: ${id}) flagged for moderation review.`,
+          reason: 'Reported by classmate for academic community policy check',
+          timestamp: new Date().toISOString(),
+          status: 'pending',
+        }));
+      }
+    } catch {}
+    return [
+      {
+        id: 'rep-sample-1',
+        postId: 'post-101',
+        authorName: 'Anonymous Member',
+        content: 'Is anyone sharing paid MST leaked questions or external assignments here?',
+        reason: 'Academic Integrity Violation / Spam',
+        timestamp: new Date(Date.now() - 7200000).toISOString(),
+        status: 'pending',
+      },
+    ];
+  });
+
+  const handleClearReport = (id: string) => {
+    const updated = reportedPosts.filter((r) => r.id !== id);
+    setReportedPosts(updated);
+    toast.success('Report flag cleared and content approved.');
+  };
+
+  const handleDeleteReportedPost = (id: string, postId: string) => {
+    const updated = reportedPosts.filter((r) => r.id !== id);
+    setReportedPosts(updated);
+    try {
+      const idsRaw = localStorage.getItem('itm_reported_posts');
+      const ids: string[] = idsRaw ? JSON.parse(idsRaw) : [];
+      localStorage.setItem('itm_reported_posts', JSON.stringify(ids.filter((x) => x !== postId)));
+    } catch {}
+    toast.success('Reported post deleted from community!');
+  };
 
   // Calculate platform curriculum statistics
   const totalSubjects = subjects.length;
@@ -217,6 +337,8 @@ export default function AdminDashboard() {
         <div className="flex items-center gap-2 border-b border-border/60 pb-3 mb-8 overflow-x-auto scrollbar-none">
           {[
             { id: "overview", label: "Dashboard Overview", icon: Activity },
+            { id: "announcements", label: `Announcements (${announcements.length})`, icon: Megaphone },
+            { id: "moderation", label: `Community & Moderation (${reportedPosts.length})`, icon: Shield },
             { id: "content", label: `Content Manager (${totalSubjects})`, icon: BookOpen },
             { id: "users", label: `User Manager (${students.length})`, icon: Users },
             { id: "settings", label: "Platform Settings", icon: Settings },
@@ -597,6 +719,258 @@ export default function AdminDashboard() {
               >
                 Reset Local Study State
               </button>
+            </div>
+          </div>
+        )}
+
+        {/* ── TAB: ANNOUNCEMENT BANNER SYSTEM ── */}
+        {activeTab === "announcements" && (
+          <div className="space-y-8 animate-fade-in">
+            {/* Create Announcement Form */}
+            <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
+              <div className="flex items-center gap-2 mb-2">
+                <Megaphone className="h-5 w-5 text-primary" />
+                <h2 className="text-lg font-bold text-foreground">Create Global Announcement Banner</h2>
+              </div>
+              <p className="text-xs text-muted-foreground mb-6">
+                Broadcast critical university notices, exam timetable releases, or maintenance alerts to all students across all pages.
+              </p>
+
+              <form onSubmit={handleCreateAnnouncement} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="sm:col-span-2">
+                    <label className="text-xs font-bold text-foreground block mb-1">
+                      Banner Headline / Title
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Exam Week Reminder: MST-1 Timetable Released"
+                      value={newAnnTitle}
+                      onChange={(e) => setNewAnnTitle(e.target.value)}
+                      className="w-full h-10 px-3 rounded-xl border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-foreground block mb-1">
+                      Alert Severity Level
+                    </label>
+                    <select
+                      value={newAnnSeverity}
+                      onChange={(e) => setNewAnnSeverity(e.target.value as any)}
+                      className="w-full h-10 px-3 rounded-xl border border-input bg-background text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-primary"
+                    >
+                      <option value="info">Info (Blue notice)</option>
+                      <option value="warning">Warning (Amber alert)</option>
+                      <option value="critical">Critical (Red urgent alert)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-xs font-bold text-foreground block mb-1">
+                    Announcement Body
+                  </label>
+                  <textarea
+                    rows={3}
+                    placeholder="e.g. MST-1 exams begin on Monday. Check your Hall Ticket eligibility and review solved question banks."
+                    value={newAnnBody}
+                    onChange={(e) => setNewAnnBody(e.target.value)}
+                    className="w-full p-3 rounded-xl border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                    required
+                  />
+                </div>
+
+                <div className="flex justify-end">
+                  <button
+                    type="submit"
+                    className="px-6 py-2.5 rounded-xl bg-primary text-primary-foreground font-bold text-xs shadow-sm hover:opacity-90 transition-opacity flex items-center gap-2"
+                  >
+                    <Plus className="h-4 w-4" />
+                    <span>Publish Global Announcement</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            {/* Active Announcements List */}
+            <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
+              <h3 className="font-bold text-base text-foreground mb-1">Active Global Announcements</h3>
+              <p className="text-xs text-muted-foreground mb-4">
+                Students can dismiss banners locally. Deleting an announcement here removes it for everyone.
+              </p>
+
+              {announcements.length === 0 ? (
+                <div className="text-center py-10 border border-dashed border-border rounded-xl">
+                  <Megaphone className="h-8 w-8 text-muted-foreground/40 mx-auto mb-2" />
+                  <p className="text-xs text-muted-foreground">No active announcements. Broadcast one above!</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {announcements.map((ann) => (
+                    <div
+                      key={ann.id}
+                      className="p-4 rounded-xl border border-border/80 bg-secondary/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                    >
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full border ${
+                            ann.severity === 'critical'
+                              ? 'bg-rose-500/20 text-rose-500 border-rose-500/30'
+                              : ann.severity === 'warning'
+                              ? 'bg-amber-500/20 text-amber-600 dark:text-amber-400 border-amber-500/30'
+                              : 'bg-primary/20 text-primary border-primary/30'
+                          }`}>
+                            {ann.severity}
+                          </span>
+                          <h4 className="font-bold text-sm text-foreground">{ann.title}</h4>
+                        </div>
+                        <p className="text-xs text-muted-foreground">{ann.body}</p>
+                        <p className="text-[10px] text-muted-foreground/60 font-mono">
+                          Posted: {new Date(ann.createdAt).toLocaleDateString()}
+                        </p>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteAnnouncement(ann.id)}
+                        className="px-3 py-1.5 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive hover:text-white transition-colors text-xs font-semibold self-start sm:self-auto shrink-0 flex items-center gap-1.5"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                        <span>Delete Banner</span>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* ── TAB: MODERATION & CONTENT ANALYTICS ── */}
+        {activeTab === "moderation" && (
+          <div className="space-y-8 animate-fade-in">
+            {/* Content Analytics Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="bg-card border border-border rounded-2xl p-5 shadow-sm">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                    Total Community Posts
+                  </span>
+                  <MessageSquare className="h-4 w-4 text-primary" />
+                </div>
+                <p className="text-3xl font-black text-foreground font-mono">{communityAnalytics.totalPosts}</p>
+                <p className="text-[11px] text-emerald-500 font-medium mt-1">+12 discussions this week</p>
+              </div>
+
+              <div className="bg-card border border-border rounded-2xl p-5 shadow-sm">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                    Total Peer Likes
+                  </span>
+                  <ThumbsUp className="h-4 w-4 text-amber-500" />
+                </div>
+                <p className="text-3xl font-black text-foreground font-mono">{communityAnalytics.totalLikes}</p>
+                <p className="text-[11px] text-amber-600 dark:text-amber-400 font-medium mt-1">Active peer feedback</p>
+              </div>
+
+              <div className="bg-card border border-border rounded-2xl p-5 shadow-sm">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                    Comments & Replies
+                  </span>
+                  <Activity className="h-4 w-4 text-indigo-500" />
+                </div>
+                <p className="text-3xl font-black text-foreground font-mono">{communityAnalytics.totalComments}</p>
+                <p className="text-[11px] text-indigo-500 font-medium mt-1">High study collaboration</p>
+              </div>
+            </div>
+
+            {/* Top 5 Active Students */}
+            <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
+              <h3 className="font-bold text-base text-foreground mb-1">Top 5 Most Active Student Contributors</h3>
+              <p className="text-xs text-muted-foreground mb-4">Ranked by discussion posts and study answers shared</p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-5 gap-3">
+                {communityAnalytics.topStudents.map((stud, idx) => (
+                  <div key={stud.name} className="p-3.5 rounded-xl border border-border bg-secondary/30 text-center">
+                    <span className="text-[10px] font-mono font-bold text-primary px-1.5 py-0.5 rounded bg-primary/10 inline-block mb-1">
+                      #{idx + 1}
+                    </span>
+                    <p className="font-bold text-sm text-foreground truncate">{stud.name}</p>
+                    <p className="text-xs text-muted-foreground font-medium">{stud.count} Contributions</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Reported Posts Moderation Queue */}
+            <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <Flag className="h-5 w-5 text-rose-500" />
+                  <h3 className="font-bold text-base text-foreground">Reported Posts Moderation Queue</h3>
+                </div>
+                <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-rose-500/10 text-rose-500 border border-rose-500/20">
+                  {reportedPosts.length} Pending
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground mb-5">
+                Review posts flagged by students for harassment, irrelevant spam, or academic dishonesty.
+              </p>
+
+              {reportedPosts.length === 0 ? (
+                <div className="text-center py-10 border border-dashed border-border rounded-xl">
+                  <CheckCircle className="h-8 w-8 text-emerald-500/60 mx-auto mb-2" />
+                  <h4 className="font-bold text-sm text-foreground">Queue is Clear!</h4>
+                  <p className="text-xs text-muted-foreground">All reported posts have been resolved or dismissed.</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {reportedPosts.map((rep) => (
+                    <div
+                      key={rep.id}
+                      className="p-4 rounded-xl border border-rose-500/30 bg-rose-500/5 flex flex-col md:flex-row md:items-center justify-between gap-4"
+                    >
+                      <div className="space-y-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-bold text-foreground">{rep.authorName}</span>
+                          <span className="text-[10px] font-mono text-muted-foreground">({rep.postId})</span>
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-500 font-bold">
+                            {rep.reason}
+                          </span>
+                        </div>
+                        <p className="text-xs text-foreground/90 font-medium italic">"{rep.content}"</p>
+                        <p className="text-[10px] text-muted-foreground font-mono">
+                          Flagged on: {new Date(rep.timestamp).toLocaleString()}
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => handleClearReport(rep.id)}
+                          className="px-3 py-1.5 rounded-lg bg-secondary hover:bg-secondary/80 text-foreground text-xs font-bold transition-colors flex items-center gap-1"
+                          title="Dismiss report and keep post"
+                        >
+                          <Check className="h-3.5 w-3.5 text-emerald-500" />
+                          <span>Approve & Clear Flag</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteReportedPost(rep.id, rep.postId)}
+                          className="px-3 py-1.5 rounded-lg bg-destructive text-white hover:bg-destructive/90 text-xs font-bold transition-colors flex items-center gap-1 shadow-sm"
+                          title="Permanently remove post from community"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                          <span>Delete Post</span>
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         )}

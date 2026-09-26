@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { BackToTop } from "@/components/BackToTop";
 import { REAL_STUDY_MATERIALS, StudyMaterial } from "@/data/materialsData";
 import { 
   FileText, 
@@ -15,12 +16,17 @@ import {
   Layers,
   Sparkles,
   Eye,
-  X
+  X,
+  Heart,
+  Clock,
+  Copy,
+  Share2
 } from "lucide-react";
 import { toast } from "sonner";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 
 export default function MaterialsPage() {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const subjectParam = searchParams.get("subject");
 
@@ -39,6 +45,52 @@ export default function MaterialsPage() {
   const [selectedSemester, setSelectedSemester] = useState("All");
   const [activePreview, setActivePreview] = useState<StudyMaterial | null>(null);
 
+  // Favorites state stored in localStorage
+  const [favorites, setFavorites] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem('itm_material_favorites');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+  const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
+
+  // Recently Viewed state stored in localStorage
+  const [recentlyViewedIds, setRecentlyViewedIds] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem('itm_recently_viewed_materials');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const trackRecentlyViewed = (id: string) => {
+    setRecentlyViewedIds((prev) => {
+      const updated = [id, ...prev.filter((i) => i !== id)].slice(0, 5);
+      localStorage.setItem('itm_recently_viewed_materials', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  const toggleFavorite = (id: string, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    setFavorites((prev) => {
+      const updated = prev.includes(id) ? prev.filter((favId) => favId !== id) : [...prev, id];
+      localStorage.setItem('itm_material_favorites', JSON.stringify(updated));
+      toast.success(prev.includes(id) ? 'Removed from favorites' : 'Saved to favorites ❤️');
+      return updated;
+    });
+  };
+
+  const handleCopyLink = (material: StudyMaterial, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    const url = `${window.location.origin}/materials?subject=${encodeURIComponent(material.subject)}`;
+    navigator.clipboard.writeText(url);
+    toast.success('Direct link copied to clipboard!');
+  };
+
   // Extract unique subjects
   const subjectList = useMemo(() => {
     const list = ["All"];
@@ -53,6 +105,8 @@ export default function MaterialsPage() {
   // Filtered list
   const filteredMaterials = useMemo(() => {
     return REAL_STUDY_MATERIALS.filter((m) => {
+      if (showOnlyFavorites && !favorites.includes(m.id)) return false;
+
       const query = searchQuery.toLowerCase();
       const matchesSearch =
         m.title.toLowerCase().includes(query) ||
@@ -70,9 +124,17 @@ export default function MaterialsPage() {
 
       return matchesSearch && matchesSubject && matchesCategory && matchesSemester;
     });
-  }, [searchQuery, selectedSubject, selectedCategory, selectedSemester]);
+  }, [searchQuery, selectedSubject, selectedCategory, selectedSemester, showOnlyFavorites, favorites]);
+
+  // Derived list of recently viewed materials
+  const recentlyViewedMaterials = useMemo(() => {
+    return recentlyViewedIds
+      .map((id) => REAL_STUDY_MATERIALS.find((m) => m.id === id))
+      .filter((m): m is StudyMaterial => Boolean(m));
+  }, [recentlyViewedIds]);
 
   const handleDownload = (material: StudyMaterial) => {
+    trackRecentlyViewed(material.id);
     if (material.downloadUrl) {
       const link = document.createElement("a");
       link.href = material.downloadUrl;
@@ -189,9 +251,12 @@ ${material.topicsCovered.map((t, idx) => `${idx + 1}. ${t}`).join("\n")}
               ].map((sem) => (
                 <button
                   key={sem.value}
-                  onClick={() => setSelectedSemester(sem.value)}
+                  onClick={() => {
+                    setShowOnlyFavorites(false);
+                    setSelectedSemester(sem.value);
+                  }}
                   className={`px-3.5 py-2 text-xs font-semibold rounded-lg transition-all whitespace-nowrap ${
-                    selectedSemester === sem.value
+                    !showOnlyFavorites && selectedSemester === sem.value
                       ? "bg-primary text-primary-foreground shadow-sm"
                       : "text-muted-foreground hover:text-foreground"
                   }`}
@@ -199,6 +264,17 @@ ${material.topicsCovered.map((t, idx) => `${idx + 1}. ${t}`).join("\n")}
                   {sem.label}
                 </button>
               ))}
+              <button
+                onClick={() => setShowOnlyFavorites(!showOnlyFavorites)}
+                className={`px-3.5 py-2 text-xs font-semibold rounded-lg transition-all whitespace-nowrap flex items-center gap-1.5 ${
+                  showOnlyFavorites
+                    ? "bg-rose-500 text-white shadow-sm"
+                    : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                }`}
+              >
+                <Heart className={`h-3.5 w-3.5 ${showOnlyFavorites ? "fill-white" : ""}`} />
+                <span>Favorites ({favorites.length})</span>
+              </button>
             </div>
           </div>
 
@@ -240,6 +316,31 @@ ${material.topicsCovered.map((t, idx) => `${idx + 1}. ${t}`).join("\n")}
             ))}
           </div>
         </div>
+
+        {/* ── Recently Viewed Section ── */}
+        {recentlyViewedMaterials.length > 0 && !showOnlyFavorites && (
+          <div className="mb-6 p-4 rounded-2xl bg-secondary/30 border border-border/80">
+            <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+              <Clock className="h-3.5 w-3.5 text-primary" />
+              <span>Recently Viewed ({recentlyViewedMaterials.length})</span>
+            </h3>
+            <div className="flex gap-2.5 overflow-x-auto pb-1 scrollbar-none">
+              {recentlyViewedMaterials.map((m) => (
+                <div
+                  key={m.id}
+                  onClick={() => handleDownload(m)}
+                  className="min-w-[220px] max-w-[260px] p-2.5 rounded-xl bg-card border border-border/70 hover:border-primary/40 transition-all cursor-pointer shadow-xs shrink-0 flex flex-col justify-between"
+                >
+                  <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-1">
+                    <span className="font-bold text-primary">{m.subjectCode}</span>
+                    <span className="font-mono uppercase font-bold">{m.fileType}</span>
+                  </div>
+                  <h4 className="text-xs font-semibold text-foreground line-clamp-1">{m.title}</h4>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* ── Materials Grid ── */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -321,10 +422,28 @@ ${material.topicsCovered.map((t, idx) => `${idx + 1}. ${t}`).join("\n")}
                   )}
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5">
+                  <button
+                    onClick={(e) => toggleFavorite(material.id, e)}
+                    className={`p-1.5 rounded-lg border transition-colors ${
+                      favorites.includes(material.id)
+                        ? "bg-rose-500/10 border-rose-500/30 text-rose-500"
+                        : "bg-secondary hover:bg-secondary/80 border-border text-muted-foreground hover:text-foreground"
+                    }`}
+                    title={favorites.includes(material.id) ? "Remove from Favorites" : "Add to Favorites"}
+                  >
+                    <Heart className={`h-4 w-4 ${favorites.includes(material.id) ? "fill-rose-500" : ""}`} />
+                  </button>
+                  <button
+                    onClick={(e) => handleCopyLink(material, e)}
+                    className="p-1.5 rounded-lg bg-secondary hover:bg-secondary/80 border border-border text-muted-foreground hover:text-foreground transition-colors"
+                    title="Copy direct share link"
+                  >
+                    <Copy className="h-4 w-4" />
+                  </button>
                   <button
                     onClick={(e) => { e.stopPropagation(); setActivePreview(material); }}
-                    className="p-1.5 rounded-lg bg-secondary hover:bg-secondary/80 text-foreground transition-colors"
+                    className="p-1.5 rounded-lg bg-secondary hover:bg-secondary/80 border border-border text-foreground transition-colors"
                     title="View Details & Syllabus Coverage"
                   >
                     <Eye className="h-4 w-4" />
@@ -342,23 +461,50 @@ ${material.topicsCovered.map((t, idx) => `${idx + 1}. ${t}`).join("\n")}
           ))}
 
           {filteredMaterials.length === 0 && (
-            <div className="col-span-full py-20 text-center bg-card border border-border rounded-2xl p-8">
+            <div className="col-span-full py-16 text-center bg-card border border-dashed border-border rounded-3xl p-8">
               <FolderDown className="h-12 w-12 mx-auto text-muted-foreground/40 mb-3" />
-              <h3 className="text-lg font-bold text-foreground mb-1">No Materials Found</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                No academic documents match your current filter settings or search terms.
+              <h3 className="text-lg font-bold text-foreground mb-1">
+                {showOnlyFavorites
+                  ? "No Favorite Materials Saved Yet"
+                  : selectedSemester !== "All"
+                  ? `No Official Notes for ${selectedSemester} Yet`
+                  : "No Study Materials Found"}
+              </h3>
+              <p className="text-xs text-muted-foreground max-w-md mx-auto mb-5 leading-relaxed">
+                {showOnlyFavorites
+                  ? "Tap the heart icon on any document or guide in the repository to pin it here for quick exam revision."
+                  : "Have Semester 1 or Semester 2 notes, question banks, or PPTs? Share them on our Campus Social community so faculty and student admins can add them to this repository!"}
               </p>
-              <button
-                onClick={() => {
-                  setSearchQuery("");
-                  setSelectedSubject("All");
-                  setSelectedCategory("All");
-                  setSelectedSemester("All");
-                }}
-                className="px-4 py-2 bg-primary text-primary-foreground text-xs font-semibold rounded-lg hover:opacity-90"
-              >
-                Clear All Filters
-              </button>
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                {showOnlyFavorites ? (
+                  <button
+                    onClick={() => setShowOnlyFavorites(false)}
+                    className="px-4 py-2 bg-primary text-primary-foreground text-xs font-bold rounded-xl shadow-xs"
+                  >
+                    Browse All Materials
+                  </button>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => navigate("/community")}
+                      className="px-4 py-2 bg-primary text-primary-foreground text-xs font-bold rounded-xl shadow-xs hover:opacity-90"
+                    >
+                      Submit Notes in Community →
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSearchQuery("");
+                        setSelectedSubject("All");
+                        setSelectedCategory("All");
+                        setSelectedSemester("All");
+                      }}
+                      className="px-4 py-2 bg-secondary text-foreground text-xs font-semibold rounded-xl hover:bg-secondary/80 border border-border"
+                    >
+                      Clear Filters
+                    </button>
+                  </>
+                )}
+              </div>
             </div>
           )}
         </div>
@@ -450,6 +596,7 @@ ${material.topicsCovered.map((t, idx) => `${idx + 1}. ${t}`).join("\n")}
         </div>
       )}
 
+      <BackToTop />
       <Footer />
     </div>
   );

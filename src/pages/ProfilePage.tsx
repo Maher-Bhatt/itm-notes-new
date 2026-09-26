@@ -23,18 +23,49 @@ import {
   X,
   Share2,
   Instagram,
-  Upload
+  Upload,
+  Copy,
+  Check,
+  Zap,
+  HelpCircle
 } from 'lucide-react';
 import { toast } from 'sonner';
 
-const PRESET_AVATARS = [
-  { id: 'av-1', label: 'Cyber Scholar', url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80' },
-  { id: 'av-2', label: 'Code Ninja', url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80' },
-  { id: 'av-3', label: 'AI Engineer', url: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80' },
-  { id: 'av-4', label: 'Quantum Dev', url: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=150&auto=format&fit=crop&q=80' },
-  { id: 'av-5', label: 'University Grad', url: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150&auto=format&fit=crop&q=80' },
-  { id: 'av-6', label: 'Silicon Architect', url: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80' },
+export interface GradientAvatar {
+  id: string;
+  label: string;
+  bgClass: string;
+}
+
+export const GRADIENT_AVATARS: GradientAvatar[] = [
+  { id: 'grad-indigo', label: 'Cosmic Indigo', bgClass: 'from-indigo-600 via-purple-600 to-pink-500' },
+  { id: 'grad-emerald', label: 'Matrix Emerald', bgClass: 'from-emerald-500 via-teal-600 to-cyan-700' },
+  { id: 'grad-solar', label: 'Solar Flare', bgClass: 'from-amber-500 via-orange-600 to-rose-600' },
+  { id: 'grad-cyber', label: 'Cyber Violet', bgClass: 'from-fuchsia-600 via-purple-700 to-indigo-900' },
+  { id: 'grad-ocean', label: 'Deep Ocean', bgClass: 'from-blue-600 via-cyan-600 to-teal-500' },
+  { id: 'grad-midnight', label: 'Midnight Slate', bgClass: 'from-zinc-800 via-slate-800 to-neutral-900' },
 ];
+
+export const renderAvatarBox = (url: string | null | undefined, name: string, sizeClass = "w-20 h-20 text-3xl") => {
+  if (url && (url.startsWith('data:image') || url.startsWith('http'))) {
+    return (
+      <img
+        src={url}
+        alt={name}
+        className={`${sizeClass} rounded-2xl object-cover shadow-md border-2 border-primary/50`}
+      />
+    );
+  }
+  const matched = GRADIENT_AVATARS.find(g => g.id === url || url?.includes(g.id));
+  const gradientClass = matched ? matched.bgClass : 'from-indigo-600 via-purple-600 to-pink-500';
+  const initial = name?.trim() ? name.trim().charAt(0).toUpperCase() : 'S';
+
+  return (
+    <div className={`${sizeClass} rounded-2xl bg-gradient-to-tr ${gradientClass} text-white flex items-center justify-center font-black shadow-md border-2 border-background/60 select-none`}>
+      {initial}
+    </div>
+  );
+};
 
 export default function ProfilePage() {
   const { user, profile, role, updateProfile } = useAuth();
@@ -51,6 +82,29 @@ export default function ProfilePage() {
   const [bio, setBio] = useState(profile?.bio || 'Passionate engineering student preparing for Semester 3 University Exams at ITM SLS Baroda.');
   const [targetCgpa, setTargetCgpa] = useState(profile?.target_cgpa || '8.5+');
   const [goal, setGoal] = useState(profile?.goal || 'Ace Computer Architecture MST & master DSA Trees');
+
+  // Subject Quiz Scores from localStorage
+  const [quizScores] = useState<{ id: string; subjectId: string; subjectName: string; score: number; total: number; percentage: number; timestamp: string }[]>(() => {
+    try {
+      const raw = localStorage.getItem('itm_quiz_scores');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch {}
+    return [
+      { id: 'q1', subjectId: 'sem3-dsa', subjectName: 'Data Structures & Algorithms', score: 9, total: 10, percentage: 90, timestamp: new Date(Date.now() - 86400000).toISOString() },
+      { id: 'q2', subjectId: 'sem3-dbms', subjectName: 'Database Management Systems', score: 8, total: 10, percentage: 80, timestamp: new Date(Date.now() - 172800000).toISOString() },
+      { id: 'q3', subjectId: 'sem3-coanmp', subjectName: 'Computer Oriented Numerical Methods', score: 9, total: 10, percentage: 90, timestamp: new Date(Date.now() - 259200000).toISOString() },
+      { id: 'q4', subjectId: 'sem3-ca', subjectName: 'Computer Architecture', score: 7, total: 10, percentage: 70, timestamp: new Date(Date.now() - 345600000).toISOString() },
+    ];
+  });
+
+  const handleCopyStudyStats = () => {
+    const text = `🎓 ITM Notes Student Passport\n👤 Student: ${displayName}\n🏅 Rank: Level ${levelInfo.level} (${levelInfo.title})\n⚡ Total XP: ${game.xp} XP\n🔥 Study Streak: ${game.streakDays} Days\n⏱️ Focus Time: ${Math.round((game.totalStudyMinutes / 60) * 10) / 10} Hours\n🎯 Target CGPA: ${targetCgpa}\n📚 Completed Topics: ${progress.completedTopics.length}\n🔗 Portal: https://itm-notes-new.vercel.app`;
+    navigator.clipboard.writeText(text);
+    toast.success('Study Stats summary copied to clipboard! Ready to share.');
+  };
 
   // Keep state in sync when profile updates
   useEffect(() => {
@@ -153,17 +207,7 @@ export default function ProfilePage() {
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
               {/* Avatar Photo with Change Camera overlay */}
               <div className="relative group">
-                {profile?.avatar_url || avatarUrl ? (
-                  <img
-                    src={profile?.avatar_url || avatarUrl || ''}
-                    alt={displayName}
-                    className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-2xl object-cover shadow-md border-2 border-primary/50"
-                  />
-                ) : (
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-2xl bg-gradient-to-tr from-primary to-blue-600 text-primary-foreground flex items-center justify-center font-black text-3xl sm:text-4xl shadow-md border-2 border-background">
-                    {displayName.charAt(0).toUpperCase()}
-                  </div>
-                )}
+                {renderAvatarBox(profile?.avatar_url || avatarUrl, displayName, "w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 text-2xl sm:text-3xl lg:text-4xl")}
                 
                 {/* Camera icon button to edit avatar directly */}
                 <button
@@ -385,6 +429,48 @@ export default function ProfilePage() {
             {/* Pomodoro Focus Timer */}
             <PomodoroTimer />
 
+            {/* Subject-Wise Quiz Performance */}
+            <div className="bg-card border border-border/80 rounded-2xl p-6 shadow-sm">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <Zap className="h-5 w-5 text-amber-500" />
+                  <h2 className="text-lg font-bold text-foreground">Subject Quiz Performance</h2>
+                </div>
+                <Link to="/quiz" className="text-xs text-primary font-bold hover:underline">
+                  Take Practice Quiz →
+                </Link>
+              </div>
+
+              <div className="space-y-3">
+                {quizScores.map((q) => (
+                  <div key={q.id} className="p-3.5 rounded-xl border border-border/60 bg-secondary/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <h4 className="font-bold text-sm text-foreground truncate">{q.subjectName}</h4>
+                      <p className="text-xs text-muted-foreground">
+                        Scored {q.score} / {q.total} questions ({q.percentage}%)
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-3 shrink-0">
+                      <div className="w-24 sm:w-32 h-2 rounded-full bg-secondary overflow-hidden">
+                        <div
+                          className={`h-full rounded-full ${
+                            q.percentage >= 80 ? 'bg-emerald-500' : q.percentage >= 60 ? 'bg-amber-500' : 'bg-rose-500'
+                          }`}
+                          style={{ width: `${q.percentage}%` }}
+                        />
+                      </div>
+                      <span className={`text-xs font-mono font-bold ${
+                        q.percentage >= 80 ? 'text-emerald-500' : q.percentage >= 60 ? 'text-amber-500' : 'text-rose-500'
+                      }`}>
+                        {q.percentage}%
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             {/* ── Badges & Achievements (Expanded 24 Badges + 1-Click Story Sharing) ── */}
             <div className="bg-card border border-border/80 rounded-2xl p-6 shadow-sm">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
@@ -490,6 +576,54 @@ export default function ProfilePage() {
 
           {/* Right Column: Academic Goals & Bookmarks */}
           <div className="space-y-6">
+            {/* Study Stats Share Card */}
+            <div className="bg-gradient-to-br from-zinc-950 via-zinc-900 to-indigo-950 border border-primary/40 rounded-2xl p-6 shadow-xl text-white relative overflow-hidden group">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-2xl pointer-events-none" />
+              
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-[10px] uppercase tracking-widest font-black text-primary px-2 py-0.5 rounded bg-primary/10 border border-primary/20">
+                  ITM Academic Passport
+                </span>
+                <span className="text-[10px] text-zinc-400 font-mono">B.Tech CSE</span>
+              </div>
+
+              <div className="flex items-center gap-3.5 mb-5">
+                {renderAvatarBox(profile?.avatar_url || avatarUrl, displayName, "w-14 h-14 text-2xl")}
+                <div className="min-w-0">
+                  <h4 className="font-extrabold text-base text-white truncate">{displayName}</h4>
+                  <p className="text-xs text-indigo-300 font-medium">Level {levelInfo.level} · {levelInfo.title}</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2.5 p-3 rounded-xl bg-white/5 border border-white/10 mb-4 text-xs">
+                <div>
+                  <span className="text-[10px] text-zinc-400 block uppercase font-bold">Total XP</span>
+                  <span className="font-black text-amber-400 font-mono text-sm">{game.xp} XP</span>
+                </div>
+                <div>
+                  <span className="text-[10px] text-zinc-400 block uppercase font-bold">Streak</span>
+                  <span className="font-black text-rose-400 font-mono text-sm">🔥 {game.streakDays} Days</span>
+                </div>
+                <div>
+                  <span className="text-[10px] text-zinc-400 block uppercase font-bold">Target CGPA</span>
+                  <span className="font-black text-emerald-400 font-mono text-sm">{targetCgpa}</span>
+                </div>
+                <div>
+                  <span className="text-[10px] text-zinc-400 block uppercase font-bold">Completed</span>
+                  <span className="font-black text-cyan-400 font-mono text-sm">{progress.completedTopics.length} Topics</span>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleCopyStudyStats}
+                className="w-full py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md apple-press"
+              >
+                <Copy className="h-3.5 w-3.5" />
+                <span>Share Study Stats</span>
+              </button>
+            </div>
+
             {/* Student Targets */}
             <div className="bg-card border border-border/80 rounded-2xl p-6 shadow-sm">
               <h3 className="font-bold text-sm uppercase tracking-wider text-muted-foreground mb-4">
@@ -600,22 +734,12 @@ export default function ProfilePage() {
                 </label>
 
                 <div className="flex items-center gap-4 mb-3">
-                  {avatarUrl ? (
-                    <img
-                      src={avatarUrl}
-                      alt="Avatar Preview"
-                      className="w-16 h-16 rounded-2xl object-cover border-2 border-primary shadow"
-                    />
-                  ) : (
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-primary to-blue-600 flex items-center justify-center font-bold text-white text-2xl border-2 border-primary/50 shadow">
-                      {displayName.charAt(0).toUpperCase()}
-                    </div>
-                  )}
+                  {renderAvatarBox(avatarUrl, displayName, "w-16 h-16 text-2xl")}
 
                   <div className="flex flex-col gap-1.5">
                     <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold cursor-pointer hover:opacity-90 shadow-xs">
                       <Upload className="h-3.5 w-3.5" />
-                      <span>Upload from Device</span>
+                      <span>Upload Custom Photo</span>
                       <input
                         type="file"
                         accept="image/*"
@@ -627,23 +751,23 @@ export default function ProfilePage() {
                   </div>
                 </div>
 
-                {/* Preset Avatars */}
+                {/* Preset Gradient Avatars */}
                 <div>
                   <span className="text-[11px] font-semibold text-muted-foreground block mb-2">
-                    Or choose a preset student avatar:
+                    Or choose a sleek gradient style:
                   </span>
-                  <div className="flex items-center gap-2 overflow-x-auto pb-1">
-                    {PRESET_AVATARS.map((av) => (
+                  <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                    {GRADIENT_AVATARS.map((av) => (
                       <button
                         type="button"
                         key={av.id}
-                        onClick={() => setAvatarUrl(av.url)}
+                        onClick={() => setAvatarUrl(av.id)}
                         title={av.label}
-                        className={`w-11 h-11 rounded-xl overflow-hidden border-2 shrink-0 transition-transform ${
-                          avatarUrl === av.url ? 'border-primary ring-2 ring-primary/40 scale-105' : 'border-border/60 hover:border-primary/60'
+                        className={`h-11 rounded-xl bg-gradient-to-tr ${av.bgClass} text-white font-black text-sm flex items-center justify-center border-2 transition-transform ${
+                          avatarUrl === av.id ? 'border-primary ring-2 ring-primary/40 scale-105' : 'border-transparent hover:scale-102'
                         }`}
                       >
-                        <img src={av.url} alt={av.label} className="w-full h-full object-cover" />
+                        {displayName.charAt(0).toUpperCase()}
                       </button>
                     ))}
                   </div>

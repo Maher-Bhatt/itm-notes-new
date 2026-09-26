@@ -17,6 +17,8 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { SearchDialog } from "@/components/SearchDialog";
 import { Footer } from "@/components/Footer";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { BackToTop } from "@/components/BackToTop";
+import { toast } from "sonner";
 
 function XcodeBlock({ code, label, variant }: { code: string; label?: string; variant?: "output" }) {
   const [copied, setCopied] = useState(false);
@@ -210,17 +212,43 @@ export default function TopicPage() {
     }
   }, [subjectId, checkDailyStreak, unlockAchievement]);
 
-  // Keyboard shortcut: F to toggle focus mode
+  // Scroll progress tracker
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const totalScroll = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      if (totalScroll > 0) {
+        const currentProgress = (window.scrollY / totalScroll) * 100;
+        setScrollProgress(Math.min(100, Math.max(0, currentProgress)));
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Keyboard shortcuts: F (focus mode), B (bookmark)
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "f" && !e.ctrlKey && !e.metaKey && !(e.target instanceof HTMLInputElement) && !(e.target instanceof HTMLTextAreaElement)) {
-        setFocusMode((prev) => !prev);
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
+        return;
       }
-      if (e.key === "Escape" && focusMode) setFocusMode(false);
+      if ((e.key === "f" || e.key === "F") && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault();
+        setFocusMode((prev) => !prev);
+      } else if ((e.key === "b" || e.key === "B") && !e.ctrlKey && !e.metaKey && resolvedTopic?.topic.id) {
+        e.preventDefault();
+        toggleBookmark(resolvedTopic.topic.id);
+        const willBeBookmarked = !isBookmarked(resolvedTopic.topic.id);
+        toast.info(willBeBookmarked ? '🔖 Topic bookmarked!' : 'Bookmark removed');
+      } else if (e.key === "Escape" && focusMode) {
+        setFocusMode(false);
+      }
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [focusMode]);
+  }, [focusMode, resolvedTopic?.topic.id, isBookmarked, toggleBookmark]);
 
   // Scroll spy for TOC
   useEffect(() => {
@@ -348,6 +376,14 @@ export default function TopicPage() {
 
   return (
     <div className={`min-h-screen bg-background flex flex-col ${focusMode ? "focus-mode" : ""}`}>
+      {/* Top Reading Progress Bar */}
+      <div className="fixed top-0 left-0 right-0 h-1 z-[60] bg-transparent pointer-events-none">
+        <div 
+          className="h-full bg-primary transition-all duration-75 ease-out shadow-sm" 
+          style={{ width: `${scrollProgress}%` }} 
+        />
+      </div>
+
       <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
 
       {/* Header */}
@@ -727,6 +763,8 @@ export default function TopicPage() {
           {!focusMode && <Footer />}
         </main>
       </div>
+
+      <BackToTop />
 
       {/* Active Recall Flashcards Modal */}
       <FlashcardsModal

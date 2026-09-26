@@ -3,6 +3,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { BackToTop } from '@/components/BackToTop';
 import {
   MessageSquare,
   Shield,
@@ -97,6 +98,26 @@ export default function CommunityPage() {
   const [sharingPost, setSharingPost] = useState<CommunityPost | null>(null);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [postToDelete, setPostToDelete] = useState<string | null>(null);
+  const [postSearchQuery, setPostSearchQuery] = useState('');
+  const [reportedPostIds, setReportedPostIds] = useState<string[]>(() => {
+    try {
+      const raw = localStorage.getItem('itm_reported_posts');
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const handleReportPost = (postId: string) => {
+    if (reportedPostIds.includes(postId)) {
+      toast.info('You have already reported this post.');
+      return;
+    }
+    const updated = [...reportedPostIds, postId];
+    setReportedPostIds(updated);
+    localStorage.setItem('itm_reported_posts', JSON.stringify(updated));
+    toast.success('⚠️ Post reported. Admin moderators will review this content.');
+  };
 
   // Comparison Modal State
   const [comparisonFriend, setComparisonFriend] = useState<ClassmateProfile | null>(null);
@@ -377,6 +398,21 @@ export default function CommunityPage() {
 
       setCommentInputs((prev) => ({ ...prev, [postId]: '' }));
       addXp(5, 'Community Comment');
+
+      // Trigger notification for campus activity
+      try {
+        const notif = {
+          id: Date.now().toString(),
+          title: 'New Comment on Campus Post',
+          message: `${masked ? 'Anonymous Student 🎭' : currentAuthorName} commented: "${content.slice(0, 40)}${content.length > 40 ? '...' : ''}"`,
+          timestamp: new Date().toISOString(),
+          read: false,
+        };
+        const currentNotifs = JSON.parse(localStorage.getItem('itm_notifications') || '[]');
+        localStorage.setItem('itm_notifications', JSON.stringify([notif, ...currentNotifs.slice(0, 29)]));
+        window.dispatchEvent(new Event('itm_notifications_updated'));
+      } catch {}
+
       toast.success('Comment added (+5 XP)!');
     } catch (err) {
       console.error('Failed to add comment:', err);
@@ -474,7 +510,7 @@ export default function CommunityPage() {
     setIsComparisonOpen(true);
   };
 
-  // Filtered Posts
+  // Filtered Posts with search query support
   const filteredPosts = useMemo(() => {
     return posts.filter((p) => {
       // If user came via a shared post link, prioritize that post
@@ -483,9 +519,21 @@ export default function CommunityPage() {
       if (activeTab === 'feedback' && p.category !== 'College Feedback') return false;
       if (activeTab === 'trending' && p.likes < 10) return false;
       if (selectedCategory !== 'All' && p.category !== selectedCategory) return false;
+      if (postSearchQuery.trim()) {
+        const q = postSearchQuery.toLowerCase();
+        const contentMatch = p.content.toLowerCase().includes(q);
+        const authorMatch = p.authorName?.toLowerCase().includes(q);
+        const catMatch = p.category.toLowerCase().includes(q);
+        if (!contentMatch && !authorMatch && !catMatch) return false;
+      }
       return true;
     });
-  }, [posts, activeTab, selectedCategory, sharedPostId]);
+  }, [posts, activeTab, selectedCategory, sharedPostId, postSearchQuery]);
+
+  // Trending posts this week (top 3 by likes)
+  const trendingPosts = useMemo(() => {
+    return [...posts].sort((a, b) => b.likes - a.likes).slice(0, 3);
+  }, [posts]);
 
   // Filtered Classmates / Friends
   const displayedClassmates = useMemo(() => {
@@ -652,17 +700,25 @@ export default function CommunityPage() {
                 )}
 
                 <form onSubmit={handleCreatePost} className="space-y-4">
-                  <textarea
-                    value={postContent}
-                    onChange={(e) => setPostContent(e.target.value)}
-                    placeholder={
-                      isMasked
-                        ? "Share an honest college complaint, confession, or feedback without revealing your identity..."
-                        : "Share an exam tip, ask a subject question, or post a campus update..."
-                    }
-                    rows={3}
-                    className="w-full p-3.5 rounded-xl bg-secondary/30 border border-border/80 focus:border-primary focus:ring-1 focus:ring-primary text-sm text-foreground placeholder:text-muted-foreground/60 resize-none outline-none transition-all"
-                  />
+                  <div className="relative">
+                    <textarea
+                      value={postContent}
+                      maxLength={500}
+                      onChange={(e) => setPostContent(e.target.value.slice(0, 500))}
+                      placeholder={
+                        isMasked
+                          ? "Share an honest college complaint, confession, or feedback without revealing your identity..."
+                          : "Share an exam tip, ask a subject question, or post a campus update..."
+                      }
+                      rows={3}
+                      className="w-full p-3.5 pb-7 rounded-xl bg-secondary/30 border border-border/80 focus:border-primary focus:ring-1 focus:ring-primary text-sm text-foreground placeholder:text-muted-foreground/60 resize-none outline-none transition-all"
+                    />
+                    <span className={`absolute bottom-2 right-3 text-[10px] font-mono ${
+                      postContent.length >= 480 ? 'text-destructive font-bold' : 'text-muted-foreground'
+                    }`}>
+                      {postContent.length} / 500
+                    </span>
+                  </div>
 
                   <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-border/50">
                     {/* Category Pill Selector */}
@@ -703,6 +759,26 @@ export default function CommunityPage() {
                 </form>
               </div>
             )}
+
+            {/* Real-time Post Search Bar */}
+            <div className="relative">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <input
+                type="text"
+                value={postSearchQuery}
+                onChange={(e) => setPostSearchQuery(e.target.value)}
+                placeholder="Search campus discussions, questions, confessions..."
+                className="w-full h-10 pl-10 pr-16 rounded-2xl border border-border/80 bg-card text-xs focus:ring-1 focus:ring-primary focus:outline-none transition-all shadow-xs"
+              />
+              {postSearchQuery && (
+                <button
+                  onClick={() => setPostSearchQuery('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-muted-foreground hover:text-foreground px-2 py-0.5 rounded-md hover:bg-secondary"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
 
             {/* Filter Tabs */}
             <div className="flex items-center justify-between gap-2 border-b border-border pb-3 flex-wrap">
@@ -901,6 +977,15 @@ export default function CommunityPage() {
                           <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-secondary text-foreground border border-border/60">
                             {post.category}
                           </span>
+                          <button
+                            onClick={() => handleReportPost(post.id)}
+                            className={`p-1.5 rounded-md hover:bg-destructive/10 transition-colors ${
+                              reportedPostIds.includes(post.id) ? 'text-destructive font-bold' : 'text-muted-foreground hover:text-destructive'
+                            }`}
+                            title={reportedPostIds.includes(post.id) ? 'Reported to Admin' : 'Report Post to Moderators'}
+                          >
+                            <AlertTriangle className="h-3.5 w-3.5" />
+                          </button>
                           {canDelete && (
                             <button
                               onClick={() => confirmDeletePost(post.id)}
@@ -1083,6 +1168,42 @@ export default function CommunityPage() {
 
           {/* ── Right Column: Friends & Classmates Network ── */}
           <div className="lg:col-span-4 space-y-6">
+            {/* Trending This Week Widget */}
+            <div className="rounded-2xl sm:rounded-3xl border border-border/80 bg-card p-5 sm:p-6 shadow-sm">
+              <div className="flex items-center gap-2 mb-3">
+                <Flame className="h-4 w-4 text-amber-500 fill-amber-500" />
+                <h3 className="font-extrabold text-sm sm:text-base text-foreground">Trending This Week</h3>
+              </div>
+              <div className="space-y-2.5">
+                {trendingPosts.length === 0 ? (
+                  <p className="text-xs text-muted-foreground">No trending posts yet.</p>
+                ) : (
+                  trendingPosts.map((tp) => (
+                    <div
+                      key={tp.id}
+                      onClick={() => {
+                        const el = document.getElementById(tp.id);
+                        if (el) el.scrollIntoView({ behavior: 'smooth' });
+                      }}
+                      className="p-3 rounded-xl bg-secondary/30 hover:bg-secondary/60 border border-border/50 transition-colors cursor-pointer"
+                    >
+                      <div className="flex items-center justify-between text-[11px] mb-1">
+                        <span className="font-semibold text-xs text-foreground truncate max-w-[140px]">
+                          {tp.isMasked ? 'Anonymous Student 🎭' : tp.authorName}
+                        </span>
+                        <span className="font-mono text-amber-600 dark:text-amber-400 font-bold flex items-center gap-0.5">
+                          ❤️ {tp.likes}
+                        </span>
+                      </div>
+                      <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+                        {tp.content}
+                      </p>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
             {/* Friends Hub Card */}
             <div className="rounded-2xl sm:rounded-3xl border border-border/80 bg-card p-5 sm:p-6 shadow-sm">
               <div className="flex items-center justify-between mb-3">
@@ -1256,6 +1377,7 @@ export default function CommunityPage() {
         </div>
       </main>
 
+      <BackToTop />
       <Footer />
 
       {/* Side-by-Side Friend Comparison Modal */}

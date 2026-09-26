@@ -10,6 +10,44 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useAcademic } from "@/contexts/AcademicContext";
 import { useSubjects } from "@/hooks/useAcademicData";
 import { subjects } from "@/data/subjects";
+import { BackToTop } from "@/components/BackToTop";
+
+function ProgressRing({ progress = 0 }: { progress: number }) {
+  const radius = 22;
+  const stroke = 3;
+  const normalizedRadius = radius - stroke * 2;
+  const circumference = normalizedRadius * 2 * Math.PI;
+  const strokeDashoffset = circumference - (progress / 100) * circumference;
+
+  return (
+    <div className="relative inline-flex items-center justify-center shrink-0">
+      <svg height={radius * 2} width={radius * 2} className="rotate-[-90deg]">
+        <circle
+          stroke="currentColor"
+          fill="transparent"
+          strokeWidth={stroke}
+          className="text-secondary"
+          r={normalizedRadius}
+          cx={radius}
+          cy={radius}
+        />
+        <circle
+          stroke="currentColor"
+          fill="transparent"
+          strokeWidth={stroke}
+          strokeDasharray={circumference + ' ' + circumference}
+          style={{ strokeDashoffset }}
+          strokeLinecap="round"
+          className="text-primary transition-all duration-500"
+          r={normalizedRadius}
+          cx={radius}
+          cy={radius}
+        />
+      </svg>
+      <span className="absolute text-[10px] font-bold text-foreground font-mono">{Math.round(progress)}%</span>
+    </div>
+  );
+}
 
 function OverallProgressBar({ progress }: { progress: number }) {
   return (
@@ -44,6 +82,23 @@ export default function DashboardPage() {
       } catch (e) {}
     }
   }, []);
+  const [weeklyGoal, setWeeklyGoal] = useState<number>(() => {
+    const saved = localStorage.getItem('itm_weekly_xp_goal');
+    return saved ? parseInt(saved, 10) : 500;
+  });
+
+  const weeklyXpEarned = useMemo(() => {
+    const history = gamification.state.activityHistory || {};
+    let total = 0;
+    for (let i = 0; i < 7; i++) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const dateStr = d.toISOString().split('T')[0];
+      total += (history[dateStr] || 0) * 15;
+    }
+    return Math.max(total, gamification.state.xp > 0 ? Math.min(gamification.state.xp, 150) : 0);
+  }, [gamification.state.activityHistory, gamification.state.xp]);
+
   const [filterSem, setFilterSem] = useState<number | 'all'>(semesterNumber || 3);
   const navigate = useNavigate();
 
@@ -167,30 +222,42 @@ export default function DashboardPage() {
                 )}
               </div>
               
-              {/* Activity Heatmap Widget */}
-              <div className="surface-elevated p-5 rounded-2xl border border-border/80 flex flex-col justify-center">
-                <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-4">Study Heatmap (Last 4 Weeks)</h3>
-                <div className="flex gap-1.5 overflow-x-auto pb-2 scrollbar-none items-end h-[80px]">
-                  {Array.from({ length: 28 }).map((_, i) => {
-                    const d = new Date();
-                    d.setDate(d.getDate() - (27 - i));
-                    const dateStr = d.toISOString().split('T')[0];
-                    const active = gamification.state.activityHistory?.[dateStr] || 0;
-                    
-                    let colorClass = "bg-secondary";
-                    if (active > 0 && active <= 2) colorClass = "bg-primary/30";
-                    else if (active > 2 && active <= 5) colorClass = "bg-primary/60";
-                    else if (active > 5) colorClass = "bg-primary";
-                    
-                    return (
-                      <div 
-                        key={i} 
-                        className={`w-4 rounded-sm ${colorClass} transition-all duration-300 hover:scale-110`}
-                        style={{ height: active > 0 ? `${Math.min(100, 30 + active * 10)}%` : '30%' }}
-                        title={`${active} topics read on ${dateStr}`}
-                      />
-                    );
-                  })}
+              {/* GitHub-Style 12-Week Study Heatmap */}
+              <div className="surface-elevated p-5 rounded-2xl border border-border/80 flex flex-col justify-between">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Study Heatmap (12 Weeks)</h3>
+                  <span className="text-xs font-semibold text-primary">
+                    {Object.values(gamification.state.activityHistory || {}).reduce((a, b) => a + b, 0)} sessions
+                  </span>
+                </div>
+                <div className="overflow-x-auto pb-1">
+                  <div className="grid grid-flow-col grid-rows-7 gap-1 w-max">
+                    {Array.from({ length: 84 }).map((_, i) => {
+                      const d = new Date();
+                      d.setDate(d.getDate() - (83 - i));
+                      const dateStr = d.toISOString().split('T')[0];
+                      const count = gamification.state.activityHistory?.[dateStr] || 0;
+                      let bg = "bg-secondary/70";
+                      if (count >= 5) bg = "bg-emerald-500";
+                      else if (count >= 3) bg = "bg-emerald-500/70";
+                      else if (count >= 1) bg = "bg-emerald-500/40";
+                      return (
+                        <div
+                          key={i}
+                          className={`w-3 h-3 rounded-[2px] ${bg} transition-all hover:scale-125 cursor-pointer`}
+                          title={`${dateStr}: ${count} study activities`}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+                <div className="flex items-center justify-end gap-1.5 text-[10px] text-muted-foreground mt-2">
+                  <span>Less</span>
+                  <span className="w-2.5 h-2.5 rounded-[2px] bg-secondary/70" />
+                  <span className="w-2.5 h-2.5 rounded-[2px] bg-emerald-500/40" />
+                  <span className="w-2.5 h-2.5 rounded-[2px] bg-emerald-500/70" />
+                  <span className="w-2.5 h-2.5 rounded-[2px] bg-emerald-500" />
+                  <span>More</span>
                 </div>
               </div>
             </div>
@@ -372,7 +439,8 @@ export default function DashboardPage() {
                         </div>
 
                         {/* Actions */}
-                        <div className="flex items-center gap-2 shrink-0">
+                        <div className="flex items-center gap-3 shrink-0">
+                          <ProgressRing progress={subProgress} />
                           <button
                             onClick={() => navigate(`/subject/${subject.id}/cheat-sheet`)}
                             className="px-3 py-1.5 rounded-xl bg-secondary hover:bg-secondary/80 text-foreground font-semibold text-xs apple-press transition-colors"
@@ -437,6 +505,40 @@ export default function DashboardPage() {
               </button>
             </div>
 
+            {/* Weekly XP Goal Widget */}
+            <div className="surface-elevated rounded-xl p-5 border border-border/80 shadow-xs">
+              <div className="flex items-center justify-between mb-3">
+                <div>
+                  <h3 className="font-semibold text-sm">Weekly XP Target</h3>
+                  <p className="text-xs text-muted-foreground">{weeklyXpEarned} / {weeklyGoal} XP</p>
+                </div>
+                <select
+                  value={weeklyGoal}
+                  onChange={(e) => {
+                    const val = Number(e.target.value);
+                    setWeeklyGoal(val);
+                    localStorage.setItem('itm_weekly_xp_goal', String(val));
+                  }}
+                  className="text-xs bg-secondary text-foreground px-2 py-1 rounded-md border border-border font-medium cursor-pointer"
+                >
+                  <option value={250}>250 XP</option>
+                  <option value={500}>500 XP</option>
+                  <option value={1000}>1000 XP</option>
+                  <option value={2000}>2000 XP</option>
+                </select>
+              </div>
+              <div className="w-full bg-secondary h-2.5 rounded-full overflow-hidden mb-2">
+                <div
+                  className="bg-emerald-500 h-full transition-all duration-700 ease-out rounded-full"
+                  style={{ width: `${Math.min(100, Math.round((weeklyXpEarned / weeklyGoal) * 100))}%` }}
+                />
+              </div>
+              <p className="text-[11px] text-muted-foreground flex justify-between">
+                <span>{Math.round((weeklyXpEarned / weeklyGoal) * 100)}% reached</span>
+                <span>{weeklyGoal > weeklyXpEarned ? `${weeklyGoal - weeklyXpEarned} XP left` : 'Goal reached! 🎉'}</span>
+              </p>
+            </div>
+
             <div className="surface-elevated rounded-xl p-5">
               <h3 className="font-semibold mb-4">Overall Progress</h3>
               <OverallProgressBar progress={overallProgress} />
@@ -463,6 +565,7 @@ export default function DashboardPage() {
         </div>
       </main>
 
+      <BackToTop />
       <Footer />
     </div>
   );

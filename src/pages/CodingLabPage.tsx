@@ -26,23 +26,63 @@ export default function CodingLabPage() {
   const [output, setOutput] = useState<string | null>(null);
   const [status, setStatus] = useState<'idle' | 'compiling' | 'running' | 'success' | 'failed'>('idle');
   const [showSolution, setShowSolution] = useState(false);
-  const [activeWorkspaceTab, setActiveWorkspaceTab] = useState<'editor' | 'specs' | 'hints' | 'solution'>('editor');
+  const [activeWorkspaceTab, setActiveWorkspaceTab] = useState<'editor' | 'specs' | 'hints' | 'solution' | 'history'>('editor');
   const [mobileTab, setMobileTab] = useState<'problems' | 'workspace'>('problems');
   const [solvedProblems, setSolvedProblems] = useState<string[]>([]);
+  const [submissionHistory, setSubmissionHistory] = useState<Array<{ problemId: string; problemTitle?: string; timestamp: string; passed: boolean }>>([]);
 
   const { addXp, unlockAchievement } = useGamification();
 
-  // Load solved problems from localStorage
+  // Load solved problems and submission history from localStorage
   useEffect(() => {
     try {
-      const saved = localStorage.getItem('itm_coding_lab_solved');
-      if (saved) {
-        setSolvedProblems(JSON.parse(saved));
-      }
+      const savedSolved = localStorage.getItem('itm_coding_lab_solved');
+      if (savedSolved) setSolvedProblems(JSON.parse(savedSolved));
+      const savedHistory = localStorage.getItem('itm_coding_history');
+      if (savedHistory) setSubmissionHistory(JSON.parse(savedHistory));
     } catch {
       // ignore
     }
   }, []);
+
+  // Auto-save code draft with debounce
+  useEffect(() => {
+    if (!activeProblemId) return;
+    const timer = setTimeout(() => {
+      localStorage.setItem(`itm_coding_draft_${activeProblemId}`, code);
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [code, activeProblemId]);
+
+  // Restore draft or starterCode when activeProblemId changes
+  useEffect(() => {
+    const draft = localStorage.getItem(`itm_coding_draft_${activeProblemId}`);
+    if (draft !== null) {
+      setCode(draft);
+    } else {
+      const prob = CODING_PROBLEMS.find(p => p.id === activeProblemId);
+      if (prob) setCode(prob.starterCode);
+    }
+  }, [activeProblemId]);
+
+  // Difficulty progress tracker statistics
+  const difficultyStats = useMemo(() => {
+    const stats = {
+      Easy: { solved: 0, total: 0 },
+      Medium: { solved: 0, total: 0 },
+      Hard: { solved: 0, total: 0 },
+    };
+    for (const p of CODING_PROBLEMS) {
+      const diff = (p.difficulty || 'Medium') as 'Easy' | 'Medium' | 'Hard';
+      if (stats[diff]) {
+        stats[diff].total += 1;
+        if (solvedProblems.includes(p.id)) {
+          stats[diff].solved += 1;
+        }
+      }
+    }
+    return stats;
+  }, [solvedProblems]);
 
   // Derive unique subjects from problems
   const availableSubjects = useMemo(() => {
@@ -184,6 +224,21 @@ export default function CodingLabPage() {
       setTimeout(() => {
         const result = currentProblem?.validator(code);
         setOutput(result.output);
+
+        // Record submission in history
+        if (currentProblem) {
+          const record = {
+            problemId: currentProblem.id,
+            problemTitle: currentProblem.title,
+            timestamp: new Date().toISOString(),
+            passed: result.passed,
+          };
+          setSubmissionHistory(prev => {
+            const next = [record, ...prev.slice(0, 49)];
+            localStorage.setItem('itm_coding_history', JSON.stringify(next));
+            return next;
+          });
+        }
 
         if (result.passed) {
           setStatus('success');
@@ -367,7 +422,29 @@ export default function CodingLabPage() {
         <div className="flex flex-col lg:grid lg:grid-cols-12 gap-5 flex-1">
           {/* Left Column: Problem Statements Sidebar */}
           <div className={`lg:col-span-4 flex-col gap-3 ${mobileTab === 'problems' ? 'flex' : 'hidden lg:flex'}`}>
-            <Card className="flex-1 flex flex-col border shadow-xs overflow-hidden max-h-[820px]">
+            {/* Difficulty Progress Tracker Card */}
+            <div className="bg-card border rounded-2xl p-3.5 shadow-xs">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Difficulty Progress</span>
+                <span className="text-xs font-mono font-bold text-primary">{solvedProblems.length}/{CODING_PROBLEMS.length} Solved</span>
+              </div>
+              <div className="grid grid-cols-3 gap-2 text-center">
+                <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-2">
+                  <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 block">Easy</span>
+                  <span className="font-mono font-bold text-xs text-foreground">{difficultyStats.Easy.solved}/{difficultyStats.Easy.total}</span>
+                </div>
+                <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-2">
+                  <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 block">Medium</span>
+                  <span className="font-mono font-bold text-xs text-foreground">{difficultyStats.Medium.solved}/{difficultyStats.Medium.total}</span>
+                </div>
+                <div className="bg-rose-500/10 border border-rose-500/20 rounded-xl p-2">
+                  <span className="text-[10px] font-bold text-rose-600 dark:text-rose-400 block">Hard</span>
+                  <span className="font-mono font-bold text-xs text-foreground">{difficultyStats.Hard.solved}/{difficultyStats.Hard.total}</span>
+                </div>
+              </div>
+            </div>
+
+            <Card className="flex-1 flex flex-col border shadow-xs overflow-hidden max-h-[720px]">
               <CardHeader className="p-3.5 pb-2.5 border-b bg-card">
                 <div className="flex items-center justify-between">
                   <h3 className="font-bold text-sm text-foreground flex items-center gap-1.5">
@@ -428,9 +505,18 @@ export default function CodingLabPage() {
                           <h4 className="font-semibold text-xs text-foreground line-clamp-1">
                             {prob.title}
                           </h4>
-                          <p className="text-[10px] text-muted-foreground truncate mt-0.5">
-                            {prob.subjectName}
-                          </p>
+                          <div className="flex items-center justify-between text-[10px] text-muted-foreground mt-0.5">
+                            <span className="truncate">{prob.subjectName}</span>
+                            {(() => {
+                              const lastAttempt = submissionHistory.find(s => s.problemId === prob.id);
+                              if (!lastAttempt) return null;
+                              return (
+                                <span className={`font-mono text-[9px] font-semibold shrink-0 ml-1.5 ${lastAttempt.passed ? 'text-emerald-500' : 'text-amber-500'}`}>
+                                  {lastAttempt.passed ? 'Passed' : 'Attempted'}
+                                </span>
+                              );
+                            })()}
+                          </div>
                         </div>
 
                         {isSolved && (
@@ -496,10 +582,11 @@ export default function CodingLabPage() {
                     { id: 'specs', label: 'Problem Specs & Constraints' },
                     { id: 'hints', label: `Hints (${currentProblem?.hints.length})` },
                     { id: 'solution', label: 'Model Solution' },
+                    { id: 'history', label: `History (${submissionHistory.filter(s => s.problemId === currentProblem?.id).length})` },
                   ].map(tab => (
                     <button
                       key={tab.id}
-                      onClick={() => setActiveWorkspaceTab(tab.id as 'editor' | 'specs' | 'hints' | 'solution')}
+                      onClick={() => setActiveWorkspaceTab(tab.id as 'editor' | 'specs' | 'hints' | 'solution' | 'history')}
                       className={`text-xs font-semibold pb-2 border-b-2 transition-all ${
                         activeWorkspaceTab === tab.id
                           ? 'border-primary text-primary'
@@ -596,6 +683,58 @@ export default function CodingLabPage() {
                 </CardContent>
               )}
 
+              {/* Tab 5: Submission History */}
+              {activeWorkspaceTab === 'history' && (
+                <CardContent className="p-4 flex-1 overflow-y-auto max-h-[580px] space-y-3">
+                  <div className="flex items-center justify-between pb-2 border-b">
+                    <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Submission Log for this Practical</span>
+                    <span className="text-xs font-mono text-muted-foreground">
+                      {submissionHistory.filter(s => s.problemId === currentProblem?.id).length} recorded attempts
+                    </span>
+                  </div>
+                  {submissionHistory.filter(s => s.problemId === currentProblem?.id).length === 0 ? (
+                    <div className="text-center py-12 px-4 border border-dashed rounded-xl text-muted-foreground text-xs">
+                      <p className="font-semibold mb-1">No submissions yet for this problem.</p>
+                      <p className="text-[11px]">Click "Run & Test Code" in the editor tab to validate and record your solution attempt.</p>
+                    </div>
+                  ) : (
+                    submissionHistory
+                      .filter(s => s.problemId === currentProblem?.id)
+                      .map((sub, idx) => (
+                        <div
+                          key={idx}
+                          className={`p-3 rounded-xl border flex items-center justify-between text-xs transition-all ${
+                            sub.passed ? 'bg-emerald-500/5 border-emerald-500/30' : 'bg-destructive/5 border-destructive/30'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2.5">
+                            {sub.passed ? (
+                              <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
+                            ) : (
+                              <XCircle className="h-4 w-4 text-destructive shrink-0" />
+                            )}
+                            <div>
+                              <span className="font-semibold block text-foreground">
+                                {sub.passed ? 'All Test Cases Passed' : 'Test Validation Failed'}
+                              </span>
+                              <span className="text-[10px] text-muted-foreground font-mono">
+                                {new Date(sub.timestamp).toLocaleString()}
+                              </span>
+                            </div>
+                          </div>
+                          <span
+                            className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full ${
+                              sub.passed ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-destructive/10 text-destructive'
+                            }`}
+                          >
+                            {sub.passed ? 'PASSED (100%)' : 'FAILED'}
+                          </span>
+                        </div>
+                      ))
+                  )}
+                </CardContent>
+              )}
+
               {/* Tab 4: Code Editor & Compiler Runner */}
               {activeWorkspaceTab === 'editor' && (
                 <div className="flex-1 flex flex-col">
@@ -610,6 +749,9 @@ export default function CodingLabPage() {
                       </span>
                       <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400">
                         {currentProblem?.language === 'sql' ? 'SQL ENGINE' : currentProblem?.language}
+                      </span>
+                      <span className="text-[10px] font-mono text-zinc-400 hidden sm:flex items-center gap-1 ml-2">
+                        <Check className="h-3 w-3 text-emerald-400" /> Draft Saved
                       </span>
                     </div>
 
@@ -647,15 +789,20 @@ export default function CodingLabPage() {
                     </div>
                   </div>
 
-                  {/* Code Textarea */}
-                  <div className="relative flex-1 bg-zinc-950 min-h-[300px]">
+                  {/* Code Textarea with Line Numbers */}
+                  <div className="relative flex-1 bg-zinc-950 min-h-[300px] flex overflow-hidden">
+                    <div className="select-none py-4 px-2.5 bg-zinc-900/70 text-zinc-600 font-mono text-xs text-right border-r border-zinc-800/80 min-w-[2.75rem] overflow-hidden">
+                      {Array.from({ length: Math.max(1, code.split('\n').length) }).map((_, i) => (
+                        <div key={i} className="leading-relaxed">{i + 1}</div>
+                      ))}
+                    </div>
                     <Textarea
                       value={code}
                       onChange={(e) => setCode(e.target.value)}
                       onKeyDown={handleKeyDown}
                       spellCheck={false}
                       placeholder={currentProblem?.language === 'sql' ? 'Enter your SQL statements here...' : 'Write your code here...'}
-                      className="w-full h-full min-h-[300px] lg:min-h-[340px] font-mono text-xs p-4 border-0 focus-visible:ring-0 rounded-none bg-zinc-950 text-zinc-100 leading-relaxed resize-none selection:bg-emerald-500/30"
+                      className="w-full h-full min-h-[300px] lg:min-h-[340px] font-mono text-xs p-4 border-0 focus-visible:ring-0 rounded-none bg-zinc-950 text-zinc-100 leading-relaxed resize-none selection:bg-emerald-500/30 overflow-y-auto"
                     />
                   </div>
 

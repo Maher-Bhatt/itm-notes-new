@@ -17,21 +17,27 @@ import PythonImpQuestionsPage from "./pages/PythonImpQuestionsPage";
 import AuthPage from "./pages/AuthPage";
 import DashboardPage from "./pages/DashboardPage";
 import OnboardingPage from "./pages/OnboardingPage";
+import { lazy, Suspense } from "react";
 import BookmarksPage from "./pages/BookmarksPage";
 import MaterialsPage from "./pages/MaterialsPage";
 import QuizPage from "./pages/QuizPage";
-import CodingLabPage from "./pages/CodingLabPage";
-import AdminDashboard from "./pages/admin/AdminDashboard";
 import SeedPage from "./pages/admin/SeedPage";
 import SubjectImpQuestionsPage from "./pages/SubjectImpQuestionsPage";
 import ProfilePage from "./pages/ProfilePage";
 import GpaCalculatorPage from "./pages/GpaCalculatorPage";
 import SubjectCheatSheetPage from "./pages/SubjectCheatSheetPage";
-import CommunityPage from "./pages/CommunityPage";
 import { PomodoroProvider } from "@/contexts/PomodoroContext";
 import { PomodoroFloatingWidget } from "@/components/PomodoroFloatingWidget";
 import { AchievementCelebrationModal } from "@/components/AchievementCelebrationModal";
+import { AnnouncementBanner } from "@/components/AnnouncementBanner";
+import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
+import { PageFallback } from "@/components/PageSkeletonLoaders";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+
+// React.lazy + Suspense code splitting for heavy interactive modules
+const CodingLabPage = lazy(() => import("./pages/CodingLabPage"));
+const CommunityPage = lazy(() => import("./pages/CommunityPage"));
+const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
 
 const queryClient = new QueryClient();
 
@@ -46,9 +52,12 @@ const App = () => (
               <Sonner />
               <BrowserRouter>
                 <ErrorBoundary>
+                  <AnnouncementBanner />
+                  <PWAInstallPrompt />
                   <PomodoroFloatingWidget />
                   <AchievementCelebrationModal />
-                  <Routes>
+                  <Suspense fallback={<PageFallback />}>
+                    <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/auth" element={<AuthPage />} />
                   <Route path="/onboarding" element={<ProtectedRoute><OnboardingPage /></ProtectedRoute>} />
@@ -73,6 +82,7 @@ const App = () => (
                   <Route path="/imp-questions/:subjectId" element={<ProtectedRoute><SubjectImpQuestionsPage /></ProtectedRoute>} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
+              </Suspense>
               </ErrorBoundary>
             </BrowserRouter>
           </TooltipProvider>

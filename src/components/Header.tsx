@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, ChevronLeft, HelpCircle, User, LogOut, Shield, Flame, BookOpen, Trophy, Clock, Calculator, Code, Menu, X, MessageSquare } from "lucide-react";
+import { Search, ChevronLeft, HelpCircle, User, LogOut, Shield, Flame, BookOpen, Trophy, Clock, Calculator, Code, Menu, X, MessageSquare, Bell, Keyboard } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { useAuth } from "@/contexts/AuthContext";
 import { useGamification } from "@/hooks/useGamification";
 import { usePomodoro } from "@/contexts/PomodoroContext";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { KeyboardShortcutsModal } from "@/components/KeyboardShortcutsModal";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,9 +24,45 @@ interface HeaderProps {
 export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
   const navigate = useNavigate();
   const { user, profile, role, signOut } = useAuth();
+  const [notifications, setNotifications] = useState<Array<{ id: string; title: string; message: string; timestamp: string; read: boolean }>>(() => {
+    try {
+      const saved = localStorage.getItem('itm_notifications');
+      return saved ? JSON.parse(saved) : [
+        {
+          id: 'welcome-notif',
+          title: 'Welcome to ITM Notes 2.0',
+          message: 'Explore detailed notes, coding practicals, and university materials.',
+          timestamp: new Date().toISOString(),
+          read: false
+        }
+      ];
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    const handleUpdate = () => {
+      try {
+        const saved = localStorage.getItem('itm_notifications');
+        if (saved) setNotifications(JSON.parse(saved));
+      } catch {}
+    };
+    window.addEventListener('itm_notifications_updated', handleUpdate);
+    return () => window.removeEventListener('itm_notifications_updated', handleUpdate);
+  }, []);
+
+  const unreadCount = notifications.filter(n => !n.read).length;
+
+  const markAllNotificationsRead = () => {
+    const updated = notifications.map(n => ({ ...n, read: true }));
+    setNotifications(updated);
+    localStorage.setItem('itm_notifications', JSON.stringify(updated));
+  };
   const { state: game, levelInfo } = useGamification();
   const { timeLeft, isRunning, setIsModalOpen } = usePomodoro();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
 
   return (
     <>
@@ -157,6 +194,69 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
             <div className="hidden md:block">
               <ThemeToggle />
             </div>
+
+            {/* Keyboard Shortcuts Trigger */}
+            <button
+              onClick={() => setShortcutsOpen(true)}
+              className="apple-press hidden sm:inline-flex items-center justify-center h-8 w-8 rounded-full bg-secondary/80 hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors border"
+              title="Keyboard Shortcuts (?)"
+            >
+              <Keyboard className="h-4 w-4" />
+            </button>
+
+            {/* Notification Bell (Visible when logged in) */}
+            {user && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    className="relative apple-press inline-flex items-center justify-center h-8 w-8 rounded-full bg-secondary/80 hover:bg-secondary transition-colors border ml-1"
+                    title="Campus Notifications"
+                  >
+                    <Bell className="h-4 w-4 text-foreground" />
+                    {unreadCount > 0 && (
+                      <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[9px] font-bold text-white ring-2 ring-background">
+                        {unreadCount > 9 ? '9+' : unreadCount}
+                      </span>
+                    )}
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-80 p-2">
+                  <div className="flex items-center justify-between pb-2 mb-2 border-b px-2">
+                    <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Notifications</span>
+                    {unreadCount > 0 && (
+                      <button
+                        onClick={markAllNotificationsRead}
+                        className="text-[11px] text-primary hover:underline font-medium"
+                      >
+                        Mark all as read
+                      </button>
+                    )}
+                  </div>
+                  <div className="space-y-1.5 max-h-64 overflow-y-auto">
+                    {notifications.length === 0 ? (
+                      <div className="text-center py-6 text-xs text-muted-foreground">
+                        No notifications yet.
+                      </div>
+                    ) : (
+                      notifications.map((n) => (
+                        <div
+                          key={n.id}
+                          className={`p-2.5 rounded-xl text-xs transition-colors border ${
+                            n.read ? 'bg-transparent border-transparent text-muted-foreground' : 'bg-primary/5 border-primary/20 text-foreground font-medium'
+                          }`}
+                        >
+                          <p className="font-semibold">{n.title}</p>
+                          <p className="text-[11px] text-muted-foreground line-clamp-2 mt-0.5">{n.message}</p>
+                          <span className="text-[9px] text-muted-foreground/70 font-mono mt-1 block">
+                            {new Date(n.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </span>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
 
             {/* User Dropdown / Auth (Always Visible) */}
             {user ? (
@@ -328,6 +428,8 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
           <ThemeToggle />
         </div>
       </div>
+
+      <KeyboardShortcutsModal open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
     </>
   );
 }
