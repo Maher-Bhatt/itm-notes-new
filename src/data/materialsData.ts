@@ -19,80 +19,8 @@ export interface StudyMaterial {
 
 export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   {
-    "id": "13fea5e268",
-    "title": "Assignment 9636",
-    "subject": "Computer Architecture",
-    "subjectCode": "CS401",
-    "subjectId": "ca-101",
-    "semester": 3,
-    "category": "Assignment",
-    "fileType": "PDF",
-    "fileSize": "133.9 KB",
-    "description": "Study material for Computer Architecture.",
-    "topicsCovered": [
-      "Computer Architecture",
-      "Assignment"
-    ],
-    "uploadedDate": "Sept 2026",
-    "downloadUrl": "/materials/Assignment_9636_Content_Document_20260818042336477PM.pdf"
-  },
-  {
-    "id": "1537449f37",
-    "title": "E-Notes 10176",
-    "subject": "Computer Architecture",
-    "subjectCode": "CS401",
-    "subjectId": "ca-101",
-    "semester": 3,
-    "category": "Notes",
-    "fileType": "PDF",
-    "fileSize": "10.1 MB",
-    "description": "Study material for Computer Architecture.",
-    "topicsCovered": [
-      "Computer Architecture",
-      "Notes"
-    ],
-    "uploadedDate": "Sept 2026",
-    "downloadUrl": "/materials/E-Notes_10176_Content_Document_20260826032250423PM.pdf"
-  },
-  {
-    "id": "e830e94f2c",
-    "title": "E-Notes 10177",
-    "subject": "Computer Architecture",
-    "subjectCode": "CS401",
-    "subjectId": "ca-101",
-    "semester": 3,
-    "category": "Notes",
-    "fileType": "PDF",
-    "fileSize": "10.5 MB",
-    "description": "Study material for Computer Architecture.",
-    "topicsCovered": [
-      "Computer Architecture",
-      "Notes"
-    ],
-    "uploadedDate": "Sept 2026",
-    "downloadUrl": "/materials/E-Notes_10177_Content_Document_20260826032332650PM.pdf"
-  },
-  {
-    "id": "84bead0d44",
-    "title": "E-Notes 10178",
-    "subject": "Computer Architecture",
-    "subjectCode": "CS401",
-    "subjectId": "ca-101",
-    "semester": 3,
-    "category": "Notes",
-    "fileType": "PDF",
-    "fileSize": "21.3 MB",
-    "description": "Study material for Computer Architecture.",
-    "topicsCovered": [
-      "Computer Architecture",
-      "Notes"
-    ],
-    "uploadedDate": "Sept 2026",
-    "downloadUrl": "/materials/E-Notes_10178_Content_Document_20260826032540310PM.pdf"
-  },
-  {
     "id": "0ba75426cd",
-    "title": "Lecture 10282",
+    "title": "Lecture 1: Register Transfer Language (RTL), Register Notation, Bus & Memory Transfers via Common Bus",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -100,7 +28,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.7 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Register Transfer Language (RTL), Register Notation, Bus & Memory Transfers via Common Bus from Unit 1.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -110,7 +38,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "0384c09b2e",
-    "title": "Lecture 10283",
+    "title": "Lecture 2: Arithmetic Micro-operations: Binary Adder, Adder-Subtractor & 4-bit Arithmetic Circuit",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -118,7 +46,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.7 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Arithmetic Micro-operations: Binary Adder, Adder-Subtractor & 4-bit Arithmetic Circuit from Unit 1.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -128,7 +56,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "a27fd640ae",
-    "title": "Lecture 10284",
+    "title": "Lecture 3: Logic Micro-operations: Hardware Implementation of 16 Operations & Bit Applications",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -136,7 +64,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.6 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Logic Micro-operations: Hardware Implementation of 16 Operations & Bit Applications from Unit 1.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -146,7 +74,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "e92a2d9546",
-    "title": "Lecture 10286",
+    "title": "Lecture 4: Shift Micro-operations: Logical, Circular, Arithmetic Shifts & Hardware Shifter Design",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -154,7 +82,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.6 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Shift Micro-operations: Logical, Circular, Arithmetic Shifts & Hardware Shifter Design from Unit 1.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -164,7 +92,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "2f8e640c5a",
-    "title": "Lecture 10287",
+    "title": "Lecture 5: Instruction Codes, Stored Program Organization, Direct vs Indirect Addressing & Instruction Formats",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -172,7 +100,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.7 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Instruction Codes, Stored Program Organization, Direct vs Indirect Addressing & Instruction Formats from Unit 2.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -182,7 +110,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "d4843d99a3",
-    "title": "Lecture 10288",
+    "title": "Lecture 6: Computer Registers, Bit Lengths & 16-bit Common Bus System Architecture",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -190,7 +118,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.6 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Computer Registers, Bit Lengths & 16-bit Common Bus System Architecture from Unit 2.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -200,7 +128,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "78ea87bf5f",
-    "title": "Lecture 10290",
+    "title": "Lecture 7: Basic Computer Instruction Set: Memory-Reference, Register-Reference & Input-Output Instructions",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -208,7 +136,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.7 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Basic Computer Instruction Set: Memory-Reference, Register-Reference & Input-Output Instructions from Unit 2.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -218,7 +146,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "0d0c985fcd",
-    "title": "Lecture 10291",
+    "title": "Lecture 8: Timing & Control, Complete Instruction Cycle & Interrupt Cycle with State Flowchart",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -226,7 +154,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.6 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Timing & Control, Complete Instruction Cycle & Interrupt Cycle with State Flowchart from Unit 2.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -236,7 +164,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "7c16165e11",
-    "title": "Lecture 10292",
+    "title": "Lecture 9: Control Memory (ROM), Microinstruction, Microprogram & Control Address Register (CAR)",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -244,7 +172,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.7 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Control Memory (ROM), Microinstruction, Microprogram & Control Address Register (CAR) from Unit 3.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -254,7 +182,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "0f1dc82497",
-    "title": "Lecture 10317",
+    "title": "Lecture 10: Address Sequencing: Next Address Selection, Conditional Branching, Opcode Mapping & Subroutine Register",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -262,7 +190,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.7 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Address Sequencing: Next Address Selection, Conditional Branching, Opcode Mapping & Subroutine Register from Unit 3.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -272,7 +200,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "3eb0392531",
-    "title": "Lecture 10321",
+    "title": "Lecture 11: Microinstruction Format: Micro-operation Fields, Condition, Branch & Symbolic Translation",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -280,7 +208,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.7 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Microinstruction Format: Micro-operation Fields, Condition, Branch & Symbolic Translation from Unit 3.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -290,7 +218,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "1384108bf1",
-    "title": "Lecture 10325",
+    "title": "Lecture 12: Hardwired Control Unit vs Microprogrammed Control Unit: Comprehensive Architectural Comparison",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -298,7 +226,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.7 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Hardwired Control Unit vs Microprogrammed Control Unit: Comprehensive Architectural Comparison from Unit 3.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -308,7 +236,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "bff021ffff",
-    "title": "Lecture 10382",
+    "title": "Lecture 13: General Register Organization: Control Word Format (SELA, SELB, SELD, OPR), Bus Architecture & ALU",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -316,7 +244,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.6 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering General Register Organization: Control Word Format (SELA, SELB, SELD, OPR), Bus Architecture & ALU from Unit 4.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -326,7 +254,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "10962be235",
-    "title": "Lecture 10385",
+    "title": "Lecture 14: Stack Organization: Register Stack with SP, FULL/EMPTY Flags, Memory Stack & RPN Evaluation",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -334,7 +262,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.7 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Stack Organization: Register Stack with SP, FULL/EMPTY Flags, Memory Stack & RPN Evaluation from Unit 4.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -344,7 +272,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "44989fbed0",
-    "title": "Lecture 10390",
+    "title": "Lecture 15: Instruction Formats: Three-Address, Two-Address, One-Address (Accumulator) & Zero-Address (Stack)",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -352,7 +280,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.6 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Instruction Formats: Three-Address, Two-Address, One-Address (Accumulator) & Zero-Address (Stack) from Unit 4.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -362,7 +290,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "ad4d21e6d6",
-    "title": "Lecture 10399",
+    "title": "Lecture 16: Addressing Modes: Direct, Indirect, Register, Relative, Indexed & Effective Address Computation",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -370,7 +298,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.6 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Addressing Modes: Direct, Indirect, Register, Relative, Indexed & Effective Address Computation from Unit 4.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -380,7 +308,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "3e6d690cc5",
-    "title": "Lecture 10403",
+    "title": "Lecture 17: Reduced Instruction Set Computer (RISC) vs Complex Instruction Set Computer (CISC) Architectural Comparison",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -388,7 +316,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.7 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Reduced Instruction Set Computer (RISC) vs Complex Instruction Set Computer (CISC) Architectural Comparison from Unit 4.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -398,7 +326,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "a8648f6467",
-    "title": "Lecture 10534",
+    "title": "Lecture 18: Addition & Subtraction with Signed-Magnitude Data & Signed 2's Complement Hardware",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -406,7 +334,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.7 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Addition & Subtraction with Signed-Magnitude Data & Signed 2's Complement Hardware from Unit 5.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -416,7 +344,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "ba4012cfc1",
-    "title": "Lecture 10534",
+    "title": "Lecture 19: Booth's Multiplication Algorithm: Signed 2's Complement Hardware, Flowchart & Bit Traces",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -424,7 +352,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.7 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Booth's Multiplication Algorithm: Signed 2's Complement Hardware, Flowchart & Bit Traces from Unit 5.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -434,7 +362,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "3e9ac4e456",
-    "title": "Lecture 10537",
+    "title": "Lecture 20: Division Algorithms: Restoring Division vs Non-Restoring Division Algorithms & Hardware Traces",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -442,7 +370,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.6 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Division Algorithms: Restoring Division vs Non-Restoring Division Algorithms & Hardware Traces from Unit 5.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -452,7 +380,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "649c43d384",
-    "title": "Lecture 10555",
+    "title": "Lecture 21: Floating-Point Arithmetic: IEEE 754 Standard, Four-Phase Algorithms & Carry Lookahead Adder",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -460,7 +388,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.6 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Floating-Point Arithmetic: IEEE 754 Standard, Four-Phase Algorithms & Carry Lookahead Adder from Unit 5.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -470,7 +398,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "fa94a8967e",
-    "title": "Lecture 10560",
+    "title": "Lecture 22: Memory Hierarchy, Locality of Reference (Temporal vs Spatial) & Main Memory Address Decoding",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -478,7 +406,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.7 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Memory Hierarchy, Locality of Reference (Temporal vs Spatial) & Main Memory Address Decoding from Unit 6.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -488,7 +416,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "5be62529ef",
-    "title": "Lecture 10569",
+    "title": "Lecture 23: Cache Memory: Direct, Associative, Set-Associative Mapping & Write Policies",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -496,7 +424,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.6 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Cache Memory: Direct, Associative, Set-Associative Mapping & Write Policies from Unit 6.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -506,7 +434,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "c5e5c6f3e1",
-    "title": "Lecture 10577",
+    "title": "Lecture 24: Virtual Memory: Paging, Address Translation, Page Tables, TLB & Replacement Algorithms",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -514,7 +442,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.6 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Virtual Memory: Paging, Address Translation, Page Tables, TLB & Replacement Algorithms from Unit 6.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -524,7 +452,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "69df2079e9",
-    "title": "Lecture 10584",
+    "title": "Lecture 25: Input-Output Organization: Asynchronous Transfers, DMA, Interrupts & Priority Schemes",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -532,7 +460,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.7 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Input-Output Organization: Asynchronous Transfers, DMA, Interrupts & Priority Schemes from Unit 6.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -542,7 +470,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "6bc852f8b0",
-    "title": "Lecture 10596",
+    "title": "Lecture 26: Register Transfer Language (RTL), Register Notation, Bus & Memory Transfers via Common Bus",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -550,7 +478,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.7 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Register Transfer Language (RTL), Register Notation, Bus & Memory Transfers via Common Bus from Unit 1.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -560,7 +488,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "1773452394",
-    "title": "Lecture 10676",
+    "title": "Lecture 27: Arithmetic Micro-operations: Binary Adder, Adder-Subtractor & 4-bit Arithmetic Circuit",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -568,7 +496,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.6 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Arithmetic Micro-operations: Binary Adder, Adder-Subtractor & 4-bit Arithmetic Circuit from Unit 1.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -578,7 +506,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "3d59456adb",
-    "title": "Lecture 10689",
+    "title": "Lecture 28: Logic Micro-operations: Hardware Implementation of 16 Operations & Bit Applications",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -586,7 +514,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.6 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Logic Micro-operations: Hardware Implementation of 16 Operations & Bit Applications from Unit 1.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -596,7 +524,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "504d7659dc",
-    "title": "Lecture 10698",
+    "title": "Lecture 29: Shift Micro-operations: Logical, Circular, Arithmetic Shifts & Hardware Shifter Design",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -604,7 +532,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.6 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Shift Micro-operations: Logical, Circular, Arithmetic Shifts & Hardware Shifter Design from Unit 1.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -614,7 +542,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "62ea18d1c8",
-    "title": "Lecture 10719",
+    "title": "Lecture 30: Instruction Codes, Stored Program Organization, Direct vs Indirect Addressing & Instruction Formats",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -622,7 +550,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.7 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Instruction Codes, Stored Program Organization, Direct vs Indirect Addressing & Instruction Formats from Unit 2.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -632,7 +560,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "0026b244c7",
-    "title": "Lecture 10744",
+    "title": "Lecture 31: Computer Registers, Bit Lengths & 16-bit Common Bus System Architecture",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -640,7 +568,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.6 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Computer Registers, Bit Lengths & 16-bit Common Bus System Architecture from Unit 2.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -650,7 +578,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "87343261f8",
-    "title": "Lecture 10752",
+    "title": "Lecture 32: Basic Computer Instruction Set: Memory-Reference, Register-Reference & Input-Output Instructions",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -658,7 +586,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.6 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Basic Computer Instruction Set: Memory-Reference, Register-Reference & Input-Output Instructions from Unit 2.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -668,7 +596,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "ef8d8aaabe",
-    "title": "Lecture 10758",
+    "title": "Lecture 33: Timing & Control, Complete Instruction Cycle & Interrupt Cycle with State Flowchart",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -676,7 +604,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.6 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Timing & Control, Complete Instruction Cycle & Interrupt Cycle with State Flowchart from Unit 2.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -686,7 +614,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "1645ab071c",
-    "title": "Lecture 10767",
+    "title": "Lecture 34: Control Memory (ROM), Microinstruction, Microprogram & Control Address Register (CAR)",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -694,7 +622,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.7 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Control Memory (ROM), Microinstruction, Microprogram & Control Address Register (CAR) from Unit 3.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -704,7 +632,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "a83818593b",
-    "title": "Lecture 10985",
+    "title": "Lecture 35: Address Sequencing: Next Address Selection, Conditional Branching, Opcode Mapping & Subroutine Register",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -712,7 +640,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.7 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Address Sequencing: Next Address Selection, Conditional Branching, Opcode Mapping & Subroutine Register from Unit 3.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -722,7 +650,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "cdacf28baa",
-    "title": "Lecture 11011",
+    "title": "Lecture 36: Microinstruction Format: Micro-operation Fields, Condition, Branch & Symbolic Translation",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -730,7 +658,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.7 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Microinstruction Format: Micro-operation Fields, Condition, Branch & Symbolic Translation from Unit 3.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -740,7 +668,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "9781245743",
-    "title": "Lecture 11020",
+    "title": "Lecture 37: Hardwired Control Unit vs Microprogrammed Control Unit: Comprehensive Architectural Comparison",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -748,7 +676,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.6 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Hardwired Control Unit vs Microprogrammed Control Unit: Comprehensive Architectural Comparison from Unit 3.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -758,7 +686,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "e0cd742eff",
-    "title": "Lecture 11049",
+    "title": "Lecture 38: General Register Organization: Control Word Format (SELA, SELB, SELD, OPR), Bus Architecture & ALU",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -766,7 +694,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.7 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering General Register Organization: Control Word Format (SELA, SELB, SELD, OPR), Bus Architecture & ALU from Unit 4.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -776,7 +704,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "acca7751e9",
-    "title": "Lecture 11063",
+    "title": "Lecture 39: Stack Organization: Register Stack with SP, FULL/EMPTY Flags, Memory Stack & RPN Evaluation",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -784,7 +712,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.7 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Stack Organization: Register Stack with SP, FULL/EMPTY Flags, Memory Stack & RPN Evaluation from Unit 4.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -794,7 +722,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "00a573172d",
-    "title": "Lecture 11084",
+    "title": "Lecture 40: Instruction Formats: Three-Address, Two-Address, One-Address (Accumulator) & Zero-Address (Stack)",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -802,7 +730,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.6 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Instruction Formats: Three-Address, Two-Address, One-Address (Accumulator) & Zero-Address (Stack) from Unit 4.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -812,7 +740,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "fbc731691d",
-    "title": "Lecture 11096",
+    "title": "Lecture 41: Addressing Modes: Direct, Indirect, Register, Relative, Indexed & Effective Address Computation",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -820,7 +748,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.7 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Addressing Modes: Direct, Indirect, Register, Relative, Indexed & Effective Address Computation from Unit 4.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -830,7 +758,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "9942d5019d",
-    "title": "Lecture 11108",
+    "title": "Lecture 42: Reduced Instruction Set Computer (RISC) vs Complex Instruction Set Computer (CISC) Architectural Comparison",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -838,7 +766,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.7 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Reduced Instruction Set Computer (RISC) vs Complex Instruction Set Computer (CISC) Architectural Comparison from Unit 4.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -848,7 +776,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "df41a1dfd8",
-    "title": "Lecture 11121",
+    "title": "Lecture 43: Addition & Subtraction with Signed-Magnitude Data & Signed 2's Complement Hardware",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -856,7 +784,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.7 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Addition & Subtraction with Signed-Magnitude Data & Signed 2's Complement Hardware from Unit 5.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -866,7 +794,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "383d9081e5",
-    "title": "Lecture 11164",
+    "title": "Lecture 44: Booth's Multiplication Algorithm: Signed 2's Complement Hardware, Flowchart & Bit Traces",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -874,7 +802,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.7 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Booth's Multiplication Algorithm: Signed 2's Complement Hardware, Flowchart & Bit Traces from Unit 5.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -884,7 +812,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "37111752d1",
-    "title": "Lecture 11172",
+    "title": "Lecture 45: Division Algorithms: Restoring Division vs Non-Restoring Division Algorithms & Hardware Traces",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -892,7 +820,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "2.7 KB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth lecture covering Division Algorithms: Restoring Division vs Non-Restoring Division Algorithms & Hardware Traces from Unit 5.",
     "topicsCovered": [
       "Computer Architecture",
       "Notes"
@@ -901,26 +829,62 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "downloadUrl": "/materials/Lecture_11172_Content_Document_20260827022147593PM.pdf"
   },
   {
-    "id": "ecdf0b6819",
-    "title": "Presentation 10168",
+    "id": "1537449f37",
+    "title": "Comprehensive Notes 1: Floating-Point Arithmetic: IEEE 754 Standard, Four-Phase Algorithms & Carry Lookahead Adder",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
     "semester": 3,
-    "category": "Presentation",
-    "fileType": "PPTX",
-    "fileSize": "3.8 MB",
-    "description": "Study material for Computer Architecture.",
+    "category": "Notes",
+    "fileType": "PDF",
+    "fileSize": "10.1 MB",
+    "description": "In-depth comprehensive notes covering Floating-Point Arithmetic: IEEE 754 Standard, Four-Phase Algorithms & Carry Lookahead Adder from Unit 5.",
     "topicsCovered": [
       "Computer Architecture",
-      "Presentation"
+      "Notes"
     ],
     "uploadedDate": "Sept 2026",
-    "downloadUrl": "/materials/Presentation_10168_Content_Document_20260826024647690PM.pptx"
+    "downloadUrl": "/materials/E-Notes_10176_Content_Document_20260826032250423PM.pdf"
+  },
+  {
+    "id": "e830e94f2c",
+    "title": "Comprehensive Notes 2: Memory Hierarchy, Locality of Reference (Temporal vs Spatial) & Main Memory Address Decoding",
+    "subject": "Computer Architecture",
+    "subjectCode": "CS401",
+    "subjectId": "ca-101",
+    "semester": 3,
+    "category": "Notes",
+    "fileType": "PDF",
+    "fileSize": "10.5 MB",
+    "description": "In-depth comprehensive notes covering Memory Hierarchy, Locality of Reference (Temporal vs Spatial) & Main Memory Address Decoding from Unit 6.",
+    "topicsCovered": [
+      "Computer Architecture",
+      "Notes"
+    ],
+    "uploadedDate": "Sept 2026",
+    "downloadUrl": "/materials/E-Notes_10177_Content_Document_20260826032332650PM.pdf"
+  },
+  {
+    "id": "84bead0d44",
+    "title": "Comprehensive Notes 3: Cache Memory: Direct, Associative, Set-Associative Mapping & Write Policies",
+    "subject": "Computer Architecture",
+    "subjectCode": "CS401",
+    "subjectId": "ca-101",
+    "semester": 3,
+    "category": "Notes",
+    "fileType": "PDF",
+    "fileSize": "21.3 MB",
+    "description": "In-depth comprehensive notes covering Cache Memory: Direct, Associative, Set-Associative Mapping & Write Policies from Unit 6.",
+    "topicsCovered": [
+      "Computer Architecture",
+      "Notes"
+    ],
+    "uploadedDate": "Sept 2026",
+    "downloadUrl": "/materials/E-Notes_10178_Content_Document_20260826032540310PM.pdf"
   },
   {
     "id": "5d704a69a9",
-    "title": "Presentation 9628",
+    "title": "Slide Deck 1: Virtual Memory: Paging, Address Translation, Page Tables, TLB & Replacement Algorithms",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -928,7 +892,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Presentation",
     "fileType": "PPTX",
     "fileSize": "1.9 MB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth slide deck covering Virtual Memory: Paging, Address Translation, Page Tables, TLB & Replacement Algorithms from Unit 6.",
     "topicsCovered": [
       "Computer Architecture",
       "Presentation"
@@ -938,7 +902,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "0512301927",
-    "title": "Presentation 9629",
+    "title": "Slide Deck 2: Input-Output Organization: Asynchronous Transfers, DMA, Interrupts & Priority Schemes",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -946,7 +910,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Presentation",
     "fileType": "PPTX",
     "fileSize": "1.9 MB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth slide deck covering Input-Output Organization: Asynchronous Transfers, DMA, Interrupts & Priority Schemes from Unit 6.",
     "topicsCovered": [
       "Computer Architecture",
       "Presentation"
@@ -956,7 +920,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "bb74037856",
-    "title": "Presentation 9630",
+    "title": "Slide Deck 3: Register Transfer Language (RTL), Register Notation, Bus & Memory Transfers via Common Bus",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -964,7 +928,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Presentation",
     "fileType": "PPTX",
     "fileSize": "2.7 MB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth slide deck covering Register Transfer Language (RTL), Register Notation, Bus & Memory Transfers via Common Bus from Unit 1.",
     "topicsCovered": [
       "Computer Architecture",
       "Presentation"
@@ -974,7 +938,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "35da71036b",
-    "title": "Presentation 9631",
+    "title": "Slide Deck 4: Arithmetic Micro-operations: Binary Adder, Adder-Subtractor & 4-bit Arithmetic Circuit",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -982,7 +946,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Presentation",
     "fileType": "PPTX",
     "fileSize": "1.9 MB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth slide deck covering Arithmetic Micro-operations: Binary Adder, Adder-Subtractor & 4-bit Arithmetic Circuit from Unit 1.",
     "topicsCovered": [
       "Computer Architecture",
       "Presentation"
@@ -992,7 +956,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "f1b617c5ad",
-    "title": "Presentation 9632",
+    "title": "Slide Deck 5: Logic Micro-operations: Hardware Implementation of 16 Operations & Bit Applications",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -1000,7 +964,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Presentation",
     "fileType": "PPTX",
     "fileSize": "3.1 MB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth slide deck covering Logic Micro-operations: Hardware Implementation of 16 Operations & Bit Applications from Unit 1.",
     "topicsCovered": [
       "Computer Architecture",
       "Presentation"
@@ -1010,7 +974,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "4fcf0cc6f0",
-    "title": "Presentation 9633",
+    "title": "Slide Deck 6: Shift Micro-operations: Logical, Circular, Arithmetic Shifts & Hardware Shifter Design",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -1018,7 +982,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Presentation",
     "fileType": "PPTX",
     "fileSize": "3.0 MB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth slide deck covering Shift Micro-operations: Logical, Circular, Arithmetic Shifts & Hardware Shifter Design from Unit 1.",
     "topicsCovered": [
       "Computer Architecture",
       "Presentation"
@@ -1028,7 +992,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "72ec4cba94",
-    "title": "Presentation 9634",
+    "title": "Slide Deck 7: Instruction Codes, Stored Program Organization, Direct vs Indirect Addressing & Instruction Formats",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -1036,7 +1000,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Presentation",
     "fileType": "PPTX",
     "fileSize": "2.6 MB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth slide deck covering Instruction Codes, Stored Program Organization, Direct vs Indirect Addressing & Instruction Formats from Unit 2.",
     "topicsCovered": [
       "Computer Architecture",
       "Presentation"
@@ -1046,7 +1010,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "64645b84e0",
-    "title": "Presentation 9635",
+    "title": "Slide Deck 8: Computer Registers, Bit Lengths & 16-bit Common Bus System Architecture",
     "subject": "Computer Architecture",
     "subjectCode": "CS401",
     "subjectId": "ca-101",
@@ -1054,13 +1018,49 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Presentation",
     "fileType": "PPTX",
     "fileSize": "2.9 MB",
-    "description": "Study material for Computer Architecture.",
+    "description": "In-depth slide deck covering Computer Registers, Bit Lengths & 16-bit Common Bus System Architecture from Unit 2.",
     "topicsCovered": [
       "Computer Architecture",
       "Presentation"
     ],
     "uploadedDate": "Sept 2026",
     "downloadUrl": "/materials/Presentation_9635_Content_Document_20260818041919323PM.pptx"
+  },
+  {
+    "id": "ecdf0b6819",
+    "title": "Slide Deck 9: Basic Computer Instruction Set: Memory-Reference, Register-Reference & Input-Output Instructions",
+    "subject": "Computer Architecture",
+    "subjectCode": "CS401",
+    "subjectId": "ca-101",
+    "semester": 3,
+    "category": "Presentation",
+    "fileType": "PPTX",
+    "fileSize": "3.8 MB",
+    "description": "In-depth slide deck covering Basic Computer Instruction Set: Memory-Reference, Register-Reference & Input-Output Instructions from Unit 2.",
+    "topicsCovered": [
+      "Computer Architecture",
+      "Presentation"
+    ],
+    "uploadedDate": "Sept 2026",
+    "downloadUrl": "/materials/Presentation_10168_Content_Document_20260826024647690PM.pptx"
+  },
+  {
+    "id": "13fea5e268",
+    "title": "Practice Assignment 1: Timing & Control, Complete Instruction Cycle & Interrupt Cycle with State Flowchart",
+    "subject": "Computer Architecture",
+    "subjectCode": "CS401",
+    "subjectId": "ca-101",
+    "semester": 3,
+    "category": "Assignment",
+    "fileType": "PDF",
+    "fileSize": "133.9 KB",
+    "description": "In-depth practice assignment covering Timing & Control, Complete Instruction Cycle & Interrupt Cycle with State Flowchart from Unit 2.",
+    "topicsCovered": [
+      "Computer Architecture",
+      "Assignment"
+    ],
+    "uploadedDate": "Sept 2026",
+    "downloadUrl": "/materials/Assignment_9636_Content_Document_20260818042336477PM.pdf"
   },
   {
     "id": "166b729bad",
@@ -1784,7 +1784,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "885d665e4c",
-    "title": "E-Notes 12527",
+    "title": "Important Shared Notes (General)",
     "subject": "Data Structures and Algorithms",
     "subjectCode": "CS403",
     "subjectId": "dsa-103",
@@ -1792,7 +1792,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "279.9 KB",
-    "description": "Study material for Data Structures and Algorithms.",
+    "description": "Hand-written or shared notes for semester 3.",
     "topicsCovered": [
       "Data Structures and Algorithms",
       "Notes"
@@ -1945,6 +1945,42 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "downloadUrl": "/materials/E-Notes_9561_Content_Document_20260816070815093PM.pdf"
   },
   {
+    "id": "7259002c0c",
+    "title": "DSA CET II Syllabus",
+    "subject": "Data Structures and Algorithms",
+    "subjectCode": "CS403",
+    "subjectId": "dsa-103",
+    "semester": 3,
+    "category": "Syllabus",
+    "fileType": "PDF",
+    "fileSize": "61.1 KB",
+    "description": "Study material for Data Structures and Algorithms.",
+    "topicsCovered": [
+      "Data Structures and Algorithms",
+      "Syllabus"
+    ],
+    "uploadedDate": "Sept 2026",
+    "downloadUrl": "/materials/DSA_CET_II_Syllabus.pdf"
+  },
+  {
+    "id": "bfee76819d",
+    "title": "Queue Notes",
+    "subject": "Data Structures and Algorithms",
+    "subjectCode": "CS403",
+    "subjectId": "dsa-103",
+    "semester": 3,
+    "category": "Notes",
+    "fileType": "PDF",
+    "fileSize": "8.7 MB",
+    "description": "Study material for Data Structures and Algorithms.",
+    "topicsCovered": [
+      "Data Structures and Algorithms",
+      "Notes"
+    ],
+    "uploadedDate": "Sept 2026",
+    "downloadUrl": "/materials/Queue_Notes.pdf"
+  },
+  {
     "id": "5f5816b5cb",
     "title": "E-Notes 8923",
     "subject": "Object-Oriented Programming with Java",
@@ -2071,26 +2107,8 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "downloadUrl": "/materials/CET-2_Syllabus.pdf"
   },
   {
-    "id": "7259002c0c",
-    "title": "DSA CET II Syllabus",
-    "subject": "Data Structures and Algorithms",
-    "subjectCode": "CS403",
-    "subjectId": "dsa-103",
-    "semester": 3,
-    "category": "Syllabus",
-    "fileType": "PDF",
-    "fileSize": "61.1 KB",
-    "description": "Study material for Data Structures and Algorithms.",
-    "topicsCovered": [
-      "Data Structures and Algorithms",
-      "Syllabus"
-    ],
-    "uploadedDate": "Sept 2026",
-    "downloadUrl": "/materials/DSA_CET_II_Syllabus.pdf"
-  },
-  {
     "id": "53309edbee",
-    "title": "E-Notes 12527",
+    "title": "Important Shared Notes (General)",
     "subject": "All Subjects",
     "subjectCode": "GEN",
     "subjectId": "gen",
@@ -2098,7 +2116,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "category": "Notes",
     "fileType": "PDF",
     "fileSize": "279.9 KB",
-    "description": "Study material for All Subjects.",
+    "description": "Hand-written or shared notes for semester 3.",
     "topicsCovered": [
       "All Subjects",
       "Notes"
@@ -2107,34 +2125,16 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "downloadUrl": "/materials/E-Notes_12527_Content_Document_20260924023809583PM.pdf"
   },
   {
-    "id": "bfee76819d",
-    "title": "Queue Notes",
+    "id": "856e0e7b62",
+    "title": "DSA Unit 1 Presentation",
     "subject": "Data Structures and Algorithms",
     "subjectCode": "CS403",
     "subjectId": "dsa-103",
     "semester": 3,
-    "category": "Notes",
-    "fileType": "PDF",
-    "fileSize": "8.7 MB",
-    "description": "Study material for Data Structures and Algorithms.",
-    "topicsCovered": [
-      "Data Structures and Algorithms",
-      "Notes"
-    ],
-    "uploadedDate": "Sept 2026",
-    "downloadUrl": "/materials/Queue_Notes.pdf"
-  },
-  {
-    "id": "856e0e7b62",
-    "title": "unit 1",
-    "subject": "All Subjects",
-    "subjectCode": "GEN",
-    "subjectId": "gen",
-    "semester": 3,
     "category": "Presentation",
     "fileType": "PPTX",
     "fileSize": "4.7 MB",
-    "description": "Study material for All Subjects.",
+    "description": "Presentation covering Introduction to Data Structures.",
     "topicsCovered": [
       "All Subjects",
       "Presentation"
@@ -2144,15 +2144,15 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "2c8e48205d",
-    "title": "unit 2",
-    "subject": "All Subjects",
-    "subjectCode": "GEN",
-    "subjectId": "gen",
+    "title": "DSA Unit 2 Presentation",
+    "subject": "Data Structures and Algorithms",
+    "subjectCode": "CS403",
+    "subjectId": "dsa-103",
     "semester": 3,
     "category": "Presentation",
     "fileType": "PPTX",
     "fileSize": "2.1 MB",
-    "description": "Study material for All Subjects.",
+    "description": "Presentation covering Linear Data Structures.",
     "topicsCovered": [
       "All Subjects",
       "Presentation"
@@ -2162,15 +2162,15 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   },
   {
     "id": "3761f35ae9",
-    "title": "WhatsApp Image 2026-09-23 at 3.17.38 PM",
+    "title": "Exam Schedule Snapshot",
     "subject": "All Subjects",
     "subjectCode": "GEN",
     "subjectId": "gen",
     "semester": 3,
-    "category": "Notes",
+    "category": "Timetable",
     "fileType": "JPEG",
     "fileSize": "107.6 KB",
-    "description": "Study material for All Subjects.",
+    "description": "Screenshot of the official exam timetable shared by faculty.",
     "topicsCovered": [
       "All Subjects",
       "Notes"
