@@ -35,7 +35,7 @@ export function AchievementCelebrationModal() {
   // Play triumph fanfare sound
   const playVictoryFanfare = () => {
     try {
-      const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
       const ctx = new AudioCtx();
       const notes = [
         { f: 523.25, t: 0.0, d: 0.15 }, // C5

@@ -1374,7 +1374,8 @@ A system of $n$ linear algebraic equations in $n$ unknowns $x_1, x_2, \\dots, x_
 
 $$A \\mathbf{x} = \\mathbf{b}$$
 
-$$\\begin{bmatrix}
+$$
+\\begin{bmatrix}
 a_{11} & a_{12} & \\dots & a_{1n} \\\\
 a_{21} & a_{22} & \\dots & a_{2n} \\\\
 \\vdots & \\vdots & \\ddots & \\vdots \\\\
@@ -1382,16 +1383,19 @@ a_{n1} & a_{n2} & \\dots & a_{nn}
 \\end{bmatrix}
 \\begin{bmatrix} x_1 \\\\ x_2 \\\\ \\vdots \\\\ x_n \\end{bmatrix}
 =
-\\begin{bmatrix} b_1 \\\\ b_2 \\\\ \\vdots \\\\ b_n \\end{bmatrix}$$
+\\begin{bmatrix} b_1 \\\\ b_2 \\\\ \\vdots \\\\ b_n \\end{bmatrix}
+$$
 
 To solve this system efficiently on a digital computer, we construct the **augmented matrix** $\\tilde{A} = [A \\mid \\mathbf{b}]$ of size $n \\times (n+1)$:
 
-$$[A \\mid \\mathbf{b}] = \\left[\\begin{array}{cccc|c}
+$$
+[A \\mid \\mathbf{b}] = \\left[\\begin{array}{cccc|c}
 a_{11} & a_{12} & \\dots & a_{1n} & b_1 \\\\
 a_{21} & a_{22} & \\dots & a_{2n} & b_2 \\\\
 \\vdots & \\vdots & \\ddots & \\vdots & \\vdots \\\\
 a_{n1} & a_{n2} & \\dots & a_{nn} & b_n
-\\end{array}\\right]$$
+\\end{array}\\right]
+$$
 
 \`\`\`mermaid
 flowchart TD

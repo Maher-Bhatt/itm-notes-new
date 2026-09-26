@@ -246,7 +246,7 @@ ${material.topicsCovered.map((t, idx) => `${idx + 1}. ${t}`).join("\n")}
           {filteredMaterials.map((material) => (
             <div
               key={material.id}
-              onClick={() => setActivePreview(material)}
+              onClick={() => handleDownload(material)}
               className="bg-card border border-border/80 hover:border-primary/40 rounded-2xl p-5 sm:p-6 flex flex-col justify-between transition-all duration-200 shadow-sm hover:shadow-md group cursor-pointer"
             >
               <div>

@@ -109,7 +109,17 @@ interface MarkdownRendererProps {
   content: string;
 }
 
+function preprocessMarkdownMath(text: string): string {
+  if (!text) return "";
+  // In JS replace, '$$$$' outputs '$$' in the result string
+  let res = text.replace(/^(\s*)\$\$(\\begin\{[a-zA-Z*]+\}.*)$/gm, "$1$$$$\n$1$2");
+  res = res.replace(/(\\end\{[a-zA-Z*]+\}|\\right[\])}|.]|\S+)\$\$$/gm, "$1\n$$$$");
+  return res;
+}
+
 export function MarkdownRenderer({ content }: MarkdownRendererProps) {
+  const processedContent = useMemo(() => preprocessMarkdownMath(content), [content]);
+
   return (
     <ReactMarkdown
       remarkPlugins={[remarkMath, remarkGfm]}
@@ -211,7 +221,7 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
         ),
       }}
     >
-      {content}
+      {processedContent}
     </ReactMarkdown>
   );
 }

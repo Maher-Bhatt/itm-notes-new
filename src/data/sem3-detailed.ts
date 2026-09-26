@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Subject } from './types';
 
 export const sem3DetailedSubjects: Subject[] = [

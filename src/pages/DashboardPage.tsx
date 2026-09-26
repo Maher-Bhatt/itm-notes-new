@@ -34,6 +34,16 @@ export default function DashboardPage() {
   const { progress, getSubjectProgress } = useProgress();
   const gamification = useGamification();
   const [searchOpen, setSearchOpen] = useState(false);
+  const [lastVisitedTopic, setLastVisitedTopic] = useState<{topicId: string, topicTitle: string, subjectId: string, subjectName: string} | null>(null);
+  
+  useEffect(() => {
+    const saved = localStorage.getItem('itm_last_visited_topic');
+    if (saved) {
+      try {
+        setLastVisitedTopic(JSON.parse(saved));
+      } catch (e) {}
+    }
+  }, []);
   const [filterSem, setFilterSem] = useState<number | 'all'>(semesterNumber || 3);
   const navigate = useNavigate();
 
@@ -129,6 +139,60 @@ export default function DashboardPage() {
                   <p className="text-xs text-muted-foreground">Interactive practice</p>
                 </div>
               </button>
+            </div>
+
+            
+            {/* Continue Learning & Heatmap */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+              {/* Continue Learning */}
+              <div className="surface-elevated p-5 rounded-2xl border border-border/80 flex flex-col justify-between">
+                <div>
+                  <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-2">Continue Learning</h3>
+                  {lastVisitedTopic ? (
+                    <>
+                      <h4 className="font-semibold text-lg line-clamp-2">{lastVisitedTopic.topicTitle}</h4>
+                      <p className="text-sm text-primary font-medium mt-1">{lastVisitedTopic.subjectName}</p>
+                    </>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">You haven't started reading any topics yet.</p>
+                  )}
+                </div>
+                {lastVisitedTopic && (
+                  <button 
+                    onClick={() => navigate(`/subject/${lastVisitedTopic.subjectId}/topic/${lastVisitedTopic.topicId}`)}
+                    className="mt-4 w-full py-2 bg-primary/10 text-primary hover:bg-primary/20 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
+                  >
+                    Resume <ArrowRight className="h-4 w-4" />
+                  </button>
+                )}
+              </div>
+              
+              {/* Activity Heatmap Widget */}
+              <div className="surface-elevated p-5 rounded-2xl border border-border/80 flex flex-col justify-center">
+                <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-4">Study Heatmap (Last 4 Weeks)</h3>
+                <div className="flex gap-1.5 overflow-x-auto pb-2 scrollbar-none items-end h-[80px]">
+                  {Array.from({ length: 28 }).map((_, i) => {
+                    const d = new Date();
+                    d.setDate(d.getDate() - (27 - i));
+                    const dateStr = d.toISOString().split('T')[0];
+                    const active = gamification.state.activityHistory?.[dateStr] || 0;
+                    
+                    let colorClass = "bg-secondary";
+                    if (active > 0 && active <= 2) colorClass = "bg-primary/30";
+                    else if (active > 2 && active <= 5) colorClass = "bg-primary/60";
+                    else if (active > 5) colorClass = "bg-primary";
+                    
+                    return (
+                      <div 
+                        key={i} 
+                        className={`w-4 rounded-sm ${colorClass} transition-all duration-300 hover:scale-110`}
+                        style={{ height: active > 0 ? `${Math.min(100, 30 + active * 10)}%` : '30%' }}
+                        title={`${active} topics read on ${dateStr}`}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
             </div>
 
             {/* Current Subjects */}

@@ -7,7 +7,8 @@ import { useTopic, useSubject } from "@/hooks/useAcademicData";
 import { MCQQuiz } from "@/components/MCQQuiz";
 import { TestMe } from "@/components/TestMe";
 import { MarkdownRenderer, extractTOC } from "@/components/MarkdownRenderer";
-import { Bookmark, CheckCircle, BookOpen, ChevronLeft, ChevronRight, Menu, X, Copy, Check, Maximize2, Minimize2, Loader2, HelpCircle, Clock, Printer, Layers, Sparkles } from "lucide-react";
+import { Bookmark, CheckCircle, BookOpen, ChevronLeft, ChevronRight, Menu, X, Copy, Check, Maximize2, Minimize2, Loader2, HelpCircle, Clock, Printer, Layers, Sparkles, MoreVertical } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { usePomodoro } from "@/contexts/PomodoroContext";
 import { AudioNotesPlayer } from "@/components/AudioNotesPlayer";
 import { FlashcardsModal, Flashcard } from "@/components/FlashcardsModal";
@@ -251,7 +252,18 @@ export default function TopicPage() {
     setSidebarOpen(false);
     setActiveTocId("");
     window.scrollTo(0, 0);
-  }, [topicId]);
+    
+    // Gamification & Continue Learning
+    if (resolvedTopic) {
+      // Assuming gamification.readTopic or similar doesn't exist yet, we just save to localstorage
+      localStorage.setItem('itm_last_visited_topic', JSON.stringify({
+        topicId: resolvedTopic.topic.id,
+        topicTitle: resolvedTopic.topic.title,
+        subjectId: subjectId,
+        subjectName: subject?.name || 'Unknown Subject'
+      }));
+    }
+  }, [topicId, resolvedTopic]);
 
   if (isTopicLoading || isSubjectLoading) {
     return (
@@ -415,6 +427,27 @@ export default function TopicPage() {
             >
               {focusMode ? <Minimize2 className="h-4 w-4 sm:h-5 sm:w-5" /> : <Maximize2 className="h-4 w-4 sm:h-5 sm:w-5" />}
             </button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="sm:hidden p-1.5 rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors">
+                  <MoreVertical className="h-4 w-4" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48 sm:hidden">
+                <DropdownMenuItem onClick={() => setFlashcardsOpen(true)}>
+                  <Layers className="mr-2 h-4 w-4 text-amber-500" />
+                  <span>Flashcards</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => window.print()}>
+                  <Printer className="mr-2 h-4 w-4 text-muted-foreground" />
+                  <span>Save / Print PDF</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setFocusMode(!focusMode)}>
+                  {focusMode ? <Minimize2 className="mr-2 h-4 w-4 text-muted-foreground" /> : <Maximize2 className="mr-2 h-4 w-4 text-muted-foreground" />}
+                  <span>{focusMode ? 'Exit Focus Mode' : 'Focus Mode'}</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <button onClick={() => toggleBookmark(topic.id)} className="p-1.5 sm:p-2 rounded-md hover:bg-secondary transition-colors">
               <Bookmark className={`h-4 w-4 sm:h-5 sm:w-5 ${bookmarked ? "fill-amber-500 text-amber-500" : "text-muted-foreground hover:text-foreground"}`} />
             </button>

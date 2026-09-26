@@ -25,7 +25,7 @@ const STORAGE_KEY = 'itm_pomodoro_state';
 // Web Audio API chime generator for pleasant study bells
 function playChime(isBreak: boolean) {
   try {
-    const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
     if (!AudioContextClass) return;
     const ctx = new AudioContextClass();
     const now = ctx.currentTime;

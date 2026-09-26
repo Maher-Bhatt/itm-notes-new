@@ -10,11 +10,13 @@ import {
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { useGamification } from '@/hooks/useGamification';
+import { useAcademic } from '@/contexts/AcademicContext';
 import { toast } from 'sonner';
 import { CodingProblem, ALL_CODING_PROBLEMS as CODING_PROBLEMS } from '@/data/codingLabData';
 
 export default function CodingLabPage() {
-  const [selectedSemester, setSelectedSemester] = useState<number | 'all'>('all');
+  const { semesterNumber } = useAcademic();
+  const [selectedSemester, setSelectedSemester] = useState<number | 'all'>((semesterNumber === 1 || semesterNumber === 2 || semesterNumber === 3) ? semesterNumber : 'all');
   const [selectedSubject, setSelectedSubject] = useState<string>('all');
   const [selectedLanguage, setSelectedLanguage] = useState<string>('all');
   const [searchProblemQuery, setSearchProblemQuery] = useState<string>('');
@@ -25,6 +27,7 @@ export default function CodingLabPage() {
   const [status, setStatus] = useState<'idle' | 'compiling' | 'running' | 'success' | 'failed'>('idle');
   const [showSolution, setShowSolution] = useState(false);
   const [activeWorkspaceTab, setActiveWorkspaceTab] = useState<'editor' | 'specs' | 'hints' | 'solution'>('editor');
+  const [mobileTab, setMobileTab] = useState<'problems' | 'workspace'>('problems');
   const [solvedProblems, setSolvedProblems] = useState<string[]>([]);
 
   const { addXp, unlockAchievement } = useGamification();
@@ -74,10 +77,21 @@ export default function CodingLabPage() {
     });
   }, [selectedSemester, selectedSubject, selectedLanguage, searchProblemQuery]);
 
+  // Reset activeProblemId when filters change
+  useEffect(() => {
+    if (filteredProblems.length > 0 && !filteredProblems.find(p => p.id === activeProblemId)) {
+      setActiveProblemId(filteredProblems[0].id);
+      setCode(filteredProblems[0].starterCode);
+      setOutput(null);
+      setStatus('idle');
+      setShowSolution(false);
+    }
+  }, [filteredProblems, activeProblemId]);
+
   const currentProblem = useMemo(() => {
-    const found = CODING_PROBLEMS.find(p => p.id === activeProblemId);
+    const found = filteredProblems.find(p => p.id === activeProblemId);
     if (found) return found;
-    return filteredProblems[0] || CODING_PROBLEMS[0];
+    return filteredProblems[0];
   }, [activeProblemId, filteredProblems]);
 
   const handleSelectProblem = (prob: CodingProblem) => {
@@ -86,10 +100,11 @@ export default function CodingLabPage() {
     setOutput(null);
     setStatus('idle');
     setShowSolution(false);
+    setMobileTab('workspace');
   };
 
   const handleResetCode = () => {
-    setCode(currentProblem.starterCode);
+    setCode(currentProblem?.starterCode);
     setOutput(null);
     setStatus('idle');
     toast.info('Starter code reset to default.');
@@ -104,27 +119,27 @@ export default function CodingLabPage() {
     const formattedRecord = [
       `================================================================================`,
       `ITM SLS BARODA UNIVERSITY — LABORATORY PRACTICAL RECORD`,
-      `Subject: ${currentProblem.subjectName}`,
-      `Practical Title: ${currentProblem.title}`,
-      `Marks / Syllabus Reference: ${currentProblem.marks}`,
-      `File Name: ${currentProblem.fileName} (${currentProblem.language.toUpperCase()})`,
-      `Difficulty Level: ${currentProblem.difficulty}`,
+      `Subject: ${currentProblem?.subjectName}`,
+      `Practical Title: ${currentProblem?.title}`,
+      `Marks / Syllabus Reference: ${currentProblem?.marks}`,
+      `File Name: ${currentProblem?.fileName} (${currentProblem?.language.toUpperCase()})`,
+      `Difficulty Level: ${currentProblem?.difficulty}`,
       `================================================================================`,
       ``,
       `[1. AIM / OBJECTIVE]:`,
-      currentProblem.description,
+      currentProblem?.description,
       ``,
       `[2. CONSTRAINTS & EVALUATION CRITERIA]:`,
-      ...currentProblem.constraints.map(c => `• ${c}`),
+      ...currentProblem?.constraints.map(c => `• ${c}`),
       ``,
       `[3. SOURCE CODE / SQL IMPLEMENTATION]:`,
-      code || currentProblem.starterCode,
+      code || currentProblem?.starterCode,
       ``,
       `[4. EXPECTED OUTPUT / TEST HARNESS RESULTS]:`,
-      currentProblem.expectedOutput,
+      currentProblem?.expectedOutput,
       ``,
       `[5. SUBMISSION VERIFICATION]:`,
-      `Status: ${solvedProblems.includes(currentProblem.id) ? 'VERIFIED & PASSED (100%)' : 'READY FOR FACULTY SUBMISSION'}`,
+      `Status: ${solvedProblems.includes(currentProblem?.id) ? 'VERIFIED & PASSED (100%)' : 'READY FOR FACULTY SUBMISSION'}`,
       `Verification Engine: ITM Notes University Practical Lab Sandbox`,
       `Export Timestamp: ${new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}`,
       `================================================================================`,
@@ -150,7 +165,7 @@ export default function CodingLabPage() {
   };
 
   const handleRun = () => {
-    const isSql = currentProblem.language === 'sql';
+    const isSql = currentProblem?.language === 'sql';
     setStatus('compiling');
     setOutput(
       isSql
@@ -167,14 +182,14 @@ export default function CodingLabPage() {
       );
 
       setTimeout(() => {
-        const result = currentProblem.validator(code);
+        const result = currentProblem?.validator(code);
         setOutput(result.output);
 
         if (result.passed) {
           setStatus('success');
           // Play celebratory sound synthesis
           try {
-            const ctx = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
             osc.connect(gain);
@@ -191,11 +206,11 @@ export default function CodingLabPage() {
             // ignore
           }
 
-          if (!solvedProblems.includes(currentProblem.id)) {
-            const updated = [...solvedProblems, currentProblem.id];
+          if (!solvedProblems.includes(currentProblem?.id)) {
+            const updated = [...solvedProblems, currentProblem?.id];
             setSolvedProblems(updated);
             localStorage.setItem('itm_coding_lab_solved', JSON.stringify(updated));
-            addXp(75, `Solved Practical: ${currentProblem.title}`);
+            addXp(75, `Solved Practical: ${currentProblem?.title}`);
             unlockAchievement('code-ninja');
             toast.success(`🎉 Practical Solved! +75 XP earned! (${updated.length}/${CODING_PROBLEMS.length} Solved)`);
           } else {
@@ -349,9 +364,9 @@ export default function CodingLabPage() {
         </div>
 
         {/* ── 2-COLUMN SPLIT: Problem Statements List (Left 4 cols) | Code IDE & Runner (Right 8 cols) ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 flex-1">
+        <div className="flex flex-col lg:grid lg:grid-cols-12 gap-5 flex-1">
           {/* Left Column: Problem Statements Sidebar */}
-          <div className="lg:col-span-4 flex flex-col gap-3">
+          <div className={`lg:col-span-4 flex-col gap-3 ${mobileTab === 'problems' ? 'flex' : 'hidden lg:flex'}`}>
             <Card className="flex-1 flex flex-col border shadow-xs overflow-hidden max-h-[820px]">
               <CardHeader className="p-3.5 pb-2.5 border-b bg-card">
                 <div className="flex items-center justify-between">
@@ -379,7 +394,7 @@ export default function CodingLabPage() {
                   </div>
                 ) : (
                   filteredProblems.map((prob) => {
-                    const isSelected = prob.id === currentProblem.id;
+                    const isSelected = prob.id === currentProblem?.id;
                     const isSolved = solvedProblems.includes(prob.id);
 
                     return (
@@ -432,17 +447,29 @@ export default function CodingLabPage() {
           </div>
 
           {/* Right Column: Active Problem Workspace, Code IDE & Test Runner */}
-          <div className="lg:col-span-8 flex flex-col gap-3">
+          <div className={`lg:col-span-8 flex-col gap-3 ${mobileTab === 'workspace' ? 'flex' : 'hidden lg:flex'}`}>
+            {currentProblem ? (
+              <>
             <Card className="flex-1 flex flex-col border shadow-xs overflow-hidden">
+              {/* Mobile Back Button */}
+              <div className="lg:hidden p-3 border-b bg-secondary/30 flex items-center">
+                <button
+                  onClick={() => setMobileTab('problems')}
+                  className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground"
+                >
+                  <ChevronRight className="h-4 w-4 rotate-180" />
+                  Back to Problems
+                </button>
+              </div>
               {/* Header with Title, Badges, and Tabs */}
               <CardHeader className="p-4 pb-2 border-b bg-card">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
                   <div>
                     <span className="text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-secondary text-secondary-foreground border mr-2">
-                      {currentProblem.subjectName}
+                      {currentProblem?.subjectName}
                     </span>
                     <span className="text-xs text-muted-foreground font-mono">
-                      {currentProblem.marks}
+                      {currentProblem?.marks}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
@@ -459,7 +486,7 @@ export default function CodingLabPage() {
                 </div>
 
                 <CardTitle className="text-base sm:text-lg font-bold leading-snug">
-                  {currentProblem.title}
+                  {currentProblem?.title}
                 </CardTitle>
 
                 {/* Workspace Navigation Tabs */}
@@ -467,7 +494,7 @@ export default function CodingLabPage() {
                   {[
                     { id: 'editor', label: 'Code Editor & Terminal' },
                     { id: 'specs', label: 'Problem Specs & Constraints' },
-                    { id: 'hints', label: `Hints (${currentProblem.hints.length})` },
+                    { id: 'hints', label: `Hints (${currentProblem?.hints.length})` },
                     { id: 'solution', label: 'Model Solution' },
                   ].map(tab => (
                     <button
@@ -490,7 +517,7 @@ export default function CodingLabPage() {
                 <CardContent className="p-4 flex-1 overflow-y-auto max-h-[580px] text-xs leading-relaxed space-y-4">
                   <div className="prose prose-sm dark:prose-invert max-w-none text-xs">
                     <p className="whitespace-pre-line text-foreground/90 font-sans text-sm">
-                      {currentProblem.description}
+                      {currentProblem?.description}
                     </p>
                   </div>
 
@@ -499,7 +526,7 @@ export default function CodingLabPage() {
                       <Layers className="h-3.5 w-3.5 text-primary" /> Constraints & University Criteria
                     </h4>
                     <ul className="list-disc pl-4 space-y-1 text-muted-foreground">
-                      {currentProblem.constraints.map((c, idx) => (
+                      {currentProblem?.constraints.map((c, idx) => (
                         <li key={idx}>{c}</li>
                       ))}
                     </ul>
@@ -510,7 +537,7 @@ export default function CodingLabPage() {
                       <Terminal className="h-3.5 w-3.5 text-emerald-500" /> Expected Test Output
                     </h4>
                     <pre className="p-2.5 rounded-lg bg-zinc-950 text-zinc-300 font-mono text-[11px] overflow-x-auto border border-zinc-800">
-                      {currentProblem.expectedOutput}
+                      {currentProblem?.expectedOutput}
                     </pre>
                   </div>
                 </CardContent>
@@ -525,7 +552,7 @@ export default function CodingLabPage() {
                     </span>
                     Check boundary conditions, syntax constraints, and expected output formatting.
                   </div>
-                  {currentProblem.hints.map((hint, idx) => (
+                  {currentProblem?.hints.map((hint, idx) => (
                     <div key={idx} className="p-3 rounded-lg bg-secondary/50 border flex items-start gap-2">
                       <span className="font-mono text-primary font-bold text-xs">{idx + 1}.</span>
                       <p className="text-foreground/90">{hint}</p>
@@ -556,13 +583,13 @@ export default function CodingLabPage() {
                           variant="ghost" 
                           size="sm" 
                           className="h-7 text-xs gap-1"
-                          onClick={() => handleCopyCode(currentProblem.modelSolution)}
+                          onClick={() => handleCopyCode(currentProblem?.modelSolution)}
                         >
                           <Copy className="h-3 w-3" /> Copy Solution
                         </Button>
                       </div>
                       <pre className="p-3 rounded-lg bg-zinc-950 text-emerald-400 font-mono text-[11px] leading-relaxed overflow-x-auto border border-zinc-800 max-h-[460px]">
-                        <code>{currentProblem.modelSolution}</code>
+                        <code>{currentProblem?.modelSolution}</code>
                       </pre>
                     </div>
                   )}
@@ -579,10 +606,10 @@ export default function CodingLabPage() {
                       <span className="h-2.5 w-2.5 rounded-full bg-yellow-500/80"></span>
                       <span className="h-2.5 w-2.5 rounded-full bg-green-500/80"></span>
                       <span className="font-mono text-xs font-semibold text-zinc-200 ml-2">
-                        {currentProblem.fileName}
+                        {currentProblem?.fileName}
                       </span>
                       <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400">
-                        {currentProblem.language === 'sql' ? 'SQL ENGINE' : currentProblem.language}
+                        {currentProblem?.language === 'sql' ? 'SQL ENGINE' : currentProblem?.language}
                       </span>
                     </div>
 
@@ -605,15 +632,15 @@ export default function CodingLabPage() {
                       >
                         {status === 'compiling' ? (
                           <span className="flex items-center gap-1.5 animate-pulse">
-                            <Sparkles className="h-3.5 w-3.5" /> {currentProblem.language === 'sql' ? 'Parsing...' : 'Compiling...'}
+                            <Sparkles className="h-3.5 w-3.5" /> {currentProblem?.language === 'sql' ? 'Parsing...' : 'Compiling...'}
                           </span>
                         ) : status === 'running' ? (
                           <span className="flex items-center gap-1.5 animate-pulse">
-                            <Play className="h-3.5 w-3.5" /> {currentProblem.language === 'sql' ? 'Executing Query...' : 'Testing...'}
+                            <Play className="h-3.5 w-3.5" /> {currentProblem?.language === 'sql' ? 'Executing Query...' : 'Testing...'}
                           </span>
                         ) : (
                           <span className="flex items-center gap-1.5">
-                            <Play className="h-3.5 w-3.5 fill-current" /> {currentProblem.language === 'sql' ? 'Execute SQL Query' : 'Run & Test Code'}
+                            <Play className="h-3.5 w-3.5 fill-current" /> {currentProblem?.language === 'sql' ? 'Execute SQL Query' : 'Run & Test Code'}
                           </span>
                         )}
                       </Button>
@@ -627,7 +654,7 @@ export default function CodingLabPage() {
                       onChange={(e) => setCode(e.target.value)}
                       onKeyDown={handleKeyDown}
                       spellCheck={false}
-                      placeholder={currentProblem.language === 'sql' ? 'Enter your SQL statements here...' : 'Write your code here...'}
+                      placeholder={currentProblem?.language === 'sql' ? 'Enter your SQL statements here...' : 'Write your code here...'}
                       className="w-full h-full min-h-[300px] lg:min-h-[340px] font-mono text-xs p-4 border-0 focus-visible:ring-0 rounded-none bg-zinc-950 text-zinc-100 leading-relaxed resize-none selection:bg-emerald-500/30"
                     />
                   </div>
@@ -658,7 +685,7 @@ export default function CodingLabPage() {
                     <div className="p-3 bg-black font-mono text-[11px] text-zinc-200 overflow-y-auto flex-1 leading-relaxed whitespace-pre-wrap selection:bg-primary/40">
                       {output || (
                         <span className="text-zinc-500 italic">
-                          {currentProblem.language === 'sql'
+                          {currentProblem?.language === 'sql'
                             ? '-- Click "Execute SQL Query" above to run validation tests against the university dataset...'
                             : '// Click "Run & Test Code" above to compile and execute test assertions...'}
                         </span>
@@ -679,11 +706,11 @@ export default function CodingLabPage() {
                     <p className="text-[11px] text-muted-foreground">+75 XP has been awarded to your student profile.</p>
                   </div>
                 </div>
-                {CODING_PROBLEMS.findIndex(p => p.id === currentProblem.id) < CODING_PROBLEMS.length - 1 && (
+                {CODING_PROBLEMS.findIndex(p => p.id === currentProblem?.id) < CODING_PROBLEMS.length - 1 && (
                   <Button
                     size="sm"
                     onClick={() => {
-                      const nextIdx = CODING_PROBLEMS.findIndex(p => p.id === currentProblem.id) + 1;
+                      const nextIdx = CODING_PROBLEMS.findIndex(p => p.id === currentProblem?.id) + 1;
                       handleSelectProblem(CODING_PROBLEMS[nextIdx]);
                     }}
                     className="gap-1 text-xs"
@@ -691,6 +718,12 @@ export default function CodingLabPage() {
                     Next Practical <ChevronRight className="h-3.5 w-3.5" />
                   </Button>
                 )}
+              </div>
+            )}
+              </>
+            ) : (
+              <div className="flex-1 flex items-center justify-center border rounded-xl bg-card text-muted-foreground p-8">
+                Select a problem or adjust filters to get started.
               </div>
             )}
           </div>

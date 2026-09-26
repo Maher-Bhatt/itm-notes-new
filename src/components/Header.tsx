@@ -35,7 +35,7 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
             {/* Hamburger Menu Toggle (Mobile Only) */}
             <button 
               onClick={() => setIsDrawerOpen(true)} 
-              className="md:hidden p-1.5 -ml-1.5 apple-press rounded-md text-muted-foreground hover:bg-secondary"
+              className="md:hidden p-1.5 -ml-1.5 apple-press rounded-md text-muted-foreground hover:bg-secondary flex items-center justify-center min-w-[44px] min-h-[44px]"
             >
               <Menu className="h-5 w-5" />
             </button>
