@@ -112,18 +112,19 @@ export function AnnouncementBanner() {
             <span className={`font-bold uppercase tracking-wider text-[10px] px-2 py-0.5 rounded-full border ${style.badge}`}>
               {announcement.severity}
             </span>
-            <span className="font-bold text-foreground truncate">{announcement.title}:</span>
-            <span className={`${style.text} font-medium line-clamp-1`}>{announcement.body}</span>
+            <span className="font-bold text-foreground text-[11px] sm:text-xs">{announcement.title}:</span>
+            <span className={`${style.text} font-medium text-[11px] sm:text-xs line-clamp-2 sm:line-clamp-1`}>{announcement.body}</span>
           </div>
         </div>
 
         <button
           type="button"
           onClick={handleDismiss}
-          className="p-1 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 text-muted-foreground hover:text-foreground transition-colors shrink-0"
+          className="p-2.5 -mr-1 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 text-muted-foreground hover:text-foreground transition-colors shrink-0 min-w-[44px] min-h-[44px] flex items-center justify-center"
           title="Dismiss announcement"
+          aria-label="Dismiss announcement"
         >
-          <X className="h-3.5 w-3.5" />
+          <X className="h-4 w-4" />
         </button>
       </div>
     </div>

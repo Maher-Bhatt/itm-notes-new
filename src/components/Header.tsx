@@ -78,8 +78,8 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
             </button>
 
             {showBack && (
-              <button onClick={() => navigate(backTo || "/")} className="apple-press p-1.5 rounded hover:bg-secondary hidden md:block">
-                <ChevronLeft className="h-4 w-4" />
+              <button onClick={() => navigate(backTo || "/")} className="apple-press p-2.5 -ml-1 rounded-lg hover:bg-secondary min-w-[44px] min-h-[44px] flex items-center justify-center">
+                <ChevronLeft className="h-5 w-5" />
               </button>
             )}
 
@@ -220,7 +220,7 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
                     )}
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-80 p-2">
+                <DropdownMenuContent align="end" className="w-72 sm:w-80 p-2 max-w-[calc(100vw-2rem)]">
                   <div className="flex items-center justify-between pb-2 mb-2 border-b px-2">
                     <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Notifications</span>
                     {unreadCount > 0 && (
@@ -423,7 +423,7 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
           )}
         </div>
         
-        <div className="p-4 border-t flex items-center justify-between bg-muted/20">
+        <div className="p-4 border-t flex items-center justify-between bg-muted/20" style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}>
           <span className="text-sm font-medium text-muted-foreground">Theme Settings</span>
           <ThemeToggle />
         </div>

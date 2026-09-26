@@ -30,9 +30,9 @@ export function MCQQuiz({ mcqs, topicId, onComplete }: MCQQuizProps) {
       setSelected(null);
       setShowResult(false);
     } else {
-      // Score already updated in handleSelect — just finish
+      // Score already fully updated in handleSelect — just finish
       setFinished(true);
-      onComplete?.(score + (selected === mcq.correctIndex ? 1 : 0), mcqs.length);
+      onComplete?.(score, mcqs.length);
     }
   };
 

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+/* Inter font loaded asynchronously via index.html preconnect */
 
 @tailwind base;
 @tailwind components;
@@ -134,7 +134,9 @@
   }
   
   /* Ensure tables don't break mobile layouts */
-  table {
+  /* Rich content tables should be scrollable on mobile */
+  .rich-content table,
+  .prose table {
     display: block;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
@@ -142,7 +144,7 @@
   
   /* Ensure code blocks scroll horizontally instead of breaking layout */
   pre {
-    max-width: calc(100vw - 2rem);
+    max-width: 100%;
   }
   
   /* Make all images responsive */
@@ -161,6 +163,14 @@
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
+}
+
+/* KaTeX display equations should scroll instead of causing page overflow */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding: 0.25rem 0;
 }
 
 @layer utilities {

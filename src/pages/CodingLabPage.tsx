@@ -775,15 +775,15 @@ export default function CodingLabPage() {
                       >
                         {status === 'compiling' ? (
                           <span className="flex items-center gap-1.5 animate-pulse">
-                            <Sparkles className="h-3.5 w-3.5" /> {currentProblem?.language === 'sql' ? 'Parsing...' : 'Compiling...'}
+                            <Sparkles className="h-3.5 w-3.5" /> <span className="hidden sm:inline">{currentProblem?.language === 'sql' ? 'Parsing...' : 'Compiling...'}</span><span className="sm:hidden">...</span>
                           </span>
                         ) : status === 'running' ? (
                           <span className="flex items-center gap-1.5 animate-pulse">
-                            <Play className="h-3.5 w-3.5" /> {currentProblem?.language === 'sql' ? 'Executing Query...' : 'Testing...'}
+                            <Play className="h-3.5 w-3.5" /> <span className="hidden sm:inline">{currentProblem?.language === 'sql' ? 'Executing Query...' : 'Testing...'}</span><span className="sm:hidden">...</span>
                           </span>
                         ) : (
                           <span className="flex items-center gap-1.5">
-                            <Play className="h-3.5 w-3.5 fill-current" /> {currentProblem?.language === 'sql' ? 'Execute SQL Query' : 'Run & Test Code'}
+                            <Play className="h-3.5 w-3.5 fill-current" /> <span className="hidden sm:inline">{currentProblem?.language === 'sql' ? 'Execute SQL Query' : 'Run & Test Code'}</span><span className="sm:hidden">Run</span>
                           </span>
                         )}
                       </Button>
