@@ -60,7 +60,7 @@ export function PWAInstallPrompt() {
   if (!showPrompt) return null;
 
   return (
-    <div className="fixed bottom-5 left-4 right-4 sm:left-auto sm:right-6 sm:max-w-md z-50 bg-card border border-primary/40 rounded-2xl p-4 shadow-2xl animate-fade-in text-foreground backdrop-blur-md">
+    <div className="fixed bottom-4 left-3 right-3 sm:left-auto sm:right-5 sm:max-w-sm z-50 bg-card border border-primary/40 rounded-2xl p-4 shadow-2xl animate-fade-in text-foreground backdrop-blur-md" style={{ marginBottom: 'env(safe-area-inset-bottom, 0px)' }}>
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
           <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-primary to-indigo-600 flex items-center justify-center text-white font-black text-xl shadow-md shrink-0">

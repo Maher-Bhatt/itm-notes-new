@@ -115,8 +115,14 @@
 
   html {
     scroll-behavior: smooth;
-    /* Support for iPhone safe area insets */
-    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    overflow-x: hidden;
+  }
+
+  /* Apply safe-area padding only to the body for iPhone notch/dynamic island */
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
   }
 }
 
@@ -177,7 +183,7 @@
   }
 
   .surface-elevated-hover:hover {
-    background: hsl(0 0% 96%);
+    background: hsl(var(--secondary));
   }
 
   /* Subtle press animation */
@@ -207,12 +213,12 @@
   }
 
   .inset-group-item:hover {
-    background: hsl(0 0% 96%);
+    background: hsl(var(--secondary));
   }
 
   /* Code blocks */
   .xcode-block {
-    background: #f5f5f5;
+    background: hsl(var(--card));
     border-radius: 0.5rem;
     border: 1px solid hsl(var(--border));
     overflow: hidden;
@@ -223,7 +229,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 10px 14px;
-    background: hsl(0 0% 98%);
+    background: hsl(var(--secondary));
     border-bottom: 1px solid hsl(var(--border));
   }
 
@@ -269,6 +275,28 @@
   .animate-scale-in {
     animation: scaleIn 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
+
+  /* Hide scrollbar but allow scrolling */
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Thin scrollbar for content panels */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.3);
+    border-radius: 2px;
+  }
 }
 
 @keyframes fadeIn {
@@ -289,9 +317,9 @@
 /* Code blocks default */
 pre {
   @apply rounded p-4 overflow-x-auto text-sm font-mono;
-  background: #f5f5f5;
+  background: hsl(var(--secondary));
   border: 1px solid hsl(var(--border));
-  color: #000;
+  color: hsl(var(--foreground));
 }
 
 code {
@@ -334,7 +362,7 @@ code {
 
 /* Focus Mode */
 .focus-mode {
-  background: hsl(0 0% 100%);
+  background: hsl(var(--background));
 }
 
 .focus-mode header {

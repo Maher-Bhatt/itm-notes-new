@@ -576,24 +576,25 @@ export default function CodingLabPage() {
                 </CardTitle>
 
                 {/* Workspace Navigation Tabs */}
-                <div className="flex border-b border-border/60 -mx-4 px-4 pt-3 gap-2">
+                <div className="flex overflow-x-auto -mx-4 px-4 pt-3 gap-1 sm:gap-2 border-b border-border/60 scrollbar-none">
                   {[
-                    { id: 'editor', label: 'Code Editor & Terminal' },
-                    { id: 'specs', label: 'Problem Specs & Constraints' },
-                    { id: 'hints', label: `Hints (${currentProblem?.hints.length})` },
-                    { id: 'solution', label: 'Model Solution' },
-                    { id: 'history', label: `History (${submissionHistory.filter(s => s.problemId === currentProblem?.id).length})` },
+                    { id: 'editor', label: 'Editor', fullLabel: 'Code Editor & Terminal' },
+                    { id: 'specs', label: 'Specs', fullLabel: 'Problem Specs & Constraints' },
+                    { id: 'hints', label: `Hints (${currentProblem?.hints.length})`, fullLabel: `Hints (${currentProblem?.hints.length})` },
+                    { id: 'solution', label: 'Solution', fullLabel: 'Model Solution' },
+                    { id: 'history', label: `History`, fullLabel: `History (${submissionHistory.filter(s => s.problemId === currentProblem?.id).length})` },
                   ].map(tab => (
                     <button
                       key={tab.id}
                       onClick={() => setActiveWorkspaceTab(tab.id as 'editor' | 'specs' | 'hints' | 'solution' | 'history')}
-                      className={`text-xs font-semibold pb-2 border-b-2 transition-all ${
+                      className={`text-xs font-semibold pb-2 border-b-2 transition-all whitespace-nowrap px-1 min-w-0 ${
                         activeWorkspaceTab === tab.id
                           ? 'border-primary text-primary'
                           : 'border-transparent text-muted-foreground hover:text-foreground'
                       }`}
                     >
-                      {tab.label}
+                      <span className="sm:hidden">{tab.label}</span>
+                      <span className="hidden sm:inline">{tab.fullLabel}</span>
                     </button>
                   ))}
                 </div>

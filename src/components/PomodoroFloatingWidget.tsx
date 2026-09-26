@@ -35,7 +35,7 @@ export function PomodoroFloatingWidget() {
     <>
       {/* ── Persistent Floating Pill (Visible when running or toggled) ── */}
       {isRunning && !isModalOpen && (
-        <div className="fixed bottom-6 right-6 z-40 animate-slide-up">
+        <div className="fixed bottom-5 left-4 sm:left-auto sm:right-6 z-40 animate-slide-up" style={{ marginBottom: 'env(safe-area-inset-bottom, 0px)' }}>
           <div className="bg-card/95 backdrop-blur-md border border-primary/30 shadow-xl rounded-full px-4 py-2 flex items-center gap-3 text-xs select-none">
             <button
               onClick={() => setIsModalOpen(true)}

@@ -354,7 +354,7 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
             <img src={logo} alt="Velocity Web" className="w-6 h-6 object-contain dark:invert" />
             <span className="font-semibold text-base leading-tight">ITM Notes</span>
           </div>
-          <button onClick={() => setIsDrawerOpen(false)} className="p-1.5 rounded-md hover:bg-secondary text-muted-foreground">
+          <button onClick={() => setIsDrawerOpen(false)} className="p-2.5 -mr-1.5 rounded-lg hover:bg-secondary text-muted-foreground min-w-[44px] min-h-[44px] flex items-center justify-center">
             <X className="h-5 w-5" />
           </button>
         </div>
@@ -364,7 +364,7 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
           {!isRunning && (
             <button 
               onClick={() => { setIsModalOpen(true); setIsDrawerOpen(false); }}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-secondary text-left transition-colors"
+              className="flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium hover:bg-secondary text-left transition-colors min-h-[44px]"
             >
               <Clock className="h-5 w-5 text-primary" />
               <span>Start Pomodoro Focus</span>
@@ -375,7 +375,7 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
             Resources & Community
           </div>
 
-          <button onClick={() => { navigate("/community"); setIsDrawerOpen(false); }} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-secondary text-left transition-colors text-foreground">
+          <button onClick={() => { navigate("/community"); setIsDrawerOpen(false); }} className="flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium hover:bg-secondary text-left transition-colors text-foreground min-h-[44px]">
             <MessageSquare className="h-5 w-5 text-primary" />
             <div className="flex items-center justify-between w-full">
               <span>Campus Social & Mask</span>
@@ -383,12 +383,12 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
             </div>
           </button>
           
-          <button onClick={() => { navigate("/materials"); setIsDrawerOpen(false); }} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-secondary text-left transition-colors">
+          <button onClick={() => { navigate("/materials"); setIsDrawerOpen(false); }} className="flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium hover:bg-secondary text-left transition-colors min-h-[44px]">
             <BookOpen className="h-5 w-5 text-primary" />
             <span>Materials</span>
           </button>
           
-          <button onClick={() => { navigate("/imp-questions"); setIsDrawerOpen(false); }} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-secondary text-left transition-colors">
+          <button onClick={() => { navigate("/imp-questions"); setIsDrawerOpen(false); }} className="flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium hover:bg-secondary text-left transition-colors min-h-[44px]">
             <HelpCircle className="h-5 w-5 text-blue-500" />
             <span>IMP Questions</span>
           </button>
@@ -397,17 +397,17 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
             Tools
           </div>
 
-          <button onClick={() => { navigate("/quiz"); setIsDrawerOpen(false); }} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-secondary text-left transition-colors">
+          <button onClick={() => { navigate("/quiz"); setIsDrawerOpen(false); }} className="flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium hover:bg-secondary text-left transition-colors min-h-[44px]">
             <HelpCircle className="h-5 w-5 text-orange-500" />
             <span>Practice Quiz</span>
           </button>
 
-          <button onClick={() => { navigate("/calculator"); setIsDrawerOpen(false); }} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-secondary text-left transition-colors">
+          <button onClick={() => { navigate("/calculator"); setIsDrawerOpen(false); }} className="flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium hover:bg-secondary text-left transition-colors min-h-[44px]">
             <Calculator className="h-5 w-5 text-primary" />
             <span>GPA Predictor</span>
           </button>
 
-          <button onClick={() => { navigate("/coding-lab"); setIsDrawerOpen(false); }} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-secondary text-left transition-colors">
+          <button onClick={() => { navigate("/coding-lab"); setIsDrawerOpen(false); }} className="flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium hover:bg-secondary text-left transition-colors min-h-[44px]">
             <Code className="h-5 w-5 text-emerald-500" />
             <span>Coding Lab</span>
           </button>
@@ -415,7 +415,7 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
           {onSearchOpen && (
             <>
               <div className="h-px bg-border my-2 mx-2" />
-              <button onClick={() => { onSearchOpen(); setIsDrawerOpen(false); }} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-secondary text-left transition-colors">
+              <button onClick={() => { onSearchOpen(); setIsDrawerOpen(false); }} className="flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium hover:bg-secondary text-left transition-colors min-h-[44px]">
                 <Search className="h-5 w-5 text-muted-foreground" />
                 <span>Search</span>
               </button>
