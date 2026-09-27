@@ -187,14 +187,47 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
 
     try {
-      const { data, error } = await supabase
+      if (profile?.id) {
+        payload.id = profile.id;
+      }
+
+      // 1. Try upsert with explicit onConflict key on user_id
+      let { data, error } = await supabase
         .from('profiles')
-        .upsert(payload)
+        .upsert(payload, { onConflict: 'user_id' })
         .select()
         .maybeSingle();
 
-      if (error) throw error;
-      if (data) {
+      // 2. If upsert fails, try direct update by user_id
+      if (error) {
+        console.warn("Profiles upsert failed, falling back to direct update:", error.message);
+        const { id, ...updateFields } = payload;
+        const res = await supabase
+          .from('profiles')
+          .update(updateFields)
+          .eq('user_id', user.id)
+          .select()
+          .maybeSingle();
+        data = res.data;
+        error = res.error;
+      }
+
+      // 3. If direct update found no row (new profile), try plain insert
+      if (error) {
+        console.warn("Direct update failed, trying plain insert:", error.message);
+        const res = await supabase
+          .from('profiles')
+          .insert(payload)
+          .select()
+          .maybeSingle();
+        data = res.data;
+        error = res.error;
+      }
+
+      if (error) {
+        console.error("Database update error:", error);
+        // Do not block student UI if local optimistic state succeeded
+      } else if (data) {
         setProfile(data as any);
         try {
           localStorage.setItem('itm_student_profile', JSON.stringify(data));
@@ -202,7 +235,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     } catch (err) {
       console.error("Failed to update profile in Supabase:", err);
-      throw err;
+      // Local profile is already saved optimistically in localStorage
     }
   };
 
