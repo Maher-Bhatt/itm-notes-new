@@ -20,7 +20,8 @@ import {
   Heart,
   Clock,
   Copy,
-  Share2
+  Share2,
+  Flame
 } from "lucide-react";
 import { toast } from "sonner";
 import { useSearchParams, useNavigate } from "react-router-dom";
@@ -55,6 +56,7 @@ export default function MaterialsPage() {
     }
   });
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
+  const [isExamMode, setIsExamMode] = useState(false);
 
   // Recently Viewed state stored in localStorage
   const [recentlyViewedIds, setRecentlyViewedIds] = useState<string[]>(() => {
@@ -121,10 +123,16 @@ export default function MaterialsPage() {
         (selectedSemester === "Semester 1" && m.semester === 1) ||
         (selectedSemester === "Semester 2" && m.semester === 2) ||
         (selectedSemester === "Semester 3" && m.semester === 3);
+        
+      if (isExamMode) {
+        if (!["Question Paper", "Syllabus", "Timetable", "Other"].includes(m.category)) {
+          return false;
+        }
+      }
 
       return matchesSearch && matchesSubject && matchesCategory && matchesSemester;
     });
-  }, [searchQuery, selectedSubject, selectedCategory, selectedSemester, showOnlyFavorites, favorites]);
+  }, [searchQuery, selectedSubject, selectedCategory, selectedSemester, showOnlyFavorites, favorites, isExamMode]);
 
   // Derived list of recently viewed materials
   const recentlyViewedMaterials = useMemo(() => {
@@ -229,6 +237,23 @@ ${material.topicsCovered.map((t, idx) => `${idx + 1}. ${t}`).join("\n")}
 
         {/* ── Filters & Search ── */}
         <div className="bg-card border border-border/80 rounded-2xl p-5 mb-8 shadow-sm space-y-4">
+          {/* Exam Mode Toggle */}
+          <div className="flex items-center justify-between p-3 rounded-xl bg-orange-500/10 border border-orange-500/20 mb-2 transition-all hover:bg-orange-500/15">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-orange-500/20 rounded-lg">
+                <Flame className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-orange-700 dark:text-orange-400 text-sm">Exam Prep Mode</h3>
+                <p className="text-xs text-orange-600/80 dark:text-orange-400/80">Only show Question Banks, Syllabus, and Timetables</p>
+              </div>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" className="sr-only peer" checked={isExamMode} onChange={(e) => setIsExamMode(e.target.checked)} />
+              <div className="w-11 h-6 bg-secondary peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-500"></div>
+            </label>
+          </div>
+
           {/* Search bar & Semester filter */}
           <div className="flex flex-col md:flex-row gap-4">
             <div className="relative flex-1">

@@ -11,6 +11,9 @@ import { useAcademic } from "@/contexts/AcademicContext";
 import { useSubjects } from "@/hooks/useAcademicData";
 import { subjects } from "@/data/subjects";
 import { BackToTop } from "@/components/BackToTop";
+import { ExamCountdown } from "@/components/ExamCountdown";
+import { TimetableWidget } from "@/components/TimetableWidget";
+import { HighYieldHub } from "@/components/HighYieldHub";
 
 function ProgressRing({ progress = 0 }: { progress: number }) {
   const radius = 22;
@@ -144,6 +147,8 @@ export default function DashboardPage() {
       <Header onSearchOpen={() => setSearchOpen(true)} />
 
       <main className="flex-1 max-w-6xl mx-auto px-6 py-8 w-full animate-fade-in">
+        <ExamCountdown />
+        
         <header className="mb-8">
           <h1 className="text-3xl font-bold tracking-tight mb-2">
             Welcome back, {profile?.display_name || user?.email?.split('@')[0]}
@@ -196,6 +201,11 @@ export default function DashboardPage() {
               </button>
             </div>
 
+            {/* Timetable Widget */}
+            <TimetableWidget />
+            
+            {/* High-Yield Hub */}
+            <HighYieldHub />
             
             {/* Continue Learning & Heatmap */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
