@@ -2177,5 +2177,59 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     ],
     "uploadedDate": "Sept 2026",
     "downloadUrl": "/materials/WhatsApp_Image_2026-09-23_at_3.17.38_PM.jpeg"
+  },
+  {
+    "id": "1901a04fae",
+    "title": "Computer Architecture MST Question Bank",
+    "subject": "Computer Architecture",
+    "subjectCode": "CS401",
+    "subjectId": "ca-101",
+    "semester": 3,
+    "category": "Question Paper",
+    "fileType": "PDF",
+    "fileSize": "188 KB",
+    "description": "Official Mid-Semester Test (MST) question bank for Computer Architecture.",
+    "topicsCovered": [
+      "Computer Architecture",
+      "Question Paper"
+    ],
+    "uploadedDate": "Sept 2026",
+    "downloadUrl": "/materials/Computer_Architecture_MST_Question_Bank.pdf"
+  },
+  {
+    "id": "323f63c7a7",
+    "title": "DBMS Question Bank (AY 2025)",
+    "subject": "Database Management Systems",
+    "subjectCode": "CS402",
+    "subjectId": "dbms-102",
+    "semester": 3,
+    "category": "Question Paper",
+    "fileType": "PDF",
+    "fileSize": "368 KB",
+    "description": "Comprehensive question bank for DBMS covering important exam topics.",
+    "topicsCovered": [
+      "Database Management Systems",
+      "Question Paper"
+    ],
+    "uploadedDate": "Sept 2026",
+    "downloadUrl": "/materials/DBMS_QUESTION_BANK_AY_2025.pdf"
+  },
+  {
+    "id": "d5309b6601",
+    "title": "MST Question Paper Format & Pattern",
+    "subject": "All Subjects",
+    "subjectCode": "GEN",
+    "subjectId": "gen",
+    "semester": 3,
+    "category": "Other",
+    "fileType": "PDF",
+    "fileSize": "71 KB",
+    "description": "Official formatting and paper pattern guide for the upcoming MST exams.",
+    "topicsCovered": [
+      "All Subjects",
+      "Exam Pattern"
+    ],
+    "uploadedDate": "Sept 2026",
+    "downloadUrl": "/materials/MST_QuestionPaper_Format.pdf"
   }
 ];
