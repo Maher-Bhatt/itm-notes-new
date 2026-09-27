@@ -99,8 +99,8 @@ export default function DashboardPage() {
       const dateStr = d.toISOString().split('T')[0];
       total += (history[dateStr] || 0) * 15;
     }
-    return Math.max(total, gamification.state.xp > 0 ? Math.min(gamification.state.xp, 150) : 0);
-  }, [gamification.state.activityHistory, gamification.state.xp]);
+    return Math.min(total || gamification.state.xp, weeklyGoal);
+  }, [gamification.state.activityHistory, gamification.state.xp, weeklyGoal]);
 
   const [filterSem, setFilterSem] = useState<number | 'all'>(semesterNumber || 3);
   const navigate = useNavigate();
@@ -488,9 +488,7 @@ export default function DashboardPage() {
                     <p className="text-xs text-muted-foreground">Level {gamification.state.level} • {gamification.state.xp} XP</p>
                   </div>
                 </div>
-                <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">
-                  🔥 {gamification.state.streakDays}d
-                </span>
+                <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">🔥 {gamification.state.streakDays}d</span>
               </div>
               
               <div className="space-y-1.5 mb-3.5">

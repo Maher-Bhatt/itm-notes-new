@@ -7,7 +7,8 @@
       (function() {
         try {
           var saved = localStorage.getItem('theme') || localStorage.getItem('vite-ui-theme');
-          var isDark = saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          // Default first-time experience is strictly LIGHT unless explicitly saved as 'dark'
+          var isDark = saved === 'dark';
           if (isDark) {
             document.documentElement.classList.add('dark');
             document.documentElement.style.backgroundColor = '#09090b';
@@ -20,15 +21,16 @@
         } catch (e) {}
       })();
     </script>
-    <title>ITM Notes — Official Study Portal | ITM SLS Baroda University</title>
-    <meta name="description" content="Comprehensive B.Tech CSE Semester 3 study portal for ITM SLS Baroda University students. Complete DSA, DBMS, Java OOP, Computer Architecture, and COANMP notes, interactive Coding Lab, SGPA/Attendance 75% calculator, and university exam question banks." />
-    <meta name="keywords" content="ITM SLS Baroda University, ITM Notes, B.Tech CSE Semester 3, Data Structures, DBMS, Java OOP, Computer Architecture, COANMP, Velocity Web, Maher Bhatt, Attendance Calculator, SGPA Calculator, Coding Lab" />
-    <meta name="author" content="Maher Bhatt — Velocity Web" />
+    <title>ITM Notes | Study Portal for ITM (SLS) Baroda University & ITM GNUMS</title>
+    <meta name="description" content="Official student-led study platform for ITM (SLS) Baroda University and ITM GNUMS. Access verified B.Tech CSE & BCA semester notes, MST Question Banks, 75% attendance buffer calculator, SGPA predictor, and interactive coding lab." />
+    <meta name="keywords" content="ITM, ITM SLS, ITM SLS Baroda, ITM SLS Baroda University, ITM GNUMS, ITMBU, ITM student notes, ITM notes, ITM CSE notes, ITM study material, ITM important questions, ITM exam timetable, attendance calculator ITM, Maher Bhatt" />
+    <meta name="author" content="Maher Bhatt" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#09090b" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" media="print" onload="this.media='all'" />
     <link rel="canonical" href="https://itm-notes-new.vercel.app/" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" href="/favicon.png" type="image/png" />
@@ -39,32 +41,71 @@
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://itm-notes-new.vercel.app/" />
     <meta property="og:site_name" content="ITM Notes" />
-    <meta property="og:title" content="ITM Notes — Comprehensive Engineering Study Portal" />
-    <meta property="og:description" content="Ace your ITM SLS Baroda University semester examinations with syllabus notes, interactive coding lab, 75% attendance calculator, and practice quizzes." />
+    <meta property="og:title" content="ITM Notes | Academic Portal for ITM (SLS) Baroda University" />
+    <meta property="og:description" content="Ace your ITM SLS Baroda University semester examinations with syllabus notes, MST question banks, interactive coding lab, and 75% attendance calculator." />
     <meta property="og:image" content="https://itm-notes-new.vercel.app/logo.png" />
 
-    <!-- Twitter Card -->
+    <!-- Twitter / X Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content="https://itm-notes-new.vercel.app/" />
-    <meta name="twitter:title" content="ITM Notes — Comprehensive Engineering Study Portal" />
-    <meta name="twitter:description" content="Ace your ITM SLS Baroda University semester examinations with syllabus notes, interactive coding lab, 75% attendance calculator, and practice quizzes." />
+    <meta name="twitter:title" content="ITM Notes | Academic Portal for ITM (SLS) Baroda University" />
+    <meta name="twitter:description" content="Ace your ITM SLS Baroda University semester examinations with syllabus notes, MST question banks, interactive coding lab, and 75% attendance calculator." />
     <meta name="twitter:image" content="https://itm-notes-new.vercel.app/logo.png" />
 
     <!-- Structured Data (JSON-LD) for Google SEO -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "EducationalOrganization",
-      "name": "ITM Notes",
-      "url": "https://itm-notes-new.vercel.app/",
-      "logo": "https://itm-notes-new.vercel.app/logo.png",
-      "founder": {
-        "@type": "Person",
-        "name": "Maher Bhatt"
-      },
-      "description": "Comprehensive engineering examination preparation platform tailored for ITM SLS Baroda University students.",
-      "sameAs": [
-        "https://www.velocityweb.online"
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://itm-notes-new.vercel.app/#website",
+          "url": "https://itm-notes-new.vercel.app/",
+          "name": "ITM Notes",
+          "alternateName": ["ITM Notes", "ITMBU Notes", "ITM SLS Notes", "ITM GNUMS Study Portal"],
+          "description": "Comprehensive student academic platform tailored for ITM (SLS) Baroda University students.",
+          "inLanguage": "en"
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://itm-notes-new.vercel.app/#organization",
+          "name": "ITM Notes",
+          "url": "https://itm-notes-new.vercel.app/",
+          "logo": "https://itm-notes-new.vercel.app/logo.png",
+          "founder": {
+            "@type": "Person",
+            "name": "Maher Bhatt"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://itm-notes-new.vercel.app/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Study Materials & Question Banks",
+              "item": "https://itm-notes-new.vercel.app/materials"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Practical Coding Lab",
+              "item": "https://itm-notes-new.vercel.app/coding-lab"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "Attendance & SGPA Calculator",
+              "item": "https://itm-notes-new.vercel.app/calculator"
+            }
+          ]
+        }
       ]
     }
     </script>

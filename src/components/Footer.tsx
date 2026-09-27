@@ -1,4 +1,4 @@
-import { Globe, UserCheck, LogOut, LayoutDashboard, User } from "lucide-react";
+import { Globe, LogOut, LayoutDashboard, User, ExternalLink, GraduationCap, FileText, Code, Calculator } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "@/assets/logo.png";
 import { useAuth } from "@/contexts/AuthContext";
@@ -11,58 +11,119 @@ export function Footer() {
     await signOut();
     navigate("/");
   };
-  return (
-    <footer className="border-t mt-auto">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
 
-          {/* About */}
-          <div className="lg:col-span-1">
-            <Link to="/" className="flex items-center gap-2 mb-4">
-              <img src={logo} alt="Velocity Web" className="w-7 h-7 object-contain dark:invert" />
-              <span className="font-semibold text-sm">ITM Notes</span>
+  return (
+    <footer className="border-t border-border/80 bg-card/50 mt-auto">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4 mb-10">
+
+          {/* About & Identity */}
+          <div className="space-y-3">
+            <Link to="/" className="flex items-center gap-2.5">
+              <img src={logo} alt="ITM Notes" className="w-8 h-8 object-contain dark:invert" />
+              <div>
+                <span className="font-extrabold text-base text-foreground tracking-tight block">ITM Notes</span>
+                <span className="text-[10px] text-muted-foreground font-semibold">ITM (SLS) Baroda University</span>
+              </div>
             </Link>
 
-            <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-              A free learning platform for ITM University engineering students. Clear notes, real examples, and practice quizzes.
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              The independent student study portal for ITM (SLS) Baroda University students. Verified syllabus notes, question banks, practical coding labs, and attendance calculators.
             </p>
 
-            <a
-              href="https://www.velocityweb.online"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
-            >
-              <Globe className="h-3 w-3" /> velocityweb.online
-            </a>
+            <div className="pt-1">
+              <a
+                href="https://www.velocityweb.online"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline font-medium"
+              >
+                <Globe className="h-3.5 w-3.5" /> Developed with Velocity Web
+              </a>
+            </div>
           </div>
 
-          {/* Features */}
+          {/* Academic Modules */}
           <div>
-            <h4 className="font-semibold text-sm mb-3 text-foreground">Features</h4>
-            <ul className="space-y-2">
+            <h4 className="font-bold text-xs uppercase tracking-wider text-foreground mb-3">
+              Academic Resources
+            </h4>
+            <ul className="space-y-2.5 text-xs text-muted-foreground">
               <li>
-                <Link to="/dashboard" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  My Subjects
+                <Link to="/materials" className="hover:text-primary transition-colors flex items-center gap-1.5">
+                  <FileText className="h-3.5 w-3.5 text-amber-500" />
+                  <span>MST Question Banks & Papers</span>
                 </Link>
               </li>
               <li>
-                <Link to="/quiz" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  Practice Quizzes
+                <Link to="/coding-lab" className="hover:text-primary transition-colors flex items-center gap-1.5">
+                  <Code className="h-3.5 w-3.5 text-emerald-500" />
+                  <span>Practical Coding Lab</span>
                 </Link>
               </li>
               <li>
-                <Link to="/bookmarks" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  Bookmarks
+                <Link to="/calculator" className="hover:text-primary transition-colors flex items-center gap-1.5">
+                  <Calculator className="h-3.5 w-3.5 text-blue-500" />
+                  <span>75% Attendance & SGPA Calculator</span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/quiz" className="hover:text-primary transition-colors">
+                  Topic Practice Quizzes
+                </Link>
+              </li>
+              <li>
+                <Link to="/bookmarks" className="hover:text-primary transition-colors">
+                  My Bookmarked Topics
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Platform */}
+          {/* Official University Portals */}
           <div>
-            <h4 className="font-semibold text-sm mb-3 text-foreground">Platform</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
+            <h4 className="font-bold text-xs uppercase tracking-wider text-foreground mb-3">
+              Official University Portals
+            </h4>
+            <ul className="space-y-2.5 text-xs text-muted-foreground">
+              <li>
+                <a
+                  href="https://itmbu.ac.in/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-primary transition-colors inline-flex items-center gap-1.5 group"
+                >
+                  <GraduationCap className="h-3.5 w-3.5 text-primary" />
+                  <span>ITM (SLS) Baroda University</span>
+                  <ExternalLink className="h-3 w-3 opacity-60 group-hover:opacity-100" />
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://ums.itmbu.ac.in/StudentPanel/StudentDashboard.aspx"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-primary transition-colors inline-flex items-center gap-1.5 group"
+                >
+                  <ExternalLink className="h-3.5 w-3.5 text-amber-500" />
+                  <span>Official Student UMS Portal</span>
+                  <ExternalLink className="h-3 w-3 opacity-60 group-hover:opacity-100" />
+                </a>
+              </li>
+              <li className="pt-2">
+                <span className="text-[11px] text-muted-foreground leading-normal block">
+                  Use UMS for official university fee payments, grade card downloads, and administrative registration.
+                </span>
+              </li>
+            </ul>
+          </div>
+
+          {/* Student Account */}
+          <div>
+            <h4 className="font-bold text-xs uppercase tracking-wider text-foreground mb-3">
+              Student Account
+            </h4>
+            <ul className="space-y-2.5 text-xs text-muted-foreground">
               {user ? (
                 <>
                   <li>
@@ -82,56 +143,62 @@ export function Footer() {
                       onClick={handleSignOut}
                       className="flex items-center gap-1.5 text-xs text-destructive hover:underline pt-1"
                     >
-                      <LogOut className="h-3 w-3" />
+                      <LogOut className="h-3.5 w-3.5" />
                       <span>Sign Out</span>
                     </button>
-                  </li>
-                  <li className="pt-2 border-t text-[11px] text-muted-foreground">
-                    Connected to ITM SLS Baroda Student Cloud
                   </li>
                 </>
               ) : (
                 <>
                   <li>
-                    <Link to="/auth" className="hover:text-foreground transition-colors font-medium text-primary">
-                      Sign In / Register
+                    <Link to="/auth?mode=login" className="hover:text-primary transition-colors font-semibold text-primary">
+                      Student Sign In
                     </Link>
                   </li>
-                  <li className="pt-3 border-t">
-                    <p className="text-xs text-muted-foreground leading-relaxed">
-                      Sign in to track progress, bookmark topics, and unlock achievements.
+                  <li>
+                    <Link to="/auth?mode=signup" className="hover:text-primary transition-colors">
+                      Create Account
+                    </Link>
+                  </li>
+                  <li className="pt-2">
+                    <p className="text-[11px] text-muted-foreground leading-relaxed">
+                      Register with your email to sync your study streak, save bookmarks, and view verified classmate networks.
                     </p>
                   </li>
                 </>
               )}
             </ul>
           </div>
-
-          {/* Team */}
-          <div>
-            <h4 className="font-semibold text-sm mb-3 text-foreground">Team</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>
-                <span className="font-medium text-foreground block">Maher Bhatt</span>
-                <span className="text-xs">Founder & Developer</span>
-              </li>
-            </ul>
-          </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="border-t mt-10 pt-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-muted-foreground">
-          <p>
-            © {new Date().getFullYear()} ITM Notes by Velocity Web
+        {/* Disclaimer & Bottom Bar */}
+        <div className="border-t border-border/80 pt-6 space-y-4">
+          <p className="text-[11px] text-muted-foreground leading-relaxed">
+            <strong>Institutional Disclaimer:</strong> ITM Notes is an independent, student-led study & academic resource portal created for students of ITM (SLS) Baroda University. It is not an official university administration website. Official institutional services, fee receipts, and official notifications are maintained at{" "}
+            <a href="https://itmbu.ac.in/" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">
+              itmbu.ac.in
+            </a>{" "}
+            and{" "}
+            <a href="https://ums.itmbu.ac.in/StudentPanel/StudentDashboard.aspx" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">
+              ums.itmbu.ac.in
+            </a>.
           </p>
-          <a
-            href="https://www.velocityweb.online"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-foreground transition-colors"
-          >
-            A Velocity Web Product
-          </a>
+
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-muted-foreground pt-2 border-t border-border/40">
+            <p>© {new Date().getFullYear()} ITM Notes. All rights reserved.</p>
+            <div className="flex items-center gap-4">
+              <span className="text-[11px]">Crafted by Maher Bhatt</span>
+              <span>•</span>
+              <a
+                href="https://www.velocityweb.online"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-foreground transition-colors"
+              >
+                Velocity Web
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </footer>

@@ -143,7 +143,7 @@ export default function CommunityPage() {
         const realClassmates: ClassmateProfile[] = data.map((p) => {
           const defaultQuote = p.role === 'admin' 
             ? 'Platform Admin & Founder. Happy learning!' 
-            : `B.Tech CSE student preparing on ITM Notes!`;
+            : (p.bio || `${p.branch || 'B.Tech CSE'} student on ITM Notes`);
 
           return {
             id: p.user_id,
@@ -153,13 +153,10 @@ export default function CommunityPage() {
             branch: p.branch || "B.Tech CSE '26",
             level: p.level || 1,
             levelTitle: (p.level || 1) > 4 ? 'Algorithm Archmage' : (p.level || 1) > 2 ? 'Binary Explorer' : 'Study Peer',
-            xp: p.xp || 120,
-            streakDays: p.streak_days || 1,
-            attendancePercent: 86,
-            topicsCompleted: 16,
-            quizzesTaken: 6,
-            badgesCount: 5,
+            xp: p.xp || 0,
+            streakDays: p.streak_days || 0,
             statusQuote: defaultQuote,
+            role: p.role || 'student',
           };
         });
         setClassmates(realClassmates);
@@ -477,15 +474,11 @@ export default function CommunityPage() {
       name: newFriendName.trim(),
       email: `${roll.toLowerCase()}@itm.ac.in`,
       branch: newFriendBranch.trim() || "B.Tech CSE '26",
-      level: Math.floor(Math.random() * 4) + 4,
+      level: 1,
       levelTitle: 'Study Peer',
-      xp: Math.floor(Math.random() * 1500) + 1200,
-      streakDays: Math.floor(Math.random() * 14) + 3,
-      attendancePercent: Math.floor(Math.random() * 18) + 78,
-      topicsCompleted: Math.floor(Math.random() * 25) + 15,
-      quizzesTaken: Math.floor(Math.random() * 10) + 5,
-      badgesCount: Math.floor(Math.random() * 8) + 4,
-      statusQuote: `Connected as study partner! Roll: ${roll}`,
+      xp: 0,
+      streakDays: 0,
+      statusQuote: `Study partner • Roll: ${roll}`,
     };
 
     setClassmates((prev) => [newStudent, ...prev]);
@@ -939,24 +932,21 @@ export default function CommunityPage() {
                               {/* Compare button on unmasked author */}
                               {!post.isMasked && (
                                 <button
-                                  onClick={() =>
-                                    handleOpenComparison({
+                                  onClick={() => {
+                                    const authorClassmate = classmates.find(c => c.id === post.authorId);
+                                    handleOpenComparison(authorClassmate || {
                                       id: post.authorId,
                                       name: post.authorName,
-                                      email: post.authorEmail,
+                                      email: post.authorEmail || `${post.authorId}@itm.ac.in`,
                                       avatar: post.authorAvatar,
                                       branch: post.authorBranch || "B.Tech CSE '26",
-                                      level: 6,
+                                      level: 1,
                                       levelTitle: 'Study Peer',
-                                      xp: 2200,
-                                      streakDays: 10,
-                                      attendancePercent: 82,
-                                      topicsCompleted: 28,
-                                      quizzesTaken: 12,
-                                      badgesCount: 11,
-                                      statusQuote: 'Preparing for Semester 3 finals!',
-                                    })
-                                  }
+                                      xp: 0,
+                                      streakDays: 0,
+                                      statusQuote: 'Preparing for semester exams!',
+                                    });
+                                  }}
                                   className="inline-flex items-center gap-1 text-[11px] font-semibold text-primary hover:underline ml-1"
                                   title="Compare academic stats with this student"
                                 >
@@ -1007,7 +997,7 @@ export default function CommunityPage() {
                               <p className="font-extrabold text-[11px] uppercase tracking-wider text-amber-700 dark:text-amber-300">
                                 🛡️ Admin Transparency Insight (Visible ONLY to Admin)
                               </p>
-                              <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-500/20 font-mono">
+                              <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 font-mono">
                                 Confidential
                               </span>
                             </div>
@@ -1319,15 +1309,7 @@ export default function CommunityPage() {
                               <span>•</span>
                               <span className="text-amber-600 font-bold">🔥 {student.streakDays}d</span>
                               <span>•</span>
-                              <span
-                                className={
-                                  student.attendancePercent >= 75
-                                    ? 'text-emerald-600 font-bold'
-                                    : 'text-red-500 font-bold'
-                                }
-                              >
-                                {student.attendancePercent}% Att.
-                              </span>
+                              <span className="font-mono text-primary font-bold">{student.xp || 0} XP</span>
                             </div>
                           </div>
                         </div>
@@ -1442,8 +1424,7 @@ export default function CommunityPage() {
                   placeholder="e.g. 23CSE042"
                   value={newFriendRollNo}
                   onChange={(e) => setNewFriendRollNo(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl bg-secondary/40 border border-border text-xs text-foreground placeholder:text-muted-foreground outline-none focus:border-primary uppercase font-mono"
-                />
+                  className="w-full px-3.5 py-2 rounded-xl bg-secondary/40 border border-border text-xs text-foreground placeholder:text-muted-foreground outline-none focus:border-primary uppercase font-mono" />
               </div>
 
               <div>

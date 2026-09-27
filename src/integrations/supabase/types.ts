@@ -17,6 +17,14 @@ export interface Database {
           avatar_url: string | null
           email: string | null
           branch: string | null
+          program: string | null
+          semester: number | null
+          enrollment_no: string | null
+          bio: string | null
+          target_cgpa: string | null
+          goal: string | null
+          onboarding_completed: boolean | null
+          achievements: Json | null
           role: string | null
           xp: number | null
           level: number | null
@@ -32,6 +40,14 @@ export interface Database {
           avatar_url?: string | null
           email?: string | null
           branch?: string | null
+          program?: string | null
+          semester?: number | null
+          enrollment_no?: string | null
+          bio?: string | null
+          target_cgpa?: string | null
+          goal?: string | null
+          onboarding_completed?: boolean | null
+          achievements?: Json | null
           role?: string | null
           xp?: number | null
           level?: number | null
@@ -47,6 +63,14 @@ export interface Database {
           avatar_url?: string | null
           email?: string | null
           branch?: string | null
+          program?: string | null
+          semester?: number | null
+          enrollment_no?: string | null
+          bio?: string | null
+          target_cgpa?: string | null
+          goal?: string | null
+          onboarding_completed?: boolean | null
+          achievements?: Json | null
           role?: string | null
           xp?: number | null
           level?: number | null
@@ -54,6 +78,41 @@ export interface Database {
           status?: string | null
           created_at?: string
           updated_at?: string
+        }
+      }
+      user_achievements: {
+        Row: {
+          id: string
+          user_id: string
+          achievement_id: string
+          title: string
+          description: string | null
+          icon: string | null
+          tier: string | null
+          xp_reward: number | null
+          unlocked_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          achievement_id: string
+          title: string
+          description?: string | null
+          icon?: string | null
+          tier?: string | null
+          xp_reward?: number | null
+          unlocked_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          achievement_id?: string
+          title?: string
+          description?: string | null
+          icon?: string | null
+          tier?: string | null
+          xp_reward?: number | null
+          unlocked_at?: string
         }
       }
       user_roles: {

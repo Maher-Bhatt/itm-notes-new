@@ -292,7 +292,7 @@ export async function generateAchievementStoryCard(data: AchievementCardData): P
   // 9. Call to action & App Watermark
   ctx.fillStyle = '#94A3B8';
   ctx.font = '600 22px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('🎓 Study with Velocity Web • itm-notes.vercel.app', width / 2, 1600);
+  ctx.fillText('🎓 Study with ITM Notes • itm-notes-new.vercel.app', width / 2, 1600);
 
   ctx.fillStyle = '#64748B';
   ctx.font = '500 18px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';

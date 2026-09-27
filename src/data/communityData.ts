@@ -49,11 +49,12 @@ export interface ClassmateProfile {
   levelTitle: string;
   xp: number;
   streakDays: number;
-  attendancePercent: number;
-  topicsCompleted: number;
-  quizzesTaken: number;
-  badgesCount: number;
+  attendancePercent?: number;
+  topicsCompleted?: number;
+  quizzesTaken?: number;
+  badgesCount?: number;
   statusQuote: string;
+  role?: string;
 }
 
 export const INITIAL_CLASSMATES: ClassmateProfile[] = [

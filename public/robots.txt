@@ -1,14 +1,23 @@
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
+# robots.txt for ITM Notes (https://itm-notes-new.vercel.app/)
 
 User-agent: *
 Allow: /
+Allow: /materials
+Allow: /coding-lab
+Allow: /calculator
+Allow: /quiz
+Allow: /imp-questions
+Allow: /subject/
+
+# Disallow private user data & authenticated panels from indexation
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /onboarding
+Disallow: /community
+Disallow: /social
+Disallow: /bookmarks
+Disallow: /admin/
+Disallow: /auth
+
+# Reference verified XML Sitemap
+Sitemap: https://itm-notes-new.vercel.app/sitemap.xml
