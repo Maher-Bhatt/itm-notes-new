@@ -102,7 +102,7 @@ export default function MaterialsPage() {
     return list;
   }, []);
 
-  const categories = ["All", "Notes", "Syllabus", "Question Paper", "Presentation", "Lab Manual", "Assignment"];
+  const categories = ["All", "Notes", "Syllabus", "Question Paper", "Timetable", "Presentation", "Lab Manual", "Assignment"];
 
   // Filtered list
   const filteredMaterials = useMemo(() => {

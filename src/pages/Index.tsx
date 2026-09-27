@@ -27,7 +27,8 @@ import {
   ExternalLink,
   Layers,
   Search,
-  Check
+  Check,
+  Image as ImageIcon
 } from "lucide-react";
 import { useState, useMemo, useEffect } from "react";
 import { SearchDialog } from "@/components/SearchDialog";
@@ -85,11 +86,19 @@ export default function Index() {
   const completedCount = progress.completedTopics.length;
   const studentName = profile?.display_name || user?.email?.split('@')[0] || 'Student';
 
-  // Real question banks for instant highlight
+  // Verified high-yield exam resources for immediate display
   const highYieldMaterials = useMemo(() => {
-    return REAL_STUDY_MATERIALS.filter((m) =>
-      m.category === "Question Paper" || m.category === "Timetable" || m.category === "Syllabus"
-    ).slice(0, 4);
+    const priorityIds = [
+      'mat-timetable-2026',
+      'mat-dbms-qb-2025',
+      'mat-ca-qb-mst',
+      'mat-dsa-qb-cet2'
+    ];
+    const picked = priorityIds
+      .map((id) => REAL_STUDY_MATERIALS.find((m) => m.id === id))
+      .filter((m) => Boolean(m));
+    if (picked.length === 4) return picked;
+    return REAL_STUDY_MATERIALS.slice(0, 4);
   }, []);
 
   return (
@@ -308,8 +317,22 @@ export default function Index() {
                   rel="noopener noreferrer"
                   className="mt-4 w-full py-2 px-3 rounded-xl bg-secondary hover:bg-primary hover:text-primary-foreground text-foreground text-xs font-semibold transition-colors flex items-center justify-center gap-1.5"
                 >
-                  <FileText className="h-3.5 w-3.5" />
-                  <span>Download PDF</span>
+                  {mat.fileType === "JPEG" || mat.fileType === "PNG" ? (
+                    <>
+                      <ImageIcon className="h-3.5 w-3.5" />
+                      <span>View Image</span>
+                    </>
+                  ) : mat.fileType === "DOCX" ? (
+                    <>
+                      <FileText className="h-3.5 w-3.5" />
+                      <span>Download DOCX</span>
+                    </>
+                  ) : (
+                    <>
+                      <FileText className="h-3.5 w-3.5" />
+                      <span>Download PDF</span>
+                    </>
+                  )}
                 </a>
               </div>
             ))}
