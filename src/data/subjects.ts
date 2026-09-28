@@ -12,7 +12,6 @@ import { probabilityStatsSubject, financialAccountingSubject } from './other-sub
 import { deRichContent } from './rich-content-de';
 import { psrRichContent } from './rich-content-psr';
 import { extraSubjects } from './extra-subjects';
-import { sem1DetailedSubjects } from './sem1-detailed';
 
 // Semester 1 Subjects
 import { sem1Python1Subject } from './sem1-python1';
@@ -38,7 +37,6 @@ const enrichedDE = injectRichContent(digitalElectronicsSubject, deRichContent);
 const enrichedPSR = injectRichContent(probabilityStatsSubject, psrRichContent);
 
 export const subjects: Subject[] = [
-  ...sem1DetailedSubjects,
   // Semester 3 (Core)
   computerArchitecture,
   sem3JavaMaster,
