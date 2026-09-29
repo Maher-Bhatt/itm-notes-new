@@ -163,7 +163,7 @@ export const MermaidDiagram = memo(function MermaidDiagram({ chart }: { chart: s
   }
 
   return (
-    <div className="my-6 rounded-xl border border-border/80 bg-card p-4 sm:p-6 shadow-sm overflow-x-auto overscroll-contain">
+    <div className="my-6 rounded-xl border border-border/80 bg-card p-4 sm:p-6 shadow-sm overflow-x-auto">
       <div
         ref={containerRef}
         className="flex justify-center min-w-[280px] max-w-full [&>svg]:max-w-full [&>svg]:h-auto"
