@@ -13,14 +13,14 @@ import { usePomodoro } from "@/contexts/PomodoroContext";
 import { AudioNotesPlayer } from "@/components/AudioNotesPlayer";
 import { FlashcardsModal, Flashcard } from "@/components/FlashcardsModal";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef, memo } from "react";
 import { SearchDialog } from "@/components/SearchDialog";
 import { Footer } from "@/components/Footer";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { BackToTop } from "@/components/BackToTop";
 import { toast } from "sonner";
 
-function XcodeBlock({ code, label, variant }: { code: string; label?: string; variant?: "output" }) {
+const XcodeBlock = memo(function XcodeBlock({ code, label, variant }: { code: string; label?: string; variant?: "output" }) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = useCallback(() => {
@@ -44,11 +44,72 @@ function XcodeBlock({ code, label, variant }: { code: string; label?: string; va
       </div>
     </div>
   );
-}
+});
 
-/* ── In-page TOC sidebar for rich content ── */
-function ContentTOC({ markdown, activeId }: { markdown: string; activeId: string }) {
+/* ── Isolated top reading progress bar (does NOT cause TopicPage to re-render on scroll) ── */
+const ReadingProgressBar = memo(function ReadingProgressBar() {
+  const barRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    let rafId: number | null = null;
+    const handleScroll = () => {
+      if (rafId !== null) return;
+      rafId = window.requestAnimationFrame(() => {
+        const totalScroll = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        if (totalScroll > 0 && barRef.current) {
+          const currentProgress = Math.min(100, Math.max(0, (window.scrollY / totalScroll) * 100));
+          barRef.current.style.width = `${currentProgress}%`;
+        }
+        rafId = null;
+      });
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (rafId !== null) cancelAnimationFrame(rafId);
+    };
+  }, []);
+
+  return (
+    <div className="fixed top-0 left-0 right-0 h-1 z-[60] bg-transparent pointer-events-none">
+      <div 
+        ref={barRef}
+        className="h-full bg-primary transition-[width] duration-75 ease-out shadow-sm" 
+        style={{ width: "0%" }} 
+      />
+    </div>
+  );
+});
+
+/* ── In-page TOC sidebar for rich content (self-contained scroll spy) ── */
+const ContentTOC = memo(function ContentTOC({ markdown }: { markdown: string }) {
+  const [activeId, setActiveId] = useState("");
   const toc = useMemo(() => extractTOC(markdown), [markdown]);
+
+  useEffect(() => {
+    if (toc.length < 2) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActiveId(entry.target.id);
+            break;
+          }
+        }
+      },
+      { rootMargin: "-80px 0px -60% 0px", threshold: 0 }
+    );
+
+    toc.forEach((item) => {
+      const el = document.getElementById(item.id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, [toc]);
+
   if (toc.length < 2) return null;
 
   return (
@@ -71,7 +132,7 @@ function ContentTOC({ markdown, activeId }: { markdown: string; activeId: string
       ))}
     </div>
   );
-}
+});
 
 export default function TopicPage() {
   const { subjectId, topicId } = useParams<{ subjectId: string; topicId: string }>();
@@ -79,7 +140,6 @@ export default function TopicPage() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [focusMode, setFocusMode] = useState(false);
-  const [activeTocId, setActiveTocId] = useState("");
 
   // 1. Static lookup
   const staticResult = useMemo(() => getTopic(subjectId || "", topicId || ""), [subjectId, topicId]);
@@ -212,21 +272,6 @@ export default function TopicPage() {
     }
   }, [subjectId, checkDailyStreak, unlockAchievement]);
 
-  // Scroll progress tracker
-  const [scrollProgress, setScrollProgress] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const totalScroll = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-      if (totalScroll > 0) {
-        const currentProgress = (window.scrollY / totalScroll) * 100;
-        setScrollProgress(Math.min(100, Math.max(0, currentProgress)));
-      }
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   // Keyboard shortcuts: F (focus mode), B (bookmark)
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -250,48 +295,28 @@ export default function TopicPage() {
     return () => window.removeEventListener("keydown", handler);
   }, [focusMode, resolvedTopic?.topic.id, isBookmarked, toggleBookmark]);
 
-  // Scroll spy for TOC
-  useEffect(() => {
-    if (!resolvedTopic?.topic.richContent) return;
-    const toc = extractTOC(resolvedTopic.topic.richContent);
-    if (toc.length < 2) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            setActiveTocId(entry.target.id);
-            break;
-          }
-        }
-      },
-      { rootMargin: "-80px 0px -60% 0px", threshold: 0 }
-    );
-
-    toc.forEach((item) => {
-      const el = document.getElementById(item.id);
-      if (el) observer.observe(el);
-    });
-
-    return () => observer.disconnect();
-  }, [resolvedTopic?.topic.richContent, topicId]);
-
+  // Scroll to top ONLY on explicit topic/subject navigation
   useEffect(() => {
     setSidebarOpen(false);
-    setActiveTocId("");
-    window.scrollTo(0, 0);
-    
-    // Gamification & Continue Learning
-    if (resolvedTopic) {
-      // Assuming gamification.readTopic or similar doesn't exist yet, we just save to localstorage
-      localStorage.setItem('itm_last_visited_topic', JSON.stringify({
-        topicId: resolvedTopic.topic.id,
-        topicTitle: resolvedTopic.topic.title,
-        subjectId: subjectId,
-        subjectName: subject?.name || 'Unknown Subject'
-      }));
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+  }, [topicId, subjectId]);
+
+  // Track last visited topic without triggering scroll resets
+  useEffect(() => {
+    if (resolvedTopic?.topic?.id) {
+      try {
+        localStorage.setItem(
+          "itm_last_visited_topic",
+          JSON.stringify({
+            topicId: resolvedTopic.topic.id,
+            topicTitle: resolvedTopic.topic.title,
+            subjectId: subjectId,
+            subjectName: subject?.name || "Unknown Subject",
+          })
+        );
+      } catch {}
     }
-  }, [topicId, resolvedTopic]);
+  }, [subjectId, resolvedTopic?.topic?.id, resolvedTopic?.topic?.title, subject?.name]);
 
   if (isTopicLoading || isSubjectLoading) {
     return (
@@ -377,12 +402,7 @@ export default function TopicPage() {
   return (
     <div className={`min-h-screen bg-background flex flex-col ${focusMode ? "focus-mode" : ""}`}>
       {/* Top Reading Progress Bar */}
-      <div className="fixed top-0 left-0 right-0 h-1 z-[60] bg-transparent pointer-events-none">
-        <div 
-          className="h-full bg-primary transition-all duration-75 ease-out shadow-sm" 
-          style={{ width: `${scrollProgress}%` }} 
-        />
-      </div>
+      <ReadingProgressBar />
 
       <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
 
@@ -528,7 +548,7 @@ export default function TopicPage() {
         </aside>
 
         {/* Main reading area */}
-        <main className="flex-1 min-w-0 animate-fade-in pb-20">
+        <main className="flex-1 min-w-0 pb-20">
           {/* Focus Mode floating toolbar */}
           {focusMode && (
             <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 bg-background/90 backdrop-blur-md border border-border rounded-full px-5 py-2.5 shadow-2xl animate-fade-in">
@@ -755,7 +775,7 @@ export default function TopicPage() {
             {/* Right sidebar — In-page TOC for rich content */}
             {hasRichContent && !focusMode && (
               <aside className="hidden xl:block w-52 shrink-0 sticky top-12 self-start h-[calc(100vh-3rem)] overflow-y-auto p-4 border-l border">
-                <ContentTOC markdown={topic.richContent!} activeId={activeTocId} />
+                <ContentTOC markdown={topic.richContent || topic.detailedExplanation || ""} />
               </aside>
             )}
           </div>

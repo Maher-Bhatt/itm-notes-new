@@ -1,7 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, memo } from "react";
 import mermaid from "mermaid";
 
 let mermaidCounter = 0;
+// Global in-memory cache so diagrams render instantaneously with zero layout shift or flickering
+const diagramCache = new Map<string, string>();
 
 /**
  * Pre-sanitizes diagram code to prevent Mermaid 11 lexer syntax errors:
@@ -26,16 +28,26 @@ function sanitizeMermaid(chart: string): string {
   return cleaned;
 }
 
-export function MermaidDiagram({ chart }: { chart: string }) {
+export const MermaidDiagram = memo(function MermaidDiagram({ chart }: { chart: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [svg, setSvg] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const isDark = typeof document !== "undefined" && document.documentElement.classList.contains("dark");
+  const cacheKey = `${isDark ? "dark" : "light"}::${chart.trim()}`;
+  const initialSvg = diagramCache.get(cacheKey) || "";
+
+  const [svg, setSvg] = useState<string>(initialSvg);
+  const [isLoading, setIsLoading] = useState<boolean>(!initialSvg);
   const [hasError, setHasError] = useState<boolean>(false);
 
   useEffect(() => {
-    setIsLoading(true);
+    // If diagram is already cached and set, do not re-render
+    if (diagramCache.has(cacheKey) && svg) {
+      setIsLoading(false);
+      return;
+    }
+
+    setIsLoading(!svg);
     setHasError(false);
-    const isDark = document.documentElement.classList.contains("dark");
+
     mermaid.initialize({
       startOnLoad: false,
       suppressErrorRendering: true, // Prevents Mermaid from injecting error bombs into DOM
@@ -98,6 +110,7 @@ export function MermaidDiagram({ chart }: { chart: string }) {
         const sanitized = sanitizeMermaid(chart);
         const { svg: rendered } = await mermaid.render(id, sanitized);
         if (!cancelled) {
+          diagramCache.set(cacheKey, rendered);
           setSvg(rendered);
           setIsLoading(false);
           setHasError(false);
@@ -115,9 +128,9 @@ export function MermaidDiagram({ chart }: { chart: string }) {
       cancelled = true;
       purgeErrorNodes();
     };
-  }, [chart]);
+  }, [chart, cacheKey, isDark, svg]);
 
-  // Loading state: Subtle dark skeleton (prevents white box flash)
+  // Loading state: Subtle dark skeleton (only shown on cold render without cache)
   if (isLoading && !svg) {
     return (
       <div className="my-6 rounded-xl border border-border/50 bg-secondary/10 p-6 flex flex-col items-center justify-center min-h-[150px] animate-pulse">
@@ -132,7 +145,7 @@ export function MermaidDiagram({ chart }: { chart: string }) {
   // Error state: Neat fallback card
   if (hasError && !svg) {
     return (
-      <div className="my-6 rounded-xl border border-border/70 bg-secondary/15 p-4 sm:p-5 shadow-sm animate-fade-in">
+      <div className="my-6 rounded-xl border border-border/70 bg-secondary/15 p-4 sm:p-5 shadow-sm">
         <div className="flex items-center justify-between mb-2.5 pb-2 border-b border-border/40">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-primary/60"></span>
@@ -150,10 +163,10 @@ export function MermaidDiagram({ chart }: { chart: string }) {
   }
 
   return (
-    <div className="my-6 rounded-xl border border-border/80 bg-card p-4 sm:p-6 shadow-sm overflow-x-auto animate-fade-in">
+    <div className="my-6 rounded-xl border border-border/80 bg-card p-4 sm:p-6 shadow-sm overflow-x-auto overscroll-contain">
       <div
         ref={containerRef}
-        className="flex justify-center min-w-[280px] max-w-full [&>svg]:max-w-full [&>svg]:h-auto transition-all"
+        className="flex justify-center min-w-[280px] max-w-full [&>svg]:max-w-full [&>svg]:h-auto"
         dangerouslySetInnerHTML={{ __html: svg }}
       />
       <p className="text-center text-[10px] font-mono text-muted-foreground/60 mt-3 uppercase tracking-wider">
@@ -161,4 +174,4 @@ export function MermaidDiagram({ chart }: { chart: string }) {
       </p>
     </div>
   );
-}
+});
