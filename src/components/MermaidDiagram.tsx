@@ -32,20 +32,22 @@ export const MermaidDiagram = memo(function MermaidDiagram({ chart }: { chart: s
   const containerRef = useRef<HTMLDivElement>(null);
   const isDark = typeof document !== "undefined" && document.documentElement.classList.contains("dark");
   const cacheKey = `${isDark ? "dark" : "light"}::${chart.trim()}`;
-  const initialSvg = diagramCache.get(cacheKey) || "";
 
-  const [svg, setSvg] = useState<string>(initialSvg);
-  const [isLoading, setIsLoading] = useState<boolean>(!initialSvg);
+  const [svg, setSvg] = useState<string>(() => diagramCache.get(cacheKey) || "");
+  const [isLoading, setIsLoading] = useState<boolean>(() => !diagramCache.has(cacheKey));
   const [hasError, setHasError] = useState<boolean>(false);
 
   useEffect(() => {
-    // If diagram is already cached and set, do not re-render
-    if (diagramCache.has(cacheKey) && svg) {
+    // If diagram is already cached, apply it immediately
+    const cached = diagramCache.get(cacheKey);
+    if (cached) {
+      setSvg(cached);
       setIsLoading(false);
+      setHasError(false);
       return;
     }
 
-    setIsLoading(!svg);
+    setIsLoading(true);
     setHasError(false);
 
     mermaid.initialize({
@@ -98,18 +100,16 @@ export const MermaidDiagram = memo(function MermaidDiagram({ chart }: { chart: s
     const id = `mermaid-${++mermaidCounter}`;
     let cancelled = false;
 
-    // Purge any stray mermaid error nodes
-    const purgeErrorNodes = () => {
-      document.querySelectorAll(`[id^="dmermaid"], [id^="mermaid-"][class*="error"], .error-icon, [id="d${id}"]`).forEach(el => el.remove());
-      const el = document.getElementById(id);
-      el?.remove();
+    // Purge only temporary mermaid scratch containers injected into document.body during render
+    const purgeScratchNodes = () => {
+      document.querySelectorAll(`[id^="dmermaid"], [id="d${id}"], [id^="mermaid-"][class*="error"], .error-icon`).forEach((el) => el.remove());
     };
 
     (async () => {
       try {
         const sanitized = sanitizeMermaid(chart);
         const { svg: rendered } = await mermaid.render(id, sanitized);
-        if (!cancelled) {
+        if (!cancelled && rendered) {
           diagramCache.set(cacheKey, rendered);
           setSvg(rendered);
           setIsLoading(false);
@@ -117,18 +117,19 @@ export const MermaidDiagram = memo(function MermaidDiagram({ chart }: { chart: s
         }
       } catch (err) {
         if (!cancelled) {
+          console.warn("Mermaid render error:", err);
           setHasError(true);
           setIsLoading(false);
-          purgeErrorNodes();
+          purgeScratchNodes();
         }
       }
     })();
 
     return () => {
       cancelled = true;
-      purgeErrorNodes();
+      purgeScratchNodes();
     };
-  }, [chart, cacheKey, isDark, svg]);
+  }, [chart, cacheKey, isDark]);
 
   // Loading state: Subtle dark skeleton (only shown on cold render without cache)
   if (isLoading && !svg) {
