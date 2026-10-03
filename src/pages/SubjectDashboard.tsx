@@ -66,7 +66,7 @@ export default function SubjectDashboard() {
       color: dbSub.color || "bg-primary",
       icon: dbSub.icon || "book-open",
       description: dbSub.description || "",
-      semester: 3,
+      semester: dbSub.semester || dbSub.semester_number || 1,
       units: (dbSub.units || []).map((u: any) => ({
         id: u.id,
         title: u.title,

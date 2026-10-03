@@ -56,18 +56,29 @@ function OverallProgressBar({ progress }: { progress: number }) {
 export default function Index() {
   const { getSubjectProgress, isBookmarked, progress } = useProgress();
   const { state: game, levelInfo } = useGamification();
-  const { user, profile } = useAuth();
+  const { user, profile, isLoading } = useAuth();
   const { semesterNumber } = useAcademic();
   const [searchOpen, setSearchOpen] = useState(false);
-  const [semesterFilter, setSemesterFilter] = useState<number | 'all'>(semesterNumber || 3);
+  const [semesterFilter, setSemesterFilter] = useState<number | 'all'>(profile?.semester || semesterNumber || 1);
   const navigate = useNavigate();
+
+  // If authenticated user hasn't completed onboarding, direct to /onboarding
+  useEffect(() => {
+    if (!isLoading && user && profile) {
+      const hasCompleted = profile.onboarding_completed === true || (profile.onboarding_completed === null && Boolean(profile.semester));
+      if (!hasCompleted) {
+        navigate("/onboarding", { replace: true });
+      }
+    }
+  }, [user, profile, isLoading, navigate]);
 
   // Sync with user's academic context when changed
   useEffect(() => {
-    if (semesterNumber && semesterFilter !== semesterNumber && semesterFilter !== 'all') {
-      setSemesterFilter(semesterNumber);
+    const targetSem = profile?.semester || semesterNumber;
+    if (targetSem && semesterFilter !== targetSem && semesterFilter !== 'all') {
+      setSemesterFilter(targetSem);
     }
-  }, [semesterNumber]);
+  }, [semesterNumber, profile?.semester]);
 
   // Clean list of verified subjects with actual topics
   const validSubjects = useMemo(() => {

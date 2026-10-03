@@ -48,7 +48,7 @@ export function FriendComparisonModal({
     return {
       name: profile?.display_name || user?.email?.split('@')[0] || (user ? 'You' : 'Guest Student'),
       avatar: profile?.avatar_url,
-      branch: "B.Tech CSE '26",
+      branch: profile?.branch || "Computer Science & Engineering",
       level: levelInfo.level,
       levelTitle: levelInfo.title,
       xp: game.xp,

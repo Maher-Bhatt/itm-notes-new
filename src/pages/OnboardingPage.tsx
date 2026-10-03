@@ -45,7 +45,7 @@ export default function OnboardingPage() {
   const [displayName, setDisplayName] = useState(profile?.display_name || user?.email?.split('@')[0] || "");
   const [program, setProgram] = useState(profile?.program || "B.Tech");
   const [branch, setBranch] = useState(profile?.branch || "Computer Science & Engineering");
-  const [semester, setSemester] = useState(profile?.semester || 3);
+  const [semester, setSemester] = useState<number>(profile?.semester || 1);
   const [enrollmentNo, setEnrollmentNo] = useState(profile?.enrollment_no || "");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(profile?.avatar_url || null);
   const [selectedPriorities, setSelectedPriorities] = useState<string[]>(["qb", "notes", "calc"]);
@@ -82,11 +82,12 @@ export default function OnboardingPage() {
   const handleComplete = async () => {
     setIsSubmitting(true);
     try {
+      const semNumber = Number(semester) || 1;
       await updateProfile({
         display_name: displayName.trim() || user?.email?.split('@')[0] || "Student",
-        program,
-        branch,
-        semester,
+        program: program || "B.Tech",
+        branch: branch || "Computer Science & Engineering",
+        semester: semNumber,
         enrollment_no: enrollmentNo.trim() || null,
         avatar_url: avatarUrl,
         goal: academicGoal,
@@ -95,7 +96,7 @@ export default function OnboardingPage() {
 
       // Also set academic context for semester selector
       setAcademicContext({
-        semesterId: `sem-${semester}`,
+        semesterId: `sem-${semNumber}`,
       });
 
       toast.success("Welcome aboard! Your student profile is set up.");
@@ -110,8 +111,15 @@ export default function OnboardingPage() {
 
   const handleSkip = async () => {
     try {
+      const semNumber = Number(semester) || 1;
       await updateProfile({
+        program: program || "B.Tech",
+        branch: branch || "Computer Science & Engineering",
+        semester: semNumber,
         onboarding_completed: true,
+      });
+      setAcademicContext({
+        semesterId: `sem-${semNumber}`,
       });
     } catch {}
     navigate("/dashboard");

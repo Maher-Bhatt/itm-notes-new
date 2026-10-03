@@ -1,9 +1,9 @@
 // @ts-nocheck
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { useAcademic } from "@/contexts/AcademicContext";
+// AuthPage handles login & onboarding redirect
 import { toast } from "sonner";
 import { Loader2, Lock, Sparkles } from "lucide-react";
 import { Header } from "@/components/Header";
@@ -25,12 +25,10 @@ function getFeatureName(path?: string) {
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
-  const [semester, setSemester] = useState("3");
-  const { setAcademicContext } = useAcademic();
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [loading, setLoading] = useState(false);
-  const { user } = useAuth();
+  const { user, profile, isLoading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -39,11 +37,18 @@ export default function AuthPage() {
     ? (typeof fromState === 'string' ? fromState : `${fromState.pathname || "/"}${fromState.search || ""}${fromState.hash || ""}`)
     : "/";
 
-  // If already logged in, redirect to intended target
-  if (user) {
-    navigate(fromLocation, { replace: true });
-    return null;
-  }
+  // If already logged in, redirect based on onboarding completion
+  useEffect(() => {
+    if (!isLoading && user) {
+      const hasCompleted = profile?.onboarding_completed === true || (profile?.onboarding_completed === null && Boolean(profile?.semester));
+      if (!hasCompleted) {
+        navigate("/onboarding", { replace: true });
+      } else {
+        const dest = fromLocation === "/auth" ? "/dashboard" : fromLocation;
+        navigate(dest, { replace: true });
+      }
+    }
+  }, [user, profile, isLoading, navigate, fromLocation]);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,18 +62,27 @@ export default function AuthPage() {
         });
         if (error) throw error;
 
-        // Ensure user profile is registered in Supabase
+        // Check if user has completed onboarding in Supabase
+        let needsOnboarding = false;
         if (data?.user?.id) {
-          const fallbackName = data.user.user_metadata?.display_name || email.split("@")[0];
-          await supabase.from("profiles").upsert({
-            user_id: data.user.id,
-            email: data.user.email,
-            display_name: fallbackName,
-          }, { onConflict: "user_id" });
+          const { data: existingProfile } = await supabase
+            .from("profiles")
+            .select("onboarding_completed, semester")
+            .eq("user_id", data.user.id)
+            .maybeSingle();
+
+          if (!existingProfile || (existingProfile.onboarding_completed !== true && !existingProfile.semester)) {
+            needsOnboarding = true;
+          }
         }
 
         toast.success("Successfully logged in!");
-        navigate(fromLocation, { replace: true });
+        if (needsOnboarding) {
+          navigate("/onboarding", { replace: true });
+        } else {
+          const dest = fromLocation === "/auth" ? "/dashboard" : fromLocation;
+          navigate(dest, { replace: true });
+        }
       } else {
         const { data, error } = await supabase.auth.signUp({
           email,
@@ -81,7 +95,7 @@ export default function AuthPage() {
         });
         if (error) throw error;
 
-        // Immediately upsert into profiles so Admin and Social see the real student
+        // Immediately upsert into profiles with uncompleted onboarding and NO preset semester/branch
         if (data?.user?.id) {
           try {
             await supabase.from("profiles").upsert({
@@ -89,9 +103,21 @@ export default function AuthPage() {
               email: email,
               display_name: displayName,
               role: email.toLowerCase() === "maherbhatt01@gmail.com" ? "admin" : "student",
-              branch: "B.Tech CSE '26",
+              branch: null,
+              program: null,
+              semester: null,
+              onboarding_completed: false,
             }, { onConflict: "user_id" });
-          } catch {}
+          } catch (err) {
+            console.warn("Profile init notice:", err);
+          }
+        }
+
+        // If session exists (auto-confirmed), navigate straight to onboarding
+        if (data?.session) {
+          toast.success("Account created! Let's set up your student profile.");
+          navigate("/onboarding", { replace: true });
+          return;
         }
 
         toast.success("Account created successfully! Please sign in.");

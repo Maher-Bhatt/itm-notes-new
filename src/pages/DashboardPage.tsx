@@ -102,15 +102,16 @@ export default function DashboardPage() {
     return Math.min(total || gamification.state.xp, weeklyGoal);
   }, [gamification.state.activityHistory, gamification.state.xp, weeklyGoal]);
 
-  const [filterSem, setFilterSem] = useState<number | 'all'>(semesterNumber || 3);
+  const [filterSem, setFilterSem] = useState<number | 'all'>(profile?.semester || semesterNumber || 1);
   const navigate = useNavigate();
 
-  // Keep filterSem in sync with semesterNumber when user updates their semester
+  // Keep filterSem in sync with user's semester when profile or academic context updates
   useEffect(() => {
-    if (semesterNumber && filterSem !== semesterNumber && filterSem !== 'all') {
-      setFilterSem(semesterNumber);
+    const targetSem = profile?.semester || semesterNumber;
+    if (targetSem && filterSem !== targetSem && filterSem !== 'all') {
+      setFilterSem(targetSem);
     }
-  }, [semesterNumber]);
+  }, [semesterNumber, profile?.semester]);
 
   // Clean verified list of subjects that contain actual topics
   const allSubjectsToRender = useMemo(() => {

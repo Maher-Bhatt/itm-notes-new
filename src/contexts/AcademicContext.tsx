@@ -20,27 +20,42 @@ interface AcademicContextType {
 const AcademicContext = createContext<AcademicContextType | undefined>(undefined);
 
 export function AcademicProvider({ children }: { children: React.ReactNode }) {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const [universityId, setUniversityId] = useState<string | null>(null);
   const [programId, setProgramId] = useState<string | null>(null);
   const [branchId, setBranchId] = useState<string | null>(null);
   const [semesterId, setSemesterId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Derive semester number from semesterId (handles both "sem-3" format and UUID format)
-  const semesterNumber = useMemo(() => {
-    if (!semesterId) return 3; // Default to Semester 3
-    // If it's in "sem-N" format
-    if (semesterId.startsWith("sem-")) {
-      const num = parseInt(semesterId.replace("sem-", ""), 10);
-      return isNaN(num) ? 3 : num;
+  // Sync from profile whenever profile.semester is loaded or updated
+  useEffect(() => {
+    if (profile?.semester) {
+      setSemesterId(`sem-${profile.semester}`);
     }
-    // If it's just a plain number string like "3"
-    const parsed = parseInt(semesterId, 10);
-    if (!isNaN(parsed) && parsed >= 1 && parsed <= 8) return parsed;
-    // Otherwise it's probably a UUID — default to 3
-    return 3;
-  }, [semesterId]);
+  }, [profile?.semester]);
+
+  // Reset when user logs out
+  useEffect(() => {
+    if (!user) {
+      setSemesterId(null);
+    }
+  }, [user]);
+
+  // Derive semester number from semesterId (handles both "sem-N" format and plain numbers)
+  const semesterNumber = useMemo(() => {
+    if (semesterId) {
+      if (semesterId.startsWith("sem-")) {
+        const num = parseInt(semesterId.replace("sem-", ""), 10);
+        if (!isNaN(num) && num >= 1 && num <= 8) return num;
+      }
+      const parsed = parseInt(semesterId, 10);
+      if (!isNaN(parsed) && parsed >= 1 && parsed <= 8) return parsed;
+    }
+    if (profile?.semester && Number(profile.semester) >= 1 && Number(profile.semester) <= 8) {
+      return Number(profile.semester);
+    }
+    return 1;
+  }, [semesterId, profile?.semester]);
 
   // Future enhancement: fetch saved academic context from a user_preferences table
   useEffect(() => {

@@ -85,8 +85,8 @@ export default function ProfilePage() {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [bio, setBio] = useState('');
   const [program, setProgram] = useState('B.Tech');
-  const [branch, setBranch] = useState("B.Tech CSE '26");
-  const [semester, setSemester] = useState(3);
+  const [branch, setBranch] = useState("Computer Science & Engineering");
+  const [semester, setSemester] = useState(1);
   const [enrollmentNo, setEnrollmentNo] = useState('');
   const [targetCgpa, setTargetCgpa] = useState('8.5+');
   const [goal, setGoal] = useState('');
@@ -99,7 +99,7 @@ export default function ProfilePage() {
       setBio(profile.bio || 'ITM SLS Baroda University student');
       setProgram(profile.program || 'B.Tech');
       setBranch(profile.branch || "Computer Science & Engineering");
-      setSemester(profile.semester || 3);
+      setSemester(profile.semester || 1);
       setEnrollmentNo(profile.enrollment_no || '');
       setTargetCgpa(profile.target_cgpa || '8.5+');
       setGoal(profile.goal || 'Master University curriculum and excel in semester exams');

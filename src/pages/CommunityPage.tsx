@@ -150,7 +150,7 @@ export default function CommunityPage() {
             name: p.display_name || p.email?.split('@')[0] || 'ITM Student',
             email: p.email || `${(p.display_name || 'student').toLowerCase().replace(/\s+/g, '')}@itm.ac.in`,
             avatar: p.avatar_url || undefined,
-            branch: p.branch || "B.Tech CSE '26",
+            branch: p.branch || "Computer Science & Engineering",
             level: p.level || 1,
             levelTitle: (p.level || 1) > 4 ? 'Algorithm Archmage' : (p.level || 1) > 2 ? 'Binary Explorer' : 'Study Peer',
             xp: p.xp || 0,
@@ -204,7 +204,7 @@ export default function CommunityPage() {
   const [isAddFriendModalOpen, setIsAddFriendModalOpen] = useState(false);
   const [newFriendName, setNewFriendName] = useState('');
   const [newFriendRollNo, setNewFriendRollNo] = useState('');
-  const [newFriendBranch, setNewFriendBranch] = useState("B.Tech CSE '26");
+  const [newFriendBranch, setNewFriendBranch] = useState(profile?.branch || "Computer Science & Engineering");
 
   // Load feed directly from Supabase Backend & listen for realtime updates
   const loadFeed = async (showLoading = false) => {
@@ -283,7 +283,7 @@ export default function CommunityPage() {
         authorName: currentAuthorName,
         authorEmail: currentAuthorEmail,
         authorAvatar: profile?.avatar_url || undefined,
-        authorBranch: profile?.branch || "B.Tech CSE '26",
+        authorBranch: profile?.branch || "Computer Science & Engineering",
         isMasked: isMasked,
         maskAlias: 'Anonymous Student 🎭',
         category: postCategory,
@@ -473,7 +473,7 @@ export default function CommunityPage() {
       id: `student-custom-${Date.now()}`,
       name: newFriendName.trim(),
       email: `${roll.toLowerCase()}@itm.ac.in`,
-      branch: newFriendBranch.trim() || "B.Tech CSE '26",
+      branch: newFriendBranch.trim() || (profile?.branch || "Computer Science & Engineering"),
       level: 1,
       levelTitle: 'Study Peer',
       xp: 0,
@@ -656,7 +656,7 @@ export default function CommunityPage() {
                         {isMasked ? 'Posting Anonymously 🎭' : currentAuthorName}
                       </h3>
                       <p className="text-[11px] text-muted-foreground">
-                        {isMasked ? 'Public Identity 100% Protected' : "B.Tech CSE '26 · Public Profile"}
+                        {isMasked ? 'Public Identity 100% Protected' : `${profile?.branch || 'ITM Baroda'} · Public Profile`}
                       </p>
                     </div>
                   </div>
@@ -939,7 +939,7 @@ export default function CommunityPage() {
                                       name: post.authorName,
                                       email: post.authorEmail || `${post.authorId}@itm.ac.in`,
                                       avatar: post.authorAvatar,
-                                      branch: post.authorBranch || "B.Tech CSE '26",
+                                      branch: post.authorBranch || "Computer Science & Engineering",
                                       level: 1,
                                       levelTitle: 'Study Peer',
                                       xp: 0,
@@ -957,7 +957,7 @@ export default function CommunityPage() {
                             </div>
 
                             <p className="text-[11px] text-muted-foreground mt-0.5">
-                              {post.isMasked ? 'Campus Mask Shield' : post.authorBranch || "B.Tech CSE '26"} ·{' '}
+                              {post.isMasked ? 'Campus Mask Shield' : post.authorBranch || "ITM Student"} ·{' '}
                               {post.createdAt}
                             </p>
                           </div>

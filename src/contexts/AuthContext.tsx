@@ -78,9 +78,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           user_id: userId,
           email: session?.user?.email || null,
           display_name: defaultName,
-          branch: "B.Tech CSE '26",
-          program: "B.Tech",
-          semester: 3,
+          branch: null,
+          program: null,
+          semester: null,
           xp: 0,
           level: 1,
           streak_days: 1,
@@ -299,6 +299,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.removeItem('itm_admin_god_mode');
     localStorage.removeItem('itm_notes_progress');
     localStorage.removeItem('itm_notes_gamification_v2');
+    localStorage.removeItem('academic_context');
     setProfile(null);
     setUser(null);
     setSession(null);
