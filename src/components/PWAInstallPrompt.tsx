@@ -63,7 +63,18 @@ export function PWAInstallPrompt() {
     }
   };
 
-  if (!showPrompt) return null;
+  // Hide during active maintenance mode
+  const isMaintenanceActive = (() => {
+    try {
+      const stored = localStorage.getItem('itm_maintenance_mode');
+      if (stored === 'false') return false;
+      return true;
+    } catch {
+      return true;
+    }
+  })();
+
+  if (isMaintenanceActive || !showPrompt) return null;
 
   return (
     <div className="fixed bottom-4 left-3 right-3 sm:left-auto sm:right-5 sm:max-w-sm z-50 bg-card border border-primary/40 rounded-2xl p-4 shadow-2xl animate-fade-in text-foreground backdrop-blur-md" style={{ marginBottom: 'env(safe-area-inset-bottom, 0px)' }}>

@@ -13,6 +13,23 @@ export function MobileBottomNav() {
     return null;
   }
 
+  // Hide during maintenance mode for non-admins so outer users only see the banner
+  const isMaintenanceActive = (() => {
+    try {
+      const stored = localStorage.getItem('itm_maintenance_mode');
+      if (stored === 'false') return false;
+      return true;
+    } catch {
+      return true;
+    }
+  })();
+  const isAdmin = user?.email === 'maherbhatt01@gmail.com';
+  const isBypassed = typeof window !== 'undefined' && sessionStorage.getItem('itm_admin_bypassed') === 'true';
+
+  if (isMaintenanceActive && !isAdmin && !isBypassed) {
+    return null;
+  }
+
   const navItems = [
     {
       to: '/',

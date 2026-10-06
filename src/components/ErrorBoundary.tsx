@@ -47,7 +47,23 @@ export class ErrorBoundary extends Component<Props, State> {
             )}
             <div className="flex gap-3 justify-center">
               <button
-                onClick={() => window.location.reload()}
+                onClick={async () => {
+                  try {
+                    if ('serviceWorker' in navigator) {
+                      const registrations = await navigator.serviceWorker.getRegistrations();
+                      for (const reg of registrations) {
+                        await reg.unregister();
+                      }
+                    }
+                    if ('caches' in window) {
+                      const keys = await caches.keys();
+                      for (const k of keys) {
+                        await caches.delete(k);
+                      }
+                    }
+                  } catch {}
+                  window.location.reload();
+                }}
                 className="pill-button apple-press bg-primary text-primary-foreground h-10 px-6 text-sm inline-flex items-center"
               >
                 Refresh Page

@@ -31,6 +31,18 @@ export function PomodoroFloatingWidget() {
   const seconds = timeLeft % 60;
   const progressPercent = Math.min(100, Math.round(((totalDuration - timeLeft) / totalDuration) * 100));
 
+  const isMaintenanceActive = (() => {
+    try {
+      const stored = localStorage.getItem('itm_maintenance_mode');
+      if (stored === 'false') return false;
+      return true;
+    } catch {
+      return true;
+    }
+  })();
+
+  if (isMaintenanceActive) return null;
+
   return (
     <>
       {/* ── Persistent Floating Pill (Visible when running or toggled) ── */}

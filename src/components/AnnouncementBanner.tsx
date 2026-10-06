@@ -81,7 +81,17 @@ export function AnnouncementBanner() {
     setAnnouncement(null);
   };
 
-  if (!announcement || !announcement.active) return null;
+  const isMaintenanceActive = (() => {
+    try {
+      const stored = localStorage.getItem('itm_maintenance_mode');
+      if (stored === 'false') return false;
+      return true;
+    } catch {
+      return true;
+    }
+  })();
+
+  if (isMaintenanceActive || !announcement || !announcement.active) return null;
 
   const severityStyles = {
     info: {
