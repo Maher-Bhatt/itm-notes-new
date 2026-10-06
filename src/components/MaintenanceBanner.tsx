@@ -18,21 +18,47 @@ import {
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+
+// Master flag: When true, every new visitor/student is locked out and shown the Velocity Web maintenance experience.
+const GLOBAL_MAINTENANCE_ENABLED = true;
+
+const checkMaintenanceActive = (): boolean => {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('maintenance') === 'false' || params.get('bypass') === 'true' || params.get('bypass') === 'admin') {
+      localStorage.setItem('itm_maintenance_mode', 'false');
+      return false;
+    }
+    if (params.get('maintenance') === 'true') {
+      localStorage.setItem('itm_maintenance_mode', 'true');
+      return true;
+    }
+
+    const stored = localStorage.getItem('itm_maintenance_mode');
+    if (stored === 'false') return false;
+    if (stored === 'true') return true;
+    return GLOBAL_MAINTENANCE_ENABLED;
+  } catch {
+    return GLOBAL_MAINTENANCE_ENABLED;
+  }
+};
 
 export function MaintenanceBanner() {
   const { role, user } = useAuth();
+  const location = useLocation();
   const isAdmin = role === 'admin' || user?.email === 'maherbhatt01@gmail.com';
 
-  const [isActive, setIsActive] = useState<boolean>(() => {
+  const [isActive, setIsActive] = useState<boolean>(checkMaintenanceActive);
+  const [adminBypass, setAdminBypass] = useState<boolean>(() => {
     try {
-      return localStorage.getItem('itm_maintenance_mode') === 'true';
+      return sessionStorage.getItem('itm_admin_bypassed') === 'true';
     } catch {
       return false;
     }
   });
-
-  const [adminBypass, setAdminBypass] = useState(false);
+  const [showPasscodePrompt, setShowPasscodePrompt] = useState(false);
+  const [passcodeInput, setPasscodeInput] = useState('');
   const [currentPing, setCurrentPing] = useState(14);
   const [timeString, setTimeString] = useState('');
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -59,11 +85,7 @@ export function MaintenanceBanner() {
   // Sync maintenance state
   useEffect(() => {
     const checkState = () => {
-      try {
-        setIsActive(localStorage.getItem('itm_maintenance_mode') === 'true');
-      } catch (e) {
-        console.warn('Failed to read maintenance mode state:', e);
-      }
+      setIsActive(checkMaintenanceActive());
     };
 
     window.addEventListener('storage', checkState);
@@ -202,10 +224,15 @@ export function MaintenanceBanner() {
     }
   };
 
+  // Allow access to auth page so admin can log in without obstruction
+  if (location.pathname === '/auth') {
+    return null;
+  }
+
   if (!isActive) return null;
 
   // Admin bypass mode
-  if (isAdmin && adminBypass) {
+  if (adminBypass) {
     return (
       <div className="bg-[#0b1410] border-b border-[#00ff88]/40 text-[#00ff88] px-4 py-2 text-xs font-mono font-bold flex items-center justify-between sticky top-0 z-[100] shadow-2xl">
         <div className="flex items-center gap-2">
@@ -216,7 +243,10 @@ export function MaintenanceBanner() {
         </div>
         <div className="flex items-center gap-2">
           <button
-            onClick={() => setAdminBypass(false)}
+            onClick={() => {
+              sessionStorage.removeItem('itm_admin_bypassed');
+              setAdminBypass(false);
+            }}
             className="px-2.5 py-1 rounded border border-[#00ff88]/30 hover:bg-[#00ff88]/10 text-[#00ff88] text-[11px] transition-colors"
           >
             Preview Screen
@@ -460,14 +490,81 @@ export function MaintenanceBanner() {
             </div>
           </div>
         ) : (
-          <div className="text-center pt-6">
+          <div className="text-center pt-6 flex flex-col items-center gap-2.5">
+            <button
+              onClick={() => setShowPasscodePrompt(true)}
+              className="text-[11px] font-mono text-zinc-500 hover:text-[#00ff88] transition-colors inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/10 hover:border-[#00ff88]/40 bg-zinc-950/70"
+            >
+              <Lock className="h-3 w-3 text-[#00ff88]" />
+              <span>[ADMIN MASTER OVERRIDE]</span>
+            </button>
             <Link
               to="/auth"
-              className="text-[11px] font-mono text-zinc-600 hover:text-zinc-400 transition-colors inline-flex items-center gap-1"
+              className="text-[10px] font-mono text-zinc-600 hover:text-zinc-400 transition-colors"
             >
-              <Lock className="h-3 w-3" />
-              <span>[ADMIN_AUTH_PORTAL]</span>
+              Admin Email Sign In &rarr;
             </Link>
+          </div>
+        )}
+
+        {/* Master Key Bypass Modal */}
+        {showPasscodePrompt && (
+          <div className="fixed inset-0 z-[100000] bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+            <div className="w-full max-w-sm bg-[#0a0c0e] border border-[#00ff88]/40 rounded-2xl p-6 shadow-2xl font-mono text-left relative">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2 text-[#00ff88] text-xs font-bold uppercase">
+                  <Terminal className="h-4 w-4" />
+                  <span>Admin Session Override</span>
+                </div>
+                <button
+                  onClick={() => setShowPasscodePrompt(false)}
+                  className="text-zinc-500 hover:text-white text-xs px-2 py-1"
+                >
+                  ✕
+                </button>
+              </div>
+              <p className="text-xs text-zinc-400 mb-4 font-sans leading-relaxed">
+                Enter your admin master key to bypass the maintenance lock for this browser session.
+              </p>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const key = passcodeInput.trim().toLowerCase();
+                  if (key === 'velocity' || key === 'itm2026' || key === 'maher' || key === 'admin') {
+                    sessionStorage.setItem('itm_admin_bypassed', 'true');
+                    setAdminBypass(true);
+                    setShowPasscodePrompt(false);
+                    toast.success('Admin authorized. Maintenance screen bypassed.');
+                  } else {
+                    toast.error('Invalid master key.');
+                  }
+                }}
+              >
+                <input
+                  type="password"
+                  placeholder="Master key..."
+                  value={passcodeInput}
+                  onChange={(e) => setPasscodeInput(e.target.value)}
+                  className="w-full px-3 py-2 bg-black border border-white/20 rounded-lg text-white font-mono text-xs focus:outline-none focus:border-[#00ff88] mb-4"
+                  autoFocus
+                />
+                <div className="flex items-center gap-2">
+                  <button
+                    type="submit"
+                    className="flex-1 py-2 rounded-lg bg-[#00ff88] text-black font-extrabold text-xs uppercase transition-transform active:scale-95"
+                  >
+                    Authorize
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowPasscodePrompt(false)}
+                    className="px-4 py-2 rounded-lg bg-zinc-900 border border-white/10 text-zinc-300 text-xs"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         )}
       </main>

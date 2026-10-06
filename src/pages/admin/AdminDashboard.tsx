@@ -54,9 +54,11 @@ export default function AdminDashboard() {
   const [searchSubject, setSearchSubject] = useState("");
   const [maintenanceMode, setMaintenanceMode] = useState<boolean>(() => {
     try {
-      return localStorage.getItem('itm_maintenance_mode') === 'true';
+      const stored = localStorage.getItem('itm_maintenance_mode');
+      if (stored === 'false') return false;
+      return true;
     } catch {
-      return false;
+      return true;
     }
   });
   const [gamificationEnabled, setGamificationEnabled] = useState(true);
