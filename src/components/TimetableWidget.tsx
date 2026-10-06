@@ -9,8 +9,26 @@ export const TimetableWidget = () => {
   
   const defaultBatchId = React.useMemo(() => {
     if (profile?.program && profile?.semester) {
-      const matchId = `${profile.program.toLowerCase()}-sem${profile.semester}`;
-      const match = TIMETABLE_DATA.find(b => b.id === matchId);
+      const baseId = `${profile.program.toLowerCase()}-sem${profile.semester}`;
+      
+      // Try exact match first
+      let match = TIMETABLE_DATA.find(b => b.id === baseId);
+      
+      // Try with branch suffix if exact match fails
+      if (!match && profile.branch) {
+        const branchLower = profile.branch.toLowerCase();
+        let branchCode = 'cse'; // Default to CSE
+        if (branchLower.includes('ai') || branchLower.includes('artificial')) branchCode = 'aids';
+        else if (branchLower.includes('cyber') || branchLower.includes('csn')) branchCode = 'csn';
+        
+        match = TIMETABLE_DATA.find(b => b.id === `${baseId}-${branchCode}`);
+      }
+      
+      // Try any that starts with the baseId (e.g. b.tech-sem3)
+      if (!match) {
+        match = TIMETABLE_DATA.find(b => b.id.startsWith(baseId));
+      }
+      
       if (match) return match.id;
     }
     return TIMETABLE_DATA[0].id;
