@@ -19,19 +19,51 @@ export class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, info: React.ErrorInfo) {
     console.error("[ErrorBoundary]", error, info.componentStack);
+    const msg = error.message || "";
+    const isChunkError =
+      msg.includes("dynamically imported module") ||
+      msg.includes("Failed to fetch dynamically imported module") ||
+      msg.includes("Loading chunk");
+
+    if (isChunkError) {
+      const alreadyRetried = sessionStorage.getItem("chunk_error_autoreload");
+      if (!alreadyRetried) {
+        sessionStorage.setItem("chunk_error_autoreload", "true");
+        if ("caches" in window) {
+          caches.keys().then((keys) => {
+            Promise.all(keys.map((k) => caches.delete(k))).then(() => {
+              window.location.reload();
+            });
+          }).catch(() => {
+            window.location.reload();
+          });
+        } else {
+          window.location.reload();
+        }
+      }
+    }
   }
 
   render() {
     if (this.state.hasError) {
+      const isChunkError =
+        this.state.error?.message?.includes("dynamically imported module") ||
+        this.state.error?.message?.includes("Failed to fetch dynamically imported module") ||
+        this.state.error?.message?.includes("Loading chunk");
+
       return (
         <div className="min-h-screen bg-background flex items-center justify-center px-6">
           <div className="text-center max-w-md animate-fade-in">
             <div className="w-14 h-14 rounded-full bg-destructive/10 flex items-center justify-center mx-auto mb-6">
-              <span className="text-2xl">⚠️</span>
+              <span className="text-2xl">{isChunkError ? "🚀" : "⚠️"}</span>
             </div>
-            <h1 className="text-xl font-bold mb-2">Something went wrong</h1>
+            <h1 className="text-xl font-bold mb-2">
+              {isChunkError ? "New Deployment Detected" : "Something went wrong"}
+            </h1>
             <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-              An unexpected error occurred. Try refreshing the page or going back to the homepage.
+              {isChunkError
+                ? "A fresh build was just deployed to Vercel. Please refresh to load the latest module."
+                : "An unexpected error occurred. Try refreshing the page or going back to the homepage."}
             </p>
             {this.state.error && (
               <div className="text-left bg-destructive/10 border border-destructive/20 rounded-xl p-4 mb-6 max-h-48 overflow-y-auto">

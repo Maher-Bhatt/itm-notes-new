@@ -38,10 +38,41 @@ import { PageFallback } from "@/components/PageSkeletonLoaders";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { useAuth } from "@/contexts/AuthContext";
 
-// React.lazy + Suspense code splitting for heavy interactive modules
-const CodingLabPage = lazy(() => import("./pages/CodingLabPage"));
-const CommunityPage = lazy(() => import("./pages/CommunityPage"));
-const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
+/**
+ * Resilient lazy loader: if a new deployment removed old hashed chunks,
+ * it clears caches and reloads once to fetch the latest version automatically.
+ */
+function lazyWithRetry<T extends React.ComponentType<any>>(
+  factory: () => Promise<{ default: T }>
+) {
+  return lazy(async () => {
+    const hasReloaded = sessionStorage.getItem("chunk_retry_refreshed");
+    try {
+      const comp = await factory();
+      sessionStorage.removeItem("chunk_retry_refreshed");
+      return comp;
+    } catch (err) {
+      if (!hasReloaded) {
+        sessionStorage.setItem("chunk_retry_refreshed", "true");
+        try {
+          if ("caches" in window) {
+            const keys = await caches.keys();
+            await Promise.all(keys.map((k) => caches.delete(k)));
+          }
+        } catch {}
+        window.location.reload();
+        return new Promise(() => {});
+      }
+      sessionStorage.removeItem("chunk_retry_refreshed");
+      throw err;
+    }
+  });
+}
+
+// React.lazy + Suspense code splitting with deployment-resilient retry
+const CodingLabPage = lazyWithRetry(() => import("./pages/CodingLabPage"));
+const CommunityPage = lazyWithRetry(() => import("./pages/CommunityPage"));
+const AdminDashboard = lazyWithRetry(() => import("./pages/admin/AdminDashboard"));
 
 const queryClient = new QueryClient();
 
