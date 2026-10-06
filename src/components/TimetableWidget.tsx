@@ -64,7 +64,36 @@ export const TimetableWidget = () => {
         </select>
       </div>
 
-      <div className="relative overflow-x-auto overflow-y-auto max-h-[450px] rounded-xl border border-border/50">
+      {/* Mobile View: Compact Examination Cards (Zero Horizontal Scroll Needed) */}
+      <div className="sm:hidden space-y-3">
+        {selectedBatch.exams.map((exam, index) => (
+          <div key={index} className="p-4 rounded-xl border border-border/70 bg-secondary/20 flex flex-col gap-2">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-xs font-bold text-primary px-2.5 py-0.5 rounded-full bg-primary/10">
+                {exam.date}
+              </span>
+              <span className="text-[11px] font-mono text-muted-foreground flex items-center gap-1">
+                <Clock className="h-3 w-3" />
+                {exam.time}
+              </span>
+            </div>
+            <div className="flex items-start gap-2 pt-1">
+              <BookOpen className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+              <div>
+                <h4 className="text-sm font-bold text-foreground leading-snug">
+                  {exam.courseName}
+                </h4>
+                <p className="text-[11px] font-mono text-muted-foreground mt-0.5">
+                  Code: {exam.courseCode}
+                </p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Desktop / Laptop View: High-Density Table with Sticky Header */}
+      <div className="hidden sm:block relative overflow-x-auto overflow-y-auto max-h-[450px] rounded-xl border border-border/50">
         <table className="w-full text-sm text-left">
           <thead className="text-xs uppercase bg-secondary/50 text-muted-foreground sticky top-0 z-10 shadow-sm">
             <tr>

@@ -32,6 +32,7 @@ import { PomodoroFloatingWidget } from "@/components/PomodoroFloatingWidget";
 import { AchievementCelebrationModal } from "@/components/AchievementCelebrationModal";
 import { AnnouncementBanner } from "@/components/AnnouncementBanner";
 import { MaintenanceBanner } from "@/components/MaintenanceBanner";
+import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 import { PageFallback } from "@/components/PageSkeletonLoaders";
 import { ProtectedRoute } from "./components/ProtectedRoute";
@@ -104,6 +105,7 @@ const App = () => (
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </Suspense>
+              <MobileBottomNav />
               </ErrorBoundary>
             </BrowserRouter>
           </TooltipProvider>

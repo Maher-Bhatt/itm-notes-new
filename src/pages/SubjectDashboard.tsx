@@ -120,7 +120,7 @@ export default function SubjectDashboard() {
       <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
       <Header onSearchOpen={() => setSearchOpen(true)} showBack backTo="/" />
 
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex-1 w-full">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex-1 w-full">
         {/* Subject header */}
         <div className="mb-6 sm:mb-8 animate-slide-up">
           <div className="flex items-center gap-3 sm:gap-4 mb-2">
