@@ -149,56 +149,66 @@ export default function DashboardPage() {
       <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
       <Header onSearchOpen={() => setSearchOpen(true)} />
 
-      <main className="flex-1 max-w-6xl mx-auto px-6 py-8 w-full animate-fade-in">
+      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full animate-fade-in">
         <ExamCountdown />
         
-        <header className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight mb-2">
-            Welcome back, {profile?.display_name || user?.email?.split('@')[0]}
-          </h1>
-          <p className="text-muted-foreground">
-            Continue where you left off or explore new subjects.
-          </p>
+        <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="flex items-center gap-5">
+            <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-primary to-primary/60 text-white flex items-center justify-center text-2xl font-bold shadow-lg shadow-primary/20">
+              {profile?.display_name?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || 'S'}
+            </div>
+            <div>
+              <p className="text-sm font-medium text-primary mb-1">Welcome back to your workspace</p>
+              <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground">
+                {profile?.display_name || user?.email?.split('@')[0]}
+              </h1>
+            </div>
+          </div>
         </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="md:col-span-2 space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="md:col-span-2 space-y-8">
             
-            {/* Quick Actions */}
+            {/* Quick Actions Redesigned */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <button
                 onClick={() => setSearchOpen(true)}
-                className="surface-elevated p-4 rounded-xl flex items-center gap-3 hover:bg-secondary transition-colors apple-press text-left"
+                className="group relative overflow-hidden bg-card border border-border/60 p-5 rounded-2xl flex flex-col items-start gap-4 hover:border-primary/40 hover:shadow-md transition-all apple-press text-left"
               >
-                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                  <Search className="h-5 w-5" />
+                <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
+                <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shadow-inner">
+                  <Search className="h-6 w-6" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-sm">Quick Search</h3>
+                  <h3 className="font-bold text-foreground mb-1">Quick Search</h3>
                   <p className="text-xs text-muted-foreground">Find notes & topics</p>
                 </div>
               </button>
+
               <button
                 onClick={() => navigate('/quiz')}
-                className="surface-elevated p-4 rounded-xl flex items-center gap-3 hover:bg-secondary transition-colors apple-press text-left"
+                className="group relative overflow-hidden bg-card border border-border/60 p-5 rounded-2xl flex flex-col items-start gap-4 hover:border-success/40 hover:shadow-md transition-all apple-press text-left"
               >
-                <div className="h-10 w-10 rounded-full bg-success/10 flex items-center justify-center text-success">
-                  <BookOpen className="h-5 w-5" />
+                <div className="absolute top-0 right-0 w-24 h-24 bg-success/5 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
+                <div className="h-12 w-12 rounded-xl bg-success/10 flex items-center justify-center text-success shadow-inner">
+                  <BookOpen className="h-6 w-6" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-sm">Practice Quiz</h3>
+                  <h3 className="font-bold text-foreground mb-1">Practice Quiz</h3>
                   <p className="text-xs text-muted-foreground">Test your knowledge</p>
                 </div>
               </button>
+
               <button
                 onClick={() => navigate('/coding-lab')}
-                className="surface-elevated p-4 rounded-xl flex items-center gap-3 hover:bg-secondary transition-colors apple-press text-left"
+                className="group relative overflow-hidden bg-card border border-border/60 p-5 rounded-2xl flex flex-col items-start gap-4 hover:border-warning/40 hover:shadow-md transition-all apple-press text-left"
               >
-                <div className="h-10 w-10 rounded-full bg-warning/10 flex items-center justify-center text-warning">
-                  <Sparkles className="h-5 w-5" />
+                <div className="absolute top-0 right-0 w-24 h-24 bg-warning/5 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
+                <div className="h-12 w-12 rounded-xl bg-warning/10 flex items-center justify-center text-warning shadow-inner">
+                  <Sparkles className="h-6 w-6" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-sm">Coding Lab</h3>
+                  <h3 className="font-bold text-foreground mb-1">Coding Lab</h3>
                   <p className="text-xs text-muted-foreground">Interactive practice</p>
                 </div>
               </button>

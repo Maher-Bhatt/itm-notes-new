@@ -1,15 +1,31 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { TIMETABLE_DATA } from "@/data/timetableData";
 import { Calendar, Clock, BookOpen } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const TimetableWidget = () => {
-  const [selectedBatchId, setSelectedBatchId] = useState(TIMETABLE_DATA[0].id);
+  const { profile } = useAuth();
+  
+  const defaultBatchId = React.useMemo(() => {
+    if (profile?.program && profile?.semester) {
+      const matchId = `${profile.program.toLowerCase()}-sem${profile.semester}`;
+      const match = TIMETABLE_DATA.find(b => b.id === matchId);
+      if (match) return match.id;
+    }
+    return TIMETABLE_DATA[0].id;
+  }, [profile]);
+
+  const [selectedBatchId, setSelectedBatchId] = useState(defaultBatchId);
+
+  useEffect(() => {
+    setSelectedBatchId(defaultBatchId);
+  }, [defaultBatchId]);
 
   const selectedBatch = TIMETABLE_DATA.find(b => b.id === selectedBatchId) || TIMETABLE_DATA[0];
 
   return (
-    <div className="bg-card border border-border/80 rounded-2xl p-5 md:p-6 shadow-sm flex flex-col h-full">
+    <div className="bg-card border border-border/80 rounded-2xl p-5 md:p-6 shadow-sm flex flex-col">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
         <div>
           <h2 className="text-lg font-bold flex items-center gap-2">
@@ -30,9 +46,9 @@ export const TimetableWidget = () => {
         </select>
       </div>
 
-      <div className="relative overflow-x-auto rounded-xl border border-border/50 flex-grow">
+      <div className="relative overflow-x-auto overflow-y-auto max-h-[450px] rounded-xl border border-border/50">
         <table className="w-full text-sm text-left">
-          <thead className="text-xs uppercase bg-secondary/50 text-muted-foreground">
+          <thead className="text-xs uppercase bg-secondary/50 text-muted-foreground sticky top-0 z-10 shadow-sm">
             <tr>
               <th scope="col" className="px-4 py-3 font-semibold whitespace-nowrap">Date</th>
               <th scope="col" className="px-4 py-3 font-semibold whitespace-nowrap">Time</th>
