@@ -12,7 +12,8 @@ import {
   Radio,
   Activity,
   Zap,
-  Server
+  Server,
+  Clock
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
