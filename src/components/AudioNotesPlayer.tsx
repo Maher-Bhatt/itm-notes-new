@@ -81,18 +81,8 @@ export function AudioNotesPlayer({ title, textToRead }: AudioNotesPlayerProps) {
     setCurrentChunkIndex(0);
   }, [chunks]);
 
-  useEffect(() => {
-    if (!('speechSynthesis' in window)) {
-      setIsSupported(false);
-    }
-
-    return () => {
-      stopPlayback();
-    };
-  }, [stopPlayback]);
-
   // Chrome TTS Keep-Alive Workaround (prevents speech from cutting off after 15 seconds)
-  const startKeepAlive = () => {
+  const startKeepAlive = useCallback(() => {
     if (keepAliveIntervalRef.current) clearInterval(keepAliveIntervalRef.current);
     keepAliveIntervalRef.current = setInterval(() => {
       if (window.speechSynthesis && isPlayingRef.current && !isPausedRef.current) {
@@ -100,14 +90,14 @@ export function AudioNotesPlayer({ title, textToRead }: AudioNotesPlayerProps) {
         window.speechSynthesis.resume();
       }
     }, 9000);
-  };
+  }, []);
 
-  const stopKeepAlive = () => {
+  const stopKeepAlive = useCallback(() => {
     if (keepAliveIntervalRef.current) {
       clearInterval(keepAliveIntervalRef.current);
       keepAliveIntervalRef.current = null;
     }
-  };
+  }, []);
 
   const stopPlayback = useCallback(() => {
     if ('speechSynthesis' in window) {
@@ -118,7 +108,17 @@ export function AudioNotesPlayer({ title, textToRead }: AudioNotesPlayerProps) {
     isPausedRef.current = false;
     setIsPlaying(false);
     setIsPaused(false);
-  }, []);
+  }, [stopKeepAlive]);
+
+  useEffect(() => {
+    if (!('speechSynthesis' in window)) {
+      setIsSupported(false);
+    }
+
+    return () => {
+      stopPlayback();
+    };
+  }, [stopPlayback]);
 
   // Plays a specific chunk index sequentially
   const speakChunk = useCallback((index: number) => {
