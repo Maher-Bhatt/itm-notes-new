@@ -298,7 +298,7 @@ export default function TopicPage() {
   // Scroll to top ONLY on explicit topic/subject navigation
   useEffect(() => {
     setSidebarOpen(false);
-    window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+    window.scrollTo(0, 0);
   }, [topicId, subjectId]);
 
   // Track last visited topic without triggering scroll resets
