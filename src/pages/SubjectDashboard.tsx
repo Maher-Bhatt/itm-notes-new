@@ -5,7 +5,7 @@ import { useProgress } from "@/hooks/useProgress";
 import { useSubject } from "@/hooks/useAcademicData";
 import { CheckCircle, BookOpen, Bookmark, ChevronRight, ChevronDown, Loader2, HelpCircle, FolderDown, Zap } from "lucide-react";
 import { SUBJECT_IMP_DATA } from "@/data/impQuestionsData";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { SearchDialog } from "@/components/SearchDialog";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -40,6 +40,10 @@ export default function SubjectDashboard() {
   const navigate = useNavigate();
   const [searchOpen, setSearchOpen] = useState(false);
   const [collapsedUnits, setCollapsedUnits] = useState<string[]>([]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [subjectId]);
 
   // 1. Check if it's already a static subject ID (e.g. "ca-101", "python")
   const staticSubject = useMemo(() => getSubject(subjectId || ""), [subjectId]);
