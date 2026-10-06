@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useNavigate, Link } from "react-router-dom";
 import { subjects, getAllTopicIds } from "@/data/subjects";
 import { REAL_STUDY_MATERIALS } from "@/data/materialsData";

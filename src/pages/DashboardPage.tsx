@@ -8,7 +8,6 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAcademic } from "@/contexts/AcademicContext";
-import { useSubjects } from "@/hooks/useAcademicData";
 import { subjects } from "@/data/subjects";
 import { BackToTop } from "@/components/BackToTop";
 import { ExamCountdown } from "@/components/ExamCountdown";
@@ -82,7 +81,9 @@ export default function DashboardPage() {
     if (saved) {
       try {
         setLastVisitedTopic(JSON.parse(saved));
-      } catch (e) {}
+      } catch (e) {
+        console.warn('Failed to parse last visited topic:', e);
+      }
     }
   }, []);
   const [weeklyGoal, setWeeklyGoal] = useState<number>(() => {
@@ -97,10 +98,11 @@ export default function DashboardPage() {
       const d = new Date();
       d.setDate(d.getDate() - i);
       const dateStr = d.toISOString().split('T')[0];
-      total += (history[dateStr] || 0) * 15;
+      // Each activity unit (topic read, quiz, or study minute) counts as 1 XP-equivalent for display
+      total += history[dateStr] || 0;
     }
-    return Math.min(total || gamification.state.xp, weeklyGoal);
-  }, [gamification.state.activityHistory, gamification.state.xp, weeklyGoal]);
+    return Math.min(total, weeklyGoal);
+  }, [gamification.state.activityHistory, weeklyGoal]);
 
   const [filterSem, setFilterSem] = useState<number | 'all'>(profile?.semester || semesterNumber || 1);
   const navigate = useNavigate();
@@ -131,7 +133,7 @@ export default function DashboardPage() {
   // Calculate dynamic stats
   const totalTopics = useMemo(() => {
     const sum = allSubjectsToRender.reduce(
-      (acc, s) => acc + (s.units?.reduce((uSum: number, u: any) => uSum + (u.topics?.length || 0), 0) || 0),
+      (acc, s) => acc + (s.units?.reduce((uSum: number, u) => uSum + (u.topics?.length || 0), 0) || 0),
       0
     );
     return sum > 0 ? sum : 85;
@@ -390,7 +392,7 @@ export default function DashboardPage() {
                   </div>
                 ) : (
                   filteredSubjects.map((subject) => {
-                    const topicIds = subject.units?.flatMap((u: any) => u.topics?.map((t: any) => t.id) || []) || [];
+                    const topicIds = subject.units?.flatMap((u) => u.topics?.map((t) => t.id) || []) || [];
                     const subProgress = getSubjectProgress(topicIds);
                     const completedInSub = Math.round((subProgress / 100) * topicIds.length);
                     const semNumber = Number(subject.semester || 1);

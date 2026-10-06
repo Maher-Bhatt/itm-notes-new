@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
@@ -352,7 +351,28 @@ function getTodayString(): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
-const GamificationContext = React.createContext<any>(undefined);
+interface GamificationContextType {
+  state: GamificationState;
+  levelInfo: {
+    level: number;
+    title: string;
+    minXp: number;
+    maxXp: number;
+    xpIntoLevel: number;
+    levelRange: number;
+    progressPercent: number;
+    nextLevel: { level: number; title: string; minXp: number; maxXp: number } | null;
+  };
+  addXp: (amount: number, reason?: string) => void;
+  unlockAchievement: (id: string) => void;
+  checkDailyStreak: () => void;
+  addStudyMinutes: (minutes: number) => void;
+  recordTopicRead: (topicId: string) => void;
+  recordQuizCompleted: (isPerfect: boolean) => void;
+  claimQuest: (questId: string) => void;
+}
+
+const GamificationContext = React.createContext<GamificationContextType | undefined>(undefined);
 
 export function GamificationProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<GamificationState>(() => {
@@ -421,7 +441,7 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
         .eq('user_id', userId)
         .then(({ data: achRows, error: achErr }) => {
           if (!achErr && achRows && achRows.length > 0) {
-            const remoteMap = new Map(achRows.map((r: any) => [r.achievement_id, r.unlocked_at]));
+            const remoteMap = new Map(achRows.map((r: { achievement_id: string; unlocked_at: string }) => [r.achievement_id, r.unlocked_at]));
             setState((prev) => {
               const updatedAchievements = prev.achievements.map((a) => {
                 const remoteUnlocked = remoteMap.get(a.id);
@@ -624,6 +644,8 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
         level: newLevel,
       };
     });
+  // unlockAchievement intentionally omitted from deps to avoid infinite loop
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Check and update daily streak
@@ -708,6 +730,7 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
   // Record a topic read
   const recordTopicRead = useCallback(
     (topicId: string) => {
+      const today = getTodayString();
       setState((prev) => {
         const newCount = prev.topicsReadCount + 1;
         if (newCount >= 1) unlockAchievement('first-step');
@@ -716,7 +739,12 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
         if (newCount >= 50) unlockAchievement('century-scholar');
         if (newCount >= 100) unlockAchievement('syllabus-conqueror');
 
-        return { ...prev, topicsReadCount: newCount };
+        const currentToday = prev.activityHistory[today] || 0;
+        return {
+          ...prev,
+          topicsReadCount: newCount,
+          activityHistory: { ...prev.activityHistory, [today]: currentToday + 1 },
+        };
       });
       addXp(15, 'Read Topic Notes');
     },
@@ -726,6 +754,7 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
   // Record a completed quiz
   const recordQuizCompleted = useCallback(
     (isPerfect: boolean) => {
+      const today = getTodayString();
       setState((prev) => {
         const newQuizzes = prev.quizzesCompletedCount + 1;
         const newPerfect = isPerfect ? prev.perfectQuizzesCount + 1 : prev.perfectQuizzesCount;
@@ -735,10 +764,12 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
         if (newPerfect >= 5) unlockAchievement('quiz-veteran');
         if (newPerfect >= 15) unlockAchievement('recall-grandmaster');
 
+        const currentToday = prev.activityHistory[today] || 0;
         return {
           ...prev,
           quizzesCompletedCount: newQuizzes,
           perfectQuizzesCount: newPerfect,
+          activityHistory: { ...prev.activityHistory, [today]: currentToday + 1 },
         };
       });
 

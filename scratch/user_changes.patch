@@ -1,0 +1,1252 @@
+﻿diff --git a/src/App.tsx b/src/App.tsx
+index f570ebc..4645c97 100644
+--- a/src/App.tsx
++++ b/src/App.tsx
+@@ -17,7 +17,7 @@ import PythonImpQuestionsPage from "./pages/PythonImpQuestionsPage";
+ import AuthPage from "./pages/AuthPage";
+ import DashboardPage from "./pages/DashboardPage";
+ import OnboardingPage from "./pages/OnboardingPage";
+-import { lazy, Suspense } from "react";
++import { lazy, Suspense, useEffect } from "react";
+ import BookmarksPage from "./pages/BookmarksPage";
+ import MaterialsPage from "./pages/MaterialsPage";
+ import QuizPage from "./pages/QuizPage";
+@@ -27,13 +27,14 @@ import ProfilePage from "./pages/ProfilePage";
+ import GpaCalculatorPage from "./pages/GpaCalculatorPage";
+ import SubjectCheatSheetPage from "./pages/SubjectCheatSheetPage";
+ import { PomodoroProvider } from "@/contexts/PomodoroContext";
+-import { GamificationProvider } from "@/hooks/useGamification";
++import { GamificationProvider, useGamification } from "@/hooks/useGamification";
+ import { PomodoroFloatingWidget } from "@/components/PomodoroFloatingWidget";
+ import { AchievementCelebrationModal } from "@/components/AchievementCelebrationModal";
+ import { AnnouncementBanner } from "@/components/AnnouncementBanner";
+ import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
+ import { PageFallback } from "@/components/PageSkeletonLoaders";
+ import { ProtectedRoute } from "./components/ProtectedRoute";
++import { useAuth } from "@/contexts/AuthContext";
+ 
+ // React.lazy + Suspense code splitting for heavy interactive modules
+ const CodingLabPage = lazy(() => import("./pages/CodingLabPage"));
+@@ -42,6 +43,21 @@ const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
+ 
+ const queryClient = new QueryClient();
+ 
++/** Runs once on app startup when user is authenticated to maintain streak. */
++function AppStartup() {
++  const { user } = useAuth();
++  const { checkDailyStreak } = useGamification();
++
++  useEffect(() => {
++    if (user) {
++      checkDailyStreak();
++    }
++  // eslint-disable-next-line react-hooks/exhaustive-deps
++  }, [user?.id]);
++
++  return null;
++}
++
+ const App = () => (
+   <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+     <QueryClientProvider client={queryClient}>
+@@ -54,6 +70,7 @@ const App = () => (
+               <Sonner />
+               <BrowserRouter>
+                 <ErrorBoundary>
++                  <AppStartup />
+                   <AnnouncementBanner />
+                   <PWAInstallPrompt />
+                   <PomodoroFloatingWidget />
+diff --git a/src/components/AnnouncementBanner.tsx b/src/components/AnnouncementBanner.tsx
+index bc9984c..15a9488 100644
+--- a/src/components/AnnouncementBanner.tsx
++++ b/src/components/AnnouncementBanner.tsx
+@@ -47,7 +47,8 @@ export function AnnouncementBanner() {
+       }
+ 
+       setAnnouncement(current);
+-    } catch {
++    } catch (e) {
++      console.warn('Failed to load announcement:', e);
+       setAnnouncement(null);
+     }
+   };
+@@ -74,7 +75,9 @@ export function AnnouncementBanner() {
+         dismissed.push(announcement.id);
+         localStorage.setItem('itm_dismissed_announcements', JSON.stringify(dismissed));
+       }
+-    } catch {}
++    } catch (e) {
++      console.warn('Failed to save dismissed announcement to localStorage:', e);
++    }
+     setAnnouncement(null);
+   };
+ 
+diff --git a/src/components/AudioNotesPlayer.tsx b/src/components/AudioNotesPlayer.tsx
+index 7305149..caece7c 100644
+--- a/src/components/AudioNotesPlayer.tsx
++++ b/src/components/AudioNotesPlayer.tsx
+@@ -19,15 +19,15 @@ export function AudioNotesPlayer({ title, textToRead }: AudioNotesPlayerProps) {
+   const isPausedRef = useRef(false);
+   const currentChunkIndexRef = useRef(0);
+   const chunksRef = useRef<string[]>([]);
+-  const keepAliveIntervalRef = useRef<any>(null);
++  const keepAliveIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+ 
+   // Clean raw text into natural, spoken English
+   const cleanSpeechText = useCallback((text: string) => {
+     return text
+       .replace(/```[\s\S]*?```/g, ' [Code example omitted for audio] ')
+       .replace(/`([^`]+)`/g, '$1')
+-      .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1')
+-      .replace(/!\[([^\]]*)\]\([^\)]+\)/g, '')
++      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
++      .replace(/!\[([^\]]*)\]\([^)]+\)/g, '')
+       .replace(/[#*_~>]/g, ' ')
+       .replace(/\\\[[\s\S]*?\\\]/g, ' [Formula] ')
+       .replace(/\\\([\s\S]*?\\\)/g, ' [Formula] ')
+@@ -89,7 +89,7 @@ export function AudioNotesPlayer({ title, textToRead }: AudioNotesPlayerProps) {
+     return () => {
+       stopPlayback();
+     };
+-  }, []);
++  }, [stopPlayback]);
+ 
+   // Chrome TTS Keep-Alive Workaround (prevents speech from cutting off after 15 seconds)
+   const startKeepAlive = () => {
+diff --git a/src/components/ChartComponents.tsx b/src/components/ChartComponents.tsx
+index d175538..afc97c1 100644
+--- a/src/components/ChartComponents.tsx
++++ b/src/components/ChartComponents.tsx
+@@ -1,4 +1,3 @@
+-// @ts-nocheck
+ import { useMemo } from "react";
+ import {
+   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
+diff --git a/src/components/FriendComparisonModal.tsx b/src/components/FriendComparisonModal.tsx
+index 5cc4d84..61cb7fd 100644
+--- a/src/components/FriendComparisonModal.tsx
++++ b/src/components/FriendComparisonModal.tsx
+@@ -30,8 +30,8 @@ export function FriendComparisonModal({
+       if (raw) {
+         const records = JSON.parse(raw);
+         if (Array.isArray(records) && records.length > 0) {
+-          const totalAttended = records.reduce((acc: number, r: any) => acc + (Number(r.attended) || 0), 0);
+-          const totalConducted = records.reduce((acc: number, r: any) => acc + (Number(r.total) || 0), 0);
++          const totalAttended = records.reduce((acc: number, r: Record<string, unknown>) => acc + (Number(r.attended) || 0), 0);
++          const totalConducted = records.reduce((acc: number, r: Record<string, unknown>) => acc + (Number(r.total) || 0), 0);
+           if (totalConducted > 0) {
+             return Math.round((totalAttended / totalConducted) * 100);
+           }
+diff --git a/src/components/Header.tsx b/src/components/Header.tsx
+index b3330ab..37f9409 100644
+--- a/src/components/Header.tsx
++++ b/src/components/Header.tsx
+@@ -46,7 +46,9 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
+       try {
+         const saved = localStorage.getItem('itm_notifications');
+         if (saved) setNotifications(JSON.parse(saved));
+-      } catch {}
++      } catch (e) {
++        console.warn('Failed to parse notifications from localStorage:', e);
++      }
+     };
+     window.addEventListener('itm_notifications_updated', handleUpdate);
+     return () => window.removeEventListener('itm_notifications_updated', handleUpdate);
+diff --git a/src/components/MarkdownRenderer.tsx b/src/components/MarkdownRenderer.tsx
+index b96c4ea..da0ba64 100644
+--- a/src/components/MarkdownRenderer.tsx
++++ b/src/components/MarkdownRenderer.tsx
+@@ -99,7 +99,7 @@ function getTextFromChildren(children: ReactNode): string {
+   if (typeof children === "string") return children;
+   if (Array.isArray(children)) return children.map(getTextFromChildren).join("");
+   if (children && typeof children === "object" && "props" in children) {
+-    return getTextFromChildren((children as any).props.children);
++    return getTextFromChildren((children as { props: { children: ReactNode } }).props.children);
+   }
+   return "";
+ }
+diff --git a/src/components/PWAInstallPrompt.tsx b/src/components/PWAInstallPrompt.tsx
+index 6a7b5a3..0db1a4e 100644
+--- a/src/components/PWAInstallPrompt.tsx
++++ b/src/components/PWAInstallPrompt.tsx
+@@ -3,7 +3,7 @@ import { Download, X, Sparkles } from 'lucide-react';
+ 
+ export function PWAInstallPrompt() {
+   const [showPrompt, setShowPrompt] = useState(false);
+-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
++  const [deferredPrompt, setDeferredPrompt] = useState<Event | null>(null);
+ 
+   useEffect(() => {
+     // Track visit count
+@@ -17,7 +17,9 @@ export function PWAInstallPrompt() {
+       if (visits >= 3) {
+         setShowPrompt(true);
+       }
+-    } catch {}
++    } catch (e) {
++      console.warn('Failed to read PWA install state from localStorage:', e);
++    }
+ 
+     const handleBeforeInstallPrompt = (e: Event) => {
+       e.preventDefault();
+@@ -45,7 +47,9 @@ export function PWAInstallPrompt() {
+       setShowPrompt(false);
+       try {
+         localStorage.setItem('itm_pwa_install_dismissed', 'true');
+-      } catch {}
++      } catch (e) {
++        console.warn('Failed to save PWA dismissal:', e);
++      }
+       alert('To install ITM Notes, tap your browser menu (Γï« or Share) and select "Add to Home Screen" or "Install App".');
+     }
+   };
+@@ -54,7 +58,9 @@ export function PWAInstallPrompt() {
+     setShowPrompt(false);
+     try {
+       localStorage.setItem('itm_pwa_install_dismissed', 'true');
+-    } catch {}
++    } catch (e) {
++      console.warn('Failed to save PWA dismissal:', e);
++    }
+   };
+ 
+   if (!showPrompt) return null;
+diff --git a/src/components/SearchDialog.tsx b/src/components/SearchDialog.tsx
+index 333538c..d871908 100644
+--- a/src/components/SearchDialog.tsx
++++ b/src/components/SearchDialog.tsx
+@@ -1,4 +1,3 @@
+-// @ts-nocheck
+ import { useState, useEffect, useMemo } from "react";
+ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+ import { Input } from "@/components/ui/input";
+diff --git a/src/components/ui/command.tsx b/src/components/ui/command.tsx
+index 68d5378..ad32c15 100644
+--- a/src/components/ui/command.tsx
++++ b/src/components/ui/command.tsx
+@@ -21,7 +21,7 @@ const Command = React.forwardRef<
+ ));
+ Command.displayName = CommandPrimitive.displayName;
+ 
+-interface CommandDialogProps extends DialogProps {}
++type CommandDialogProps = DialogProps;
+ 
+ const CommandDialog = ({ children, ...props }: CommandDialogProps) => {
+   return (
+diff --git a/src/components/ui/textarea.tsx b/src/components/ui/textarea.tsx
+index 4a5643e..18eba7f 100644
+--- a/src/components/ui/textarea.tsx
++++ b/src/components/ui/textarea.tsx
+@@ -2,7 +2,7 @@ import * as React from "react";
+ 
+ import { cn } from "@/lib/utils";
+ 
+-export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
++export type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement>;
+ 
+ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(({ className, ...props }, ref) => {
+   return (
+diff --git a/src/contexts/AuthContext.tsx b/src/contexts/AuthContext.tsx
+index b8b59b5..62729eb 100644
+--- a/src/contexts/AuthContext.tsx
++++ b/src/contexts/AuthContext.tsx
+@@ -1,4 +1,3 @@
+-// @ts-nocheck
+ import { createContext, useContext, useEffect, useState } from "react";
+ import { User, Session } from "@supabase/supabase-js";
+ import { supabase } from "@/integrations/supabase/client";
+@@ -65,11 +64,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
+       ]);
+ 
+       if (profileResponse.data) {
+-        setProfile(profileResponse.data as any);
++        setProfile(profileResponse.data as UserProfile);
+         try {
+           localStorage.setItem('itm_student_profile', JSON.stringify(profileResponse.data));
+-        } catch {
+-          // ignore
++        } catch (e) {
++          console.warn('Failed to cache profile in localStorage:', e);
+         }
+       } else {
+         // Auto-create initial profile for user in Supabase with genuine data
+@@ -88,24 +87,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
+         }).select().maybeSingle();
+ 
+         if (data) {
+-          setProfile(data as any);
++          setProfile(data as UserProfile);
+           try {
+             localStorage.setItem('itm_student_profile', JSON.stringify(data));
+-          } catch {}
++          } catch (e) {
++            console.warn('Failed to cache profile in localStorage:', e);
++          }
+         }
+       }
+       
+       if (rolesResponse.data) {
+         const roles = rolesResponse.data.map(r => r.role);
+-        if (roles.includes('admin') || userAuth.email === 'maherbhatt01@gmail.com') {
++        if (roles.includes('admin')) {
+           setRole('admin');
+         } else if (roles.length > 0) {
+           setRole(roles[0] as AppRole);
+         } else {
+           setRole('user');
+         }
+-      } else if (userAuth.email === 'maherbhatt01@gmail.com') {
+-        setRole('admin');
++      } else {
++        setRole('user');
+       }
+     } catch (error) {
+       console.error("Error fetching user data from Supabase:", error);
+@@ -156,7 +157,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
+   const updateProfile = async (updates: Partial<UserProfile>) => {
+     if (!user?.id) return;
+ 
+-    const payload: Record<string, any> = {
++    const payload: Record<string, string | number | boolean | null> = {
+       user_id: user.id,
+       updated_at: new Date().toISOString(),
+     };
+@@ -228,10 +229,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
+         console.error("Database update error:", error);
+         // Do not block student UI if local optimistic state succeeded
+       } else if (data) {
+-        setProfile(data as any);
++        setProfile(data as UserProfile);
+         try {
+           localStorage.setItem('itm_student_profile', JSON.stringify(data));
+-        } catch {}
++        } catch (e) {
++          console.warn('Failed to cache profile in localStorage:', e);
++        }
+       }
+     } catch (err) {
+       console.error("Failed to update profile in Supabase:", err);
+@@ -283,7 +286,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
+       const publicUrl = publicUrlData.publicUrl;
+       await updateProfile({ avatar_url: publicUrl });
+       return publicUrl;
+-    } catch (err: any) {
++    } catch (err: unknown) {
+       console.error("Avatar upload exception:", err);
+       throw err;
+     }
+diff --git a/src/data/impQuestionsData.ts b/src/data/impQuestionsData.ts
+index e1d55eb..5225a9d 100644
+--- a/src/data/impQuestionsData.ts
++++ b/src/data/impQuestionsData.ts
+@@ -146,7 +146,7 @@ Register Transfer Language (RTL) is a symbolic notation used to describe precise
+ - Simultaneous Swap: \`T: R1 <- R2, R2 <- R1\` (works simultaneously due to edge-triggered flip-flops).
+ - Memory Read: \`DR <- M[AR]\`.`,
+         examTip: 'Always mention that RTL transfers are copy operations (R1 is not emptied) and that P drives the LOAD input.',
+-        devBrain: 'RTL is just assignment statements in code: P: R2 <- R1 is literally \`if (P) { R2 = R1; }\`.'
++        devBrain: 'RTL is just assignment statements in code: P: R2 <- R1 is literally `if (P) { R2 = R1; }`.'
+       },
+       {
+         id: 'ca-q2',
+@@ -541,24 +541,24 @@ Every instruction cycle begins with the Fetch and Decode routines, controlled by
+ 
+ ### Detailed RTL Micro-operations:
+ 1. **Timing State $T_0$:**
+-   $$\\mathbf{R\' T_0: AR \\leftarrow PC}$$
++   $$\\mathbf{R' T_0: AR \\leftarrow PC}$$
+    - **Bus Action:** $S_2 S_1 S_0 = 010$ (puts PC onto common bus).
+    - **Register Action:** \`LD(AR) = 1\`. AR now holds the exact memory address of instruction.
+ 
+ 2. **Timing State $T_1$:**
+-   $$\\mathbf{R\' T_1: IR \\leftarrow M[AR], \\; PC \\leftarrow PC + 1}$$
++   $$\\mathbf{R' T_1: IR \\leftarrow M[AR], \\; PC \\leftarrow PC + 1}$$
+    - **Bus Action:** $S_2 S_1 S_0 = 111$ (Memory read). \`Read = 1\`, \`LD(IR) = 1\`.
+    - **Counter Action:** \`INR(PC) = 1\`. PC is incremented to point to next instruction.
+ 
+ 3. **Timing State $T_2$:**
+-   $$\\mathbf{R\' T_2: D_0 \\dots D_7 \\leftarrow \\text{Decode } IR(12-14), \\; AR \\leftarrow IR(0-11), \\; I \\leftarrow IR(15)}$$
++   $$\\mathbf{R' T_2: D_0 \\dots D_7 \\leftarrow \\text{Decode } IR(12-14), \\; AR \\leftarrow IR(0-11), \\; I \\leftarrow IR(15)}$$
+    - 3x8 Decoder converts 3 opcode bits into one active-high signal $D_0$ through $D_7$.
+    - Lower 12 bits transferred to AR in anticipation of operand fetching.
+    - Bit 15 loaded into mode flip-flop I.
+ 
+ 4. **Timing State $T_3$ (Indirect Evaluation):**
+    - If Memory-Reference and Indirect ($D_7' I = 1$):
+-     $$\\mathbf{D_7\' I T_3: AR \\leftarrow M[AR]}$$
++     $$\\mathbf{D_7' I T_3: AR \\leftarrow M[AR]}$$
+    - If Memory-Reference and Direct ($D_7' I' = 1$): No action; AR already holds effective address.`
+       },
+ 
+@@ -631,9 +631,9 @@ Every instruction cycle begins with the Fetch and Decode routines, controlled by
+ ### Summary Table:
+ | Part | Operation | Result | Micro-operation Category |
+ | :---: | :--- | :---: | :--- |
+-| **(a)** | $R_3 \leftarrow R_1 + R_2$ | \`0000 0100\` (Carry=1) | Arithmetic Micro-operation |
+-| **(b)** | $R_4 \leftarrow R_1 - R_2$ | \`0101 0110\` | Arithmetic Micro-operation |
+-| **(c)** | $R_5 \leftarrow R_1 \wedge R_2$ | \`0000 0101\` | Logic Micro-operation |
++| **(a)** | $R_3 \\\\leftarrow R_1 + R_2$ | \`0000 0100\` (Carry=1) | Arithmetic Micro-operation |
++| **(b)** | $R_4 \\\\leftarrow R_1 - R_2$ | \`0101 0110\` | Arithmetic Micro-operation |
++| **(c)** | $R_5 \\\\leftarrow R_1 \\\\wedge R_2$ | \`0000 0101\` | Logic Micro-operation |
+ | **(d)** | \`shl 2\` of $R_1$ | \`1011 0100\` | Shift Micro-operation |
+ | **(e)** | \`ashr 2\` of $R_2$ | \`0001 0101\` | Shift Micro-operation |`
+       },
+@@ -729,7 +729,7 @@ In a modern CPU datapath, multiple general-purpose registers ($R_1$ to $R_7$) ar
+ ### 14-Bit Control Word Format:
+ $$\\mathbf{\\text{Control Word} = \\text{SELA (3 bits)} \\; | \\; \\text{SELB (3 bits)} \\; | \\; \\text{SELD (3 bits)} \\; | \\; \\text{OPR (5 bits)}}$$
+ 
+-### Executing $R_3 \leftarrow R_1 + R_2$:
++### Executing $R_3 \\\\leftarrow R_1 + R_2$:
+ | Step | Field | Binary Value | Function |
+ | :---: | :--- | :---: | :--- |
+ | **1** | **SELA** | \`001\` | MUX A selects register $R_1$ to drive the internal **A Bus**. |
+diff --git a/src/data/sem3-coanmp-master.ts b/src/data/sem3-coanmp-master.ts
+index 3dbba91..4e53dc9 100644
+--- a/src/data/sem3-coanmp-master.ts
++++ b/src/data/sem3-coanmp-master.ts
+@@ -1,4 +1,4 @@
+-import type { Subject } from './types';
++∩╗┐import type { Subject } from './types';
+ 
+ export const sem3CoanmpMaster: Subject = {
+   id: 'sem3-coanmp',
+@@ -1647,7 +1647,7 @@ flowchart TD
+ > Write out $[A \\mid I]$ as a $3 \\times 6$ matrix. Maintain vertical divider lines separating the left 3 columns from the right 3 columns throughout your working steps. Never perform row operations on only the left side!
+ 
+ > [!NOTE] **DEV BRAIN:**
+-> In numerical software, computing an explicit matrix inverse $A^{-1}$ to solve $A x = b$ via $x = A^{-1} b$ is considered an anti-pattern. Computing $A^{-1}$ costs $n^3$ flops and introduces double the round-off error compared to direct Gaussian elimination or LU solve ($rac{2}{3} n^3$). *Never invert a matrix unless the inverse itself is explicitly needed!*
++> In numerical software, computing an explicit matrix inverse $A^{-1}$ to solve $A x = b$ via $x = A^{-1} b$ is considered an anti-pattern. Computing $A^{-1}$ costs $n^3$ flops and introduces double the round-off error compared to direct Gaussian elimination or LU solve ($\frac{2}{3} n^3$). *Never invert a matrix unless the inverse itself is explicitly needed!*
+ 
+ > [!WARNING] **TRAP:**
+ > When normalizing row $k$ by dividing by $a_{kk}$, do not forget to divide the corresponding elements in the right-hand identity matrix block!
+diff --git a/src/data/sem3-detailed.ts b/src/data/sem3-detailed.ts
+index 8d8d544..0fd507d 100644
+--- a/src/data/sem3-detailed.ts
++++ b/src/data/sem3-detailed.ts
+@@ -1,4 +1,4 @@
+-// @ts-nocheck
++// Sem 3 detailed data
+ import { Subject } from './types';
+ 
+ export const sem3DetailedSubjects: Subject[] = [
+@@ -99,8 +99,8 @@ export const sem3DetailedSubjects: Subject[] = [
+             examples: [
+               {
+                 title: "3NF Violation Example",
+-                problem: "Identify the 3NF violation: \`Students(StudentID, Name, Department, DeptHead)\`",
+-                explanation: "DeptHead depends on Department, and Department depends on StudentID. This is a transitive dependency! Fix: Split into \`Students(StudentID, Name, Department)\` and \`Departments(Department, DeptHead)\`."
++                problem: "Identify the 3NF violation: `Students(StudentID, Name, Department, DeptHead)`",
++                explanation: "DeptHead depends on Department, and Department depends on StudentID. This is a transitive dependency! Fix: Split into `Students(StudentID, Name, Department)` and `Departments(Department, DeptHead)`."
+               }
+             ],
+             keyPoints: ["Reduces redundancy", "Prevents anomalies", "BCNF is stricter than 3NF"],
+diff --git a/src/data/subjects.ts b/src/data/subjects.ts
+index d925345..3ae2409 100644
+--- a/src/data/subjects.ts
++++ b/src/data/subjects.ts
+@@ -1,4 +1,3 @@
+-// @ts-nocheck
+ import { Subject } from './types';
+ import { computerArchitecture } from './computer-architecture';
+ import { sem3JavaMaster } from './sem3-java-master';
+diff --git a/src/hooks/useAcademicData.ts b/src/hooks/useAcademicData.ts
+index 8f68b3b..331d5ab 100644
+--- a/src/hooks/useAcademicData.ts
++++ b/src/hooks/useAcademicData.ts
+@@ -1,4 +1,3 @@
+-// @ts-nocheck
+ import { useQuery } from "@tanstack/react-query";
+ import { supabase } from "@/integrations/supabase/client";
+ 
+@@ -99,10 +98,10 @@ export function useSubject(subjectId?: string) {
+       
+       // Sort units and topics
+       if (data.units) {
+-        data.units.sort((a: any, b: any) => a.order_index - b.order_index);
+-        data.units.forEach((unit: any) => {
++        data.units.sort((a: { order_index: number }, b: { order_index: number }) => a.order_index - b.order_index);
++        data.units.forEach((unit: { topics?: { order_index: number }[] }) => {
+           if (unit.topics) {
+-            unit.topics.sort((a: any, b: any) => a.order_index - b.order_index);
++            unit.topics.sort((a: { order_index: number }, b: { order_index: number }) => a.order_index - b.order_index);
+           }
+         });
+       }
+@@ -129,9 +128,10 @@ export function useTopic(topicId?: string) {
+         .single();
+       if (error) throw error;
+ 
+-      if (data.examples) data.examples.sort((a: any, b: any) => a.order_index - b.order_index);
+-      if (data.key_points) data.key_points.sort((a: any, b: any) => a.order_index - b.order_index);
+-      if (data.mcqs) data.mcqs.sort((a: any, b: any) => a.order_index - b.order_index);
++      type Orderable = { order_index: number };
++      if (data.examples) data.examples.sort((a: Orderable, b: Orderable) => a.order_index - b.order_index);
++      if (data.key_points) data.key_points.sort((a: Orderable, b: Orderable) => a.order_index - b.order_index);
++      if (data.mcqs) data.mcqs.sort((a: Orderable, b: Orderable) => a.order_index - b.order_index);
+ 
+       return data;
+     },
+diff --git a/src/hooks/useGamification.tsx b/src/hooks/useGamification.tsx
+index e212e07..0c4aae7 100644
+--- a/src/hooks/useGamification.tsx
++++ b/src/hooks/useGamification.tsx
+@@ -1,4 +1,3 @@
+-// @ts-nocheck
+ import React, { useState, useEffect, useCallback, useMemo } from 'react';
+ import { toast } from 'sonner';
+ import { supabase } from '@/integrations/supabase/client';
+@@ -352,7 +351,28 @@ function getTodayString(): string {
+   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+ }
+ 
+-const GamificationContext = React.createContext<any>(undefined);
++interface GamificationContextType {
++  state: GamificationState;
++  levelInfo: {
++    level: number;
++    title: string;
++    minXp: number;
++    maxXp: number;
++    xpIntoLevel: number;
++    levelRange: number;
++    progressPercent: number;
++    nextLevel: { level: number; title: string; minXp: number; maxXp: number } | null;
++  };
++  addXp: (amount: number, reason?: string) => void;
++  unlockAchievement: (id: string) => void;
++  checkDailyStreak: () => void;
++  addStudyMinutes: (minutes: number) => void;
++  recordTopicRead: (topicId: string) => void;
++  recordQuizCompleted: (isPerfect: boolean) => void;
++  claimQuest: (questId: string) => void;
++}
++
++const GamificationContext = React.createContext<GamificationContextType | undefined>(undefined);
+ 
+ export function GamificationProvider({ children }: { children: React.ReactNode }) {
+   const [state, setState] = useState<GamificationState>(() => {
+@@ -421,7 +441,7 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
+         .eq('user_id', userId)
+         .then(({ data: achRows, error: achErr }) => {
+           if (!achErr && achRows && achRows.length > 0) {
+-            const remoteMap = new Map(achRows.map((r: any) => [r.achievement_id, r.unlocked_at]));
++            const remoteMap = new Map(achRows.map((r: { achievement_id: string; unlocked_at: string }) => [r.achievement_id, r.unlocked_at]));
+             setState((prev) => {
+               const updatedAchievements = prev.achievements.map((a) => {
+                 const remoteUnlocked = remoteMap.get(a.id);
+@@ -624,6 +644,8 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
+         level: newLevel,
+       };
+     });
++  // unlockAchievement intentionally omitted from deps to avoid infinite loop
++  // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, []);
+ 
+   // Check and update daily streak
+@@ -708,6 +730,7 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
+   // Record a topic read
+   const recordTopicRead = useCallback(
+     (topicId: string) => {
++      const today = getTodayString();
+       setState((prev) => {
+         const newCount = prev.topicsReadCount + 1;
+         if (newCount >= 1) unlockAchievement('first-step');
+@@ -716,7 +739,12 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
+         if (newCount >= 50) unlockAchievement('century-scholar');
+         if (newCount >= 100) unlockAchievement('syllabus-conqueror');
+ 
+-        return { ...prev, topicsReadCount: newCount };
++        const currentToday = prev.activityHistory[today] || 0;
++        return {
++          ...prev,
++          topicsReadCount: newCount,
++          activityHistory: { ...prev.activityHistory, [today]: currentToday + 1 },
++        };
+       });
+       addXp(15, 'Read Topic Notes');
+     },
+@@ -726,6 +754,7 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
+   // Record a completed quiz
+   const recordQuizCompleted = useCallback(
+     (isPerfect: boolean) => {
++      const today = getTodayString();
+       setState((prev) => {
+         const newQuizzes = prev.quizzesCompletedCount + 1;
+         const newPerfect = isPerfect ? prev.perfectQuizzesCount + 1 : prev.perfectQuizzesCount;
+@@ -735,10 +764,12 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
+         if (newPerfect >= 5) unlockAchievement('quiz-veteran');
+         if (newPerfect >= 15) unlockAchievement('recall-grandmaster');
+ 
++        const currentToday = prev.activityHistory[today] || 0;
+         return {
+           ...prev,
+           quizzesCompletedCount: newQuizzes,
+           perfectQuizzesCount: newPerfect,
++          activityHistory: { ...prev.activityHistory, [today]: currentToday + 1 },
+         };
+       });
+ 
+diff --git a/src/hooks/useProgress.ts b/src/hooks/useProgress.ts
+index 6ca0554..35e4ee4 100644
+--- a/src/hooks/useProgress.ts
++++ b/src/hooks/useProgress.ts
+@@ -12,8 +12,9 @@ function loadLocal(): Progress {
+   try {
+     const stored = localStorage.getItem(STORAGE_KEY);
+     if (stored) return JSON.parse(stored);
+-  } catch {}
+-  return { completedTopics: [], bookmarkedTopics: [], mcqScores: {} };
++  } catch (e) {
++    console.warn('Failed to load progress from localStorage:', e);
++  }  return { completedTopics: [], bookmarkedTopics: [], mcqScores: {} };
+ }
+ 
+ export function useProgress() {
+diff --git a/src/pages/AuthPage.tsx b/src/pages/AuthPage.tsx
+index 3b8ed37..f0220e9 100644
+--- a/src/pages/AuthPage.tsx
++++ b/src/pages/AuthPage.tsx
+@@ -1,4 +1,3 @@
+-// @ts-nocheck
+ import { useState, useEffect } from "react";
+ import { useNavigate, useLocation } from "react-router-dom";
+ import { supabase } from "@/integrations/supabase/client";
+@@ -32,7 +31,7 @@ export default function AuthPage() {
+   const navigate = useNavigate();
+   const location = useLocation();
+ 
+-  const fromState = (location.state as any)?.from;
++  const fromState = (location.state as { from?: string | { pathname?: string; search?: string; hash?: string } } | null)?.from;
+   const fromLocation = fromState
+     ? (typeof fromState === 'string' ? fromState : `${fromState.pathname || "/"}${fromState.search || ""}${fromState.hash || ""}`)
+     : "/";
+@@ -102,7 +101,7 @@ export default function AuthPage() {
+               user_id: data.user.id,
+               email: email,
+               display_name: displayName,
+-              role: email.toLowerCase() === "maherbhatt01@gmail.com" ? "admin" : "student",
++              role: "student",
+               branch: null,
+               program: null,
+               semester: null,
+@@ -123,8 +122,9 @@ export default function AuthPage() {
+         toast.success("Account created successfully! Please sign in.");
+         setIsLogin(true);
+       }
+-    } catch (error: any) {
+-      toast.error(error.message || "An error occurred during authentication.");
++    } catch (error: unknown) {
++      const msg = error instanceof Error ? error.message : "An error occurred during authentication.";
++      toast.error(msg);
+     } finally {
+       setLoading(false);
+     }
+@@ -137,7 +137,7 @@ export default function AuthPage() {
+       <main className="flex-1 flex items-center justify-center p-4">
+         <div className="w-full max-w-md surface-elevated rounded-xl p-8 animate-slide-up">
+           {/* Target Feature Requirement Banner */}
+-          {(location.state as any)?.from && (
++          {(location.state as { from?: string } | null)?.from && (
+             <div className="mb-6 p-3.5 rounded-xl bg-primary/10 border border-primary/20 text-xs text-primary font-medium flex items-center gap-2.5 animate-pulse">
+               <Lock className="h-4 w-4 shrink-0 text-primary" />
+               <div>
+diff --git a/src/pages/BookmarksPage.tsx b/src/pages/BookmarksPage.tsx
+index 46530ec..3e4db7c 100644
+--- a/src/pages/BookmarksPage.tsx
++++ b/src/pages/BookmarksPage.tsx
+@@ -42,7 +42,9 @@ export default function BookmarksPage() {
+     try {
+       const raw = localStorage.getItem('itm_bookmark_notes');
+       if (raw) return JSON.parse(raw);
+-    } catch {}
++    } catch (e) {
++      console.warn('Failed to load bookmark notes from localStorage:', e);
++    }
+     return {};
+   });
+ 
+@@ -55,7 +57,9 @@ export default function BookmarksPage() {
+   useEffect(() => {
+     try {
+       localStorage.setItem('itm_bookmark_notes', JSON.stringify(notes));
+-    } catch {}
++    } catch (e) {
++      console.warn('Failed to save bookmark notes to localStorage:', e);
++    }
+   }, [notes]);
+ 
+   // Extract all bookmarked topics from subjects data
+@@ -85,7 +89,7 @@ export default function BookmarksPage() {
+ 
+   // Filtered & Sorted items
+   const processedItems = useMemo(() => {
+-    let list = bookmarkedItems.filter((item) =>
++    const list = bookmarkedItems.filter((item) =>
+       item.topicTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
+       item.subjectName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+       item.unitTitle.toLowerCase().includes(searchQuery.toLowerCase())
+diff --git a/src/pages/CommunityPage.tsx b/src/pages/CommunityPage.tsx
+index 3e60b45..c95a1a2 100644
+--- a/src/pages/CommunityPage.tsx
++++ b/src/pages/CommunityPage.tsx
+@@ -1,5 +1,5 @@
+ // @ts-nocheck
+-import { useState, useMemo, useEffect } from 'react';
++import { useState, useMemo, useEffect, useCallback } from 'react';
+ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+ import { Header } from '@/components/Header';
+ import { Footer } from '@/components/Footer';
+@@ -124,7 +124,9 @@ export default function CommunityPage() {
+     try {
+       const raw = localStorage.getItem('itm_user_classmates_network');
+       if (raw) return JSON.parse(raw);
+-    } catch {}
++    } catch (e) {
++      console.warn('Failed to load classmates from localStorage:', e);
++    }
+     return INITIAL_CLASSMATES;
+   });
+ 
+@@ -158,7 +160,9 @@ export default function CommunityPage() {
+         setClassmates(realClassmates);
+         try {
+           localStorage.setItem('itm_user_classmates_network', JSON.stringify(realClassmates));
+-        } catch {}
++        } catch (e) {
++          console.warn('Failed to cache classmates in localStorage:', e);
++        }
+       }
+     } catch (err) {
+       console.error('Failed to load real classmates from Supabase:', err);
+@@ -185,14 +189,18 @@ export default function CommunityPage() {
+     try {
+       const raw = localStorage.getItem('itm_user_friends_ids');
+       if (raw) return JSON.parse(raw);
+-    } catch {}
++    } catch (e) {
++      console.warn('Failed to load friend IDs from localStorage:', e);
++    }
+     return [];
+   });
+ 
+   useEffect(() => {
+     try {
+       localStorage.setItem('itm_user_friends_ids', JSON.stringify(friendIds));
+-    } catch {}
++    } catch (e) {
++      console.warn('Failed to save friend IDs to localStorage:', e);
++    }
+   }, [friendIds]);
+ 
+   const [classmateTab, setClassmateTab] = useState<'friends' | 'all'>('all');
+@@ -203,7 +211,7 @@ export default function CommunityPage() {
+   const [newFriendBranch, setNewFriendBranch] = useState(profile?.branch || "Computer Science & Engineering");
+ 
+   // Load feed directly from Supabase Backend & listen for realtime updates
+-  const loadFeed = async (showLoading = false) => {
++  const loadFeed = useCallback(async (showLoading = false) => {
+     if (showLoading) setIsLoadingPosts(true);
+     try {
+       const fetched = await fetchCommunityPosts(user?.id);
+@@ -214,7 +222,7 @@ export default function CommunityPage() {
+       if (showLoading) setIsLoadingPosts(false);
+       setIsRefreshing(false);
+     }
+-  };
++  }, [user?.id]);
+ 
+   useEffect(() => {
+     loadFeed(true);
+@@ -225,7 +233,7 @@ export default function CommunityPage() {
+     return () => {
+       unsubscribe();
+     };
+-  }, [user?.id]);
++  }, [loadFeed]);
+ 
+   // Sync friends from Supabase Backend
+   useEffect(() => {
+@@ -404,7 +412,9 @@ export default function CommunityPage() {
+         const currentNotifs = JSON.parse(localStorage.getItem('itm_notifications') || '[]');
+         localStorage.setItem('itm_notifications', JSON.stringify([notif, ...currentNotifs.slice(0, 29)]));
+         window.dispatchEvent(new Event('itm_notifications_updated'));
+-      } catch {}
++      } catch (e) {
++        console.warn('Failed to save notification to localStorage:', e);
++      }
+ 
+       toast.success('Comment added (+5 XP)!');
+     } catch (err) {
+diff --git a/src/pages/DashboardPage.tsx b/src/pages/DashboardPage.tsx
+index fbc6adb..f00e7a9 100644
+--- a/src/pages/DashboardPage.tsx
++++ b/src/pages/DashboardPage.tsx
+@@ -8,7 +8,6 @@ import { Header } from "@/components/Header";
+ import { Footer } from "@/components/Footer";
+ import { useAuth } from "@/contexts/AuthContext";
+ import { useAcademic } from "@/contexts/AcademicContext";
+-import { useSubjects } from "@/hooks/useAcademicData";
+ import { subjects } from "@/data/subjects";
+ import { BackToTop } from "@/components/BackToTop";
+ import { ExamCountdown } from "@/components/ExamCountdown";
+@@ -82,7 +81,9 @@ export default function DashboardPage() {
+     if (saved) {
+       try {
+         setLastVisitedTopic(JSON.parse(saved));
+-      } catch (e) {}
++      } catch (e) {
++        console.warn('Failed to parse last visited topic:', e);
++      }
+     }
+   }, []);
+   const [weeklyGoal, setWeeklyGoal] = useState<number>(() => {
+@@ -97,10 +98,11 @@ export default function DashboardPage() {
+       const d = new Date();
+       d.setDate(d.getDate() - i);
+       const dateStr = d.toISOString().split('T')[0];
+-      total += (history[dateStr] || 0) * 15;
++      // Each activity unit (topic read, quiz, or study minute) counts as 1 XP-equivalent for display
++      total += history[dateStr] || 0;
+     }
+-    return Math.min(total || gamification.state.xp, weeklyGoal);
+-  }, [gamification.state.activityHistory, gamification.state.xp, weeklyGoal]);
++    return Math.min(total, weeklyGoal);
++  }, [gamification.state.activityHistory, weeklyGoal]);
+ 
+   const [filterSem, setFilterSem] = useState<number | 'all'>(profile?.semester || semesterNumber || 1);
+   const navigate = useNavigate();
+@@ -131,7 +133,7 @@ export default function DashboardPage() {
+   // Calculate dynamic stats
+   const totalTopics = useMemo(() => {
+     const sum = allSubjectsToRender.reduce(
+-      (acc, s) => acc + (s.units?.reduce((uSum: number, u: any) => uSum + (u.topics?.length || 0), 0) || 0),
++      (acc, s) => acc + (s.units?.reduce((uSum: number, u) => uSum + (u.topics?.length || 0), 0) || 0),
+       0
+     );
+     return sum > 0 ? sum : 85;
+@@ -390,7 +392,7 @@ export default function DashboardPage() {
+                   </div>
+                 ) : (
+                   filteredSubjects.map((subject) => {
+-                    const topicIds = subject.units?.flatMap((u: any) => u.topics?.map((t: any) => t.id) || []) || [];
++                    const topicIds = subject.units?.flatMap((u) => u.topics?.map((t) => t.id) || []) || [];
+                     const subProgress = getSubjectProgress(topicIds);
+                     const completedInSub = Math.round((subProgress / 100) * topicIds.length);
+                     const semNumber = Number(subject.semester || 1);
+diff --git a/src/pages/GpaCalculatorPage.tsx b/src/pages/GpaCalculatorPage.tsx
+index 841f534..baf1ebd 100644
+--- a/src/pages/GpaCalculatorPage.tsx
++++ b/src/pages/GpaCalculatorPage.tsx
+@@ -164,7 +164,9 @@ export default function GpaCalculatorPage() {
+         const parsed = JSON.parse(saved);
+         if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+       }
+-    } catch {}
++    } catch (e) {
++      console.warn('Failed to load GPA subjects from localStorage:', e);
++    }
+     return DEFAULT_INITIAL_SUBJECTS;
+   });
+ 
+@@ -172,7 +174,9 @@ export default function GpaCalculatorPage() {
+   useEffect(() => {
+     try {
+       localStorage.setItem('itm_user_gpa_subjects', JSON.stringify(subjects));
+-    } catch {}
++    } catch (e) {
++      console.warn('Failed to save GPA subjects to localStorage:', e);
++    }
+   }, [subjects]);
+ 
+   // Target SGPA for Goal Planner
+@@ -196,11 +200,11 @@ export default function GpaCalculatorPage() {
+         const parsed = JSON.parse(saved);
+         if (Array.isArray(parsed) && parsed.length > 0) {
+           // Normalize entries to guarantee present, absent, noAttendance exist
+-          return parsed.map((item: any) => {
+-            const present = typeof item.present === 'number' ? item.present : (item.attended || 0);
++          return parsed.map((item: Record<string, unknown>) => {
++            const present = typeof item.present === 'number' ? item.present : ((item.attended as number) || 0);
+             const absent = typeof item.absent === 'number'
+               ? item.absent
+-              : Math.max(0, (item.total || 0) - present);
++              : Math.max(0, ((item.total as number) || 0) - present);
+             const noAttendance = typeof item.noAttendance === 'number' ? item.noAttendance : 0;
+             return {
+               id: item.id || `att-${Date.now()}`,
+@@ -213,7 +217,9 @@ export default function GpaCalculatorPage() {
+           });
+         }
+       }
+-    } catch {}
++    } catch (e) {
++      console.warn('Failed to load attendance records from localStorage:', e);
++    }
+     return DEFAULT_INITIAL_ATTENDANCE;
+   });
+ 
+@@ -227,7 +233,9 @@ export default function GpaCalculatorPage() {
+   useEffect(() => {
+     try {
+       localStorage.setItem('itm_attendance_records', JSON.stringify(subjectAttendance));
+-    } catch {}
++    } catch (e) {
++      console.warn('Failed to save attendance records to localStorage:', e);
++    }
+   }, [subjectAttendance]);
+ 
+   // Selected Semester (1, 2, or 3)
+@@ -242,7 +250,9 @@ export default function GpaCalculatorPage() {
+         const parsed = JSON.parse(saved);
+         if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+       }
+-    } catch {}
++    } catch (e) {
++      console.warn('Failed to load CGPA history from localStorage:', e);
++    }
+     return [
+       { sem: 1, sgpa: 8.2, credits: 20 },
+       { sem: 2, sgpa: 8.4, credits: 21 },
+@@ -252,7 +262,9 @@ export default function GpaCalculatorPage() {
+   useEffect(() => {
+     try {
+       localStorage.setItem('itm_cgpa_history', JSON.stringify(prevSemesters));
+-    } catch {}
++    } catch (e) {
++      console.warn('Failed to save CGPA history to localStorage:', e);
++    }
+   }, [prevSemesters]);
+ 
+   const handleSemesterSwitch = (sem: 1 | 2 | 3) => {
+@@ -376,7 +388,17 @@ export default function GpaCalculatorPage() {
+     };
+   }, [prevSemesters, result]);
+ 
+-  // Overall attendance statistics
++  // Keep overall counters in sync whenever per-subject attendance rows change.
++  // This ensures the summary cards always reflect the per-subject table values.
++  useEffect(() => {
++    if (subjectAttendance.length === 0) return;
++    const derivedTotal = subjectAttendance.reduce((s, a) => s + a.present + a.absent, 0);
++    const derivedAttended = subjectAttendance.reduce((s, a) => s + a.present, 0);
++    setOverallTotalClasses(derivedTotal > 0 ? derivedTotal : 1);
++    setOverallAttendedClasses(derivedAttended);
++  }, [subjectAttendance]);
++
++  // Overall attendance statistics ΓÇö now always derived from subjectAttendance via the counters above
+   const attendanceStats = useMemo(() => {
+     const total = Math.max(1, overallTotalClasses);
+     const attended = Math.min(total, Math.max(0, overallAttendedClasses));
+@@ -517,15 +539,13 @@ export default function GpaCalculatorPage() {
+         return { ...s, [type]: s[type] + 1 };
+       })
+     );
++    // overallTotalClasses / overallAttendedClasses are auto-synced via useEffect above
+     if (type === 'present') {
+-      setOverallAttendedClasses((prev) => prev + 1);
+-      setOverallTotalClasses((prev) => prev + 1);
+       toast.success('Marked Present (+1)');
+     } else if (type === 'absent') {
+-      setOverallTotalClasses((prev) => prev + 1);
+       toast.error('Marked Absent (+1 Missed)');
+     } else {
+-      toast.info('Marked No Attendance / Class Cancelled (Doesn\'t penalize 75%)');
++      toast.info("Marked No Attendance / Class Cancelled (Doesn't penalize 75%)");
+     }
+   };
+ 
+diff --git a/src/pages/Index.tsx b/src/pages/Index.tsx
+index 03c2845..42c8311 100644
+--- a/src/pages/Index.tsx
++++ b/src/pages/Index.tsx
+@@ -1,4 +1,3 @@
+-// @ts-nocheck
+ import { useNavigate, Link } from "react-router-dom";
+ import { subjects, getAllTopicIds } from "@/data/subjects";
+ import { REAL_STUDY_MATERIALS } from "@/data/materialsData";
+diff --git a/src/pages/OnboardingPage.tsx b/src/pages/OnboardingPage.tsx
+index c1aad08..f118adf 100644
+--- a/src/pages/OnboardingPage.tsx
++++ b/src/pages/OnboardingPage.tsx
+@@ -1,4 +1,3 @@
+-// @ts-nocheck
+ import { useState, useEffect } from "react";
+ import { useNavigate } from "react-router-dom";
+ import { Header } from "@/components/Header";
+@@ -72,8 +71,9 @@ export default function OnboardingPage() {
+       const url = await uploadAvatar(file);
+       setAvatarUrl(url);
+       toast.success("Profile photo uploaded!");
+-    } catch (err: any) {
+-      toast.error(err.message || "Failed to upload photo.");
++    } catch (err: unknown) {
++      const msg = err instanceof Error ? err.message : "Failed to upload photo.";
++      toast.error(msg);
+     } finally {
+       setIsUploadingPhoto(false);
+     }
+@@ -121,7 +121,9 @@ export default function OnboardingPage() {
+       setAcademicContext({
+         semesterId: `sem-${semNumber}`,
+       });
+-    } catch {}
++    } catch (err) {
++      console.warn('Failed to save onboarding skip data:', err);
++    }
+     navigate("/dashboard");
+   };
+ 
+diff --git a/src/pages/ProfilePage.tsx b/src/pages/ProfilePage.tsx
+index 7072781..b9f30bb 100644
+--- a/src/pages/ProfilePage.tsx
++++ b/src/pages/ProfilePage.tsx
+@@ -1,4 +1,3 @@
+-// @ts-nocheck
+ import { useState, useEffect } from 'react';
+ import { useNavigate, Link } from 'react-router-dom';
+ import { Header } from '@/components/Header';
+@@ -116,7 +115,9 @@ export default function ProfilePage() {
+         const parsed = JSON.parse(raw);
+         if (Array.isArray(parsed)) return parsed;
+       }
+-    } catch {}
++    } catch (e) {
++      console.warn('Failed to load quiz history from localStorage:', e);
++    }
+     return [];
+   });
+ 
+@@ -146,9 +147,10 @@ export default function ProfilePage() {
+       const uploadedUrl = await uploadAvatar(file);
+       setAvatarUrl(uploadedUrl);
+       toast.success('Profile photo uploaded and saved successfully to database!');
+-    } catch (err: any) {
++    } catch (err: unknown) {
+       console.error('Failed to upload avatar:', err);
+-      toast.error(err.message || 'Could not upload photo. Please try a different image.');
++      const msg = err instanceof Error ? err.message : 'Could not upload photo. Please try a different image.';
++      toast.error(msg);
+     } finally {
+       setIsUploadingPhoto(false);
+     }
+diff --git a/src/pages/QuizPage.tsx b/src/pages/QuizPage.tsx
+index 7f437a0..e13788a 100644
+--- a/src/pages/QuizPage.tsx
++++ b/src/pages/QuizPage.tsx
+@@ -5,6 +5,7 @@ import { subjects } from "@/data/subjects";
+ import { MCQQuiz } from "@/components/MCQQuiz";
+ import { Button } from "@/components/ui/button";
+ import { useGamification } from "@/hooks/useGamification";
++import type { MCQ } from "@/data/types";
+ import { 
+   BookOpen, 
+   Sparkles, 
+@@ -41,12 +42,12 @@ export default function QuizPage() {
+ 
+   // Total MCQs across all Semester 3 subjects
+   const allSem3Mcqs = useMemo(() => {
+-    let pool: any[] = [];
++    let pool: MCQ[] = [];
+     availableSubjects.forEach((s) => {
+       s.units.forEach((u) => {
+         u.topics.forEach((t) => {
+           if (t.mcqs && t.mcqs.length > 0) {
+-            const tagged = t.mcqs.map((m: any) => ({
++            const tagged = t.mcqs.map((m) => ({
+               ...m,
+               subjectName: s.name,
+               topicTitle: t.title,
+@@ -61,7 +62,7 @@ export default function QuizPage() {
+ 
+   // Selected MCQs pool based on subject and count
+   const mcqs = useMemo(() => {
+-    let pool: any[] = [];
++    let pool: MCQ[] = [];
+ 
+     if (selectedSubject === "all-sem3") {
+       pool = [...allSem3Mcqs];
+@@ -71,7 +72,7 @@ export default function QuizPage() {
+         subj.units.forEach((u) => {
+           u.topics.forEach((t) => {
+             if (t.mcqs) {
+-              const tagged = t.mcqs.map((m: any) => ({
++              const tagged = t.mcqs.map((m) => ({
+                 ...m,
+                 subjectName: subj.name,
+                 topicTitle: t.title,
+@@ -115,7 +116,9 @@ export default function QuizPage() {
+         timestamp: new Date().toISOString()
+       });
+       localStorage.setItem('itm_quiz_scores', JSON.stringify(list.slice(0, 30)));
+-    } catch {}
++    } catch (e) {
++      console.warn('Failed to save quiz score to localStorage:', e);
++    }
+     toast.success(`Quiz Completed! You scored ${score} / ${total}`, {
+       description: score === total ? "Perfect Score! ≡ƒîƒ +100 Bonus XP" : "+50 XP awarded to your profile.",
+     });
+diff --git a/src/pages/TopicPage.tsx b/src/pages/TopicPage.tsx
+index 7f0ca7a..8505f99 100644
+--- a/src/pages/TopicPage.tsx
++++ b/src/pages/TopicPage.tsx
+@@ -314,7 +314,9 @@ export default function TopicPage() {
+             subjectName: subject?.name || "Unknown Subject",
+           })
+         );
+-      } catch {}
++      } catch (e) {
++        console.warn('Failed to save last visited topic to localStorage:', e);
++      }
+     }
+   }, [subjectId, resolvedTopic?.topic?.id, resolvedTopic?.topic?.title, subject?.name]);
+ 
+@@ -340,7 +342,7 @@ export default function TopicPage() {
+         .replace(/```[\s\S]*?```/g, "")
+         .replace(/<[^>]*>/g, "")
+         .replace(/#{1,6}\s+/g, "")
+-        .replace(/\[([^\]]+)\]\([^\)]+\)/g, "$1")
++        .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+         .replace(/[*_~`]/g, "")
+         .replace(/\|[^\n]+\|/g, "")
+         .trim();
+diff --git a/src/pages/admin/AdminDashboard.tsx b/src/pages/admin/AdminDashboard.tsx
+index bc73b24..d5033e3 100644
+--- a/src/pages/admin/AdminDashboard.tsx
++++ b/src/pages/admin/AdminDashboard.tsx
+@@ -61,7 +61,9 @@ export default function AdminDashboard() {
+     try {
+       const raw = localStorage.getItem('itm_announcements');
+       if (raw) return JSON.parse(raw);
+-    } catch {}
++    } catch (e) {
++      console.warn('Failed to load announcements from localStorage:', e);
++    }
+     return [
+       {
+         id: 'ann-exam-week',
+@@ -138,7 +140,9 @@ export default function AdminDashboard() {
+           status: 'pending',
+         }));
+       }
+-    } catch {}
++    } catch (e) {
++      console.warn('Failed to load reported posts from localStorage:', e);
++    }
+     return [
+       {
+         id: 'rep-sample-1',
+@@ -165,7 +169,9 @@ export default function AdminDashboard() {
+       const idsRaw = localStorage.getItem('itm_reported_posts');
+       const ids: string[] = idsRaw ? JSON.parse(idsRaw) : [];
+       localStorage.setItem('itm_reported_posts', JSON.stringify(ids.filter((x) => x !== postId)));
+-    } catch {}
++    } catch (e) {
++      console.warn('Failed to update reported posts in localStorage:', e);
++    }
+     toast.success('Reported post deleted from community!');
+   };
+ 
+diff --git a/src/services/communityService.ts b/src/services/communityService.ts
+index d8833cd..c6db62c 100644
+--- a/src/services/communityService.ts
++++ b/src/services/communityService.ts
+@@ -143,7 +143,9 @@ export async function fetchCommunityPosts(currentUserId?: string): Promise<Commu
+     // Save combined posts to local cache
+     try {
+       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(remotePosts));
+-    } catch {}
++    } catch (e) {
++      console.warn('Failed to cache community posts in localStorage:', e);
++    }
+ 
+     return remotePosts.length > 0 ? remotePosts : INITIAL_POSTS;
+   } catch (error) {
+@@ -201,7 +203,9 @@ export async function createCommunityPost(
+         post_id: newId,
+         user_id: post.authorId,
+       });
+-    } catch {}
++    } catch (e) {
++      console.warn('Failed to register initial post like:', e);
++    }
+   }
+ 
+   const createdPost: CommunityPost = {
+@@ -225,7 +229,9 @@ export async function createCommunityPost(
+   const cached = getLocalCachedPosts();
+   try {
+     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify([createdPost, ...cached]));
+-  } catch {}
++  } catch (e) {
++    console.warn('Failed to update cached posts in localStorage:', e);
++  }
+ 
+   return createdPost;
+ }
+@@ -356,7 +362,9 @@ export async function fetchUserFriends(userId: string): Promise<string[]> {
+       const ids = data.map((d) => d.friend_id);
+       try {
+         localStorage.setItem(LOCAL_FRIENDS_KEY, JSON.stringify(ids));
+-      } catch {}
++      } catch (e) {
++        console.warn('Failed to cache friend IDs in localStorage:', e);
++      }
+       return ids;
+     }
+   } catch (err) {
+@@ -439,7 +447,9 @@ function getLocalCachedPosts(): CommunityPost[] {
+   try {
+     const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
+     if (raw) return JSON.parse(raw);
+-  } catch {}
++  } catch (e) {
++    console.warn('Failed to read cached posts from localStorage:', e);
++  }
+   return INITIAL_POSTS;
+ }
+ 
+@@ -447,6 +457,8 @@ function getLocalFriendIds(): string[] {
+   try {
+     const raw = localStorage.getItem(LOCAL_FRIENDS_KEY);
+     if (raw) return JSON.parse(raw);
+-  } catch {}
++  } catch (e) {
++    console.warn('Failed to read friend IDs from localStorage:', e);
++  }
+   return ['student-1', 'student-2'];
+ }
+diff --git a/src/services/umsIntegration.ts b/src/services/umsIntegration.ts
+index 237d24f..a71b79b 100644
+--- a/src/services/umsIntegration.ts
++++ b/src/services/umsIntegration.ts
+@@ -41,7 +41,7 @@ export function validateItmbuEnrollment(enrollmentNo: string): { isValid: boolea
+     return { isValid: false, message: "ITMBU Enrollment number must be between 8 and 20 characters." };
+   }
+   // Allow alphanumeric, forward slashes, and hyphens
+-  const validPattern = /^[A-Z0-9\/-]+$/;
++  const validPattern = /^[A-Z0-9/-]+$/;
+   if (!validPattern.test(cleaned)) {
+     return { isValid: false, message: "Enrollment number contains invalid characters." };
+   }
+@@ -68,7 +68,7 @@ export async function saveVerifiedStudentProfile(
+   }
+ 
+   try {
+-    const updates: Record<string, any> = {
++    const updates: Record<string, string | number | boolean | null> = {
+       updated_at: new Date().toISOString(),
+     };
+ 
+@@ -85,9 +85,10 @@ export async function saveVerifiedStudentProfile(
+ 
+     if (error) throw error;
+     return { success: true };
+-  } catch (err: any) {
++  } catch (err: unknown) {
+     console.error("UMS integration error:", err);
+-    return { success: false, error: err.message || "Failed to update verified student profile." };
++    const msg = err instanceof Error ? err.message : "Failed to update verified student profile.";
++    return { success: false, error: msg };
+   }
+ }
+ 

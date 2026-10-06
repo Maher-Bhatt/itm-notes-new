@@ -46,7 +46,9 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
       try {
         const saved = localStorage.getItem('itm_notifications');
         if (saved) setNotifications(JSON.parse(saved));
-      } catch {}
+      } catch (e) {
+        console.warn('Failed to parse notifications from localStorage:', e);
+      }
     };
     window.addEventListener('itm_notifications_updated', handleUpdate);
     return () => window.removeEventListener('itm_notifications_updated', handleUpdate);

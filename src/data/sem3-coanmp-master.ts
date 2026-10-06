@@ -1,4 +1,4 @@
-import type { Subject } from './types';
+﻿import type { Subject } from './types';
 
 export const sem3CoanmpMaster: Subject = {
   id: 'sem3-coanmp',
@@ -1647,7 +1647,7 @@ flowchart TD
 > Write out $[A \\mid I]$ as a $3 \\times 6$ matrix. Maintain vertical divider lines separating the left 3 columns from the right 3 columns throughout your working steps. Never perform row operations on only the left side!
 
 > [!NOTE] **DEV BRAIN:**
-> In numerical software, computing an explicit matrix inverse $A^{-1}$ to solve $A x = b$ via $x = A^{-1} b$ is considered an anti-pattern. Computing $A^{-1}$ costs $n^3$ flops and introduces double the round-off error compared to direct Gaussian elimination or LU solve ($rac{2}{3} n^3$). *Never invert a matrix unless the inverse itself is explicitly needed!*
+> In numerical software, computing an explicit matrix inverse $A^{-1}$ to solve $A x = b$ via $x = A^{-1} b$ is considered an anti-pattern. Computing $A^{-1}$ costs $n^3$ flops and introduces double the round-off error compared to direct Gaussian elimination or LU solve ($\frac{2}{3} n^3$). *Never invert a matrix unless the inverse itself is explicitly needed!*
 
 > [!WARNING] **TRAP:**
 > When normalizing row $k$ by dividing by $a_{kk}$, do not forget to divide the corresponding elements in the right-hand identity matrix block!

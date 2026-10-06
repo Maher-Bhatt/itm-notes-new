@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -32,7 +31,7 @@ export default function AuthPage() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const fromState = (location.state as any)?.from;
+  const fromState = (location.state as { from?: string | { pathname?: string; search?: string; hash?: string } } | null)?.from;
   const fromLocation = fromState
     ? (typeof fromState === 'string' ? fromState : `${fromState.pathname || "/"}${fromState.search || ""}${fromState.hash || ""}`)
     : "/";
@@ -102,7 +101,7 @@ export default function AuthPage() {
               user_id: data.user.id,
               email: email,
               display_name: displayName,
-              role: email.toLowerCase() === "maherbhatt01@gmail.com" ? "admin" : "student",
+              role: "student",
               branch: null,
               program: null,
               semester: null,
@@ -123,8 +122,9 @@ export default function AuthPage() {
         toast.success("Account created successfully! Please sign in.");
         setIsLogin(true);
       }
-    } catch (error: any) {
-      toast.error(error.message || "An error occurred during authentication.");
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : "An error occurred during authentication.";
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
@@ -137,7 +137,7 @@ export default function AuthPage() {
       <main className="flex-1 flex items-center justify-center p-4">
         <div className="w-full max-w-md surface-elevated rounded-xl p-8 animate-slide-up">
           {/* Target Feature Requirement Banner */}
-          {(location.state as any)?.from && (
+          {(location.state as { from?: string } | null)?.from && (
             <div className="mb-6 p-3.5 rounded-xl bg-primary/10 border border-primary/20 text-xs text-primary font-medium flex items-center gap-2.5 animate-pulse">
               <Lock className="h-4 w-4 shrink-0 text-primary" />
               <div>

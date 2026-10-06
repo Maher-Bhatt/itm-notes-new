@@ -146,7 +146,7 @@ Register Transfer Language (RTL) is a symbolic notation used to describe precise
 - Simultaneous Swap: \`T: R1 <- R2, R2 <- R1\` (works simultaneously due to edge-triggered flip-flops).
 - Memory Read: \`DR <- M[AR]\`.`,
         examTip: 'Always mention that RTL transfers are copy operations (R1 is not emptied) and that P drives the LOAD input.',
-        devBrain: 'RTL is just assignment statements in code: P: R2 <- R1 is literally \`if (P) { R2 = R1; }\`.'
+        devBrain: 'RTL is just assignment statements in code: P: R2 <- R1 is literally `if (P) { R2 = R1; }`.'
       },
       {
         id: 'ca-q2',
@@ -541,24 +541,24 @@ Every instruction cycle begins with the Fetch and Decode routines, controlled by
 
 ### Detailed RTL Micro-operations:
 1. **Timing State $T_0$:**
-   $$\\mathbf{R\' T_0: AR \\leftarrow PC}$$
+   $$\\mathbf{R' T_0: AR \\leftarrow PC}$$
    - **Bus Action:** $S_2 S_1 S_0 = 010$ (puts PC onto common bus).
    - **Register Action:** \`LD(AR) = 1\`. AR now holds the exact memory address of instruction.
 
 2. **Timing State $T_1$:**
-   $$\\mathbf{R\' T_1: IR \\leftarrow M[AR], \\; PC \\leftarrow PC + 1}$$
+   $$\\mathbf{R' T_1: IR \\leftarrow M[AR], \\; PC \\leftarrow PC + 1}$$
    - **Bus Action:** $S_2 S_1 S_0 = 111$ (Memory read). \`Read = 1\`, \`LD(IR) = 1\`.
    - **Counter Action:** \`INR(PC) = 1\`. PC is incremented to point to next instruction.
 
 3. **Timing State $T_2$:**
-   $$\\mathbf{R\' T_2: D_0 \\dots D_7 \\leftarrow \\text{Decode } IR(12-14), \\; AR \\leftarrow IR(0-11), \\; I \\leftarrow IR(15)}$$
+   $$\\mathbf{R' T_2: D_0 \\dots D_7 \\leftarrow \\text{Decode } IR(12-14), \\; AR \\leftarrow IR(0-11), \\; I \\leftarrow IR(15)}$$
    - 3x8 Decoder converts 3 opcode bits into one active-high signal $D_0$ through $D_7$.
    - Lower 12 bits transferred to AR in anticipation of operand fetching.
    - Bit 15 loaded into mode flip-flop I.
 
 4. **Timing State $T_3$ (Indirect Evaluation):**
    - If Memory-Reference and Indirect ($D_7' I = 1$):
-     $$\\mathbf{D_7\' I T_3: AR \\leftarrow M[AR]}$$
+     $$\\mathbf{D_7' I T_3: AR \\leftarrow M[AR]}$$
    - If Memory-Reference and Direct ($D_7' I' = 1$): No action; AR already holds effective address.`
       },
 
@@ -631,9 +631,9 @@ Every instruction cycle begins with the Fetch and Decode routines, controlled by
 ### Summary Table:
 | Part | Operation | Result | Micro-operation Category |
 | :---: | :--- | :---: | :--- |
-| **(a)** | $R_3 \leftarrow R_1 + R_2$ | \`0000 0100\` (Carry=1) | Arithmetic Micro-operation |
-| **(b)** | $R_4 \leftarrow R_1 - R_2$ | \`0101 0110\` | Arithmetic Micro-operation |
-| **(c)** | $R_5 \leftarrow R_1 \wedge R_2$ | \`0000 0101\` | Logic Micro-operation |
+| **(a)** | $R_3 \\\\leftarrow R_1 + R_2$ | \`0000 0100\` (Carry=1) | Arithmetic Micro-operation |
+| **(b)** | $R_4 \\\\leftarrow R_1 - R_2$ | \`0101 0110\` | Arithmetic Micro-operation |
+| **(c)** | $R_5 \\\\leftarrow R_1 \\\\wedge R_2$ | \`0000 0101\` | Logic Micro-operation |
 | **(d)** | \`shl 2\` of $R_1$ | \`1011 0100\` | Shift Micro-operation |
 | **(e)** | \`ashr 2\` of $R_2$ | \`0001 0101\` | Shift Micro-operation |`
       },
@@ -729,7 +729,7 @@ In a modern CPU datapath, multiple general-purpose registers ($R_1$ to $R_7$) ar
 ### 14-Bit Control Word Format:
 $$\\mathbf{\\text{Control Word} = \\text{SELA (3 bits)} \\; | \\; \\text{SELB (3 bits)} \\; | \\; \\text{SELD (3 bits)} \\; | \\; \\text{OPR (5 bits)}}$$
 
-### Executing $R_3 \leftarrow R_1 + R_2$:
+### Executing $R_3 \\\\leftarrow R_1 + R_2$:
 | Step | Field | Binary Value | Function |
 | :---: | :--- | :---: | :--- |
 | **1** | **SELA** | \`001\` | MUX A selects register $R_1$ to drive the internal **A Bus**. |

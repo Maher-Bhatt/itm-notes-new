@@ -164,7 +164,9 @@ export default function GpaCalculatorPage() {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) return parsed;
       }
-    } catch {}
+    } catch (e) {
+      console.warn('Failed to load GPA subjects from localStorage:', e);
+    }
     return DEFAULT_INITIAL_SUBJECTS;
   });
 
@@ -172,7 +174,9 @@ export default function GpaCalculatorPage() {
   useEffect(() => {
     try {
       localStorage.setItem('itm_user_gpa_subjects', JSON.stringify(subjects));
-    } catch {}
+    } catch (e) {
+      console.warn('Failed to save GPA subjects to localStorage:', e);
+    }
   }, [subjects]);
 
   // Target SGPA for Goal Planner
@@ -196,11 +200,11 @@ export default function GpaCalculatorPage() {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
           // Normalize entries to guarantee present, absent, noAttendance exist
-          return parsed.map((item: any) => {
-            const present = typeof item.present === 'number' ? item.present : (item.attended || 0);
+          return parsed.map((item: Record<string, unknown>) => {
+            const present = typeof item.present === 'number' ? item.present : ((item.attended as number) || 0);
             const absent = typeof item.absent === 'number'
               ? item.absent
-              : Math.max(0, (item.total || 0) - present);
+              : Math.max(0, ((item.total as number) || 0) - present);
             const noAttendance = typeof item.noAttendance === 'number' ? item.noAttendance : 0;
             return {
               id: item.id || `att-${Date.now()}`,
@@ -213,7 +217,9 @@ export default function GpaCalculatorPage() {
           });
         }
       }
-    } catch {}
+    } catch (e) {
+      console.warn('Failed to load attendance records from localStorage:', e);
+    }
     return DEFAULT_INITIAL_ATTENDANCE;
   });
 
@@ -227,7 +233,9 @@ export default function GpaCalculatorPage() {
   useEffect(() => {
     try {
       localStorage.setItem('itm_attendance_records', JSON.stringify(subjectAttendance));
-    } catch {}
+    } catch (e) {
+      console.warn('Failed to save attendance records to localStorage:', e);
+    }
   }, [subjectAttendance]);
 
   // Selected Semester (1, 2, or 3)
@@ -242,7 +250,9 @@ export default function GpaCalculatorPage() {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) return parsed;
       }
-    } catch {}
+    } catch (e) {
+      console.warn('Failed to load CGPA history from localStorage:', e);
+    }
     return [
       { sem: 1, sgpa: 8.2, credits: 20 },
       { sem: 2, sgpa: 8.4, credits: 21 },
@@ -252,7 +262,9 @@ export default function GpaCalculatorPage() {
   useEffect(() => {
     try {
       localStorage.setItem('itm_cgpa_history', JSON.stringify(prevSemesters));
-    } catch {}
+    } catch (e) {
+      console.warn('Failed to save CGPA history to localStorage:', e);
+    }
   }, [prevSemesters]);
 
   const handleSemesterSwitch = (sem: 1 | 2 | 3) => {
@@ -376,7 +388,17 @@ export default function GpaCalculatorPage() {
     };
   }, [prevSemesters, result]);
 
-  // Overall attendance statistics
+  // Keep overall counters in sync whenever per-subject attendance rows change.
+  // This ensures the summary cards always reflect the per-subject table values.
+  useEffect(() => {
+    if (subjectAttendance.length === 0) return;
+    const derivedTotal = subjectAttendance.reduce((s, a) => s + a.present + a.absent, 0);
+    const derivedAttended = subjectAttendance.reduce((s, a) => s + a.present, 0);
+    setOverallTotalClasses(derivedTotal > 0 ? derivedTotal : 1);
+    setOverallAttendedClasses(derivedAttended);
+  }, [subjectAttendance]);
+
+  // Overall attendance statistics — now always derived from subjectAttendance via the counters above
   const attendanceStats = useMemo(() => {
     const total = Math.max(1, overallTotalClasses);
     const attended = Math.min(total, Math.max(0, overallAttendedClasses));
@@ -517,15 +539,13 @@ export default function GpaCalculatorPage() {
         return { ...s, [type]: s[type] + 1 };
       })
     );
+    // overallTotalClasses / overallAttendedClasses are auto-synced via useEffect above
     if (type === 'present') {
-      setOverallAttendedClasses((prev) => prev + 1);
-      setOverallTotalClasses((prev) => prev + 1);
       toast.success('Marked Present (+1)');
     } else if (type === 'absent') {
-      setOverallTotalClasses((prev) => prev + 1);
       toast.error('Marked Absent (+1 Missed)');
     } else {
-      toast.info('Marked No Attendance / Class Cancelled (Doesn\'t penalize 75%)');
+      toast.info("Marked No Attendance / Class Cancelled (Doesn't penalize 75%)");
     }
   };
 

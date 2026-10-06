@@ -41,7 +41,7 @@ export function validateItmbuEnrollment(enrollmentNo: string): { isValid: boolea
     return { isValid: false, message: "ITMBU Enrollment number must be between 8 and 20 characters." };
   }
   // Allow alphanumeric, forward slashes, and hyphens
-  const validPattern = /^[A-Z0-9\/-]+$/;
+  const validPattern = /^[A-Z0-9/-]+$/;
   if (!validPattern.test(cleaned)) {
     return { isValid: false, message: "Enrollment number contains invalid characters." };
   }
@@ -68,7 +68,7 @@ export async function saveVerifiedStudentProfile(
   }
 
   try {
-    const updates: Record<string, any> = {
+    const updates: Record<string, string | number | boolean | null> = {
       updated_at: new Date().toISOString(),
     };
 
@@ -85,9 +85,10 @@ export async function saveVerifiedStudentProfile(
 
     if (error) throw error;
     return { success: true };
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("UMS integration error:", err);
-    return { success: false, error: err.message || "Failed to update verified student profile." };
+    const msg = err instanceof Error ? err.message : "Failed to update verified student profile.";
+    return { success: false, error: msg };
   }
 }
 

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
@@ -72,8 +71,9 @@ export default function OnboardingPage() {
       const url = await uploadAvatar(file);
       setAvatarUrl(url);
       toast.success("Profile photo uploaded!");
-    } catch (err: any) {
-      toast.error(err.message || "Failed to upload photo.");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to upload photo.";
+      toast.error(msg);
     } finally {
       setIsUploadingPhoto(false);
     }
@@ -121,7 +121,9 @@ export default function OnboardingPage() {
       setAcademicContext({
         semesterId: `sem-${semNumber}`,
       });
-    } catch {}
+    } catch (err) {
+      console.warn('Failed to save onboarding skip data:', err);
+    }
     navigate("/dashboard");
   };
 

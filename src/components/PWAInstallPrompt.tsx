@@ -3,7 +3,7 @@ import { Download, X, Sparkles } from 'lucide-react';
 
 export function PWAInstallPrompt() {
   const [showPrompt, setShowPrompt] = useState(false);
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [deferredPrompt, setDeferredPrompt] = useState<Event | null>(null);
 
   useEffect(() => {
     // Track visit count
@@ -17,7 +17,9 @@ export function PWAInstallPrompt() {
       if (visits >= 3) {
         setShowPrompt(true);
       }
-    } catch {}
+    } catch (e) {
+      console.warn('Failed to read PWA install state from localStorage:', e);
+    }
 
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
@@ -45,7 +47,9 @@ export function PWAInstallPrompt() {
       setShowPrompt(false);
       try {
         localStorage.setItem('itm_pwa_install_dismissed', 'true');
-      } catch {}
+      } catch (e) {
+        console.warn('Failed to save PWA dismissal:', e);
+      }
       alert('To install ITM Notes, tap your browser menu (⋮ or Share) and select "Add to Home Screen" or "Install App".');
     }
   };
@@ -54,7 +58,9 @@ export function PWAInstallPrompt() {
     setShowPrompt(false);
     try {
       localStorage.setItem('itm_pwa_install_dismissed', 'true');
-    } catch {}
+    } catch (e) {
+      console.warn('Failed to save PWA dismissal:', e);
+    }
   };
 
   if (!showPrompt) return null;

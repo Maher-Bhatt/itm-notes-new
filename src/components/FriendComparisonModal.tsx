@@ -30,8 +30,8 @@ export function FriendComparisonModal({
       if (raw) {
         const records = JSON.parse(raw);
         if (Array.isArray(records) && records.length > 0) {
-          const totalAttended = records.reduce((acc: number, r: any) => acc + (Number(r.attended) || 0), 0);
-          const totalConducted = records.reduce((acc: number, r: any) => acc + (Number(r.total) || 0), 0);
+          const totalAttended = records.reduce((acc: number, r: Record<string, unknown>) => acc + (Number(r.attended) || 0), 0);
+          const totalConducted = records.reduce((acc: number, r: Record<string, unknown>) => acc + (Number(r.total) || 0), 0);
           if (totalConducted > 0) {
             return Math.round((totalAttended / totalConducted) * 100);
           }

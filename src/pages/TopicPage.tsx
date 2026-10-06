@@ -314,7 +314,9 @@ export default function TopicPage() {
             subjectName: subject?.name || "Unknown Subject",
           })
         );
-      } catch {}
+      } catch (e) {
+        console.warn('Failed to save last visited topic to localStorage:', e);
+      }
     }
   }, [subjectId, resolvedTopic?.topic?.id, resolvedTopic?.topic?.title, subject?.name]);
 
@@ -340,7 +342,7 @@ export default function TopicPage() {
         .replace(/```[\s\S]*?```/g, "")
         .replace(/<[^>]*>/g, "")
         .replace(/#{1,6}\s+/g, "")
-        .replace(/\[([^\]]+)\]\([^\)]+\)/g, "$1")
+        .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
         .replace(/[*_~`]/g, "")
         .replace(/\|[^\n]+\|/g, "")
         .trim();

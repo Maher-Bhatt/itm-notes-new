@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { createContext, useContext, useEffect, useState } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
@@ -65,11 +64,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       ]);
 
       if (profileResponse.data) {
-        setProfile(profileResponse.data as any);
+        setProfile(profileResponse.data as UserProfile);
         try {
           localStorage.setItem('itm_student_profile', JSON.stringify(profileResponse.data));
-        } catch {
-          // ignore
+        } catch (e) {
+          console.warn('Failed to cache profile in localStorage:', e);
         }
       } else {
         // Auto-create initial profile for user in Supabase with genuine data
@@ -88,24 +87,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }).select().maybeSingle();
 
         if (data) {
-          setProfile(data as any);
+          setProfile(data as UserProfile);
           try {
             localStorage.setItem('itm_student_profile', JSON.stringify(data));
-          } catch {}
+          } catch (e) {
+            console.warn('Failed to cache profile in localStorage:', e);
+          }
         }
       }
       
       if (rolesResponse.data) {
         const roles = rolesResponse.data.map(r => r.role);
-        if (roles.includes('admin') || userAuth.email === 'maherbhatt01@gmail.com') {
+        if (roles.includes('admin')) {
           setRole('admin');
         } else if (roles.length > 0) {
           setRole(roles[0] as AppRole);
         } else {
           setRole('user');
         }
-      } else if (userAuth.email === 'maherbhatt01@gmail.com') {
-        setRole('admin');
+      } else {
+        setRole('user');
       }
     } catch (error) {
       console.error("Error fetching user data from Supabase:", error);
@@ -156,7 +157,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const updateProfile = async (updates: Partial<UserProfile>) => {
     if (!user?.id) return;
 
-    const payload: Record<string, any> = {
+    const payload: Record<string, string | number | boolean | null> = {
       user_id: user.id,
       updated_at: new Date().toISOString(),
     };
@@ -228,10 +229,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         console.error("Database update error:", error);
         // Do not block student UI if local optimistic state succeeded
       } else if (data) {
-        setProfile(data as any);
+        setProfile(data as UserProfile);
         try {
           localStorage.setItem('itm_student_profile', JSON.stringify(data));
-        } catch {}
+        } catch (e) {
+          console.warn('Failed to cache profile in localStorage:', e);
+        }
       }
     } catch (err) {
       console.error("Failed to update profile in Supabase:", err);
@@ -283,7 +286,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const publicUrl = publicUrlData.publicUrl;
       await updateProfile({ avatar_url: publicUrl });
       return publicUrl;
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Avatar upload exception:", err);
       throw err;
     }

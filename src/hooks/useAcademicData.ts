@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -99,10 +98,10 @@ export function useSubject(subjectId?: string) {
       
       // Sort units and topics
       if (data.units) {
-        data.units.sort((a: any, b: any) => a.order_index - b.order_index);
-        data.units.forEach((unit: any) => {
+        data.units.sort((a: { order_index: number }, b: { order_index: number }) => a.order_index - b.order_index);
+        data.units.forEach((unit: { topics?: { order_index: number }[] }) => {
           if (unit.topics) {
-            unit.topics.sort((a: any, b: any) => a.order_index - b.order_index);
+            unit.topics.sort((a: { order_index: number }, b: { order_index: number }) => a.order_index - b.order_index);
           }
         });
       }
@@ -129,9 +128,10 @@ export function useTopic(topicId?: string) {
         .single();
       if (error) throw error;
 
-      if (data.examples) data.examples.sort((a: any, b: any) => a.order_index - b.order_index);
-      if (data.key_points) data.key_points.sort((a: any, b: any) => a.order_index - b.order_index);
-      if (data.mcqs) data.mcqs.sort((a: any, b: any) => a.order_index - b.order_index);
+      type Orderable = { order_index: number };
+      if (data.examples) data.examples.sort((a: Orderable, b: Orderable) => a.order_index - b.order_index);
+      if (data.key_points) data.key_points.sort((a: Orderable, b: Orderable) => a.order_index - b.order_index);
+      if (data.mcqs) data.mcqs.sort((a: Orderable, b: Orderable) => a.order_index - b.order_index);
 
       return data;
     },

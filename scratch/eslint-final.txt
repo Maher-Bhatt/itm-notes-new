@@ -1,0 +1,172 @@
+﻿
+E:\PROJECT\itm-notes-new-main\src\components\AnnouncementBanner.tsx
+  13:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+  78:13  error    Empty block statement                                                                                                           no-empty
+
+E:\PROJECT\itm-notes-new-main\src\components\AudioNotesPlayer.tsx
+  22:39  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+E:\PROJECT\itm-notes-new-main\src\components\ChartComponents.tsx
+  1:1  error  Do not use "@ts-nocheck" because it alters compilation errors  @typescript-eslint/ban-ts-comment
+
+E:\PROJECT\itm-notes-new-main\src\components\FriendComparisonModal.tsx
+  33:65  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  34:66  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+E:\PROJECT\itm-notes-new-main\src\components\KeyboardShortcutsModal.tsx
+  37:6  warning  React Hook useEffect has a missing dependency: 'setOpen'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+E:\PROJECT\itm-notes-new-main\src\components\MarkdownRenderer.tsx
+   69:17  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+  102:45  error    Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+
+E:\PROJECT\itm-notes-new-main\src\components\SearchDialog.tsx
+  1:1  error  Do not use "@ts-nocheck" because it alters compilation errors  @typescript-eslint/ban-ts-comment
+
+E:\PROJECT\itm-notes-new-main\src\components\SupportFlow.tsx
+  20:17  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+E:\PROJECT\itm-notes-new-main\src\components\TestMe.tsx
+  57:6  warning  React Hook useEffect has a missing dependency: 'timeLeft'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+E:\PROJECT\itm-notes-new-main\src\components\ui\badge.tsx
+  29:17  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+E:\PROJECT\itm-notes-new-main\src\components\ui\button.tsx
+  47:18  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+E:\PROJECT\itm-notes-new-main\src\components\ui\command.tsx
+  24:11  error  An interface declaring no members is equivalent to its supertype  @typescript-eslint/no-empty-object-type
+
+E:\PROJECT\itm-notes-new-main\src\components\ui\form.tsx
+  129:10  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+E:\PROJECT\itm-notes-new-main\src\components\ui\navigation-menu.tsx
+  111:3  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+E:\PROJECT\itm-notes-new-main\src\components\ui\sidebar.tsx
+  636:3  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+E:\PROJECT\itm-notes-new-main\src\components\ui\sonner.tsx
+  27:19  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+E:\PROJECT\itm-notes-new-main\src\components\ui\toggle.tsx
+  37:18  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+E:\PROJECT\itm-notes-new-main\src\contexts\AcademicContext.tsx
+  114:17  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+E:\PROJECT\itm-notes-new-main\src\contexts\AuthContext.tsx
+  319:17  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+E:\PROJECT\itm-notes-new-main\src\contexts\PomodoroContext.tsx
+  175:6   warning  React Hook useEffect has a missing dependency: 'timeLeft'. Either include it or remove the dependency array                     react-hooks/exhaustive-deps
+  255:17  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+E:\PROJECT\itm-notes-new-main\src\data\subjects.ts
+  1:1  error  Do not use "@ts-nocheck" because it alters compilation errors  @typescript-eslint/ban-ts-comment
+
+E:\PROJECT\itm-notes-new-main\src\hooks\useAcademicData.ts
+    1:1   error  Do not use "@ts-nocheck" because it alters compilation errors  @typescript-eslint/ban-ts-comment
+  102:29  error  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  102:37  error  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  103:35  error  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  105:34  error  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  105:42  error  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  132:49  error  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  132:57  error  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  133:53  error  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  133:61  error  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  134:41  error  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  134:49  error  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+
+E:\PROJECT\itm-notes-new-main\src\hooks\useGamification.tsx
+    1:1   error    Do not use "@ts-nocheck" because it alters compilation errors                                                                   @typescript-eslint/ban-ts-comment
+   43:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+  336:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+  355:49  error    Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+  424:55  error    Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+  546:6   warning  React Hook useCallback has a missing dependency: 'unlockAchievement'. Either include it or remove the dependency array          react-hooks/exhaustive-deps
+  796:17  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+E:\PROJECT\itm-notes-new-main\src\pages\AuthPage.tsx
+    1:1    error  Do not use "@ts-nocheck" because it alters compilation errors  @typescript-eslint/ban-ts-comment
+   35:40   error  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  126:21   error  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  140:31   error  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  144:129  error  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+
+E:\PROJECT\itm-notes-new-main\src\pages\BookmarksPage.tsx
+   72:45  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  198:64  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+E:\PROJECT\itm-notes-new-main\src\pages\CommunityPage.tsx
+    1:1   error  Do not use "@ts-nocheck" because it alters compilation errors  @typescript-eslint/ban-ts-comment
+  135:38  error  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  135:59  error  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+
+E:\PROJECT\itm-notes-new-main\src\pages\DashboardPage.tsx
+  116:6  warning  React Hook useEffect has a missing dependency: 'filterSem'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+E:\PROJECT\itm-notes-new-main\src\pages\GpaCalculatorPage.tsx
+   48:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+   59:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+   70:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+  104:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+  114:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+E:\PROJECT\itm-notes-new-main\src\pages\ImpQuestionsSubjectsPage.tsx
+  30:9  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+E:\PROJECT\itm-notes-new-main\src\pages\Index.tsx
+   1:1  error    Do not use "@ts-nocheck" because it alters compilation errors                                                      @typescript-eslint/ban-ts-comment
+  81:6  warning  React Hook useEffect has a missing dependency: 'semesterFilter'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+E:\PROJECT\itm-notes-new-main\src\pages\OnboardingPage.tsx
+   1:1   error    Do not use "@ts-nocheck" because it alters compilation errors                                                   @typescript-eslint/ban-ts-comment
+  64:6   warning  React Hook useEffect has a missing dependency: 'displayName'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  75:19  error    Unexpected any. Specify a different type                                                                        @typescript-eslint/no-explicit-any
+
+E:\PROJECT\itm-notes-new-main\src\pages\ProfilePage.tsx
+    1:1   error    Do not use "@ts-nocheck" because it alters compilation errors                                                                   @typescript-eslint/ban-ts-comment
+   43:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+   52:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+  151:19  error    Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+  453:66  error    Unexpected any. Specify a different type                                                                                        @typescript-eslint/no-explicit-any
+
+E:\PROJECT\itm-notes-new-main\src\pages\PythonImpQuestionsPage.tsx
+  469:46  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+E:\PROJECT\itm-notes-new-main\src\pages\SubjectDashboard.tsx
+  55:32  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  70:42  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  74:42  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+E:\PROJECT\itm-notes-new-main\src\pages\TopicPage.tsx
+  160:32  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  171:42  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  175:42  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  194:30  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  205:54  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  207:42  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  317:15  error  Empty block statement                     no-empty
+
+E:\PROJECT\itm-notes-new-main\src\pages\admin\AdminDashboard.tsx
+    1:1   error  Do not use "@ts-nocheck" because it alters compilation errors  @typescript-eslint/ban-ts-comment
+   60:54  error  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  128:54  error  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  269:26  error  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  356:55  error  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  767:76  error  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+
+E:\PROJECT\itm-notes-new-main\src\pages\admin\SeedPage.tsx
+    1:1   error  Do not use "@ts-nocheck" because it alters compilation errors  @typescript-eslint/ban-ts-comment
+  174:21  error  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+
+E:\PROJECT\itm-notes-new-main\src\services\communityService.ts
+    1:1   error  Do not use "@ts-nocheck" because it alters compilation errors  @typescript-eslint/ban-ts-comment
+  104:31  error  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+  220:32  error  Unexpected any. Specify a different type                       @typescript-eslint/no-explicit-any
+
+Γ£û 93 problems (63 errors, 30 warnings)
+

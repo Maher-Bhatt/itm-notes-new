@@ -17,7 +17,7 @@ import PythonImpQuestionsPage from "./pages/PythonImpQuestionsPage";
 import AuthPage from "./pages/AuthPage";
 import DashboardPage from "./pages/DashboardPage";
 import OnboardingPage from "./pages/OnboardingPage";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import BookmarksPage from "./pages/BookmarksPage";
 import MaterialsPage from "./pages/MaterialsPage";
 import QuizPage from "./pages/QuizPage";
@@ -27,13 +27,14 @@ import ProfilePage from "./pages/ProfilePage";
 import GpaCalculatorPage from "./pages/GpaCalculatorPage";
 import SubjectCheatSheetPage from "./pages/SubjectCheatSheetPage";
 import { PomodoroProvider } from "@/contexts/PomodoroContext";
-import { GamificationProvider } from "@/hooks/useGamification";
+import { GamificationProvider, useGamification } from "@/hooks/useGamification";
 import { PomodoroFloatingWidget } from "@/components/PomodoroFloatingWidget";
 import { AchievementCelebrationModal } from "@/components/AchievementCelebrationModal";
 import { AnnouncementBanner } from "@/components/AnnouncementBanner";
 import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 import { PageFallback } from "@/components/PageSkeletonLoaders";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import { useAuth } from "@/contexts/AuthContext";
 
 // React.lazy + Suspense code splitting for heavy interactive modules
 const CodingLabPage = lazy(() => import("./pages/CodingLabPage"));
@@ -41,6 +42,21 @@ const CommunityPage = lazy(() => import("./pages/CommunityPage"));
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
 
 const queryClient = new QueryClient();
+
+/** Runs once on app startup when user is authenticated to maintain streak. */
+function AppStartup() {
+  const { user } = useAuth();
+  const { checkDailyStreak } = useGamification();
+
+  useEffect(() => {
+    if (user) {
+      checkDailyStreak();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id]);
+
+  return null;
+}
 
 const App = () => (
   <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
@@ -54,6 +70,7 @@ const App = () => (
               <Sonner />
               <BrowserRouter>
                 <ErrorBoundary>
+                  <AppStartup />
                   <AnnouncementBanner />
                   <PWAInstallPrompt />
                   <PomodoroFloatingWidget />

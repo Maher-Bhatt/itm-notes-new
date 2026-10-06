@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
@@ -124,7 +124,9 @@ export default function CommunityPage() {
     try {
       const raw = localStorage.getItem('itm_user_classmates_network');
       if (raw) return JSON.parse(raw);
-    } catch {}
+    } catch (e) {
+      console.warn('Failed to load classmates from localStorage:', e);
+    }
     return INITIAL_CLASSMATES;
   });
 
@@ -158,7 +160,9 @@ export default function CommunityPage() {
         setClassmates(realClassmates);
         try {
           localStorage.setItem('itm_user_classmates_network', JSON.stringify(realClassmates));
-        } catch {}
+        } catch (e) {
+          console.warn('Failed to cache classmates in localStorage:', e);
+        }
       }
     } catch (err) {
       console.error('Failed to load real classmates from Supabase:', err);
@@ -185,14 +189,18 @@ export default function CommunityPage() {
     try {
       const raw = localStorage.getItem('itm_user_friends_ids');
       if (raw) return JSON.parse(raw);
-    } catch {}
+    } catch (e) {
+      console.warn('Failed to load friend IDs from localStorage:', e);
+    }
     return [];
   });
 
   useEffect(() => {
     try {
       localStorage.setItem('itm_user_friends_ids', JSON.stringify(friendIds));
-    } catch {}
+    } catch (e) {
+      console.warn('Failed to save friend IDs to localStorage:', e);
+    }
   }, [friendIds]);
 
   const [classmateTab, setClassmateTab] = useState<'friends' | 'all'>('all');
@@ -203,7 +211,7 @@ export default function CommunityPage() {
   const [newFriendBranch, setNewFriendBranch] = useState(profile?.branch || "Computer Science & Engineering");
 
   // Load feed directly from Supabase Backend & listen for realtime updates
-  const loadFeed = async (showLoading = false) => {
+  const loadFeed = useCallback(async (showLoading = false) => {
     if (showLoading) setIsLoadingPosts(true);
     try {
       const fetched = await fetchCommunityPosts(user?.id);
@@ -214,7 +222,7 @@ export default function CommunityPage() {
       if (showLoading) setIsLoadingPosts(false);
       setIsRefreshing(false);
     }
-  };
+  }, [user?.id]);
 
   useEffect(() => {
     loadFeed(true);
@@ -225,7 +233,7 @@ export default function CommunityPage() {
     return () => {
       unsubscribe();
     };
-  }, [user?.id]);
+  }, [loadFeed]);
 
   // Sync friends from Supabase Backend
   useEffect(() => {
@@ -404,7 +412,9 @@ export default function CommunityPage() {
         const currentNotifs = JSON.parse(localStorage.getItem('itm_notifications') || '[]');
         localStorage.setItem('itm_notifications', JSON.stringify([notif, ...currentNotifs.slice(0, 29)]));
         window.dispatchEvent(new Event('itm_notifications_updated'));
-      } catch {}
+      } catch (e) {
+        console.warn('Failed to save notification to localStorage:', e);
+      }
 
       toast.success('Comment added (+5 XP)!');
     } catch (err) {

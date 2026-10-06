@@ -5,6 +5,7 @@ import { subjects } from "@/data/subjects";
 import { MCQQuiz } from "@/components/MCQQuiz";
 import { Button } from "@/components/ui/button";
 import { useGamification } from "@/hooks/useGamification";
+import type { MCQ } from "@/data/types";
 import { 
   BookOpen, 
   Sparkles, 
@@ -41,12 +42,12 @@ export default function QuizPage() {
 
   // Total MCQs across all Semester 3 subjects
   const allSem3Mcqs = useMemo(() => {
-    let pool: any[] = [];
+    let pool: MCQ[] = [];
     availableSubjects.forEach((s) => {
       s.units.forEach((u) => {
         u.topics.forEach((t) => {
           if (t.mcqs && t.mcqs.length > 0) {
-            const tagged = t.mcqs.map((m: any) => ({
+            const tagged = t.mcqs.map((m) => ({
               ...m,
               subjectName: s.name,
               topicTitle: t.title,
@@ -61,7 +62,7 @@ export default function QuizPage() {
 
   // Selected MCQs pool based on subject and count
   const mcqs = useMemo(() => {
-    let pool: any[] = [];
+    let pool: MCQ[] = [];
 
     if (selectedSubject === "all-sem3") {
       pool = [...allSem3Mcqs];
@@ -71,7 +72,7 @@ export default function QuizPage() {
         subj.units.forEach((u) => {
           u.topics.forEach((t) => {
             if (t.mcqs) {
-              const tagged = t.mcqs.map((m: any) => ({
+              const tagged = t.mcqs.map((m) => ({
                 ...m,
                 subjectName: subj.name,
                 topicTitle: t.title,
@@ -115,7 +116,9 @@ export default function QuizPage() {
         timestamp: new Date().toISOString()
       });
       localStorage.setItem('itm_quiz_scores', JSON.stringify(list.slice(0, 30)));
-    } catch {}
+    } catch (e) {
+      console.warn('Failed to save quiz score to localStorage:', e);
+    }
     toast.success(`Quiz Completed! You scored ${score} / ${total}`, {
       description: score === total ? "Perfect Score! 🌟 +100 Bonus XP" : "+50 XP awarded to your profile.",
     });

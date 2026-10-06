@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Subject } from './types';
 import { computerArchitecture } from './computer-architecture';
 import { sem3JavaMaster } from './sem3-java-master';

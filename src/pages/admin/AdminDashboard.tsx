@@ -61,7 +61,9 @@ export default function AdminDashboard() {
     try {
       const raw = localStorage.getItem('itm_announcements');
       if (raw) return JSON.parse(raw);
-    } catch {}
+    } catch (e) {
+      console.warn('Failed to load announcements from localStorage:', e);
+    }
     return [
       {
         id: 'ann-exam-week',
@@ -138,7 +140,9 @@ export default function AdminDashboard() {
           status: 'pending',
         }));
       }
-    } catch {}
+    } catch (e) {
+      console.warn('Failed to load reported posts from localStorage:', e);
+    }
     return [
       {
         id: 'rep-sample-1',
@@ -165,7 +169,9 @@ export default function AdminDashboard() {
       const idsRaw = localStorage.getItem('itm_reported_posts');
       const ids: string[] = idsRaw ? JSON.parse(idsRaw) : [];
       localStorage.setItem('itm_reported_posts', JSON.stringify(ids.filter((x) => x !== postId)));
-    } catch {}
+    } catch (e) {
+      console.warn('Failed to update reported posts in localStorage:', e);
+    }
     toast.success('Reported post deleted from community!');
   };
 

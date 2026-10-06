@@ -47,7 +47,8 @@ export function AnnouncementBanner() {
       }
 
       setAnnouncement(current);
-    } catch {
+    } catch (e) {
+      console.warn('Failed to load announcement:', e);
       setAnnouncement(null);
     }
   };
@@ -74,7 +75,9 @@ export function AnnouncementBanner() {
         dismissed.push(announcement.id);
         localStorage.setItem('itm_dismissed_announcements', JSON.stringify(dismissed));
       }
-    } catch {}
+    } catch (e) {
+      console.warn('Failed to save dismissed announcement to localStorage:', e);
+    }
     setAnnouncement(null);
   };
 

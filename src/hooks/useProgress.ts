@@ -12,8 +12,9 @@ function loadLocal(): Progress {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) return JSON.parse(stored);
-  } catch {}
-  return { completedTopics: [], bookmarkedTopics: [], mcqScores: {} };
+  } catch (e) {
+    console.warn('Failed to load progress from localStorage:', e);
+  }  return { completedTopics: [], bookmarkedTopics: [], mcqScores: {} };
 }
 
 export function useProgress() {

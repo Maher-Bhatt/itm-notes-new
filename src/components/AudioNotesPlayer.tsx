@@ -19,15 +19,15 @@ export function AudioNotesPlayer({ title, textToRead }: AudioNotesPlayerProps) {
   const isPausedRef = useRef(false);
   const currentChunkIndexRef = useRef(0);
   const chunksRef = useRef<string[]>([]);
-  const keepAliveIntervalRef = useRef<any>(null);
+  const keepAliveIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Clean raw text into natural, spoken English
   const cleanSpeechText = useCallback((text: string) => {
     return text
       .replace(/```[\s\S]*?```/g, ' [Code example omitted for audio] ')
       .replace(/`([^`]+)`/g, '$1')
-      .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1')
-      .replace(/!\[([^\]]*)\]\([^\)]+\)/g, '')
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+      .replace(/!\[([^\]]*)\]\([^)]+\)/g, '')
       .replace(/[#*_~>]/g, ' ')
       .replace(/\\\[[\s\S]*?\\\]/g, ' [Formula] ')
       .replace(/\\\([\s\S]*?\\\)/g, ' [Formula] ')
@@ -89,7 +89,7 @@ export function AudioNotesPlayer({ title, textToRead }: AudioNotesPlayerProps) {
     return () => {
       stopPlayback();
     };
-  }, []);
+  }, [stopPlayback]);
 
   // Chrome TTS Keep-Alive Workaround (prevents speech from cutting off after 15 seconds)
   const startKeepAlive = () => {

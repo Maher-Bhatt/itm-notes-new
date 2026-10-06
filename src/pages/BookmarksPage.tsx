@@ -42,7 +42,9 @@ export default function BookmarksPage() {
     try {
       const raw = localStorage.getItem('itm_bookmark_notes');
       if (raw) return JSON.parse(raw);
-    } catch {}
+    } catch (e) {
+      console.warn('Failed to load bookmark notes from localStorage:', e);
+    }
     return {};
   });
 
@@ -55,7 +57,9 @@ export default function BookmarksPage() {
   useEffect(() => {
     try {
       localStorage.setItem('itm_bookmark_notes', JSON.stringify(notes));
-    } catch {}
+    } catch (e) {
+      console.warn('Failed to save bookmark notes to localStorage:', e);
+    }
   }, [notes]);
 
   // Extract all bookmarked topics from subjects data
@@ -85,7 +89,7 @@ export default function BookmarksPage() {
 
   // Filtered & Sorted items
   const processedItems = useMemo(() => {
-    let list = bookmarkedItems.filter((item) =>
+    const list = bookmarkedItems.filter((item) =>
       item.topicTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.subjectName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.unitTitle.toLowerCase().includes(searchQuery.toLowerCase())

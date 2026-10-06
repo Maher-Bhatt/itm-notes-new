@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Header } from '@/components/Header';
@@ -116,7 +115,9 @@ export default function ProfilePage() {
         const parsed = JSON.parse(raw);
         if (Array.isArray(parsed)) return parsed;
       }
-    } catch {}
+    } catch (e) {
+      console.warn('Failed to load quiz history from localStorage:', e);
+    }
     return [];
   });
 
@@ -146,9 +147,10 @@ export default function ProfilePage() {
       const uploadedUrl = await uploadAvatar(file);
       setAvatarUrl(uploadedUrl);
       toast.success('Profile photo uploaded and saved successfully to database!');
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Failed to upload avatar:', err);
-      toast.error(err.message || 'Could not upload photo. Please try a different image.');
+      const msg = err instanceof Error ? err.message : 'Could not upload photo. Please try a different image.';
+      toast.error(msg);
     } finally {
       setIsUploadingPhoto(false);
     }

@@ -143,7 +143,9 @@ export async function fetchCommunityPosts(currentUserId?: string): Promise<Commu
     // Save combined posts to local cache
     try {
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(remotePosts));
-    } catch {}
+    } catch (e) {
+      console.warn('Failed to cache community posts in localStorage:', e);
+    }
 
     return remotePosts.length > 0 ? remotePosts : INITIAL_POSTS;
   } catch (error) {
@@ -201,7 +203,9 @@ export async function createCommunityPost(
         post_id: newId,
         user_id: post.authorId,
       });
-    } catch {}
+    } catch (e) {
+      console.warn('Failed to register initial post like:', e);
+    }
   }
 
   const createdPost: CommunityPost = {
@@ -225,7 +229,9 @@ export async function createCommunityPost(
   const cached = getLocalCachedPosts();
   try {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify([createdPost, ...cached]));
-  } catch {}
+  } catch (e) {
+    console.warn('Failed to update cached posts in localStorage:', e);
+  }
 
   return createdPost;
 }
@@ -356,7 +362,9 @@ export async function fetchUserFriends(userId: string): Promise<string[]> {
       const ids = data.map((d) => d.friend_id);
       try {
         localStorage.setItem(LOCAL_FRIENDS_KEY, JSON.stringify(ids));
-      } catch {}
+      } catch (e) {
+        console.warn('Failed to cache friend IDs in localStorage:', e);
+      }
       return ids;
     }
   } catch (err) {
@@ -439,7 +447,9 @@ function getLocalCachedPosts(): CommunityPost[] {
   try {
     const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (raw) return JSON.parse(raw);
-  } catch {}
+  } catch (e) {
+    console.warn('Failed to read cached posts from localStorage:', e);
+  }
   return INITIAL_POSTS;
 }
 
@@ -447,6 +457,8 @@ function getLocalFriendIds(): string[] {
   try {
     const raw = localStorage.getItem(LOCAL_FRIENDS_KEY);
     if (raw) return JSON.parse(raw);
-  } catch {}
+  } catch (e) {
+    console.warn('Failed to read friend IDs from localStorage:', e);
+  }
   return ['student-1', 'student-2'];
 }
