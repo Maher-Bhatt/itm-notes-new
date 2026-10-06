@@ -368,6 +368,7 @@ interface GamificationContextType {
   checkDailyStreak: () => void;
   addStudyMinutes: (minutes: number) => void;
   recordTopicRead: (topicId: string) => void;
+  recordTopicCompleted: (topicId?: string) => void;
   recordQuizCompleted: (isPerfect: boolean) => void;
   claimQuest: (questId: string) => void;
 }
@@ -807,6 +808,7 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
       checkDailyStreak,
       addStudyMinutes,
       recordTopicRead,
+      recordTopicCompleted: (topicId?: string) => recordTopicRead(topicId || ''),
       recordQuizCompleted,
       claimQuest,
     }}>

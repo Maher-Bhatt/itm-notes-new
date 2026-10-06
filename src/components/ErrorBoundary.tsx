@@ -30,9 +30,21 @@ export class ErrorBoundary extends Component<Props, State> {
               <span className="text-2xl">⚠️</span>
             </div>
             <h1 className="text-xl font-bold mb-2">Something went wrong</h1>
-            <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+            <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
               An unexpected error occurred. Try refreshing the page or going back to the homepage.
             </p>
+            {this.state.error && (
+              <div className="text-left bg-destructive/10 border border-destructive/20 rounded-xl p-4 mb-6 max-h-48 overflow-y-auto">
+                <p className="text-xs font-mono text-destructive font-semibold break-all">
+                  {this.state.error.name}: {this.state.error.message}
+                </p>
+                {this.state.error.stack && (
+                  <pre className="text-[10px] font-mono text-muted-foreground mt-2 whitespace-pre-wrap break-all">
+                    {this.state.error.stack.slice(0, 500)}
+                  </pre>
+                )}
+              </div>
+            )}
             <div className="flex gap-3 justify-center">
               <button
                 onClick={() => window.location.reload()}

@@ -266,9 +266,13 @@ export default function TopicPage() {
 
   // Check daily streak when user visits topic & unlock MST Survivor for CA
   useEffect(() => {
-    checkDailyStreak();
-    if (subjectId === 'ca-101') {
-      unlockAchievement('mst-survivor');
+    try {
+      checkDailyStreak();
+      if (subjectId === 'ca-101') {
+        unlockAchievement('mst-survivor');
+      }
+    } catch (e) {
+      console.warn('Gamification check error:', e);
     }
   }, [subjectId, checkDailyStreak, unlockAchievement]);
 
