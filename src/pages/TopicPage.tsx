@@ -657,7 +657,7 @@ export default function TopicPage() {
                   </TabsContent>
                 </Tabs>
 
-                {topic.examples.length > 0 && (
+                {topic.examples && topic.examples.length > 0 && (
                   <div className="mt-16">
                     <h2 className="text-2xl font-extrabold mb-8 pb-3 border-b border-border text-foreground">Worked Examples</h2>
                     <div className="space-y-8">
@@ -678,7 +678,7 @@ export default function TopicPage() {
                   </div>
                 )}
 
-                {topic.keyPoints.length > 0 && (
+                {topic.keyPoints && topic.keyPoints.length > 0 && (
                   <div className="mt-16">
                     <h2 className="text-2xl font-extrabold mb-6 pb-3 border-b border-border text-foreground">Key Points</h2>
                     <div className="space-y-3 bg-secondary/20 rounded-xl p-6 border border-border/50">
@@ -747,17 +747,19 @@ export default function TopicPage() {
                   </div>
                 )}
 
-                <div className="mt-16 mb-8">
-                  <h2 className="text-2xl font-extrabold mb-6 pb-3 border-b border-border text-foreground">Practice Quiz ({topic.mcqs.length} MCQs)</h2>
-                  <MCQQuiz
-                    mcqs={topic.mcqs}
-                    topicId={topic.id}
-                    onComplete={(score, total) => {
-                      saveMcqScore(topic.id, score, total);
-                      recordQuizCompleted(score, total);
-                    }}
-                  />
-                </div>
+                {topic.mcqs && topic.mcqs.length > 0 && (
+                  <div className="mt-16 mb-8">
+                    <h2 className="text-2xl font-extrabold mb-6 pb-3 border-b border-border text-foreground">Practice Quiz ({topic.mcqs.length} MCQs)</h2>
+                    <MCQQuiz
+                      mcqs={topic.mcqs}
+                      topicId={topic.id}
+                      onComplete={(score, total) => {
+                        saveMcqScore(topic.id, score, total);
+                        recordQuizCompleted(score, total);
+                      }}
+                    />
+                  </div>
+                )}
               </div>
 
               {/* Nav */}
