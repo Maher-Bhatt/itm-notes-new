@@ -52,7 +52,13 @@ export default function AdminDashboard() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"overview" | "content" | "users" | "announcements" | "moderation" | "settings">("overview");
   const [searchSubject, setSearchSubject] = useState("");
-  const [maintenanceMode, setMaintenanceMode] = useState(false);
+  const [maintenanceMode, setMaintenanceMode] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('itm_maintenance_mode') === 'true';
+    } catch {
+      return false;
+    }
+  });
   const [gamificationEnabled, setGamificationEnabled] = useState(true);
   const [publicRegEnabled, setPublicRegEnabled] = useState(true);
 
@@ -694,8 +700,24 @@ export default function AdminDashboard() {
                 </div>
                 <button
                   onClick={() => {
-                    setMaintenanceMode(!maintenanceMode);
-                    toast.warning(`Maintenance mode ${!maintenanceMode ? "activated" : "deactivated"}`);
+                    const next = !maintenanceMode;
+                    setMaintenanceMode(next);
+                    try {
+                      localStorage.setItem('itm_maintenance_mode', String(next));
+                      window.dispatchEvent(new Event('itm_maintenance_updated'));
+                      supabase.channel('platform_maintenance').send({
+                        type: 'broadcast',
+                        event: 'status_change',
+                        payload: { active: next },
+                      });
+                    } catch (e) {
+                      console.warn('Failed to persist maintenance mode:', e);
+                    }
+                    if (next) {
+                      toast.warning("Maintenance mode activated! A banner is now displayed across the site.");
+                    } else {
+                      toast.success("Maintenance mode deactivated! Banner removed.");
+                    }
                   }}
                   className={`w-12 h-6 rounded-full transition-colors p-1 ${
                     maintenanceMode ? "bg-destructive" : "bg-secondary"
