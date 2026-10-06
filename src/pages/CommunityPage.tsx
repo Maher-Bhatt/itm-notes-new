@@ -71,13 +71,9 @@ export default function CommunityPage() {
   const { user, profile, role } = useAuth();
   const { addXp } = useGamification();
 
-  // Admin resolution: Maher or Admin role has God-Mode access to de-mask
   const isAdmin = useMemo(() => {
-    if (role === 'admin') return true;
-    const email = user?.email?.toLowerCase() || '';
-    const name = profile?.display_name?.toLowerCase() || '';
-    return email.includes('maher') || email.includes('admin') || name.includes('maher') || localStorage.getItem('itm_admin_god_mode') === 'true';
-  }, [role, user, profile]);
+    return role === 'admin';
+  }, [role]);
 
   const [posts, setPosts] = useState<CommunityPost[]>([]);
   const [isLoadingPosts, setIsLoadingPosts] = useState(true);

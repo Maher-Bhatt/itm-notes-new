@@ -318,46 +318,10 @@ export default function TopicPage() {
     }
   }, [subjectId, resolvedTopic?.topic?.id, resolvedTopic?.topic?.title, subject?.name]);
 
-  if (isTopicLoading || isSubjectLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center animate-fade-in flex flex-col items-center gap-3">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <p className="text-sm text-muted-foreground">Loading topic notes...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!resolvedTopic) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center animate-fade-in">
-          <h2 className="text-xl font-bold mb-2">Topic not found</h2>
-          <p className="text-sm text-muted-foreground mb-4">We couldn't find the requested topic.</p>
-          <Link to="/" className="text-primary hover:underline text-sm font-medium">← Back to home</Link>
-        </div>
-      </div>
-    );
-  }
-
-  const { topic, unitTitle } = resolvedTopic;
-  const completed = isCompleted(topic.id);
-  const bookmarked = isBookmarked(topic.id);
-  const hasRichContent = true;
-
-  const handleComplete = () => {
-    if (!completed) {
-      recordTopicCompleted();
-    }
-    toggleComplete(topic.id);
-  };
-
-  const allUnits = subject?.units || [];
-
   // Comprehensive audio script including title, overview, exam points, in-depth lecture notes, examples, and revision
   const fullAudioLectureScript = useMemo(() => {
-    if (!topic) return "";
+    if (!resolvedTopic?.topic) return "";
+    const { topic, unitTitle } = resolvedTopic;
     const sections: string[] = [];
 
     sections.push(`Topic: ${topic.title}. From unit: ${unitTitle}. Subject: ${subject?.name || ""}.`);
@@ -397,7 +361,44 @@ export default function TopicPage() {
     }
 
     return sections.join(" ");
-  }, [topic, unitTitle, subject]);
+  }, [resolvedTopic, subject]);
+
+  if (isTopicLoading || isSubjectLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center animate-fade-in flex flex-col items-center gap-3">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="text-sm text-muted-foreground">Loading topic notes...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!resolvedTopic) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center animate-fade-in">
+          <h2 className="text-xl font-bold mb-2">Topic not found</h2>
+          <p className="text-sm text-muted-foreground mb-4">We couldn't find the requested topic.</p>
+          <Link to="/" className="text-primary hover:underline text-sm font-medium">← Back to home</Link>
+        </div>
+      </div>
+    );
+  }
+
+  const { topic, unitTitle } = resolvedTopic;
+  const completed = isCompleted(topic.id);
+  const bookmarked = isBookmarked(topic.id);
+  const hasRichContent = true;
+
+  const handleComplete = () => {
+    if (!completed) {
+      recordTopicCompleted();
+    }
+    toggleComplete(topic.id);
+  };
+
+  const allUnits = subject?.units || [];
 
   return (
     <div className={`min-h-screen bg-background flex flex-col ${focusMode ? "focus-mode" : ""}`}>

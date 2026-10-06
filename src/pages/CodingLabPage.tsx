@@ -170,7 +170,7 @@ export default function CodingLabPage() {
       currentProblem?.description,
       ``,
       `[2. CONSTRAINTS & EVALUATION CRITERIA]:`,
-      ...currentProblem?.constraints.map(c => `• ${c}`),
+      ...(currentProblem?.constraints || []).map(c => `• ${c}`),
       ``,
       `[3. SOURCE CODE / SQL IMPLEMENTATION]:`,
       code || currentProblem?.starterCode,
@@ -222,7 +222,9 @@ export default function CodingLabPage() {
       );
 
       setTimeout(() => {
-        const result = currentProblem?.validator(code);
+        const result = currentProblem?.validator 
+          ? currentProblem.validator(code) 
+          : { passed: false, output: 'Problem validator not found.' };
         setOutput(result.output);
 
         // Record submission in history

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -352,7 +352,9 @@ function getTodayString(): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
-export function useGamification() {
+const GamificationContext = React.createContext<any>(undefined);
+
+export function GamificationProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<GamificationState>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -765,15 +767,27 @@ export function useGamification() {
     [addXp]
   );
 
-  return {
-    state,
-    levelInfo,
-    addXp,
-    unlockAchievement,
-    checkDailyStreak,
-    addStudyMinutes,
-    recordTopicRead,
-    recordQuizCompleted,
-    claimQuest,
-  };
+  return (
+    <GamificationContext.Provider value={{
+      state,
+      levelInfo,
+      addXp,
+      unlockAchievement,
+      checkDailyStreak,
+      addStudyMinutes,
+      recordTopicRead,
+      recordQuizCompleted,
+      claimQuest,
+    }}>
+      {children}
+    </GamificationContext.Provider>
+  );
+}
+
+export function useGamification() {
+  const context = React.useContext(GamificationContext);
+  if (!context) {
+    throw new Error('useGamification must be used within a GamificationProvider');
+  }
+  return context;
 }

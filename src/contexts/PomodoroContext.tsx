@@ -72,7 +72,7 @@ export function PomodoroProvider({ children }: { children: React.ReactNode }) {
   const [sessionCount, setSessionCount] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { recordStudyTime, unlockAchievement } = useGamification();
+  const { addStudyMinutes, unlockAchievement } = useGamification();
   const endTimeRef = useRef<number | null>(null);
 
   // Load from local storage
@@ -142,7 +142,7 @@ export function PomodoroProvider({ children }: { children: React.ReactNode }) {
 
           if (mode === 'study') {
             playChime(false);
-            recordStudyTime(studyMinutes);
+            addStudyMinutes(studyMinutes);
             unlockAchievement('focus-hero');
             setSessionCount((prev) => prev + 1);
 
@@ -172,7 +172,7 @@ export function PomodoroProvider({ children }: { children: React.ReactNode }) {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isRunning, mode, studyMinutes, breakMinutes, recordStudyTime, unlockAchievement]);
+  }, [isRunning, mode, studyMinutes, breakMinutes, addStudyMinutes, unlockAchievement]);
 
   const startTimer = useCallback(() => {
     endTimeRef.current = Date.now() + timeLeft * 1000;

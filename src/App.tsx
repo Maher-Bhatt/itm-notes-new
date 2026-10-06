@@ -27,6 +27,7 @@ import ProfilePage from "./pages/ProfilePage";
 import GpaCalculatorPage from "./pages/GpaCalculatorPage";
 import SubjectCheatSheetPage from "./pages/SubjectCheatSheetPage";
 import { PomodoroProvider } from "@/contexts/PomodoroContext";
+import { GamificationProvider } from "@/hooks/useGamification";
 import { PomodoroFloatingWidget } from "@/components/PomodoroFloatingWidget";
 import { AchievementCelebrationModal } from "@/components/AchievementCelebrationModal";
 import { AnnouncementBanner } from "@/components/AnnouncementBanner";
@@ -46,8 +47,9 @@ const App = () => (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <AcademicProvider>
-          <PomodoroProvider>
-            <TooltipProvider>
+          <GamificationProvider>
+            <PomodoroProvider>
+              <TooltipProvider>
               <Toaster />
               <Sonner />
               <BrowserRouter>
@@ -86,8 +88,9 @@ const App = () => (
               </ErrorBoundary>
             </BrowserRouter>
           </TooltipProvider>
-        </PomodoroProvider>
-      </AcademicProvider>
+            </PomodoroProvider>
+          </GamificationProvider>
+        </AcademicProvider>
       </AuthProvider>
     </QueryClientProvider>
   </ThemeProvider>

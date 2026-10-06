@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import type { MCQ } from "@/data/types";
 import { CheckCircle, XCircle } from "lucide-react";
 
@@ -13,6 +13,7 @@ export function MCQQuiz({ mcqs, topicId, onComplete }: MCQQuizProps) {
   const [selected, setSelected] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [score, setScore] = useState(0);
+  const scoreRef = React.useRef(0);
   const [finished, setFinished] = useState(false);
 
   const mcq = mcqs[current];
@@ -21,7 +22,10 @@ export function MCQQuiz({ mcqs, topicId, onComplete }: MCQQuizProps) {
     if (showResult) return;
     setSelected(idx);
     setShowResult(true);
-    if (idx === mcq.correctIndex) setScore((s) => s + 1);
+    if (idx === mcq.correctIndex) {
+      setScore((s) => s + 1);
+      scoreRef.current += 1;
+    }
   };
 
   const handleNext = () => {
@@ -30,9 +34,8 @@ export function MCQQuiz({ mcqs, topicId, onComplete }: MCQQuizProps) {
       setSelected(null);
       setShowResult(false);
     } else {
-      // Score already fully updated in handleSelect — just finish
       setFinished(true);
-      onComplete?.(score, mcqs.length);
+      onComplete?.(scoreRef.current, mcqs.length);
     }
   };
 
@@ -41,6 +44,7 @@ export function MCQQuiz({ mcqs, topicId, onComplete }: MCQQuizProps) {
     setSelected(null);
     setShowResult(false);
     setScore(0);
+    scoreRef.current = 0;
     setFinished(false);
   };
 

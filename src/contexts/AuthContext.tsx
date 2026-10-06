@@ -57,11 +57,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [role, setRole] = useState<AppRole | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchProfileAndRole = async (userId: string) => {
+  const fetchProfileAndRole = async (userAuth: User) => {
     try {
       const [profileResponse, rolesResponse] = await Promise.all([
-        supabase.from('profiles').select('*').eq('user_id', userId).maybeSingle(),
-        supabase.from('user_roles').select('role').eq('user_id', userId)
+        supabase.from('profiles').select('*').eq('user_id', userAuth.id).maybeSingle(),
+        supabase.from('user_roles').select('role').eq('user_id', userAuth.id)
       ]);
 
       if (profileResponse.data) {
@@ -73,10 +73,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       } else {
         // Auto-create initial profile for user in Supabase with genuine data
-        const defaultName = session?.user?.user_metadata?.display_name || session?.user?.email?.split('@')[0] || 'Student';
+        const defaultName = userAuth.user_metadata?.display_name || userAuth.email?.split('@')[0] || 'Student';
         const { data } = await supabase.from('profiles').insert({
-          user_id: userId,
-          email: session?.user?.email || null,
+          user_id: userAuth.id,
+          email: userAuth.email || null,
           display_name: defaultName,
           branch: null,
           program: null,
@@ -97,14 +97,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       if (rolesResponse.data) {
         const roles = rolesResponse.data.map(r => r.role);
-        if (roles.includes('admin') || session?.user?.email === 'maherbhatt01@gmail.com') {
+        if (roles.includes('admin') || userAuth.email === 'maherbhatt01@gmail.com') {
           setRole('admin');
         } else if (roles.length > 0) {
           setRole(roles[0] as AppRole);
         } else {
           setRole('user');
         }
-      } else if (session?.user?.email === 'maherbhatt01@gmail.com') {
+      } else if (userAuth.email === 'maherbhatt01@gmail.com') {
         setRole('admin');
       }
     } catch (error) {
@@ -115,8 +115,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const refreshProfile = async () => {
-    if (user?.id) {
-      await fetchProfileAndRole(user.id);
+    if (user) {
+      await fetchProfileAndRole(user);
     }
   };
 
@@ -126,7 +126,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
-        fetchProfileAndRole(session.user.id);
+        fetchProfileAndRole(session.user);
       } else {
         setProfile(null);
         localStorage.removeItem('itm_student_profile');
@@ -141,7 +141,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
-        fetchProfileAndRole(session.user.id);
+        fetchProfileAndRole(session.user);
       } else {
         setProfile(null);
         localStorage.removeItem('itm_student_profile');
