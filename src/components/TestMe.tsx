@@ -61,7 +61,7 @@ export function TestMe({ mcqs, topicId, topicTitle }: TestMeProps) {
 
   const formatTime = (s: number) => `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, "0")}`;
 
-  if (mcqs.length < 2) return null;
+  if (!mcqs || mcqs.length < 2) return null;
 
   return (
     <>
