@@ -1,11 +1,10 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { 
   Code, Play, CheckCircle2, XCircle, RotateCcw, 
   Lightbulb, Sparkles, BookOpen, Terminal, ChevronRight, 
-  Layers, Check, Copy, Flame, Award, HelpCircle, Database, FileText
+  Layers, Check, Copy, FileText, Search, Filter
 } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
@@ -16,7 +15,7 @@ import { CodingProblem, ALL_CODING_PROBLEMS as CODING_PROBLEMS } from '@/data/co
 
 export default function CodingLabPage() {
   const { semesterNumber } = useAcademic();
-  const [selectedSemester, setSelectedSemester] = useState<number | 'all'>((semesterNumber === 1 || semesterNumber === 2 || semesterNumber === 3) ? semesterNumber : 'all');
+  const [selectedSemester, setSelectedSemester] = useState<number | 'all'>('all');
   const [selectedSubject, setSelectedSubject] = useState<string>('all');
   const [selectedLanguage, setSelectedLanguage] = useState<string>('all');
   const [searchProblemQuery, setSearchProblemQuery] = useState<string>('');
@@ -27,7 +26,10 @@ export default function CodingLabPage() {
   const [status, setStatus] = useState<'idle' | 'compiling' | 'running' | 'success' | 'failed'>('idle');
   const [showSolution, setShowSolution] = useState(false);
   const [activeWorkspaceTab, setActiveWorkspaceTab] = useState<'editor' | 'specs' | 'hints' | 'solution' | 'history'>('editor');
-  const [mobileTab, setMobileTab] = useState<'problems' | 'workspace'>('problems');
+  
+  // To reduce UI clutter, we can hide/show a filter panel
+  const [showFilters, setShowFilters] = useState(false);
+
   const [solvedProblems, setSolvedProblems] = useState<string[]>([]);
   const [submissionHistory, setSubmissionHistory] = useState<Array<{ problemId: string; problemTitle?: string; timestamp: string; passed: boolean }>>([]);
 
@@ -65,25 +67,6 @@ export default function CodingLabPage() {
     }
   }, [activeProblemId]);
 
-  // Difficulty progress tracker statistics
-  const difficultyStats = useMemo(() => {
-    const stats = {
-      Easy: { solved: 0, total: 0 },
-      Medium: { solved: 0, total: 0 },
-      Hard: { solved: 0, total: 0 },
-    };
-    for (const p of CODING_PROBLEMS) {
-      const diff = (p.difficulty || 'Medium') as 'Easy' | 'Medium' | 'Hard';
-      if (stats[diff]) {
-        stats[diff].total += 1;
-        if (solvedProblems.includes(p.id)) {
-          stats[diff].solved += 1;
-        }
-      }
-    }
-    return stats;
-  }, [solvedProblems]);
-
   // Derive unique subjects from problems
   const availableSubjects = useMemo(() => {
     const map = new Map<string, { name: string; semester: number; count: number }>();
@@ -117,7 +100,6 @@ export default function CodingLabPage() {
     });
   }, [selectedSemester, selectedSubject, selectedLanguage, searchProblemQuery]);
 
-  // Reset activeProblemId when filters change
   useEffect(() => {
     if (filteredProblems.length > 0 && !filteredProblems.find(p => p.id === activeProblemId)) {
       setActiveProblemId(filteredProblems[0].id);
@@ -140,19 +122,19 @@ export default function CodingLabPage() {
     setOutput(null);
     setStatus('idle');
     setShowSolution(false);
-    setMobileTab('workspace');
+    setActiveWorkspaceTab('editor');
   };
 
   const handleResetCode = () => {
     setCode(currentProblem?.starterCode);
     setOutput(null);
     setStatus('idle');
-    toast.info('Starter code reset to default.');
+    toast.info('Starter code reset to default.', { style: { background: '#050608', color: '#00ff88', border: '1px solid #00ff88' } });
   };
 
   const handleCopyCode = (text: string) => {
     navigator.clipboard.writeText(text);
-    toast.success('Code copied to clipboard!');
+    toast.success('Code copied to clipboard!', { style: { background: '#050608', color: '#00ff88', border: '1px solid #00ff88' } });
   };
 
   const handleCopyFacultySubmission = () => {
@@ -186,10 +168,9 @@ export default function CodingLabPage() {
     ].join('\n');
 
     navigator.clipboard.writeText(formattedRecord);
-    toast.success('📋 University Practical Record copied! Paste directly into your lab manual or report.');
+    toast.success('University Practical Record copied!', { style: { background: '#050608', color: '#00ff88', border: '1px solid #00ff88' } });
   };
 
-  // Keyboard support: Handle tab key inside textarea for code indentation
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Tab') {
       e.preventDefault();
@@ -227,7 +208,6 @@ export default function CodingLabPage() {
           : { passed: false, output: 'Problem validator not found.' };
         setOutput(result.output);
 
-        // Record submission in history
         if (currentProblem) {
           const record = {
             problemId: currentProblem.id,
@@ -244,24 +224,21 @@ export default function CodingLabPage() {
 
         if (result.passed) {
           setStatus('success');
-          // Play celebratory sound synthesis
           try {
             const ctx = new (window.AudioContext || window.webkitAudioContext)();
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
             osc.connect(gain);
             gain.connect(ctx.destination);
-            osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
-            osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1); // E5
-            osc.frequency.setValueAtTime(783.99, ctx.currentTime + 0.2); // G5
-            osc.frequency.setValueAtTime(1046.50, ctx.currentTime + 0.3); // C6
+            osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+            osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1);
+            osc.frequency.setValueAtTime(783.99, ctx.currentTime + 0.2);
+            osc.frequency.setValueAtTime(1046.50, ctx.currentTime + 0.3);
             gain.gain.setValueAtTime(0.15, ctx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
             osc.start();
             osc.stop(ctx.currentTime + 0.6);
-          } catch {
-            // ignore
-          }
+          } catch {}
 
           if (!solvedProblems.includes(currentProblem?.id)) {
             const updated = [...solvedProblems, currentProblem?.id];
@@ -269,617 +246,469 @@ export default function CodingLabPage() {
             localStorage.setItem('itm_coding_lab_solved', JSON.stringify(updated));
             addXp(75, `Solved Practical: ${currentProblem?.title}`);
             unlockAchievement('code-ninja');
-            toast.success(`🎉 Practical Solved! +75 XP earned! (${updated.length}/${CODING_PROBLEMS.length} Solved)`);
+            toast.success(`Practical Solved! +75 XP earned!`, { style: { background: '#050608', color: '#00ff88', border: '1px solid #00ff88' } });
           } else {
-            toast.success('All test cases passed successfully!');
+            toast.success('All test cases passed successfully!', { style: { background: '#050608', color: '#00ff88', border: '1px solid #00ff88' } });
           }
         } else {
           setStatus('failed');
-          toast.error(isSql ? 'SQL validation failed. Check syntax and hints.' : 'Test cases failed. Check console output and hints.');
+          toast.error(isSql ? 'SQL validation failed. Check syntax and hints.' : 'Test cases failed. Check console output and hints.', { style: { background: '#050608', color: '#ff3366', border: '1px solid #ff3366' } });
         }
       }, isSql ? 600 : 900);
     }, isSql ? 350 : 600);
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background selection:bg-primary/20">
+    <div className="min-h-screen flex flex-col bg-[#050608] text-[#f4f4f5] font-sans selection:bg-[#00ff88]/30">
       <Header />
       
-      {/* Top Banner */}
-      <section className="bg-secondary/40 border-b py-4 px-4 sm:px-6">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
+      {/* Brutalist Header / Top Bar */}
+      <div className="border-b border-[#333] bg-[#050608] px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-[#111] border border-[#333] flex items-center justify-center shadow-[0_0_10px_rgba(0,255,136,0.1)]">
+            <Terminal className="h-5 w-5 text-[#00ff88]" />
+          </div>
           <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-                <Code className="h-5 w-5" />
-              </span>
-              <h1 className="text-xl sm:text-2xl font-bold tracking-tight">University Coding & Database Lab</h1>
-            </div>
-            <p className="text-xs sm:text-sm text-muted-foreground">
-              Select Semester & Subject → Choose Language → Select Problem Statement → Code & Test Live
+            <h1 className="text-lg font-mono font-bold tracking-tight text-[#f4f4f5] uppercase">
+              // TERMINAL_LAB_ENVIRONMENT
+            </h1>
+            <p className="text-[10px] font-mono text-[#888] uppercase tracking-widest">
+              SECURE CONNECTION ESTABLISHED. READY FOR INPUT.
             </p>
           </div>
-
-          {/* Practical Stats Badge */}
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-card border shadow-xs">
-              <Award className="h-4 w-4 text-emerald-500" />
-              <div className="text-xs">
-                <span className="font-bold text-foreground">{solvedProblems.length}</span>
-                <span className="text-muted-foreground"> / {CODING_PROBLEMS.length} Solved</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-xs font-bold">
-              <Flame className="h-4 w-4 fill-amber-500 text-amber-500" />
-              <span>+75 XP / Practical</span>
-            </div>
-          </div>
         </div>
-      </section>
 
-      {/* Main Workspace */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-6 flex flex-col gap-4">
-        {/* ── 3-TIER NAVIGATION: Semester -> Subject -> Language ── */}
-        <div className="p-4 rounded-2xl bg-card border border-border shadow-xs space-y-3">
-          {/* Row 1: Semester Selector */}
-          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-            <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider shrink-0 w-20">
-              1. Semester:
-            </span>
-            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
-              {[
-                { id: 'all' as const, label: `All Semesters (${CODING_PROBLEMS.length})` },
-                { id: 1 as const, label: `Semester 1 (${CODING_PROBLEMS.filter(p => p.id.startsWith('py1') || p.id.startsWith('wt')).length})` },
-                { id: 3 as const, label: `Semester 3 (${CODING_PROBLEMS.filter(p => !p.id.startsWith('py1') && !p.id.startsWith('wt')).length})` },
-              ].map((sem) => (
-                <button
-                  key={String(sem.id)}
-                  onClick={() => {
-                    setSelectedSemester(sem.id);
-                    setSelectedSubject('all');
-                  }}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all border ${
-                    selectedSemester === sem.id
-                      ? 'bg-primary text-primary-foreground border-primary shadow-xs'
-                      : 'bg-card text-muted-foreground hover:text-foreground border-border hover:bg-secondary'
-                  }`}
-                >
-                  {sem.label}
-                </button>
-              ))}
-            </div>
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <div className="relative flex-1 sm:w-64">
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#666]" />
+            <input
+              type="text"
+              value={searchProblemQuery}
+              onChange={(e) => setSearchProblemQuery(e.target.value)}
+              placeholder="SEARCH PROTOCOLS..."
+              className="w-full h-9 pl-9 pr-3 bg-[#111] border border-[#333] text-xs font-mono text-[#f4f4f5] placeholder-[#666] focus:border-[#00ff88] focus:outline-none transition-colors rounded-none uppercase"
+            />
           </div>
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className={`h-9 px-3 border border-[#333] flex items-center gap-2 font-mono text-xs transition-colors rounded-none ${showFilters ? 'bg-[#00ff88] text-[#050608] border-[#00ff88]' : 'bg-[#111] text-[#f4f4f5] hover:border-[#00ff88] hover:text-[#00ff88]'}`}
+          >
+            <Filter className="h-4 w-4" />
+            <span className="hidden sm:inline">FILTERS</span>
+          </button>
+        </div>
+      </div>
 
-          {/* Row 2: Subject Selector */}
-          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-            <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider shrink-0 w-20">
-              2. Subject:
-            </span>
-            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
-              <button
-                onClick={() => setSelectedSubject('all')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all border ${
-                  selectedSubject === 'all'
-                    ? 'bg-primary text-primary-foreground border-primary shadow-xs'
-                    : 'bg-card text-muted-foreground hover:text-foreground border-border hover:bg-secondary'
-                }`}
-              >
-                All Subjects
-              </button>
-              {availableSubjects
-                .filter(s => selectedSemester === 'all' || s.semester === selectedSemester)
-                .map((subj) => (
+      {/* Expandable Filter Panel */}
+      {showFilters && (
+        <div className="bg-[#0a0a0a] border-b border-[#333] p-4 font-mono text-xs animate-in slide-in-from-top-2">
+          <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Semester Filter */}
+            <div className="space-y-2">
+              <span className="text-[#666] uppercase tracking-wider font-bold">1. TARGET_SEMESTER</span>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { id: 'all' as const, label: `ALL (${CODING_PROBLEMS.length})` },
+                  { id: 1 as const, label: `SEM_1` },
+                  { id: 3 as const, label: `SEM_3` },
+                ].map((sem) => (
                   <button
-                    key={subj.name}
-                    onClick={() => setSelectedSubject(subj.name)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all border ${
-                      selectedSubject === subj.name
-                        ? 'bg-primary text-primary-foreground border-primary shadow-xs'
-                        : 'bg-card text-muted-foreground hover:text-foreground border-border hover:bg-secondary'
+                    key={String(sem.id)}
+                    onClick={() => { setSelectedSemester(sem.id); setSelectedSubject('all'); }}
+                    className={`px-3 py-1.5 border transition-all rounded-none uppercase ${
+                      selectedSemester === sem.id
+                        ? 'bg-[#00ff88] text-[#050608] border-[#00ff88] shadow-[0_0_8px_rgba(0,255,136,0.4)]'
+                        : 'bg-[#111] text-[#888] border-[#333] hover:border-[#666] hover:text-[#f4f4f5]'
                     }`}
                   >
-                    {subj.name} ({subj.count})
+                    {sem.label}
                   </button>
                 ))}
+              </div>
             </div>
-          </div>
 
-          {/* Row 3: Language Filter & Search */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1 border-t border-border/60">
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider shrink-0 w-20">
-                3. Language:
-              </span>
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+            {/* Subject Filter */}
+            <div className="space-y-2">
+              <span className="text-[#666] uppercase tracking-wider font-bold">2. LOAD_SUBJECT</span>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => setSelectedSubject('all')}
+                  className={`px-3 py-1.5 border transition-all rounded-none uppercase ${
+                    selectedSubject === 'all'
+                      ? 'bg-[#00ff88] text-[#050608] border-[#00ff88] shadow-[0_0_8px_rgba(0,255,136,0.4)]'
+                      : 'bg-[#111] text-[#888] border-[#333] hover:border-[#666] hover:text-[#f4f4f5]'
+                  }`}
+                >
+                  ALL_SUBJECTS
+                </button>
+                {availableSubjects
+                  .filter(s => selectedSemester === 'all' || s.semester === selectedSemester)
+                  .map((subj) => (
+                    <button
+                      key={subj.name}
+                      onClick={() => setSelectedSubject(subj.name)}
+                      className={`px-3 py-1.5 border transition-all rounded-none uppercase ${
+                        selectedSubject === subj.name
+                          ? 'bg-[#00ff88] text-[#050608] border-[#00ff88] shadow-[0_0_8px_rgba(0,255,136,0.4)]'
+                          : 'bg-[#111] text-[#888] border-[#333] hover:border-[#666] hover:text-[#f4f4f5]'
+                      }`}
+                    >
+                      {subj.name.replace(/\s+/g, '_')}
+                    </button>
+                  ))}
+              </div>
+            </div>
+
+            {/* Language Filter */}
+            <div className="space-y-2">
+              <span className="text-[#666] uppercase tracking-wider font-bold">3. COMPILER_ENV</span>
+              <div className="flex flex-wrap gap-2">
                 {['all', 'python', 'c', 'sql', 'java'].map((lang) => (
                   <button
                     key={lang}
                     onClick={() => setSelectedLanguage(lang)}
-                    className={`px-2.5 py-1 rounded-md text-xs font-mono font-semibold uppercase transition-all border ${
+                    className={`px-3 py-1.5 border transition-all rounded-none uppercase ${
                       selectedLanguage === lang
-                        ? 'bg-primary text-primary-foreground border-primary shadow-xs'
-                        : 'bg-card text-muted-foreground hover:text-foreground border-border hover:bg-secondary'
+                        ? 'bg-[#00ff88] text-[#050608] border-[#00ff88] shadow-[0_0_8px_rgba(0,255,136,0.4)]'
+                        : 'bg-[#111] text-[#888] border-[#333] hover:border-[#666] hover:text-[#f4f4f5]'
                     }`}
                   >
-                    {lang}
+                    {lang === 'all' ? 'ALL_ENV' : `ENV_${lang.toUpperCase()}`}
                   </button>
                 ))}
               </div>
             </div>
-
-            {/* Quick Search Input */}
-            <div className="flex items-center gap-2 w-full sm:w-64">
-              <input
-                type="text"
-                value={searchProblemQuery}
-                onChange={(e) => setSearchProblemQuery(e.target.value)}
-                placeholder="Search problem statements..."
-                className="w-full h-8 px-3 rounded-lg border border-input bg-background text-xs focus:ring-1 focus:ring-primary focus:outline-none"
-              />
-            </div>
           </div>
         </div>
+      )}
 
-        {/* ── 2-COLUMN SPLIT: Problem Statements List (Left 4 cols) | Code IDE & Runner (Right 8 cols) ── */}
-        <div className="flex flex-col lg:grid lg:grid-cols-12 gap-5 flex-1">
-          {/* Left Column: Problem Statements Sidebar */}
-          <div className={`lg:col-span-4 flex-col gap-3 ${mobileTab === 'problems' ? 'flex' : 'hidden lg:flex'}`}>
-            {/* Difficulty Progress Tracker Card */}
-            <div className="bg-card border rounded-2xl p-3.5 shadow-xs">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Difficulty Progress</span>
-                <span className="text-xs font-mono font-bold text-primary">{solvedProblems.length}/{CODING_PROBLEMS.length} Solved</span>
-              </div>
-              <div className="grid grid-cols-3 gap-2 text-center">
-                <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-2">
-                  <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 block">Easy</span>
-                  <span className="font-mono font-bold text-xs text-foreground">{difficultyStats.Easy.solved}/{difficultyStats.Easy.total}</span>
-                </div>
-                <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-2">
-                  <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 block">Medium</span>
-                  <span className="font-mono font-bold text-xs text-foreground">{difficultyStats.Medium.solved}/{difficultyStats.Medium.total}</span>
-                </div>
-                <div className="bg-rose-500/10 border border-rose-500/20 rounded-xl p-2">
-                  <span className="text-[10px] font-bold text-rose-600 dark:text-rose-400 block">Hard</span>
-                  <span className="font-mono font-bold text-xs text-foreground">{difficultyStats.Hard.solved}/{difficultyStats.Hard.total}</span>
-                </div>
-              </div>
-            </div>
-
-            <Card className="flex-1 flex flex-col border shadow-xs overflow-hidden max-h-[720px]">
-              <CardHeader className="p-3.5 pb-2.5 border-b bg-card">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-bold text-sm text-foreground flex items-center gap-1.5">
-                    <BookOpen className="h-4 w-4 text-primary" />
-                    Problem Statements
-                  </h3>
-                  <span className="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-secondary text-primary">
-                    {filteredProblems.length} available
-                  </span>
-                </div>
-                <p className="text-[11px] text-muted-foreground">Select a practical below to load into the workspace</p>
-              </CardHeader>
-
-              <CardContent className="p-2 flex-1 overflow-y-auto space-y-1.5 scrollbar-thin">
-                {filteredProblems.length === 0 ? (
-                  <div className="text-center py-12 px-4 text-muted-foreground">
-                    <p className="font-semibold text-xs">No practicals found matching filters.</p>
-                    <button
-                      onClick={() => { setSelectedSemester('all'); setSelectedSubject('all'); setSelectedLanguage('all'); setSearchProblemQuery(''); }}
-                      className="mt-2 text-xs text-primary underline"
-                    >
-                      Reset all filters
-                    </button>
-                  </div>
-                ) : (
-                  filteredProblems.map((prob) => {
-                    const isSelected = prob.id === currentProblem?.id;
-                    const isSolved = solvedProblems.includes(prob.id);
-
-                    return (
-                      <button
-                        key={prob.id}
-                        onClick={() => handleSelectProblem(prob)}
-                        className={`w-full p-2.5 rounded-xl text-left transition-all duration-150 flex items-start justify-between gap-2 border ${
-                          isSelected
-                            ? 'bg-primary/10 border-primary text-foreground shadow-xs ring-1 ring-primary/30'
-                            : 'bg-card border-border/80 hover:border-primary/40 hover:bg-secondary/40 text-muted-foreground hover:text-foreground'
-                        }`}
-                      >
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-1.5 mb-1">
-                            <span className="font-mono text-[10px] font-bold px-1.5 py-0.5 rounded bg-secondary text-foreground uppercase">
-                              {prob.language}
-                            </span>
-                            <span className={`text-[10px] font-bold px-1.5 py-0.2 rounded-full ${
-                              prob.difficulty === 'Easy'
-                                ? 'bg-emerald-500/10 text-emerald-600'
-                                : prob.difficulty === 'Medium'
-                                ? 'bg-amber-500/10 text-amber-600'
-                                : 'bg-rose-500/10 text-rose-600'
-                            }`}>
-                              {prob.difficulty}
-                            </span>
-                            <span className="text-[10px] text-muted-foreground truncate">
-                              {prob.marks}
-                            </span>
-                          </div>
-                          <h4 className="font-semibold text-xs text-foreground line-clamp-1">
-                            {prob.title}
-                          </h4>
-                          <div className="flex items-center justify-between text-[10px] text-muted-foreground mt-0.5">
-                            <span className="truncate">{prob.subjectName}</span>
-                            {(() => {
-                              const lastAttempt = submissionHistory.find(s => s.problemId === prob.id);
-                              if (!lastAttempt) return null;
-                              return (
-                                <span className={`font-mono text-[9px] font-semibold shrink-0 ml-1.5 ${lastAttempt.passed ? 'text-emerald-500' : 'text-amber-500'}`}>
-                                  {lastAttempt.passed ? 'Passed' : 'Attempted'}
-                                </span>
-                              );
-                            })()}
-                          </div>
-                        </div>
-
-                        {isSolved && (
-                          <span className="p-1 rounded-full bg-emerald-500 text-white shrink-0 mt-0.5" title="Solved">
-                            <Check className="h-3 w-3" />
-                          </span>
-                        )}
-                      </button>
-                    );
-                  })
-                )}
-              </CardContent>
-            </Card>
+      {/* Main Workspace Layout */}
+      <main className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
+        
+        {/* Left Sidebar: Problem List */}
+        <aside className="w-full lg:w-[340px] flex-shrink-0 flex flex-col border-r border-[#333] bg-[#050608]">
+          <div className="p-3 border-b border-[#333] bg-[#0a0a0a] flex items-center justify-between">
+            <span className="font-mono text-[10px] text-[#888] uppercase tracking-widest">
+              Available_Protocols [{filteredProblems.length}]
+            </span>
+            <span className="font-mono text-[10px] text-[#00ff88] uppercase tracking-widest flex items-center gap-1">
+              <CheckCircle2 className="h-3 w-3" /> {solvedProblems.length} SOLVED
+            </span>
           </div>
-
-          {/* Right Column: Active Problem Workspace, Code IDE & Test Runner */}
-          <div className={`lg:col-span-8 flex-col gap-3 ${mobileTab === 'workspace' ? 'flex' : 'hidden lg:flex'}`}>
-            {currentProblem ? (
-              <>
-            <Card className="flex-1 flex flex-col border shadow-xs overflow-hidden">
-              {/* Mobile Back Button */}
-              <div className="lg:hidden p-3 border-b bg-secondary/30 flex items-center">
-                <button
-                  onClick={() => setMobileTab('problems')}
-                  className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground"
-                >
-                  <ChevronRight className="h-4 w-4 rotate-180" />
-                  Back to Problems
-                </button>
+          
+          <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-[#333] scrollbar-track-[#0a0a0a]">
+            {filteredProblems.length === 0 ? (
+              <div className="p-6 text-center text-[#666] font-mono text-xs">
+                NO PROTOCOLS FOUND MATCHING CURRENT PARAMETERS.
               </div>
-              {/* Header with Title, Badges, and Tabs */}
-              <CardHeader className="p-4 pb-2 border-b bg-card">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-                  <div>
-                    <span className="text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-secondary text-secondary-foreground border mr-2">
-                      {currentProblem?.subjectName}
-                    </span>
-                    <span className="text-xs text-muted-foreground font-mono">
-                      {currentProblem?.marks}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={handleCopyFacultySubmission}
-                      className="h-7 text-xs border-primary/30 hover:bg-primary/10 text-foreground font-medium"
-                    >
-                      <FileText className="h-3.5 w-3.5 text-primary mr-1" />
-                      Copy Faculty Lab Record
-                    </Button>
-                  </div>
-                </div>
-
-                <CardTitle className="text-base sm:text-lg font-bold leading-snug">
-                  {currentProblem?.title}
-                </CardTitle>
-
-                {/* Workspace Navigation Tabs */}
-                <div className="flex overflow-x-auto -mx-4 px-4 pt-3 gap-1 sm:gap-2 border-b border-border/60 scrollbar-none">
-                  {[
-                    { id: 'editor', label: 'Editor', fullLabel: 'Code Editor & Terminal' },
-                    { id: 'specs', label: 'Specs', fullLabel: 'Problem Specs & Constraints' },
-                    { id: 'hints', label: `Hints (${currentProblem?.hints.length})`, fullLabel: `Hints (${currentProblem?.hints.length})` },
-                    { id: 'solution', label: 'Solution', fullLabel: 'Model Solution' },
-                    { id: 'history', label: `History`, fullLabel: `History (${submissionHistory.filter(s => s.problemId === currentProblem?.id).length})` },
-                  ].map(tab => (
+            ) : (
+              <div className="flex flex-col">
+                {filteredProblems.map((prob) => {
+                  const isSelected = prob.id === currentProblem?.id;
+                  const isSolved = solvedProblems.includes(prob.id);
+                  
+                  return (
                     <button
-                      key={tab.id}
-                      onClick={() => setActiveWorkspaceTab(tab.id as 'editor' | 'specs' | 'hints' | 'solution' | 'history')}
-                      className={`text-xs font-semibold pb-2 border-b-2 transition-all whitespace-nowrap px-1 min-w-0 ${
-                        activeWorkspaceTab === tab.id
-                          ? 'border-primary text-primary'
-                          : 'border-transparent text-muted-foreground hover:text-foreground'
+                      key={prob.id}
+                      onClick={() => handleSelectProblem(prob)}
+                      className={`w-full text-left p-4 border-b border-[#222] transition-colors relative group ${
+                        isSelected 
+                          ? 'bg-[#111] border-l-2 border-l-[#00ff88]' 
+                          : 'bg-[#050608] border-l-2 border-l-transparent hover:bg-[#0a0a0a]'
                       }`}
                     >
-                      <span className="sm:hidden">{tab.label}</span>
-                      <span className="hidden sm:inline">{tab.fullLabel}</span>
-                    </button>
-                  ))}
-                </div>
-              </CardHeader>
-
-              {/* Tab 1: Specs */}
-              {activeWorkspaceTab === 'specs' && (
-                <CardContent className="p-4 flex-1 overflow-y-auto max-h-[580px] text-xs leading-relaxed space-y-4">
-                  <div className="prose prose-sm dark:prose-invert max-w-none text-xs">
-                    <p className="whitespace-pre-line text-foreground/90 font-sans text-sm">
-                      {currentProblem?.description}
-                    </p>
-                  </div>
-
-                  <div>
-                    <h4 className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5 flex items-center gap-1">
-                      <Layers className="h-3.5 w-3.5 text-primary" /> Constraints & University Criteria
-                    </h4>
-                    <ul className="list-disc pl-4 space-y-1 text-muted-foreground">
-                      {currentProblem?.constraints.map((c, idx) => (
-                        <li key={idx}>{c}</li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div>
-                    <h4 className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5 flex items-center gap-1">
-                      <Terminal className="h-3.5 w-3.5 text-emerald-500" /> Expected Test Output
-                    </h4>
-                    <pre className="p-2.5 rounded-lg bg-zinc-950 text-zinc-300 font-mono text-[11px] overflow-x-auto border border-zinc-800">
-                      {currentProblem?.expectedOutput}
-                    </pre>
-                  </div>
-                </CardContent>
-              )}
-
-              {/* Tab 2: Hints */}
-              {activeWorkspaceTab === 'hints' && (
-                <CardContent className="p-4 flex-1 overflow-y-auto max-h-[580px] text-xs leading-relaxed space-y-3">
-                  <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-800 dark:text-amber-300 text-xs">
-                    <span className="font-bold flex items-center gap-1 mb-1">
-                      <Lightbulb className="h-3.5 w-3.5" /> Examiner Note:
-                    </span>
-                    Check boundary conditions, syntax constraints, and expected output formatting.
-                  </div>
-                  {currentProblem?.hints.map((hint, idx) => (
-                    <div key={idx} className="p-3 rounded-lg bg-secondary/50 border flex items-start gap-2">
-                      <span className="font-mono text-primary font-bold text-xs">{idx + 1}.</span>
-                      <p className="text-foreground/90">{hint}</p>
-                    </div>
-                  ))}
-                </CardContent>
-              )}
-
-              {/* Tab 3: Model Solution */}
-              {activeWorkspaceTab === 'solution' && (
-                <CardContent className="p-4 flex-1 overflow-y-auto max-h-[580px] text-xs leading-relaxed space-y-3">
-                  {!showSolution ? (
-                    <div className="text-center py-8 px-4 border rounded-xl bg-secondary/30">
-                      <HelpCircle className="h-8 w-8 text-primary mx-auto mb-2 opacity-80" />
-                      <h4 className="font-bold text-sm mb-1">Unlock University Reference Code?</h4>
-                      <p className="text-muted-foreground text-xs mb-4">
-                        We recommend trying to solve the practical in the editor first to earn your +75 XP reward!
-                      </p>
-                      <Button size="sm" onClick={() => setShowSolution(true)} className="gap-1.5">
-                        <Sparkles className="h-4 w-4" /> Reveal Model Solution
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="font-mono text-[11px] text-muted-foreground">Reference Implementation</span>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          className="h-7 text-xs gap-1"
-                          onClick={() => handleCopyCode(currentProblem?.modelSolution)}
-                        >
-                          <Copy className="h-3 w-3" /> Copy Solution
-                        </Button>
+                      <div className="flex items-start justify-between gap-2 mb-1.5">
+                        <span className={`font-mono text-[10px] px-1.5 py-0.5 uppercase ${
+                          isSelected ? 'bg-[#00ff88] text-[#050608]' : 'bg-[#222] text-[#888] group-hover:text-[#aaa]'
+                        }`}>
+                          {prob.language}
+                        </span>
+                        {isSolved && <Check className="h-4 w-4 text-[#00ff88]" />}
                       </div>
-                      <pre className="p-3 rounded-lg bg-zinc-950 text-emerald-400 font-mono text-[11px] leading-relaxed overflow-x-auto border border-zinc-800 max-h-[460px]">
-                        <code>{currentProblem?.modelSolution}</code>
+                      <h4 className={`text-sm font-semibold leading-tight line-clamp-2 ${isSelected ? 'text-[#f4f4f5]' : 'text-[#aaa]'}`}>
+                        {prob.title}
+                      </h4>
+                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-2 text-[10px] font-mono uppercase text-[#666]">
+                        <span className="truncate max-w-[120px]">{prob.subjectName}</span>
+                        <span>•</span>
+                        <span className={`${
+                          prob.difficulty === 'Easy' ? 'text-[#00ff88]' : 
+                          prob.difficulty === 'Medium' ? 'text-[#ffaa00]' : 'text-[#ff3366]'
+                        }`}>{prob.difficulty}</span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </aside>
+
+        {/* Right Area: Code Workspace */}
+        <section className="flex-1 flex flex-col bg-[#0a0a0a] overflow-hidden">
+          {currentProblem ? (
+            <>
+              {/* Workspace Header */}
+              <div className="p-4 border-b border-[#333] bg-[#050608] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="font-mono text-[10px] text-[#00ff88] uppercase tracking-widest border border-[#00ff88]/30 px-1.5 py-0.5 bg-[#00ff88]/5">
+                      {currentProblem.subjectName}
+                    </span>
+                    <span className="font-mono text-[10px] text-[#666] uppercase">
+                      ID: {currentProblem.id}
+                    </span>
+                  </div>
+                  <h2 className="text-xl sm:text-2xl font-bold text-[#f4f4f5] tracking-tight">
+                    {currentProblem.title}
+                  </h2>
+                </div>
+                
+                <Button
+                  onClick={handleCopyFacultySubmission}
+                  className="rounded-none bg-[#111] border border-[#333] text-[#aaa] hover:bg-[#222] hover:text-[#f4f4f5] font-mono text-xs uppercase"
+                >
+                  <FileText className="h-3.5 w-3.5 mr-2" />
+                  EXPORT_RECORD
+                </Button>
+              </div>
+
+              {/* Workspace Tabs */}
+              <div className="flex items-center px-4 border-b border-[#333] bg-[#050608] overflow-x-auto scrollbar-none">
+                {[
+                  { id: 'editor', label: 'TERMINAL_EDITOR' },
+                  { id: 'specs', label: 'MISSION_SPECS' },
+                  { id: 'hints', label: 'DECRYPT_HINTS' },
+                  { id: 'solution', label: 'OVERRIDE_SOLUTION' },
+                  { id: 'history', label: 'EXECUTION_LOGS' },
+                ].map(tab => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveWorkspaceTab(tab.id as any)}
+                    className={`px-4 py-3 font-mono text-[11px] uppercase tracking-widest transition-colors whitespace-nowrap border-b-2 ${
+                      activeWorkspaceTab === tab.id
+                        ? 'border-[#00ff88] text-[#00ff88] bg-[#00ff88]/5'
+                        : 'border-transparent text-[#666] hover:text-[#f4f4f5] hover:bg-[#111]'
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Tab Content Areas */}
+              <div className="flex-1 flex flex-col overflow-hidden">
+                
+                {activeWorkspaceTab === 'specs' && (
+                  <div className="p-6 overflow-y-auto font-mono text-sm leading-relaxed text-[#aaa] space-y-8">
+                    <div>
+                      <h3 className="text-[#00ff88] text-xs uppercase tracking-widest mb-3 flex items-center gap-2">
+                        <span className="h-px bg-[#00ff88]/30 flex-1"></span>
+                        [ OBJECTIVE_DATA ]
+                        <span className="h-px bg-[#00ff88]/30 flex-1"></span>
+                      </h3>
+                      <p className="whitespace-pre-line bg-[#111] p-4 border border-[#333] text-[#f4f4f5]">
+                        {currentProblem.description}
+                      </p>
+                    </div>
+
+                    <div>
+                      <h3 className="text-[#00ff88] text-xs uppercase tracking-widest mb-3 flex items-center gap-2">
+                        <span className="h-px bg-[#00ff88]/30 flex-1"></span>
+                        [ PROTOCOL_CONSTRAINTS ]
+                        <span className="h-px bg-[#00ff88]/30 flex-1"></span>
+                      </h3>
+                      <ul className="space-y-2">
+                        {currentProblem.constraints.map((c, i) => (
+                          <li key={i} className="flex items-start gap-2 bg-[#111] p-3 border border-[#333]">
+                            <span className="text-[#666]">{`> `}</span>
+                            <span className="text-[#ccc]">{c}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div>
+                      <h3 className="text-[#00ff88] text-xs uppercase tracking-widest mb-3 flex items-center gap-2">
+                        <span className="h-px bg-[#00ff88]/30 flex-1"></span>
+                        [ EXPECTED_TELEMETRY ]
+                        <span className="h-px bg-[#00ff88]/30 flex-1"></span>
+                      </h3>
+                      <pre className="p-4 bg-black border border-[#333] text-[#00ff88] overflow-x-auto selection:bg-[#00ff88]/30">
+                        {currentProblem.expectedOutput}
                       </pre>
                     </div>
-                  )}
-                </CardContent>
-              )}
-
-              {/* Tab 5: Submission History */}
-              {activeWorkspaceTab === 'history' && (
-                <CardContent className="p-4 flex-1 overflow-y-auto max-h-[580px] space-y-3">
-                  <div className="flex items-center justify-between pb-2 border-b">
-                    <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Submission Log for this Practical</span>
-                    <span className="text-xs font-mono text-muted-foreground">
-                      {submissionHistory.filter(s => s.problemId === currentProblem?.id).length} recorded attempts
-                    </span>
                   </div>
-                  {submissionHistory.filter(s => s.problemId === currentProblem?.id).length === 0 ? (
-                    <div className="text-center py-12 px-4 border border-dashed rounded-xl text-muted-foreground text-xs">
-                      <p className="font-semibold mb-1">No submissions yet for this problem.</p>
-                      <p className="text-[11px]">Click "Run & Test Code" in the editor tab to validate and record your solution attempt.</p>
-                    </div>
-                  ) : (
-                    submissionHistory
-                      .filter(s => s.problemId === currentProblem?.id)
-                      .map((sub, idx) => (
-                        <div
-                          key={idx}
-                          className={`p-3 rounded-xl border flex items-center justify-between text-xs transition-all ${
-                            sub.passed ? 'bg-emerald-500/5 border-emerald-500/30' : 'bg-destructive/5 border-destructive/30'
-                          }`}
-                        >
-                          <div className="flex items-center gap-2.5">
-                            {sub.passed ? (
-                              <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
-                            ) : (
-                              <XCircle className="h-4 w-4 text-destructive shrink-0" />
-                            )}
+                )}
+
+                {activeWorkspaceTab === 'hints' && (
+                  <div className="p-6 overflow-y-auto font-mono text-sm space-y-4">
+                    {currentProblem.hints.map((hint, idx) => (
+                      <div key={idx} className="p-4 bg-[#111] border border-[#333] flex items-start gap-3">
+                        <span className="text-[#00ff88] font-bold">[{idx + 1}]</span>
+                        <p className="text-[#aaa]">{hint}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {activeWorkspaceTab === 'history' && (
+                  <div className="p-6 overflow-y-auto font-mono space-y-4">
+                    {submissionHistory.filter(s => s.problemId === currentProblem.id).length === 0 ? (
+                      <div className="p-8 text-center text-[#666] border border-dashed border-[#333]">
+                        NO EXECUTION LOGS FOUND FOR CURRENT PROTOCOL.
+                      </div>
+                    ) : (
+                      submissionHistory.filter(s => s.problemId === currentProblem.id).map((sub, idx) => (
+                        <div key={idx} className={`p-4 border flex items-center justify-between ${
+                          sub.passed ? 'bg-[#00ff88]/5 border-[#00ff88]/30 text-[#00ff88]' : 'bg-[#ff3366]/5 border-[#ff3366]/30 text-[#ff3366]'
+                        }`}>
+                          <div className="flex items-center gap-3">
+                            {sub.passed ? <CheckCircle2 className="h-5 w-5" /> : <XCircle className="h-5 w-5" />}
                             <div>
-                              <span className="font-semibold block text-foreground">
-                                {sub.passed ? 'All Test Cases Passed' : 'Test Validation Failed'}
-                              </span>
-                              <span className="text-[10px] text-muted-foreground font-mono">
-                                {new Date(sub.timestamp).toLocaleString()}
-                              </span>
+                              <div className="text-sm font-bold uppercase tracking-widest">
+                                {sub.passed ? 'VERIFICATION_PASSED' : 'VERIFICATION_FAILED'}
+                              </div>
+                              <div className="text-[10px] text-[#666] mt-1">
+                                TIMESTAMP: {new Date(sub.timestamp).toISOString()}
+                              </div>
                             </div>
                           </div>
-                          <span
-                            className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full ${
-                              sub.passed ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-destructive/10 text-destructive'
-                            }`}
-                          >
-                            {sub.passed ? 'PASSED (100%)' : 'FAILED'}
+                          <span className="text-xs uppercase tracking-widest bg-black px-2 py-1 border border-current">
+                            {sub.passed ? 'SUCCESS_100%' : 'ERROR_FATAL'}
                           </span>
                         </div>
                       ))
-                  )}
-                </CardContent>
-              )}
-
-              {/* Tab 4: Code Editor & Compiler Runner */}
-              {activeWorkspaceTab === 'editor' && (
-                <div className="flex-1 flex flex-col">
-                  {/* Editor Toolbar */}
-                  <div className="py-2.5 px-4 bg-zinc-900 border-b border-zinc-800 flex items-center justify-between text-zinc-300">
-                    <div className="flex items-center gap-2">
-                      <span className="h-2.5 w-2.5 rounded-full bg-red-500/80"></span>
-                      <span className="h-2.5 w-2.5 rounded-full bg-yellow-500/80"></span>
-                      <span className="h-2.5 w-2.5 rounded-full bg-green-500/80"></span>
-                      <span className="font-mono text-xs font-semibold text-zinc-200 ml-2">
-                        {currentProblem?.fileName}
-                      </span>
-                      <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400">
-                        {currentProblem?.language === 'sql' ? 'SQL ENGINE' : currentProblem?.language}
-                      </span>
-                      <span className="text-[10px] font-mono text-zinc-400 hidden sm:flex items-center gap-1 ml-2">
-                        <Check className="h-3 w-3 text-emerald-400" /> Draft Saved
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-1.5 sm:gap-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={handleResetCode}
-                        title="Reset starter code"
-                        className="h-7 px-2 text-xs text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800"
-                      >
-                        <RotateCcw className="h-3 w-3 mr-1" />
-                        Reset
-                      </Button>
-                      <Button
-                        size="sm"
-                        onClick={handleRun}
-                        disabled={status === 'compiling' || status === 'running'}
-                        className="h-7 px-3 text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-semibold shadow-xs"
-                      >
-                        {status === 'compiling' ? (
-                          <span className="flex items-center gap-1.5 animate-pulse">
-                            <Sparkles className="h-3.5 w-3.5" /> <span className="hidden sm:inline">{currentProblem?.language === 'sql' ? 'Parsing...' : 'Compiling...'}</span><span className="sm:hidden">...</span>
-                          </span>
-                        ) : status === 'running' ? (
-                          <span className="flex items-center gap-1.5 animate-pulse">
-                            <Play className="h-3.5 w-3.5" /> <span className="hidden sm:inline">{currentProblem?.language === 'sql' ? 'Executing Query...' : 'Testing...'}</span><span className="sm:hidden">...</span>
-                          </span>
-                        ) : (
-                          <span className="flex items-center gap-1.5">
-                            <Play className="h-3.5 w-3.5 fill-current" /> <span className="hidden sm:inline">{currentProblem?.language === 'sql' ? 'Execute SQL Query' : 'Run & Test Code'}</span><span className="sm:hidden">Run</span>
-                          </span>
-                        )}
-                      </Button>
-                    </div>
+                    )}
                   </div>
+                )}
 
-                  {/* Code Textarea with Line Numbers */}
-                  <div className="relative flex-1 bg-zinc-950 min-h-[300px] flex overflow-hidden">
-                    <div className="select-none py-4 px-2.5 bg-zinc-900/70 text-zinc-600 font-mono text-xs text-right border-r border-zinc-800/80 min-w-[2.75rem] overflow-hidden">
-                      {Array.from({ length: Math.max(1, code.split('\n').length) }).map((_, i) => (
-                        <div key={i} className="leading-relaxed">{i + 1}</div>
-                      ))}
-                    </div>
-                    <Textarea
-                      value={code}
-                      onChange={(e) => setCode(e.target.value)}
-                      onKeyDown={handleKeyDown}
-                      spellCheck={false}
-                      placeholder={currentProblem?.language === 'sql' ? 'Enter your SQL statements here...' : 'Write your code here...'}
-                      className="w-full h-full min-h-[300px] lg:min-h-[340px] font-mono text-xs p-4 border-0 focus-visible:ring-0 rounded-none bg-zinc-950 text-zinc-100 leading-relaxed resize-none selection:bg-emerald-500/30 overflow-y-auto"
-                    />
+                {activeWorkspaceTab === 'solution' && (
+                  <div className="p-6 overflow-y-auto font-mono">
+                    {!showSolution ? (
+                      <div className="text-center p-12 bg-[#111] border border-[#333]">
+                        <Lightbulb className="h-10 w-10 text-[#666] mx-auto mb-4" />
+                        <h4 className="text-[#f4f4f5] text-lg mb-2 uppercase tracking-widest font-bold">OVERRIDE_AUTHORIZATION_REQUIRED</h4>
+                        <p className="text-[#888] text-xs mb-6 max-w-md mx-auto leading-relaxed">
+                          WARNING: ACCESSING REFERENCE SOLUTION WILL BYPASS MANUAL LEARNING PROTOCOLS. IT IS RECOMMENDED TO ATTEMPT EXECUTION FIRST.
+                        </p>
+                        <Button 
+                          onClick={() => setShowSolution(true)}
+                          className="bg-transparent border border-[#00ff88] text-[#00ff88] hover:bg-[#00ff88] hover:text-black rounded-none uppercase tracking-widest text-xs h-10 px-6"
+                        >
+                          <Check className="h-4 w-4 mr-2" />
+                          AUTHORIZE OVERRIDE
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[#00ff88] text-xs uppercase tracking-widest">[ DECRYPTED_SOLUTION ]</span>
+                          <Button 
+                            onClick={() => handleCopyCode(currentProblem.modelSolution)}
+                            variant="ghost"
+                            className="h-8 rounded-none text-[#aaa] hover:text-[#f4f4f5] hover:bg-[#222]"
+                          >
+                            <Copy className="h-4 w-4 mr-2" /> COPY
+                          </Button>
+                        </div>
+                        <pre className="p-4 bg-black border border-[#333] text-[#f4f4f5] overflow-x-auto text-xs leading-relaxed selection:bg-[#00ff88]/30">
+                          <code>{currentProblem.modelSolution}</code>
+                        </pre>
+                      </div>
+                    )}
                   </div>
+                )}
 
-                  {/* Integrated Terminal & Test Harness Console */}
-                  <div className="h-44 flex flex-col bg-zinc-900 border-t border-zinc-800">
-                    <div className="py-1.5 px-4 bg-zinc-950 border-b border-zinc-800 flex items-center justify-between">
+                {/* Editor Tab */}
+                {activeWorkspaceTab === 'editor' && (
+                  <div className="flex-1 flex flex-col relative bg-[#050608]">
+                    
+                    {/* Toolbar */}
+                    <div className="h-10 flex items-center justify-between px-3 border-b border-[#333] bg-[#0a0a0a]">
+                      <div className="flex items-center gap-3 font-mono text-[10px]">
+                        <span className="text-[#00ff88] flex items-center gap-1 uppercase tracking-widest">
+                          <Code className="h-3 w-3" /> {currentProblem.fileName}
+                        </span>
+                        <span className="text-[#666]">|</span>
+                        <span className="text-[#888] uppercase tracking-widest">{currentProblem.language}</span>
+                      </div>
+                      
                       <div className="flex items-center gap-2">
-                        <Terminal className="h-3.5 w-3.5 text-zinc-400" />
-                        <span className="text-[11px] font-mono font-semibold uppercase tracking-wider text-zinc-300">
-                          Execution Console & Output
+                        <Button
+                          variant="ghost"
+                          onClick={handleResetCode}
+                          className="h-7 rounded-none px-2 text-[#888] hover:text-white hover:bg-[#222] font-mono text-[10px] uppercase tracking-widest"
+                        >
+                          <RotateCcw className="h-3 w-3 mr-1.5" /> RESET
+                        </Button>
+                        <Button
+                          onClick={handleRun}
+                          disabled={status === 'compiling' || status === 'running'}
+                          className={`h-7 rounded-none px-4 font-mono text-[10px] uppercase tracking-widest transition-all ${
+                            status === 'compiling' || status === 'running'
+                              ? 'bg-[#222] text-[#666] border border-[#333]'
+                              : 'bg-[#00ff88] text-black border border-[#00ff88] hover:bg-[#00cc6a] hover:border-[#00cc6a] shadow-[0_0_10px_rgba(0,255,136,0.2)]'
+                          }`}
+                        >
+                          {(status === 'compiling' || status === 'running') ? (
+                            <span className="flex items-center gap-1.5 animate-pulse">
+                              <Terminal className="h-3 w-3" /> EXECUTING...
+                            </span>
+                          ) : (
+                            <span className="flex items-center gap-1.5 font-bold">
+                              <Play className="h-3 w-3 fill-current" /> EXECUTE_CODE
+                            </span>
+                          )}
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Textarea Area */}
+                    <div className="flex-1 flex overflow-hidden">
+                      {/* Line Numbers */}
+                      <div className="w-12 bg-[#0a0a0a] border-r border-[#333] text-[#555] font-mono text-xs py-4 flex flex-col items-end pr-2 select-none">
+                        {Array.from({ length: Math.max(1, code.split('\n').length) }).map((_, i) => (
+                          <div key={i} className="leading-relaxed">{i + 1}</div>
+                        ))}
+                      </div>
+                      <Textarea
+                        value={code}
+                        onChange={(e) => setCode(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        spellCheck={false}
+                        className="flex-1 font-mono text-sm p-4 bg-transparent border-none text-[#e0e0e0] resize-none focus-visible:ring-0 leading-relaxed selection:bg-[#00ff88]/30 rounded-none h-full"
+                      />
+                    </div>
+
+                    {/* Terminal Output */}
+                    <div className="h-48 flex flex-col border-t border-[#333] bg-black">
+                      <div className="h-8 flex items-center px-3 border-b border-[#333] bg-[#0a0a0a]">
+                        <span className="font-mono text-[10px] text-[#888] uppercase tracking-widest flex items-center gap-1.5">
+                          <Terminal className="h-3 w-3 text-[#00ff88]" /> OUTPUT_CONSOLE
                         </span>
                       </div>
-                      <div>
-                        {status === 'success' && (
-                          <span className="inline-flex items-center gap-1 text-[11px] font-mono text-emerald-400 font-bold">
-                            <CheckCircle2 className="h-3.5 w-3.5" /> All Tests Passed
-                          </span>
-                        )}
-                        {status === 'failed' && (
-                          <span className="inline-flex items-center gap-1 text-[11px] font-mono text-rose-400 font-bold">
-                            <XCircle className="h-3.5 w-3.5" /> Test Cases Failed
+                      <div className="flex-1 p-3 font-mono text-xs leading-relaxed text-[#aaa] overflow-y-auto selection:bg-[#00ff88]/30">
+                        {output || (
+                          <span className="text-[#444]">
+                            &gt; _ WAITING FOR EXECUTION COMMAND...
                           </span>
                         )}
                       </div>
                     </div>
 
-                    <div className="p-3 bg-black font-mono text-[11px] text-zinc-200 overflow-y-auto flex-1 leading-relaxed whitespace-pre-wrap selection:bg-primary/40">
-                      {output || (
-                        <span className="text-zinc-500 italic">
-                          {currentProblem?.language === 'sql'
-                            ? '-- Click "Execute SQL Query" above to run validation tests against the university dataset...'
-                            : '// Click "Run & Test Code" above to compile and execute test assertions...'}
-                        </span>
-                      )}
-                    </div>
                   </div>
-                </div>
-              )}
-            </Card>
-
-            {/* Quick Next Practical Navigation when solved */}
-            {status === 'success' && (
-              <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-emerald-500" />
-                  <div>
-                    <h5 className="font-bold text-xs text-foreground">Practical Solved & Verified!</h5>
-                    <p className="text-[11px] text-muted-foreground">+75 XP has been awarded to your student profile.</p>
-                  </div>
-                </div>
-                {CODING_PROBLEMS.findIndex(p => p.id === currentProblem?.id) < CODING_PROBLEMS.length - 1 && (
-                  <Button
-                    size="sm"
-                    onClick={() => {
-                      const nextIdx = CODING_PROBLEMS.findIndex(p => p.id === currentProblem?.id) + 1;
-                      handleSelectProblem(CODING_PROBLEMS[nextIdx]);
-                    }}
-                    className="gap-1 text-xs"
-                  >
-                    Next Practical <ChevronRight className="h-3.5 w-3.5" />
-                  </Button>
                 )}
               </div>
-            )}
-              </>
-            ) : (
-              <div className="flex-1 flex items-center justify-center border rounded-xl bg-card text-muted-foreground p-8">
-                Select a problem or adjust filters to get started.
-              </div>
-            )}
-          </div>
-        </div>
+            </>
+          ) : (
+            <div className="flex-1 flex items-center justify-center font-mono text-xs text-[#666] uppercase tracking-widest">
+              AWAITING PROTOCOL SELECTION...
+            </div>
+          )}
+        </section>
       </main>
-
+      
       <Footer />
     </div>
   );
