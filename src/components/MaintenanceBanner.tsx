@@ -96,15 +96,32 @@ export function MaintenanceBanner() {
     }
   };
 
-  const handleMasterKeySubmit = (e: React.FormEvent) => {
+  const handleMasterKeySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (masterKey.toLowerCase() === 'velocity' || masterKey.toLowerCase() === 'itm2026') {
-      setAdminBypass(true);
-      sessionStorage.setItem('itm_admin_bypassed', 'true');
-      toast.success('Admin Bypass Granted. Welcome back.');
-      setShowKeyPrompt(false);
-    } else {
-      toast.error('Invalid Master Override Key');
+    
+    // Quick crypto hash comparison to prevent plain-text keys in bundle
+    try {
+      const msgBuffer = new TextEncoder().encode(masterKey.toLowerCase());
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      
+      // Hashes for 'velocity' and 'itm2026'
+      if (
+        hashHex === '7181fecba68c5b967ec7db698308ce015886d91d1e4ed422208e983416dddf8e' || 
+        hashHex === 'b3db97fec2d5e2d6b38c353c070c7cb9d9196b010f3c5f4b50c058c42dbfa96b'
+      ) {
+        setAdminBypass(true);
+        sessionStorage.setItem('itm_admin_bypassed', 'true');
+        toast.success('Admin Bypass Granted. Welcome back.');
+        setShowKeyPrompt(false);
+      } else {
+        toast.error('Invalid Master Override Key');
+        setMasterKey('');
+      }
+    } catch {
+      // Fallback
+      toast.error('Cryptography module unavailable.');
       setMasterKey('');
     }
   };
