@@ -17,10 +17,9 @@ export function MobileBottomNav() {
   const isMaintenanceActive = (() => {
     try {
       const stored = localStorage.getItem('itm_maintenance_mode');
-      if (stored === 'false') return false;
-      return true;
+      return stored === 'true';
     } catch {
-      return true;
+      return false;
     }
   })();
   const isAdmin = user?.email === 'maherbhatt01@gmail.com';

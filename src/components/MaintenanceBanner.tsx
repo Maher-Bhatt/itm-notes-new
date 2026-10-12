@@ -13,9 +13,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useLocation } from 'react-router-dom';
 
-const GLOBAL_MAINTENANCE_ENABLED = true;
-
-const checkMaintenanceActive = (): boolean => {
+export const checkMaintenanceActive = (): boolean => {
   try {
     const params = new URLSearchParams(window.location.search);
     if (params.get('maintenance') === 'false' || params.get('bypass') === 'true' || params.get('bypass') === 'admin') {
@@ -28,11 +26,9 @@ const checkMaintenanceActive = (): boolean => {
     }
 
     const stored = localStorage.getItem('itm_maintenance_mode');
-    if (stored === 'false') return false;
-    if (stored === 'true') return true;
-    return GLOBAL_MAINTENANCE_ENABLED;
+    return stored === 'true';
   } catch {
-    return GLOBAL_MAINTENANCE_ENABLED;
+    return false;
   }
 };
 
