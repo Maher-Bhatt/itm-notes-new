@@ -19,6 +19,7 @@ export default function CodingLabPage() {
   const [selectedSemester, setSelectedSemester] = useState<number | 'all'>('all');
   const [selectedSubject, setSelectedSubject] = useState<string>('all');
   const [selectedLanguage, setSelectedLanguage] = useState<string>('all');
+  const [selectedDifficulty, setSelectedDifficulty] = useState<string>('all');
   const [searchProblemQuery, setSearchProblemQuery] = useState<string>('');
   
   const [activeProblemId, setActiveProblemId] = useState<string>(CODING_PROBLEMS[0].id);
@@ -85,6 +86,7 @@ export default function CodingLabPage() {
       if (selectedSemester !== 'all' && probSem !== selectedSemester) return false;
       if (selectedSubject !== 'all' && p.subjectName !== selectedSubject) return false;
       if (selectedLanguage !== 'all' && p.language.toLowerCase() !== selectedLanguage.toLowerCase()) return false;
+      if (selectedDifficulty !== 'all' && p.difficulty.toLowerCase() !== selectedDifficulty.toLowerCase()) return false;
       if (searchProblemQuery.trim()) {
         const q = searchProblemQuery.toLowerCase();
         return (
@@ -95,7 +97,7 @@ export default function CodingLabPage() {
       }
       return true;
     });
-  }, [selectedSemester, selectedSubject, selectedLanguage, searchProblemQuery]);
+  }, [selectedSemester, selectedSubject, selectedLanguage, selectedDifficulty, searchProblemQuery]);
 
   useEffect(() => {
     if (filteredProblems.length > 0 && !filteredProblems.find(p => p.id === activeProblemId)) {
@@ -304,7 +306,7 @@ export default function CodingLabPage() {
       {/* Expandable Filters (Premium UI) */}
       {showFilters && (
         <div className="bg-card border-b p-4 shadow-inner animate-in slide-in-from-top-2">
-          <div className="max-w-[1600px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
+          <div className="max-w-[1600px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-sm">
             <div className="space-y-2">
               <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Semester</label>
               <div className="flex flex-wrap gap-2">
@@ -361,6 +363,29 @@ export default function CodingLabPage() {
                 ))}
               </div>
             </div>
+            <div className="space-y-2">
+              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Difficulty</label>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { id: 'all', label: 'All' },
+                  { id: 'easy', label: 'Easy' },
+                  { id: 'medium', label: 'Medium' },
+                  { id: 'hard', label: '🔥 Hard' },
+                ].map(diff => (
+                  <button
+                    key={diff.id}
+                    onClick={() => setSelectedDifficulty(diff.id)}
+                    className={`px-3 py-1.5 rounded-lg border transition-all text-xs font-medium ${
+                      selectedDifficulty === diff.id 
+                        ? (diff.id === 'hard' ? 'bg-rose-600 text-white border-rose-600 shadow-sm' : 'bg-primary text-primary-foreground border-primary shadow-sm')
+                        : 'bg-background hover:bg-secondary'
+                    }`}
+                  >
+                    {diff.label}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       )}
@@ -386,8 +411,26 @@ export default function CodingLabPage() {
 
         {/* Left Sidebar: Problem List */}
         <div className={`w-full lg:w-80 flex-shrink-0 flex-col border-r bg-card/30 ${mobileView === 'list' ? 'flex' : 'hidden lg:flex'} h-[calc(100vh-140px)] lg:h-auto`}>
-          <div className="p-3 border-b bg-card/50 flex justify-between items-center sticky top-0 z-10">
+          <div className="p-3 border-b bg-card/50 flex justify-between items-center sticky top-0 z-10 gap-2">
             <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Practicals ({filteredProblems.length})</span>
+            <div className="flex items-center gap-1">
+              {[
+                { id: 'all', label: 'All' },
+                { id: 'hard', label: '🔥 Hard' },
+              ].map(d => (
+                <button
+                  key={d.id}
+                  onClick={() => setSelectedDifficulty(d.id)}
+                  className={`text-[10px] px-2 py-0.5 rounded-full font-semibold transition-all border ${
+                    selectedDifficulty === d.id
+                      ? (d.id === 'hard' ? 'bg-rose-600 text-white border-rose-600 shadow-xs' : 'bg-primary text-primary-foreground border-primary shadow-xs')
+                      : 'bg-secondary/60 text-muted-foreground border-transparent hover:border-border'
+                  }`}
+                >
+                  {d.label}
+                </button>
+              ))}
+            </div>
           </div>
           <div className="flex-1 overflow-y-auto scrollbar-thin">
             {filteredProblems.length === 0 ? (
