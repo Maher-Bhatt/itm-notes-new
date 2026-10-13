@@ -81,6 +81,7 @@ export default function CommunityPage() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [activeTab, setActiveTab] = useState<'all' | 'masked' | 'feedback' | 'trending'>('all');
+  const [feedSort, setFeedSort] = useState<'latest' | 'likes' | 'comments'>('latest');
   const [expandedComments, setExpandedComments] = useState<Record<string, boolean>>({});
 
   // New Post Form State
@@ -509,9 +510,9 @@ export default function CommunityPage() {
     setIsComparisonOpen(true);
   };
 
-  // Filtered Posts with search query support
+  // Filtered Posts with search query & sorting support
   const filteredPosts = useMemo(() => {
-    return posts.filter((p) => {
+    let list = posts.filter((p) => {
       // If user came via a shared post link, prioritize that post
       if (sharedPostId && p.id === sharedPostId) return true;
       if (activeTab === 'masked' && !p.isMasked) return false;
@@ -527,7 +528,15 @@ export default function CommunityPage() {
       }
       return true;
     });
-  }, [posts, activeTab, selectedCategory, sharedPostId, postSearchQuery]);
+
+    if (feedSort === 'likes') {
+      list = [...list].sort((a, b) => b.likes - a.likes);
+    } else if (feedSort === 'comments') {
+      list = [...list].sort((a, b) => (b.comments?.length || 0) - (a.comments?.length || 0));
+    }
+
+    return list;
+  }, [posts, activeTab, selectedCategory, sharedPostId, postSearchQuery, feedSort]);
 
   // Trending posts this week (top 3 by likes)
   const trendingPosts = useMemo(() => {
@@ -759,24 +768,47 @@ export default function CommunityPage() {
               </div>
             )}
 
-            {/* Real-time Post Search Bar */}
-            <div className="relative">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <input
-                type="text"
-                value={postSearchQuery}
-                onChange={(e) => setPostSearchQuery(e.target.value)}
-                placeholder="Search campus discussions, questions, confessions..."
-                className="w-full h-10 pl-10 pr-16 rounded-2xl border border-border/80 bg-card text-xs focus:ring-1 focus:ring-primary focus:outline-none transition-all shadow-xs"
-              />
-              {postSearchQuery && (
-                <button
-                  onClick={() => setPostSearchQuery('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-muted-foreground hover:text-foreground px-2 py-0.5 rounded-md hover:bg-secondary"
-                >
-                  Clear
-                </button>
-              )}
+            {/* Real-time Post Search Bar & Topic Pills */}
+            <div className="space-y-2">
+              <div className="relative">
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <input
+                  type="text"
+                  value={postSearchQuery}
+                  onChange={(e) => setPostSearchQuery(e.target.value)}
+                  placeholder="Search campus discussions, questions, confessions..."
+                  className="w-full h-10 pl-10 pr-16 rounded-2xl border border-border/80 bg-card text-xs focus:ring-1 focus:ring-primary focus:outline-none transition-all shadow-xs"
+                />
+                {postSearchQuery && (
+                  <button
+                    onClick={() => setPostSearchQuery('')}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-muted-foreground hover:text-foreground px-2 py-0.5 rounded-md hover:bg-secondary"
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
+
+              {/* Topic Hashtags Quick-Filter Pills */}
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider shrink-0 mr-1">Trending Topics:</span>
+                {['#DSA', '#DBMS', '#Java', '#MST', '#ExamTips', '#Canteen', '#Projects'].map((tag) => {
+                  const isActive = postSearchQuery.toLowerCase() === tag.toLowerCase().replace('#', '');
+                  return (
+                    <button
+                      key={tag}
+                      onClick={() => setPostSearchQuery(isActive ? '' : tag.replace('#', ''))}
+                      className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full border transition-all whitespace-nowrap ${
+                        isActive
+                          ? 'bg-primary text-primary-foreground border-primary shadow-xs'
+                          : 'bg-secondary/40 hover:bg-secondary text-muted-foreground hover:text-foreground border-border/60'
+                      }`}
+                    >
+                      {tag}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
             {/* Filter Tabs */}
@@ -825,7 +857,7 @@ export default function CommunityPage() {
                 </button>
               </div>
 
-              {/* Category Dropdown Filter & Refresh */}
+              {/* Category & Sort Dropdown Filter & Refresh */}
               <div className="flex items-center gap-2">
                 <button
                   type="button"
@@ -838,6 +870,17 @@ export default function CommunityPage() {
                 >
                   <RotateCw className={`h-3.5 w-3.5 ${isRefreshing ? 'animate-spin text-primary' : ''}`} />
                 </button>
+
+                <select
+                  value={feedSort}
+                  onChange={(e) => setFeedSort(e.target.value as any)}
+                  className="px-2.5 py-1 rounded-lg bg-secondary text-xs text-foreground font-semibold border border-border/80 outline-none cursor-pointer"
+                >
+                  <option value="latest">Sort: Latest</option>
+                  <option value="likes">Sort: Most Liked</option>
+                  <option value="comments">Sort: Most Discussed</option>
+                </select>
+
                 <Filter className="h-3.5 w-3.5 text-muted-foreground" />
                 <select
                   value={selectedCategory}

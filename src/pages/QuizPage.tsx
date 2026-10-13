@@ -25,6 +25,14 @@ export default function QuizPage() {
   const [selectedSubject, setSelectedSubject] = useState<string>("all-sem3");
   const [questionCount, setQuestionCount] = useState<number>(10);
   const [quizStarted, setQuizStarted] = useState(false);
+  const [recentScores, setRecentScores] = useState<any[]>(() => {
+    try {
+      const raw = localStorage.getItem('itm_quiz_scores');
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
+  });
   const { recordQuizCompleted, addXp } = useGamification();
 
   // Get subjects that have MCQs
@@ -116,6 +124,7 @@ export default function QuizPage() {
         timestamp: new Date().toISOString()
       });
       localStorage.setItem('itm_quiz_scores', JSON.stringify(list.slice(0, 30)));
+      setRecentScores(list.slice(0, 30));
     } catch (e) {
       console.warn('Failed to save quiz score to localStorage:', e);
     }
@@ -273,6 +282,57 @@ export default function QuizPage() {
                 Start Practice Quiz ({mcqs.length} Questions)
               </Button>
             </div>
+
+            {/* Recent Quiz Attempts & History */}
+            {recentScores.length > 0 && (
+              <div className="surface-elevated rounded-2xl p-6 border border-border">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <Award className="h-4 w-4 text-primary" />
+                    <h3 className="font-bold text-sm text-foreground">
+                      Recent Practice Attempts & Accuracy History
+                    </h3>
+                  </div>
+                  <button
+                    onClick={() => {
+                      localStorage.removeItem('itm_quiz_scores');
+                      setRecentScores([]);
+                      toast.info("Quiz history cleared");
+                    }}
+                    className="text-xs text-muted-foreground hover:text-destructive transition-colors"
+                  >
+                    Clear History
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                  {recentScores.slice(0, 6).map((sc: any, idx: number) => (
+                    <div
+                      key={idx}
+                      className="p-3.5 rounded-xl border border-border/80 bg-secondary/30 flex items-center justify-between"
+                    >
+                      <div className="min-w-0 pr-2">
+                        <p className="font-bold text-xs text-foreground truncate">{sc.subjectName}</p>
+                        <p className="text-[10px] text-muted-foreground mt-0.5">
+                          {new Date(sc.timestamp).toLocaleDateString()} · {sc.score}/{sc.total} Correct
+                        </p>
+                      </div>
+                      <span
+                        className={`text-xs font-mono font-bold px-2 py-0.5 rounded-full shrink-0 ${
+                          sc.percentage >= 80
+                            ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
+                            : sc.percentage >= 60
+                            ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
+                            : "bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20"
+                        }`}
+                      >
+                        {sc.percentage}%
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <div className="animate-fade-in space-y-6">

@@ -813,7 +813,7 @@ export default function GpaCalculatorPage() {
             </div>
 
             {/* Target SGPA Advisor Banner */}
-            <div className="p-4 rounded-2xl bg-secondary/30 border border-border/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="p-4 sm:p-5 rounded-2xl bg-secondary/30 border border-border/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
                   <Target className="h-5 w-5" />
@@ -821,27 +821,53 @@ export default function GpaCalculatorPage() {
                 <div>
                   <h4 className="text-xs sm:text-sm font-bold text-foreground">SGPA Target Goal Planner</h4>
                   <p className="text-[11px] text-muted-foreground">
-                    To achieve an SGPA of <strong className="text-foreground">{targetSgpa}</strong>, you need an average of{' '}
+                    To achieve an SGPA of <strong className="text-foreground">{targetSgpa.toFixed(1)}</strong>, you need an average of{' '}
                     <strong className="text-primary">{targetRequiredMarks} / 50</strong> marks in your external semester exams.
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-1.5 shrink-0">
-                <span className="text-xs font-semibold text-muted-foreground mr-1">Target:</span>
-                {[7.5, 8.0, 8.5, 9.0].map((t) => (
-                  <button
-                    key={t}
-                    onClick={() => setTargetSgpa(t)}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
-                      targetSgpa === t
-                        ? 'bg-primary text-primary-foreground shadow-sm'
-                        : 'bg-secondary text-muted-foreground hover:text-foreground'
-                    }`}
-                  >
-                    {t.toFixed(1)}
-                  </button>
-                ))}
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="flex items-center gap-2 bg-background p-1.5 rounded-xl border border-border shadow-inner">
+                  <span className="text-[11px] font-bold text-muted-foreground pl-1">Target:</span>
+                  <input
+                    type="range"
+                    min="5.0"
+                    max="10.0"
+                    step="0.1"
+                    value={targetSgpa}
+                    onChange={(e) => setTargetSgpa(parseFloat(e.target.value))}
+                    className="w-24 sm:w-32 accent-primary cursor-pointer"
+                  />
+                  <input
+                    type="number"
+                    min="4.0"
+                    max="10.0"
+                    step="0.1"
+                    value={targetSgpa}
+                    onChange={(e) => {
+                      const val = parseFloat(e.target.value);
+                      if (!isNaN(val)) setTargetSgpa(Math.max(4.0, Math.min(10.0, val)));
+                    }}
+                    className="w-14 h-7 text-xs font-mono font-bold text-center rounded-lg border border-input bg-secondary/50 focus:ring-1 focus:ring-primary"
+                  />
+                </div>
+
+                <div className="flex items-center gap-1">
+                  {[7.5, 8.0, 8.5, 9.0].map((t) => (
+                    <button
+                      key={t}
+                      onClick={() => setTargetSgpa(t)}
+                      className={`px-2 py-1 rounded-lg text-xs font-bold transition-all ${
+                        targetSgpa === t
+                          ? 'bg-primary text-primary-foreground shadow-sm'
+                          : 'bg-secondary text-muted-foreground hover:text-foreground'
+                      }`}
+                    >
+                      {t.toFixed(1)}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 
@@ -1106,6 +1132,64 @@ export default function GpaCalculatorPage() {
                 </div>
               </>
             )}
+
+            {/* ITM University Degree Classification & Grading Standard */}
+            <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-sm mt-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 pb-3 border-b border-border/60">
+                <div>
+                  <h4 className="font-bold text-sm sm:text-base text-foreground flex items-center gap-2">
+                    <Award className="h-4 w-4 text-primary" />
+                    <span>ITM SLS Baroda University Degree Classification Standard</span>
+                  </h4>
+                  <p className="text-xs text-muted-foreground">Official UGC / AICTE 10-Point Relative Grading System & Degree Honours Criteria</p>
+                </div>
+                <span className="text-[11px] font-mono font-bold px-2.5 py-1 rounded-lg bg-secondary text-primary">
+                  Formula: (CGPA − 0.75) × 10 = %
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-xs">
+                <div className="p-3.5 rounded-xl border border-emerald-500/30 bg-emerald-500/5 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-foreground">Distinction</span>
+                    <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">CGPA ≥ 8.50</span>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground">First Class with Distinction (Honours Equivalent ≥ 77.5%)</p>
+                </div>
+
+                <div className="p-3.5 rounded-xl border border-blue-500/30 bg-blue-500/5 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-foreground">First Class</span>
+                    <span className="font-mono font-bold text-blue-600 dark:text-blue-400">7.00 – 8.49</span>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground">First Class Degree (Percentage: 62.5% to 77.4%)</p>
+                </div>
+
+                <div className="p-3.5 rounded-xl border border-amber-500/30 bg-amber-500/5 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-foreground">Second Class</span>
+                    <span className="font-mono font-bold text-amber-600 dark:text-amber-400">6.00 – 6.99</span>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground">Second Class Degree (Percentage: 52.5% to 62.4%)</p>
+                </div>
+
+                <div className="p-3.5 rounded-xl border border-border bg-secondary/30 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-foreground">Pass Class</span>
+                    <span className="font-mono font-bold text-foreground">5.00 – 5.99</span>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground">Pass Division (Percentage: 42.5% to 52.4%)</p>
+                </div>
+
+                <div className="p-3.5 rounded-xl border border-rose-500/30 bg-rose-500/5 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-foreground">Remedial</span>
+                    <span className="font-mono font-bold text-rose-600 dark:text-rose-400">&lt; 5.00 (FF)</span>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground">Remedial Examination Required in Next Semester</p>
+                </div>
+              </div>
+            </div>
           </div>
         )}
 

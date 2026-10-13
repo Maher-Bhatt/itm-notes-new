@@ -44,6 +44,7 @@ export default function MaterialsPage() {
   const [selectedSubject, setSelectedSubject] = useState(initialSubject);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedSemester, setSelectedSemester] = useState("All");
+  const [sortBy, setSortBy] = useState<"default" | "title" | "pages">("default");
   const [activePreview, setActivePreview] = useState<StudyMaterial | null>(null);
 
   // Favorites state stored in localStorage
@@ -104,9 +105,9 @@ export default function MaterialsPage() {
 
   const categories = ["All", "Notes", "Syllabus", "Question Paper", "Timetable", "Presentation", "Lab Manual", "Assignment"];
 
-  // Filtered list
+  // Filtered & sorted list
   const filteredMaterials = useMemo(() => {
-    return REAL_STUDY_MATERIALS.filter((m) => {
+    let list = REAL_STUDY_MATERIALS.filter((m) => {
       if (showOnlyFavorites && !favorites.includes(m.id)) return false;
 
       const query = searchQuery.toLowerCase();
@@ -132,7 +133,19 @@ export default function MaterialsPage() {
 
       return matchesSearch && matchesSubject && matchesCategory && matchesSemester;
     });
-  }, [searchQuery, selectedSubject, selectedCategory, selectedSemester, showOnlyFavorites, favorites, isExamMode]);
+
+    if (sortBy === "title") {
+      list = [...list].sort((a, b) => a.title.localeCompare(b.title));
+    } else if (sortBy === "pages") {
+      list = [...list].sort((a, b) => {
+        const pA = parseInt(a.pages || "0", 10) || 0;
+        const pB = parseInt(b.pages || "0", 10) || 0;
+        return pB - pA;
+      });
+    }
+
+    return list;
+  }, [searchQuery, selectedSubject, selectedCategory, selectedSemester, showOnlyFavorites, favorites, isExamMode, sortBy]);
 
   // Derived list of recently viewed materials
   const recentlyViewedMaterials = useMemo(() => {
@@ -300,6 +313,16 @@ ${material.topicsCovered.map((t, idx) => `${idx + 1}. ${t}`).join("\n")}
                 <Heart className={`h-3.5 w-3.5 ${showOnlyFavorites ? "fill-white" : ""}`} />
                 <span>Favorites ({favorites.length})</span>
               </button>
+
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as any)}
+                className="px-2.5 py-1.5 rounded-lg bg-background border border-border text-xs font-medium text-foreground outline-none cursor-pointer"
+              >
+                <option value="default">Sort: Default</option>
+                <option value="title">Sort: Title (A-Z)</option>
+                <option value="pages">Sort: Length / Pages</option>
+              </select>
             </div>
           </div>
 
@@ -372,7 +395,10 @@ ${material.topicsCovered.map((t, idx) => `${idx + 1}. ${t}`).join("\n")}
           {filteredMaterials.map((material) => (
             <div
               key={material.id}
-              onClick={() => handleDownload(material)}
+              onClick={() => {
+                trackRecentlyViewed(material.id);
+                setActivePreview(material);
+              }}
               className="bg-card border border-border/80 hover:border-primary/40 rounded-2xl p-5 sm:p-6 flex flex-col justify-between transition-all duration-200 shadow-sm hover:shadow-md group cursor-pointer"
             >
               <div>
@@ -563,9 +589,33 @@ ${material.topicsCovered.map((t, idx) => `${idx + 1}. ${t}`).join("\n")}
               Subject: {activePreview.subject}
             </p>
 
-            <p className="text-sm text-muted-foreground leading-relaxed mb-6">
+            <p className="text-sm text-muted-foreground leading-relaxed mb-4">
               {activePreview.description}
             </p>
+
+            {/* Embedded Document Preview If URL is available */}
+            {activePreview.downloadUrl && (
+              <div className="mb-4">
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Document Preview</span>
+                  <a
+                    href={activePreview.downloadUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[11px] font-bold text-primary hover:underline flex items-center gap-1"
+                  >
+                    <ExternalLink className="h-3 w-3" /> Full Window
+                  </a>
+                </div>
+                <div className="w-full h-56 rounded-xl border border-border overflow-hidden bg-secondary/30 relative">
+                  <iframe
+                    src={`${activePreview.downloadUrl}#toolbar=0`}
+                    title={activePreview.title}
+                    className="w-full h-full border-0"
+                  />
+                </div>
+              </div>
+            )}
 
             <div className="mb-6">
               <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">

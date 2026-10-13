@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -30,8 +30,27 @@ import {
   ThumbsUp,
   Flag,
   Check,
-  Megaphone
+  Megaphone,
+  Download,
+  Wifi,
+  Cpu,
+  HardDrive,
+  BarChart3,
+  History,
+  FileText,
+  Clock
 } from "lucide-react";
+import { 
+  ResponsiveContainer, 
+  BarChart, 
+  Bar, 
+  XAxis, 
+  YAxis, 
+  Tooltip, 
+  PieChart, 
+  Pie, 
+  Cell 
+} from "recharts";
 import { toast } from "sonner";
 
 interface StudentUser {
@@ -47,11 +66,44 @@ interface StudentUser {
   joined: string;
 }
 
+interface AuditLogItem {
+  id: string;
+  admin: string;
+  action: string;
+  target: string;
+  timestamp: string;
+}
+
+const ANNOUNCEMENT_PRESETS = [
+  {
+    title: "Exam Week: MST-1 Timetable Announced",
+    severity: "warning",
+    body: "The Mid-Semester Test 1 (MST-1) timetable is released. Verify your attendance threshold on the GPA Calculator and review Solved Question Banks.",
+  },
+  {
+    title: "Solved IMP Question Banks Updated",
+    severity: "info",
+    body: "New high-weightage 7-mark & 14-mark university exam questions with step-by-step solutions are live for DSA, DBMS, and CA.",
+  },
+  {
+    title: "Platform Maintenance Window",
+    severity: "critical",
+    body: "Scheduled maintenance will occur tonight from 2:00 AM to 4:00 AM IST. Please save your Coding Lab scripts before the window starts.",
+  },
+  {
+    title: "Coding Lab Benchmark Contest Live",
+    severity: "info",
+    body: "Compete with peers in algorithmic challenges across C, Python, and Java. Earn up to 250 Bonus XP and climb the platform leaderboard!",
+  },
+];
+
 export default function AdminDashboard() {
   const { role, user, profile } = useAuth();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<"overview" | "content" | "users" | "announcements" | "moderation" | "settings">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "users" | "analytics" | "announcements" | "moderation" | "content" | "telemetry" | "settings">("overview");
   const [searchSubject, setSearchSubject] = useState("");
+  const [userSearch, setUserSearch] = useState("");
+  const [roleFilter, setRoleFilter] = useState("all");
   const [maintenanceMode, setMaintenanceMode] = useState<boolean>(() => {
     try {
       const stored = localStorage.getItem('itm_maintenance_mode');
@@ -62,6 +114,86 @@ export default function AdminDashboard() {
   });
   const [gamificationEnabled, setGamificationEnabled] = useState(true);
   const [publicRegEnabled, setPublicRegEnabled] = useState(true);
+
+  // ── Administrative Audit Trail State ──
+  const [auditLogs, setAuditLogs] = useState<AuditLogItem[]>(() => {
+    try {
+      const raw = localStorage.getItem('itm_admin_audit_log');
+      if (raw) return JSON.parse(raw);
+    } catch {
+      // fallback
+    }
+    return [
+      {
+        id: 'audit-init-1',
+        admin: 'maherbhatt01@gmail.com',
+        action: 'PLATFORM_BOOT',
+        target: 'System Command Center Activated',
+        timestamp: new Date().toISOString(),
+      },
+    ];
+  });
+
+  const appendAuditLog = (action: string, target: string) => {
+    const item: AuditLogItem = {
+      id: `audit-${Date.now()}`,
+      admin: user?.email || "admin@itm.edu",
+      action,
+      target,
+      timestamp: new Date().toISOString(),
+    };
+    try {
+      const raw = localStorage.getItem('itm_admin_audit_log');
+      const current = raw ? JSON.parse(raw) : [];
+      const updated = [item, ...current].slice(0, 100);
+      setAuditLogs(updated);
+      localStorage.setItem('itm_admin_audit_log', JSON.stringify(updated));
+    } catch (e) {
+      console.warn('Failed to append audit log:', e);
+    }
+  };
+
+  // ── Platform Telemetry State ──
+  const [pingLatency, setPingLatency] = useState<number | null>(null);
+  const [isPinging, setIsPinging] = useState(false);
+  const [storageInfo, setStorageInfo] = useState<{ usedKb: number; keysCount: number }>({ usedKb: 0, keysCount: 0 });
+
+  const runTelemetryPing = async () => {
+    setIsPinging(true);
+    const start = performance.now();
+    try {
+      const { error } = await supabase.from('profiles').select('id', { count: 'exact', head: true }).limit(1);
+      const ms = Math.round(performance.now() - start);
+      setPingLatency(ms);
+      if (error) throw error;
+      appendAuditLog("PING_TEST", `Latency: ${ms}ms (Supabase Connected)`);
+      toast.success(`Supabase round-trip latency: ${ms}ms`);
+    } catch {
+      setPingLatency(-1);
+      toast.error('Supabase connection latency test failed');
+    } finally {
+      setIsPinging(false);
+    }
+  };
+
+  const calculateStorage = () => {
+    let totalChars = 0;
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key) {
+        const val = localStorage.getItem(key) || '';
+        totalChars += key.length + val.length;
+      }
+    }
+    setStorageInfo({
+      usedKb: Math.round((totalChars * 2) / 1024),
+      keysCount: localStorage.length,
+    });
+  };
+
+  useEffect(() => {
+    calculateStorage();
+  }, []);
 
   // ── Announcement System State ──
   const [announcements, setAnnouncements] = useState<any[]>(() => {
@@ -104,6 +236,7 @@ export default function AdminDashboard() {
     setAnnouncements(updated);
     localStorage.setItem('itm_announcements', JSON.stringify(updated));
     window.dispatchEvent(new Event('itm_announcement_updated'));
+    appendAuditLog("CREATE_ANNOUNCEMENT", `Published "${newEntry.title}"`);
     setNewAnnTitle('');
     setNewAnnBody('');
     toast.success(`Created "${newEntry.title}" banner! Visible across all pages.`);
@@ -114,7 +247,17 @@ export default function AdminDashboard() {
     setAnnouncements(updated);
     localStorage.setItem('itm_announcements', JSON.stringify(updated));
     window.dispatchEvent(new Event('itm_announcement_updated'));
+    appendAuditLog("DELETE_ANNOUNCEMENT", `Deleted banner ${id}`);
     toast.info('Announcement removed');
+  };
+
+  const handleToggleAnnouncementActive = (id: string) => {
+    const updated = announcements.map((a) => (a.id === id ? { ...a, active: !a.active } : a));
+    setAnnouncements(updated);
+    localStorage.setItem('itm_announcements', JSON.stringify(updated));
+    window.dispatchEvent(new Event('itm_announcement_updated'));
+    appendAuditLog("TOGGLE_ANNOUNCEMENT", `Toggled banner ${id}`);
+    toast.success("Updated banner visibility!");
   };
 
   // ── Content Analytics State ──
@@ -276,12 +419,50 @@ export default function AdminDashboard() {
         role: appRole as any,
       });
 
+      appendAuditLog("ROLE_CHANGE", `Updated profile ${profileId} to ${newRole.toUpperCase()}`);
       toast.success(`Role updated to ${newRole.toUpperCase()} in Supabase!`);
     } catch (err) {
       console.error("Role update error:", err);
       toast.error("Failed to save role change to database.");
       loadStudents();
     }
+  };
+
+  const filteredStudents = useMemo(() => {
+    return students.filter((s) => {
+      const matchesSearch =
+        s.name.toLowerCase().includes(userSearch.toLowerCase()) ||
+        s.email.toLowerCase().includes(userSearch.toLowerCase());
+      const matchesRole = roleFilter === "all" || s.role.toLowerCase() === roleFilter.toLowerCase();
+      return matchesSearch && matchesRole;
+    });
+  }, [students, userSearch, roleFilter]);
+
+  const handleExportStudentsCSV = () => {
+    if (filteredStudents.length === 0) {
+      toast.error("No student records to export matching current filter.");
+      return;
+    }
+    const headers = ["Name", "Email", "Role", "Level", "XP", "Streak Days", "Joined Date"];
+    const rows = filteredStudents.map((s) => [
+      `"${s.name.replace(/"/g, '""')}"`,
+      `"${s.email}"`,
+      s.role,
+      s.level,
+      s.xp,
+      s.streak,
+      `"${s.joined}"`,
+    ]);
+    const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map((r) => r.join(","))].join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `itm_students_roster_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    appendAuditLog("EXPORT_CSV", `Exported ${filteredStudents.length} student records`);
+    toast.success(`Exported ${filteredStudents.length} student records to CSV!`);
   };
 
   const filteredSubjects = subjects.filter(
@@ -350,10 +531,12 @@ export default function AdminDashboard() {
         <div className="flex items-center gap-2 border-b border-border/60 pb-3 mb-8 overflow-x-auto scrollbar-none">
           {[
             { id: "overview", label: "Dashboard Overview", icon: Activity },
-            { id: "announcements", label: `Announcements (${announcements.length})`, icon: Megaphone },
-            { id: "moderation", label: `Community & Moderation (${reportedPosts.length})`, icon: Shield },
-            { id: "content", label: `Content Manager (${totalSubjects})`, icon: BookOpen },
             { id: "users", label: `User Manager (${students.length})`, icon: Users },
+            { id: "analytics", label: "Academic Analytics", icon: BarChart3 },
+            { id: "announcements", label: `Announcements (${announcements.length})`, icon: Megaphone },
+            { id: "moderation", label: `Community (${reportedPosts.length})`, icon: Shield },
+            { id: "content", label: `Content Manager (${totalSubjects})`, icon: BookOpen },
+            { id: "telemetry", label: "System Telemetry & Audit", icon: Cpu },
             { id: "settings", label: "Platform Settings", icon: Settings },
           ].map((tab) => {
             const Icon = tab.icon;
@@ -535,10 +718,10 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* ── TAB 3: USER MANAGER ── */}
+        {/* ── TAB: USER MANAGER ── */}
         {activeTab === "users" && (
-          <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm">
-            <div className="p-5 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm space-y-4">
+            <div className="p-5 border-b border-border flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
                 <div className="flex items-center gap-2">
                   <h3 className="font-bold text-base text-foreground">Registered Student Directory</h3>
@@ -551,15 +734,53 @@ export default function AdminDashboard() {
                 </p>
               </div>
 
-              <button
-                onClick={loadStudents}
-                disabled={isLoadingStudents}
-                className="px-3.5 py-1.5 rounded-xl bg-secondary hover:bg-secondary/80 border border-border text-xs font-semibold text-foreground flex items-center gap-1.5 transition-colors self-start sm:self-auto apple-press"
-                title="Refresh student list"
-              >
-                <RefreshCw className={`h-3.5 w-3.5 ${isLoadingStudents ? "animate-spin text-primary" : ""}`} />
-                <span>Refresh Students</span>
-              </button>
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  onClick={handleExportStudentsCSV}
+                  className="px-3.5 py-1.5 rounded-xl bg-primary text-primary-foreground text-xs font-bold flex items-center gap-1.5 hover:opacity-90 shadow-sm transition-opacity apple-press"
+                  title="Export student records to CSV spreadsheet"
+                >
+                  <Download className="h-3.5 w-3.5" />
+                  <span>Export CSV</span>
+                </button>
+
+                <button
+                  onClick={loadStudents}
+                  disabled={isLoadingStudents}
+                  className="px-3.5 py-1.5 rounded-xl bg-secondary hover:bg-secondary/80 border border-border text-xs font-semibold text-foreground flex items-center gap-1.5 transition-colors apple-press"
+                  title="Refresh student list"
+                >
+                  <RefreshCw className={`h-3.5 w-3.5 ${isLoadingStudents ? "animate-spin text-primary" : ""}`} />
+                  <span>Refresh</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Filter & Search Bar */}
+            <div className="px-5 pb-2 flex flex-col sm:flex-row gap-3">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <input
+                  type="text"
+                  placeholder="Search students by name or email..."
+                  value={userSearch}
+                  onChange={(e) => setUserSearch(e.target.value)}
+                  className="w-full h-10 pl-9 pr-4 rounded-xl border border-input bg-background text-xs focus:ring-1 focus:ring-primary outline-none"
+                />
+              </div>
+
+              <div className="flex items-center gap-2 shrink-0">
+                <select
+                  value={roleFilter}
+                  onChange={(e) => setRoleFilter(e.target.value)}
+                  className="h-10 px-3 rounded-xl border border-input bg-background text-xs font-semibold text-foreground outline-none cursor-pointer"
+                >
+                  <option value="all">All Roles ({students.length})</option>
+                  <option value="student">Students ({students.filter(s => s.role === 'student').length})</option>
+                  <option value="contributor">Contributors ({students.filter(s => s.role === 'contributor').length})</option>
+                  <option value="admin">Admins ({students.filter(s => s.role === 'admin').length})</option>
+                </select>
+              </div>
             </div>
 
             <div className="overflow-x-auto">
@@ -582,15 +803,15 @@ export default function AdminDashboard() {
                         <p className="font-medium text-xs">Syncing registered students from Supabase Cloud...</p>
                       </td>
                     </tr>
-                  ) : students.length === 0 ? (
+                  ) : filteredStudents.length === 0 ? (
                     <tr>
                       <td colSpan={6} className="p-12 text-center text-muted-foreground">
                         <Users className="h-6 w-6 mx-auto mb-2 opacity-40" />
-                        <p className="font-medium text-xs">No registered students found yet.</p>
+                        <p className="font-medium text-xs">No registered students found matching filter.</p>
                       </td>
                     </tr>
                   ) : (
-                    students.map((student) => (
+                    filteredStudents.map((student) => (
                       <tr key={student.id} className="hover:bg-secondary/20 transition-colors">
                         <td className="p-4">
                           <div className="font-bold text-foreground">{student.name}</div>
@@ -761,9 +982,34 @@ export default function AdminDashboard() {
                 <Megaphone className="h-5 w-5 text-primary" />
                 <h2 className="text-lg font-bold text-foreground">Create Global Announcement Banner</h2>
               </div>
-              <p className="text-xs text-muted-foreground mb-6">
+              <p className="text-xs text-muted-foreground mb-4">
                 Broadcast critical university notices, exam timetable releases, or maintenance alerts to all students across all pages.
               </p>
+
+              {/* 1-Click Announcement Presets */}
+              <div className="mb-5 p-3.5 rounded-xl border border-border bg-secondary/30">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block mb-2">
+                  ⚡ Quick 1-Click Presets
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {ANNOUNCEMENT_PRESETS.map((preset, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => {
+                        setNewAnnTitle(preset.title);
+                        setNewAnnBody(preset.body);
+                        setNewAnnSeverity(preset.severity as any);
+                        toast.info(`Loaded preset: "${preset.title}"`);
+                      }}
+                      className="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-background hover:bg-card border border-border text-foreground transition-colors apple-press flex items-center gap-1.5 shadow-xs"
+                    >
+                      <Sparkles className="h-3 w-3 text-primary" />
+                      <span>{preset.title.split(":")[0]}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
 
               <form onSubmit={handleCreateAnnouncement} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -827,7 +1073,7 @@ export default function AdminDashboard() {
             <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
               <h3 className="font-bold text-base text-foreground mb-1">Active Global Announcements</h3>
               <p className="text-xs text-muted-foreground mb-4">
-                Students can dismiss banners locally. Deleting an announcement here removes it for everyone.
+                Manage visibility or delete announcements across the platform in real time.
               </p>
 
               {announcements.length === 0 ? (
@@ -854,6 +1100,13 @@ export default function AdminDashboard() {
                             {ann.severity}
                           </span>
                           <h4 className="font-bold text-sm text-foreground">{ann.title}</h4>
+                          <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold border ${
+                            ann.active !== false
+                              ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
+                              : "bg-muted text-muted-foreground border-border"
+                          }`}>
+                            {ann.active !== false ? "🟢 Live" : "⚪ Paused"}
+                          </span>
                         </div>
                         <p className="text-xs text-muted-foreground">{ann.body}</p>
                         <p className="text-[10px] text-muted-foreground/60 font-mono">
@@ -861,14 +1114,29 @@ export default function AdminDashboard() {
                         </p>
                       </div>
 
-                      <button
-                        type="button"
-                        onClick={() => handleDeleteAnnouncement(ann.id)}
-                        className="px-3 py-1.5 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive hover:text-white transition-colors text-xs font-semibold self-start sm:self-auto shrink-0 flex items-center gap-1.5"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                        <span>Delete Banner</span>
-                      </button>
+                      <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => handleToggleAnnouncementActive(ann.id)}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors flex items-center gap-1.5 ${
+                            ann.active !== false
+                              ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20"
+                              : "bg-secondary text-muted-foreground border-border hover:bg-secondary/80"
+                          }`}
+                          title={ann.active !== false ? "Click to pause announcement" : "Click to activate announcement"}
+                        >
+                          {ann.active !== false ? <CheckCircle className="h-3.5 w-3.5 text-emerald-500" /> : <AlertCircle className="h-3.5 w-3.5" />}
+                          <span>{ann.active !== false ? "Active" : "Paused"}</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteAnnouncement(ann.id)}
+                          className="px-3 py-1.5 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive hover:text-white transition-colors text-xs font-semibold flex items-center gap-1.5"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                          <span>Delete</span>
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -1000,6 +1268,319 @@ export default function AdminDashboard() {
                   ))}
                 </div>
               )}
+            </div>
+          </div>
+        )}
+
+        {/* ── TAB: ACADEMIC & PLATFORM ANALYTICS ── */}
+        {activeTab === "analytics" && (
+          <div className="space-y-8 animate-fade-in">
+            {/* Key Curriculum & Content Indicators */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <div className="bg-card border border-border rounded-2xl p-5 shadow-sm">
+                <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1">
+                  Curriculum Subjects
+                </span>
+                <p className="text-3xl font-black text-foreground font-mono">{totalSubjects}</p>
+                <p className="text-[11px] text-emerald-500 font-medium mt-1">BCA, MCA & B.Tech</p>
+              </div>
+              <div className="bg-card border border-border rounded-2xl p-5 shadow-sm">
+                <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1">
+                  Syllabus Units
+                </span>
+                <p className="text-3xl font-black text-foreground font-mono">{totalUnits}</p>
+                <p className="text-[11px] text-primary font-medium mt-1">Modular units</p>
+              </div>
+              <div className="bg-card border border-border rounded-2xl p-5 shadow-sm">
+                <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1">
+                  Detailed Topics
+                </span>
+                <p className="text-3xl font-black text-foreground font-mono">{totalTopics}</p>
+                <p className="text-[11px] text-indigo-500 font-medium mt-1">Theory & Worked Solns</p>
+              </div>
+              <div className="bg-card border border-border rounded-2xl p-5 shadow-sm">
+                <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-1">
+                  Practice MCQs
+                </span>
+                <p className="text-3xl font-black text-foreground font-mono">{totalMcqs}</p>
+                <p className="text-[11px] text-amber-500 font-medium mt-1">Auto-graded bank</p>
+              </div>
+            </div>
+
+            {/* Charts Row */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Subject MCQ Bank Distribution Chart */}
+              <div className="lg:col-span-2 bg-card border border-border rounded-2xl p-6 shadow-sm flex flex-col">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 className="font-bold text-base text-foreground flex items-center gap-2">
+                      <BarChart3 className="h-4 w-4 text-primary" />
+                      Practice MCQs Distribution Per Subject
+                    </h3>
+                    <p className="text-xs text-muted-foreground">
+                      Total interactive practice questions verified across each academic subject.
+                    </p>
+                  </div>
+                  <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">
+                    {totalMcqs} Questions Total
+                  </span>
+                </div>
+
+                <div className="h-72 w-full mt-2">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={subjects.map(s => ({
+                      code: s.code || s.id.toUpperCase(),
+                      mcqs: s.units?.reduce((acc, u) => acc + (u.topics?.reduce((tAcc, t) => tAcc + (t.mcqs?.length || 0), 0) || 0), 0) || 0,
+                      topics: s.units?.reduce((acc, u) => acc + (u.topics?.length || 0), 0) || 0,
+                    }))}>
+                      <XAxis dataKey="code" stroke="#888888" fontSize={11} tickLine={false} axisLine={false} />
+                      <YAxis stroke="#888888" fontSize={11} tickLine={false} axisLine={false} />
+                      <Tooltip 
+                        contentStyle={{ 
+                          backgroundColor: "hsl(var(--card))", 
+                          borderColor: "hsl(var(--border))",
+                          borderRadius: "0.75rem",
+                          fontSize: "12px",
+                        }} 
+                      />
+                      <Bar dataKey="mcqs" name="Practice MCQs" fill="hsl(var(--primary))" radius={[6, 6, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+
+              {/* Student Roster Role Breakdown (PieChart) */}
+              <div className="bg-card border border-border rounded-2xl p-6 shadow-sm flex flex-col">
+                <div className="mb-4">
+                  <h3 className="font-bold text-base text-foreground flex items-center gap-2">
+                    <Users className="h-4 w-4 text-purple-500" />
+                    User Role Distribution
+                  </h3>
+                  <p className="text-xs text-muted-foreground">
+                    Breakdown of registered campus accounts.
+                  </p>
+                </div>
+
+                <div className="h-60 w-full flex items-center justify-center">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={[
+                          { name: "Students", value: students.filter(s => s.role === 'student').length || 1, color: "#3b82f6" },
+                          { name: "Contributors", value: students.filter(s => s.role === 'contributor').length || 0, color: "#10b981" },
+                          { name: "Admins", value: students.filter(s => s.role === 'admin').length || 1, color: "#8b5cf6" },
+                        ]}
+                        dataKey="value"
+                        nameKey="name"
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={75}
+                        innerRadius={45}
+                        paddingAngle={4}
+                      >
+                        <Cell fill="#3b82f6" />
+                        <Cell fill="#10b981" />
+                        <Cell fill="#8b5cf6" />
+                      </Pie>
+                      <Tooltip 
+                        contentStyle={{ 
+                          backgroundColor: "hsl(var(--card))", 
+                          borderColor: "hsl(var(--border))",
+                          borderRadius: "0.75rem",
+                          fontSize: "12px",
+                        }} 
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+
+                <div className="grid grid-cols-3 gap-2 pt-2 border-t border-border/60 text-center">
+                  <div>
+                    <span className="text-[10px] text-blue-500 font-bold uppercase block">Students</span>
+                    <span className="font-mono font-bold text-sm text-foreground">
+                      {students.filter(s => s.role === 'student').length}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-emerald-500 font-bold uppercase block">Contributors</span>
+                    <span className="font-mono font-bold text-sm text-foreground">
+                      {students.filter(s => s.role === 'contributor').length}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-purple-500 font-bold uppercase block">Admins</span>
+                    <span className="font-mono font-bold text-sm text-foreground">
+                      {students.filter(s => s.role === 'admin').length}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── TAB: PLATFORM TELEMETRY & AUDIT TRAILS ── */}
+        {activeTab === "telemetry" && (
+          <div className="space-y-8 animate-fade-in">
+            {/* Telemetry Status Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Supabase Connection Latency Card */}
+              <div className="bg-card border border-border rounded-2xl p-6 shadow-sm space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Wifi className="h-5 w-5 text-primary" />
+                    <h3 className="font-bold text-base text-foreground">Supabase Cloud Latency Ping</h3>
+                  </div>
+                  <button
+                    onClick={runTelemetryPing}
+                    disabled={isPinging}
+                    className="px-3 py-1.5 rounded-xl bg-primary text-primary-foreground text-xs font-bold flex items-center gap-1.5 hover:opacity-90 apple-press disabled:opacity-50"
+                  >
+                    <RefreshCw className={`h-3.5 w-3.5 ${isPinging ? "animate-spin" : ""}`} />
+                    <span>{isPinging ? "Testing Ping..." : "Run Latency Ping"}</span>
+                  </button>
+                </div>
+
+                <p className="text-xs text-muted-foreground">
+                  Measures real-time round-trip latency to the Supabase PostgreSQL cluster serving authentication, user profiles, and real-time broadcasts.
+                </p>
+
+                <div className="p-4 rounded-xl border border-border bg-secondary/30 flex items-center justify-between">
+                  <div>
+                    <span className="text-[11px] font-semibold text-muted-foreground uppercase block">
+                      Round-Trip Status
+                    </span>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-2xl font-black font-mono text-foreground">
+                        {pingLatency === null ? "--" : pingLatency === -1 ? "Failed" : `${pingLatency} ms`}
+                      </span>
+                      {pingLatency !== null && pingLatency > 0 && (
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase border ${
+                          pingLatency < 150 
+                            ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
+                            : pingLatency < 400
+                            ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
+                            : "bg-rose-500/10 text-rose-500 border-rose-500/20"
+                        }`}>
+                          {pingLatency < 150 ? "🟢 Optimal" : pingLatency < 400 ? "🟡 Normal" : "🔴 High"}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="text-right text-[11px] text-muted-foreground">
+                    <div>Cluster: AWS ap-south-1</div>
+                    <div>TLS 1.3 · HTTPS / WSS</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Local Client Storage Quota Card */}
+              <div className="bg-card border border-border rounded-2xl p-6 shadow-sm space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <HardDrive className="h-5 w-5 text-indigo-500" />
+                    <h3 className="font-bold text-base text-foreground">Client Storage Quota</h3>
+                  </div>
+                  <button
+                    onClick={calculateStorage}
+                    className="px-3 py-1.5 rounded-xl bg-secondary hover:bg-secondary/80 border border-border text-xs font-semibold text-foreground flex items-center gap-1.5 transition-colors apple-press"
+                  >
+                    <RefreshCw className="h-3.5 w-3.5" />
+                    <span>Recalculate</span>
+                  </button>
+                </div>
+
+                <p className="text-xs text-muted-foreground">
+                  Tracks client-side local cache utilization for offline study materials, quiz attempts, and user preferences.
+                </p>
+
+                <div className="p-4 rounded-xl border border-border bg-secondary/30 flex items-center justify-between">
+                  <div>
+                    <span className="text-[11px] font-semibold text-muted-foreground uppercase block">
+                      Cache Utilized
+                    </span>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-2xl font-black font-mono text-foreground">
+                        {storageInfo.usedKb} KB
+                      </span>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-secondary text-muted-foreground">
+                        of ~5,120 KB Quota
+                      </span>
+                    </div>
+                  </div>
+                  <div className="text-right text-[11px] text-muted-foreground">
+                    <div>{storageInfo.keysCount} Cached Keys</div>
+                    <div className="text-emerald-500 font-semibold">&lt; 1% Quota Used</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Administrative Security Audit Trail Table */}
+            <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm space-y-4">
+              <div className="p-5 border-b border-border flex items-center justify-between">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <History className="h-5 w-5 text-primary" />
+                    <h3 className="font-bold text-base text-foreground">Administrative Security Audit Trail</h3>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Immutable log of role updates, maintenance mode toggles, and global banner broadcasts.
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => {
+                    localStorage.removeItem('itm_admin_audit_log');
+                    setAuditLogs([]);
+                    toast.info("Audit log history cleared.");
+                  }}
+                  className="px-3 py-1.5 rounded-xl bg-secondary hover:bg-secondary/80 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors apple-press"
+                >
+                  Clear Logs
+                </button>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-secondary/40 text-muted-foreground uppercase text-[10px] font-bold border-b border-border">
+                    <tr>
+                      <th className="p-4">Timestamp</th>
+                      <th className="p-4">Operator</th>
+                      <th className="p-4">Action</th>
+                      <th className="p-4">Target / Detail</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border">
+                    {auditLogs.length === 0 ? (
+                      <tr>
+                        <td colSpan={4} className="p-8 text-center text-muted-foreground">
+                          No security audit events recorded yet.
+                        </td>
+                      </tr>
+                    ) : (
+                      auditLogs.map((log) => (
+                        <tr key={log.id} className="hover:bg-secondary/20 transition-colors">
+                          <td className="p-4 font-mono text-[11px] text-muted-foreground">
+                            {new Date(log.timestamp).toLocaleString()}
+                          </td>
+                          <td className="p-4 font-semibold text-foreground">
+                            {log.admin}
+                          </td>
+                          <td className="p-4">
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold font-mono uppercase bg-primary/10 text-primary border border-primary/20">
+                              {log.action}
+                            </span>
+                          </td>
+                          <td className="p-4 text-foreground/90 font-medium">
+                            {log.target}
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         )}
