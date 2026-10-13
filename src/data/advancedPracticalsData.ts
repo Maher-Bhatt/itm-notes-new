@@ -249,212 +249,304 @@ int lcs(char* X, char* Y, int m, int n) {
     marks: '7 Marks (Practical 3 Exam)',
     language: 'c',
     fileName: 'waiting-list.c',
-    description: 'Implement Practical 3: Railway Ticket Reservation Waiting List using a Queue (FIFO) in C. When confirmed seats are fully booked, additional passenger booking requests enter a waiting list queue.\n\nImplement the 5 required operations:\n1. Add Passenger (Enqueue): Insert a passenger at the rear of the queue.\n2. Allocate Seat (Dequeue): Remove the passenger at the front of the queue and allocate the seat to them upon a ticket cancellation.\n3. Display Waiting (Display): Display all passengers from the front to the rear.\n4. Display Next Passenger (Peek): Display the passenger at the front of the queue without removing them.\n5. Count Waiting Passengers: Count and display the number of passengers currently waiting.',
+    description: 'Implement Practical 3: Railway Reservation Waiting List system using a Queue (FIFO) in C.\n\nWhen confirmed seats are fully booked, incoming passengers with token numbers are placed on a waiting list queue.\n\nImplement the 5 required operations with a menu-driven program:\n1. Add Passenger (Enqueue): Insert a passenger token at the rear of the waitQ (Check Overflow).\n2. Allocate Seat (Dequeue): Remove the passenger at the front of the queue and allocate the seat to them upon cancellation (Check Underflow).\n3. Display Waiting (Display): Display all passenger tokens currently waiting from front to rear.\n4. Display Next Passenger (Peek): Display passenger token at the front of the queue without removing it.\n5. Number of Waiting Passengers: Count and display the number of passengers currently waiting.',
     constraints: [
-      'Maximum waiting list capacity: MAX = 5',
-      'FIFO (First-In, First-Out) queuing discipline',
-      'Handle Queue Overflow (rear == MAX - 1)',
-      'Handle Queue Underflow (front == -1 || front > rear)',
+      'Maximum waiting list capacity: #define MAX 6',
+      'int waitQ[MAX], front = -1, rear = -1',
+      'FIFO Queuing Discipline (First-In, First-Out)',
+      'isFull() Overflow check: rear == MAX - 1',
+      'isEmpty() Underflow check: front == -1 || front > rear',
       'Time Complexity: Enqueue O(1), Dequeue O(1), Peek O(1), Display O(n), Count O(1)'
     ],
-    expectedOutput: '=== Practical 3: Railway Reservation Waiting List (Queue) ===\nAdded to waiting list: Rahul (ID: 101)\nAdded to waiting list: Priya (ID: 102)\nAdded to waiting list: Amit (ID: 103)\n\nTotal waiting: 3\nNext passenger eligible for seat: Rahul (ID: 101)\n\n--- Seat Becomes Available (Cancellation) ---\nSeat allocated to: Rahul (ID: 101)\n\nCurrent Waiting List:\n  1. Priya (ID: 102)\n  2. Amit (ID: 103)\nRemaining in waiting list: 2\n✔ All 5 Waiting List Queue operations verified.',
+    expectedOutput: '========================================================\n  Practical 3: Railway Reservation Waiting List (Queue) \n========================================================\n\n1. Add Passenger: Token 101 added to wait Queue.\n2. Add Passenger: Token 102 added to wait Queue.\n3. Add Passenger: Token 103 added to wait Queue.\n\n--- Status Check ---\nTotal passengers currently waiting: 3\nNext passenger eligible for confirmed seat: Token #101\n\n--- Cancellation Occurs: Allocate Seat ---\nSeat successfully allocated to Token #101 (Removed from waiting list).\n\n--- Current Waiting List (Front to Rear) ---\n[1] Token #102 (Next in line)\n[2] Token #103\n\nTotal passengers remaining: 2\n✔ All 5 Railway Reservation queue operations verified.\n[Exit code: 0]',
     starterCode: `/*
-Practical 3: Railway Reservation Waiting List using Queue
-1. Add Passenger (Enqueue) -
-   Insert a passenger at the rear of the queue
-2. Allocate Seat (Dequeue)
-   Remove the passenger at the front of the queue
-   The removed passenger is allocated the seat
-3. Display Waiting (Display)
-   Display all passengers from the front to rear
-4. Display Next Passenger (Peek)
-   Display the passenger at the front of the queue without removing it
-5. Count Waiting Passengers
-   Count and display the number of passengers currently waiting
+Practical 3: Railway reservation Waiting list using Queue.
+ 1. Add passenger(Enqueue) -
+    insert a passenger at the rear of the std::queue 
+ 2. Allocate Seat (Dequeue) -
+    remove the passenger at the front of the queue
+    The removed passenger is allocated the Seat
+ 3. Display waiting(Display) -
+    Display all the passenger from front to rear
+ 4. Display next passenger(peek)
+    display passenger at the front of the queue without removing it.
+ 5. count waiting passenger
+    count and display the number of passengers currently waiting.   
 */
+#include<stdio.h>
+#include<stdlib.h>
+#define MAX 6
 
-#include <stdio.h>
-#include <string.h>
+int waitQ[MAX];
+int front = -1;
+int rear = -1;
 
-#define MAX 5
+int isFull()
+{
+    if (rear == MAX - 1)
+        return 1;
+    return 0;
+}
 
-typedef struct {
-    int id;
-    char name[50];
-} Passenger;
+int isEmpty()
+{
+    if (front == -1 || front > rear)
+        return 1;
+    return 0;
+}
 
-Passenger queue[MAX];
-int front = -1, rear = -1;
-
-// 1. Add Passenger (Enqueue) - Insert at rear
-void addPassenger(int id, const char *name) {
-    if (rear == MAX - 1) {
-        printf("Waiting list is full! Overflow occurred.\\n");
-        return;
+void addpassenger(int tokenNumber)
+{
+    // CHECK FOR OVERFLOW
+    if (isFull())
+    {
+        printf("\\nThe waiting List Queue is Full..");
+    }else{
+        if(front == -1)
+             front = 0;
+        rear = rear + 1;
+        waitQ[rear] = tokenNumber;
+        printf("\\n%d is added to wait Queue", tokenNumber);
     }
-    if (front == -1) front = 0;
-    rear++;
-    queue[rear].id = id;
-    strcpy(queue[rear].name, name);
-    printf("Added to waiting list: %s (ID: %d)\\n", name, id);
 }
 
 // 2. Allocate Seat (Dequeue) - Remove from front
-Passenger allocateSeat() {
-    Passenger empty = {-1, "None"};
-    // TODO: Check underflow condition (front == -1 || front > rear)
-    // Remove passenger from front, reset if empty, and return allocated passenger
-    return empty;
+void allocateSeat()
+{
+    // TODO: Check if empty. If not, print allocated token at front and increment front.
+    // Reset front = -1, rear = -1 if front > rear.
 }
 
-// 3. Display Waiting (Display) - Display all passengers from front to rear
-void displayWaiting() {
-    // TODO: Check if empty, iterate from front to rear and print passengers
+// 3. Display waiting (Display) - Display all from front to rear
+void displayWaiting()
+{
+    // TODO: Check if empty. Loop from front to rear and print all waiting tokens.
 }
 
-// 4. Display Next Passenger (Peek) - Display front passenger without removing
-void displayNextPassenger() {
-    // TODO: Check if empty, print passenger at front of queue
+// 4. Display next passenger (Peek) - Peek at front
+void displayNextPassenger()
+{
+    // TODO: Check if empty. Display passenger at front of queue without removing it.
 }
 
-// 5. Count Waiting Passengers - Count and display total waiting
-int countWaiting() {
-    // TODO: Return total number of passengers currently waiting
+// 5. Count waiting passengers - Count waiting tokens
+int countWaitingPassengers()
+{
+    // TODO: Return (rear - front + 1) if not empty, else return 0.
     return 0;
 }
 
-int main() {
-    printf("=== Practical 3: Railway Reservation Waiting List ===\\n");
-    addPassenger(101, "Rahul");
-    addPassenger(102, "Priya");
-    addPassenger(103, "Amit");
-    
-    printf("\\nTotal waiting: %d\\n", countWaiting());
-    displayNextPassenger();
-    
-    printf("\\n--- Seat Becomes Available (Cancellation) ---\\n");
-    allocateSeat();
-    
-    printf("\\n");
-    displayWaiting();
-    printf("Remaining in waiting list: %d\\n", countWaiting());
-    return 0;
+void main()
+{
+    //  Menu
+    int choice;
+    int tokenNumber;
+    while(1)
+    {
+        printf("\\n1. Add passenger");
+        printf("\\n2. Allocate seat");
+        printf("\\n3. Display waiting");
+        printf("\\n4. Display next passenger");
+        printf("\\n5. Number of waiting passenger");
+        printf("\\n6. Exit");
+        printf("\\n Ur choice:");
+        scanf("%d",&choice);
+        switch(choice)
+        {
+            case 1:
+                   printf("\\nToken Number?:");
+                   scanf("%d",&tokenNumber);
+                   addpassenger(tokenNumber);
+                   break;
+            case 2:
+                   allocateSeat();
+                   break;
+            case 3:
+                   displayWaiting();
+                   break;
+            case 4:
+                   displayNextPassenger();
+                   break;
+            case 5:
+                   printf("\\nWaiting passengers count: %d", countWaitingPassengers());
+                   break;
+            case 6:
+                   printf("\\nExiting...");
+                   exit(0);
+            default:
+                   printf("\\nInvalid choice!");
+        }
+    }
 }`,
     modelSolution: `/*
-Practical 3: Railway Reservation Waiting List using Queue
-1. Add Passenger (Enqueue) -
-   Insert a passenger at the rear of the queue
-2. Allocate Seat (Dequeue)
-   Remove the passenger at the front of the queue
-   The removed passenger is allocated the seat
-3. Display Waiting (Display)
-   Display all passengers from the front to rear
-4. Display Next Passenger (Peek)
-   Display the passenger at the front of the queue without removing it
-5. Count Waiting Passengers
-   Count and display the number of passengers currently waiting
+Practical 3: Railway reservation Waiting list using Queue.
+ 1. Add passenger(Enqueue) -
+    insert a passenger at the rear of the std::queue 
+ 2. Allocate Seat (Dequeue) -
+    remove the passenger at the front of the queue
+    The removed passenger is allocated the Seat
+ 3. Display waiting(Display) -
+    Display all the passenger from front to rear
+ 4. Display next passenger(peek)
+    display passenger at the front of the queue without removing it.
+ 5. count waiting passenger
+    count and display the number of passengers currently waiting.   
 */
+#include<stdio.h>
+#include<stdlib.h>
+#define MAX 6
 
-#include <stdio.h>
-#include <string.h>
+int waitQ[MAX];
+int front = -1;
+int rear = -1;
 
-#define MAX 5
-
-typedef struct {
-    int id;
-    char name[50];
-} Passenger;
-
-Passenger queue[MAX];
-int front = -1, rear = -1;
-
-// 1. Add Passenger (Enqueue) - Insert at rear
-void addPassenger(int id, const char *name) {
-    if (rear == MAX - 1) {
-        printf("Waiting list is full! Overflow occurred.\\n");
-        return;
-    }
-    if (front == -1) front = 0;
-    rear++;
-    queue[rear].id = id;
-    strcpy(queue[rear].name, name);
-    printf("Added to waiting list: %s (ID: %d)\\n", name, id);
+int isFull()
+{
+    if (rear == MAX - 1)
+        return 1;
+    return 0;
 }
 
-// 2. Allocate Seat (Dequeue) - Remove from front
-Passenger allocateSeat() {
-    Passenger empty = {-1, "None"};
-    if (front == -1 || front > rear) {
-        printf("Waiting list is empty! Underflow occurred.\\n");
-        return empty;
-    }
-    Passenger allocated = queue[front];
-    front++;
-    if (front > rear) {
-        front = -1;
-        rear = -1;
-    }
-    printf("Seat allocated to: %s (ID: %d)\\n", allocated.name, allocated.id);
-    return allocated;
+int isEmpty()
+{
+    if (front == -1 || front > rear)
+        return 1;
+    return 0;
 }
 
-// 3. Display Waiting (Display) - Display all passengers from front to rear
-void displayWaiting() {
-    if (front == -1 || front > rear) {
-        printf("Waiting list is empty.\\n");
-        return;
+// 1. Add passenger (Enqueue) - insert at rear
+void addpassenger(int tokenNumber)
+{
+    // CHECK FOR OVERFLOW
+    if (isFull())
+    {
+        printf("\\nThe waiting List Queue is Full..\\n");
     }
-    printf("Current Waiting List:\\n");
-    for (int i = front; i <= rear; i++) {
-        printf("  %d. %s (ID: %d)\\n", (i - front + 1), queue[i].name, queue[i].id);
+    else
+    {
+        if (front == -1)
+            front = 0;
+        rear = rear + 1;
+        waitQ[rear] = tokenNumber;
+        printf("\\n%d is added to wait Queue\\n", tokenNumber);
     }
 }
 
-// 4. Display Next Passenger (Peek) - Display front passenger without removing
-void displayNextPassenger() {
-    if (front == -1 || front > rear) {
-        printf("No next passenger in waiting list.\\n");
-        return;
+// 2. Allocate Seat (Dequeue) - remove from front
+void allocateSeat()
+{
+    if (isEmpty())
+    {
+        printf("\\nWaiting list is empty! No passenger to allocate seat.\\n");
     }
-    printf("Next passenger eligible for seat: %s (ID: %d)\\n", queue[front].name, queue[front].id);
+    else
+    {
+        int allocatedToken = waitQ[front];
+        printf("\\nSeat successfully allocated to Token #%d (Removed from waiting list).\\n", allocatedToken);
+        front = front + 1;
+        if (front > rear)
+        {
+            front = -1;
+            rear = -1;
+        }
+    }
 }
 
-// 5. Count Waiting Passengers - Count and display total waiting
-int countWaiting() {
-    if (front == -1 || front > rear) {
+// 3. Display waiting (Display) - front to rear
+void displayWaiting()
+{
+    if (isEmpty())
+    {
+        printf("\\n--- Current Railway Waiting List ---");
+        printf("\\nWaiting list is EMPTY.\\n");
+    }
+    else
+    {
+        printf("\\n--- Current Railway Waiting List ---");
+        for (int i = front; i <= rear; i++)
+        {
+            printf("\\n[%d] Token #%d", (i - front + 1), waitQ[i]);
+        }
+        printf("\\n");
+    }
+}
+
+// 4. Display next passenger (Peek)
+void displayNextPassenger()
+{
+    if (isEmpty())
+    {
+        printf("\\nNo passengers waiting in queue.\\n");
+    }
+    else
+    {
+        printf("\\nNext passenger eligible for confirmed seat: Token #%d\\n", waitQ[front]);
+    }
+}
+
+// 5. Count waiting passengers
+int countWaitingPassengers()
+{
+    if (isEmpty())
+    {
         return 0;
     }
     return (rear - front + 1);
 }
 
-int main() {
-    printf("=== Practical 3: Railway Reservation Waiting List ===\\n");
-    addPassenger(101, "Rahul");
-    addPassenger(102, "Priya");
-    addPassenger(103, "Amit");
-    
-    printf("\\nTotal waiting: %d\\n", countWaiting());
-    displayNextPassenger();
-    
-    printf("\\n--- Seat Becomes Available (Cancellation) ---\\n");
-    allocateSeat();
-    
-    printf("\\n");
-    displayWaiting();
-    printf("Remaining in waiting list: %d\\n", countWaiting());
-    return 0;
+void main()
+{
+    //  Menu
+    int choice;
+    int tokenNumber;
+    while(1)
+    {
+        printf("\\n1. Add passenger");
+        printf("\\n2. Allocate seat");
+        printf("\\n3. Display waiting");
+        printf("\\n4. Display next passenger");
+        printf("\\n5. Number of waiting passenger");
+        printf("\\n6. Exit");
+        printf("\\n Ur choice: ");
+        if (scanf("%d", &choice) != 1) break;
+        switch(choice)
+        {
+            case 1:
+                   printf("\\nToken Number?: ");
+                   scanf("%d", &tokenNumber);
+                   addpassenger(tokenNumber);
+                   break;
+            case 2:
+                   allocateSeat();
+                   break;
+            case 3:
+                   displayWaiting();
+                   break;
+            case 4:
+                   displayNextPassenger();
+                   break;
+            case 5:
+                   printf("\\nNumber of waiting passengers: %d\\n", countWaitingPassengers());
+                   break;
+            case 6:
+                   printf("\\nExiting Railway Reservation System. Goodbye!\\n");
+                   exit(0);
+            default:
+                   printf("\\nInvalid choice! Please choose 1 to 6.\\n");
+        }
+    }
 }`,
     hints: [
-      '1. Enqueue: check if rear == MAX - 1. If front == -1, set front = 0. Increment rear++ and copy passenger details.',
-      '2. Dequeue: check if front == -1 || front > rear. Grab queue[front++]. Reset front = rear = -1 when front > rear.',
-      '3. Display: iterate from i = front up to rear printing each passenger.',
-      '4. Peek: access queue[front] without incrementing the front pointer.',
-      '5. Count: if queue not empty, return (rear - front + 1).'
+      'isFull(): return 1 if rear == MAX - 1, else 0.',
+      'allocateSeat(): Check isEmpty(). Store waitQ[front], increment front = front + 1. If front > rear, reset front = rear = -1.',
+      'displayWaiting(): Check isEmpty(). Loop from i = front to rear and printf waitQ[i].',
+      'displayNextPassenger(): Check isEmpty(). Print waitQ[front] without incrementing front.',
+      'countWaitingPassengers(): Return (rear - front + 1) if not empty, else 0.'
     ],
     validator: makeValidator(
-      ['queue', 'front', 'rear', 'allocateseat', 'displaywaiting', 'displaynextpassenger', 'countwaiting'],
-      '✔ Operation 1 (Add Passenger / Enqueue): VERIFIED\n✔ Operation 2 (Allocate Seat / Dequeue): VERIFIED\n✔ Operation 3 (Display Waiting List): VERIFIED\n✔ Operation 4 (Peek Next Passenger): VERIFIED\n✔ Operation 5 (Count Waiting Passengers): VERIFIED\n✔ All 5 Railway Reservation queue invariants PASSED [Exit code: 0]',
-      'Implement addPassenger, allocateSeat, displayWaiting, displayNextPassenger, and countWaiting using front and rear pointers.'
+      ['waitq', 'front', 'rear', 'addpassenger', 'allocateseat', 'displaywaiting', 'displaynextpassenger', 'countwaitingpassengers'],
+      '✔ Operation 1 (Add Passenger / Enqueue): VERIFIED\n✔ Operation 2 (Allocate Seat / Dequeue): VERIFIED\n✔ Operation 3 (Display Waiting List): VERIFIED\n✔ Operation 4 (Peek Next Passenger): VERIFIED\n✔ Operation 5 (Count Waiting Passengers): VERIFIED\n✔ Menu-driven switch-case loops validated [Exit code: 0]',
+      'Implement allocateSeat, displayWaiting, displayNextPassenger, and countWaitingPassengers matching the professor\'s menu structure.'
     )
   },
   {
@@ -466,210 +558,259 @@ int main() {
     marks: '7 Marks (Practical 3 Exam)',
     language: 'java',
     fileName: 'RailwayWaitingList.java',
-    description: 'Implement Practical 3: Railway Ticket Reservation Waiting List using a Queue (FIFO) in Java. When confirmed seats are fully booked, additional passenger booking requests enter a waiting list queue.\n\nImplement the 5 required operations:\n1. Add Passenger (Enqueue): Insert a passenger at the rear of the queue.\n2. Allocate Seat (Dequeue): Remove the passenger at the front of the queue and allocate the seat to them upon a ticket cancellation.\n3. Display Waiting (Display): Display all passengers from the front to the rear.\n4. Display Next Passenger (Peek): Display the passenger at the front of the queue without removing them.\n5. Count Waiting Passengers: Count and display the number of passengers currently waiting.',
+    description: 'Implement Practical 3: Railway Reservation Waiting List system using a Queue (FIFO) in Java.\n\nWhen confirmed seats are fully booked, incoming passengers with token numbers are placed on a waiting list queue.\n\nImplement the 5 required operations with a menu-driven program in Java:\n1. Add Passenger (Enqueue): Insert a passenger token at the rear of the waitQ (Check Overflow).\n2. Allocate Seat (Dequeue): Remove the passenger at the front of the queue and allocate the seat to them upon cancellation (Check Underflow).\n3. Display Waiting (Display): Display all passenger tokens currently waiting from front to rear.\n4. Display Next Passenger (Peek): Display passenger token at the front of the queue without removing it.\n5. Number of Waiting Passengers: Count and display the number of passengers currently waiting.',
     constraints: [
-      'Maximum waiting list capacity: MAX = 5',
-      'FIFO (First-In, First-Out) queuing discipline',
-      'Handle Queue Overflow and Underflow conditions',
+      'Maximum waiting list capacity: MAX = 6',
+      'private static int[] waitQ = new int[MAX]',
+      'private static int front = -1, rear = -1',
+      'FIFO Queuing Discipline (First-In, First-Out)',
+      'isFull() Overflow check: rear == MAX - 1',
+      'isEmpty() Underflow check: front == -1 || front > rear',
       'Time Complexity: Enqueue O(1), Dequeue O(1), Peek O(1), Display O(n), Count O(1)'
     ],
-    expectedOutput: '=== Practical 3: Railway Reservation Waiting List (Java) ===\nAdded to waiting list: Rahul (ID: 101)\nAdded to waiting list: Priya (ID: 102)\nAdded to waiting list: Amit (ID: 103)\n\nTotal waiting: 3\nNext passenger eligible for seat: Rahul (ID: 101)\n\n--- Seat Becomes Available (Cancellation) ---\nSeat allocated to: Rahul (ID: 101)\n\nCurrent Waiting List:\n  1. Priya (ID: 102)\n  2. Amit (ID: 103)\nRemaining in waiting list: 2\n✔ All 5 Waiting List Queue operations verified.',
+    expectedOutput: '========================================================\n  Practical 3: Railway Reservation Waiting List (Java)  \n========================================================\n\n1. Add Passenger: Token 101 added to wait Queue.\n2. Add Passenger: Token 102 added to wait Queue.\n3. Add Passenger: Token 103 added to wait Queue.\n\n--- Status Check ---\nTotal passengers currently waiting: 3\nNext passenger eligible for confirmed seat: Token #101\n\n--- Cancellation Occurs: Allocate Seat ---\nSeat successfully allocated to Token #101 (Removed from waiting list).\n\n--- Current Waiting List (Front to Rear) ---\n[1] Token #102 (Next in line)\n[2] Token #103\n\nTotal passengers remaining: 2\n✔ All 5 Railway Reservation queue operations verified in Java.\n[Exit code: 0]',
     starterCode: `/*
-Practical 3: Railway Reservation Waiting List using Queue
-1. Add Passenger (Enqueue) -
-   Insert a passenger at the rear of the queue
-2. Allocate Seat (Dequeue)
-   Remove the passenger at the front of the queue
-   The removed passenger is allocated the seat
-3. Display Waiting (Display)
-   Display all passengers from the front to rear
-4. Display Next Passenger (Peek)
-   Display the passenger at the front of the queue without removing it
-5. Count Waiting Passengers
-   Count and display the number of passengers currently waiting
+Practical 3: Railway reservation Waiting list using Queue.
+ 1. Add passenger(Enqueue) -
+    insert a passenger at the rear of the queue 
+ 2. Allocate Seat (Dequeue) -
+    remove the passenger at the front of the queue
+    The removed passenger is allocated the Seat
+ 3. Display waiting(Display) -
+    Display all the passenger from front to rear
+ 4. Display next passenger(peek)
+    display passenger at the front of the queue without removing it.
+ 5. count waiting passenger
+    count and display the number of passengers currently waiting.   
 */
 
-class Passenger {
-    int id;
-    String name;
-    public Passenger(int id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-}
+import java.util.Scanner;
 
 public class RailwayWaitingList {
-    private static final int MAX = 5;
-    private Passenger[] queue = new Passenger[MAX];
-    private int front = -1, rear = -1;
+    private static final int MAX = 6;
+    private static int[] waitQ = new int[MAX];
+    private static int front = -1;
+    private static int rear = -1;
 
-    // 1. Add Passenger (Enqueue) - Insert at rear
-    public void addPassenger(int id, String name) {
-        if (rear == MAX - 1) {
-            System.out.println("Waiting list is full! Overflow occurred.");
-            return;
+    public static boolean isFull() {
+        return rear == MAX - 1;
+    }
+
+    public static boolean isEmpty() {
+        return front == -1 || front > rear;
+    }
+
+    // 1. Add passenger (Enqueue)
+    public static void addPassenger(int tokenNumber) {
+        if (isFull()) {
+            System.out.println("\\nThe waiting List Queue is Full..");
+        } else {
+            if (front == -1) front = 0;
+            rear = rear + 1;
+            waitQ[rear] = tokenNumber;
+            System.out.println("\\n" + tokenNumber + " is added to wait Queue");
         }
-        if (front == -1) front = 0;
-        queue[++rear] = new Passenger(id, name);
-        System.out.println("Added to waiting list: " + name + " (ID: " + id + ")");
     }
 
-    // 2. Allocate Seat (Dequeue) - Remove from front
-    public Passenger allocateSeat() {
-        // TODO: Check underflow condition (front == -1 || front > rear)
-        // Remove passenger from front, update pointers, and return
-        return null;
+    // TODO: 2. Allocate Seat (Dequeue)
+    public static void allocateSeat() {
+        // Check isEmpty(), print allocated token at front, increment front
     }
 
-    // 3. Display Waiting (Display) - Display all from front to rear
-    public void displayWaiting() {
-        // TODO: Check if empty, print all waiting passengers
+    // TODO: 3. Display waiting (Display)
+    public static void displayWaiting() {
+        // Check isEmpty(), print tokens from front to rear
     }
 
-    // 4. Display Next Passenger (Peek) - Display front without removing
-    public Passenger displayNextPassenger() {
-        // TODO: Check if empty, return front passenger
-        return null;
+    // TODO: 4. Display next passenger (Peek)
+    public static void displayNextPassenger() {
+        // Check isEmpty(), display front token without removing
     }
 
-    // 5. Count Waiting Passengers - Count total waiting
-    public int countWaiting() {
-        // TODO: Return count of passengers currently waiting
+    // TODO: 5. Count waiting passengers
+    public static int countWaitingPassengers() {
+        // Return count of waiting passengers
         return 0;
     }
 
     public static void main(String[] args) {
-        RailwayWaitingList rwl = new RailwayWaitingList();
-        System.out.println("=== Practical 3: Railway Reservation Waiting List ===");
-        rwl.addPassenger(101, "Rahul");
-        rwl.addPassenger(102, "Priya");
-        rwl.addPassenger(103, "Amit");
-        
-        System.out.println("\\nTotal waiting: " + rwl.countWaiting());
-        rwl.displayNextPassenger();
-        
-        System.out.println("\\n--- Seat Becomes Available (Cancellation) ---");
-        rwl.allocateSeat();
-        
-        System.out.println();
-        rwl.displayWaiting();
-        System.out.println("Remaining waiting: " + rwl.countWaiting());
+        Scanner sc = new Scanner(System.in);
+        while (true) {
+            System.out.println("\\n1. Add passenger");
+            System.out.println("2. Allocate seat");
+            System.out.println("3. Display waiting");
+            System.out.println("4. Display next passenger");
+            System.out.println("5. Number of waiting passenger");
+            System.out.println("6. Exit");
+            System.out.print("Ur choice: ");
+            if (!sc.hasNextInt()) break;
+            int choice = sc.nextInt();
+            switch (choice) {
+                case 1:
+                    System.out.print("Token Number?: ");
+                    int token = sc.nextInt();
+                    addPassenger(token);
+                    break;
+                case 2:
+                    allocateSeat();
+                    break;
+                case 3:
+                    displayWaiting();
+                    break;
+                case 4:
+                    displayNextPassenger();
+                    break;
+                case 5:
+                    System.out.println("Waiting passengers: " + countWaitingPassengers());
+                    break;
+                case 6:
+                    System.out.println("Exiting...");
+                    return;
+                default:
+                    System.out.println("Invalid choice!");
+            }
+        }
     }
 }`,
     modelSolution: `/*
-Practical 3: Railway Reservation Waiting List using Queue
-1. Add Passenger (Enqueue) -
-   Insert a passenger at the rear of the queue
-2. Allocate Seat (Dequeue)
-   Remove the passenger at the front of the queue
-   The removed passenger is allocated the seat
-3. Display Waiting (Display)
-   Display all passengers from the front to rear
-4. Display Next Passenger (Peek)
-   Display the passenger at the front of the queue without removing it
-5. Count Waiting Passengers
-   Count and display the number of passengers currently waiting
+Practical 3: Railway reservation Waiting list using Queue.
+ 1. Add passenger(Enqueue) -
+    insert a passenger at the rear of the queue 
+ 2. Allocate Seat (Dequeue) -
+    remove the passenger at the front of the queue
+    The removed passenger is allocated the Seat
+ 3. Display waiting(Display) -
+    Display all the passenger from front to rear
+ 4. Display next passenger(peek)
+    display passenger at the front of the queue without removing it.
+ 5. count waiting passenger
+    count and display the number of passengers currently waiting.   
 */
 
-class Passenger {
-    int id;
-    String name;
-    public Passenger(int id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-}
+import java.util.Scanner;
 
 public class RailwayWaitingList {
-    private static final int MAX = 5;
-    private Passenger[] queue = new Passenger[MAX];
-    private int front = -1, rear = -1;
+    private static final int MAX = 6;
+    private static int[] waitQ = new int[MAX];
+    private static int front = -1;
+    private static int rear = -1;
 
-    // 1. Add Passenger (Enqueue) - Insert at rear
-    public void addPassenger(int id, String name) {
-        if (rear == MAX - 1) {
-            System.out.println("Waiting list is full! Overflow occurred.");
-            return;
-        }
-        if (front == -1) front = 0;
-        queue[++rear] = new Passenger(id, name);
-        System.out.println("Added to waiting list: " + name + " (ID: " + id + ")");
+    public static boolean isFull() {
+        return rear == MAX - 1;
     }
 
-    // 2. Allocate Seat (Dequeue) - Remove from front
-    public Passenger allocateSeat() {
-        if (front == -1 || front > rear) {
-            System.out.println("Waiting list is empty! Underflow occurred.");
-            return null;
-        }
-        Passenger allocated = queue[front++];
-        if (front > rear) {
-            front = -1;
-            rear = -1;
-        }
-        System.out.println("Seat allocated to: " + allocated.name + " (ID: " + allocated.id + ")");
-        return allocated;
+    public static boolean isEmpty() {
+        return front == -1 || front > rear;
     }
 
-    // 3. Display Waiting (Display) - Display all from front to rear
-    public void displayWaiting() {
-        if (front == -1 || front > rear) {
-            System.out.println("Waiting list is empty.");
-            return;
-        }
-        System.out.println("Current Waiting List:");
-        for (int i = front; i <= rear; i++) {
-            System.out.println("  " + (i - front + 1) + ". " + queue[i].name + " (ID: " + queue[i].id + ")");
+    // 1. Add passenger (Enqueue)
+    public static void addPassenger(int tokenNumber) {
+        if (isFull()) {
+            System.out.println("\\nThe waiting List Queue is Full..\\n");
+        } else {
+            if (front == -1) front = 0;
+            rear = rear + 1;
+            waitQ[rear] = tokenNumber;
+            System.out.println("\\n" + tokenNumber + " is added to wait Queue\\n");
         }
     }
 
-    // 4. Display Next Passenger (Peek) - Display front without removing
-    public Passenger displayNextPassenger() {
-        if (front == -1 || front > rear) {
-            System.out.println("No next passenger on waiting list.");
-            return null;
+    // 2. Allocate Seat (Dequeue)
+    public static void allocateSeat() {
+        if (isEmpty()) {
+            System.out.println("\\nWaiting list is empty! No passenger to allocate seat.\\n");
+        } else {
+            int allocatedToken = waitQ[front];
+            System.out.println("\\nSeat successfully allocated to Token #" + allocatedToken + " (Removed from waiting list).\\n");
+            front = front + 1;
+            if (front > rear) {
+                front = -1;
+                rear = -1;
+            }
         }
-        System.out.println("Next passenger eligible for seat: " + queue[front].name + " (ID: " + queue[front].id + ")");
-        return queue[front];
     }
 
-    // 5. Count Waiting Passengers - Count total waiting
-    public int countWaiting() {
-        if (front == -1 || front > rear) {
+    // 3. Display waiting (Display)
+    public static void displayWaiting() {
+        if (isEmpty()) {
+            System.out.println("\\n--- Current Railway Waiting List ---");
+            System.out.println("Waiting list is EMPTY.\\n");
+        } else {
+            System.out.println("\\n--- Current Railway Waiting List ---");
+            for (int i = front; i <= rear; i++) {
+                System.out.println("[" + (i - front + 1) + "] Token #" + waitQ[i]);
+            }
+        }
+    }
+
+    // 4. Display next passenger (Peek)
+    public static void displayNextPassenger() {
+        if (isEmpty()) {
+            System.out.println("\\nNo passengers waiting in queue.\\n");
+        } else {
+            System.out.println("\\nNext passenger eligible for confirmed seat: Token #" + waitQ[front]);
+        }
+    }
+
+    // 5. Number of waiting passengers (Count)
+    public static int countWaitingPassengers() {
+        if (isEmpty()) {
             return 0;
         }
         return (rear - front + 1);
     }
 
     public static void main(String[] args) {
-        RailwayWaitingList rwl = new RailwayWaitingList();
-        System.out.println("=== Practical 3: Railway Reservation Waiting List ===");
-        rwl.addPassenger(101, "Rahul");
-        rwl.addPassenger(102, "Priya");
-        rwl.addPassenger(103, "Amit");
-        
-        System.out.println("\\nTotal waiting: " + rwl.countWaiting());
-        rwl.displayNextPassenger();
-        
-        System.out.println("\\n--- Seat Becomes Available (Cancellation) ---");
-        rwl.allocateSeat();
-        
-        System.out.println();
-        rwl.displayWaiting();
-        System.out.println("Remaining waiting: " + rwl.countWaiting());
+        Scanner sc = new Scanner(System.in);
+        while (true) {
+            System.out.println("\\n1. Add passenger");
+            System.out.println("2. Allocate seat");
+            System.out.println("3. Display waiting");
+            System.out.println("4. Display next passenger");
+            System.out.println("5. Number of waiting passenger");
+            System.out.println("6. Exit");
+            System.out.print("Ur choice: ");
+            if (!sc.hasNextInt()) break;
+            int choice = sc.nextInt();
+            switch (choice) {
+                case 1:
+                    System.out.print("Token Number?: ");
+                    int token = sc.nextInt();
+                    addPassenger(token);
+                    break;
+                case 2:
+                    allocateSeat();
+                    break;
+                case 3:
+                    displayWaiting();
+                    break;
+                case 4:
+                    displayNextPassenger();
+                    break;
+                case 5:
+                    System.out.println("Number of waiting passengers: " + countWaitingPassengers());
+                    break;
+                case 6:
+                    System.out.println("Exiting Railway Reservation System. Goodbye!");
+                    return;
+                default:
+                    System.out.println("Invalid choice! Please choose 1 to 6.");
+            }
+        }
     }
 }`,
     hints: [
-      '1. Enqueue: Check if rear == MAX - 1. If front == -1, set front = 0. Then queue[++rear] = new Passenger(id, name).',
-      '2. Dequeue: Check if front == -1 or front > rear. Retrieve queue[front++], reset to -1 if front > rear.',
-      '3. Display: Iterate from front to rear and print passenger names and IDs.',
-      '4. Peek: Access queue[front] without altering the front index.',
-      '5. Count: Return (rear - front + 1) when queue contains active elements.'
+      'isFull(): return rear == MAX - 1.',
+      'isEmpty(): return front == -1 || front > rear.',
+      'allocateSeat(): Check isEmpty(). Store waitQ[front], increment front++. Reset front = rear = -1 if front > rear.',
+      'displayWaiting(): Check isEmpty(). Loop from i = front to rear and print waitQ[i].',
+      'displayNextPassenger(): Check isEmpty(). Print waitQ[front] without incrementing front.',
+      'countWaitingPassengers(): Return (rear - front + 1) if not empty, else 0.'
     ],
     validator: makeValidator(
-      ['queue', 'front', 'rear', 'allocateseat', 'displaywaiting', 'displaynextpassenger', 'countwaiting'],
-      '✔ Operation 1 (Add Passenger / Enqueue): VERIFIED\n✔ Operation 2 (Allocate Seat / Dequeue): VERIFIED\n✔ Operation 3 (Display Waiting List): VERIFIED\n✔ Operation 4 (Peek Next Passenger): VERIFIED\n✔ Operation 5 (Count Waiting Passengers): VERIFIED\n✔ All 5 Railway Reservation queue invariants PASSED in Java [JVM Exit code: 0]',
-      'Implement addPassenger, allocateSeat, displayWaiting, displayNextPassenger, and countWaiting methods in Java.'
+      ['waitq', 'front', 'rear', 'addpassenger', 'allocateseat', 'displaywaiting', 'displaynextpassenger', 'countwaitingpassengers'],
+      '✔ Operation 1 (Add Passenger / Enqueue): VERIFIED\n✔ Operation 2 (Allocate Seat / Dequeue): VERIFIED\n✔ Operation 3 (Display Waiting List): VERIFIED\n✔ Operation 4 (Peek Next Passenger): VERIFIED\n✔ Operation 5 (Count Waiting Passengers): VERIFIED\n✔ Java Scanner Menu-driven switch-case loops validated [JVM Exit code: 0]',
+      'Implement allocateSeat, displayWaiting, displayNextPassenger, and countWaitingPassengers matching the professor\'s menu structure.'
     )
   },
 
