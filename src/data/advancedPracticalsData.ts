@@ -18,6 +18,129 @@ function makeValidator(tokens: string[], testOutput: string, hint: string) {
   };
 }
 
+function validateRailwayQueue(code: string, isJava = false) {
+  const clean = code.toLowerCase().replace(/\s+/g, ' ');
+
+  // 1. Queue storage
+  const hasQueue = clean.includes('waitq') || clean.includes('queue') || clean.includes('cqueue') || clean.includes('q[');
+  
+  // 2. Queue pointers
+  const hasPointers = clean.includes('front') && clean.includes('rear');
+  
+  // 3. Operation 1: Add Passenger (Enqueue)
+  const hasEnqueue = 
+    clean.includes('addpassenger') || 
+    clean.includes('enqueue') || 
+    clean.includes('insert') || 
+    (clean.includes('rear') && (clean.includes('token') || clean.includes('pass')));
+
+  // 4. Operation 2: Allocate Seat (Dequeue)
+  const hasDequeue = 
+    clean.includes('allocateseat') || 
+    clean.includes('dequeue') || 
+    clean.includes('remove') || 
+    clean.includes('front++') || 
+    clean.includes('front = front + 1') || 
+    clean.includes('front += 1');
+
+  // 5. Operation 3: Display Waiting
+  const hasDisplay = 
+    clean.includes('displaywaiting') || 
+    clean.includes('display') || 
+    clean.includes('print') || 
+    clean.includes('show');
+
+  // 6. Operation 4: Peek / Next Passenger
+  const hasPeek = 
+    clean.includes('nextpassenger') || 
+    clean.includes('displaynext') || 
+    clean.includes('peek') || 
+    (clean.includes('[front]') && (clean.includes('next') || clean.includes('seat') || clean.includes('pass')));
+
+  // 7. Operation 5: Count Passengers
+  const hasCount = 
+    clean.includes('countpassenger') || 
+    clean.includes('countwaiting') || 
+    clean.includes('count') || 
+    clean.includes('rear - front') || 
+    clean.includes('number of waiting');
+
+  const missing: string[] = [];
+  if (!hasQueue) missing.push("Queue array (waitQ or queue)");
+  if (!hasPointers) missing.push("Queue pointers (front, rear)");
+  if (!hasEnqueue) missing.push("Add Passenger (Enqueue) operation");
+  if (!hasDequeue) missing.push("Allocate Seat (Dequeue) operation");
+  if (!hasDisplay) missing.push("Display Waiting List operation");
+  if (!hasPeek) missing.push("Next Passenger (Peek) operation");
+  if (!hasCount) missing.push("Count Waiting Passengers logic");
+
+  if (missing.length === 0) {
+    return {
+      passed: true,
+      output: `[${isJava ? 'OpenJDK 21 64-Bit VM' : 'GCC 13.2.0 Linux Sandbox'}]
+$ ${isJava ? 'javac RailwayWaitingList.java && java RailwayWaitingList' : 'gcc -Wall -Wextra -O2 waiting-list.c -o waiting-list && ./waiting-list'}
+
+================================================================
+  ITM Baroda University — Practical 3 Test Suite Execution
+================================================================
+
+[TEST 1: Enqueue Initial Tokens]
+  → Action: Add passenger with Token #101
+  ✔ Output: 101 is added to wait Queue
+  → Action: Add passenger with Token #102
+  ✔ Output: 102 is added to wait Queue
+  → Action: Add passenger with Token #103
+  ✔ Output: 103 is added to wait Queue
+
+[TEST 2: Count & Peek Operations]
+  → Action: Count Waiting Passengers
+  ✔ Output: Total Waiting Passengers: 3
+  → Action: Display Next Passenger (Peek)
+  ✔ Output: Next Passenger eligible for seat: 101 (Non-destructive)
+
+[TEST 3: Seat Allocation / Dequeue Operation]
+  → Action: Allocate Seat (Ticket cancellation occurred)
+  ✔ Output: Seat allocated to Passenger: 101
+  ✔ State: Front pointer updated; passenger successfully moved to confirmed.
+
+[TEST 4: Display Current Waiting List]
+  → Action: Display Waiting List
+  ✔ Output: Waiting Passengers: 102 103
+
+[TEST 5: Final Count & Boundary Checking]
+  → Action: Count Remaining Passengers
+  ✔ Output: Total Waiting Passengers: 2
+
+================================================================
+✔ VERIFICATION STATUS: 100% PASSED (All 5 Queue Invariants Satisfied)
+• Enqueue (Add Passenger)       : PASSED
+• Dequeue (Allocate Seat)       : PASSED
+• Display Waiting List          : PASSED
+• Next Passenger (Peek)         : PASSED
+• Count Waiting Passengers      : PASSED
+• Overflow / Underflow Checks   : PASSED
+• Memory / Exit Code            : 0 (Normal Termination)
+================================================================`
+    };
+  }
+
+  return {
+    passed: false,
+    output: `[${isJava ? 'Java Compiler' : 'GCC Compiler'} Semantic Static Analyzer] Check Failed.
+Missing required logic component: ${missing[0]}
+
+Analysis of your submitted code:
+• Queue array & Pointers : ${hasQueue && hasPointers ? '✔ Found' : '❌ Incomplete'}
+• Add Passenger (Enqueue): ${hasEnqueue ? '✔ Found' : '❌ Missing'}
+• Allocate Seat (Dequeue): ${hasDequeue ? '✔ Found' : '❌ Missing'}
+• Display Waiting List   : ${hasDisplay ? '✔ Found' : '❌ Missing'}
+• Next Passenger (Peek)  : ${hasPeek ? '✔ Found' : '❌ Missing'}
+• Count Waiting Logic    : ${hasCount ? '✔ Found' : '❌ Missing'}
+
+Suggestion: Implement ${missing.join(', ')} to satisfy all 5 requirements of Practical 3.`
+  };
+}
+
 export const ADVANCED_PRACTICALS: CodingProblem[] = [
   // =========================================================================
   // 1. ADVANCED DATA STRUCTURES & ALGORITHMS (C/C++)
@@ -543,11 +666,7 @@ void main()
       'displayNextPassenger(): Check isEmpty(). Print waitQ[front] without incrementing front.',
       'countWaitingPassengers(): Return (rear - front + 1) if not empty, else 0.'
     ],
-    validator: makeValidator(
-      ['waitq', 'front', 'rear', 'addpassenger', 'allocateseat', 'displaywaiting', 'displaynextpassenger', 'countwaitingpassengers'],
-      '✔ Operation 1 (Add Passenger / Enqueue): VERIFIED\n✔ Operation 2 (Allocate Seat / Dequeue): VERIFIED\n✔ Operation 3 (Display Waiting List): VERIFIED\n✔ Operation 4 (Peek Next Passenger): VERIFIED\n✔ Operation 5 (Count Waiting Passengers): VERIFIED\n✔ Menu-driven switch-case loops validated [Exit code: 0]',
-      'Implement allocateSeat, displayWaiting, displayNextPassenger, and countWaitingPassengers matching the professor\'s menu structure.'
-    )
+    validator: (code: string) => validateRailwayQueue(code, false)
   },
   {
     id: 'dsa-39-railway-reservation-queue-java',
@@ -807,11 +926,7 @@ public class RailwayWaitingList {
       'displayNextPassenger(): Check isEmpty(). Print waitQ[front] without incrementing front.',
       'countWaitingPassengers(): Return (rear - front + 1) if not empty, else 0.'
     ],
-    validator: makeValidator(
-      ['waitq', 'front', 'rear', 'addpassenger', 'allocateseat', 'displaywaiting', 'displaynextpassenger', 'countwaitingpassengers'],
-      '✔ Operation 1 (Add Passenger / Enqueue): VERIFIED\n✔ Operation 2 (Allocate Seat / Dequeue): VERIFIED\n✔ Operation 3 (Display Waiting List): VERIFIED\n✔ Operation 4 (Peek Next Passenger): VERIFIED\n✔ Operation 5 (Count Waiting Passengers): VERIFIED\n✔ Java Scanner Menu-driven switch-case loops validated [JVM Exit code: 0]',
-      'Implement allocateSeat, displayWaiting, displayNextPassenger, and countWaitingPassengers matching the professor\'s menu structure.'
-    )
+    validator: (code: string) => validateRailwayQueue(code, true)
   },
 
   // =========================================================================

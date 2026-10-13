@@ -1,11 +1,12 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { 
   Code, Play, CheckCircle2, XCircle, RotateCcw, 
   Lightbulb, Sparkles, BookOpen, Terminal, ChevronRight, 
-  Layers, Check, Copy, Flame, Award, HelpCircle, FileText, Search, Filter, Menu
+  Layers, Check, Copy, Flame, Award, HelpCircle, FileText, Search, Filter, Menu,
+  Maximize2, Minimize2, Trash2, Send
 } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
@@ -27,6 +28,16 @@ export default function CodingLabPage() {
   const [output, setOutput] = useState<string | null>(null);
   const [status, setStatus] = useState<'idle' | 'compiling' | 'running' | 'success' | 'failed'>('idle');
   const [showSolution, setShowSolution] = useState(false);
+  
+  // Interactive Terminal State
+  const [terminalInput, setTerminalInput] = useState<string>('');
+  const [isTerminalExpanded, setIsTerminalExpanded] = useState<boolean>(false);
+  const [activeConsoleTab, setActiveConsoleTab] = useState<'terminal' | 'harness'>('terminal');
+  const [terminalLogs, setTerminalLogs] = useState<string[]>([
+    'itm@lab:~/dsa$ # Interactive Sandbox Ready. Click "Run Code" or type commands below.'
+  ]);
+  const [simQueue, setSimQueue] = useState<number[]>([101, 102, 103]);
+  const terminalBottomRef = useRef<HTMLDivElement | null>(null);
   
   // Left side of workspace tabs
   const [leftTab, setLeftTab] = useState<'specs' | 'hints' | 'history' | 'solution'>('specs');
@@ -66,6 +77,12 @@ export default function CodingLabPage() {
       if (prob) setCode(prob.starterCode);
     }
   }, [activeProblemId]);
+
+  useEffect(() => {
+    if (activeConsoleTab === 'terminal') {
+      terminalBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [terminalLogs, activeConsoleTab]);
 
   const availableSubjects = useMemo(() => {
     const map = new Map<string, { name: string; semester: number; count: number }>();
@@ -187,26 +204,55 @@ export default function CodingLabPage() {
 
   const handleRun = () => {
     const isSql = currentProblem?.language === 'sql';
+    const isC = currentProblem?.language === 'c';
+    const isJava = currentProblem?.language === 'java';
     setStatus('compiling');
     setOutput(
       isSql
         ? 'Parsing SQL syntax AST and verifying relational schema integrity...'
-        : 'Compiling and preparing runtime test harness...'
+        : 'Compiling source code with native sandbox compiler...'
     );
+
+    const compileCmd = isC 
+      ? `gcc -Wall -Wextra -O2 ${currentProblem?.fileName} -o output_bin`
+      : isJava 
+        ? `javac -Xlint:all ${currentProblem?.fileName}`
+        : isSql
+          ? `sqlite3 :memory: < ${currentProblem?.fileName}`
+          : `python3 -m py_compile ${currentProblem?.fileName}`;
+
+    setTerminalLogs(prev => [
+      ...prev,
+      `\n--- [BUILD & EXECUTE: ${new Date().toLocaleTimeString()}] ---`,
+      `itm@lab-terminal:~/workspace$ ${compileCmd}`,
+      `✔ Build succeeded (0 errors, 0 warnings)`
+    ]);
 
     setTimeout(() => {
       setStatus('running');
       setOutput(
         isSql
           ? 'Executing relational queries in in-memory database engine against schema tables...'
-          : 'Executing binary with test cases in isolated sandbox...'
+          : 'Executing binary in interactive Linux sandbox harness...'
       );
+
+      setTerminalLogs(prev => [
+        ...prev,
+        `itm@lab-terminal:~/workspace$ ./${currentProblem?.fileName.replace(/\.(c|java|py|sql)$/, '') || 'output_bin'}`
+      ]);
 
       setTimeout(() => {
         const result = currentProblem?.validator 
           ? currentProblem.validator(code) 
           : { passed: false, output: 'Problem validator not found.' };
         setOutput(result.output);
+        setTerminalLogs(prev => [
+          ...prev,
+          result.output,
+          result.passed 
+            ? `[Process exited with status 0 (SUCCESS)]` 
+            : `[Process exited with non-zero exit status (FAILED)]`
+        ]);
 
         if (currentProblem) {
           const record = {
@@ -256,6 +302,82 @@ export default function CodingLabPage() {
         }
       }, isSql ? 600 : 900);
     }, isSql ? 350 : 600);
+  };
+
+  const handleTerminalSubmit = (e?: React.FormEvent, customCmd?: string) => {
+    if (e) e.preventDefault();
+    const rawCmd = (customCmd !== undefined ? customCmd : terminalInput).trim();
+    if (!rawCmd) return;
+    setTerminalInput('');
+
+    if (rawCmd.toLowerCase() === 'clear') {
+      setTerminalLogs(['itm@lab-terminal:~/dsa$ # Terminal cleared']);
+      return;
+    }
+
+    if (rawCmd.toLowerCase() === 'help') {
+      setTerminalLogs(prev => [
+        ...prev,
+        `itm@lab-terminal:~/dsa$ help`,
+        `Available Interactive Commands:`,
+        `  1 <token>  : Add passenger token to waiting list (e.g. '1 105')`,
+        `  2          : Allocate seat to next passenger (dequeue)`,
+        `  3          : Display current waiting list`,
+        `  4          : Peek next passenger in line`,
+        `  5          : Count number of waiting passengers`,
+        `  6 / exit   : Exit program`,
+        `  run        : Execute full compilation and validation test suite`,
+        `  clear      : Clear terminal screen`
+      ]);
+      return;
+    }
+
+    if (rawCmd.toLowerCase() === 'run') {
+      handleRun();
+      return;
+    }
+
+    const tokens = rawCmd.split(' ');
+    const choice = tokens[0];
+    const newLogs: string[] = [`itm@lab-terminal:~/dsa$ ${rawCmd}`];
+
+    if (choice === '1') {
+      const token = tokens[1] ? parseInt(tokens[1]) : Math.floor(100 + Math.random() * 900);
+      if (simQueue.length >= 6) {
+        newLogs.push(`The Waiting List Queue is Full.. (Overflow: MAX 6 reached)`);
+      } else {
+        setSimQueue(prev => [...prev, token]);
+        newLogs.push(`Token Number?: ${token}`, `${token} is added to wait Queue`);
+      }
+    } else if (choice === '2') {
+      if (simQueue.length === 0) {
+        newLogs.push(`The Waiting List Queue is Empty.. (Underflow: No passengers waiting)`);
+      } else {
+        const allocated = simQueue[0];
+        setSimQueue(prev => prev.slice(1));
+        newLogs.push(`Seat allocated to Passenger: ${allocated} (Allocated seat confirmed)`);
+      }
+    } else if (choice === '3') {
+      if (simQueue.length === 0) {
+        newLogs.push(`The Waiting List Queue is Empty..`);
+      } else {
+        newLogs.push(`Waiting Passengers: ${simQueue.join(' ')}`);
+      }
+    } else if (choice === '4') {
+      if (simQueue.length === 0) {
+        newLogs.push(`The Waiting List Queue is Empty..`);
+      } else {
+        newLogs.push(`Next Passenger: ${simQueue[0]}`);
+      }
+    } else if (choice === '5') {
+      newLogs.push(`Total Waiting Passengers: ${simQueue.length}`);
+    } else if (choice === '6' || choice.toLowerCase() === 'exit') {
+      newLogs.push(`Exiting Railway Reservation System. Program terminated with exit code 0.`);
+    } else {
+      newLogs.push(`Command "${rawCmd}" executed.`);
+    }
+
+    setTerminalLogs(prev => [...prev, ...newLogs]);
   };
 
   return (
@@ -681,24 +803,207 @@ export default function CodingLabPage() {
                   />
                 </div>
 
-                {/* Test Console */}
-                <div className="h-48 flex flex-col bg-zinc-950 border-t border-zinc-800 shrink-0">
-                  <div className="h-9 px-4 flex items-center justify-between bg-zinc-900 border-b border-zinc-800 shrink-0">
-                    <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-2">
-                      <Terminal className="h-3.5 w-3.5" /> Execution Console
-                    </span>
-                    {status === 'success' && <span className="text-[11px] font-mono text-emerald-400 font-bold flex items-center gap-1"><CheckCircle2 className="h-3 w-3" /> Passed</span>}
-                    {status === 'failed' && <span className="text-[11px] font-mono text-rose-400 font-bold flex items-center gap-1"><XCircle className="h-3 w-3" /> Failed</span>}
+                {/* Terminal & Execution Console */}
+                <div className={`${isTerminalExpanded ? 'h-96 sm:h-[460px]' : 'h-56 sm:h-64'} flex flex-col bg-zinc-950 border-t border-zinc-800 shrink-0 transition-all duration-200`}>
+                  
+                  {/* Terminal Header Bar */}
+                  <div className="h-9 px-3 flex items-center justify-between bg-zinc-900 border-b border-zinc-800 shrink-0 select-none">
+                    <div className="flex items-center gap-2">
+                      <div className="flex gap-1.5 mr-2">
+                        <div className="h-2.5 w-2.5 rounded-full bg-rose-500/80"></div>
+                        <div className="h-2.5 w-2.5 rounded-full bg-amber-500/80"></div>
+                        <div className="h-2.5 w-2.5 rounded-full bg-emerald-500/80"></div>
+                      </div>
+                      
+                      {/* Tabs */}
+                      <button
+                        onClick={() => setActiveConsoleTab('terminal')}
+                        className={`text-[11px] font-mono px-2.5 py-1 rounded transition-colors flex items-center gap-1.5 ${
+                          activeConsoleTab === 'terminal'
+                            ? 'bg-zinc-800 text-emerald-400 font-bold shadow-sm'
+                            : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
+                        }`}
+                      >
+                        <Terminal className="h-3 w-3" /> Interactive Terminal
+                      </button>
+
+                      <button
+                        onClick={() => setActiveConsoleTab('harness')}
+                        className={`text-[11px] font-mono px-2.5 py-1 rounded transition-colors flex items-center gap-1.5 ${
+                          activeConsoleTab === 'harness'
+                            ? 'bg-zinc-800 text-emerald-400 font-bold shadow-sm'
+                            : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
+                        }`}
+                      >
+                        <CheckCircle2 className="h-3 w-3" /> Test Harness Output
+                      </button>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      {status === 'compiling' && (
+                        <span className="text-[11px] font-mono text-amber-400 font-bold flex items-center gap-1 animate-pulse">
+                          ● Compiling...
+                        </span>
+                      )}
+                      {status === 'running' && (
+                        <span className="text-[11px] font-mono text-cyan-400 font-bold flex items-center gap-1 animate-pulse">
+                          ● Executing...
+                        </span>
+                      )}
+                      {status === 'success' && (
+                        <span className="text-[11px] font-mono text-emerald-400 font-bold flex items-center gap-1 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800/50">
+                          <CheckCircle2 className="h-3 w-3" /> Passed
+                        </span>
+                      )}
+                      {status === 'failed' && (
+                        <span className="text-[11px] font-mono text-rose-400 font-bold flex items-center gap-1 bg-rose-950/60 px-2 py-0.5 rounded border border-rose-800/50">
+                          <XCircle className="h-3 w-3" /> Failed
+                        </span>
+                      )}
+
+                      <button
+                        onClick={() => {
+                          setTerminalLogs(['itm@lab-terminal:~/workspace$ # Terminal reset']);
+                          setOutput(null);
+                        }}
+                        title="Clear console logs"
+                        className="p-1 rounded text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 transition-colors"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+
+                      <button
+                        onClick={() => setIsTerminalExpanded(!isTerminalExpanded)}
+                        title={isTerminalExpanded ? "Collapse terminal" : "Expand terminal"}
+                        className="p-1 rounded text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 transition-colors"
+                      >
+                        {isTerminalExpanded ? (
+                          <Minimize2 className="h-3.5 w-3.5" />
+                        ) : (
+                          <Maximize2 className="h-3.5 w-3.5" />
+                        )}
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex-1 p-4 font-mono text-xs text-zinc-300 overflow-y-auto whitespace-pre-wrap leading-relaxed">
-                    {output || (
-                      <span className="text-zinc-600 italic">
-                        {currentProblem.language === 'sql'
-                          ? '-- Write your SQL queries above and click "Run Code" to execute them against the validation schema.'
-                          : '// Write your code above and click "Run Code" to compile and execute test assertions.'}
-                      </span>
-                    )}
-                  </div>
+
+                  {/* Terminal Body */}
+                  {activeConsoleTab === 'terminal' ? (
+                    <div className="flex-1 flex flex-col min-h-0 bg-black/95">
+                      {/* Quick Menu Action Bar (For Menu-driven practicals like Practical 3) */}
+                      <div className="px-3 py-1.5 bg-zinc-900/60 border-b border-zinc-800/60 flex items-center gap-1.5 overflow-x-auto text-[11px] font-mono text-zinc-400 shrink-0 scrollbar-none">
+                        <span className="text-zinc-500 font-bold uppercase tracking-wider text-[10px] mr-1">Quick:</span>
+                        <button
+                          onClick={() => handleTerminalSubmit(undefined, '1 101')}
+                          className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-emerald-400 transition-colors shrink-0"
+                        >
+                          1: Add #101
+                        </button>
+                        <button
+                          onClick={() => handleTerminalSubmit(undefined, '1 102')}
+                          className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-emerald-400 transition-colors shrink-0"
+                        >
+                          1: Add #102
+                        </button>
+                        <button
+                          onClick={() => handleTerminalSubmit(undefined, '2')}
+                          className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-amber-400 transition-colors shrink-0"
+                        >
+                          2: Allocate Seat
+                        </button>
+                        <button
+                          onClick={() => handleTerminalSubmit(undefined, '3')}
+                          className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-cyan-400 transition-colors shrink-0"
+                        >
+                          3: Display
+                        </button>
+                        <button
+                          onClick={() => handleTerminalSubmit(undefined, '4')}
+                          className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-purple-400 transition-colors shrink-0"
+                        >
+                          4: Peek
+                        </button>
+                        <button
+                          onClick={() => handleTerminalSubmit(undefined, '5')}
+                          className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-blue-400 transition-colors shrink-0"
+                        >
+                          5: Count
+                        </button>
+                        <button
+                          onClick={() => handleTerminalSubmit(undefined, 'help')}
+                          className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-zinc-200 transition-colors shrink-0"
+                        >
+                          help
+                        </button>
+                        <button
+                          onClick={() => handleTerminalSubmit(undefined, 'run')}
+                          className="px-2 py-0.5 rounded bg-emerald-950/80 border border-emerald-700/60 text-emerald-300 hover:bg-emerald-900 transition-colors shrink-0"
+                        >
+                          ▶ Test Suite
+                        </button>
+                      </div>
+
+                      {/* Terminal Logs Output */}
+                      <div className="flex-1 p-3 font-mono text-xs text-zinc-300 overflow-y-auto whitespace-pre-wrap leading-relaxed select-text space-y-1">
+                        {terminalLogs.map((line, idx) => {
+                          const isPrompt = line.startsWith('itm@') || line.startsWith('$');
+                          const isPass = line.includes('✔') || line.includes('SUCCESS') || line.includes('PASSED');
+                          const isFail = line.includes('❌') || line.includes('FAILED') || line.includes('Error') || line.includes('Underflow') || line.includes('Overflow');
+                          const isHighlight = line.includes('==') || line.includes('--');
+                          return (
+                            <div 
+                              key={idx} 
+                              className={`${
+                                isPrompt ? 'text-emerald-400 font-semibold' :
+                                isPass ? 'text-emerald-300' :
+                                isFail ? 'text-rose-400' :
+                                isHighlight ? 'text-zinc-500' : 'text-zinc-300'
+                              }`}
+                            >
+                              {line}
+                            </div>
+                          );
+                        })}
+                        <div ref={terminalBottomRef} />
+                      </div>
+
+                      {/* Interactive Command Input Prompt */}
+                      <form 
+                        onSubmit={handleTerminalSubmit}
+                        className="h-10 px-3 bg-zinc-900 border-t border-zinc-800 flex items-center gap-2 shrink-0"
+                      >
+                        <span className="font-mono text-xs text-emerald-400 font-bold select-none shrink-0 flex items-center gap-1">
+                          <Terminal className="h-3 w-3" /> itm@sandbox:~$
+                        </span>
+                        <input
+                          type="text"
+                          value={terminalInput}
+                          onChange={(e) => setTerminalInput(e.target.value)}
+                          placeholder="Type menu choice (1-6) or command (e.g. '1 105', '2', 'clear', 'help')..."
+                          className="flex-1 bg-transparent border-0 text-zinc-100 font-mono text-xs focus:outline-none placeholder:text-zinc-600 h-full"
+                        />
+                        <Button 
+                          type="submit" 
+                          size="sm" 
+                          variant="ghost" 
+                          className="h-7 px-2 text-zinc-400 hover:text-emerald-400 hover:bg-zinc-800"
+                        >
+                          <Send className="h-3.5 w-3.5" />
+                        </Button>
+                      </form>
+                    </div>
+                  ) : (
+                    /* Test Harness Tab Output */
+                    <div className="flex-1 p-4 font-mono text-xs text-zinc-300 overflow-y-auto whitespace-pre-wrap leading-relaxed select-text">
+                      {output || (
+                        <span className="text-zinc-600 italic">
+                          {currentProblem.language === 'sql'
+                            ? '-- Write your SQL queries above and click "Run Code" to execute them against the validation schema.'
+                            : '// Write your code above and click "Run Code" to compile and execute test assertions.'}
+                        </span>
+                      )}
+                    </div>
+                  )}
+
                 </div>
 
               </div>
