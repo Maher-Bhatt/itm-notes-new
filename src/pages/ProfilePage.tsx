@@ -509,55 +509,61 @@ export default function ProfilePage() {
                 {filteredAchievements.map((ach) => {
                   const isUnlocked = !!ach.unlockedAt;
                   const tierColors = {
-                    mythic: 'border-rose-500/60 bg-gradient-to-br from-rose-500/10 to-card shadow-rose-500/10 shadow-md',
-                    legendary: 'border-purple-500/60 bg-gradient-to-br from-purple-500/10 to-card shadow-purple-500/10 shadow-md',
-                    gold: 'border-amber-500/60 bg-gradient-to-br from-amber-500/10 to-card shadow-amber-500/10 shadow-md',
-                    silver: 'border-slate-400/50 bg-gradient-to-br from-slate-400/10 to-card',
-                    bronze: 'border-amber-700/40 bg-gradient-to-br from-amber-700/10 to-card',
+                    mythic: 'border-[#D6E85D]/80 bg-gradient-to-br from-[#183F36]/50 via-card to-card shadow-[0_0_20px_rgba(214,232,93,0.15)] ring-1 ring-[#D6E85D]/40',
+                    legendary: 'border-purple-500/70 bg-gradient-to-br from-purple-500/15 via-card to-card shadow-[0_0_20px_rgba(168,85,247,0.15)] ring-1 ring-purple-500/30',
+                    gold: 'border-amber-500/70 bg-gradient-to-br from-amber-500/15 via-card to-card shadow-[0_0_20px_rgba(245,158,11,0.15)] ring-1 ring-amber-500/30',
+                    silver: 'border-slate-300/60 bg-gradient-to-br from-slate-400/10 via-card to-card ring-1 ring-slate-400/20',
+                    bronze: 'border-[#E07A5F]/60 bg-gradient-to-br from-[#E07A5F]/10 via-card to-card ring-1 ring-[#E07A5F]/20',
                   };
 
                   const tierBadges = {
-                    mythic: 'bg-rose-500/20 text-rose-500 border-rose-500/30',
-                    legendary: 'bg-purple-600/20 text-purple-600 border-purple-500/30',
-                    gold: 'bg-amber-500/20 text-amber-600 border-amber-500/30',
-                    silver: 'bg-slate-400/20 text-slate-600 dark:text-slate-300 border-slate-400/30',
-                    bronze: 'bg-amber-700/20 text-amber-700 border-amber-700/30',
+                    mythic: 'bg-[#D6E85D]/20 text-[#D6E85D] border-[#D6E85D]/40 font-black',
+                    legendary: 'bg-purple-600/20 text-purple-400 border-purple-500/40 font-black',
+                    gold: 'bg-amber-500/20 text-amber-400 border-amber-500/40 font-black',
+                    silver: 'bg-slate-400/20 text-slate-300 border-slate-400/40 font-black',
+                    bronze: 'bg-[#E07A5F]/20 text-[#E07A5F] border-[#E07A5F]/40 font-black',
                   };
 
                   return (
                     <div
                       key={ach.id}
                       onClick={() => isUnlocked && handleOpenAchievementStory(ach)}
-                      className={`p-4 rounded-xl border transition-all flex flex-col justify-between gap-3 relative ${
+                      className={`p-4 rounded-2xl border transition-all flex flex-col justify-between gap-3 relative overflow-hidden ${
                         isUnlocked
-                          ? `${tierColors[ach.tier]} hover:scale-[1.01] cursor-pointer group`
-                          : 'border-border/40 bg-secondary/10 opacity-60'
+                          ? `${tierColors[ach.tier]} hover:scale-[1.02] hover:-translate-y-0.5 cursor-pointer group shadow-lg`
+                          : 'border-border/40 bg-secondary/15 opacity-60'
                       }`}
                     >
                       <div className="flex items-start gap-3">
-                        <span className="text-3xl shrink-0 mt-0.5 filter drop-shadow-sm">{ach.icon}</span>
+                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shrink-0 shadow-inner ${
+                          isUnlocked ? 'bg-black/30 border border-white/10 group-hover:scale-110 transition-transform' : 'bg-secondary/30 grayscale'
+                        }`}>
+                          {ach.icon}
+                        </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between gap-1 mb-1">
-                            <h4 className="font-bold text-sm text-foreground truncate group-hover:text-primary transition-colors">
+                            <h4 className="font-bold text-sm text-foreground truncate group-hover:text-primary transition-colors font-display">
                               {ach.title}
                             </h4>
                             <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-full border ${tierBadges[ach.tier]}`}>
                               {ach.tier}
                             </span>
                           </div>
-                          <p className="text-xs text-muted-foreground leading-snug">{ach.description}</p>
+                          <p className="text-xs text-muted-foreground leading-snug line-clamp-2">{ach.description}</p>
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between pt-2 border-t border-border/40 text-[11px]">
-                        <span className="font-bold text-amber-500 font-mono">+{ach.xpReward} XP</span>
+                      <div className="flex items-center justify-between pt-2.5 border-t border-border/40 text-[11px]">
+                        <span className="font-extrabold text-[#D6E85D] font-mono bg-[#183F36]/60 px-2 py-0.5 rounded-md border border-[#D6E85D]/20">
+                          +{ach.xpReward} XP
+                        </span>
                         {isUnlocked ? (
-                          <span className="text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
-                            <CheckCircle2 className="h-3.5 w-3.5" /> Unlocked
+                          <span className="text-[#D6E85D] font-bold flex items-center gap-1 group-hover:underline">
+                            <Sparkles className="h-3.5 w-3.5" /> View Story ↗
                           </span>
                         ) : (
-                          <span className="text-muted-foreground flex items-center gap-1">
-                            Locked
+                          <span className="text-muted-foreground flex items-center gap-1 text-[10px]">
+                            🔒 Locked
                           </span>
                         )}
                       </div>

@@ -421,14 +421,6 @@ export default function AdminDashboard() {
     toast.info("Launching student maintenance lock screen...");
   };
 
-  const testFullLockout = () => {
-    sessionStorage.removeItem("itm_admin_bypassed");
-    localStorage.removeItem("itm_admin_god_mode");
-    sessionStorage.setItem("itm_preview_maintenance", "true");
-    window.dispatchEvent(new Event("itm_preview_maintenance"));
-    toast.warning("Full Lockout active! Unlock using Master PIN (2026).");
-  };
-
   // ── Announcements ───────────────────────────────────────────────────────────
   const [announcements, setAnnouncements] = useState<Announcement[]>(() => {
     try {
@@ -928,20 +920,10 @@ export default function AdminDashboard() {
                 <button
                   type="button"
                   onClick={launchStudentPreview}
-                  className="px-4 py-3 bg-[#D6E85D] hover:bg-[#c2d54e] text-[#183F36] rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer group"
+                  className="px-4 py-3 bg-[#D6E85D] hover:bg-[#c2d54e] text-[#183F36] rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer group w-full"
                 >
                   <Eye className="h-4 w-4 group-hover:scale-110 transition-transform" />
                   <span>Launch 3D Student Preview</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={testFullLockout}
-                  className="px-4 py-3 bg-red-600/90 hover:bg-red-600 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer border border-red-500/40"
-                  title="Locks your screen too so you can test unlock with PIN 2026"
-                >
-                  <Lock className="h-4 w-4" />
-                  <span>Test Lockout (PIN: 2026)</span>
                 </button>
               </div>
 
@@ -995,12 +977,12 @@ export default function AdminDashboard() {
             <div className="p-4 rounded-xl bg-slate-800/80 border border-slate-700 text-xs text-slate-300 space-y-1.5">
               <p className="font-bold text-white flex items-center gap-1.5">
                 <Shield className="h-3.5 w-3.5 text-[#D6E85D]" />
-                Administrator Access Notes:
+                Zero-Trust Lockdown Policy:
               </p>
               <ul className="list-disc pl-4 space-y-1 text-slate-400">
-                <li>Admins can continue navigating the dashboard while maintenance mode is active.</li>
-                <li>Emergency unlock PIN for any blocked device: <strong className="text-white">2026</strong> or <strong className="text-white">velocity</strong>.</li>
-                <li>Turning maintenance OFF restores instant access globally across all sessions.</li>
+                <li>Authenticated platform administrators (Founder Maher Bhatt) retain full access automatically.</li>
+                <li>Normal users, students, and unauthenticated guests are completely blocked with zero client-side bypass.</li>
+                <li>Turning maintenance OFF restores instant real-time access globally across all student sessions.</li>
               </ul>
             </div>
           </div>

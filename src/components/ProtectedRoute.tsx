@@ -42,62 +42,41 @@ export function ProtectedRoute({
     }
   }
 
-  // Admin Route Verification
-  if (requireAdmin && role !== 'admin' && !isUnlocked) {
-    const handleUnlock = (e: React.FormEvent) => {
-      e.preventDefault();
-      const cleaned = pin.trim().toLowerCase();
-      if (cleaned === "2026" || cleaned === "velocity" || cleaned === "itm2026") {
-        try {
-          sessionStorage.setItem('itm_admin_bypassed', 'true');
-          localStorage.setItem('itm_admin_god_mode', 'true');
-        } catch {}
-        setIsUnlocked(true);
-        toast.success("Administrator clearance granted!");
-      } else {
-        toast.error("Invalid Admin Passcode");
-        setPin("");
-      }
-    };
+  // Admin Route Verification — Strict Founder & Verified Admin Role Only
+  const isVerifiedAdmin = role === 'admin' || user?.email?.toLowerCase() === 'maherbhatt01@gmail.com';
 
+  if (requireAdmin && !isVerifiedAdmin) {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4 antialiased">
-        <div className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl space-y-6 text-center">
-          <div className="w-16 h-16 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-400 mx-auto flex items-center justify-center">
+        <div className="w-full max-w-md bg-slate-900 border border-rose-500/30 rounded-2xl p-8 shadow-2xl space-y-6 text-center">
+          <div className="w-16 h-16 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-400 mx-auto flex items-center justify-center">
             <ShieldAlert className="h-8 w-8" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-white tracking-tight">Admin Console Restricted</h2>
-            <p className="text-xs text-slate-400 mt-1">
-              Signed in as <span className="text-slate-200 font-mono">{user.email}</span>. Elevated administrative privileges required.
+            <span className="px-2.5 py-0.5 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 text-[10px] font-bold uppercase tracking-wider">
+              403 • Unauthorized Access
+            </span>
+            <h2 className="text-xl font-bold text-white tracking-tight mt-2">Platform Admin Console Restricted</h2>
+            <p className="text-xs text-slate-400 mt-2 leading-relaxed">
+              Signed in as <span className="text-slate-200 font-mono font-semibold">{user.email}</span>. This command area is strictly reserved for the platform founder and authorized university administrators.
             </p>
           </div>
 
-          <form onSubmit={handleUnlock} className="space-y-4">
-            <div className="relative">
-              <KeyRound className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
-              <input
-                type="password"
-                placeholder="Enter Admin Master PIN..."
-                value={pin}
-                onChange={(e) => setPin(e.target.value)}
-                autoFocus
-                className="w-full h-11 pl-10 pr-4 rounded-xl bg-slate-800/80 border border-slate-700 text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-500 font-mono tracking-wider"
-              />
+          <div className="p-3.5 rounded-xl bg-slate-950/60 border border-slate-800 text-left space-y-1.5 text-xs text-slate-400">
+            <div className="flex items-center gap-1.5 font-bold text-slate-300">
+              <span className="w-2 h-2 rounded-full bg-rose-500" />
+              <span>Security Policy Enforced</span>
             </div>
-            <button
-              type="submit"
-              className="w-full h-11 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-purple-600/30 transition-all cursor-pointer"
-            >
-              Authorize & Access Admin Console
-            </button>
-          </form>
+            <p className="text-[11px] leading-relaxed">
+              Direct access requires authenticated administrator credentials in the university database.
+            </p>
+          </div>
 
           <button
             onClick={() => navigate("/dashboard")}
-            className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors cursor-pointer"
+            className="w-full h-11 bg-[#183F36] hover:bg-[#1f5246] text-[#D6E85D] rounded-xl text-xs font-bold shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer border border-[#D6E85D]/30"
           >
-            <ArrowLeft className="h-3.5 w-3.5" /> Return to Student Dashboard
+            <ArrowLeft className="h-4 w-4" /> Return to Student Dashboard
           </button>
         </div>
       </div>

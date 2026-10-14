@@ -52,15 +52,6 @@ export function MaintenanceBanner() {
     }
   });
 
-  const [adminBypass, setAdminBypass] = useState<boolean>(() => {
-    try { 
-      return sessionStorage.getItem('itm_admin_bypassed') === 'true' || 
-             localStorage.getItem('itm_admin_god_mode') === 'true'; 
-    } catch { 
-      return false; 
-    }
-  });
-
   const [isPreviewingAsStudent, setIsPreviewingAsStudent] = useState<boolean>(() => {
     try {
       return sessionStorage.getItem('itm_preview_maintenance') === 'true';
@@ -69,9 +60,15 @@ export function MaintenanceBanner() {
     }
   });
 
-  const [masterKey, setMasterKey] = useState('');
-  const [showKeyPrompt, setShowKeyPrompt] = useState(false);
   const [timeLeft, setTimeLeft] = useState<{ hours: number; minutes: number; seconds: number } | null>(null);
+
+  // Purge any legacy unauthorized god mode tokens from browser storage
+  useEffect(() => {
+    try {
+      localStorage.removeItem('itm_admin_god_mode');
+      sessionStorage.removeItem('itm_admin_bypassed');
+    } catch {}
+  }, []);
 
   // 1. Fetch Cloud Config & Listen for Real-Time Sync across devices
   useEffect(() => {
@@ -207,7 +204,7 @@ export function MaintenanceBanner() {
   }, [config.endTime, config.active]);
 
   // 3. Overflow Management & Locking Decision
-  const isBlocking = (config.active && (!adminBypass && !isAdmin)) || isPreviewingAsStudent;
+  const isBlocking = (config.active && !isAdmin) || (isAdmin && isPreviewingAsStudent);
 
   useEffect(() => {
     if (isBlocking) {
@@ -245,35 +242,18 @@ export function MaintenanceBanner() {
     }
   };
 
-  const handleMasterKeySubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const cleanKey = masterKey.trim().toLowerCase();
-    if (cleanKey === '2026' || cleanKey === 'velocity' || cleanKey === 'itm2026') {
-      setAdminBypass(true);
-      sessionStorage.setItem('itm_admin_bypassed', 'true');
-      localStorage.setItem('itm_admin_god_mode', 'true');
-      setIsPreviewingAsStudent(false);
-      sessionStorage.removeItem('itm_preview_maintenance');
-      toast.success('Admin Bypass Granted.');
-      setShowKeyPrompt(false);
-    } else {
-      toast.error('Invalid Master Override PIN (Default: 2026)');
-      setMasterKey('');
-    }
-  };
-
   const exitPreview = () => {
     setIsPreviewingAsStudent(false);
     sessionStorage.removeItem('itm_preview_maintenance');
   };
 
-  // Admin Floating Ribbon (When Maintenance is ON and Admin is reviewing the portal)
-  if (config.active && (isAdmin || adminBypass) && !isPreviewingAsStudent) {
+  // Admin Floating Ribbon (When Maintenance is ON and Founder/Admin is reviewing the portal)
+  if (config.active && isAdmin && !isPreviewingAsStudent) {
     return (
       <aside aria-label="System Maintenance Notification" className="fixed top-0 left-0 right-0 z-[100] bg-amber-500 text-amber-950 px-4 py-2 shadow-lg flex flex-wrap items-center justify-between gap-2 text-xs font-bold border-b border-amber-600/40">
         <div className="flex items-center gap-2">
           <span className="w-2.5 h-2.5 rounded-full bg-red-600 animate-ping inline-block" />
-          <span>🔴 System Locked for Students (Admin Bypass Active)</span>
+          <span>🔴 System Locked for Students (Admin Mode Active)</span>
           {timeLeft && (
             <span className="bg-amber-600/30 px-2.5 py-0.5 rounded font-mono text-amber-950">
               Ends in: {String(timeLeft.hours).padStart(2, '0')}:{String(timeLeft.minutes).padStart(2, '0')}:{String(timeLeft.seconds).padStart(2, '0')}
@@ -290,17 +270,6 @@ export function MaintenanceBanner() {
             className="px-3 py-1 bg-amber-600/30 hover:bg-amber-600/50 text-amber-950 rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs font-bold"
           >
             <Eye className="h-3.5 w-3.5" /> Preview Student Lockout
-          </button>
-          <button
-            onClick={() => {
-              setAdminBypass(false);
-              sessionStorage.removeItem('itm_admin_bypassed');
-              localStorage.removeItem('itm_admin_god_mode');
-              setIsPreviewingAsStudent(true);
-            }}
-            className="px-3 py-1 bg-red-600 text-white hover:bg-red-700 rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs font-bold"
-          >
-            <Lock className="h-3.5 w-3.5" /> Lock My Screen
           </button>
           <button
             onClick={handleDeactivate}
@@ -363,13 +332,10 @@ export function MaintenanceBanner() {
               <span>Exit Live Preview</span>
             </button>
           ) : (
-            <button 
-              onClick={() => setShowKeyPrompt(!showKeyPrompt)}
-              className="px-3 py-1.5 rounded-xl border border-white/10 hover:border-[#D6E85D]/40 bg-white/5 text-xs font-semibold text-[#A6C4BC] hover:text-[#D6E85D] transition-all flex items-center gap-1.5 cursor-pointer"
-            >
-              <KeyRound className="h-3.5 w-3.5" />
-              <span>Admin Bypass</span>
-            </button>
+            <div className="px-3 py-1.5 rounded-xl border border-[#D6E85D]/30 bg-[#12332C]/80 text-xs font-semibold text-[#D6E85D] flex items-center gap-1.5">
+              <ShieldCheck className="h-3.5 w-3.5" />
+              <span>Lockdown Active</span>
+            </div>
           )}
         </div>
       </nav>
@@ -429,23 +395,6 @@ export function MaintenanceBanner() {
                 <div className="w-2.5 h-2.5 rounded-full bg-[#D6E85D] animate-ping shrink-0" />
                 <span>Our engineering team is actively upgrading the server cluster. Stand by for instant restoration.</span>
               </div>
-            )}
-
-            {/* Secret Master Override Input */}
-            {showKeyPrompt && (
-              <form onSubmit={handleMasterKeySubmit} className="flex max-w-sm mx-auto lg:mx-0 gap-2 p-2 bg-[#12332C] rounded-2xl border border-[#D6E85D]/40 shadow-xl animate-fade-in">
-                <input
-                  type="password"
-                  value={masterKey}
-                  onChange={(e) => setMasterKey(e.target.value)}
-                  placeholder="Enter Master PIN (Default: 2026)"
-                  className="flex-1 bg-transparent px-3 text-xs sm:text-sm text-white placeholder-white/40 outline-none"
-                  autoFocus
-                />
-                <button type="submit" className="px-4 py-2 bg-[#D6E85D] text-[#183F36] rounded-xl text-xs font-bold shadow hover:bg-[#c2d54e] transition-colors cursor-pointer">
-                  Unlock
-                </button>
-              </form>
             )}
           </div>
 

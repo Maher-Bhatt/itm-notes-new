@@ -114,31 +114,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       // Check owner email
       const isAdminEmail = userAuth.email && ['maherbhatt01@gmail.com'].includes(userAuth.email.toLowerCase());
-      if (resolvedRole !== 'admin' && isAdminEmail) {
+      if (isAdminEmail) {
         resolvedRole = 'admin';
         // Auto-heal database role record
         supabase.from('user_roles').upsert({ user_id: userAuth.id, role: 'admin' }).catch(() => {});
       }
 
-      // Check session/local storage admin authorization
-      const isBypassed = typeof window !== 'undefined' && (
-        localStorage.getItem('itm_admin_god_mode') === 'true' || 
-        sessionStorage.getItem('itm_admin_bypassed') === 'true'
-      );
-      if (resolvedRole !== 'admin' && isBypassed) {
-        resolvedRole = 'admin';
-      }
+      // Security: Purge any legacy unauthorized god-mode bypass tokens from local storage
+      try {
+        localStorage.removeItem('itm_admin_god_mode');
+        sessionStorage.removeItem('itm_admin_bypassed');
+      } catch {}
 
       setRole(resolvedRole);
     } catch (error) {
       console.error("Error fetching user data from Supabase:", error);
       const isOwner = userAuth?.email?.toLowerCase() === 'maherbhatt01@gmail.com';
-      const isBypassed = typeof window !== 'undefined' && (
-        localStorage.getItem('itm_admin_god_mode') === 'true' || 
-        sessionStorage.getItem('itm_admin_bypassed') === 'true'
-      );
-      if (isOwner || isBypassed) {
+      if (isOwner) {
         setRole('admin');
+      } else {
+        setRole('user');
       }
     } finally {
       setIsLoading(false);

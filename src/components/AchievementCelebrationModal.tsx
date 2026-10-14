@@ -2,9 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useGamification, Achievement } from '@/hooks/useGamification';
 import { generateAchievementStoryCard } from '@/utils/achievementCardGenerator';
+import { UserAvatar, resolveAvatarUrl, MAHER_CANONICAL_AVATAR } from '@/components/UserAvatar';
 import { 
   X, Download, Share2, Sparkles, Check, 
-  Instagram, MessageCircle, Copy, Award, Flame, ExternalLink, Loader2
+  Instagram, MessageCircle, Copy, Award, Flame, ExternalLink, Loader2,
+  Trophy, ShieldCheck, Smartphone, Eye
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -24,18 +26,22 @@ export function AchievementCelebrationModal() {
   const { state: game, levelInfo } = useGamification();
   const [activeAchievement, setActiveAchievement] = useState<Achievement | null>(null);
   const [eventData, setEventData] = useState<UnlockedEventDetail | null>(null);
+  const [activeView, setActiveView] = useState<'trophy' | 'story'>('trophy');
   const [isGenerating, setIsGenerating] = useState(false);
   const [storyPreviewUrl, setStoryPreviewUrl] = useState<string | null>(null);
   const [storyBlob, setStoryBlob] = useState<Blob | null>(null);
   const [copied, setCopied] = useState(false);
 
+  // 3D Tilt interactive state
+  const [tilt, setTilt] = useState({ x: 0, y: 0, glareX: 50, glareY: 50 });
+
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const confettiAnimRef = useRef<number | null>(null);
 
-  // Play triumph fanfare sound
+  // Play triumph fanfare sound using Web Audio API
   const playVictoryFanfare = () => {
     try {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
       const ctx = new AudioCtx();
       const notes = [
         { f: 523.25, t: 0.0, d: 0.15 }, // C5
@@ -71,17 +77,17 @@ export function AchievementCelebrationModal() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    const colors = ['#F59E0B', '#10B981', '#3B82F6', '#8B5CF6', '#EC4899', '#F43F5E', '#FFFFFF'];
-    const particles = Array.from({ length: 80 }).map(() => ({
-      x: canvas.width / 2 + (Math.random() - 0.5) * 200,
-      y: canvas.height * 0.4,
-      vx: (Math.random() - 0.5) * 16,
-      vy: (Math.random() - 0.8) * 18,
-      size: Math.random() * 8 + 4,
+    const colors = ['#D6E85D', '#183F36', '#F59E0B', '#10B981', '#3B82F6', '#C084FC', '#FFFFFF'];
+    const particles = Array.from({ length: 90 }).map(() => ({
+      x: canvas.width / 2 + (Math.random() - 0.5) * 260,
+      y: canvas.height * 0.38,
+      vx: (Math.random() - 0.5) * 18,
+      vy: (Math.random() - 0.85) * 20,
+      size: Math.random() * 9 + 4,
       color: colors[Math.floor(Math.random() * colors.length)],
       rotation: Math.random() * 360,
-      vRot: (Math.random() - 0.5) * 10,
-      gravity: 0.35,
+      vRot: (Math.random() - 0.5) * 12,
+      gravity: 0.38,
       friction: 0.98,
       alpha: 1,
     }));
@@ -96,7 +102,7 @@ export function AchievementCelebrationModal() {
         p.x += p.vx;
         p.y += p.vy;
         p.rotation += p.vRot;
-        p.alpha -= 0.008;
+        p.alpha -= 0.007;
 
         if (p.alpha > 0) {
           alive = true;
@@ -105,7 +111,7 @@ export function AchievementCelebrationModal() {
           ctx.translate(p.x, p.y);
           ctx.rotate((p.rotation * Math.PI) / 180);
           ctx.fillStyle = p.color;
-          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.65);
           ctx.restore();
         }
       });
@@ -125,6 +131,7 @@ export function AchievementCelebrationModal() {
       if (detail && detail.achievement) {
         setActiveAchievement(detail.achievement);
         setEventData(detail);
+        setActiveView('trophy');
         if (!detail.isReplay) {
           playVictoryFanfare();
           setTimeout(() => startConfetti(), 100);
@@ -151,7 +158,7 @@ export function AchievementCelebrationModal() {
     setIsGenerating(true);
 
     const studentName = profile?.display_name || user?.email?.split('@')[0] || 'Maher Bhatt';
-    const avatarUrl = profile?.avatar_url || null;
+    const avatarUrl = resolveAvatarUrl(profile, user) || MAHER_CANONICAL_AVATAR;
 
     generateAchievementStoryCard({
       studentName,
@@ -186,12 +193,87 @@ export function AchievementCelebrationModal() {
   if (!activeAchievement) return null;
 
   const studentName = profile?.display_name || user?.email?.split('@')[0] || 'Maher Bhatt';
-  const shareText = `🎓 I just unlocked "${activeAchievement.title}" (+${activeAchievement.xpReward} XP) on ITM Notes! Check out our Semester 3 Exam Notes: https://itm-notes.vercel.app`;
+  const effectiveAvatar = resolveAvatarUrl(profile, user) || MAHER_CANONICAL_AVATAR;
+  const shareText = `🎓 I just unlocked "${activeAchievement.title}" (+${activeAchievement.xpReward} XP) on ITM Notes! Check out our verified Semester 3 Computer Engineering Notes: https://itm-notes-new.vercel.app`;
+
+  // Handle 3D mouse tilt
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    const rotX = ((y - centerY) / centerY) * -12;
+    const rotY = ((x - centerX) / centerX) * 12;
+
+    setTilt({
+      x: rotX,
+      y: rotY,
+      glareX: (x / rect.width) * 100,
+      glareY: (y / rect.height) * 100,
+    });
+  };
+
+  const handleMouseLeave = () => {
+    setTilt({ x: 0, y: 0, glareX: 50, glareY: 50 });
+  };
+
+  // Tier specific luxury styling
+  const tierConfig = {
+    bronze: {
+      border: 'border-[#E07A5F]/60',
+      glow: 'shadow-[0_0_50px_rgba(224,122,95,0.35)]',
+      pill: 'bg-gradient-to-r from-[#C25E38] to-[#E07A5F] text-white',
+      badge: '★ BRONZE SCHOLAR ★',
+      ringColor: '#E07A5F',
+      accentText: 'text-[#E07A5F]',
+    },
+    silver: {
+      border: 'border-slate-300/60',
+      glow: 'shadow-[0_0_50px_rgba(226,232,240,0.35)]',
+      pill: 'bg-gradient-to-r from-slate-300 to-slate-100 text-slate-900',
+      badge: '★ SILVER VIRTUOSO ★',
+      ringColor: '#E2E8F0',
+      accentText: 'text-slate-200',
+    },
+    gold: {
+      border: 'border-[#D6E85D]/70',
+      glow: 'shadow-[0_0_60px_rgba(214,232,93,0.4)]',
+      pill: 'bg-gradient-to-r from-[#D6E85D] to-[#F59E0B] text-[#183F36]',
+      badge: '★ 24K GOLD MASTER ★',
+      ringColor: '#D6E85D',
+      accentText: 'text-[#D6E85D]',
+    },
+    legendary: {
+      border: 'border-purple-500/70',
+      glow: 'shadow-[0_0_60px_rgba(168,85,247,0.4)]',
+      pill: 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white',
+      badge: '★ LEGENDARY TRIUMPH ★',
+      ringColor: '#C084FC',
+      accentText: 'text-purple-300',
+    },
+    mythic: {
+      border: 'border-[#D6E85D]',
+      glow: 'shadow-[0_0_70px_rgba(214,232,93,0.5)]',
+      pill: 'bg-gradient-to-r from-[#D6E85D] via-emerald-400 to-[#183F36] text-[#183F36]',
+      badge: '★ MYTHIC ARCHITECT ★',
+      ringColor: '#D6E85D',
+      accentText: 'text-[#D6E85D]',
+    },
+  }[activeAchievement.tier] || {
+    border: 'border-[#D6E85D]/60',
+    glow: 'shadow-[0_0_50px_rgba(214,232,93,0.3)]',
+    pill: 'bg-[#D6E85D] text-[#183F36]',
+    badge: '★ ACADEMIC HONORS ★',
+    ringColor: '#D6E85D',
+    accentText: 'text-[#D6E85D]',
+  };
 
   // 1-Click Share to Instagram Stories
   const handleShareInstagram = async () => {
     if (!storyBlob) {
-      toast.error('Card is still generating, please wait a moment.');
+      toast.error('Story card is still rendering. Please try again in a second.');
       return;
     }
 
@@ -199,12 +281,11 @@ export function AchievementCelebrationModal() {
       type: 'image/png',
     });
 
-    // Check if Web Share API with files is supported (iOS Safari / Android Chrome)
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
       try {
         await navigator.share({
           files: [file],
-          title: `ITM Achievement: ${activeAchievement.title}`,
+          title: `ITM Honors: ${activeAchievement.title}`,
           text: shareText,
         });
         toast.success('Select Instagram Stories from your share sheet!');
@@ -216,13 +297,10 @@ export function AchievementCelebrationModal() {
       }
     }
 
-    // Fallback: Download card and open Instagram app / web
     handleDownloadStory();
-    toast.info('Story card downloaded! Opening Instagram...', {
-      description: 'You can now select the saved image directly in your Instagram Story camera!',
+    toast.info('Story image saved! Select it in Instagram Story camera.', {
+      description: 'Image saved to your camera roll in 1080x1920 HD quality.',
     });
-
-    // Attempt to open native Instagram on mobile
     window.location.href = 'instagram://story';
     setTimeout(() => {
       window.open('https://instagram.com', '_blank');
@@ -244,7 +322,7 @@ export function AchievementCelebrationModal() {
       try {
         await navigator.share({
           files: [file],
-          title: `ITM Achievement: ${activeAchievement.title}`,
+          title: `ITM Honors: ${activeAchievement.title}`,
           text: shareText,
         });
         toast.success('Select WhatsApp -> "My Status" to share!');
@@ -256,11 +334,10 @@ export function AchievementCelebrationModal() {
       }
     }
 
-    // Fallback: Download the image and launch WhatsApp directly
     handleDownloadStory();
     const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
     window.open(whatsappUrl, '_blank');
-    toast.success('Story card saved to your photos! Opening WhatsApp...');
+    toast.success('Card downloaded! Opening WhatsApp...');
   };
 
   // Direct High-Res Card Download
@@ -268,146 +345,223 @@ export function AchievementCelebrationModal() {
     if (!storyPreviewUrl) return;
     const a = document.createElement('a');
     a.href = storyPreviewUrl;
-    a.download = `ITM_Achievement_${activeAchievement.id}_Story.png`;
+    a.download = `ITM_Notes_${activeAchievement.id}_Story.png`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-    toast.success('HD Instagram Story card downloaded to your device!');
+    toast.success('HD Instagram & WhatsApp Story Card (1080x1920) downloaded!');
   };
 
   const handleCopyText = () => {
     navigator.clipboard.writeText(shareText);
     setCopied(true);
-    toast.success('Share link and text copied to clipboard!');
+    toast.success('Achievement showcase link copied to clipboard!');
     setTimeout(() => setCopied(false), 2000);
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80 backdrop-blur-md animate-fade-in overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/85 backdrop-blur-xl animate-fade-in overflow-y-auto">
       {/* Full-screen Confetti Canvas */}
       <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-10 w-full h-full" />
 
-      {/* Main Luxury Modal Card */}
-      <div className="relative z-20 w-full max-w-[calc(100vw-1rem)] sm:max-w-xl bg-gradient-to-b from-zinc-900 via-zinc-950 to-black border border-amber-500/40 rounded-3xl p-4 sm:p-6 lg:p-7 shadow-[0_0_60px_rgba(245,158,11,0.25)] flex flex-col gap-5 text-center my-auto">
+      {/* Main Luxury Modal Container */}
+      <div className="relative z-20 w-full max-w-2xl bg-gradient-to-b from-[#12332C]/95 via-[#0A1A16]/95 to-black border border-[#23584C] rounded-3xl p-5 sm:p-7 shadow-[0_0_80px_rgba(24,63,54,0.6)] flex flex-col gap-5 text-center my-auto backdrop-blur-2xl">
+        
         {/* Close Button */}
         <button
           onClick={() => setActiveAchievement(null)}
-          className="absolute right-4 top-4 p-2 rounded-full bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300 transition-colors z-30"
-          title="Close celebration"
+          className="absolute right-4 top-4 p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-[#E8EDE4] transition-all z-30 cursor-pointer shadow-md"
+          title="Close"
         >
-          <X className="h-5 w-5" />
+          <X className="h-4 w-4" />
         </button>
 
-        {/* Celebration Header */}
+        {/* Modal Top Header */}
         <div className="flex flex-col items-center">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold uppercase tracking-wider mb-2">
-            <Sparkles className="h-3.5 w-3.5" />
-            <span>{eventData?.isReplay ? 'Achievement Viewer' : 'Achievement Unlocked'}</span>
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D6E85D]/15 border border-[#D6E85D]/30 text-[#D6E85D] text-[11px] font-bold uppercase tracking-wider mb-1.5">
+            <Sparkles className="h-3.5 w-3.5 animate-spin [animation-duration:10s]" />
+            <span>{eventData?.isReplay ? 'Honors Gallery • Achievement Story' : 'New Milestone Unlocked!'}</span>
           </div>
 
-          <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-white tracking-tight">
+          <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight font-display">
             {eventData?.isReplay ? 'Your Academic Triumph' : 'Academic Triumph!'}
           </h2>
-          <p className="text-xs sm:text-sm text-zinc-400 mt-0.5">
-            ITM SLS Baroda University • Department of CSE
+          <p className="text-xs text-[#A2BAAF] flex items-center gap-1.5 mt-0.5 font-medium">
+            <ShieldCheck className="h-3.5 w-3.5 text-[#D6E85D]" />
+            <span>ITM SLS Baroda University • Department of Computer Science</span>
           </p>
+
+          {/* View Mode Switcher: 3D Trophy vs 9:16 Social Story */}
+          <div className="inline-flex p-1 rounded-2xl bg-black/40 border border-white/10 mt-3 gap-1">
+            <button
+              onClick={() => setActiveView('trophy')}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                activeView === 'trophy'
+                  ? 'bg-[#183F36] text-[#D6E85D] shadow-md border border-[#D6E85D]/30'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <Trophy className="h-3.5 w-3.5" />
+              <span>3D Trophy Medal</span>
+            </button>
+            <button
+              onClick={() => setActiveView('story')}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                activeView === 'story'
+                  ? 'bg-[#183F36] text-[#D6E85D] shadow-md border border-[#D6E85D]/30'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <Smartphone className="h-3.5 w-3.5" />
+              <span>Story Card (9:16)</span>
+            </button>
+          </div>
         </div>
 
-        {/* The "Most Beautiful Card" Showcase Preview */}
-        <div className="relative mx-auto w-full max-w-[280px] sm:max-w-[340px] lg:max-w-[360px] rounded-2xl overflow-hidden border-2 border-amber-500/50 shadow-2xl bg-zinc-900 aspect-[9/14] flex flex-col items-center justify-between p-3 sm:p-5 text-white">
-          {/* Ambient Card Background Glows */}
-          <div className="absolute -top-16 -left-16 w-44 h-44 bg-amber-500/20 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute -bottom-16 -right-16 w-44 h-44 bg-blue-500/20 rounded-full blur-3xl pointer-events-none" />
+        {/* ── CARD DISPLAY VIEWPORT ── */}
+        {activeView === 'trophy' ? (
+          /* 1. 3D Interactive Holographic Trophy Card */
+          <div 
+            className="[perspective:1000px] flex items-center justify-center my-1 select-none"
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+          >
+            <div 
+              style={{
+                transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+                transition: tilt.x === 0 ? 'transform 0.5s ease-out' : 'none',
+              }}
+              className={`relative mx-auto w-full max-w-[340px] sm:max-w-[380px] rounded-3xl overflow-hidden border-2 ${tierConfig.border} ${tierConfig.glow} bg-gradient-to-br from-[#183F36]/90 via-[#0F2B24]/95 to-[#081714] p-5 sm:p-6 text-white flex flex-col justify-between aspect-[9/13.5] shadow-2xl backdrop-blur-md`}
+            >
+              {/* Dynamic Glare Shimmer across the surface */}
+              <div 
+                className="absolute inset-0 pointer-events-none opacity-25 mix-blend-overlay transition-opacity duration-300"
+                style={{
+                  background: `radial-gradient(circle at ${tilt.glareX}% ${tilt.glareY}%, rgba(255,255,255,0.8) 0%, rgba(214,232,93,0.3) 35%, transparent 70%)`
+                }}
+              />
 
-          {/* Card Top: User Info & University */}
-          <div className="w-full flex items-center justify-between border-b border-white/10 pb-3 z-10">
-            <div className="flex items-center gap-2.5 text-left">
-              {/* Profile Photo / Avatar */}
-              <div className="relative">
-                {profile?.avatar_url ? (
-                  <img
-                    src={profile.avatar_url}
-                    alt={studentName}
-                    className="w-10 h-10 rounded-full object-cover border-2 border-amber-400 shadow-md"
-                  />
-                ) : (
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-primary to-blue-600 flex items-center justify-center font-bold text-white text-sm border-2 border-amber-400 shadow-md">
-                    {studentName.charAt(0).toUpperCase()}
+              {/* Ambient Background Glows */}
+              <div className="absolute -top-16 -left-16 w-44 h-44 bg-[#D6E85D]/20 rounded-full blur-3xl pointer-events-none" />
+              <div className="absolute -bottom-16 -right-16 w-44 h-44 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none" />
+
+              {/* Card Header: Student & University Branding */}
+              <div className="w-full flex items-center justify-between border-b border-white/10 pb-3 z-10">
+                <div className="flex items-center gap-2.5 text-left">
+                  <div className="relative">
+                    <UserAvatar
+                      avatarUrl={effectiveAvatar}
+                      displayName={studentName}
+                      email={user?.email}
+                      className="w-11 h-11 text-xs ring-2 ring-[#D6E85D]"
+                    />
+                    <div className="absolute -bottom-1 -right-1 bg-amber-500 text-white rounded-full p-0.5 shadow-md">
+                      <Flame className="h-3 w-3" />
+                    </div>
                   </div>
-                )}
-                <div className="absolute -bottom-1 -right-1 bg-amber-500 rounded-full p-0.5 shadow">
-                  <Flame className="h-3 w-3 text-white" />
+
+                  <div>
+                    <div className="flex items-center gap-1.5">
+                      <h4 className="font-bold text-sm text-white leading-tight font-display">{studentName}</h4>
+                      <span className="w-3.5 h-3.5 rounded-full bg-[#D6E85D] text-[#183F36] flex items-center justify-center text-[9px] font-black">✓</span>
+                    </div>
+                    <p className="text-[11px] text-[#D6E85D] font-semibold mt-0.5">
+                      Level {eventData?.level || levelInfo.level} · {eventData?.levelTitle || levelInfo.title}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="text-right">
+                  <span className="text-[9px] font-black text-[#D6E85D] tracking-wider block">ITM SLS BARODA</span>
+                  <span className="text-[8px] text-[#A2BAAF] font-mono">B.TECH CSE '26</span>
                 </div>
               </div>
 
-              <div>
-                <h4 className="font-bold text-xs text-white leading-tight">{studentName}</h4>
-                <p className="text-[10px] text-amber-400 font-semibold">
-                  Level {eventData?.level || levelInfo.level} · {eventData?.levelTitle || levelInfo.title}
+              {/* Card Center: Sculpted 3D Medallion Emblem */}
+              <div className="flex flex-col items-center my-auto py-2 z-10">
+                {/* Embossed Tier Banner */}
+                <span className={`text-[10px] font-black uppercase tracking-widest px-3.5 py-1 rounded-full mb-3 shadow-md border border-white/20 ${tierConfig.pill}`}>
+                  {tierConfig.badge}
+                </span>
+
+                {/* 3D Concentric Medal Rings */}
+                <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full flex items-center justify-center my-2">
+                  {/* Outer Orbit Dash Ring */}
+                  <div 
+                    className="absolute inset-0 rounded-full border-2 border-dashed animate-spin [animation-duration:24s]"
+                    style={{ borderColor: tierConfig.ringColor }}
+                  />
+                  {/* Middle Glowing Metallic Ring */}
+                  <div 
+                    className="absolute inset-2 rounded-full border-2 bg-gradient-to-tr from-black/80 to-[#183F36]/80 shadow-[0_0_30px_rgba(214,232,93,0.3)] flex items-center justify-center"
+                    style={{ borderColor: tierConfig.ringColor }}
+                  >
+                    {/* Inner Centerpiece Icon with floating drop shadow */}
+                    <div className="text-5xl sm:text-6xl drop-shadow-[0_8px_16px_rgba(0,0,0,0.6)] animate-bounce [animation-duration:3s]">
+                      {activeAchievement.icon || '🏆'}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Achievement Title */}
+                <h3 className="text-lg sm:text-xl font-black text-white leading-tight mb-1 font-display mt-2 tracking-tight">
+                  {activeAchievement.title}
+                </h3>
+
+                {/* Description */}
+                <p className="text-xs text-[#C2D6CF] max-w-[280px] leading-relaxed line-clamp-2">
+                  {activeAchievement.description}
                 </p>
+
+                {/* XP Reward Capsule */}
+                <div className="mt-3 inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#D6E85D]/20 border border-[#D6E85D]/50 text-[#D6E85D] font-black text-xs shadow-inner animate-pulse">
+                  <Sparkles className="h-3.5 w-3.5" />
+                  <span>+{activeAchievement.xpReward} XP CREDITED</span>
+                </div>
+              </div>
+
+              {/* Card Footer: Verified Watermark */}
+              <div className="w-full pt-3 border-t border-white/10 flex items-center justify-between text-[10px] text-[#A2BAAF] z-10 font-mono">
+                <span className="flex items-center gap-1 font-bold text-white">
+                  🔥 {eventData?.streakDays || game.streakDays} Day Streak
+                </span>
+                <span className="text-[#D6E85D] font-bold">✨ itm-notes-new.vercel.app</span>
               </div>
             </div>
-
-            <div className="text-right">
-              <span className="text-[9px] font-bold text-zinc-400 block tracking-wider">ITM SLS BARODA</span>
-              <span className="text-[8px] text-zinc-500 font-mono">B.TECH CSE</span>
+          </div>
+        ) : (
+          /* 2. Real High-Res 9:16 Social Story Preview */
+          <div className="flex items-center justify-center my-1">
+            <div className="relative mx-auto w-full max-w-[280px] sm:max-w-[320px] rounded-3xl overflow-hidden border-2 border-[#D6E85D]/60 shadow-2xl bg-black aspect-[9/16] flex items-center justify-center">
+              {isGenerating || !storyPreviewUrl ? (
+                <div className="p-6 text-center space-y-3">
+                  <Loader2 className="h-8 w-8 animate-spin text-[#D6E85D] mx-auto" />
+                  <p className="text-xs text-[#A2BAAF] font-medium">Generating 1080x1920 HD Story Card...</p>
+                </div>
+              ) : (
+                <img
+                  src={storyPreviewUrl}
+                  alt="Story Card Preview"
+                  className="w-full h-full object-cover"
+                />
+              )}
             </div>
           </div>
+        )}
 
-          {/* Card Center: Animated Achievement Badge */}
-          <div className="flex flex-col items-center my-auto py-2 z-10">
-            {/* Tier Banner */}
-            <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full mb-3 shadow-sm ${
-              activeAchievement.tier === 'legendary'
-                ? 'bg-purple-600 text-white'
-                : activeAchievement.tier === 'gold'
-                ? 'bg-amber-500 text-black'
-                : activeAchievement.tier === 'silver'
-                ? 'bg-zinc-200 text-zinc-900'
-                : 'bg-amber-700 text-white'
-            }`}>
-              ★ {activeAchievement.tier} Achievement ★
-            </span>
-
-            {/* Giant Icon */}
-            <div className="text-5xl sm:text-6xl lg:text-7xl mb-2 animate-bounce drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)]">
-              {activeAchievement.icon}
-            </div>
-
-            <h3 className="text-base sm:text-lg lg:text-xl font-black text-white leading-tight mb-1">
-              {activeAchievement.title}
-            </h3>
-
-            <p className="text-xs text-zinc-300 max-w-[260px] leading-relaxed">
-              {activeAchievement.description}
-            </p>
-
-            {/* XP Pill */}
-            <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 font-black text-xs">
-              <Sparkles className="h-3.5 w-3.5 text-amber-400" />
-              <span>+{activeAchievement.xpReward} XP AWARDED</span>
-            </div>
-          </div>
-
-          {/* Card Footer: University Watermark & Stats */}
-          <div className="w-full pt-3 border-t border-white/10 flex items-center justify-between text-[10px] text-zinc-400 z-10 font-mono">
-            <span>🔥 {eventData?.streakDays || game.streakDays} Day Streak</span>
-            <span className="text-amber-400 font-bold">✨ itm-notes.vercel.app</span>
-          </div>
-        </div>
-
-        {/* Share & Download Actions */}
-        <div className="flex flex-col gap-2.5">
-          <p className="text-xs font-semibold text-zinc-300 uppercase tracking-wider flex items-center justify-center gap-1">
-            <Share2 className="h-3.5 w-3.5 text-amber-400" /> Share with Friends & Classmates
+        {/* ── ACTION BAR ── */}
+        <div className="flex flex-col gap-2.5 pt-1">
+          <p className="text-xs font-bold text-[#A2BAAF] uppercase tracking-wider flex items-center justify-center gap-1.5">
+            <Share2 className="h-3.5 w-3.5 text-[#D6E85D]" />
+            <span>Share Achievement with Classmates</span>
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             {/* Instagram Stories Button */}
-            <Button
+            <button
               onClick={handleShareInstagram}
               disabled={isGenerating}
-              className="h-11 bg-gradient-to-r from-purple-600 via-pink-600 to-amber-600 hover:opacity-90 text-white font-bold text-xs gap-2 rounded-xl shadow-lg border-0"
+              className="h-11 bg-gradient-to-r from-[#833ab4] via-[#fd1d1d] to-[#fcb045] hover:opacity-95 text-white font-extrabold text-xs flex items-center justify-center gap-2 rounded-2xl shadow-lg border-0 transition-transform hover:scale-[1.02] cursor-pointer disabled:opacity-50"
             >
               {isGenerating ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -415,13 +569,13 @@ export function AchievementCelebrationModal() {
                 <Instagram className="h-4 w-4" />
               )}
               <span>Share to Instagram Story</span>
-            </Button>
+            </button>
 
             {/* WhatsApp Status Button */}
-            <Button
+            <button
               onClick={handleShareWhatsApp}
               disabled={isGenerating}
-              className="h-11 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs gap-2 rounded-xl shadow-lg"
+              className="h-11 bg-gradient-to-r from-[#25D366] to-[#128C7E] hover:opacity-95 text-white font-extrabold text-xs flex items-center justify-center gap-2 rounded-2xl shadow-lg border-0 transition-transform hover:scale-[1.02] cursor-pointer disabled:opacity-50"
             >
               {isGenerating ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -429,41 +583,40 @@ export function AchievementCelebrationModal() {
                 <MessageCircle className="h-4 w-4" />
               )}
               <span>Share to WhatsApp Status</span>
-            </Button>
+            </button>
           </div>
 
           <div className="grid grid-cols-2 gap-2.5">
             {/* Download HD Card */}
-            <Button
-              variant="outline"
+            <button
               onClick={handleDownloadStory}
               disabled={isGenerating || !storyPreviewUrl}
-              className="h-9 border-zinc-700 bg-zinc-900/80 hover:bg-zinc-800 text-zinc-200 text-xs font-semibold gap-1.5 rounded-xl"
+              className="h-9 border border-[#23584C] bg-[#12332C]/80 hover:bg-[#183F36] text-[#E8EDE4] text-xs font-semibold flex items-center justify-center gap-1.5 rounded-xl transition-all cursor-pointer disabled:opacity-50"
             >
-              <Download className="h-3.5 w-3.5 text-amber-400" />
-              <span>Download Card (HD)</span>
-            </Button>
+              <Download className="h-3.5 w-3.5 text-[#D6E85D]" />
+              <span>Download HD Story</span>
+            </button>
 
             {/* Copy Shareable Link */}
-            <Button
-              variant="outline"
+            <button
               onClick={handleCopyText}
-              className="h-9 border-zinc-700 bg-zinc-900/80 hover:bg-zinc-800 text-zinc-200 text-xs font-semibold gap-1.5 rounded-xl"
+              className="h-9 border border-[#23584C] bg-[#12332C]/80 hover:bg-[#183F36] text-[#E8EDE4] text-xs font-semibold flex items-center justify-center gap-1.5 rounded-xl transition-all cursor-pointer"
             >
               {copied ? (
                 <>
                   <Check className="h-3.5 w-3.5 text-emerald-400" />
-                  <span>Copied Link!</span>
+                  <span className="text-emerald-400 font-bold">Copied!</span>
                 </>
               ) : (
                 <>
-                  <Copy className="h-3.5 w-3.5" />
+                  <Copy className="h-3.5 w-3.5 text-[#D6E85D]" />
                   <span>Copy Share Text</span>
                 </>
               )}
-            </Button>
+            </button>
           </div>
         </div>
+
       </div>
     </div>
   );
