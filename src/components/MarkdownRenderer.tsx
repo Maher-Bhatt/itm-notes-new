@@ -111,9 +111,23 @@ interface MarkdownRendererProps {
 
 function preprocessMarkdownMath(text: string): string {
   if (!text) return "";
-  // In JS replace, '$$$$' outputs '$$' in the result string
-  let res = text.replace(/^(\s*)\$\$(\\begin\{[a-zA-Z*]+\}.*)$/gm, "$1$$$$\n$1$2");
-  res = res.replace(/(\\end\{[a-zA-Z*]+\}|\\right[\])}|.]|\S+)\$\$$/gm, "$1\n$$$$");
+
+  // 1. Multiline blocks where $$ has \begin{...} on the same line without a closing $$ on that line
+  let res = text.replace(/^(\s*)\$\$(\\begin\{[a-zA-Z*]+\}.*)$/gm, (match, indent, rest) => {
+    if (rest.trimEnd().endsWith("$$")) {
+      return match;
+    }
+    return `${indent}$$\n${indent}${rest}`;
+  });
+
+  // 2. Multiline blocks where \end{...}$$ has no newline before $$
+  res = res.replace(/^(\s*)(.*\\end\{[a-zA-Z*]+\})\$\$$/gm, (match, indent, rest) => {
+    if (rest.trimStart().startsWith("$$")) {
+      return match;
+    }
+    return `${indent}${rest}\n${indent}$$`;
+  });
+
   return res;
 }
 
@@ -215,7 +229,7 @@ export const MarkdownRenderer = memo(function MarkdownRenderer({ content }: Mark
   return (
     <ReactMarkdown
       remarkPlugins={[remarkMath, remarkGfm]}
-      rehypePlugins={[rehypeKatex]}
+      rehypePlugins={[[rehypeKatex, { strict: false, throwOnError: false }]]}
       components={markdownComponents}
     >
       {processedContent}
