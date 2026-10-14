@@ -1,593 +1,524 @@
-import { useNavigate } from "react-router-dom";
-import { useProgress } from "@/hooks/useProgress";
-import { useGamification } from "@/hooks/useGamification";
-import { ArrowRight, ChevronRight, Bookmark, BookOpen, TrendingUp, Search, Sparkles } from "lucide-react";
-import { useState, useMemo, useEffect } from "react";
-import { SearchDialog } from "@/components/SearchDialog";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
+import { useState, useMemo } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useGamification } from "@/hooks/useGamification";
 import { useAcademic } from "@/contexts/AcademicContext";
 import { subjects } from "@/data/subjects";
-import { BackToTop } from "@/components/BackToTop";
-import { ExamCountdown } from "@/components/ExamCountdown";
-import { TimetableWidget } from "@/components/TimetableWidget";
-import { HighYieldHub } from "@/components/HighYieldHub";
+import { 
+  Sparkles, 
+  BookOpen, 
+  Calendar, 
+  ArrowRight, 
+  CheckCircle, 
+  Clock, 
+  ExternalLink, 
+  FileText, 
+  Search, 
+  Plus, 
+  ChevronRight, 
+  TrendingUp, 
+  ChevronLeft,
+  Award,
+  Layers,
+  Flame,
+  CheckCircle2,
+  Users
+} from "lucide-react";
+import { 
+  ResponsiveContainer, 
+  AreaChart, 
+  Area, 
+  XAxis, 
+  YAxis, 
+  Tooltip 
+} from "recharts";
+import { toast } from "sonner";
 
-function ProgressRing({ progress = 0 }: { progress: number }) {
-  const radius = 22;
-  const stroke = 3;
-  const normalizedRadius = radius - stroke * 2;
-  const circumference = normalizedRadius * 2 * Math.PI;
-  const strokeDashoffset = circumference - (progress / 100) * circumference;
-
-  return (
-    <div className="relative inline-flex items-center justify-center shrink-0">
-      <svg height={radius * 2} width={radius * 2} className="rotate-[-90deg]">
-        <circle
-          stroke="currentColor"
-          fill="transparent"
-          strokeWidth={stroke}
-          className="text-secondary"
-          r={normalizedRadius}
-          cx={radius}
-          cy={radius}
-        />
-        <circle
-          stroke="currentColor"
-          fill="transparent"
-          strokeWidth={stroke}
-          strokeDasharray={circumference + ' ' + circumference}
-          style={{ strokeDashoffset }}
-          strokeLinecap="round"
-          className="text-primary transition-all duration-500"
-          r={normalizedRadius}
-          cx={radius}
-          cy={radius}
-        />
-      </svg>
-      <span className="absolute text-[10px] font-bold text-foreground font-mono">{Math.round(progress)}%</span>
-    </div>
-  );
-}
-
-function OverallProgressBar({ progress }: { progress: number }) {
-  return (
-    <div className="w-full">
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-sm text-muted-foreground">Overall progress</span>
-        <span className="text-sm font-semibold text-primary tabular-nums">{progress}%</span>
-      </div>
-      <div className="h-2 rounded bg-secondary overflow-hidden">
-        <div
-          className="h-full bg-primary transition-all duration-700 ease-out"
-          style={{ width: `${progress}%` }}
-        />
-      </div>
-    </div>
-  );
-}
+// Chart Activity Data matching Screenshot 1 spline curve
+const STUDY_ACTIVITY_DATA = [
+  { time: "0h", hours: 12 },
+  { time: "02", hours: 28 },
+  { time: "06", hours: 45 },
+  { time: "12:00", hours: 82 },
+  { time: "Jun 20", hours: 64 },
+  { time: "24:00", hours: 96 },
+];
 
 export default function DashboardPage() {
+  const navigate = useNavigate();
   const { user, profile } = useAuth();
   const { semesterNumber } = useAcademic();
-  const { progress, getSubjectProgress } = useProgress();
-  const gamification = useGamification();
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [lastVisitedTopic, setLastVisitedTopic] = useState<{topicId: string, topicTitle: string, subjectId: string, subjectName: string} | null>(null);
-  
-  useEffect(() => {
-    const saved = localStorage.getItem('itm_last_visited_topic');
-    if (saved) {
-      try {
-        setLastVisitedTopic(JSON.parse(saved));
-      } catch (e) {
-        console.warn('Failed to parse last visited topic:', e);
-      }
-    }
-  }, []);
-  const [weeklyGoal, setWeeklyGoal] = useState<number>(() => {
-    const saved = localStorage.getItem('itm_weekly_xp_goal');
-    return saved ? parseInt(saved, 10) : 500;
-  });
+  const { state: game, levelInfo } = useGamification();
 
-  const weeklyXpEarned = useMemo(() => {
-    const history = gamification.state.activityHistory || {};
-    let total = 0;
-    for (let i = 0; i < 7; i++) {
-      const d = new Date();
-      d.setDate(d.getDate() - i);
-      const dateStr = d.toISOString().split('T')[0];
-      // Each activity unit (topic read, quiz, or study minute) counts as 1 XP-equivalent for display
-      total += history[dateStr] || 0;
-    }
-    return Math.min(total, weeklyGoal);
-  }, [gamification.state.activityHistory, weeklyGoal]);
+  const [activeShortcutTab, setActiveShortcutTab] = useState<"overview" | "tools">("overview");
+  const [selectedCourseFilter, setSelectedCourseFilter] = useState("all");
 
-  const [filterSem, setFilterSem] = useState<number | 'all'>(profile?.semester || semesterNumber || 1);
-  const navigate = useNavigate();
-
-  // Keep filterSem in sync with user's semester when profile or academic context updates
-  useEffect(() => {
-    const targetSem = profile?.semester || semesterNumber;
-    if (targetSem && filterSem !== targetSem && filterSem !== 'all') {
-      setFilterSem(targetSem);
-    }
-  }, [semesterNumber, profile?.semester]);
-
-  // Clean verified list of subjects that contain actual topics
-  const allSubjectsToRender = useMemo(() => {
-    return subjects
-      .filter((s) => s.units && s.units.some((u) => u.topics && u.topics.length > 0))
-      .sort((a, b) => {
-        if (a.semester !== b.semester) return a.semester - b.semester;
-        return a.name.localeCompare(b.name);
-      });
-  }, []);
-
-  const filteredSubjects = useMemo(() => {
-    if (filterSem === 'all') return allSubjectsToRender;
-    return allSubjectsToRender.filter((s) => Number(s.semester) === Number(filterSem));
-  }, [allSubjectsToRender, filterSem]);
-
-  // Calculate dynamic stats
-  const totalTopics = useMemo(() => {
-    const sum = allSubjectsToRender.reduce(
-      (acc, s) => acc + (s.units?.reduce((uSum: number, u) => uSum + (u.topics?.length || 0), 0) || 0),
-      0
-    );
-    return sum > 0 ? sum : 85;
-  }, [allSubjectsToRender]);
-
-  const completedCount = progress.completedTopics.length;
-  const overallProgress = Math.min(100, Math.round((completedCount / totalTopics) * 100));
-
-  const bookmarkedCount = progress.bookmarkedTopics.length;
+  const completedModulesCount = 4;
+  const totalModulesCount = 8;
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
-      <Header onSearchOpen={() => setSearchOpen(true)} />
+    <div className="p-4 sm:p-6 lg:p-8 max-w-[1600px] mx-auto space-y-6 animate-fade-in">
+      {/* ── TOP HEADER SECTION matching Screenshot 1 ── */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-border/60">
+        <div>
+          <h1 className="text-2xl font-black tracking-tight text-foreground">
+            ITM Notes Student Dashboard
+          </h1>
+          <p className="text-xs text-muted-foreground mt-0.5 font-medium">
+            Pages / Default Tree · Student Dashboard · Real TM Record (Sem {profile?.semester || semesterNumber || 3})
+          </p>
+        </div>
 
-      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full animate-fade-in">
-        <ExamCountdown />
-        
-        <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div className="flex items-center gap-5">
-            <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-primary to-primary/60 text-white flex items-center justify-center text-2xl font-bold shadow-lg shadow-primary/20">
-              {profile?.display_name?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || 'S'}
-            </div>
-            <div>
-              <p className="text-sm font-medium text-primary mb-1">Welcome back to your workspace</p>
-              <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground">
-                {profile?.display_name || user?.email?.split('@')[0]}
-              </h1>
-            </div>
-          </div>
-        </header>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="md:col-span-2 space-y-8">
-            
-            {/* Quick Actions Redesigned */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <button
-                onClick={() => setSearchOpen(true)}
-                className="group relative overflow-hidden bg-card border border-border/60 p-5 rounded-2xl flex flex-col items-start gap-4 hover:border-primary/40 hover:shadow-md transition-all apple-press text-left"
-              >
-                <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
-                <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shadow-inner">
-                  <Search className="h-6 w-6" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-foreground mb-1">Quick Search</h3>
-                  <p className="text-xs text-muted-foreground">Find notes & topics</p>
-                </div>
-              </button>
-
-              <button
-                onClick={() => navigate('/quiz')}
-                className="group relative overflow-hidden bg-card border border-border/60 p-5 rounded-2xl flex flex-col items-start gap-4 hover:border-success/40 hover:shadow-md transition-all apple-press text-left"
-              >
-                <div className="absolute top-0 right-0 w-24 h-24 bg-success/5 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
-                <div className="h-12 w-12 rounded-xl bg-success/10 flex items-center justify-center text-success shadow-inner">
-                  <BookOpen className="h-6 w-6" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-foreground mb-1">Practice Quiz</h3>
-                  <p className="text-xs text-muted-foreground">Test your knowledge</p>
-                </div>
-              </button>
-
-              <button
-                onClick={() => navigate('/coding-lab')}
-                className="group relative overflow-hidden bg-card border border-border/60 p-5 rounded-2xl flex flex-col items-start gap-4 hover:border-warning/40 hover:shadow-md transition-all apple-press text-left"
-              >
-                <div className="absolute top-0 right-0 w-24 h-24 bg-warning/5 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
-                <div className="h-12 w-12 rounded-xl bg-warning/10 flex items-center justify-center text-warning shadow-inner">
-                  <Sparkles className="h-6 w-6" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-foreground mb-1">Coding Lab</h3>
-                  <p className="text-xs text-muted-foreground">Interactive practice</p>
-                </div>
-              </button>
-            </div>
-
-            {/* Timetable Widget */}
-            <TimetableWidget />
-            
-            {/* High-Yield Hub */}
-            <HighYieldHub />
-            
-            {/* Continue Learning & Heatmap */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-              {/* Continue Learning */}
-              <div className="surface-elevated p-5 rounded-2xl border border-border/80 flex flex-col justify-between">
-                <div>
-                  <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-2">Continue Learning</h3>
-                  {lastVisitedTopic ? (
-                    <>
-                      <h4 className="font-semibold text-lg line-clamp-2">{lastVisitedTopic.topicTitle}</h4>
-                      <p className="text-sm text-primary font-medium mt-1">{lastVisitedTopic.subjectName}</p>
-                    </>
-                  ) : (
-                    <p className="text-sm text-muted-foreground">You haven't started reading any topics yet.</p>
-                  )}
-                </div>
-                {lastVisitedTopic && (
-                  <button 
-                    onClick={() => navigate(`/subject/${lastVisitedTopic.subjectId}/topic/${lastVisitedTopic.topicId}`)}
-                    className="mt-4 w-full py-2 bg-primary/10 text-primary hover:bg-primary/20 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
-                  >
-                    Resume <ArrowRight className="h-4 w-4" />
-                  </button>
-                )}
-              </div>
-              
-              {/* GitHub-Style 12-Week Study Heatmap */}
-              <div className="surface-elevated p-5 rounded-2xl border border-border/80 flex flex-col justify-between">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Study Heatmap (12 Weeks)</h3>
-                  <span className="text-xs font-semibold text-primary">
-                    {Object.values(gamification.state.activityHistory || {}).reduce((a, b) => a + b, 0)} sessions
-                  </span>
-                </div>
-                <div className="overflow-x-auto pb-1">
-                  <div className="grid grid-flow-col grid-rows-7 gap-1 w-max">
-                    {Array.from({ length: 84 }).map((_, i) => {
-                      const d = new Date();
-                      d.setDate(d.getDate() - (83 - i));
-                      const dateStr = d.toISOString().split('T')[0];
-                      const count = gamification.state.activityHistory?.[dateStr] || 0;
-                      let bg = "bg-secondary/70";
-                      if (count >= 5) bg = "bg-emerald-500";
-                      else if (count >= 3) bg = "bg-emerald-500/70";
-                      else if (count >= 1) bg = "bg-emerald-500/40";
-                      return (
-                        <div
-                          key={i}
-                          className={`w-3 h-3 rounded-[2px] ${bg} transition-all hover:scale-125 cursor-pointer`}
-                          title={`${dateStr}: ${count} study activities`}
-                        />
-                      );
-                    })}
-                  </div>
-                </div>
-                <div className="flex items-center justify-end gap-1.5 text-[10px] text-muted-foreground mt-2">
-                  <span>Less</span>
-                  <span className="w-2.5 h-2.5 rounded-[2px] bg-secondary/70" />
-                  <span className="w-2.5 h-2.5 rounded-[2px] bg-emerald-500/40" />
-                  <span className="w-2.5 h-2.5 rounded-[2px] bg-emerald-500/70" />
-                  <span className="w-2.5 h-2.5 rounded-[2px] bg-emerald-500" />
-                  <span>More</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Current Subjects */}
-            <section>
-              {/* ── 1. SEMESTER-FIRST SELECTOR ── */}
-              <div className="mb-6">
-                <div className="flex items-center justify-between mb-3">
-                  <div>
-                    <h2 className="text-xl font-bold tracking-tight text-foreground">Select Your Semester</h2>
-                    <p className="text-xs text-muted-foreground">Choose a semester to view its official curriculum and study materials.</p>
-                  </div>
-                  <button
-                    onClick={() => setFilterSem('all')}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border ${
-                      filterSem === 'all'
-                        ? 'bg-primary text-primary-foreground border-primary shadow-xs'
-                        : 'bg-card text-muted-foreground hover:text-foreground border-border hover:bg-secondary'
-                    }`}
-                  >
-                    View All ({allSubjectsToRender.length})
-                  </button>
-                </div>
-
-                {/* 3 Prominent Semester Cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  {[
-                    {
-                      sem: 1,
-                      title: 'Semester 1',
-                      tagline: 'Engineering Foundations',
-                      subjects: 'Python 1, Physics, CLA, TCS, Web Tech',
-                      color: 'emerald',
-                      count: allSubjectsToRender.filter((s) => s.semester === 1).length,
-                    },
-                    {
-                      sem: 2,
-                      title: 'Semester 2',
-                      tagline: 'Core Systems & Math',
-                      subjects: 'Python 2, C Lang, Digital Electronics, Stats, Accounts',
-                      color: 'blue',
-                      count: allSubjectsToRender.filter((s) => s.semester === 2).length,
-                    },
-                    {
-                      sem: 3,
-                      title: 'Semester 3',
-                      tagline: 'Advanced Computer Science',
-                      subjects: 'Comp Architecture, DSA, DBMS, Java, COANMP',
-                      color: 'amber',
-                      count: allSubjectsToRender.filter((s) => s.semester === 3).length,
-                    },
-                  ].map((card) => {
-                    const isSelected = filterSem === card.sem;
-                    const isUserCurrent = semesterNumber === card.sem;
-
-                    return (
-                      <button
-                        key={card.sem}
-                        onClick={() => setFilterSem(card.sem)}
-                        className={`p-4 rounded-2xl text-left transition-all duration-200 apple-press border relative ${
-                          isSelected
-                            ? 'bg-card border-primary shadow-md ring-2 ring-primary/20'
-                            : 'bg-card/60 border-border hover:border-primary/40 hover:bg-secondary/40'
-                        }`}
-                      >
-                        <div className="flex items-center justify-between mb-1.5">
-                          <span className={`text-xs font-black px-2.5 py-0.5 rounded-full ${
-                            card.sem === 1
-                              ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
-                              : card.sem === 2
-                              ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
-                              : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
-                          }`}>
-                            {card.title}
-                          </span>
-                          <div className="flex items-center gap-1">
-                            {isUserCurrent && (
-                              <span className="text-[10px] font-bold text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded-full" title="Your Enrolled Semester">
-                                ⭐ Your Sem
-                              </span>
-                            )}
-                            <span className="text-xs font-mono font-bold text-muted-foreground">
-                              {card.count} Sub
-                            </span>
-                          </div>
-                        </div>
-
-                        <p className="font-bold text-sm text-foreground mb-1">{card.tagline}</p>
-                        <p className="text-[11px] text-muted-foreground line-clamp-1 leading-snug">{card.subjects}</p>
-
-                        <div className="mt-2.5 flex items-center gap-1 text-[11px] font-semibold text-primary">
-                          <span>{isSelected ? 'Viewing subjects below' : 'Click to view subjects'}</span>
-                          <ChevronRight className="h-3 w-3" />
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* ── 2. SUBJECTS LIST FOR SELECTED SEMESTER ── */}
-              <div className="flex items-center justify-between gap-3 mb-3.5 pb-2 border-b border-border">
-                <div className="flex items-center gap-2">
-                  <h3 className="text-base font-bold text-foreground">
-                    {filterSem === 'all' ? 'All University Subjects' : `Semester ${filterSem} Subjects`}
-                  </h3>
-                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-secondary text-muted-foreground">
-                    {filteredSubjects.length} courses
-                  </span>
-                </div>
-                <span className="text-xs text-muted-foreground">Select a course to read complete notes</span>
-              </div>
-
-              <div className="space-y-3">
-                {filteredSubjects.length === 0 ? (
-                  <div className="text-center p-8 border border-dashed rounded-xl border-border">
-                    <p className="text-muted-foreground font-semibold">No subjects found for this selection.</p>
-                  </div>
-                ) : (
-                  filteredSubjects.map((subject) => {
-                    const topicIds = subject.units?.flatMap((u) => u.topics?.map((t) => t.id) || []) || [];
-                    const subProgress = getSubjectProgress(topicIds);
-                    const completedInSub = Math.round((subProgress / 100) * topicIds.length);
-                    const semNumber = Number(subject.semester || 1);
-
-                    return (
-                      <div
-                        key={subject.id}
-                        className="group w-full bg-card border border-border hover:border-primary/60 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all duration-150 shadow-xs"
-                      >
-                        <div
-                          onClick={() => navigate(`/subject/${subject.id}`)}
-                          className="flex-1 min-w-0 cursor-pointer"
-                        >
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-primary/10 text-primary">
-                              {subject.code || "CSE"}
-                            </span>
-                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                              semNumber === 1
-                                ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
-                                : semNumber === 2
-                                ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20'
-                                : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'
-                            }`}>
-                              Sem {semNumber}
-                            </span>
-                            <h3 className="font-bold text-sm sm:text-base text-foreground group-hover:text-primary transition-colors truncate">
-                              {subject.name}
-                            </h3>
-                          </div>
-
-                          <p className="text-xs text-muted-foreground line-clamp-1 mb-1.5">
-                            {subject.description || 'Deep research notes, diagrams & practice quizzes'}
-                          </p>
-
-                          <div className="flex items-center gap-3 text-[11px] text-muted-foreground font-medium">
-                            <span>{subject.units?.length || 0} Units</span>
-                            <span>•</span>
-                            <span>{topicIds.length} Core Topics</span>
-                            {subProgress > 0 && (
-                              <>
-                                <span>•</span>
-                                <span className="text-primary font-bold">{completedInSub} completed ({subProgress}%)</span>
-                              </>
-                            )}
-                          </div>
-
-                          {/* Progress bar */}
-                          {subProgress > 0 && (
-                            <div className="mt-2.5 h-1.5 w-full max-w-sm rounded-full bg-secondary overflow-hidden">
-                              <div
-                                className="h-full bg-primary transition-all duration-500 rounded-full"
-                                style={{ width: `${subProgress}%` }}
-                              />
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Actions */}
-                        <div className="flex items-center gap-3 shrink-0">
-                          <ProgressRing progress={subProgress} />
-                          <button
-                            onClick={() => navigate(`/subject/${subject.id}/cheat-sheet`)}
-                            className="px-3 py-1.5 rounded-xl bg-secondary hover:bg-secondary/80 text-foreground font-semibold text-xs apple-press transition-colors"
-                            title="Quick Exam Cheat Sheet"
-                          >
-                            Cheat Sheet
-                          </button>
-                          <button
-                            onClick={() => navigate(`/subject/${subject.id}`)}
-                            className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-primary text-primary-foreground font-bold text-xs hover:opacity-90 apple-press transition-opacity shadow-sm"
-                          >
-                            <span>Study Notes</span>
-                            <ChevronRight className="h-3.5 w-3.5" />
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })
-                )}
-              </div>
-            </section>
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Search for topics..."
+              onClick={() => {
+                const event = new KeyboardEvent('keydown', { key: 'k', ctrlKey: true });
+                window.dispatchEvent(event);
+              }}
+              readOnly
+              className="h-9 pl-8 pr-3 w-44 sm:w-56 rounded-xl border border-input bg-card text-xs focus:outline-none cursor-pointer"
+            />
           </div>
 
-          {/* Sidebar */}
-          <div className="space-y-6">
-            {/* Gamification Rank & Streak Widget */}
-            <div className="surface-elevated rounded-xl p-5 border border-primary/20 bg-gradient-to-br from-primary/5 via-card to-background shadow-sm">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-xl shadow-inner">
-                    ⚡
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-sm text-foreground leading-tight">{gamification.levelInfo.title}</h3>
-                    <p className="text-xs text-muted-foreground">Level {gamification.state.level} • {gamification.state.xp} XP</p>
-                  </div>
-                </div>
-                <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">🔥 {gamification.state.streakDays}d</span>
-              </div>
-              
-              <div className="space-y-1.5 mb-3.5">
-                <div className="flex justify-between text-[11px] text-muted-foreground font-medium">
-                  <span>Level Progress</span>
-                  <span>{gamification.levelInfo.progressPercent}%</span>
-                </div>
-                <div className="w-full bg-secondary h-2 rounded-full overflow-hidden">
-                  <div 
-                    className="bg-primary h-full transition-all duration-700 ease-out" 
-                    style={{ width: `${gamification.levelInfo.progressPercent}%` }} 
-                  />
-                </div>
-              </div>
+          <button
+            onClick={() => {
+              navigate("/materials");
+              toast.info("Navigating to Academic Materials repository");
+            }}
+            className="h-9 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md shadow-indigo-600/20 flex items-center gap-2 transition-all active:scale-95 shrink-0"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            <span>Add Sheet</span>
+          </button>
+        </div>
+      </div>
 
-              <button 
-                onClick={() => navigate('/profile')}
-                className="w-full text-xs font-semibold text-primary hover:text-primary/80 transition-colors flex items-center justify-between pt-2 border-t border-border/60"
-              >
-                <span>View Daily Quests & Focus Timer</span>
-                <ChevronRight className="h-3.5 w-3.5" />
-              </button>
-            </div>
-
-            {/* Weekly XP Goal Widget */}
-            <div className="surface-elevated rounded-xl p-5 border border-border/80 shadow-xs">
-              <div className="flex items-center justify-between mb-3">
-                <div>
-                  <h3 className="font-semibold text-sm">Weekly XP Target</h3>
-                  <p className="text-xs text-muted-foreground">{weeklyXpEarned} / {weeklyGoal} XP</p>
-                </div>
-                <select
-                  value={weeklyGoal}
-                  onChange={(e) => {
-                    const val = Number(e.target.value);
-                    setWeeklyGoal(val);
-                    localStorage.setItem('itm_weekly_xp_goal', String(val));
-                  }}
-                  className="text-xs bg-secondary text-foreground px-2 py-1 rounded-md border border-border font-medium cursor-pointer"
-                >
-                  <option value={250}>250 XP</option>
-                  <option value={500}>500 XP</option>
-                  <option value={1000}>1000 XP</option>
-                  <option value={2000}>2000 XP</option>
-                </select>
-              </div>
-              <div className="w-full bg-secondary h-2.5 rounded-full overflow-hidden mb-2">
-                <div
-                  className="bg-emerald-500 h-full transition-all duration-700 ease-out rounded-full"
-                  style={{ width: `${Math.min(100, Math.round((weeklyXpEarned / weeklyGoal) * 100))}%` }}
-                />
-              </div>
-              <p className="text-[11px] text-muted-foreground flex justify-between">
-                <span>{Math.round((weeklyXpEarned / weeklyGoal) * 100)}% reached</span>
-                <span>{weeklyGoal > weeklyXpEarned ? `${weeklyGoal - weeklyXpEarned} XP left` : 'Goal reached! 🎉'}</span>
+      {/* ── 2-COLUMN MAIN GRID ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* ── LEFT / MAIN CONTENT (~68% width -> lg:col-span-8) ── */}
+        <div className="lg:col-span-8 space-y-6">
+          {/* 1. Hero Academic Overview Card matching Screenshot 1 */}
+          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-indigo-950 to-indigo-900 text-white p-6 sm:p-8 shadow-xl border border-slate-800">
+            <div className="relative z-10 max-w-xl space-y-3">
+              <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-indigo-500/30 text-indigo-200 border border-indigo-400/30 inline-block">
+                Semester 3 Active Term
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
+                Academic Overview
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal">
+                Tune into your study on blast with the fastest access to any syllabus topic, 
+                high-yield question bank, or practical reference across BCA & MCA.
               </p>
-            </div>
-
-            <div className="surface-elevated rounded-xl p-5">
-              <h3 className="font-semibold mb-4">Overall Progress</h3>
-              <OverallProgressBar progress={overallProgress} />
-              <div className="mt-4 pt-4 border-t text-sm flex justify-between text-muted-foreground">
-                <span>Completed Topics</span>
-                <span className="font-medium text-foreground">{completedCount}</span>
-              </div>
-            </div>
-
-            {bookmarkedCount > 0 && (
-              <div className="surface-elevated rounded-xl p-5">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-2">
-                    <Bookmark className="h-4 w-4 text-warning fill-warning" />
-                    <h3 className="font-semibold">Bookmarks ({bookmarkedCount})</h3>
-                  </div>
-                </div>
-                <button onClick={() => navigate("/bookmarks")} className="text-sm text-primary font-medium hover:underline pt-2 block w-full text-left">
-                  View all your bookmarks &rarr;
+              <div className="pt-2">
+                <button
+                  onClick={() => navigate("/materials")}
+                  className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-lg shadow-indigo-600/30 transition-all hover:scale-105 active:scale-95 flex items-center gap-2"
+                >
+                  <span>See Section Now</span>
+                  <ArrowRight className="h-3.5 w-3.5" />
                 </button>
               </div>
-            )}
+            </div>
+
+            {/* 3D Visual Art Illustration (Simulated via SVG Graphic) */}
+            <div className="absolute right-4 -bottom-6 sm:bottom-0 opacity-80 sm:opacity-100 pointer-events-none hidden sm:block">
+              <svg width="220" height="180" viewBox="0 0 220 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="30" y="20" width="130" height="150" rx="16" fill="#1E293B" stroke="#6366F1" strokeWidth="2" />
+                <rect x="45" y="40" width="100" height="12" rx="6" fill="#475569" />
+                <rect x="45" y="60" width="70" height="10" rx="5" fill="#6366F1" fillOpacity="0.6" />
+                <rect x="45" y="80" width="90" height="10" rx="5" fill="#475569" fillOpacity="0.8" />
+                <rect x="45" y="100" width="80" height="10" rx="5" fill="#475569" fillOpacity="0.8" />
+                <circle cx="160" cy="50" r="28" fill="#F59E0B" />
+                <path d="M152 50L158 56L170 44" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+                <rect x="135" y="105" width="55" height="14" rx="4" transform="rotate(-35 135 105)" fill="#38BDF8" />
+                <polygon points="120,125 125,115 132,122" fill="#F43F5E" />
+              </svg>
+            </div>
+          </div>
+
+          {/* 2. Academic Overview Secondary Card */}
+          <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h3 className="font-bold text-base text-foreground">Academic Overview</h3>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  See how you currently benchmark across modules, verified exam papers, and practical labs.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold text-xs border border-emerald-500/20 flex items-center gap-1.5">
+                  <CheckCircle className="h-3.5 w-3.5" />
+                  <span>Complete {completedModulesCount}/{totalModulesCount} modules</span>
+                </span>
+
+                <select 
+                  value={selectedCourseFilter}
+                  onChange={(e) => setSelectedCourseFilter(e.target.value)}
+                  className="h-8 px-2.5 rounded-lg border border-input bg-background text-xs font-semibold text-foreground outline-none cursor-pointer"
+                >
+                  <option value="all">All Courses</option>
+                  <option value="dsa">DSA</option>
+                  <option value="dbms">DBMS</option>
+                  <option value="ca">Computer Arch</option>
+                  <option value="java">Java</option>
+                </select>
+
+                <button 
+                  onClick={() => navigate("/materials")}
+                  className="text-xs text-primary hover:underline font-semibold flex items-center gap-1"
+                >
+                  <span>See all</span>
+                  <ExternalLink className="h-3 w-3" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* 3. Dual Split Row: Shortcuts & Study Progress Activity Curve */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Left Card: Shortcuts matching Screenshot 1 */}
+            <div className="bg-card border border-border rounded-2xl p-5 shadow-sm flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="font-bold text-sm text-foreground">Shortcuts</h3>
+                  <div className="flex rounded-lg bg-secondary p-0.5 border border-border text-[11px] font-semibold">
+                    <button
+                      onClick={() => setActiveShortcutTab("overview")}
+                      className={`px-2.5 py-1 rounded-md transition-all ${
+                        activeShortcutTab === "overview" ? "bg-background text-foreground shadow-xs font-bold" : "text-muted-foreground"
+                      }`}
+                    >
+                      Overview
+                    </button>
+                    <button
+                      onClick={() => setActiveShortcutTab("tools")}
+                      className={`px-2.5 py-1 rounded-md transition-all ${
+                        activeShortcutTab === "tools" ? "bg-background text-foreground shadow-xs font-bold" : "text-muted-foreground"
+                      }`}
+                    >
+                      Tools & Docs
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  {/* Shortcut 1 */}
+                  <div 
+                    onClick={() => navigate("/imp-questions")}
+                    className="p-3 rounded-xl border border-border/80 bg-secondary/20 hover:bg-secondary/50 cursor-pointer transition-all flex items-start gap-3"
+                  >
+                    <div className="p-2 rounded-lg bg-orange-500/10 text-orange-500 shrink-0 mt-0.5">
+                      <FileText className="h-4 w-4" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <h4 className="font-bold text-xs text-foreground truncate">
+                        Alternative Tree Tracker Maps Notes...
+                      </h4>
+                      <p className="text-[11px] text-muted-foreground truncate">
+                        Current ITM 2026 - 4 submissions · 18 files updated
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Shortcut 2 */}
+                  <div 
+                    onClick={() => navigate("/materials")}
+                    className="p-3 rounded-xl border border-border/80 bg-secondary/20 hover:bg-secondary/50 cursor-pointer transition-all flex items-start gap-3"
+                  >
+                    <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-500 shrink-0 mt-0.5">
+                      <Calendar className="h-4 w-4" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center justify-between">
+                        <h4 className="font-bold text-xs text-foreground truncate">
+                          Internal Continuous Tests & Exams
+                        </h4>
+                        <span className="text-[10px] px-1.5 py-0.2 rounded bg-emerald-500/10 text-emerald-600 font-bold border border-emerald-500/20">
+                          ✓ Active
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-muted-foreground truncate">
+                        October 26, 2026 – Due Nov 11, 2026
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Shortcut 3 */}
+                  <div 
+                    onClick={() => navigate("/calculator")}
+                    className="p-3 rounded-xl border border-border/80 bg-secondary/20 hover:bg-secondary/50 cursor-pointer transition-all flex items-start gap-3"
+                  >
+                    <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-500 shrink-0 mt-0.5">
+                      <CheckCircle2 className="h-4 w-4" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <h4 className="font-bold text-xs text-foreground truncate">
+                        Curriculum Tree Regulations & Attendance
+                      </h4>
+                      <p className="text-[11px] text-muted-foreground truncate">
+                        SLS Baroda University 75% Criteria Calculator
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-3 border-t border-border/60 mt-3 flex items-center justify-between text-xs text-muted-foreground">
+                <span>3 Shortcuts configured</span>
+                <button onClick={() => navigate("/materials")} className="text-primary hover:underline font-semibold text-[11px]">
+                  Manage shortcuts
+                </button>
+              </div>
+            </div>
+
+            {/* Right Card: Study Progress with Spline Area Chart matching Screenshot 1 */}
+            <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-bold text-sm text-foreground">Study Progress</h3>
+                  <span className="text-[11px] text-muted-foreground">Level 5 Academic</span>
+                </div>
+                <div className="text-right">
+                  <span className="text-lg font-black font-mono text-primary">209.4 XP</span>
+                  <span className="text-[10px] text-muted-foreground block">Overall Rating</span>
+                </div>
+              </div>
+
+              {/* Progress Bars */}
+              <div className="space-y-2 text-xs">
+                <div>
+                  <div className="flex justify-between text-[11px] mb-1 font-semibold text-muted-foreground">
+                    <span>Total CPI Target</span>
+                    <span className="text-foreground font-mono">38 / 50%</span>
+                  </div>
+                  <div className="h-1.5 rounded-full bg-secondary overflow-hidden">
+                    <div className="h-full bg-indigo-500 rounded-full" style={{ width: "76%" }} />
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex justify-between text-[11px] mb-1 font-semibold text-muted-foreground">
+                    <span>Attendance Tracking</span>
+                    <span className="text-foreground font-mono">38 / 50%</span>
+                  </div>
+                  <div className="h-1.5 rounded-full bg-secondary overflow-hidden">
+                    <div className="h-full bg-sky-500 rounded-full" style={{ width: "76%" }} />
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex justify-between text-[11px] mb-1 font-semibold text-muted-foreground">
+                    <span>Interaction Practical Progress</span>
+                    <span className="text-foreground font-mono">48 / 50%</span>
+                  </div>
+                  <div className="h-1.5 rounded-full bg-secondary overflow-hidden">
+                    <div className="h-full bg-emerald-500 rounded-full" style={{ width: "96%" }} />
+                  </div>
+                </div>
+              </div>
+
+              {/* Spline Area Chart matching Screenshot 1 */}
+              <div className="h-28 w-full pt-2">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={STUDY_ACTIVITY_DATA}>
+                    <defs>
+                      <linearGradient id="purpleGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#6366F1" stopOpacity={0.4} />
+                        <stop offset="95%" stopColor="#6366F1" stopOpacity={0.0} />
+                      </linearGradient>
+                    </defs>
+                    <XAxis dataKey="time" stroke="#94A3B8" fontSize={9} tickLine={false} axisLine={false} />
+                    <YAxis hide domain={[0, 100]} />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: "hsl(var(--card))", 
+                        borderColor: "hsl(var(--border))",
+                        borderRadius: "0.5rem",
+                        fontSize: "11px",
+                      }} 
+                    />
+                    <Area 
+                      type="monotone" 
+                      dataKey="hours" 
+                      stroke="#6366F1" 
+                      strokeWidth={2.5}
+                      fillOpacity={1} 
+                      fill="url(#purpleGradient)" 
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
           </div>
         </div>
-      </main>
 
-      <BackToTop />
-      <Footer />
+        {/* ── RIGHT COLUMN (~32% width -> lg:col-span-4) ── */}
+        <div className="lg:col-span-4 space-y-6">
+          {/* 1. Study Progress Advice Widget matching Screenshot 1 */}
+          <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-3">
+            <div className="flex items-center justify-between">
+              <h3 className="font-bold text-sm text-foreground">Study Progress</h3>
+              <div className="flex items-center gap-1 text-muted-foreground">
+                <button className="p-1 rounded hover:bg-secondary"><ChevronLeft className="h-4 w-4" /></button>
+                <button className="p-1 rounded hover:bg-secondary"><ChevronRight className="h-4 w-4" /></button>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-xl bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200/50 dark:border-indigo-800/30 flex items-start gap-3">
+              <div className="p-2.5 rounded-xl bg-indigo-600 text-white shrink-0">
+                <BookOpen className="h-5 w-5" />
+              </div>
+              <div className="space-y-1">
+                <p className="text-xs font-medium text-foreground leading-relaxed">
+                  Feed your student notes to help improve your grading for mid exams preparation.
+                </p>
+                <Link to="/materials" className="text-xs text-indigo-600 dark:text-indigo-400 font-bold hover:underline inline-block pt-1">
+                  Learn more &gt;
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* 2. Radial Donut Dual Gauges matching Screenshot 1 (30% & 91%) */}
+          <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="font-bold text-sm text-foreground">Study Progress</h3>
+              <Link to="/calculator" className="text-xs text-primary font-semibold hover:underline">
+                View All &gt;
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 text-center py-2">
+              {/* Gauge 1: 30% Syllabus */}
+              <div className="flex flex-col items-center">
+                <div className="relative w-24 h-24 flex items-center justify-center">
+                  <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                    <path
+                      className="text-secondary stroke-current"
+                      strokeWidth="3.5"
+                      fill="none"
+                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    />
+                    <path
+                      className="text-indigo-600 stroke-current transition-all duration-1000"
+                      strokeDasharray="30, 100"
+                      strokeWidth="3.5"
+                      strokeLinecap="round"
+                      fill="none"
+                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    />
+                  </svg>
+                  <div className="absolute text-center">
+                    <span className="text-xl font-black text-foreground font-mono">30%</span>
+                  </div>
+                </div>
+                <span className="text-xs font-bold text-foreground mt-2">Syllabus Covered</span>
+                <span className="text-[10px] text-muted-foreground">Units 1–2 done</span>
+              </div>
+
+              {/* Gauge 2: 91% Attendance */}
+              <div className="flex flex-col items-center">
+                <div className="relative w-24 h-24 flex items-center justify-center">
+                  <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                    <path
+                      className="text-secondary stroke-current"
+                      strokeWidth="3.5"
+                      fill="none"
+                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    />
+                    <path
+                      className="text-sky-500 stroke-current transition-all duration-1000"
+                      strokeDasharray="91, 100"
+                      strokeWidth="3.5"
+                      strokeLinecap="round"
+                      fill="none"
+                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    />
+                  </svg>
+                  <div className="absolute text-center">
+                    <span className="text-xl font-black text-foreground font-mono">91%</span>
+                  </div>
+                </div>
+                <span className="text-xs font-bold text-foreground mt-2">Attendance</span>
+                <span className="text-[10px] text-emerald-600 font-semibold">Above 75% cutoff</span>
+              </div>
+            </div>
+          </div>
+
+          {/* 3. Faculty / Subject Mentors Quick List matching Screenshot 1 */}
+          <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-3">
+            <h3 className="font-bold text-sm text-foreground">Faculty & Subject Mentors</h3>
+
+            <div className="space-y-3">
+              {/* Mentor 1 */}
+              <div className="p-3 rounded-xl border border-border/80 bg-secondary/20 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-8 h-8 rounded-full bg-purple-500/20 text-purple-600 font-bold text-xs flex items-center justify-center shrink-0">
+                    AM
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-xs font-bold text-foreground truncate">Aniket Manjrekar Trek</p>
+                    <p className="text-[10px] text-muted-foreground truncate">Data Structures & Algo · BCA</p>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => toast.info("Opening Aniket Manjrekar's course guide...")}
+                  className="px-2.5 py-1 rounded-lg border border-border text-[11px] font-semibold text-foreground hover:bg-secondary transition-colors shrink-0"
+                >
+                  View More
+                </button>
+              </div>
+
+              {/* Mentor 2 */}
+              <div className="p-3 rounded-xl border border-border/80 bg-secondary/20 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-8 h-8 rounded-full bg-blue-500/20 text-blue-600 font-bold text-xs flex items-center justify-center shrink-0">
+                    BT
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-1.5">
+                      <p className="text-xs font-bold text-foreground truncate">Bcs Tracking</p>
+                      <span className="text-[9px] px-1 rounded bg-emerald-500/20 text-emerald-600 font-bold">PRO</span>
+                    </div>
+                    <p className="text-[10px] text-muted-foreground truncate">Database Sys, App Development</p>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => toast.info("Opening DBMS practical portal...")}
+                  className="px-2.5 py-1 rounded-lg border border-border text-[11px] font-semibold text-foreground hover:bg-secondary transition-colors shrink-0"
+                >
+                  View More
+                </button>
+              </div>
+
+              {/* Mentor 3 */}
+              <div className="p-3 rounded-xl border border-border/80 bg-secondary/20 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-8 h-8 rounded-full bg-amber-500/20 text-amber-600 font-bold text-xs flex items-center justify-center shrink-0">
+                    AS
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-xs font-bold text-foreground truncate">Applied Science</p>
+                    <p className="text-[10px] text-muted-foreground truncate">Engineering Chem, Assignment 2</p>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => toast.info("Opening Chemistry assignment tracker...")}
+                  className="px-2.5 py-1 rounded-lg border border-border text-[11px] font-semibold text-foreground hover:bg-secondary transition-colors shrink-0"
+                >
+                  View More
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

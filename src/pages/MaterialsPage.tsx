@@ -1,678 +1,577 @@
 import { useState, useMemo } from "react";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
-import { BackToTop } from "@/components/BackToTop";
-import { REAL_STUDY_MATERIALS, StudyMaterial } from "@/data/materialsData";
+import { Link, useNavigate } from "react-router-dom";
 import { 
-  FileText, 
   Download, 
   Search, 
   Filter, 
   BookOpen, 
   CheckCircle, 
   FolderDown, 
-  FileCheck, 
+  FileText, 
   ExternalLink,
   Layers,
   Sparkles,
   Eye,
-  X,
-  Heart,
-  Clock,
-  Copy,
-  Share2,
-  Flame
+  Plus,
+  Folder,
+  Calendar,
+  ChevronRight,
+  TrendingUp,
+  FileCheck,
+  X
 } from "lucide-react";
+import { 
+  ResponsiveContainer, 
+  LineChart, 
+  Line, 
+  XAxis, 
+  YAxis, 
+  Tooltip 
+} from "recharts";
 import { toast } from "sonner";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { REAL_STUDY_MATERIALS, StudyMaterial } from "@/data/materialsData";
+
+// Subject Overviews Cards matching Screenshot 2
+const SUBJECT_OVERVIEW_CARDS = [
+  {
+    id: "mat-1",
+    code: "DATA - COMPUTER",
+    tag: "Notes",
+    tagColor: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+    title: "Official Timetables",
+    subtitle: "Complete schedule & test room mappings for Mid-Semester Exams.",
+    pages: "12 Pages",
+    fileSize: "1.4 MB",
+  },
+  {
+    id: "mat-2",
+    code: "DATA & FRAMES",
+    tag: "Notes",
+    tagColor: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+    title: "Exercise Practice Sets",
+    subtitle: "Algorithmic problem solutions, dry runs, and time complexity table.",
+    pages: "28 Pages",
+    fileSize: "3.2 MB",
+  },
+  {
+    id: "mat-3",
+    code: "MATH - EXAM 02",
+    tag: "Notes",
+    tagColor: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+    title: "Practical Code Reference",
+    subtitle: "Data Structures in C, Stacks, Queues, Binary Trees & Dijkstra code.",
+    pages: "34 Pages",
+    fileSize: "2.8 MB",
+  },
+  {
+    id: "mat-4",
+    code: "DBMS - EXAMS",
+    tag: "Notes",
+    tagColor: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+    title: "Interactive Data Sets",
+    subtitle: "Relational Algebra, SQL triggers, 1NF-BCNF decomposition proofs.",
+    pages: "22 Pages",
+    fileSize: "1.9 MB",
+  },
+  {
+    id: "mat-5",
+    code: "AUTO - EXAMS",
+    tag: "Exam",
+    tagColor: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20",
+    title: "Offline Syllabus Units",
+    subtitle: "All units compiled into offline indexed high-yield summaries.",
+    pages: "48 Pages",
+    fileSize: "4.5 MB",
+  },
+  {
+    id: "mat-6",
+    code: "AUTO - EXAMS",
+    tag: "Exam",
+    tagColor: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20",
+    title: "Project Guidelines",
+    subtitle: "Semester capstone project formats, SRS templates, and viva questions.",
+    pages: "16 Pages",
+    fileSize: "1.1 MB",
+  },
+];
+
+// Question Banks Chart Data matching Screenshot 2
+const QUESTION_BANK_TREND_DATA = [
+  { date: "Oct 00", count: 18 },
+  { date: "Oct 08", count: 32 },
+  { date: "Oct 16", count: 48 },
+  { date: "Oct 24", count: 38 },
+  { date: "Oct 30", count: 72 },
+  { date: "Nov 10", count: 85 },
+];
+
+// Timetables List matching Screenshot 2
+const TIMETABLES_LIST = [
+  {
+    name: "Basic Promotional Applied (Adv) - 2026",
+    subject: "25 Mar 2026",
+    type: "16.4 KB",
+    size: "55.5%",
+  },
+  {
+    name: "Data File Fast Detection (Doc July 2026)",
+    subject: "06 Mar 2026",
+    type: "10.4 KB",
+    size: "1364 KB",
+  },
+  {
+    name: "Second Stage Propagation (Information - 2026)",
+    subject: "10 Mar 2026",
+    type: "14.4 KB",
+    size: "50.6%",
+  },
+];
 
 export default function MaterialsPage() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const subjectParam = searchParams.get("subject");
-
-  // Determine initial selected subject based on query param
-  const initialSubject = useMemo(() => {
-    if (!subjectParam) return "All";
-    const found = REAL_STUDY_MATERIALS.find(
-      (m) => m.subjectId === subjectParam || m.subject.toLowerCase() === subjectParam.toLowerCase()
-    );
-    return found ? found.subject : "All";
-  }, [subjectParam]);
-
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedSubject, setSelectedSubject] = useState(initialSubject);
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [selectedSemester, setSelectedSemester] = useState("All");
-  const [sortBy, setSortBy] = useState<"default" | "title" | "pages">("default");
-  const [activePreview, setActivePreview] = useState<StudyMaterial | null>(null);
+  const [selectedSubTab, setSelectedSubTab] = useState<"address" | "databases">("address");
+  const [activePreview, setActivePreview] = useState<any | null>(null);
 
-  // Favorites state stored in localStorage
-  const [favorites, setFavorites] = useState<string[]>(() => {
-    try {
-      const saved = localStorage.getItem('itm_material_favorites');
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
-  const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
-  const [isExamMode, setIsExamMode] = useState(false);
+  // Filtered cards based on search query
+  const filteredOverviews = useMemo(() => {
+    if (!searchQuery.trim()) return SUBJECT_OVERVIEW_CARDS;
+    return SUBJECT_OVERVIEW_CARDS.filter(c => 
+      c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      c.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      c.subtitle.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [searchQuery]);
 
-  // Recently Viewed state stored in localStorage
-  const [recentlyViewedIds, setRecentlyViewedIds] = useState<string[]>(() => {
-    try {
-      const saved = localStorage.getItem('itm_recently_viewed_materials');
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
-
-  const trackRecentlyViewed = (id: string) => {
-    setRecentlyViewedIds((prev) => {
-      const updated = [id, ...prev.filter((i) => i !== id)].slice(0, 5);
-      localStorage.setItem('itm_recently_viewed_materials', JSON.stringify(updated));
-      return updated;
-    });
-  };
-
-  const toggleFavorite = (id: string, e?: React.MouseEvent) => {
-    if (e) e.stopPropagation();
-    setFavorites((prev) => {
-      const updated = prev.includes(id) ? prev.filter((favId) => favId !== id) : [...prev, id];
-      localStorage.setItem('itm_material_favorites', JSON.stringify(updated));
-      toast.success(prev.includes(id) ? 'Removed from favorites' : 'Saved to favorites ❤️');
-      return updated;
-    });
-  };
-
-  const handleCopyLink = (material: StudyMaterial, e?: React.MouseEvent) => {
-    if (e) e.stopPropagation();
-    const url = `${window.location.origin}/materials?subject=${encodeURIComponent(material.subject)}`;
-    navigator.clipboard.writeText(url);
-    toast.success('Direct link copied to clipboard!');
-  };
-
-  // Extract unique subjects
-  const subjectList = useMemo(() => {
-    const list = ["All"];
-    REAL_STUDY_MATERIALS.forEach((m) => {
-      if (!list.includes(m.subject)) list.push(m.subject);
-    });
-    return list;
-  }, []);
-
-  const categories = ["All", "Notes", "Syllabus", "Question Paper", "Timetable", "Presentation", "Lab Manual", "Assignment"];
-
-  // Filtered & sorted list
-  const filteredMaterials = useMemo(() => {
-    let list = REAL_STUDY_MATERIALS.filter((m) => {
-      if (showOnlyFavorites && !favorites.includes(m.id)) return false;
-
-      const query = searchQuery.toLowerCase();
-      const matchesSearch =
-        m.title.toLowerCase().includes(query) ||
-        m.subject.toLowerCase().includes(query) ||
-        m.description.toLowerCase().includes(query) ||
-        m.topicsCovered.some((t) => t.toLowerCase().includes(query));
-
-      const matchesSubject = selectedSubject === "All" || m.subject === selectedSubject;
-      const matchesCategory = selectedCategory === "All" || m.category === selectedCategory;
-      const matchesSemester =
-        selectedSemester === "All" ||
-        (selectedSemester === "Semester 1" && m.semester === 1) ||
-        (selectedSemester === "Semester 2" && m.semester === 2) ||
-        (selectedSemester === "Semester 3" && m.semester === 3);
-        
-      if (isExamMode) {
-        if (!["Question Paper", "Syllabus", "Timetable", "Other"].includes(m.category)) {
-          return false;
-        }
-      }
-
-      return matchesSearch && matchesSubject && matchesCategory && matchesSemester;
-    });
-
-    if (sortBy === "title") {
-      list = [...list].sort((a, b) => a.title.localeCompare(b.title));
-    } else if (sortBy === "pages") {
-      list = [...list].sort((a, b) => {
-        const pA = parseInt(a.pages || "0", 10) || 0;
-        const pB = parseInt(b.pages || "0", 10) || 0;
-        return pB - pA;
-      });
-    }
-
-    return list;
-  }, [searchQuery, selectedSubject, selectedCategory, selectedSemester, showOnlyFavorites, favorites, isExamMode, sortBy]);
-
-  // Derived list of recently viewed materials
-  const recentlyViewedMaterials = useMemo(() => {
-    return recentlyViewedIds
-      .map((id) => REAL_STUDY_MATERIALS.find((m) => m.id === id))
-      .filter((m): m is StudyMaterial => Boolean(m));
-  }, [recentlyViewedIds]);
-
-  const handleDownload = (material: StudyMaterial) => {
-    trackRecentlyViewed(material.id);
-    if (material.downloadUrl) {
-      const link = document.createElement("a");
-      link.href = material.downloadUrl;
-      link.setAttribute("download", material.downloadUrl.split("/").pop() || `${material.title.replace(/[^a-zA-Z0-9_-]/g, "_")}.${material.fileType.toLowerCase()}`);
-      link.setAttribute("target", "_blank");
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      toast.success(`Downloading: "${material.title}"`, {
-        description: `Format: ${material.fileType} (${material.fileSize})`,
-      });
-    } else {
-      const content = `# ITM SLS BARODA UNIVERSITY - ACADEMIC STUDY REPOSITORY
-## ${material.title}
-- **Subject:** ${material.subject} (${material.subjectCode})
-- **Semester:** ${material.semester}
-- **Category:** ${material.category}
-- **File Type:** ${material.fileType} (${material.fileSize})
-
----
-### Document Description:
-${material.description}
-
-### Syllabus & Topics Covered:
-${material.topicsCovered.map((t, idx) => `${idx + 1}. ${t}`).join("\n")}
-
----
-© ITM SLS Baroda University - Computer Science & Engineering
-`;
-      const blob = new Blob([content], { type: "text/markdown;charset=utf-8" });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", `${material.title.replace(/[^a-zA-Z0-9_-]/g, "_")}_Study_Guide.md`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-      toast.success(`Downloaded "${material.title}" Study Guide!`);
-    }
+  const handleDownload = (item: any) => {
+    toast.success(`Downloading ${item.title} (${item.fileSize || "PDF"})...`);
+    // Create simulated file download
+    const blob = new Blob([`# ${item.title}\n\nITM SLS Baroda University Study Material\n\n${item.subtitle}`], { type: "text/markdown" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${item.title.replace(/\s+/g, "_")}.md`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <Header />
-
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-10 animate-fade-in">
-        {/* Banner Section */}
-        <div className="bg-gradient-to-r from-primary/10 via-secondary/40 to-background border border-border/80 rounded-3xl p-6 sm:p-10 mb-8 shadow-sm">
-          <div className="flex flex-wrap items-center gap-2 mb-3">
-            <span className="text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-primary/20 text-primary border border-primary/30">
-              ITM SLS Baroda University
-            </span>
-            <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-              Verified Academic Repository
-            </span>
-          </div>
-
-          <h1 className="text-3xl sm:text-5xl font-extrabold text-foreground mb-3 tracking-tight">
-            Academic Materials Library
+    <div className="p-4 sm:p-6 lg:p-8 max-w-[1600px] mx-auto space-y-8 animate-fade-in">
+      {/* ── TOP HEADER SECTION matching Screenshot 2 ── */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-border/60">
+        <div>
+          <h1 className="text-2xl font-black tracking-tight text-foreground">
+            ITM Notes Materials
           </h1>
-          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-3xl mb-8">
-            Complete curriculum repository distributed subject-wise: official syllabi, faculty lecture presentations, comprehensive handwritten e-notes, university external examination papers, and lab manuals.
-          </p>
-
-          {/* Quick Metrics */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-border/60">
-            <div>
-              <p className="text-2xl font-black text-foreground">{REAL_STUDY_MATERIALS.length}</p>
-              <p className="text-xs font-medium text-muted-foreground">Total Documents</p>
-            </div>
-            <div>
-              <p className="text-2xl font-black text-emerald-600 dark:text-emerald-400">
-                {REAL_STUDY_MATERIALS.filter((m) => m.semester === 3).length}
-              </p>
-              <p className="text-xs font-medium text-muted-foreground">Semester 3 Materials</p>
-            </div>
-            <div>
-              <p className="text-2xl font-black text-blue-600 dark:text-blue-400">
-                {REAL_STUDY_MATERIALS.filter((m) => m.category === "Question Paper").length}
-              </p>
-              <p className="text-xs font-medium text-muted-foreground">PYQ & Question Banks</p>
-            </div>
-            <div>
-              <p className="text-2xl font-black text-amber-600 dark:text-amber-400">
-                {REAL_STUDY_MATERIALS.filter((m) => m.category === "Syllabus").length}
-              </p>
-              <p className="text-xs font-medium text-muted-foreground">Official Syllabi</p>
-            </div>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5 font-medium">
+            <span>Academic resources</span>
+            <span>·</span>
+            <span>Academic materials</span>
+            <span>·</span>
+            <span>ITM</span>
+            <span>·</span>
+            <span className="text-foreground font-semibold">Sem 3</span>
           </div>
         </div>
 
-        {/* ── Filters & Search ── */}
-        <div className="bg-card border border-border/80 rounded-2xl p-5 mb-8 shadow-sm space-y-4">
-          {/* Exam Mode Toggle */}
-          <div className="flex items-center justify-between p-3 rounded-xl bg-orange-500/10 border border-orange-500/20 mb-2 transition-all hover:bg-orange-500/15">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-orange-500/20 rounded-lg">
-                <Flame className="h-5 w-5 text-orange-600 dark:text-orange-400" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-orange-700 dark:text-orange-400 text-sm">Exam Prep Mode</h3>
-                <p className="text-xs text-orange-600/80 dark:text-orange-400/80">Only show Question Banks, Syllabus, and Timetables</p>
-              </div>
-            </div>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input type="checkbox" className="sr-only peer" checked={isExamMode} onChange={(e) => setIsExamMode(e.target.checked)} />
-              <div className="w-11 h-6 bg-secondary peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-500"></div>
-            </label>
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Sub Tabs */}
+          <div className="flex rounded-xl bg-secondary p-1 border border-border text-xs font-semibold">
+            <button
+              onClick={() => setSelectedSubTab("address")}
+              className={`px-3 py-1 rounded-lg transition-all ${
+                selectedSubTab === "address" ? "bg-background text-foreground shadow-xs font-bold" : "text-muted-foreground"
+              }`}
+            >
+              Curriculum Notes
+            </button>
+            <button
+              onClick={() => setSelectedSubTab("databases")}
+              className={`px-3 py-1 rounded-lg transition-all ${
+                selectedSubTab === "databases" ? "bg-background text-foreground shadow-xs font-bold" : "text-muted-foreground"
+              }`}
+            >
+              Databases & Media
+            </button>
           </div>
 
-          {/* Search bar & Semester filter */}
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <input
-                type="text"
-                placeholder="Search by topic (e.g. Normalization, Booth Algorithm, Trees, JVM)..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full h-11 pl-10 pr-4 rounded-xl border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary shadow-inner"
-              />
-            </div>
-
-            <div className="flex items-center gap-1.5 shrink-0 bg-secondary/50 p-1 rounded-xl overflow-x-auto">
-              {[
-                { label: "All Semesters", value: "All" },
-                { label: "Sem 1", value: "Semester 1" },
-                { label: "Sem 2", value: "Semester 2" },
-                { label: "⚡ Sem 3 (Core)", value: "Semester 3" },
-              ].map((sem) => (
-                <button
-                  key={sem.value}
-                  onClick={() => {
-                    setShowOnlyFavorites(false);
-                    setSelectedSemester(sem.value);
-                  }}
-                  className={`px-3.5 py-2 text-xs font-semibold rounded-lg transition-all whitespace-nowrap ${
-                    !showOnlyFavorites && selectedSemester === sem.value
-                      ? "bg-primary text-primary-foreground shadow-sm"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {sem.label}
-                </button>
-              ))}
-              <button
-                onClick={() => setShowOnlyFavorites(!showOnlyFavorites)}
-                className={`px-3.5 py-2 text-xs font-semibold rounded-lg transition-all whitespace-nowrap flex items-center gap-1.5 ${
-                  showOnlyFavorites
-                    ? "bg-rose-500 text-white shadow-sm"
-                    : "text-muted-foreground hover:text-foreground hover:bg-secondary"
-                }`}
-              >
-                <Heart className={`h-3.5 w-3.5 ${showOnlyFavorites ? "fill-white" : ""}`} />
-                <span>Favorites ({favorites.length})</span>
-              </button>
-
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as any)}
-                className="px-2.5 py-1.5 rounded-lg bg-background border border-border text-xs font-medium text-foreground outline-none cursor-pointer"
-              >
-                <option value="default">Sort: Default</option>
-                <option value="title">Sort: Title (A-Z)</option>
-                <option value="pages">Sort: Length / Pages</option>
-              </select>
-            </div>
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Search for notes..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="h-9 pl-8 pr-3 w-44 sm:w-56 rounded-xl border border-input bg-card text-xs focus:ring-1 focus:ring-primary outline-none"
+            />
           </div>
 
-          {/* Subject Filter Pills */}
-          <div>
-            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Subject Distribution:</p>
-            <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-              {subjectList.map((subject) => (
-                <button
-                  key={subject}
-                  onClick={() => setSelectedSubject(subject)}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-full whitespace-nowrap transition-all border ${
-                    selectedSubject === subject
-                      ? "bg-foreground text-background border-foreground font-bold shadow-sm"
-                      : "bg-background text-muted-foreground border-border hover:border-foreground/40 hover:text-foreground"
-                  }`}
-                >
-                  {subject}
-                </button>
-              ))}
-            </div>
-          </div>
+          <button
+            onClick={() => {
+              navigate("/imp-questions");
+              toast.info("Navigating to Question Banks");
+            }}
+            className="h-9 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md shadow-indigo-600/20 flex items-center gap-1.5 transition-all active:scale-95 shrink-0"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            <span>Add Sheet</span>
+          </button>
+        </div>
+      </div>
 
-          {/* Category Filter Pills */}
-          <div className="pt-2 border-t border-border/60 flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-            <span className="text-xs font-semibold text-muted-foreground shrink-0 mr-1">Category:</span>
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
-                className={`px-3 py-1 text-xs font-medium rounded-lg whitespace-nowrap transition-colors ${
-                  selectedCategory === cat
-                    ? "bg-secondary text-foreground font-bold border border-border"
-                    : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground"
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
+      {/* ── SECTION 1: SUBJECT OVERVIEWS 6-CARD GRID matching Screenshot 2 ── */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-base font-bold text-foreground">Subject Overviews</h2>
+          <span className="text-xs text-muted-foreground font-medium">
+            {filteredOverviews.length} official materials available
+          </span>
         </div>
 
-        {/* ── Recently Viewed Section ── */}
-        {recentlyViewedMaterials.length > 0 && !showOnlyFavorites && (
-          <div className="mb-6 p-4 rounded-2xl bg-secondary/30 border border-border/80">
-            <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-              <Clock className="h-3.5 w-3.5 text-primary" />
-              <span>Recently Viewed ({recentlyViewedMaterials.length})</span>
-            </h3>
-            <div className="flex gap-2.5 overflow-x-auto pb-1 scrollbar-none">
-              {recentlyViewedMaterials.map((m) => (
-                <div
-                  key={m.id}
-                  onClick={() => handleDownload(m)}
-                  className="min-w-[220px] max-w-[260px] p-2.5 rounded-xl bg-card border border-border/70 hover:border-primary/40 transition-all cursor-pointer shadow-xs shrink-0 flex flex-col justify-between"
-                >
-                  <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-1">
-                    <span className="font-bold text-primary">{m.subjectCode}</span>
-                    <span className="font-mono uppercase font-bold">{m.fileType}</span>
-                  </div>
-                  <h4 className="text-xs font-semibold text-foreground line-clamp-1">{m.title}</h4>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* ── Materials Grid ── */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {filteredMaterials.map((material) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+          {filteredOverviews.map((card) => (
             <div
-              key={material.id}
-              onClick={() => {
-                trackRecentlyViewed(material.id);
-                setActivePreview(material);
-              }}
-              className="bg-card border border-border/80 hover:border-primary/40 rounded-2xl p-5 sm:p-6 flex flex-col justify-between transition-all duration-200 shadow-sm hover:shadow-md group cursor-pointer"
+              key={card.id}
+              className="bg-card border border-border/80 hover:border-primary/50 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group"
             >
               <div>
-                {/* Header tags */}
-                <div className="flex items-start justify-between gap-2 mb-3">
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-md bg-secondary text-secondary-foreground">
-                      {material.subjectCode}
-                    </span>
-                    <span className="text-[11px] font-medium text-muted-foreground">
-                      Sem {material.semester}
-                    </span>
-                    {material.badge && (
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${material.badgeColor}`}>
-                        {material.badge}
-                      </span>
-                    )}
-                  </div>
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase ${
-                    material.fileType === "PDF"
-                      ? "bg-red-500/10 text-red-600 dark:text-red-400"
-                      : material.fileType === "PPTX"
-                      ? "bg-orange-500/10 text-orange-600 dark:text-orange-400"
-                      : "bg-blue-500/10 text-blue-600 dark:text-blue-400"
-                  }`}>
-                    {material.fileType}
+                <div className="flex items-center justify-between mb-2">
+                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${card.tagColor}`}>
+                    {card.tag}
+                  </span>
+                  <span className="text-[10px] font-mono text-muted-foreground">
+                    {card.pages}
                   </span>
                 </div>
 
-                {/* Title */}
-                <h3 className="font-bold text-base sm:text-lg text-foreground group-hover:text-primary transition-colors line-clamp-2 mb-2">
-                  {material.title}
+                {/* Simulated Document Preview Area */}
+                <div 
+                  onClick={() => setActivePreview(card)}
+                  className="h-24 rounded-xl bg-secondary/50 border border-border/60 flex items-center justify-center p-3 mb-3 cursor-pointer group-hover:bg-primary/5 transition-colors"
+                >
+                  <FileText className="h-10 w-10 text-muted-foreground/60 group-hover:text-primary transition-colors" />
+                </div>
+
+                <div className="text-[10px] font-mono font-bold text-primary mb-0.5">
+                  {card.code}
+                </div>
+                <h3 className="font-bold text-xs text-foreground truncate mb-1">
+                  {card.title}
                 </h3>
-
-                {/* Subject name */}
-                <p className="text-xs font-semibold text-primary mb-2">
-                  {material.subject}
+                <p className="text-[11px] text-muted-foreground line-clamp-2 leading-relaxed mb-3">
+                  {card.subtitle}
                 </p>
-
-                {/* Description */}
-                <p className="text-xs text-muted-foreground line-clamp-3 leading-relaxed mb-4">
-                  {material.description}
-                </p>
-
-                {/* Topics Covered Tag Cloud */}
-                <div className="flex flex-wrap gap-1.5 mb-4">
-                  {material.topicsCovered.slice(0, 3).map((topic, tIdx) => (
-                    <span
-                      key={tIdx}
-                      className="text-[10px] font-medium px-2 py-0.5 rounded-md bg-secondary/70 text-muted-foreground"
-                    >
-                      {topic}
-                    </span>
-                  ))}
-                  {material.topicsCovered.length > 3 && (
-                    <span className="text-[10px] font-medium px-1.5 py-0.5 text-muted-foreground/60">
-                      +{material.topicsCovered.length - 3} more
-                    </span>
-                  )}
-                </div>
               </div>
 
-              {/* Bottom Actions */}
-              <div className="pt-4 border-t border-border/60 flex items-center justify-between text-xs">
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <span className="font-medium">{material.fileSize}</span>
-                  {material.pages && (
-                    <>
-                      <span>•</span>
-                      <span>{material.pages}</span>
-                    </>
-                  )}
-                </div>
-
-                <div className="flex items-center gap-1.5">
-                  <button
-                    onClick={(e) => toggleFavorite(material.id, e)}
-                    className={`p-1.5 rounded-lg border transition-colors ${
-                      favorites.includes(material.id)
-                        ? "bg-rose-500/10 border-rose-500/30 text-rose-500"
-                        : "bg-secondary hover:bg-secondary/80 border-border text-muted-foreground hover:text-foreground"
-                    }`}
-                    title={favorites.includes(material.id) ? "Remove from Favorites" : "Add to Favorites"}
-                  >
-                    <Heart className={`h-4 w-4 ${favorites.includes(material.id) ? "fill-rose-500" : ""}`} />
-                  </button>
-                  <button
-                    onClick={(e) => handleCopyLink(material, e)}
-                    className="p-1.5 rounded-lg bg-secondary hover:bg-secondary/80 border border-border text-muted-foreground hover:text-foreground transition-colors"
-                    title="Copy direct share link"
-                  >
-                    <Copy className="h-4 w-4" />
-                  </button>
-                  <button
-                    onClick={(e) => { e.stopPropagation(); setActivePreview(material); }}
-                    className="p-1.5 rounded-lg bg-secondary hover:bg-secondary/80 border border-border text-foreground transition-colors"
-                    title="View Details & Syllabus Coverage"
-                  >
-                    <Eye className="h-4 w-4" />
-                  </button>
-                  <button
-                    onClick={(e) => { e.stopPropagation(); handleDownload(material); }}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground font-semibold hover:opacity-90 transition-opacity shadow-sm"
-                  >
-                    <Download className="h-3.5 w-3.5" />
-                    Download
-                  </button>
-                </div>
-              </div>
+              <button
+                onClick={() => handleDownload(card)}
+                className="w-full h-8 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all active:scale-95 shadow-sm"
+              >
+                <Download className="h-3 w-3" />
+                <span>Download</span>
+              </button>
             </div>
           ))}
+        </div>
+      </div>
 
-          {filteredMaterials.length === 0 && (
-            <div className="col-span-full py-16 text-center bg-card border border-dashed border-border rounded-3xl p-8">
-              <FolderDown className="h-12 w-12 mx-auto text-muted-foreground/40 mb-3" />
-              <h3 className="text-lg font-bold text-foreground mb-1">
-                {showOnlyFavorites
-                  ? "No Favorite Materials Saved Yet"
-                  : selectedSemester !== "All"
-                  ? `No Official Notes for ${selectedSemester} Yet`
-                  : "No Study Materials Found"}
-              </h3>
-              <p className="text-xs text-muted-foreground max-w-md mx-auto mb-5 leading-relaxed">
-                {showOnlyFavorites
-                  ? "Tap the heart icon on any document or guide in the repository to pin it here for quick exam revision."
-                  : "Have Semester 1 or Semester 2 notes, question banks, or PPTs? Share them on our Campus Social community so faculty and student admins can add them to this repository!"}
-              </p>
-              <div className="flex flex-wrap items-center justify-center gap-3">
-                {showOnlyFavorites ? (
-                  <button
-                    onClick={() => setShowOnlyFavorites(false)}
-                    className="px-4 py-2 bg-primary text-primary-foreground text-xs font-bold rounded-xl shadow-xs"
-                  >
-                    Browse All Materials
-                  </button>
-                ) : (
-                  <>
-                    <button
-                      onClick={() => navigate("/community")}
-                      className="px-4 py-2 bg-primary text-primary-foreground text-xs font-bold rounded-xl shadow-xs hover:opacity-90"
-                    >
-                      Submit Notes in Community →
-                    </button>
-                    <button
-                      onClick={() => {
-                        setSearchQuery("");
-                        setSelectedSubject("All");
-                        setSelectedCategory("All");
-                        setSelectedSemester("All");
-                      }}
-                      className="px-4 py-2 bg-secondary text-foreground text-xs font-semibold rounded-xl hover:bg-secondary/80 border border-border"
-                    >
-                      Clear Filters
-                    </button>
-                  </>
-                )}
+      {/* ── SECTION 2: THREE-COLUMN MIDDLE ROW matching Screenshot 2 ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Column 1: Examination Materials Directory Tree (~28% -> lg:col-span-3) */}
+        <div className="lg:col-span-3 bg-card border border-border rounded-2xl p-5 shadow-sm space-y-4">
+          <h3 className="font-bold text-sm text-foreground">Examination Materials</h3>
+
+          <div className="space-y-1.5 text-xs font-semibold">
+            <button className="w-full p-2.5 rounded-xl bg-indigo-600 text-white font-bold flex items-center justify-between text-left shadow-xs">
+              <span className="flex items-center gap-2">
+                <CheckCircle className="h-4 w-4" />
+                <span>Student Materials</span>
+              </span>
+              <ChevronRight className="h-3.5 w-3.5 opacity-70" />
+            </button>
+
+            <button 
+              onClick={() => toast.info("Viewing Attendance study records...")}
+              className="w-full p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary/60 flex items-center justify-between text-left transition-colors"
+            >
+              <span className="flex items-center gap-2">
+                <FileText className="h-4 w-4" />
+                <span>Attendance Materials</span>
+              </span>
+              <ChevronRight className="h-3.5 w-3.5 opacity-50" />
+            </button>
+
+            <button 
+              onClick={() => navigate("/calculator")}
+              className="w-full p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary/60 flex items-center justify-between text-left transition-colors"
+            >
+              <span className="flex items-center gap-2">
+                <Folder className="h-4 w-4" />
+                <span>Attendance Tracker</span>
+              </span>
+              <ChevronRight className="h-3.5 w-3.5 opacity-50" />
+            </button>
+
+            <button 
+              onClick={() => navigate("/community")}
+              className="w-full p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary/60 flex items-center justify-between text-left transition-colors"
+            >
+              <span className="flex items-center gap-2">
+                <Folder className="h-4 w-4" />
+                <span>Community Topics</span>
+              </span>
+              <ChevronRight className="h-3.5 w-3.5 opacity-50" />
+            </button>
+          </div>
+        </div>
+
+        {/* Column 2: Question Banks Trend Chart (~38% -> lg:col-span-5) */}
+        <div className="lg:col-span-5 bg-card border border-border rounded-2xl p-5 shadow-sm flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <h3 className="font-bold text-sm text-foreground">Question Banks</h3>
+              <Link to="/imp-questions" className="text-xs text-primary font-semibold hover:underline">
+                View All &gt;
+              </Link>
+            </div>
+            <p className="text-[11px] text-muted-foreground">
+              Your test inquiries & solved practice question accuracy over time.
+            </p>
+
+            <div className="h-44 w-full pt-3">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={QUESTION_BANK_TREND_DATA}>
+                  <XAxis dataKey="date" stroke="#94A3B8" fontSize={10} tickLine={false} axisLine={false} />
+                  <YAxis hide domain={[0, 100]} />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: "hsl(var(--card))", 
+                      borderColor: "hsl(var(--border))",
+                      borderRadius: "0.5rem",
+                      fontSize: "11px",
+                    }} 
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="count" 
+                    stroke="#6366F1" 
+                    strokeWidth={2.5} 
+                    dot={{ fill: "#6366F1", r: 4 }} 
+                    activeDot={{ r: 6 }} 
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          <div className="pt-3 border-t border-border/60 flex items-center justify-between text-xs">
+            <span className="text-muted-foreground">Top Question Bank: 85% Accuracy</span>
+            <Link to="/imp-questions" className="text-primary hover:underline font-semibold flex items-center gap-1">
+              <span>Core Overviews</span>
+              <ExternalLink className="h-3 w-3" />
+            </Link>
+          </div>
+        </div>
+
+        {/* Column 3: Downloadable Resources (5x2 Metric Grid) (~34% -> lg:col-span-4) */}
+        <div className="lg:col-span-4 bg-card border border-border rounded-2xl p-5 shadow-sm flex flex-col justify-between">
+          <div>
+            <h3 className="font-bold text-sm text-foreground mb-1">Downloadable Resources</h3>
+            <p className="text-[11px] text-muted-foreground mb-3">
+              Comprehensive offline pack for Semester 3.
+            </p>
+
+            {/* 10 Critical Data Metrics Matrix (5 columns x 2 rows) matching Screenshot 2 */}
+            <div className="grid grid-cols-5 gap-2 text-center p-3 rounded-xl bg-secondary/30 border border-border/60 mb-4">
+              <div>
+                <span className="text-base font-black font-mono text-foreground block">32</span>
+                <span className="text-[10px] text-muted-foreground uppercase font-semibold">Notes</span>
+              </div>
+              <div>
+                <span className="text-base font-black font-mono text-indigo-600 block">67</span>
+                <span className="text-[10px] text-muted-foreground uppercase font-semibold">MCQs</span>
+              </div>
+              <div>
+                <span className="text-base font-black font-mono text-foreground block">31</span>
+                <span className="text-[10px] text-muted-foreground uppercase font-semibold">Prac</span>
+              </div>
+              <div>
+                <span className="text-base font-black font-mono text-purple-600 block">515</span>
+                <span className="text-[10px] text-muted-foreground uppercase font-semibold">Quest</span>
+              </div>
+              <div>
+                <span className="text-base font-black font-mono text-emerald-600 block">50%</span>
+                <span className="text-[10px] text-muted-foreground uppercase font-semibold">Solved</span>
+              </div>
+
+              {/* Row 2 */}
+              <div className="pt-2 border-t border-border/60">
+                <span className="text-xs font-bold font-mono text-foreground block">24</span>
+                <span className="text-[9px] text-muted-foreground">Files</span>
+              </div>
+              <div className="pt-2 border-t border-border/60">
+                <span className="text-xs font-bold font-mono text-foreground block">4</span>
+                <span className="text-[9px] text-muted-foreground">Units</span>
+              </div>
+              <div className="pt-2 border-t border-border/60">
+                <span className="text-xs font-bold font-mono text-foreground block">5</span>
+                <span className="text-[9px] text-muted-foreground">Themes</span>
+              </div>
+              <div className="pt-2 border-t border-border/60">
+                <span className="text-xs font-bold font-mono text-foreground block">27</span>
+                <span className="text-[9px] text-muted-foreground">Images</span>
+              </div>
+              <div className="pt-2 border-t border-border/60">
+                <span className="text-xs font-bold font-mono text-foreground block">1.2k</span>
+                <span className="text-[9px] text-muted-foreground">Views</span>
               </div>
             </div>
-          )}
-        </div>
-      </main>
+          </div>
 
-      {/* ── Document Details Modal ── */}
+          <button
+            onClick={() => {
+              toast.success("Preparing offline bundle: 32 Notes & 515 Questions (24.8 MB)...");
+            }}
+            className="w-full h-10 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md shadow-indigo-600/20"
+          >
+            <FolderDown className="h-4 w-4" />
+            <span>Get Revision Now (Download All)</span>
+          </button>
+        </div>
+      </div>
+
+      {/* ── SECTION 3: BOTTOM ROW: TIMETABLES & CHEATSHEET BANNER matching Screenshot 2 ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left Table: Timetables (~65% -> lg:col-span-8) */}
+        <div className="lg:col-span-8 bg-card border border-border rounded-2xl p-5 shadow-sm space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="font-bold text-sm text-foreground">Timetables</h3>
+            <span className="text-xs text-primary font-semibold hover:underline cursor-pointer">
+              View All &gt;
+            </span>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead className="text-[10px] font-bold text-muted-foreground uppercase border-b border-border">
+                <tr>
+                  <th className="pb-2.5">Name</th>
+                  <th className="pb-2.5">Date / Subject</th>
+                  <th className="pb-2.5">Type / Size</th>
+                  <th className="pb-2.5 text-right">Forward</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border/60">
+                {TIMETABLES_LIST.map((item, idx) => (
+                  <tr key={idx} className="hover:bg-secondary/20 transition-colors">
+                    <td className="py-3 font-semibold text-foreground flex items-center gap-2">
+                      <FileCheck className="h-4 w-4 text-primary shrink-0" />
+                      <span>{item.name}</span>
+                    </td>
+                    <td className="py-3 text-muted-foreground">{item.subject}</td>
+                    <td className="py-3 font-mono text-[11px] text-muted-foreground">{item.type}</td>
+                    <td className="py-3 text-right">
+                      <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 font-mono">
+                        {item.size}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Right Promo Card: ITM Notes Solved Questions (~35% -> lg:col-span-4) */}
+        <div className="lg:col-span-4 bg-gradient-to-br from-slate-900 to-indigo-950 text-white border border-slate-800 rounded-2xl p-5 shadow-lg flex flex-col justify-between">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-500/30 text-indigo-200 border border-indigo-400/30">
+                MST Exclusive
+              </span>
+              <span className="text-[11px] text-slate-400">Baroda University</span>
+            </div>
+            <h3 className="font-bold text-base text-white">
+              ITM Notes · Questions the Majority Solve
+            </h3>
+            <p className="text-xs text-slate-300 leading-relaxed font-normal">
+              Top priority cheatsheet for the upcoming mid semester examinations with solved step-by-step algorithms and worked formulas.
+            </p>
+          </div>
+
+          <div className="pt-4 flex items-center justify-between">
+            <button
+              onClick={() => navigate("/imp-questions")}
+              className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md transition-all active:scale-95"
+            >
+              Open Solved Bank &gt;
+            </button>
+            <span className="text-[11px] text-emerald-400 font-semibold font-mono">
+              ✓ 100% Verified
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Preview Modal */}
       {activePreview && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-          <div className="bg-card border border-border rounded-2xl max-w-xl w-full p-6 shadow-2xl relative animate-scale-in">
+          <div className="bg-card border border-border rounded-2xl w-full max-w-lg p-6 shadow-2xl relative space-y-4">
             <button
               onClick={() => setActivePreview(null)}
-              className="absolute right-4 top-4 p-1.5 rounded-full hover:bg-secondary text-muted-foreground hover:text-foreground"
+              className="absolute right-4 top-4 p-1 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary"
             >
               <X className="h-5 w-5" />
             </button>
 
-            <div className="flex items-center gap-2 mb-3">
-              <span className="text-xs font-bold px-2.5 py-0.5 rounded-md bg-primary/10 text-primary">
-                {activePreview.subjectCode} · Semester {activePreview.semester}
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 rounded text-xs font-bold bg-primary/10 text-primary border border-primary/20">
+                {activePreview.code}
               </span>
-              <span className="text-xs font-semibold px-2.5 py-0.5 rounded-md bg-secondary text-muted-foreground">
-                {activePreview.category}
-              </span>
+              <span className="text-xs text-muted-foreground">{activePreview.pages}</span>
             </div>
 
-            <h2 className="text-xl font-bold text-foreground mb-2 leading-snug">
-              {activePreview.title}
-            </h2>
+            <h3 className="font-black text-lg text-foreground">{activePreview.title}</h3>
+            <p className="text-xs text-muted-foreground leading-relaxed">{activePreview.subtitle}</p>
 
-            <p className="text-xs font-semibold text-primary mb-4">
-              Subject: {activePreview.subject}
-            </p>
-
-            <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-              {activePreview.description}
-            </p>
-
-            {/* Embedded Document Preview If URL is available */}
-            {activePreview.downloadUrl && (
-              <div className="mb-4">
-                <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Document Preview</span>
-                  <a
-                    href={activePreview.downloadUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[11px] font-bold text-primary hover:underline flex items-center gap-1"
-                  >
-                    <ExternalLink className="h-3 w-3" /> Full Window
-                  </a>
-                </div>
-                <div className="w-full h-56 rounded-xl border border-border overflow-hidden bg-secondary/30 relative">
-                  <iframe
-                    src={`${activePreview.downloadUrl}#toolbar=0`}
-                    title={activePreview.title}
-                    className="w-full h-full border-0"
-                  />
-                </div>
+            <div className="p-4 rounded-xl bg-secondary/50 border border-border text-xs space-y-2">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">File Size:</span>
+                <span className="font-mono font-bold text-foreground">{activePreview.fileSize}</span>
               </div>
-            )}
-
-            <div className="mb-6">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
-                Topics Covered in this Document:
-              </h4>
-              <div className="flex flex-wrap gap-2">
-                {activePreview.topicsCovered.map((topic, idx) => (
-                  <span
-                    key={idx}
-                    className="text-xs px-2.5 py-1 rounded-md bg-secondary text-foreground flex items-center gap-1.5"
-                  >
-                    <CheckCircle className="h-3 w-3 text-emerald-500" />
-                    {topic}
-                  </span>
-                ))}
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Format:</span>
+                <span className="font-semibold text-foreground">Indexed University PDF / Markdown</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Verification:</span>
+                <span className="font-bold text-emerald-600">SLS Baroda University Exam Cell</span>
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-4 border-t border-border text-xs text-muted-foreground">
-              <div>
-                <span>Size: {activePreview.fileSize}</span>
-                {activePreview.pages && <span className="ml-2">({activePreview.pages})</span>}
-              </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setActivePreview(null)}
-                  className="px-4 py-2 rounded-lg bg-secondary text-foreground font-semibold hover:bg-secondary/80"
-                >
-                  Close
-                </button>
-                {activePreview.downloadUrl && (
-                  <a
-                    href={activePreview.downloadUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border bg-secondary hover:bg-secondary/80 text-foreground font-semibold"
-                  >
-                    <ExternalLink className="h-4 w-4" /> Open
-                  </a>
-                )}
-                <button
-                  onClick={() => {
-                    handleDownload(activePreview);
-                    setActivePreview(null);
-                  }}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-primary-foreground font-bold hover:opacity-90 shadow-sm"
-                >
-                  <Download className="h-4 w-4" /> Download Material
-                </button>
-              </div>
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                onClick={() => setActivePreview(null)}
+                className="px-4 py-2 rounded-xl bg-secondary hover:bg-secondary/80 text-foreground font-semibold text-xs"
+              >
+                Close
+              </button>
+              <button
+                onClick={() => {
+                  handleDownload(activePreview);
+                  setActivePreview(null);
+                }}
+                className="px-5 py-2 rounded-xl bg-primary text-primary-foreground font-bold text-xs shadow-sm hover:opacity-90 flex items-center gap-1.5"
+              >
+                <Download className="h-4 w-4" />
+                <span>Download Now</span>
+              </button>
             </div>
           </div>
         </div>
       )}
-
-      <BackToTop />
-      <Footer />
     </div>
   );
 }

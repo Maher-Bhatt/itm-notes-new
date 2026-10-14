@@ -1,8 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
-import { SearchDialog } from "@/components/SearchDialog";
+import { Link, useNavigate } from "react-router-dom";
 import { 
   BookOpen, 
   ChevronRight, 
@@ -12,223 +9,447 @@ import {
   Database, 
   Server, 
   Coffee, 
-  Calculator, 
   Terminal, 
-  Code2 
+  Code2,
+  CheckCircle,
+  FileText,
+  Folder,
+  Download,
+  FolderDown,
+  FileCheck,
+  ExternalLink,
+  Flame,
+  Search,
+  Plus,
+  Eye
 } from "lucide-react";
+import { 
+  ResponsiveContainer, 
+  LineChart, 
+  Line, 
+  XAxis, 
+  YAxis, 
+  Tooltip 
+} from "recharts";
+import { toast } from "sonner";
 
-interface ImpSubjectCard {
-  id: string;
-  route: string;
-  name: string;
-  code: string;
-  semester: string;
-  description: string;
-  questionsCount: string;
-  badge: string;
-  badgeColor: string;
-  icon: any;
-  featured?: boolean;
-}
-
-const ALL_IMP_SUBJECTS: ImpSubjectCard[] = [
-  // ── SEMESTER 3 CORE SUBJECTS ──
-  {
-    id: "computer-architecture",
-    route: "/imp-questions/ca-101",
-    name: "Computer Architecture",
-    code: "CS401",
-    semester: "Semester 3",
-    description: "Units 1–6 · Micro-operations, Common Bus, CPU Organization, Hardwired vs Microprogrammed, RISC/CISC, Pipelining",
-    questionsCount: "46 Solved Exam Questions · 218 Marks · Last-Night Cheat Sheet",
-    badge: "MST Exam Bank",
-    badgeColor: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20",
-    icon: Cpu,
-    featured: true,
-  },
-  {
-    id: "dsa",
-    route: "/imp-questions/sem3-dsa",
-    name: "Data Structures & Algorithms (DSA)",
-    code: "DSA301",
-    semester: "Semester 3",
-    description: "Units 1–6 · Complexity, Linked Lists, Stacks, Queues, BST, AVL Rotations, Dijkstra, Kruskal, Sorting & Hashing",
-    questionsCount: "Unit-wise 3M, 5M & 7M Questions · Complexities Table · C Code",
-    badge: "Curriculum Bank",
-    badgeColor: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20",
-    icon: Database,
-    featured: true,
-  },
-  {
-    id: "dbms",
-    route: "/imp-questions/sem3-dbms",
-    name: "Database Management Systems (DBMS)",
-    code: "DBMS302",
-    semester: "Semester 3",
-    description: "Units 1–5 · 3-Tier Architecture, ER Modeling, Relational Algebra, SQL Joins & Subqueries, 1NF to BCNF, ACID",
-    questionsCount: "Unit-wise 3M, 5M & 7M Questions · Normalization Traces · SQL",
-    badge: "Curriculum Bank",
-    badgeColor: "bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20",
-    icon: Server,
-    featured: true,
-  },
-  {
-    id: "java",
-    route: "/imp-questions/sem3-java",
-    name: "Object Oriented Programming — Java",
-    code: "JAVA303",
-    semester: "Semester 3",
-    description: "Units 1–6 · JVM Architecture, 4 Pillars of OOP, Dynamic Method Dispatch, Exceptions, Multithreading, Collections",
-    questionsCount: "Unit-wise Questions · Working Java Programs · Lifecycle Traces",
-    badge: "Curriculum Bank",
-    badgeColor: "bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20",
-    icon: Coffee,
-    featured: true,
-  },
-  {
-    id: "coanmp",
-    route: "/imp-questions/sem3-coanmp",
-    name: "Numerical Methods with Python (COANMP)",
-    code: "COANMP",
-    semester: "Semester 3",
-    description: "Units 1–6 · Errors, Bisection, Newton-Raphson, Interpolation (Forward/Lagrange), Trapezoidal, Simpson 1/3, Gauss, RK4",
-    questionsCount: "Formula Sheets · Step-by-Step Derivations · Python Implementations",
-    badge: "Curriculum Bank",
-    badgeColor: "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20",
-    icon: Calculator,
-    featured: true,
-  },
-
-  // ── FOUNDATIONAL PROGRAMMING ──
-  {
-    id: "c-programming",
-    route: "/imp-questions/c-programming",
-    name: "Programming in C",
-    code: "CS101",
-    semester: "Semester 1 & 2",
-    description: "Units 4–8 · Pointers, Pointer Arithmetic, Dynamic Memory, Structures, File I/O, Standard Library",
-    questionsCount: "15 MCQs · 15 Important Questions · 6 Complete Programs",
-    badge: "CET Exam",
-    badgeColor: "bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20",
-    icon: Terminal,
-  },
-  {
-    id: "python",
-    route: "/imp-questions/python",
-    name: "Python Programming",
-    code: "CS201",
-    semester: "Semester 1 & 2",
-    description: "Multithreading, Custom Exception Handling, Synchronization & Regular Expressions",
-    questionsCount: "11 Threading/Exception Qs · 14 Regex Qs · Code Snippets",
-    badge: "Assignments & Labs",
-    badgeColor: "bg-yellow-500/10 text-yellow-700 dark:text-yellow-400 border border-yellow-500/20",
-    icon: Code2,
-  },
+// Question Bank Activity Chart Data matching Screenshot 3
+const QUESTION_BANK_TREND_DATA = [
+  { date: "Oct 00", inquiries: 18 },
+  { date: "Oct 08", inquiries: 32 },
+  { date: "Oct 16", inquiries: 48 },
+  { date: "Oct 24", inquiries: 38 },
+  { date: "Oct 30", inquiries: 72 },
+  { date: "Nov 10", inquiries: 85 },
 ];
 
 export default function ImpQuestionsSubjectsPage() {
   const navigate = useNavigate();
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [activeFilter, setActiveFilter] = useState<"All" | "Semester 3" | "Foundations">("All");
-
-  const filteredSubjects = ALL_IMP_SUBJECTS.filter((sub) => {
-    if (activeFilter === "Semester 3") return sub.semester === "Semester 3";
-    if (activeFilter === "Foundations") return sub.semester !== "Semester 3";
-    return true;
+  const [activeTab, setActiveTab] = useState<"all" | "exam" | "subject">("all");
+  const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({
+    "ca-q1": true,
   });
 
-  return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
-      <Header onSearchOpen={() => setSearchOpen(true)} showBack backTo="/" />
+  const toggleCheck = (id: string) => {
+    setCheckedItems((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
 
-      <main className="flex-1 max-w-4xl mx-auto w-full px-4 sm:px-6 py-10 animate-fade-in">
-        {/* Header Section */}
-        <div className="mb-8">
-          <div className="flex items-center gap-2.5 mb-2">
-            <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
-              <HelpCircle className="h-5 w-5" />
-            </div>
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
-                Important Exam Questions
-              </h1>
-            </div>
+  return (
+    <div className="p-4 sm:p-6 lg:p-8 max-w-[1600px] mx-auto space-y-8 animate-fade-in">
+      {/* ── TOP HEADER SECTION matching Screenshot 3 ── */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-border/60">
+        <div>
+          <h1 className="text-2xl font-black tracking-tight text-foreground">
+            Important Exam Questions
+          </h1>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5 font-medium">
+            <span>Academic resources</span>
+            <span>·</span>
+            <span>Question Banks</span>
+            <span>·</span>
+            <span>ITM</span>
+            <span>·</span>
+            <span className="text-foreground font-semibold">Sem 3</span>
           </div>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            Curated question banks, previous year university exam patterns, step-by-step model answers, and last-night revision cheat sheets.
-          </p>
         </div>
 
-        {/* Filter Pills */}
-        <div className="flex items-center gap-2 mb-6 border-b border-border/60 pb-3">
-          {(["All", "Semester 3", "Foundations"] as const).map((filter) => (
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Mode Filter Tabs matching Screenshot 3 */}
+          <div className="flex rounded-xl bg-secondary p-1 border border-border text-xs font-semibold">
             <button
-              key={filter}
-              onClick={() => setActiveFilter(filter)}
-              className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all ${
-                activeFilter === filter
-                  ? "bg-primary text-primary-foreground shadow-sm"
-                  : "bg-secondary/60 text-muted-foreground hover:bg-secondary hover:text-foreground"
+              onClick={() => setActiveTab("all")}
+              className={`px-3 py-1 rounded-lg transition-all ${
+                activeTab === "all" ? "bg-background text-foreground shadow-xs font-bold" : "text-muted-foreground"
               }`}
             >
-              {filter === "Semester 3" ? "⚡ Semester 3 (Your Current Semester)" : filter}
+              All Courses
             </button>
-          ))}
+            <button
+              onClick={() => setActiveTab("exam")}
+              className={`px-3 py-1 rounded-lg transition-all flex items-center gap-1 ${
+                activeTab === "exam" ? "bg-background text-foreground shadow-xs font-bold" : "text-muted-foreground"
+              }`}
+            >
+              <Flame className="h-3.5 w-3.5 text-amber-500" />
+              <span>Exam Banks</span>
+            </button>
+            <button
+              onClick={() => setActiveTab("subject")}
+              className={`px-3 py-1 rounded-lg transition-all flex items-center gap-1 ${
+                activeTab === "subject" ? "bg-background text-foreground shadow-xs font-bold" : "text-muted-foreground"
+              }`}
+            >
+              <Folder className="h-3.5 w-3.5" />
+              <span>Subject Wise</span>
+            </button>
+          </div>
+
+          <button
+            onClick={() => {
+              navigate("/quiz");
+              toast.info("Navigating to Active Recall Quiz");
+            }}
+            className="h-9 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md shadow-indigo-600/20 flex items-center gap-1.5 transition-all active:scale-95 shrink-0"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            <span>Practice Quiz</span>
+          </button>
+        </div>
+      </div>
+
+      {/* ── TOP 3 SUBJECT CARDS GRID matching Screenshot 3 ── */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Card 1: Computer Architecture ✨ */}
+        <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-4 hover:border-primary/50 transition-colors">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="p-2 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400">
+                <Cpu className="h-5 w-5" />
+              </div>
+              <div>
+                <h3 className="font-bold text-sm text-foreground flex items-center gap-1.5">
+                  <span>Computer Architecture</span>
+                  <Sparkles className="h-3.5 w-3.5 text-amber-500" />
+                </h3>
+                <span className="text-[10px] text-muted-foreground font-mono">CS401 · 46 Solved Questions</span>
+              </div>
+            </div>
+
+            <Link 
+              to="/imp-questions/ca-101" 
+              className="text-xs text-primary font-semibold hover:underline"
+            >
+              View All &gt;
+            </Link>
+          </div>
+
+          {/* Checklist Items matching Screenshot 3 */}
+          <div className="space-y-2 pt-1 text-xs">
+            <div 
+              onClick={() => toggleCheck("ca-q1")}
+              className="p-2.5 rounded-xl border border-border/80 bg-secondary/20 hover:bg-secondary/40 cursor-pointer flex items-center justify-between"
+            >
+              <div className="flex items-center gap-2">
+                <input 
+                  type="checkbox" 
+                  checked={checkedItems["ca-q1"] || false} 
+                  onChange={() => toggleCheck("ca-q1")}
+                  className="rounded text-primary focus:ring-0" 
+                />
+                <span className="font-medium text-foreground">Current Exam Questions (Units 1–6)</span>
+              </div>
+              <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
+            </div>
+
+            <div 
+              onClick={() => navigate("/imp-questions/ca-101")}
+              className="p-2.5 rounded-xl border border-border/80 bg-secondary/20 hover:bg-secondary/40 cursor-pointer flex items-center justify-between"
+            >
+              <div className="flex items-center gap-2">
+                <span className="w-4 h-4 rounded border border-border inline-block" />
+                <span className="font-medium text-foreground">L1 Computer Architecture (3016)</span>
+              </div>
+              <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
+            </div>
+
+            <div 
+              onClick={() => navigate("/imp-questions/ca-101")}
+              className="p-2.5 rounded-xl border border-border/80 bg-secondary/20 hover:bg-secondary/40 cursor-pointer flex items-center justify-between"
+            >
+              <div className="flex items-center gap-2">
+                <span className="w-4 h-4 rounded border border-border inline-block" />
+                <span className="font-medium text-foreground">Certain Exam Management (Net 2026)</span>
+              </div>
+              <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
+            </div>
+          </div>
         </div>
 
-        {/* Subjects List */}
-        <div className="space-y-4">
-          {filteredSubjects.map((subject) => {
-            const Icon = subject.icon;
-            return (
-              <button
-                key={subject.id}
-                onClick={() => navigate(subject.route)}
-                className="group w-full bg-card border border-border/80 hover:border-primary/50 rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-4 text-left transition-all duration-200 shadow-sm hover:shadow-md apple-press"
-              >
-                <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                  <Icon className="h-6 w-6" />
-                </div>
+        {/* Card 2: Data Structures ✨ */}
+        <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-4 hover:border-primary/50 transition-colors">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                <Database className="h-5 w-5" />
+              </div>
+              <div>
+                <h3 className="font-bold text-sm text-foreground flex items-center gap-1.5">
+                  <span>Data Structures</span>
+                  <Sparkles className="h-3.5 w-3.5 text-amber-500" />
+                </h3>
+                <span className="text-[10px] text-muted-foreground font-mono">DSA301 · Complexity & Code</span>
+              </div>
+            </div>
 
-                <div className="flex-1 min-w-0">
-                  <div className="flex flex-wrap items-center gap-2 mb-1">
-                    <span className="text-xs font-bold text-primary">
-                      {subject.code}
-                    </span>
-                    <span className="text-xs text-muted-foreground/60">•</span>
-                    <span className="text-xs font-medium text-muted-foreground">
-                      {subject.semester}
-                    </span>
-                    <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${subject.badgeColor}`}>
-                      {subject.badge}
-                    </span>
-                  </div>
+            <Link 
+              to="/imp-questions/sem3-dsa" 
+              className="text-xs text-primary font-semibold hover:underline"
+            >
+              View All &gt;
+            </Link>
+          </div>
 
-                  <h3 className="font-bold text-lg text-foreground group-hover:text-primary transition-colors">
-                    {subject.name}
-                  </h3>
-
-                  <p className="text-xs text-muted-foreground mt-1 mb-2 line-clamp-2 leading-relaxed">
-                    {subject.description}
-                  </p>
-
-                  <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground/80">
-                    <Sparkles className="h-3.5 w-3.5 text-amber-500" />
-                    <span>{subject.questionsCount}</span>
-                  </div>
-                </div>
-
-                <div className="hidden sm:flex items-center justify-center w-8 h-8 rounded-full bg-secondary text-muted-foreground group-hover:bg-primary group-hover:text-primary-foreground transition-all shrink-0">
-                  <ChevronRight className="h-4 w-4" />
-                </div>
-              </button>
-            );
-          })}
+          {/* Table Metrics matching Screenshot 3 */}
+          <div className="rounded-xl border border-border/80 bg-secondary/20 p-2.5 text-xs">
+            <div className="grid grid-cols-5 text-[10px] font-bold text-muted-foreground uppercase pb-1.5 border-b border-border/60">
+              <span>Date</span>
+              <span>Action</span>
+              <span>Stock</span>
+              <span>Link</span>
+              <span className="text-right">49</span>
+            </div>
+            <div className="grid grid-cols-5 py-2 items-center text-[11px] font-medium border-b border-border/40">
+              <span className="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-600 font-bold font-mono text-[10px] inline-block w-fit">~90</span>
+              <span>0</span>
+              <span className="font-mono">13</span>
+              <Eye className="h-3.5 w-3.5 text-muted-foreground" />
+              <ChevronRight className="h-3.5 w-3.5 text-muted-foreground ml-auto" />
+            </div>
+            <div className="grid grid-cols-5 py-2 items-center text-[11px] font-medium">
+              <span className="px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-600 font-bold font-mono text-[10px] inline-block w-fit">6</span>
+              <span>0</span>
+              <span className="font-mono">13</span>
+              <span className="text-muted-foreground">-</span>
+              <Eye className="h-3.5 w-3.5 text-muted-foreground ml-auto" />
+            </div>
+          </div>
         </div>
-      </main>
 
-      <Footer />
+        {/* Card 3: Database Management Systems ✨ */}
+        <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-4 hover:border-primary/50 transition-colors">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="p-2 rounded-xl bg-orange-500/10 text-orange-600 dark:text-orange-400">
+                <Server className="h-5 w-5" />
+              </div>
+              <div>
+                <h3 className="font-bold text-sm text-foreground flex items-center gap-1.5">
+                  <span>Database Management</span>
+                  <Sparkles className="h-3.5 w-3.5 text-amber-500" />
+                </h3>
+                <span className="text-[10px] text-muted-foreground font-mono">DBMS302 · SQL & Normalization</span>
+              </div>
+            </div>
+
+            <Link 
+              to="/imp-questions/sem3-dbms" 
+              className="text-xs text-primary font-semibold hover:underline"
+            >
+              View All &gt;
+            </Link>
+          </div>
+
+          {/* Table Metrics matching Screenshot 3 */}
+          <div className="rounded-xl border border-border/80 bg-secondary/20 p-2.5 text-xs">
+            <div className="grid grid-cols-5 text-[10px] font-bold text-muted-foreground uppercase pb-1.5 border-b border-border/60">
+              <span>Owner</span>
+              <span>Section</span>
+              <span>Stock</span>
+              <span>Link</span>
+              <span className="text-right">46</span>
+            </div>
+            <div className="grid grid-cols-5 py-2 items-center text-[11px] font-medium border-b border-border/40">
+              <span className="px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-600 font-bold font-mono text-[10px] inline-block w-fit">-10.6</span>
+              <span>0</span>
+              <span className="text-muted-foreground">-</span>
+              <span className="text-[10px] font-mono text-muted-foreground">126 KB</span>
+              <ChevronRight className="h-3.5 w-3.5 text-muted-foreground ml-auto" />
+            </div>
+            <div className="grid grid-cols-5 py-2 items-center text-[11px] font-medium">
+              <span className="px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-600 font-bold font-mono text-[10px] inline-block w-fit">10</span>
+              <span>0</span>
+              <span className="text-muted-foreground">-</span>
+              <span className="text-[10px] font-mono text-muted-foreground">126 KB</span>
+              <ChevronRight className="h-3.5 w-3.5 text-muted-foreground ml-auto" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── LOWER SECTION: EXAMINATION MATERIALS TREE + DBMS CHART + 5x2 RESOURCE MATRIX matching Screenshot 3 ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Column 1: Examination Materials Directory Tree */}
+        <div className="lg:col-span-3 bg-card border border-border rounded-2xl p-5 shadow-sm space-y-4">
+          <h3 className="font-bold text-sm text-foreground">Examination Materials</h3>
+
+          <div className="space-y-1.5 text-xs font-semibold">
+            <button className="w-full p-2.5 rounded-xl bg-indigo-600 text-white font-bold flex items-center justify-between text-left shadow-xs">
+              <span className="flex items-center gap-2">
+                <CheckCircle className="h-4 w-4" />
+                <span>Student Materials</span>
+              </span>
+              <ChevronRight className="h-3.5 w-3.5 opacity-70" />
+            </button>
+
+            <button 
+              onClick={() => toast.info("Opening Attendance study materials...")}
+              className="w-full p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary/60 flex items-center justify-between text-left transition-colors"
+            >
+              <span className="flex items-center gap-2">
+                <FileText className="h-4 w-4" />
+                <span>Attendance Materials</span>
+              </span>
+              <ChevronRight className="h-3.5 w-3.5 opacity-50" />
+            </button>
+
+            <button 
+              onClick={() => navigate("/calculator")}
+              className="w-full p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary/60 flex items-center justify-between text-left transition-colors"
+            >
+              <span className="flex items-center gap-2">
+                <Folder className="h-4 w-4" />
+                <span>Attendance Tracker</span>
+              </span>
+              <ChevronRight className="h-3.5 w-3.5 opacity-50" />
+            </button>
+
+            <button 
+              onClick={() => navigate("/community")}
+              className="w-full p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary/60 flex items-center justify-between text-left transition-colors"
+            >
+              <span className="flex items-center gap-2">
+                <Folder className="h-4 w-4" />
+                <span>Community Topics</span>
+              </span>
+              <ChevronRight className="h-3.5 w-3.5 opacity-50" />
+            </button>
+          </div>
+        </div>
+
+        {/* Column 2: Database Management Systems Line Chart */}
+        <div className="lg:col-span-5 bg-card border border-border rounded-2xl p-5 shadow-sm flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <h3 className="font-bold text-sm text-foreground">Database Management Systems</h3>
+              <span className="text-xs text-primary font-semibold hover:underline cursor-pointer">
+                View All &gt;
+              </span>
+            </div>
+            <p className="text-[11px] text-muted-foreground">
+              Year Date Inquiries & Exam Question Analysis
+            </p>
+
+            <div className="h-44 w-full pt-3">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={QUESTION_BANK_TREND_DATA}>
+                  <XAxis dataKey="date" stroke="#94A3B8" fontSize={10} tickLine={false} axisLine={false} />
+                  <YAxis hide domain={[0, 100]} />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: "hsl(var(--card))", 
+                      borderColor: "hsl(var(--border))",
+                      borderRadius: "0.5rem",
+                      fontSize: "11px",
+                    }} 
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="inquiries" 
+                    stroke="#6366F1" 
+                    strokeWidth={2.5} 
+                    dot={{ fill: "#6366F1", r: 4 }} 
+                    activeDot={{ r: 6 }} 
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          <div className="pt-3 border-t border-border/60 flex items-center justify-between text-xs">
+            <span className="text-muted-foreground">Question Bank Inquiries: 0 %</span>
+            <span className="text-primary hover:underline font-semibold flex items-center gap-1 cursor-pointer">
+              <span>Core Overviews</span>
+              <ExternalLink className="h-3 w-3" />
+            </span>
+          </div>
+        </div>
+
+        {/* Column 3: Downloadable Resources (5x2 Metric Grid) */}
+        <div className="lg:col-span-4 bg-card border border-border rounded-2xl p-5 shadow-sm flex flex-col justify-between">
+          <div>
+            <h3 className="font-bold text-sm text-foreground mb-1">Downloadable Resources</h3>
+            <p className="text-[11px] text-muted-foreground mb-3">
+              Comprehensive offline pack for Semester 3.
+            </p>
+
+            {/* 10 Critical Data Metrics Matrix matching Screenshot 3 */}
+            <div className="grid grid-cols-5 gap-2 text-center p-3 rounded-xl bg-secondary/30 border border-border/60 mb-4">
+              <div>
+                <span className="text-base font-black font-mono text-foreground block">32</span>
+                <span className="text-[10px] text-muted-foreground uppercase font-semibold">Notes</span>
+              </div>
+              <div>
+                <span className="text-base font-black font-mono text-indigo-600 block">67</span>
+                <span className="text-[10px] text-muted-foreground uppercase font-semibold">MCQs</span>
+              </div>
+              <div>
+                <span className="text-base font-black font-mono text-foreground block">31</span>
+                <span className="text-[10px] text-muted-foreground uppercase font-semibold">Prac</span>
+              </div>
+              <div>
+                <span className="text-base font-black font-mono text-purple-600 block">515</span>
+                <span className="text-[10px] text-muted-foreground uppercase font-semibold">Quest</span>
+              </div>
+              <div>
+                <span className="text-base font-black font-mono text-emerald-600 block">50%</span>
+                <span className="text-[10px] text-muted-foreground uppercase font-semibold">Solved</span>
+              </div>
+
+              {/* Row 2 */}
+              <div className="pt-2 border-t border-border/60">
+                <span className="text-xs font-bold font-mono text-foreground block">24</span>
+                <span className="text-[9px] text-muted-foreground">Files</span>
+              </div>
+              <div className="pt-2 border-t border-border/60">
+                <span className="text-xs font-bold font-mono text-foreground block">4</span>
+                <span className="text-[9px] text-muted-foreground">Units</span>
+              </div>
+              <div className="pt-2 border-t border-border/60">
+                <span className="text-xs font-bold font-mono text-foreground block">5</span>
+                <span className="text-[9px] text-muted-foreground">Themes</span>
+              </div>
+              <div className="pt-2 border-t border-border/60">
+                <span className="text-xs font-bold font-mono text-foreground block">27</span>
+                <span className="text-[9px] text-muted-foreground">Images</span>
+              </div>
+              <div className="pt-2 border-t border-border/60">
+                <span className="text-xs font-bold font-mono text-foreground block">1.2k</span>
+                <span className="text-[9px] text-muted-foreground">Views</span>
+              </div>
+            </div>
+          </div>
+
+          <button
+            onClick={() => {
+              toast.success("Preparing full 515-question solved revision pack...");
+            }}
+            className="w-full h-10 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md shadow-indigo-600/20"
+          >
+            <FolderDown className="h-4 w-4" />
+            <span>Get Revision Now</span>
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
