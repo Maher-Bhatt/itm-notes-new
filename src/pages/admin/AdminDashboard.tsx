@@ -36,6 +36,7 @@ import {
   Eye,
   Database,
   Power,
+  Lock,
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -380,25 +381,51 @@ export default function AdminDashboard() {
       bc.postMessage(cfg);
       bc.close();
     } catch {}
+
+    // Synchronize globally via Supabase profiles for instant multi-device sync
     supabase
-      .from("app_settings" as any)
-      .upsert({ key: "maintenance_mode", value: cfg } as any)
-      .then(() => {})
-      .catch(() => {});
+      .from("profiles")
+      .update({ status: next ? `MAINTENANCE:${JSON.stringify(cfg)}` : "Active" })
+      .eq("email", "maherbhatt01@gmail.com")
+      .then(() => {});
+
     toast[next ? "warning" : "success"](
-      next ? "Maintenance mode is now ON — students are blocked." : "Maintenance mode is OFF — site is live."
+      next ? "Maintenance mode is now ACTIVE globally — students are blocked." : "Maintenance mode is OFF — site is live globally."
     );
   };
 
   const saveMaintenanceMessage = () => {
     const stored = localStorage.getItem("itm_maintenance_config");
     const existing = stored ? JSON.parse(stored) : {};
+    const updated = { ...existing, message: maintenanceMsg };
     localStorage.setItem(
       "itm_maintenance_config",
-      JSON.stringify({ ...existing, message: maintenanceMsg })
+      JSON.stringify(updated)
     );
     window.dispatchEvent(new Event("itm_maintenance_updated"));
-    toast.success("Maintenance message saved.");
+
+    if (maintenanceOn) {
+      supabase
+        .from("profiles")
+        .update({ status: `MAINTENANCE:${JSON.stringify(updated)}` })
+        .eq("email", "maherbhatt01@gmail.com")
+        .then(() => {});
+    }
+    toast.success("Maintenance message saved and synced.");
+  };
+
+  const launchStudentPreview = () => {
+    sessionStorage.setItem("itm_preview_maintenance", "true");
+    window.dispatchEvent(new Event("itm_preview_maintenance"));
+    toast.info("Launching student maintenance lock screen...");
+  };
+
+  const testFullLockout = () => {
+    sessionStorage.removeItem("itm_admin_bypassed");
+    localStorage.removeItem("itm_admin_god_mode");
+    sessionStorage.setItem("itm_preview_maintenance", "true");
+    window.dispatchEvent(new Event("itm_preview_maintenance"));
+    toast.warning("Full Lockout active! Unlock using Master PIN (2026).");
   };
 
   // ── Announcements ───────────────────────────────────────────────────────────
@@ -853,29 +880,40 @@ export default function AdminDashboard() {
         {activeTab === "maintenance" && (
           <div className="space-y-6 animate-fade-in max-w-2xl">
             {/* Big toggle */}
-            <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6 space-y-4">
-              <h2 className="font-bold text-base text-white flex items-center gap-2">
-                <Power className="h-4 w-4 text-[#D6E85D]" />
-                Maintenance Toggle
-              </h2>
+            <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6 space-y-5">
+              <div className="flex items-center justify-between">
+                <h2 className="font-bold text-base text-white flex items-center gap-2">
+                  <Power className="h-4 w-4 text-[#D6E85D]" />
+                  Global Maintenance Protocol
+                </h2>
+                <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${
+                  maintenanceOn
+                    ? "bg-amber-500/20 text-amber-300 border-amber-500/40 animate-pulse"
+                    : "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
+                }`}>
+                  {maintenanceOn ? "SYSTEM LOCKED" : "ONLINE LIVE"}
+                </span>
+              </div>
+
               <div className="flex items-center justify-between p-5 bg-slate-700/50 rounded-xl border border-slate-600">
                 <div>
-                  <p className="font-bold text-white text-lg">
-                    {maintenanceOn ? "🔴 Maintenance is ON" : "🟢 Site is Live"}
+                  <p className="font-bold text-white text-lg flex items-center gap-2">
+                    <span>{maintenanceOn ? "🔴 Maintenance is ON" : "🟢 Site is Live"}</span>
                   </p>
-                  <p className="text-sm text-slate-400 mt-0.5">
+                  <p className="text-xs sm:text-sm text-slate-300 mt-1">
                     {maintenanceOn
-                      ? "Students see a maintenance screen. Admins have bypass access."
-                      : "All users have full access to ITM Notes."}
+                      ? "All students and visitors are blocked globally. Admins have bypass access."
+                      : "All courses, coding labs, and materials are fully accessible to everyone."}
                   </p>
                 </div>
                 <button
                   onClick={toggleMaintenance}
-                  className={`relative w-14 h-7 rounded-full transition-colors focus:outline-none border-2 ${
+                  className={`relative w-14 h-7 rounded-full transition-colors focus:outline-none border-2 shrink-0 cursor-pointer ${
                     maintenanceOn
-                      ? "bg-amber-500 border-amber-400"
+                      ? "bg-amber-500 border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.5)]"
                       : "bg-slate-600 border-slate-500"
                   }`}
+                  title={maintenanceOn ? "Deactivate Maintenance" : "Activate Maintenance"}
                 >
                   <span
                     className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
@@ -885,10 +923,33 @@ export default function AdminDashboard() {
                 </button>
               </div>
 
+              {/* Action Buttons: Live Preview & Full Lockout */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                <button
+                  type="button"
+                  onClick={launchStudentPreview}
+                  className="px-4 py-3 bg-[#D6E85D] hover:bg-[#c2d54e] text-[#183F36] rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer group"
+                >
+                  <Eye className="h-4 w-4 group-hover:scale-110 transition-transform" />
+                  <span>Launch 3D Student Preview</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={testFullLockout}
+                  className="px-4 py-3 bg-red-600/90 hover:bg-red-600 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer border border-red-500/40"
+                  title="Locks your screen too so you can test unlock with PIN 2026"
+                >
+                  <Lock className="h-4 w-4" />
+                  <span>Test Lockout (PIN: 2026)</span>
+                </button>
+              </div>
+
               {/* Countdown timer */}
-              <div>
-                <label className="block text-xs font-semibold text-slate-400 mb-1">
-                  Estimated Duration (minutes)
+              <div className="pt-2 border-t border-slate-700/80">
+                <label className="block text-xs font-semibold text-slate-300 mb-1 flex items-center justify-between">
+                  <span>Estimated Duration (Minutes)</span>
+                  <span className="text-[#D6E85D] font-mono font-bold">{maintenanceCountdown} mins</span>
                 </label>
                 <input
                   type="number"
@@ -898,8 +959,8 @@ export default function AdminDashboard() {
                   onChange={(e) => setMaintenanceCountdown(Number(e.target.value))}
                   className="w-full bg-slate-700 border border-slate-600 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-[#D6E85D]/60"
                 />
-                <p className="text-[11px] text-slate-500 mt-1">
-                  Sets the countdown timer displayed to students.
+                <p className="text-[11px] text-slate-400 mt-1">
+                  Sets the live countdown timer displayed to students on the lock screen.
                 </p>
               </div>
             </div>
@@ -908,37 +969,40 @@ export default function AdminDashboard() {
             <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6 space-y-4">
               <h2 className="font-bold text-base text-white flex items-center gap-2">
                 <FileText className="h-4 w-4 text-[#D6E85D]" />
-                Maintenance Message
+                Public Maintenance Message
               </h2>
               <textarea
                 value={maintenanceMsg}
                 onChange={(e) => setMaintenanceMsg(e.target.value)}
-                rows={4}
+                rows={3}
                 className="w-full bg-slate-700 border border-slate-600 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#D6E85D]/60 resize-none"
                 placeholder="Enter the message students will see during maintenance…"
               />
-              <button
-                onClick={saveMaintenanceMessage}
-                className="px-4 py-2 bg-[#D6E85D] text-[#183F36] rounded-xl text-sm font-bold hover:opacity-90 transition-opacity"
-              >
-                Save Message
-              </button>
+              <div className="flex items-center justify-between">
+                <p className="text-xs text-slate-400">
+                  Broadcasts in real-time to all connected devices.
+                </p>
+                <button
+                  onClick={saveMaintenanceMessage}
+                  className="px-4 py-2 bg-[#D6E85D] text-[#183F36] rounded-xl text-xs font-bold hover:opacity-90 transition-opacity cursor-pointer shadow-xs"
+                >
+                  Save & Broadcast
+                </button>
+              </div>
             </div>
 
-            {/* Preview */}
-            {maintenanceOn && (
-              <div className="bg-slate-800 border border-amber-500/30 rounded-2xl p-6 space-y-3">
-                <p className="text-xs font-bold text-amber-400 uppercase tracking-wide">Student Preview</p>
-                <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-5 text-center space-y-2">
-                  <div className="text-4xl">🔧</div>
-                  <h3 className="font-bold text-white text-lg">We are building something incredible.</h3>
-                  <p className="text-sm text-slate-300">{maintenanceMsg}</p>
-                  <p className="text-xs text-amber-400 font-semibold">
-                    Estimated time: {maintenanceCountdown} minutes
-                  </p>
-                </div>
-              </div>
-            )}
+            {/* Quick Status Notice */}
+            <div className="p-4 rounded-xl bg-slate-800/80 border border-slate-700 text-xs text-slate-300 space-y-1.5">
+              <p className="font-bold text-white flex items-center gap-1.5">
+                <Shield className="h-3.5 w-3.5 text-[#D6E85D]" />
+                Administrator Access Notes:
+              </p>
+              <ul className="list-disc pl-4 space-y-1 text-slate-400">
+                <li>Admins can continue navigating the dashboard while maintenance mode is active.</li>
+                <li>Emergency unlock PIN for any blocked device: <strong className="text-white">2026</strong> or <strong className="text-white">velocity</strong>.</li>
+                <li>Turning maintenance OFF restores instant access globally across all sessions.</li>
+              </ul>
+            </div>
           </div>
         )}
 
