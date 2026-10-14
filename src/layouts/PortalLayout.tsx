@@ -5,6 +5,7 @@ import { PortalTopNav } from "./PortalTopNav";
 import { SearchDialog } from "@/components/SearchDialog";
 import { MessageSquare, Sparkles, X, Send } from "lucide-react";
 import { toast } from "sonner";
+import { useFocusMode } from "@/contexts/FocusModeContext";
 
 export function PortalLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -14,7 +15,7 @@ export function PortalLayout() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [isFocusMode, setIsFocusMode] = useState(false);
+  const { focusMode, toggleFocusMode, setFocusMode } = useFocusMode();
 
   // Close mobile sidebar on route change
   useEffect(() => {
@@ -32,25 +33,19 @@ export function PortalLayout() {
         setSearchOpen((prev) => !prev);
       } else if ((e.key === "f" || e.key === "F") && !e.ctrlKey && !e.metaKey && !isInput) {
         e.preventDefault();
-        setIsFocusMode((prev) => {
-          const next = !prev;
-          toast.info(next ? "🎯 Focus Mode Enabled (Sidebar Hidden)" : "Focus Mode Disabled");
-          return next;
-        });
-      } else if (e.key === "Escape" && isFocusMode) {
-        setIsFocusMode(false);
+        toggleFocusMode();
+        toast.info(!focusMode ? "🎯 Focus Mode Enabled (Sidebar Hidden)" : "Focus Mode Disabled");
+      } else if (e.key === "Escape" && focusMode) {
+        setFocusMode(false);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isFocusMode]);
+  }, [focusMode, toggleFocusMode, setFocusMode]);
 
   const handleToggleFocusMode = () => {
-    setIsFocusMode((prev) => {
-      const next = !prev;
-      toast.info(next ? "🎯 Focus Mode Enabled (Sidebar Hidden)" : "Focus Mode Disabled");
-      return next;
-    });
+    toggleFocusMode();
+    toast.info(!focusMode ? "🎯 Focus Mode Enabled (Sidebar Hidden)" : "Focus Mode Disabled");
   };
 
   const handleSendQuickSupport = (e: React.FormEvent) => {
@@ -67,7 +62,7 @@ export function PortalLayout() {
       <PortalSidebar 
         isOpen={sidebarOpen} 
         onClose={() => setSidebarOpen(false)} 
-        isCollapsed={isFocusMode}
+        isCollapsed={focusMode}
       />
 
       {/* 2. Main Content Viewport */}
@@ -76,7 +71,7 @@ export function PortalLayout() {
         <PortalTopNav 
           onToggleSidebar={() => setSidebarOpen((prev) => !prev)}
           onOpenSearch={() => setSearchOpen(true)}
-          isFocusMode={isFocusMode}
+          isFocusMode={focusMode}
           onToggleFocusMode={handleToggleFocusMode}
         />
 

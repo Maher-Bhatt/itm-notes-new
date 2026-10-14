@@ -140,7 +140,7 @@ export default function DashboardPage() {
               <p className="text-xs sm:text-sm text-[#E8EDE4]/90 leading-relaxed font-normal">
                 {user 
                   ? "Access verified syllabus topics, high-yield question banks, or practical codes across B.Tech CSE & BCA. Quietly confident and exam-ready."
-                  : "Welcome to ITM MOOCs! Access verified university notes, solved practical codes (DSA in C & Java), past exam questions, and study calculators across universities."}
+                  : "Welcome to ITM Notes! Access verified university notes, solved practical codes (DSA in C & Java), past exam questions, and study calculators across universities."}
               </p>
               <div className="pt-2 flex flex-wrap items-center gap-3">
                 <button

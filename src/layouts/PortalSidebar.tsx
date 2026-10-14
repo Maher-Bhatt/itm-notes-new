@@ -67,7 +67,7 @@ export function PortalSidebar({ isOpen = false, onClose, isCollapsed = false }: 
 
   const sidebarContent = (
     <div className="flex flex-col h-full bg-[#183F36] text-[#E8EDE4] select-none border-r border-[#1D4A3F]">
-      {/* Brand Header — ITM MOOCs */}
+      {/* Brand Header — ITM Notes */}
       <div className="p-4 border-b border-[#1D4A3F] flex items-center justify-between shrink-0 bg-[#12332C]/60">
         <Link to="/" onClick={onClose} className="flex items-center gap-2 group">
           <ItmMoocsLogo variant="live" size="md" inverted={true} showTagline={true} />

@@ -29,6 +29,7 @@ import GpaCalculatorPage from "./pages/GpaCalculatorPage";
 import SubjectCheatSheetPage from "./pages/SubjectCheatSheetPage";
 import { PortalLayout } from "@/layouts/PortalLayout";
 import { PomodoroProvider } from "@/contexts/PomodoroContext";
+import { FocusModeProvider } from "@/contexts/FocusModeContext";
 import { GamificationProvider, useGamification } from "@/hooks/useGamification";
 import { PomodoroFloatingWidget } from "@/components/PomodoroFloatingWidget";
 import { AchievementCelebrationModal } from "@/components/AchievementCelebrationModal";
@@ -115,59 +116,61 @@ const App = () => (
         <AcademicProvider>
           <GamificationProvider>
             <PomodoroProvider>
-              <TooltipProvider>
-              <Toaster />
-              <Sonner />
-              <BrowserRouter>
-                <ErrorBoundary>
-                  <AppStartup />
-                  <MaintenanceBanner />
-                  <AnnouncementBanner />
-                  <PWAInstallPrompt />
-                  <PomodoroFloatingWidget />
-                  <AchievementCelebrationModal />
-                  <Suspense fallback={<PageFallback />}>
-                    <Routes>
-                      {/* Standalone Landing, Authentication & Onboarding */}
-                      <Route path="/" element={<RootRoute />} />
-                      <Route path="/auth" element={<AuthPage />} />
-                      <Route path="/onboarding" element={<ProtectedRoute><OnboardingPage /></ProtectedRoute>} />
+              <FocusModeProvider>
+                <TooltipProvider>
+                <Toaster />
+                <Sonner />
+                <BrowserRouter>
+                  <ErrorBoundary>
+                    <AppStartup />
+                    <MaintenanceBanner />
+                    <AnnouncementBanner />
+                    <PWAInstallPrompt />
+                    <PomodoroFloatingWidget />
+                    <AchievementCelebrationModal />
+                    <Suspense fallback={<PageFallback />}>
+                      <Routes>
+                        {/* Standalone Landing, Authentication & Onboarding */}
+                        <Route path="/" element={<RootRoute />} />
+                        <Route path="/auth" element={<AuthPage />} />
+                        <Route path="/onboarding" element={<ProtectedRoute><OnboardingPage /></ProtectedRoute>} />
 
-                      {/* Distraction-Free Topic Reader */}
-                      <Route path="/subject/:subjectId/topic/:topicId" element={<TopicPage />} />
+                        {/* Distraction-Free Topic Reader */}
+                        <Route path="/subject/:subjectId/topic/:topicId" element={<TopicPage />} />
 
-                      {/* Unified Modern Portal Layout */}
-                      <Route element={<PortalLayout />}>
-                        <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
-                        <Route path="/materials" element={<ProtectedRoute><MaterialsPage /></ProtectedRoute>} />
-                        <Route path="/quiz" element={<ProtectedRoute><QuizPage /></ProtectedRoute>} />
-                        <Route path="/coding-lab" element={<ProtectedRoute><CodingLabPage /></ProtectedRoute>} />
-                        <Route path="/community" element={<ProtectedRoute><CommunityPage /></ProtectedRoute>} />
-                        <Route path="/social" element={<ProtectedRoute><CommunityPage /></ProtectedRoute>} />
-                        <Route path="/imp-questions" element={<ProtectedRoute><ImpQuestionsSubjectsPage /></ProtectedRoute>} />
-                        <Route path="/imp-questions/c-programming" element={<ProtectedRoute><CProgrammingImpQuestionsPage /></ProtectedRoute>} />
-                        <Route path="/imp-questions/python" element={<ProtectedRoute><PythonImpQuestionsPage /></ProtectedRoute>} />
-                        <Route path="/imp-questions/:subjectId" element={<ProtectedRoute><SubjectImpQuestionsPage /></ProtectedRoute>} />
-                        <Route path="/calculator" element={<ProtectedRoute><GpaCalculatorPage /></ProtectedRoute>} />
-                        <Route path="/gpa-calculator" element={<ProtectedRoute><GpaCalculatorPage /></ProtectedRoute>} />
-                        <Route path="/bookmarks" element={<ProtectedRoute><BookmarksPage /></ProtectedRoute>} />
-                        <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-                        <Route path="/subject/:subjectId" element={<SubjectDashboard />} />
-                        <Route path="/subject/:subjectId/cheat-sheet" element={<SubjectCheatSheetPage />} />
-                        <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminDashboard /></ProtectedRoute>} />
-                        <Route path="/admin/seed" element={<ProtectedRoute requireAdmin><SeedPage /></ProtectedRoute>} />
-                        <Route path="/explore" element={<Index />} />
-                      </Route>
+                        {/* Unified Modern Portal Layout */}
+                        <Route element={<PortalLayout />}>
+                          <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+                          <Route path="/materials" element={<ProtectedRoute><MaterialsPage /></ProtectedRoute>} />
+                          <Route path="/quiz" element={<ProtectedRoute><QuizPage /></ProtectedRoute>} />
+                          <Route path="/coding-lab" element={<ProtectedRoute><CodingLabPage /></ProtectedRoute>} />
+                          <Route path="/community" element={<ProtectedRoute><CommunityPage /></ProtectedRoute>} />
+                          <Route path="/social" element={<ProtectedRoute><CommunityPage /></ProtectedRoute>} />
+                          <Route path="/imp-questions" element={<ProtectedRoute><ImpQuestionsSubjectsPage /></ProtectedRoute>} />
+                          <Route path="/imp-questions/c-programming" element={<ProtectedRoute><CProgrammingImpQuestionsPage /></ProtectedRoute>} />
+                          <Route path="/imp-questions/python" element={<ProtectedRoute><PythonImpQuestionsPage /></ProtectedRoute>} />
+                          <Route path="/imp-questions/:subjectId" element={<ProtectedRoute><SubjectImpQuestionsPage /></ProtectedRoute>} />
+                          <Route path="/calculator" element={<ProtectedRoute><GpaCalculatorPage /></ProtectedRoute>} />
+                          <Route path="/gpa-calculator" element={<ProtectedRoute><GpaCalculatorPage /></ProtectedRoute>} />
+                          <Route path="/bookmarks" element={<ProtectedRoute><BookmarksPage /></ProtectedRoute>} />
+                          <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+                          <Route path="/subject/:subjectId" element={<SubjectDashboard />} />
+                          <Route path="/subject/:subjectId/cheat-sheet" element={<SubjectCheatSheetPage />} />
+                          <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminDashboard /></ProtectedRoute>} />
+                          <Route path="/admin/seed" element={<ProtectedRoute requireAdmin><SeedPage /></ProtectedRoute>} />
+                          <Route path="/explore" element={<Index />} />
+                        </Route>
 
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
-              </Suspense>
-              <MobileBottomNav />
-              </ErrorBoundary>
-            </BrowserRouter>
-          </TooltipProvider>
-            </PomodoroProvider>
-          </GamificationProvider>
+                        <Route path="*" element={<NotFound />} />
+                      </Routes>
+                </Suspense>
+                <MobileBottomNav />
+                </ErrorBoundary>
+              </BrowserRouter>
+            </TooltipProvider>
+          </FocusModeProvider>
+        </PomodoroProvider>
+      </GamificationProvider>
         </AcademicProvider>
       </AuthProvider>
     </QueryClientProvider>

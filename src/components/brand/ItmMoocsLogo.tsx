@@ -12,7 +12,7 @@ interface ItmMoocsLogoProps {
 }
 
 /**
- * ItmMoocsLogo: Official Brand Kit Logo Component for ITM MOOCs.
+ * ItmMoocsLogo: Official Brand Kit Logo Component for ITM Notes.
  * Uses the authentic abstract arch/pathway mark, forest green, and chartreuse accents.
  * Supports compact UI, mark-only, or full horizontal lockup with live typography.
  */
@@ -50,7 +50,7 @@ export function ItmMoocsLogo({
       <div className={`relative inline-flex items-center justify-center shrink-0 ${markSizeClasses[size]} ${className}`}>
         <img
           src={markTransparent}
-          alt="ITM MOOCs Mark"
+          alt="ITM Notes Mark"
           className="w-full h-full object-contain"
           loading="eager"
         />
@@ -63,7 +63,7 @@ export function ItmMoocsLogo({
       <div className={`inline-flex flex-col items-start ${className}`}>
         <img
           src={primaryTransparent}
-          alt="ITM MOOCs — Learn Beyond Borders"
+          alt="ITM Notes — Your Academic Companion"
           className={`${heightClasses[size]} w-auto object-contain ${inverted ? "brightness-0 invert" : ""}`}
           loading="eager"
         />
@@ -77,7 +77,7 @@ export function ItmMoocsLogo({
         <div className={`relative shrink-0 ${markSizeClasses[size]}`}>
           <img
             src={markTransparent}
-            alt="ITM MOOCs Mark"
+            alt="ITM Notes Mark"
             className="w-full h-full object-contain"
           />
         </div>
@@ -95,7 +95,7 @@ export function ItmMoocsLogo({
                 inverted ? "text-[#D6E85D]" : "text-[#183F36] dark:text-[#D6E85D]"
               }`}
             >
-              MOOCs
+              Notes
             </span>
           </div>
           {showTagline && (
@@ -104,7 +104,7 @@ export function ItmMoocsLogo({
                 inverted ? "text-[#D6E85D]/80" : "text-[#68716B] dark:text-[#D6E85D]/80"
               }`}
             >
-              Learn Beyond Borders
+              Your Academic Companion
             </span>
           )}
         </div>
@@ -117,7 +117,7 @@ export function ItmMoocsLogo({
     <div className={`inline-flex items-center ${className}`}>
       <img
         src={horizontalTransparent}
-        alt="ITM MOOCs"
+        alt="ITM Notes"
         className={`${heightClasses[size]} w-auto object-contain ${inverted ? "brightness-0 invert" : ""}`}
         loading="eager"
       />

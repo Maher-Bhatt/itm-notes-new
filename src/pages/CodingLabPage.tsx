@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { useGamification } from '@/hooks/useGamification';
 import { useAcademic } from '@/contexts/AcademicContext';
+import { useFocusMode } from '@/contexts/FocusModeContext';
 import { toast } from 'sonner';
 import { CodingProblem, ALL_CODING_PROBLEMS as CODING_PROBLEMS } from '@/data/codingLabData';
 
@@ -243,6 +244,7 @@ Understand the core input constraints, invariants, and edge cases. Strive for op
 
 export default function CodingLabPage() {
   const { semesterNumber } = useAcademic();
+  const { focusMode, toggleFocusMode } = useFocusMode();
   const [selectedSemester, setSelectedSemester] = useState<number | 'all'>('all');
   const [selectedSubject, setSelectedSubject] = useState<string>('all');
   const [selectedLanguage, setSelectedLanguage] = useState<string>('all');
@@ -746,7 +748,7 @@ export default function CodingLabPage() {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-base sm:text-lg font-bold tracking-tight">ITM MOOCs Practical & Coding Lab</h1>
+                <h1 className="text-base sm:text-lg font-bold tracking-tight">ITM Notes Practical & Coding Lab</h1>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-semibold">
                   154 Practicals Live
                 </span>
@@ -792,6 +794,34 @@ export default function CodingLabPage() {
                 <span className="ml-1 h-4 w-4 rounded-full bg-background text-foreground text-[10px] flex items-center justify-center font-bold">
                   {activeFiltersCount}
                 </span>
+              )}
+            </Button>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                toggleFocusMode();
+                toast.info(!focusMode ? "🎯 Focus Mode Enabled (Sidebar Hidden)" : "Focus Mode Disabled");
+              }}
+              className={`h-8 rounded-full px-3 text-xs gap-1.5 transition-all ${
+                focusMode 
+                  ? 'bg-[#183F36] text-[#D6E85D] border-[#183F36] font-bold shadow-md hover:bg-[#12332C]' 
+                  : 'bg-card hover:bg-secondary text-muted-foreground hover:text-foreground border-border'
+              }`}
+              title={focusMode ? "Exit Focus Mode (Press F or Esc)" : "Focus Mode: Hide Sidebar & Focus on Coding (Press F)"}
+            >
+              {focusMode ? (
+                <>
+                  <Minimize2 className="h-3.5 w-3.5" />
+                  <span className="hidden sm:inline">Exit Focus</span>
+                </>
+              ) : (
+                <>
+                  <Maximize2 className="h-3.5 w-3.5" />
+                  <span className="hidden sm:inline">Focus Mode</span>
+                  <kbd className="hidden lg:inline-flex items-center px-1 text-[9px] font-mono bg-background/50 rounded border border-border/60">F</kbd>
+                </>
               )}
             </Button>
           </div>
@@ -1797,6 +1827,23 @@ export default function CodingLabPage() {
           )}
         </div>
       </main>
+
+      {/* Floating Exit Focus Mode Button */}
+      {focusMode && (
+        <div className="fixed bottom-6 right-8 z-50 animate-fade-in">
+          <button
+            onClick={() => {
+              toggleFocusMode();
+              toast.info("Focus Mode Disabled");
+            }}
+            className="flex items-center gap-2 px-3.5 py-2 rounded-full bg-[#183F36] text-[#D6E85D] border border-[#264941] shadow-2xl text-xs font-bold hover:scale-105 active:scale-95 transition-all cursor-pointer"
+            title="Click to restore sidebar (or press Esc / F)"
+          >
+            <Minimize2 className="h-4 w-4" />
+            <span>Exit Focus Mode (F)</span>
+          </button>
+        </div>
+      )}
     </div>
   );
 }

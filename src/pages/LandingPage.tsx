@@ -1,40 +1,52 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import { 
-  BookOpen, 
-  Code2, 
-  CheckCircle2, 
-  HelpCircle, 
-  Flame, 
-  Sparkles, 
-  Shield, 
-  Calculator, 
-  Users, 
-  ArrowRight, 
-  Check, 
-  Lock, 
-  Unlock, 
-  Eye, 
-  EyeOff, 
-  Clock, 
-  FileText, 
-  ChevronRight, 
-  Terminal, 
-  Award, 
-  AlertTriangle, 
-  Zap, 
-  Download, 
-  Layers, 
+import {
+  BookOpen,
+  Code2,
+  CheckCircle2,
+  HelpCircle,
+  Flame,
+  Sparkles,
+  Shield,
+  Calculator,
+  Users,
+  ArrowRight,
+  Check,
+  Lock,
+  Unlock,
+  Eye,
+  EyeOff,
+  Clock,
+  FileText,
+  ChevronRight,
+  Terminal,
+  Award,
+  AlertTriangle,
+  Zap,
+  Download,
+  Layers,
   Globe,
   Loader2,
   GraduationCap,
-  Building2
+  Building2,
+  Trophy,
 } from "lucide-react";
 import { ItmMoocsLogo } from "@/components/brand/ItmMoocsLogo";
 
+// ── Types ──────────────────────────────────────────────────────────────────────
+interface Particle {
+  id: number;
+  left: string;
+  animationDuration: string;
+  animationDelay: string;
+  size: string;
+  opacity: number;
+}
+
+// ── Helper ─────────────────────────────────────────────────────────────────────
 function getFeatureName(path?: string) {
   if (!path) return "the Academic Hub";
   if (path.includes("material")) return "the Academic Materials Library";
@@ -47,12 +59,46 @@ function getFeatureName(path?: string) {
   return "the Academic Hub";
 }
 
+// ── Inline global keyframe styles ─────────────────────────────────────────────
+const globalStyles = `
+@keyframes float-up {
+  0%   { opacity: 0; transform: translateY(100vh) scale(0.5); }
+  10%  { opacity: 0.7; }
+  90%  { opacity: 0.5; }
+  100% { opacity: 0; transform: translateY(-10vh) scale(1); }
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+@keyframes gentle-float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+`;
+
+// ── Typewriter words ───────────────────────────────────────────────────────────
+const TYPEWRITER_WORDS = ["DSA Notes", "DBMS SQL", "Java OOP", "COA Pipelines", "MCQ Practice"];
+
+// ── Component ──────────────────────────────────────────────────────────────────
 export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean }) {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, profile, isLoading } = useAuth();
 
-  // Auth Card State
+  // ── Auth Card State ──────────────────────────────────────────────────────────
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -60,37 +106,126 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Interactive Attendance Demo State
+  // ── Interactive Attendance Demo State ────────────────────────────────────────
   const [demoTotalClasses, setDemoTotalClasses] = useState(48);
   const [demoAttendedClasses, setDemoAttendedClasses] = useState(41);
 
-  // Interactive Code Demo Language State
+  // ── Interactive Code Demo Language State ─────────────────────────────────────
   const [demoCodeLang, setDemoCodeLang] = useState<"c" | "java">("c");
+
+  // ── Typewriter State ─────────────────────────────────────────────────────────
+  const [twWordIndex, setTwWordIndex] = useState(0);
+  const [twDisplayed, setTwDisplayed] = useState("");
+  const [twDeleting, setTwDeleting] = useState(false);
+
+  // ── Particles ────────────────────────────────────────────────────────────────
+  const [particles, setParticles] = useState<Particle[]>([]);
+
+  // ── Counter Animation ────────────────────────────────────────────────────────
+  const statsRef = useRef<HTMLDivElement>(null);
+  const [countersStarted, setCountersStarted] = useState(false);
+  const [mcqCount, setMcqCount] = useState(0);
+  const [pdfCount, setPdfCount] = useState(0);
+  const [labCount, setLabCount] = useState(0);
+  const [studentCount, setStudentCount] = useState(0);
+
+  // ── Logged-in redirect banner ────────────────────────────────────────────────
+  const [redirectCountdown, setRedirectCountdown] = useState(2);
 
   const fromState = (location.state as { from?: string | { pathname?: string; search?: string; hash?: string } } | null)?.from;
   const fromLocation = fromState
-    ? (typeof fromState === 'string' ? fromState : `${fromState.pathname || "/"}${fromState.search || ""}${fromState.hash || ""}`)
+    ? (typeof fromState === "string" ? fromState : `${fromState.pathname || "/"}${fromState.search || ""}${fromState.hash || ""}`)
     : "/dashboard";
 
-  // If user is already authenticated, redirect to dashboard
+  // ── If user is logged in, show welcome + auto-redirect after 2s ──────────────
   useEffect(() => {
     if (!isLoading && user) {
       const dest = fromLocation === "/auth" || fromLocation === "/" ? "/dashboard" : fromLocation;
-      navigate(dest, { replace: true });
+      const timer = setInterval(() => {
+        setRedirectCountdown((prev) => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            navigate(dest, { replace: true });
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      return () => clearInterval(timer);
     }
   }, [user, isLoading, navigate, fromLocation]);
 
-  // Scroll to Auth card if focusAuth is true
+  // ── Scroll to auth card if focusAuth prop is set ─────────────────────────────
   useEffect(() => {
     if (focusAuth) {
       const el = document.getElementById("auth-portal-card");
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth" });
-      }
+      if (el) el.scrollIntoView({ behavior: "smooth" });
     }
   }, [focusAuth]);
 
-  // Auth Submission
+  // ── Generate particles on mount ──────────────────────────────────────────────
+  useEffect(() => {
+    const generated: Particle[] = Array.from({ length: 20 }, (_, i) => ({
+      id: i,
+      left: `${Math.random() * 100}%`,
+      animationDuration: `${8 + Math.random() * 12}s`,
+      animationDelay: `${Math.random() * 10}s`,
+      size: `${3 + Math.random() * 5}px`,
+      opacity: 0.3 + Math.random() * 0.5,
+    }));
+    setParticles(generated);
+  }, []);
+
+  // ── Typewriter effect ────────────────────────────────────────────────────────
+  useEffect(() => {
+    const currentWord = TYPEWRITER_WORDS[twWordIndex];
+    let timeout: ReturnType<typeof setTimeout>;
+
+    if (!twDeleting && twDisplayed.length < currentWord.length) {
+      timeout = setTimeout(() => setTwDisplayed(currentWord.slice(0, twDisplayed.length + 1)), 80);
+    } else if (!twDeleting && twDisplayed.length === currentWord.length) {
+      timeout = setTimeout(() => setTwDeleting(true), 1800);
+    } else if (twDeleting && twDisplayed.length > 0) {
+      timeout = setTimeout(() => setTwDisplayed(twDisplayed.slice(0, -1)), 45);
+    } else if (twDeleting && twDisplayed.length === 0) {
+      setTwDeleting(false);
+      setTwWordIndex((prev) => (prev + 1) % TYPEWRITER_WORDS.length);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [twDisplayed, twDeleting, twWordIndex]);
+
+  // ── Counter animation (IntersectionObserver) ─────────────────────────────────
+  useEffect(() => {
+    if (!statsRef.current) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !countersStarted) {
+          setCountersStarted(true);
+          animateCounter(setMcqCount, 500, 1800);
+          animateCounter(setPdfCount, 60, 1400);
+          animateCounter(setLabCount, 15, 1200);
+          animateCounter(setStudentCount, 100, 1600);
+        }
+      },
+      { threshold: 0.3 }
+    );
+    observer.observe(statsRef.current);
+    return () => observer.disconnect();
+  }, [countersStarted]);
+
+  function animateCounter(setter: React.Dispatch<React.SetStateAction<number>>, target: number, duration: number) {
+    const steps = 40;
+    const interval = duration / steps;
+    let step = 0;
+    const timer = setInterval(() => {
+      step++;
+      setter(Math.round((target * step) / steps));
+      if (step >= steps) clearInterval(timer);
+    }, interval);
+  }
+
+  // ── Auth Submission ──────────────────────────────────────────────────────────
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -103,9 +238,8 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
         });
         if (error) throw error;
 
-        toast.success("Welcome back! Signing into ITM MOOCs...");
-        
-        // Check onboarding status
+        toast.success("Welcome back! Signing into ITM Notes...");
+
         let needsOnboarding = false;
         if (data?.user?.id) {
           const { data: existingProfile } = await supabase
@@ -139,700 +273,621 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
 
         if (data?.user?.id) {
           try {
-            await supabase.from("profiles").upsert({
-              user_id: data.user.id,
-              email: email.trim(),
-              display_name: displayName.trim() || email.split("@")[0],
-              role: "student",
-              onboarding_completed: false,
-            }, { onConflict: "user_id" });
+            await supabase.from("profiles").upsert(
+              {
+                user_id: data.user.id,
+                email: email.trim(),
+                display_name: displayName.trim() || email.split("@")[0],
+                role: "student",
+                onboarding_completed: false,
+              },
+              { onConflict: "user_id" }
+            );
           } catch {}
         }
 
-        toast.success("Account created successfully! Welcome to ITM MOOCs.");
+        toast.success("Account created successfully! Welcome to ITM Notes.");
         navigate("/onboarding", { replace: true });
       }
-    } catch (err: any) {
-      toast.error(err?.message || "Authentication error. Please check your credentials.");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Authentication error. Please check your credentials.";
+      toast.error(message);
     } finally {
       setLoading(false);
     }
   };
 
-  // 75% Attendance calculation
+  // ── 75% Attendance calculation ───────────────────────────────────────────────
   const demoPercentage = demoTotalClasses > 0 ? (demoAttendedClasses / demoTotalClasses) * 100 : 0;
   const isDemoSafe = demoPercentage >= 75;
   const safeBunks = isDemoSafe ? Math.floor((demoAttendedClasses - 0.75 * demoTotalClasses) / 0.75) : 0;
   const neededClasses = !isDemoSafe ? Math.ceil((0.75 * demoTotalClasses - demoAttendedClasses) / 0.25) : 0;
 
+  // ── Feature cards data ───────────────────────────────────────────────────────
+  const features = [
+    {
+      icon: <BookOpen className="h-6 w-6" />,
+      emoji: "📚",
+      title: "Study Materials",
+      desc: "Verified notes, PDFs, and formula sheets for every topic — mapped 100% to your university syllabus.",
+      color: "text-[#183F36] dark:text-[#D6E85D]",
+    },
+    {
+      icon: <HelpCircle className="h-6 w-6" />,
+      emoji: "🧠",
+      title: "Practice Quizzes",
+      desc: "500+ MCQs with step-by-step explanations, topic accuracy gauges, and XP rewards for every correct answer.",
+      color: "text-[#267653] dark:text-[#D6E85D]",
+    },
+    {
+      icon: <Code2 className="h-6 w-6" />,
+      emoji: "💻",
+      title: "Coding Lab",
+      desc: "Hands-on practicals in C, Java, and Python with simulated terminal output and dual-language toggle.",
+      color: "text-[#315B4F] dark:text-[#D6E85D]",
+    },
+    {
+      icon: <Calculator className="h-6 w-6" />,
+      emoji: "📊",
+      title: "SGPA Calculator",
+      desc: "GPA tracker with real-time 75% attendance protection — know exactly how many classes you can safely skip.",
+      color: "text-[#A66A1D] dark:text-[#D6E85D]",
+    },
+    {
+      icon: <Trophy className="h-6 w-6" />,
+      emoji: "🏆",
+      title: "Gamification",
+      desc: "Earn XP, level up your student rank, maintain daily study streaks, and compete on the leaderboard.",
+      color: "text-[#267653] dark:text-[#D6E85D]",
+    },
+    {
+      icon: <Users className="h-6 w-6" />,
+      emoji: "👥",
+      title: "Community",
+      desc: "Campus Pulse real-time discussions, anonymous confessions wall, and study group formation — all in one place.",
+      color: "text-[#183F36] dark:text-[#D6E85D]",
+    },
+  ];
+
+  // ── How it works steps ───────────────────────────────────────────────────────
+  const steps = [
+    { step: "01", title: "Create your account", desc: "Sign up free in under 30 seconds — no credit card, no paywall." },
+    { step: "02", title: "Choose semester & subjects", desc: "Select your university, semester, and subjects to get a personalised study hub." },
+    { step: "03", title: "Study, practice & track", desc: "Read notes, attempt MCQs, run practicals, and watch your progress grow." },
+  ];
+
+  // ══════════════════════════════════════════════════════════════════════════════
   return (
-    <div className="min-h-screen bg-[#F5F1E8] dark:bg-[#12221E] text-[#202522] dark:text-[#F5F1E8] selection:bg-[#D6E85D] selection:text-[#183F36] font-sans antialiased">
-      {/* ── TOP MARKETING NAVBAR ── */}
-      <header className="sticky top-0 z-50 bg-[#FFFEFA]/90 dark:bg-[#182E29]/90 backdrop-blur-md border-b border-[#E0E2D9] dark:border-[#264941] px-4 sm:px-8 py-3.5 transition-colors">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 group">
-            <ItmMoocsLogo variant="live" size="md" showTagline={true} />
-          </Link>
+    <>
+      {/* Inject global CSS keyframes */}
+      <style>{globalStyles}</style>
 
-          <nav className="hidden md:flex items-center gap-6 text-xs font-semibold text-[#68716B] dark:text-[#A2BAAF] font-display">
-            <a href="#features" className="hover:text-[#183F36] dark:hover:text-[#D6E85D] transition-colors">Pillars</a>
-            <a href="#universities" className="hover:text-[#183F36] dark:hover:text-[#D6E85D] transition-colors">Universities</a>
-            <a href="#coding-lab" className="hover:text-[#183F36] dark:hover:text-[#D6E85D] transition-colors">Coding Lab</a>
-            <a href="#attendance" className="hover:text-[#183F36] dark:hover:text-[#D6E85D] transition-colors">75% Safeguard</a>
-            <a href="#faq" className="hover:text-[#183F36] dark:hover:text-[#D6E85D] transition-colors">FAQ</a>
-          </nav>
+      <div className="min-h-screen bg-[#F5F1E8] dark:bg-[#12221E] text-[#202522] dark:text-[#F5F1E8] selection:bg-[#D6E85D] selection:text-[#183F36] font-sans antialiased">
 
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => {
-                const el = document.getElementById("auth-portal-card");
-                el?.scrollIntoView({ behavior: "smooth" });
-              }}
-              className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-[#183F36] hover:bg-[#12332C] text-white text-xs font-bold shadow-md shadow-[#183F36]/20 transition-all hover:scale-102 active:scale-98 cursor-pointer flex items-center gap-2 font-display"
-            >
-              <span>Student Sign In</span>
-              <ArrowRight className="h-3.5 w-3.5 text-[#D6E85D]" />
-            </button>
-          </div>
-        </div>
-      </header>
+        {/* ── TOP NAVBAR ─────────────────────────────────────────────────────── */}
+        <header className="sticky top-0 z-50 bg-[#183F36]/95 backdrop-blur-md border-b border-[#1D4A3F] px-4 sm:px-8 py-3.5 transition-colors">
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <Link to="/" className="flex items-center gap-2 group">
+              <ItmMoocsLogo variant="live" size="md" showTagline={false} inverted={true} />
+            </Link>
 
-      {/* ── HERO MARKETING SECTION WITH EMBEDDED AUTH CARD ── */}
-      <section className="relative overflow-hidden py-12 lg:py-20 border-b border-[#E0E2D9] dark:border-[#264941]">
-        {/* Subtle Brand Background Accents */}
-        <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#D6E85D]/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute top-1/3 right-1/4 w-80 h-80 bg-[#183F36]/10 rounded-full blur-3xl pointer-events-none" />
+            <nav className="hidden md:flex items-center gap-6 text-xs font-semibold text-[#A2BAAF]">
+              <a href="#features" className="hover:text-[#D6E85D] transition-colors">Features</a>
+              <a href="#how-it-works" className="hover:text-[#D6E85D] transition-colors">How It Works</a>
+              <a href="#stats" className="hover:text-[#D6E85D] transition-colors">Stats</a>
+              <a href="#auth-portal-card" className="hover:text-[#D6E85D] transition-colors">Sign In</a>
+            </nav>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            
-            {/* Left Hero Pitch (lg:col-span-7) */}
-            <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#E8EDE4] dark:bg-[#1D3B34] border border-[#E0E2D9] dark:border-[#264941] text-[#183F36] dark:text-[#D6E85D] text-xs font-bold font-display">
-                <Sparkles className="h-3.5 w-3.5 text-[#D6E85D]" />
-                <span>Multi-University Learning Hub · Learn Beyond Borders</span>
-              </div>
-
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-[#183F36] dark:text-[#F5F1E8] leading-[1.1] font-display">
-                Master Your Semester Exams. <br />
-                <span className="text-[#315B4F] dark:text-[#D6E85D]">
-                  Quietly Confident. Truly Complete.
-                </span>
-              </h1>
-
-              <p className="text-sm sm:text-base text-[#68716B] dark:text-[#A2BAAF] max-w-2xl mx-auto lg:mx-0 leading-relaxed font-normal">
-                Say goodbye to scattered WhatsApp PDFs and broken code files. ITM MOOCs equips you with verified university syllabus notes, interactive practical coding labs (DSA in C & Java), past exam question banks with step-by-step marking schemes, and the 75% attendance safeguard calculator.
-              </p>
-
-              {/* High Impact Metrics */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-                <div className="p-4 rounded-2xl bg-[#FFFEFA] dark:bg-[#182E29] border border-[#E0E2D9] dark:border-[#264941] text-center shadow-xs">
-                  <div className="text-2xl font-black font-mono text-[#183F36] dark:text-[#D6E85D]">100%</div>
-                  <div className="text-[10px] text-[#68716B] dark:text-[#A2BAAF] font-bold uppercase tracking-wider mt-0.5">Syllabus Mapped</div>
-                </div>
-                <div className="p-4 rounded-2xl bg-[#FFFEFA] dark:bg-[#182E29] border border-[#E0E2D9] dark:border-[#264941] text-center shadow-xs">
-                  <div className="text-2xl font-black font-mono text-[#267653] dark:text-[#D6E85D]">150+</div>
-                  <div className="text-[10px] text-[#68716B] dark:text-[#A2BAAF] font-bold uppercase tracking-wider mt-0.5">Coding Practicals</div>
-                </div>
-                <div className="p-4 rounded-2xl bg-[#FFFEFA] dark:bg-[#182E29] border border-[#E0E2D9] dark:border-[#264941] text-center shadow-xs">
-                  <div className="text-2xl font-black font-mono text-[#183F36] dark:text-[#D6E85D]">480+</div>
-                  <div className="text-[10px] text-[#68716B] dark:text-[#A2BAAF] font-bold uppercase tracking-wider mt-0.5">Practice MCQs</div>
-                </div>
-                <div className="p-4 rounded-2xl bg-[#FFFEFA] dark:bg-[#182E29] border border-[#E0E2D9] dark:border-[#264941] text-center shadow-xs">
-                  <div className="text-2xl font-black font-mono text-[#A66A1D] dark:text-[#D6E85D]">75%</div>
-                  <div className="text-[10px] text-[#68716B] dark:text-[#A2BAAF] font-bold uppercase tracking-wider mt-0.5">Attendance Guard</div>
-                </div>
-              </div>
-
-              {/* Feature Pills */}
-              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 pt-1 text-xs text-[#68716B] dark:text-[#A2BAAF]">
-                <span className="flex items-center gap-1.5"><Check className="h-4 w-4 text-[#267653] dark:text-[#D6E85D]" /> Open to all engineering students</span>
-                <span className="flex items-center gap-1.5"><Check className="h-4 w-4 text-[#267653] dark:text-[#D6E85D]" /> C & Java Compiler</span>
-                <span className="flex items-center gap-1.5"><Check className="h-4 w-4 text-[#267653] dark:text-[#D6E85D]" /> MST-1 & MST-2 Question Banks</span>
-              </div>
-            </div>
-
-            {/* Right Modern Paper Auth Card (lg:col-span-5) */}
-            <div id="auth-portal-card" className="lg:col-span-5">
-              <div className="bg-[#FFFEFA] dark:bg-[#182E29] border border-[#E0E2D9] dark:border-[#264941] rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-[#D6E85D]/10 rounded-full blur-2xl pointer-events-none" />
-
-                {/* Redirect notice if student was routed here from a protected page */}
-                {fromState && (
-                  <div className="mb-5 p-3 rounded-xl bg-[#E8EDE4] dark:bg-[#1D3B34] border border-[#E0E2D9] dark:border-[#264941] text-xs text-[#183F36] dark:text-[#D6E85D] font-medium flex items-center gap-2">
-                    <Lock className="h-4 w-4 text-[#183F36] dark:text-[#D6E85D] shrink-0" />
-                    <span>
-                      <strong className="text-[#183F36] dark:text-[#F5F1E8]">Student Login Required:</strong> Sign in below to access {getFeatureName((fromState as any)?.pathname)}.
-                    </span>
-                  </div>
-                )}
-
-                {/* Auth Mode Toggle Tabs */}
-                <div className="flex p-1 rounded-2xl bg-[#F5F1E8] dark:bg-[#12221E] border border-[#E0E2D9] dark:border-[#264941] mb-6 font-display">
+            <div className="flex items-center gap-3">
+              {user ? (
+                <button
+                  onClick={() => navigate("/dashboard")}
+                  className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-[#D6E85D] hover:bg-[#c8da4e] text-[#183F36] text-xs font-bold shadow-md transition-all hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-2"
+                >
+                  <span>Go to Dashboard</span>
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </button>
+              ) : (
+                <>
                   <button
-                    type="button"
-                    onClick={() => setIsLogin(true)}
-                    className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all ${
-                      isLogin
-                        ? "bg-[#183F36] text-white shadow-sm"
-                        : "text-[#68716B] dark:text-[#A2BAAF] hover:text-[#183F36] dark:hover:text-[#F5F1E8]"
-                    }`}
+                    onClick={() => {
+                      setIsLogin(true);
+                      document.getElementById("auth-portal-card")?.scrollIntoView({ behavior: "smooth" });
+                    }}
+                    className="px-4 py-2 rounded-xl border border-[#D6E85D]/40 text-[#D6E85D] text-xs font-bold hover:bg-[#D6E85D]/10 transition-all cursor-pointer hidden sm:block"
                   >
                     Sign In
                   </button>
                   <button
-                    type="button"
-                    onClick={() => setIsLogin(false)}
-                    className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all ${
-                      !isLogin
-                        ? "bg-[#183F36] text-white shadow-sm"
-                        : "text-[#68716B] dark:text-[#A2BAAF] hover:text-[#183F36] dark:hover:text-[#F5F1E8]"
-                    }`}
+                    onClick={() => {
+                      setIsLogin(false);
+                      document.getElementById("auth-portal-card")?.scrollIntoView({ behavior: "smooth" });
+                    }}
+                    className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-[#D6E85D] hover:bg-[#c8da4e] text-[#183F36] text-xs font-bold shadow-md transition-all hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-2"
                   >
-                    Create Account
+                    <span>Register Free</span>
+                    <ArrowRight className="h-3.5 w-3.5" />
                   </button>
+                </>
+              )}
+            </div>
+          </div>
+        </header>
+
+        {/* ── SECTION 1: HERO ─────────────────────────────────────────────────── */}
+        <section className="relative min-h-screen flex items-center overflow-hidden" style={{ background: "linear-gradient(160deg, #183F36 0%, #0D2B23 60%, #091A15 100%)" }}>
+          {/* Floating particles */}
+          {particles.map((p) => (
+            <div
+              key={p.id}
+              className="absolute rounded-full pointer-events-none"
+              style={{
+                left: p.left,
+                bottom: "-10px",
+                width: p.size,
+                height: p.size,
+                background: "#D6E85D",
+                boxShadow: `0 0 6px 2px rgba(214,232,93,0.4)`,
+                animation: `float-up ${p.animationDuration} ${p.animationDelay} infinite linear`,
+                opacity: p.opacity,
+              }}
+            />
+          ))}
+
+          {/* Glow blobs */}
+          <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-[#D6E85D]/5 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-[#183F36]/30 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-20 w-full">
+            {/* Logged-in welcome banner */}
+            {!isLoading && user && (
+              <div
+                className="mb-8 mx-auto max-w-xl p-4 rounded-2xl text-center border border-[#D6E85D]/30 bg-[#D6E85D]/10"
+                style={{ animation: "scale-in 0.4s ease both" }}
+              >
+                <p className="text-[#D6E85D] font-bold text-sm">
+                  Welcome back, {profile?.display_name || user.email?.split("@")[0]}! 👋
+                </p>
+                <p className="text-[#A2BAAF] text-xs mt-1">
+                  Redirecting to your dashboard in {redirectCountdown}s…
+                </p>
+                <button
+                  onClick={() => navigate("/dashboard")}
+                  className="mt-3 px-5 py-2 rounded-xl bg-[#D6E85D] text-[#183F36] text-xs font-bold hover:bg-[#c8da4e] transition-all"
+                >
+                  Continue studying →
+                </button>
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+              {/* Left hero content */}
+              <div className="lg:col-span-7 space-y-7 text-center lg:text-left" style={{ animation: "fade-in-up 0.7s ease both" }}>
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#D6E85D]/10 border border-[#D6E85D]/30 text-[#D6E85D] text-xs font-bold">
+                  <Sparkles className="h-3.5 w-3.5" />
+                  <span>ITM Notes · Free for all ITM SLS Baroda University Students</span>
                 </div>
 
-                {/* Header text */}
-                <div className="mb-5 text-center sm:text-left">
-                  <h3 className="text-lg sm:text-xl font-extrabold text-[#183F36] dark:text-[#F5F1E8] tracking-tight font-display">
-                    {isLogin ? "Welcome to ITM MOOCs" : "Join the Learning Hub"}
-                  </h3>
-                  <p className="text-xs text-[#68716B] dark:text-[#A2BAAF] mt-1">
-                    {isLogin
-                      ? "Access your courses, practical codes, and exam models."
-                      : "Create your student passport. Access verified semester resources."}
-                  </p>
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.1]">
+                  Study Smarter.<br />
+                  <span className="text-[#D6E85D]">Score Higher.</span>
+                </h1>
+
+                {/* Typewriter */}
+                <div className="text-xl sm:text-2xl font-bold text-[#A2BAAF] flex items-center gap-2 justify-center lg:justify-start min-h-[2rem]">
+                  <span>Master</span>
+                  <span className="text-[#D6E85D] font-black min-w-[180px] text-left">
+                    {twDisplayed}
+                    <span
+                      className="ml-0.5 inline-block w-0.5 h-6 bg-[#D6E85D] align-middle"
+                      style={{ animation: "blink 1s step-end infinite" }}
+                    />
+                  </span>
                 </div>
 
-                {/* Form Fields */}
-                <form onSubmit={handleAuth} className="space-y-4">
-                  {!isLogin && (
-                    <div>
-                      <label className="block text-xs font-semibold text-[#202522] dark:text-[#E8EDE4] mb-1.5">
-                        Full Name
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={displayName}
-                        onChange={(e) => setDisplayName(e.target.value)}
-                        placeholder="e.g. Maher Bhatt"
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-[#F5F1E8] dark:bg-[#12221E] border border-[#E0E2D9] dark:border-[#264941] text-[#202522] dark:text-[#F5F1E8] text-xs placeholder:text-[#68716B]/60 focus:outline-none focus:ring-2 focus:ring-[#D6E85D]"
-                      />
+                <p className="text-sm sm:text-base text-[#A2BAAF] max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                  ITM Notes gives you everything you need to ace Semester exams — verified notes, MCQ practice, coding labs, SGPA calculator, and more. All in one place. All free.
+                </p>
+
+                {/* CTA buttons */}
+                <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
+                  <button
+                    onClick={() => {
+                      setIsLogin(false);
+                      document.getElementById("auth-portal-card")?.scrollIntoView({ behavior: "smooth" });
+                    }}
+                    className="px-7 py-3.5 rounded-xl bg-[#D6E85D] hover:bg-[#c8da4e] text-[#183F36] font-bold text-sm shadow-lg shadow-[#D6E85D]/20 transition-all hover:scale-105 active:scale-95 flex items-center gap-2 justify-center cursor-pointer"
+                  >
+                    Get Started Free →
+                  </button>
+                  <a
+                    href="#features"
+                    className="px-7 py-3.5 rounded-xl border-2 border-[#D6E85D]/40 text-[#D6E85D] font-bold text-sm hover:bg-[#D6E85D]/10 transition-all flex items-center gap-2 justify-center"
+                  >
+                    Explore Materials
+                  </a>
+                </div>
+
+                {/* Floating stat cards */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+                  {[
+                    { value: "500+", label: "MCQs" },
+                    { value: "60+", label: "PDFs" },
+                    { value: "15+", label: "Practicals" },
+                    { value: "4", label: "Subjects" },
+                  ].map((stat, i) => (
+                    <div
+                      key={stat.label}
+                      className="p-4 rounded-2xl bg-white/5 border border-white/10 text-center backdrop-blur-sm"
+                      style={{
+                        animation: `fade-in-up 0.6s ease ${0.2 + i * 0.1}s both`,
+                        animationName: "gentle-float",
+                        animationDuration: `${3 + i * 0.5}s`,
+                        animationTimingFunction: "ease-in-out",
+                        animationIterationCount: "infinite",
+                        animationDelay: `${i * 0.3}s`,
+                      }}
+                    >
+                      <div className="text-2xl font-black font-mono text-[#D6E85D]">{stat.value}</div>
+                      <div className="text-[10px] text-[#A2BAAF] font-bold uppercase tracking-wider mt-0.5">{stat.label}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Right: Auth card */}
+              <div id="auth-portal-card" className="lg:col-span-5" style={{ animation: "fade-in-up 0.7s ease 0.15s both" }}>
+                <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-[#D6E85D]/10 rounded-full blur-2xl pointer-events-none" />
+
+                  {fromState && (
+                    <div className="mb-5 p-3 rounded-xl bg-[#D6E85D]/10 border border-[#D6E85D]/30 text-xs text-[#D6E85D] font-medium flex items-center gap-2">
+                      <Lock className="h-4 w-4 shrink-0" />
+                      <span>
+                        <strong className="text-white">Login Required:</strong> Sign in to access{" "}
+                        {getFeatureName((fromState as { pathname?: string })?.pathname)}.
+                      </span>
                     </div>
                   )}
 
+                  {/* Tab toggle */}
+                  <div className="flex p-1 rounded-2xl bg-black/20 border border-white/10 mb-6">
+                    <button
+                      type="button"
+                      onClick={() => setIsLogin(true)}
+                      className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all ${isLogin ? "bg-[#D6E85D] text-[#183F36]" : "text-[#A2BAAF] hover:text-white"}`}
+                    >
+                      Sign In
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setIsLogin(false)}
+                      className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all ${!isLogin ? "bg-[#D6E85D] text-[#183F36]" : "text-[#A2BAAF] hover:text-white"}`}
+                    >
+                      Create Account
+                    </button>
+                  </div>
+
+                  <div className="mb-5 text-center sm:text-left">
+                    <h3 className="text-lg sm:text-xl font-extrabold text-white tracking-tight">
+                      {isLogin ? "Welcome to ITM Notes" : "Join ITM Notes"}
+                    </h3>
+                    <p className="text-xs text-[#A2BAAF] mt-1">
+                      {isLogin
+                        ? "Access your notes, practicals, quizzes and more."
+                        : "Create your student account. 100% free, forever."}
+                    </p>
+                  </div>
+
+                  <form onSubmit={handleAuth} className="space-y-4">
+                    {!isLogin && (
+                      <div>
+                        <label className="block text-xs font-semibold text-white mb-1.5">Full Name</label>
+                        <input
+                          type="text"
+                          required
+                          value={displayName}
+                          onChange={(e) => setDisplayName(e.target.value)}
+                          placeholder="e.g. Maher Bhatt"
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white text-xs placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#D6E85D]"
+                        />
+                      </div>
+                    )}
+
+                    <div>
+                      <label className="block text-xs font-semibold text-white mb-1.5">Email Address</label>
+                      <input
+                        type="email"
+                        required
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="student@itmbu.ac.in"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white text-xs placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#D6E85D]"
+                      />
+                    </div>
+
+                    <div>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <label className="text-xs font-semibold text-white">Password</label>
+                        {isLogin && (
+                          <button
+                            type="button"
+                            onClick={() => toast.info("Password reset available via Supabase email link.")}
+                            className="text-[11px] text-[#A2BAAF] hover:text-[#D6E85D]"
+                          >
+                            Forgot?
+                          </button>
+                        )}
+                      </div>
+                      <div className="relative">
+                        <input
+                          type={showPassword ? "text" : "password"}
+                          required
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          placeholder="••••••••"
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white text-xs placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#D6E85D] pr-10"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white p-1"
+                        >
+                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </button>
+                      </div>
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="w-full py-3 rounded-xl bg-[#D6E85D] hover:bg-[#c8da4e] text-[#183F36] text-xs font-bold shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 mt-2"
+                    >
+                      {loading ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          <span>Verifying…</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>{isLogin ? "Sign In to ITM Notes" : "Create My Account"}</span>
+                          <ArrowRight className="h-4 w-4" />
+                        </>
+                      )}
+                    </button>
+                  </form>
+
+                  <div className="mt-5 pt-4 border-t border-white/10 flex items-center justify-between text-[11px] text-[#A2BAAF]">
+                    <span className="flex items-center gap-1.5">
+                      <Shield className="h-3.5 w-3.5 text-[#D6E85D]" />
+                      256-bit Encrypted
+                    </span>
+                    <span>Free & Open Source</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── SECTION 2: FEATURE HIGHLIGHTS ──────────────────────────────────── */}
+        <section id="features" className="py-20 bg-[#F5F1E8] dark:bg-[#12221E]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6">
+            <div className="text-center max-w-2xl mx-auto mb-14">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#267653] dark:text-[#D6E85D] block mb-2">
+                Everything You Need
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#183F36] dark:text-[#F5F1E8] tracking-tight">
+                Engineered for High-Performance Study
+              </h2>
+              <p className="text-sm text-[#68716B] dark:text-[#A2BAAF] mt-3">
+                Every feature is built around what ITM SLS Baroda University students actually need.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {features.map((feat, i) => (
+                <div
+                  key={feat.title}
+                  className="group p-6 rounded-2xl bg-white dark:bg-[#182E29] border border-[#E0E2D9] dark:border-[#264941] space-y-4 hover:border-[#183F36] dark:hover:border-[#D6E85D] hover:scale-[1.03] hover:shadow-lg transition-all duration-200 cursor-default shadow-xs"
+                  style={{ animation: `fade-in-up 0.5s ease ${0.1 * i}s both` }}
+                >
+                  <div className="w-12 h-12 rounded-2xl bg-[#D6E85D] flex items-center justify-center text-2xl shadow-sm">
+                    {feat.emoji}
+                  </div>
+                  <h3 className="font-bold text-base text-[#183F36] dark:text-[#F5F1E8]">{feat.title}</h3>
+                  <p className="text-xs text-[#68716B] dark:text-[#A2BAAF] leading-relaxed">{feat.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── SECTION 3: HOW IT WORKS ─────────────────────────────────────────── */}
+        <section id="how-it-works" className="py-20 bg-white dark:bg-[#182E29] border-y border-[#E0E2D9] dark:border-[#264941]">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6">
+            <div className="text-center max-w-xl mx-auto mb-14">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#267653] dark:text-[#D6E85D] block mb-2">Simple Onboarding</span>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#183F36] dark:text-[#F5F1E8] tracking-tight">
+                Up and studying in 60 seconds
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {steps.map((s, i) => (
+                <div key={s.step} className="relative flex flex-col items-center text-center gap-4" style={{ animation: `fade-in-up 0.5s ease ${0.15 * i}s both` }}>
+                  {/* Connector line */}
+                  {i < steps.length - 1 && (
+                    <div className="hidden md:block absolute top-8 left-[calc(50%+2.5rem)] right-[calc(-50%+2.5rem)] h-0.5 bg-gradient-to-r from-[#183F36] to-[#D6E85D] opacity-30" />
+                  )}
+                  <div className="w-16 h-16 rounded-2xl bg-[#183F36] text-[#D6E85D] flex items-center justify-center text-xl font-black shadow-lg">
+                    {s.step}
+                  </div>
+                  <h3 className="font-bold text-[#183F36] dark:text-[#F5F1E8]">{s.title}</h3>
+                  <p className="text-xs text-[#68716B] dark:text-[#A2BAAF] leading-relaxed">{s.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── SECTION 4: ANIMATED STATS ──────────────────────────────────────── */}
+        <section id="stats" ref={statsRef} className="py-20" style={{ background: "linear-gradient(135deg, #183F36 0%, #0D2B23 100%)" }}>
+          <div className="max-w-5xl mx-auto px-4 sm:px-6">
+            <div className="text-center mb-12">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#D6E85D] block mb-2">By the Numbers</span>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+                A growing library of resources
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {[
+                { value: mcqCount, suffix: "+", label: "Practice MCQs", icon: "🧠" },
+                { value: pdfCount, suffix: "+", label: "PDF Study Guides", icon: "📄" },
+                { value: labCount, suffix: "+", label: "Lab Practicals", icon: "💻" },
+                { value: studentCount, suffix: "+", label: "Students Studying", icon: "🎓" },
+              ].map((stat) => (
+                <div key={stat.label} className="text-center p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm" style={{ animation: "gentle-float 4s ease-in-out infinite" }}>
+                  <div className="text-3xl mb-2">{stat.icon}</div>
+                  <div className="text-4xl font-black font-mono text-[#D6E85D]">
+                    {stat.value}{stat.suffix}
+                  </div>
+                  <div className="text-xs text-[#A2BAAF] font-semibold uppercase tracking-wider mt-2">{stat.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── SECTION 5: SIGN IN / SIGN UP CARD (standalone) ─────────────────── */}
+        <section className="py-20 bg-[#F5F1E8] dark:bg-[#12221E]">
+          <div className="max-w-2xl mx-auto px-4 sm:px-6">
+            <div className="text-center mb-10">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#267653] dark:text-[#D6E85D] block mb-2">Start Now</span>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#183F36] dark:text-[#F5F1E8] tracking-tight">
+                Ready to ace your semester?
+              </h2>
+              <p className="text-sm text-[#68716B] dark:text-[#A2BAAF] mt-3">
+                Join ITM Notes and get instant access to verified notes, MCQs, and coding practicals.
+              </p>
+            </div>
+
+            <div className="bg-white dark:bg-[#182E29] rounded-3xl shadow-2xl border border-[#E0E2D9] dark:border-[#264941] p-8 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-40 h-40 bg-[#D6E85D]/5 rounded-full blur-3xl pointer-events-none" />
+
+              {/* Tab toggle */}
+              <div className="flex p-1 rounded-2xl bg-[#F5F1E8] dark:bg-[#12221E] border border-[#E0E2D9] dark:border-[#264941] mb-6">
+                <button
+                  type="button"
+                  onClick={() => setIsLogin(true)}
+                  className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all ${isLogin ? "bg-[#183F36] text-white shadow-sm" : "text-[#68716B] dark:text-[#A2BAAF] hover:text-[#183F36] dark:hover:text-white"}`}
+                >
+                  Sign In
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsLogin(false)}
+                  className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all ${!isLogin ? "bg-[#183F36] text-white shadow-sm" : "text-[#68716B] dark:text-[#A2BAAF] hover:text-[#183F36] dark:hover:text-white"}`}
+                >
+                  Create Account
+                </button>
+              </div>
+
+              <div className="mb-5">
+                <h3 className="text-lg font-extrabold text-[#183F36] dark:text-[#F5F1E8]">
+                  {isLogin ? "Welcome back to ITM Notes" : "Create your free account"}
+                </h3>
+                <p className="text-xs text-[#68716B] dark:text-[#A2BAAF] mt-1">
+                  {isLogin ? "Sign in to continue your study session." : "Free forever. No credit card needed."}
+                </p>
+              </div>
+
+              <form onSubmit={handleAuth} className="space-y-4">
+                {!isLogin && (
                   <div>
-                    <label className="block text-xs font-semibold text-[#202522] dark:text-[#E8EDE4] mb-1.5">
-                      Student Email Address
-                    </label>
+                    <label className="block text-xs font-semibold text-[#202522] dark:text-[#E8EDE4] mb-1.5">Full Name</label>
                     <input
-                      type="email"
+                      type="text"
                       required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="student@itmbu.ac.in or personal email"
+                      value={displayName}
+                      onChange={(e) => setDisplayName(e.target.value)}
+                      placeholder="e.g. Maher Bhatt"
                       className="w-full px-3.5 py-2.5 rounded-xl bg-[#F5F1E8] dark:bg-[#12221E] border border-[#E0E2D9] dark:border-[#264941] text-[#202522] dark:text-[#F5F1E8] text-xs placeholder:text-[#68716B]/60 focus:outline-none focus:ring-2 focus:ring-[#D6E85D]"
                     />
                   </div>
-
-                  <div>
-                    <div className="flex items-center justify-between mb-1.5">
-                      <label className="text-xs font-semibold text-[#202522] dark:text-[#E8EDE4]">
-                        Password
-                      </label>
-                      {isLogin && (
-                        <button
-                          type="button"
-                          onClick={() => toast.info("Password reset available via Supabase email link.")}
-                          className="text-[11px] text-[#68716B] hover:text-[#183F36] dark:hover:text-[#D6E85D]"
-                        >
-                          Forgot?
-                        </button>
-                      )}
-                    </div>
-                    <div className="relative">
-                      <input
-                        type={showPassword ? "text" : "password"}
-                        required
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="••••••••"
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-[#F5F1E8] dark:bg-[#12221E] border border-[#E0E2D9] dark:border-[#264941] text-[#202522] dark:text-[#F5F1E8] text-xs placeholder:text-[#68716B]/60 focus:outline-none focus:ring-2 focus:ring-[#D6E85D] pr-10"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-[#68716B] hover:text-[#202522] p-1"
-                      >
-                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </button>
-                    </div>
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full py-3 rounded-xl bg-[#183F36] hover:bg-[#12332C] text-white text-xs font-bold shadow-md shadow-[#183F36]/25 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 font-display mt-2"
-                  >
-                    {loading ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin text-[#D6E85D]" />
-                        <span>Verifying credentials...</span>
-                      </>
-                    ) : (
-                      <>
-                        <span>{isLogin ? "Sign In to Learning Hub" : "Create My Student Account"}</span>
-                        <ArrowRight className="h-4 w-4 text-[#D6E85D]" />
-                      </>
-                    )}
-                  </button>
-                </form>
-
-                {/* Footer security note */}
-                <div className="mt-5 pt-4 border-t border-[#E0E2D9] dark:border-[#264941] flex items-center justify-between text-[11px] text-[#68716B] dark:text-[#A2BAAF]">
-                  <span className="flex items-center gap-1.5">
-                    <Shield className="h-3.5 w-3.5 text-[#267653] dark:text-[#D6E85D]" />
-                    256-bit Encrypted
-                  </span>
-                  <span>Free & Open Source</span>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* ── MULTI-UNIVERSITY NETWORK SHOWCASE ── */}
-      <section id="universities" className="py-16 bg-[#FFFEFA] dark:bg-[#182E29] border-b border-[#E0E2D9] dark:border-[#264941]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center max-w-2xl mx-auto mb-10">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-[#68716B] dark:text-[#D6E85D] block mb-2 font-display">
-              Multi-University Network
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#183F36] dark:text-[#F5F1E8] tracking-tight font-display">
-              Learn Beyond Borders Across Institutions
-            </h2>
-            <p className="text-xs sm:text-sm text-[#68716B] dark:text-[#A2BAAF] mt-2">
-              ITM MOOCs supports curriculum mapping and resource sharing across universities.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="p-6 rounded-2xl bg-[#F5F1E8] dark:bg-[#12221E] border border-[#E0E2D9] dark:border-[#264941] space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-[#183F36] text-[#D6E85D] flex items-center justify-center font-bold">
-                <Building2 className="h-5 w-5" />
-              </div>
-              <div>
-                <span className="text-[10px] font-bold uppercase text-[#267653] dark:text-[#D6E85D] tracking-wider">
-                  Active & Primary
-                </span>
-                <h3 className="font-bold text-base text-[#183F36] dark:text-[#F5F1E8] font-display">
-                  ITM (SLS) Baroda University
-                </h3>
-                <p className="text-xs text-[#68716B] dark:text-[#A2BAAF] mt-1">
-                  100% verified B.Tech CSE & BCA semester notes, lab practicals, past MST exam question banks, and CET syllabi.
-                </p>
-              </div>
-              <div className="pt-2 flex items-center gap-2 text-[11px] font-semibold text-[#183F36] dark:text-[#D6E85D]">
-                <CheckCircle2 className="h-4 w-4" /> 16 Modules · 4 Semesters Active
-              </div>
-            </div>
-
-            <div className="p-6 rounded-2xl bg-[#F5F1E8] dark:bg-[#12221E] border border-[#E0E2D9] dark:border-[#264941] space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-[#224E43] text-white flex items-center justify-center font-bold">
-                <GraduationCap className="h-5 w-5" />
-              </div>
-              <div>
-                <span className="text-[10px] font-bold uppercase text-[#A66A1D] dark:text-[#D6E85D] tracking-wider">
-                  Syllabus Mapped
-                </span>
-                <h3 className="font-bold text-base text-[#183F36] dark:text-[#F5F1E8] font-display">
-                  Gujarat Technological University
-                </h3>
-                <p className="text-xs text-[#68716B] dark:text-[#A2BAAF] mt-1">
-                  Cross-compatible engineering mathematics, DSA in C/C++, database systems, and computer architecture notes.
-                </p>
-              </div>
-              <div className="pt-2 flex items-center gap-2 text-[11px] font-semibold text-[#68716B] dark:text-[#A2BAAF]">
-                <Layers className="h-4 w-4" /> Common Core Units Mapped
-              </div>
-            </div>
-
-            <div className="p-6 rounded-2xl bg-[#F5F1E8] dark:bg-[#12221E] border border-[#E0E2D9] dark:border-[#264941] space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-[#315B4F] text-white flex items-center justify-center font-bold">
-                <Globe className="h-5 w-5" />
-              </div>
-              <div>
-                <span className="text-[10px] font-bold uppercase text-[#68716B] dark:text-[#A2BAAF] tracking-wider">
-                  Resource Repository
-                </span>
-                <h3 className="font-bold text-base text-[#183F36] dark:text-[#F5F1E8] font-display">
-                  National University Hub
-                </h3>
-                <p className="text-xs text-[#68716B] dark:text-[#A2BAAF] mt-1">
-                  Standardized university coding labs, competitive algorithms, test cases, and academic planning calculators.
-                </p>
-              </div>
-              <div className="pt-2 flex items-center gap-2 text-[11px] font-semibold text-[#68716B] dark:text-[#A2BAAF]">
-                <Sparkles className="h-4 w-4 text-[#D6E85D]" /> Open to all university learners
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── 6 CORE VALUE PILLARS ── */}
-      <section id="features" className="py-20 max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="text-center max-w-2xl mx-auto mb-14">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-[#68716B] dark:text-[#D6E85D] block mb-2 font-display">
-            The Learning System
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-[#183F36] dark:text-[#F5F1E8] tracking-tight font-display">
-            Engineered For Calm, High-Performance Study
-          </h2>
-          <p className="text-xs sm:text-sm text-[#68716B] dark:text-[#A2BAAF] mt-2">
-            Every feature is purposefully designed around actual university requirements—from attendance criteria to exam algorithms.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Card 1 */}
-          <div className="p-6 rounded-2xl bg-[#FFFEFA] dark:bg-[#182E29] border border-[#E0E2D9] dark:border-[#264941] space-y-4 hover:border-[#183F36] dark:hover:border-[#D6E85D] transition-colors shadow-xs">
-            <div className="w-12 h-12 rounded-2xl bg-[#E8EDE4] dark:bg-[#1D3B34] text-[#183F36] dark:text-[#D6E85D] flex items-center justify-center">
-              <BookOpen className="h-6 w-6" />
-            </div>
-            <h3 className="font-bold text-base text-[#183F36] dark:text-[#F5F1E8] font-display">
-              Distraction-Free Course Reader
-            </h3>
-            <p className="text-xs text-[#68716B] dark:text-[#A2BAAF] leading-relaxed">
-              Markdown-rendered syllabus topics with KaTeX math rendering, syntax-highlighted code blocks, auto table-of-contents, and dark mode reading.
-            </p>
-          </div>
-
-          {/* Card 2 */}
-          <div className="p-6 rounded-2xl bg-[#FFFEFA] dark:bg-[#182E29] border border-[#E0E2D9] dark:border-[#264941] space-y-4 hover:border-[#183F36] dark:hover:border-[#D6E85D] transition-colors shadow-xs">
-            <div className="w-12 h-12 rounded-2xl bg-[#E8EDE4] dark:bg-[#1D3B34] text-[#267653] dark:text-[#D6E85D] flex items-center justify-center">
-              <Code2 className="h-6 w-6" />
-            </div>
-            <h3 className="font-bold text-base text-[#183F36] dark:text-[#F5F1E8] font-display">
-              Practical Coding Lab (C & Java)
-            </h3>
-            <p className="text-xs text-[#68716B] dark:text-[#A2BAAF] leading-relaxed">
-              Toggle between C99 pointers and Java OOP implementations for every practical. Includes simulated terminal with stdin, test cases, and time complexity.
-            </p>
-          </div>
-
-          {/* Card 3 */}
-          <div className="p-6 rounded-2xl bg-[#FFFEFA] dark:bg-[#182E29] border border-[#E0E2D9] dark:border-[#264941] space-y-4 hover:border-[#183F36] dark:hover:border-[#D6E85D] transition-colors shadow-xs">
-            <div className="w-12 h-12 rounded-2xl bg-[#E8EDE4] dark:bg-[#1D3B34] text-[#A66A1D] dark:text-[#D6E85D] flex items-center justify-center">
-              <Calculator className="h-6 w-6" />
-            </div>
-            <h3 className="font-bold text-base text-[#183F36] dark:text-[#F5F1E8] font-display">
-              75% Attendance Guard
-            </h3>
-            <p className="text-xs text-[#68716B] dark:text-[#A2BAAF] leading-relaxed">
-              Real-time buffer calculation telling you exactly how many lectures you can safely miss, or how many consecutive classes you must attend to avoid exam debarment.
-            </p>
-          </div>
-
-          {/* Card 4 */}
-          <div className="p-6 rounded-2xl bg-[#FFFEFA] dark:bg-[#182E29] border border-[#E0E2D9] dark:border-[#264941] space-y-4 hover:border-[#183F36] dark:hover:border-[#D6E85D] transition-colors shadow-xs">
-            <div className="w-12 h-12 rounded-2xl bg-[#E8EDE4] dark:bg-[#1D3B34] text-[#183F36] dark:text-[#D6E85D] flex items-center justify-center">
-              <FileText className="h-6 w-6" />
-            </div>
-            <h3 className="font-bold text-base text-[#183F36] dark:text-[#F5F1E8] font-display">
-              Past Exam Question Banks
-            </h3>
-            <p className="text-xs text-[#68716B] dark:text-[#A2BAAF] leading-relaxed">
-              Complete archives of previous MST-1, MST-2, and final examination questions tagged with 3-mark short answers, 5-mark long explanations, and marking criteria.
-            </p>
-          </div>
-
-          {/* Card 5 */}
-          <div className="p-6 rounded-2xl bg-[#FFFEFA] dark:bg-[#182E29] border border-[#E0E2D9] dark:border-[#264941] space-y-4 hover:border-[#183F36] dark:hover:border-[#D6E85D] transition-colors shadow-xs">
-            <div className="w-12 h-12 rounded-2xl bg-[#E8EDE4] dark:bg-[#1D3B34] text-[#267653] dark:text-[#D6E85D] flex items-center justify-center">
-              <Award className="h-6 w-6" />
-            </div>
-            <h3 className="font-bold text-base text-[#183F36] dark:text-[#F5F1E8] font-display">
-              Practice Quizzes & Gauges
-            </h3>
-            <p className="text-xs text-[#68716B] dark:text-[#A2BAAF] leading-relaxed">
-              Subject-wise MCQs matching university CET formats. Interactive progress gauges track your topic accuracy and average time per question with detailed explanations.
-            </p>
-          </div>
-
-          {/* Card 6 */}
-          <div className="p-6 rounded-2xl bg-[#FFFEFA] dark:bg-[#182E29] border border-[#E0E2D9] dark:border-[#264941] space-y-4 hover:border-[#183F36] dark:hover:border-[#D6E85D] transition-colors shadow-xs">
-            <div className="w-12 h-12 rounded-2xl bg-[#E8EDE4] dark:bg-[#1D3B34] text-[#183F36] dark:text-[#D6E85D] flex items-center justify-center">
-              <Users className="h-6 w-6" />
-            </div>
-            <h3 className="font-bold text-base text-[#183F36] dark:text-[#F5F1E8] font-display">
-              Campus Pulse & Social
-            </h3>
-            <p className="text-xs text-[#68716B] dark:text-[#A2BAAF] leading-relaxed">
-              Real-time student discussions, anonymous campus confessions, study group formation, and exam prep tips directly connected to Supabase real-time backend.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* ── LIVE INTERACTIVE ATTENDANCE DEMO ── */}
-      <section id="attendance" className="py-16 bg-[#FFFEFA] dark:bg-[#182E29] border-y border-[#E0E2D9] dark:border-[#264941]">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-            
-            <div className="md:col-span-5 space-y-4">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#A66A1D] dark:text-[#D6E85D] font-display">
-                Try the Calculator
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#183F36] dark:text-[#F5F1E8] tracking-tight font-display">
-                Will you be allowed to sit for the Semester Exam?
-              </h2>
-              <p className="text-xs text-[#68716B] dark:text-[#A2BAAF] leading-relaxed">
-                Test our 75% attendance criteria algorithm right now. Drag the sliders to see how your buffer is calculated automatically.
-              </p>
-            </div>
-
-            <div className="md:col-span-7 bg-[#F5F1E8] dark:bg-[#12221E] p-6 rounded-3xl border border-[#E0E2D9] dark:border-[#264941] space-y-5">
-              <div>
-                <div className="flex justify-between text-xs font-semibold mb-1 text-[#202522] dark:text-[#E8EDE4]">
-                  <span>Total Classes Delivered</span>
-                  <span className="font-mono text-[#183F36] dark:text-[#D6E85D] font-bold">{demoTotalClasses} lectures</span>
-                </div>
-                <input
-                  type="range"
-                  min="20"
-                  max="80"
-                  value={demoTotalClasses}
-                  onChange={(e) => {
-                    const total = Number(e.target.value);
-                    setDemoTotalClasses(total);
-                    if (demoAttendedClasses > total) setDemoAttendedClasses(total);
-                  }}
-                  className="w-full accent-[#183F36] dark:accent-[#D6E85D]"
-                />
-              </div>
-
-              <div>
-                <div className="flex justify-between text-xs font-semibold mb-1 text-[#202522] dark:text-[#E8EDE4]">
-                  <span>Classes You Attended</span>
-                  <span className="font-mono text-[#183F36] dark:text-[#D6E85D] font-bold">{demoAttendedClasses} lectures</span>
-                </div>
-                <input
-                  type="range"
-                  min="0"
-                  max={demoTotalClasses}
-                  value={demoAttendedClasses}
-                  onChange={(e) => setDemoAttendedClasses(Number(e.target.value))}
-                  className="w-full accent-[#183F36] dark:accent-[#D6E85D]"
-                />
-              </div>
-
-              {/* Status Output Box */}
-              <div className={`p-4 rounded-2xl border flex items-center justify-between ${
-                isDemoSafe
-                  ? "bg-[#E8EDE4] dark:bg-[#183F36]/40 border-[#183F36]/30 text-[#183F36] dark:text-[#D6E85D]"
-                  : "bg-rose-500/10 border-rose-500/30 text-rose-700 dark:text-rose-400"
-              }`}>
+                )}
                 <div>
-                  <div className="text-xl font-black font-mono">
-                    {demoPercentage.toFixed(1)}%
+                  <label className="block text-xs font-semibold text-[#202522] dark:text-[#E8EDE4] mb-1.5">Email Address</label>
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="student@itmbu.ac.in"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#F5F1E8] dark:bg-[#12221E] border border-[#E0E2D9] dark:border-[#264941] text-[#202522] dark:text-[#F5F1E8] text-xs placeholder:text-[#68716B]/60 focus:outline-none focus:ring-2 focus:ring-[#D6E85D]"
+                  />
+                </div>
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="text-xs font-semibold text-[#202522] dark:text-[#E8EDE4]">Password</label>
+                    {isLogin && (
+                      <button type="button" onClick={() => toast.info("Password reset available via Supabase email link.")} className="text-[11px] text-[#68716B] hover:text-[#183F36] dark:hover:text-[#D6E85D]">
+                        Forgot?
+                      </button>
+                    )}
                   </div>
-                  <div className="text-xs font-semibold mt-0.5">
-                    {isDemoSafe ? "✅ Exam Hall Ticket Guaranteed" : "⚠️ Exam Debarment Risk"}
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="••••••••"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#F5F1E8] dark:bg-[#12221E] border border-[#E0E2D9] dark:border-[#264941] text-[#202522] dark:text-[#F5F1E8] text-xs placeholder:text-[#68716B]/60 focus:outline-none focus:ring-2 focus:ring-[#D6E85D] pr-10"
+                    />
+                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#68716B] hover:text-[#202522] p-1">
+                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
                   </div>
                 </div>
-
-                <div className="text-right text-xs">
-                  {isDemoSafe ? (
-                    <div>
-                      <span className="text-[10px] uppercase font-bold text-[#68716B] dark:text-[#A2BAAF] block">Safe to Bunk</span>
-                      <span className="font-black font-mono text-sm text-[#183F36] dark:text-[#D6E85D]">{safeBunks} more classes</span>
-                    </div>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-3 rounded-xl bg-[#183F36] hover:bg-[#12332C] text-white text-xs font-bold shadow-md shadow-[#183F36]/25 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 mt-2"
+                >
+                  {loading ? (
+                    <><Loader2 className="h-4 w-4 animate-spin text-[#D6E85D]" /><span>Verifying…</span></>
                   ) : (
-                    <div>
-                      <span className="text-[10px] uppercase font-bold text-rose-500 block">Must Attend</span>
-                      <span className="font-black font-mono text-sm text-rose-600 dark:text-rose-400">{neededClasses} consecutive</span>
-                    </div>
+                    <><span>{isLogin ? "Sign In to ITM Notes" : "Create My Free Account"}</span><ArrowRight className="h-4 w-4 text-[#D6E85D]" /></>
                   )}
-                </div>
+                </button>
+              </form>
+
+              <div className="mt-5 pt-4 border-t border-[#E0E2D9] dark:border-[#264941] flex items-center justify-between text-[11px] text-[#68716B] dark:text-[#A2BAAF]">
+                <span className="flex items-center gap-1.5">
+                  <Shield className="h-3.5 w-3.5 text-[#267653] dark:text-[#D6E85D]" />
+                  256-bit Encrypted
+                </span>
+                <span>Free & Open Source</span>
               </div>
             </div>
-
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* ── LIVE INTERACTIVE CODING LAB DEMO ── */}
-      <section id="coding-lab" className="py-20 max-w-6xl mx-auto px-4 sm:px-6">
-        <div className="text-center max-w-2xl mx-auto mb-10">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-[#267653] dark:text-[#D6E85D] block mb-2 font-display">
-            Interactive Practical Lab
-          </span>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#183F36] dark:text-[#F5F1E8] tracking-tight font-display">
-            Practical 3: Railway Reservation Waiting List Queue
-          </h2>
-          <p className="text-xs sm:text-sm text-[#68716B] dark:text-[#A2BAAF] mt-2">
-            Switch between C and Java OOP solutions seamlessly. Both implementations handle multiple test cases and dry runs.
-          </p>
-        </div>
-
-        <div className="bg-[#12332C] rounded-3xl border border-[#1D4A3F] overflow-hidden shadow-2xl">
-          {/* Editor Header Bar */}
-          <div className="p-4 border-b border-[#1D4A3F] flex items-center justify-between bg-[#0E2822]">
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-rose-500/80" />
-              <div className="w-3 h-3 rounded-full bg-amber-500/80" />
-              <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
-              <span className="ml-3 font-mono text-xs text-[#A2BAAF]">
-                {demoCodeLang === "c" ? "railway_reservation_queue.c" : "RailwayReservationQueue.java"}
-              </span>
+        {/* ── SECTION 6: FOOTER ──────────────────────────────────────────────── */}
+        <footer className="bg-[#12332C] text-[#E8EDE4] py-10 border-t border-[#1D4A3F]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <ItmMoocsLogo variant="live" size="sm" inverted={true} showTagline={false} />
             </div>
-
-            {/* Language Switcher */}
-            <div className="flex items-center gap-1 bg-[#183F36] p-1 rounded-xl border border-[#1D4A3F] text-xs font-bold">
-              <button
-                type="button"
-                onClick={() => setDemoCodeLang("c")}
-                className={`px-3 py-1 rounded-lg transition-all ${
-                  demoCodeLang === "c"
-                    ? "bg-[#D6E85D] text-[#183F36]"
-                    : "text-[#A2BAAF] hover:text-white"
-                }`}
-              >
-                C (C99)
-              </button>
-              <button
-                type="button"
-                onClick={() => setDemoCodeLang("java")}
-                className={`px-3 py-1 rounded-lg transition-all ${
-                  demoCodeLang === "java"
-                    ? "bg-[#D6E85D] text-[#183F36]"
-                    : "text-[#A2BAAF] hover:text-white"
-                }`}
-              >
-                Java (OOP)
-              </button>
-            </div>
+            <p className="text-xs text-[#A2BAAF] text-center sm:text-right">
+              ITM Notes © 2025 · Made with ❤️ for ITM SLS Baroda University students
+            </p>
           </div>
+        </footer>
 
-          {/* Editor Code View */}
-          <div className="p-5 font-mono text-xs text-[#E8EDE4] overflow-x-auto leading-relaxed max-h-96">
-            <pre>
-              {demoCodeLang === "c"
-                ? `/* Practical 3: Railway Reservation Waiting List Queue in C99 */
-#include <stdio.h>
-#include <stdlib.h>
-#define MAX 6
-
-int waitQ[MAX];
-int front = -1, rear = -1;
-
-int isFull()  { return rear == MAX - 1; }
-int isEmpty() { return front == -1 || front > rear; }
-
-void addPassenger(int tokenNumber) {
-    if (isFull()) {
-        printf("\\nThe Waiting List Queue is Full..");
-    } else {
-        if (front == -1) front = 0;
-        waitQ[++rear] = tokenNumber;
-        printf("\\n%d is added to wait Queue", tokenNumber);
-    }
-}
-
-void allocateSeat() {
-    if (isEmpty()) {
-        printf("\\nThe Waiting List Queue is Empty..");
-    } else {
-        printf("\\nSeat allocated to Passenger: %d", waitQ[front++]);
-        if (front > rear) { front = -1; rear = -1; }
-    }
-}`
-                : `/* Practical 3: Railway Reservation Waiting List Queue in Java */
-import java.util.Scanner;
-
-public class RailwayReservationQueue {
-    private static final int MAX = 6;
-    private int[] waitQ = new int[MAX];
-    private int front = -1, rear = -1;
-
-    public boolean isFull()  { return rear == MAX - 1; }
-    public boolean isEmpty() { return front == -1 || front > rear; }
-
-    public void addPassenger(int tokenNumber) {
-        if (isFull()) {
-            System.out.println("The Waiting List Queue is Full..");
-        } else {
-            if (front == -1) front = 0;
-            waitQ[++rear] = tokenNumber;
-            System.out.println(tokenNumber + " is added to wait Queue");
-        }
-    }
-}`}
-            </pre>
-          </div>
-        </div>
-      </section>
-
-      {/* ── FREQUENTLY ASKED QUESTIONS (FAQ) ── */}
-      <section id="faq" className="py-20 bg-[#FFFEFA] dark:bg-[#182E29] border-t border-[#E0E2D9] dark:border-[#264941]">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6">
-          <div className="text-center max-w-xl mx-auto mb-12">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-[#68716B] dark:text-[#D6E85D] block mb-2 font-display">
-              Student FAQ
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#183F36] dark:text-[#F5F1E8] tracking-tight font-display">
-              Frequently Asked Questions
-            </h2>
-          </div>
-
-          <div className="space-y-4">
-            <div className="p-5 rounded-2xl bg-[#F5F1E8] dark:bg-[#12221E] border border-[#E0E2D9] dark:border-[#264941]">
-              <h4 className="font-bold text-sm text-[#183F36] dark:text-[#F5F1E8] font-display">
-                Is ITM MOOCs free for all university students?
-              </h4>
-              <p className="text-xs text-[#68716B] dark:text-[#A2BAAF] mt-2 leading-relaxed">
-                Yes. ITM MOOCs is 100% free for all students. There are no subscriptions, paywalls, or hidden charges.
-              </p>
-            </div>
-
-            <div className="p-5 rounded-2xl bg-[#F5F1E8] dark:bg-[#12221E] border border-[#E0E2D9] dark:border-[#264941]">
-              <h4 className="font-bold text-sm text-[#183F36] dark:text-[#F5F1E8] font-display">
-                How accurate is the 75% attendance safeguard calculator?
-              </h4>
-              <p className="text-xs text-[#68716B] dark:text-[#A2BAAF] mt-2 leading-relaxed">
-                The algorithm adheres strictly to statutory university examination guidelines: Attended / Delivered ≥ 0.75. It precisely rounds up needed lectures and rounds down safe bunks.
-              </p>
-            </div>
-
-            <div className="p-5 rounded-2xl bg-[#F5F1E8] dark:bg-[#12221E] border border-[#E0E2D9] dark:border-[#264941]">
-              <h4 className="font-bold text-sm text-[#183F36] dark:text-[#F5F1E8] font-display">
-                Can students from other universities use ITM MOOCs?
-              </h4>
-              <p className="text-xs text-[#68716B] dark:text-[#A2BAAF] mt-2 leading-relaxed">
-                Yes! ITM MOOCs is designed as a multi-university platform. Common core engineering courses (DSA, DBMS, Computer Architecture, Math) are cross-compatible across GTU, Parul, and other institutions.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── FOOTER ── */}
-      <footer className="bg-[#12332C] text-[#E8EDE4] py-12 border-t border-[#1D4A3F]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-3">
-            <ItmMoocsLogo variant="live" size="sm" inverted={true} showTagline={true} />
-          </div>
-
-          <p className="text-xs text-[#A2BAAF] text-center sm:text-right">
-            ITM MOOCs • Multi-University Academic Platform • Developed with Velocity Web
-          </p>
-        </div>
-      </footer>
-    </div>
+      </div>
+    </>
   );
 }

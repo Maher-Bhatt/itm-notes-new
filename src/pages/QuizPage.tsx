@@ -356,7 +356,7 @@ export default function QuizPage() {
           <div className="flex items-center gap-2 text-xs text-slate-400 font-medium mb-1">
             <Link to="/" className="hover:text-primary transition-colors">Dashboard</Link>
             <span>/</span>
-            <span className="text-slate-300">ITM MOOCs</span>
+            <span className="text-slate-300">ITM Notes</span>
             <span>/</span>
             <span className="text-slate-100 font-bold">Subject Quiz</span>
           </div>
@@ -438,37 +438,44 @@ export default function QuizPage() {
                   onClick={() => setSelectedSubject("all-sem3")}
                   className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer ${
                     selectedSubject === "all-sem3"
-                      ? "border-[#183F36] bg-[#183F36]/25 text-white font-bold shadow-md shadow-[#183F36]/20 ring-1 ring-[#D6E85D]/40"
-                      : "border-slate-800 bg-slate-800/40 text-slate-400 hover:bg-slate-800/70 hover:text-slate-200"
+                      ? "border-[#183F36] bg-[#183F36]/40 text-white font-bold shadow-md shadow-[#183F36]/30 ring-2 ring-[#D6E85D]"
+                      : "border-slate-700 bg-slate-800/80 text-slate-200 hover:bg-slate-750 hover:border-slate-600"
                   }`}
                 >
-                  <div className="text-xs font-bold">All Semester 3 Core</div>
-                  <div className="text-[10px] text-slate-400 mt-1 font-mono flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#D6E85D]" />
+                  <div className="text-sm font-bold text-white">All Semester 3 Core</div>
+                  <div className={`text-[11px] mt-1 font-mono flex items-center gap-1.5 ${
+                    selectedSubject === "all-sem3" ? "text-[#D6E85D] font-bold" : "text-slate-300"
+                  }`}>
+                    <span className="w-2 h-2 rounded-full bg-[#D6E85D] shrink-0" />
                     <span>{allSem3Mcqs.length} Total Curated MCQs</span>
                   </div>
                 </button>
 
                 {availableSubjects
                   .filter((s) => s.semester === 3 || s.id.startsWith("sem3") || s.id === "ca-101")
-                  .map((s) => (
-                    <button
-                      key={s.id}
-                      type="button"
-                      onClick={() => setSelectedSubject(s.id)}
-                      className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer ${
-                        selectedSubject === s.id
-                          ? "border-[#183F36] bg-[#183F36]/25 text-white font-bold shadow-md shadow-[#183F36]/20 ring-1 ring-[#D6E85D]/40"
-                          : "border-slate-800 bg-slate-800/40 text-slate-400 hover:bg-slate-800/70 hover:text-slate-200"
-                      }`}
-                    >
-                      <div className="text-xs font-bold truncate">{s.name}</div>
-                      <div className="text-[10px] text-slate-400 mt-1 font-mono flex items-center gap-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                        <span>{s.totalMcqs} Practice MCQs</span>
-                      </div>
-                    </button>
-                  ))}
+                  .map((s) => {
+                    const isSelected = selectedSubject === s.id;
+                    return (
+                      <button
+                        key={s.id}
+                        type="button"
+                        onClick={() => setSelectedSubject(s.id)}
+                        className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer ${
+                          isSelected
+                            ? "border-[#183F36] bg-[#183F36]/40 text-white font-bold shadow-md shadow-[#183F36]/30 ring-2 ring-[#D6E85D]"
+                            : "border-slate-700 bg-slate-800/80 text-slate-200 hover:bg-slate-750 hover:border-slate-600"
+                        }`}
+                      >
+                        <div className="text-sm font-bold text-white truncate">{s.name}</div>
+                        <div className={`text-[11px] mt-1 font-mono flex items-center gap-1.5 ${
+                          isSelected ? "text-[#D6E85D] font-bold" : "text-slate-300"
+                        }`}>
+                          <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
+                          <span>{s.totalMcqs} Practice MCQs</span>
+                        </div>
+                      </button>
+                    );
+                  })}
               </div>
             </div>
 

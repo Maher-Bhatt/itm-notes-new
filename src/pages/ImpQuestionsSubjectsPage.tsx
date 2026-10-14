@@ -67,7 +67,7 @@ export default function ImpQuestionsSubjectsPage() {
             <span>·</span>
             <span>Question Banks</span>
             <span>·</span>
-            <span>ITM MOOCs</span>
+            <span>ITM Notes</span>
             <span>·</span>
             <span className="text-foreground font-semibold">Sem 3</span>
           </div>
