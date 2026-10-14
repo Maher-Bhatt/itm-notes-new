@@ -1,8 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { getSubject } from '@/data/subjects';
-import { Header } from '@/components/Header';
-import { Footer } from '@/components/Footer';
 import { MarkdownRenderer } from '@/components/MarkdownRenderer';
 import { 
   Zap, 
@@ -34,27 +32,20 @@ export default function SubjectCheatSheetPage() {
 
   if (!subject) {
     return (
-      <div className="min-h-screen bg-background flex flex-col">
-        <Header />
-        <main className="flex-1 max-w-4xl mx-auto w-full px-6 py-20 text-center">
-          <HelpCircle className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-          <h2 className="text-2xl font-bold mb-2">Subject Not Found</h2>
-          <p className="text-muted-foreground mb-6">Cannot find cheat sheet for subject: {subjectId}</p>
-          <Link to="/" className="px-4 py-2 bg-primary text-primary-foreground rounded-lg font-semibold">
-            Back to Home
-          </Link>
-        </main>
-        <Footer />
+      <div className="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto w-full py-20 text-center text-foreground">
+        <HelpCircle className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+        <h2 className="text-2xl font-bold mb-2">Subject Not Found</h2>
+        <p className="text-muted-foreground mb-6">Cannot find cheat sheet for subject: {subjectId}</p>
+        <Link to="/dashboard" className="px-4 py-2 bg-primary text-primary-foreground rounded-lg font-semibold">
+          Back to Dashboard
+        </Link>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <Header />
-
-      <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-8 animate-fade-in">
-        {/* Navigation Breadcrumb */}
+    <div className="p-4 sm:p-6 lg:p-8 max-w-6xl mx-auto w-full animate-fade-in text-foreground">
+      {/* Navigation Breadcrumb */}
         <div className="print-hidden flex items-center gap-2 text-xs text-muted-foreground mb-4">
           <Link to="/" className="hover:text-foreground">Home</Link>
           <span>/</span>
@@ -217,9 +208,6 @@ export default function SubjectCheatSheetPage() {
               </div>
             ))}
         </div>
-      </main>
-
-      <Footer />
     </div>
   );
 }

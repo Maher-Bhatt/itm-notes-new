@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
+import logo from "@/assets/logo.png";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAcademic } from "@/contexts/AcademicContext";
 import { 
@@ -134,8 +133,22 @@ export default function OnboardingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col justify-between">
-      <Header />
+    <div className="min-h-screen bg-background text-foreground flex flex-col justify-between selection:bg-indigo-500/30">
+      {/* Aesthetic Top Bar */}
+      <header className="border-b border-border/80 bg-card/60 backdrop-blur-xl px-4 sm:px-8 py-3.5 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <img src={logo} alt="ITM Notes" className="w-7 h-7 object-contain dark:invert" />
+          <div>
+            <h1 className="font-extrabold text-sm text-foreground tracking-tight">ITM Notes</h1>
+            <p className="text-[10px] text-muted-foreground font-mono">SLS Baroda University • Onboarding</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-[11px] font-bold text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded-full border border-indigo-500/20">
+            Step {step} of 4
+          </span>
+        </div>
+      </header>
 
       <main className="flex-1 max-w-xl mx-auto w-full px-4 sm:px-6 py-8 sm:py-12 flex flex-col justify-center">
         {/* Progress Bar & Step Indicator */}
@@ -509,7 +522,9 @@ export default function OnboardingPage() {
         )}
       </main>
 
-      <Footer />
+      <footer className="py-4 border-t border-border/60 text-center text-xs text-muted-foreground">
+        ITM (SLS) Baroda University Academic Portal • Built by Velocity Web
+      </footer>
     </div>
   );
 }

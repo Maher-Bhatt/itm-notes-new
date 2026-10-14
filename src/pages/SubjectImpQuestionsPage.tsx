@@ -1,7 +1,5 @@
 import { useState, useMemo } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import { SearchDialog } from "@/components/SearchDialog";
 import { SUBJECT_IMP_DATA, ImpQuestion } from "@/data/impQuestionsData";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
@@ -82,35 +80,26 @@ export default function SubjectImpQuestionsPage() {
 
   if (!subjectData) {
     return (
-      <div className="min-h-screen bg-background flex flex-col">
-        <Header />
-        <main className="flex-1 max-w-4xl mx-auto w-full px-6 py-20 text-center">
-          <HelpCircle className="h-12 w-12 mx-auto text-muted-foreground/50 mb-4" />
-          <h2 className="text-2xl font-bold mb-2">Subject Questions Not Found</h2>
-          <p className="text-muted-foreground mb-6">
-            We couldn't locate questions for subject ID: <code className="text-primary">{subjectId}</code>
-          </p>
-          <Link
-            to="/imp-questions"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:opacity-90 transition-opacity"
-          >
-            <ChevronLeft className="h-4 w-4" />
-            Back to All IMP Questions
-          </Link>
-        </main>
-        <Footer />
+      <div className="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto w-full py-20 text-center text-foreground">
+        <HelpCircle className="h-12 w-12 mx-auto text-muted-foreground/50 mb-4" />
+        <h2 className="text-2xl font-bold mb-2">Subject Questions Not Found</h2>
+        <p className="text-muted-foreground mb-6">
+          We couldn't locate questions for subject ID: <code className="text-primary">{subjectId}</code>
+        </p>
+        <Link
+          to="/imp-questions"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:opacity-90 transition-opacity"
+        >
+          <ChevronLeft className="h-4 w-4" />
+          Back to All IMP Questions
+        </Link>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto w-full text-foreground animate-fade-in">
       <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
-
-      {/* Top Header */}
-      <Header onSearchOpen={() => setSearchOpen(true)} showBack backTo="/imp-questions" />
-
-      <main className="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 py-8 animate-fade-in">
         {/* Breadcrumb Navigation */}
         <div className="flex items-center gap-2 text-xs text-muted-foreground mb-4">
           <Link to="/" className="hover:text-foreground">Home</Link>
@@ -404,9 +393,6 @@ export default function SubjectImpQuestionsPage() {
             ))}
           </div>
         )}
-      </main>
-
-      <Footer />
     </div>
   );
 }

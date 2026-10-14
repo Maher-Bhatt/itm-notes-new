@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import { SearchDialog } from "@/components/SearchDialog";
 import { Download, ChevronDown, ChevronUp, Code2, BookOpen } from "lucide-react";
 
@@ -538,11 +536,10 @@ export default function PythonImpQuestionsPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto w-full text-foreground animate-fade-in">
       <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
-      <Header onSearchOpen={() => setSearchOpen(true)} showBack backTo="/imp-questions" />
 
-      <main className="flex-1 max-w-3xl mx-auto w-full px-4 sm:px-6 py-8 animate-fade-in">
+      <div className="w-full">
         {/* Header */}
         <div className="flex items-start justify-between gap-4 mb-6">
           <div>
@@ -631,9 +628,7 @@ export default function PythonImpQuestionsPage() {
             ))}
           </div>
         )}
-      </main>
-
-      <Footer />
+      </div>
     </div>
   );
 }

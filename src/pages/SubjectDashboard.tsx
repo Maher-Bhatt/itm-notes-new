@@ -7,8 +7,6 @@ import { CheckCircle, BookOpen, Bookmark, ChevronRight, ChevronDown, Loader2, He
 import { SUBJECT_IMP_DATA } from "@/data/impQuestionsData";
 import { useState, useMemo, useEffect } from "react";
 import { SearchDialog } from "@/components/SearchDialog";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import { BackToTop } from "@/components/BackToTop";
 import { SubjectDashboardSkeleton } from "@/components/PageSkeletonLoaders";
 
@@ -116,11 +114,10 @@ export default function SubjectDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto w-full text-foreground animate-fade-in">
       <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
-      <Header onSearchOpen={() => setSearchOpen(true)} showBack backTo="/" />
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex-1 w-full">
+      <div className="w-full">
         {/* Subject header */}
         <div className="mb-6 sm:mb-8 animate-slide-up">
           <div className="flex items-center gap-3 sm:gap-4 mb-2">
@@ -242,7 +239,6 @@ export default function SubjectDashboard() {
       </div>
 
       <BackToTop />
-      <Footer />
     </div>
   );
 }

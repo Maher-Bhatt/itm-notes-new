@@ -1,7 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import { useProgress } from "@/hooks/useProgress";
 import { 
   Bookmark, 
@@ -150,9 +148,8 @@ export default function BookmarksPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <Header />
-      <main className="flex-1 max-w-4xl mx-auto w-full px-4 sm:px-6 py-8 animate-fade-in">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto space-y-6 animate-fade-in text-foreground">
+      <div>
         {/* Header Title & Counter */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <div className="flex items-center gap-3">
@@ -498,8 +495,7 @@ export default function BookmarksPage() {
             ))}
           </div>
         )}
-      </main>
-      <Footer />
+      </div>
     </div>
   );
 }

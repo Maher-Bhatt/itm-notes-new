@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
@@ -15,6 +15,7 @@ import ImpQuestionsSubjectsPage from "./pages/ImpQuestionsSubjectsPage";
 import CProgrammingImpQuestionsPage from "./pages/CProgrammingImpQuestionsPage";
 import PythonImpQuestionsPage from "./pages/PythonImpQuestionsPage";
 import AuthPage from "./pages/AuthPage";
+import LandingPage from "./pages/LandingPage";
 import DashboardPage from "./pages/DashboardPage";
 import OnboardingPage from "./pages/OnboardingPage";
 import { lazy, Suspense, useEffect } from "react";
@@ -92,6 +93,21 @@ function AppStartup() {
   return null;
 }
 
+/**
+ * RootRoute: If guest/unauthenticated, renders the modern marketing LandingPage.
+ * If student is signed in, redirects to the personalized /dashboard inside PortalLayout.
+ */
+function RootRoute() {
+  const { user, isLoading } = useAuth();
+  if (isLoading) {
+    return <PageFallback />;
+  }
+  if (!user) {
+    return <LandingPage />;
+  }
+  return <Navigate to="/dashboard" replace />;
+}
+
 const App = () => (
   <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
     <QueryClientProvider client={queryClient}>
@@ -112,7 +128,8 @@ const App = () => (
                   <AchievementCelebrationModal />
                   <Suspense fallback={<PageFallback />}>
                     <Routes>
-                      {/* Standalone Authentication & Onboarding */}
+                      {/* Standalone Landing, Authentication & Onboarding */}
+                      <Route path="/" element={<RootRoute />} />
                       <Route path="/auth" element={<AuthPage />} />
                       <Route path="/onboarding" element={<ProtectedRoute><OnboardingPage /></ProtectedRoute>} />
 
@@ -121,7 +138,6 @@ const App = () => (
 
                       {/* Unified Modern Portal Layout */}
                       <Route element={<PortalLayout />}>
-                        <Route path="/" element={<DashboardPage />} />
                         <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
                         <Route path="/materials" element={<ProtectedRoute><MaterialsPage /></ProtectedRoute>} />
                         <Route path="/quiz" element={<ProtectedRoute><QuizPage /></ProtectedRoute>} />

@@ -31,8 +31,6 @@ import {
 } from "lucide-react";
 import { useState, useMemo, useEffect } from "react";
 import { SearchDialog } from "@/components/SearchDialog";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import { BackToTop } from "@/components/BackToTop";
 
 function OverallProgressBar({ progress }: { progress: number }) {
@@ -112,9 +110,8 @@ export default function Index() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="w-full text-foreground animate-fade-in">
       <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
-      <Header onSearchOpen={() => setSearchOpen(true)} />
 
       {/* ── 1. Hero Section ── */}
       <section className="relative overflow-hidden pt-8 pb-14 sm:pt-14 sm:pb-20 px-4 sm:px-6 border-b border-border bg-gradient-to-b from-card/80 via-background to-background">
@@ -526,7 +523,6 @@ export default function Index() {
         </div>
       </section>
 
-      <Footer />
       <BackToTop />
     </div>
   );

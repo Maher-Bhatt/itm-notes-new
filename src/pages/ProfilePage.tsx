@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Header } from '@/components/Header';
-import { Footer } from '@/components/Footer';
 import { useAuth } from '@/contexts/AuthContext';
 import { useGamification, Achievement } from '@/hooks/useGamification';
 import { useProgress } from '@/hooks/useProgress';
@@ -210,10 +208,7 @@ export default function ProfilePage() {
   });
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <Header />
-
-      <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-10 animate-fade-in">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-6xl mx-auto w-full animate-fade-in text-foreground">
         {/* Top Hero Profile Card */}
         <div className="bg-gradient-to-br from-primary/10 via-secondary/40 to-background border border-border/80 rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 mb-8 shadow-sm">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -644,7 +639,6 @@ export default function ProfilePage() {
             </div>
           </div>
         </div>
-      </main>
 
       {/* Edit Profile & Photo Modal */}
       {isEditing && (
@@ -859,8 +853,6 @@ export default function ProfilePage() {
           </div>
         </div>
       )}
-
-      <Footer />
     </div>
   );
 }

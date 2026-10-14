@@ -4,7 +4,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { subjects } from "@/data/subjects";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-import { Header } from "@/components/Header";
 import { useAuth } from "@/contexts/AuthContext";
 import { Navigate } from "react-router-dom";
 
@@ -181,10 +180,8 @@ export default function SeedPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <Header />
-      <main className="flex-1 max-w-4xl mx-auto w-full p-6">
-        <h1 className="text-2xl font-bold mb-4">Database Seeder</h1>
+    <div className="p-6 max-w-4xl mx-auto w-full text-foreground">
+      <h1 className="text-2xl font-bold mb-4">Database Seeder</h1>
         <p className="text-muted-foreground mb-6">
           This will migrate all hardcoded subjects, units, topics, examples, and MCQs into Supabase.
           Do not run this multiple times unless you clear the database first.
@@ -204,7 +201,6 @@ export default function SeedPage() {
             <div key={i} className="mb-1">{entry}</div>
           ))}
         </div>
-      </main>
     </div>
   );
 }
