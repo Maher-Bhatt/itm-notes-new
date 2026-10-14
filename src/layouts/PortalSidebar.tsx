@@ -47,14 +47,15 @@ export function PortalSidebar({ isOpen = false, onClose, isCollapsed = false }: 
 
   const isActive = (path: string) => {
     if (path === "/" && currentPath === "/") return true;
-    if (path !== "/" && currentPath.startsWith(path)) return true;
+    if (path === "/subjects" && (currentPath.startsWith("/subjects") || currentPath.startsWith("/subject/"))) return true;
+    if (path !== "/" && path !== "/subjects" && currentPath.startsWith(path)) return true;
     return false;
   };
 
   const navItems = [
     { name: "Home", path: "/", icon: Home },
     { name: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
-    { name: "Subjects & Notes", path: "/subject/sem3-dsa", icon: BookOpen, badge: "CORE" },
+    { name: "Subjects & Notes", path: "/subjects", icon: BookOpen, badge: "CORE" },
     { name: "Materials", path: "/materials", icon: Layers, badge: "NEW" },
     { name: "Projects & Lab", path: "/coding-lab", icon: Code2 },
     { name: "Question Banks", path: "/imp-questions", icon: HelpCircle },

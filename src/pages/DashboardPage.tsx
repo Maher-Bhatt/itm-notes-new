@@ -247,6 +247,15 @@ export default function DashboardPage() {
                 </select>
 
                 <button 
+                  onClick={() => navigate("/subjects")}
+                  className="px-2.5 py-1 rounded-lg bg-primary/10 hover:bg-primary/20 text-xs text-primary font-semibold flex items-center gap-1 transition-colors cursor-pointer"
+                >
+                  <BookOpen className="h-3 w-3" />
+                  <span>All Subjects</span>
+                  <ArrowRight className="h-3 w-3" />
+                </button>
+
+                <button 
                   onClick={() => navigate("/materials")}
                   className="text-xs text-primary hover:underline font-semibold flex items-center gap-1"
                 >

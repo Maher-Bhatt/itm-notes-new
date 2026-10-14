@@ -31,10 +31,10 @@ export function MobileBottomNav() {
 
   const navItems = [
     {
-      to: '/',
+      to: '/subjects',
       label: 'Subjects',
       icon: BookOpen,
-      isActive: location.pathname === '/',
+      isActive: location.pathname.startsWith('/subject') || location.pathname === '/subjects',
     },
     {
       to: '/dashboard',

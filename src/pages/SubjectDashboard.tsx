@@ -1,9 +1,9 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { getSubject, getAllTopicIds } from "@/data/subjects";
+import { getSubject, getAllTopicIds, subjects } from "@/data/subjects";
 import { Subject } from "@/data/types";
 import { useProgress } from "@/hooks/useProgress";
 import { useSubject } from "@/hooks/useAcademicData";
-import { CheckCircle, BookOpen, Bookmark, ChevronRight, ChevronDown, Loader2, HelpCircle, FolderDown, Zap } from "lucide-react";
+import { CheckCircle, BookOpen, Bookmark, ChevronRight, ChevronDown, Loader2, HelpCircle, FolderDown, Zap, ArrowLeft } from "lucide-react";
 import { SUBJECT_IMP_DATA } from "@/data/impQuestionsData";
 import { useState, useMemo, useEffect } from "react";
 import { SearchDialog } from "@/components/SearchDialog";
@@ -107,6 +107,11 @@ export default function SubjectDashboard() {
   const topicIds = getAllTopicIds(subject.id);
   const progress = getSubjectProgress(topicIds);
 
+  const siblingSubjects = useMemo(
+    () => subjects.filter((s) => s.semester === subject.semester),
+    [subject.semester]
+  );
+
   const toggleUnit = (unitId: string) => {
     setCollapsedUnits((prev) =>
       prev.includes(unitId) ? prev.filter((id) => id !== unitId) : [...prev, unitId]
@@ -114,14 +119,132 @@ export default function SubjectDashboard() {
   };
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto w-full text-foreground animate-fade-in">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto w-full text-foreground animate-fade-in space-y-6">
       <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
+
+      {/* Top Breadcrumb & Course Switcher Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-border/70">
+        <div className="flex items-center gap-2 flex-wrap text-xs">
+          <Link
+            to="/subjects"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border bg-card hover:bg-secondary text-xs font-semibold text-foreground transition-all shadow-xs group"
+          >
+            <ArrowLeft className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
+            <span>← All Subjects</span>
+          </Link>
+          <span className="text-muted-foreground">/</span>
+          <span className="font-semibold text-muted-foreground">
+            Semester {subject.semester}
+          </span>
+          <span className="text-muted-foreground">/</span>
+          <span className="font-bold text-foreground">
+            {subject.code || subject.name.split("—")[0].trim()}
+          </span>
+        </div>
+
+        {/* Quick Subject Dropdown Selector */}
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-semibold text-muted-foreground hidden sm:inline">Change Subject:</span>
+          <select
+            value={subject.id}
+            onChange={(e) => navigate(`/subject/${e.target.value}`)}
+            className="h-8 px-2.5 rounded-lg border border-input bg-card text-xs font-semibold text-foreground outline-none cursor-pointer focus:ring-1 focus:ring-primary"
+          >
+            <optgroup label="Semester 3 (Core)">
+              {subjects
+                .filter((s) => s.semester === 3)
+                .map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.code ? `[${s.code}] ` : ""}{s.name.replace("Comprehensive University Syllabus for ", "").split("—")[0].trim()}
+                  </option>
+                ))}
+            </optgroup>
+            <optgroup label="Semester 2">
+              {subjects
+                .filter((s) => s.semester === 2)
+                .map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.code ? `[${s.code}] ` : ""}{s.name.replace("Comprehensive University Syllabus for ", "").split("—")[0].trim()}
+                  </option>
+                ))}
+            </optgroup>
+            <optgroup label="Semester 1">
+              {subjects
+                .filter((s) => s.semester === 1)
+                .map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.code ? `[${s.code}] ` : ""}{s.name.replace("Comprehensive University Syllabus for ", "").split("—")[0].trim()}
+                  </option>
+                ))}
+            </optgroup>
+          </select>
+        </div>
+      </div>
+
+      {/* Horizontal Semester Course Switcher Pills */}
+      {siblingSubjects.length > 1 && (
+        <div className="bg-card border border-border/80 rounded-2xl p-3 shadow-xs space-y-2">
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+              <BookOpen className="h-3.5 w-3.5 text-primary" />
+              Semester {subject.semester} Courses — Quick Switch:
+            </span>
+            <Link to="/subjects" className="text-[11px] font-semibold text-primary hover:underline">
+              View All {subjects.length} Subjects Directory →
+            </Link>
+          </div>
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+            {siblingSubjects.map((sib) => {
+              const isCurrent = sib.id === subject.id || sib.code === subject.code;
+              const shortTitle = sib.name
+                .replace("Comprehensive University Syllabus for ", "")
+                .split("—")[0]
+                .trim();
+
+              return (
+                <button
+                  key={sib.id}
+                  onClick={() => navigate(`/subject/${sib.id}`)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all shrink-0 cursor-pointer flex items-center gap-1.5 border ${
+                    isCurrent
+                      ? "bg-[#183F36] text-[#D6E85D] border-[#D6E85D]/40 font-bold shadow-xs"
+                      : "bg-secondary/60 text-muted-foreground hover:text-foreground border-transparent hover:border-border"
+                  }`}
+                >
+                  {sib.code && (
+                    <span
+                      className={`text-[10px] font-mono px-1 py-0.5 rounded ${
+                        isCurrent
+                          ? "bg-[#D6E85D]/20 text-[#D6E85D]"
+                          : "bg-muted text-muted-foreground"
+                      }`}
+                    >
+                      {sib.code}
+                    </span>
+                  )}
+                  <span>{shortTitle}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       <div className="w-full">
         {/* Subject header */}
         <div className="mb-6 sm:mb-8 animate-slide-up">
           <div className="flex items-center gap-3 sm:gap-4 mb-2">
             <div className="flex-1">
+              <div className="flex items-center gap-2 mb-1.5">
+                {subject.code && (
+                  <span className="px-2 py-0.5 rounded-md font-mono text-[10px] font-bold bg-primary/10 text-primary border border-primary/20">
+                    {subject.code}
+                  </span>
+                )}
+                <span className="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-secondary text-muted-foreground">
+                  Semester {subject.semester}
+                </span>
+              </div>
               <h1 className="text-xl sm:text-2xl font-bold">{subject.name}</h1>
               <p className="text-xs sm:text-sm text-muted-foreground mt-1">{subject.description}</p>
             </div>

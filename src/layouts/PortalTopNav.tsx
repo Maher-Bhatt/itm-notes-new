@@ -92,7 +92,7 @@ export function PortalTopNav({
 
   const topTabs = [
     { label: "Dashboard", path: "/dashboard" },
-    { label: "Subjects & Notes", path: "/subject/sem3-dsa" },
+    { label: "Subjects & Notes", path: "/subjects" },
     { label: "Materials", path: "/materials" },
     { label: "Coding Lab", path: "/coding-lab" },
     { label: "Exam Questions", path: "/imp-questions" },
@@ -136,7 +136,7 @@ export function PortalTopNav({
         {/* Top Horizontal Tabs */}
         <nav className="hidden sm:flex items-center gap-1 font-display">
           {topTabs.map((tab) => {
-            const active = location.pathname === tab.path || (tab.path.startsWith("/subject") && location.pathname.startsWith("/subject"));
+            const active = location.pathname === tab.path || (tab.path === "/subjects" && (location.pathname.startsWith("/subjects") || location.pathname.startsWith("/subject")));
             return (
               <Link
                 key={tab.label}

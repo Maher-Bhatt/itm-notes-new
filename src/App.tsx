@@ -27,6 +27,7 @@ import SubjectImpQuestionsPage from "./pages/SubjectImpQuestionsPage";
 import ProfilePage from "./pages/ProfilePage";
 import GpaCalculatorPage from "./pages/GpaCalculatorPage";
 import SubjectCheatSheetPage from "./pages/SubjectCheatSheetPage";
+import SubjectsPage from "./pages/SubjectsPage";
 import { PortalLayout } from "@/layouts/PortalLayout";
 import { PomodoroProvider } from "@/contexts/PomodoroContext";
 import { FocusModeProvider } from "@/contexts/FocusModeContext";
@@ -154,6 +155,7 @@ const App = () => (
                           <Route path="/gpa-calculator" element={<ProtectedRoute><GpaCalculatorPage /></ProtectedRoute>} />
                           <Route path="/bookmarks" element={<ProtectedRoute><BookmarksPage /></ProtectedRoute>} />
                           <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+                          <Route path="/subjects" element={<ProtectedRoute><SubjectsPage /></ProtectedRoute>} />
                           <Route path="/subject/:subjectId" element={<SubjectDashboard />} />
                           <Route path="/subject/:subjectId/cheat-sheet" element={<SubjectCheatSheetPage />} />
                           <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminDashboard /></ProtectedRoute>} />
