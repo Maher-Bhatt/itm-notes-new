@@ -40,7 +40,7 @@ export function PortalLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-background text-foreground flex antialiased">
+    <div className="h-screen w-screen overflow-hidden bg-slate-50 dark:bg-background text-foreground flex antialiased">
       {/* 1. Persistent Left Dark-Navy Sidebar */}
       <PortalSidebar 
         isOpen={sidebarOpen} 
@@ -48,15 +48,15 @@ export function PortalLayout() {
       />
 
       {/* 2. Main Content Viewport */}
-      <div className="flex-1 flex flex-col min-w-0 min-h-screen overflow-x-hidden">
-        {/* Sticky Top Navbar */}
+      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+        {/* Sticky Fixed Top Navbar - NEVER SCROLLS AWAY */}
         <PortalTopNav 
           onToggleSidebar={() => setSidebarOpen((prev) => !prev)}
           onOpenSearch={() => setSearchOpen(true)}
         />
 
-        {/* Dynamic Page Content */}
-        <main className="flex-1 pb-16">
+        {/* Dynamic Page Content - Dedicated smooth scroll container */}
+        <main className="flex-1 overflow-y-auto overflow-x-hidden">
           <Outlet />
         </main>
       </div>

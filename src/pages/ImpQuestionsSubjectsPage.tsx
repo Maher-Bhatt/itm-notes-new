@@ -293,7 +293,7 @@ export default function ImpQuestionsSubjectsPage() {
           <h3 className="font-bold text-sm text-foreground">Examination Materials</h3>
 
           <div className="space-y-1.5 text-xs font-semibold">
-            <button className="w-full p-2.5 rounded-xl bg-indigo-600 text-white font-bold flex items-center justify-between text-left shadow-xs">
+            <button className="w-full p-2.5 rounded-xl bg-blue-600 text-white font-bold flex items-center justify-between text-left shadow-md shadow-blue-600/20">
               <span className="flex items-center gap-2">
                 <CheckCircle className="h-4 w-4" />
                 <span>Student Materials</span>
@@ -443,7 +443,7 @@ export default function ImpQuestionsSubjectsPage() {
             onClick={() => {
               toast.success("Preparing full 515-question solved revision pack...");
             }}
-            className="w-full h-10 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md shadow-indigo-600/20"
+            className="w-full h-10 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md shadow-blue-600/20"
           >
             <FolderDown className="h-4 w-4" />
             <span>Get Revision Now</span>

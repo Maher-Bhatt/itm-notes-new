@@ -37,7 +37,7 @@ const SUBJECT_OVERVIEW_CARDS = [
     id: "mat-1",
     code: "DATA - COMPUTER",
     tag: "Notes",
-    tagColor: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+    tagColor: "bg-emerald-500 text-white shadow-xs",
     title: "Official Timetables",
     subtitle: "Complete schedule & test room mappings for Mid-Semester Exams.",
     pages: "12 Pages",
@@ -47,7 +47,7 @@ const SUBJECT_OVERVIEW_CARDS = [
     id: "mat-2",
     code: "DATA & FRAMES",
     tag: "Notes",
-    tagColor: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+    tagColor: "bg-emerald-500 text-white shadow-xs",
     title: "Exercise Practice Sets",
     subtitle: "Algorithmic problem solutions, dry runs, and time complexity table.",
     pages: "28 Pages",
@@ -57,7 +57,7 @@ const SUBJECT_OVERVIEW_CARDS = [
     id: "mat-3",
     code: "MATH - EXAM 02",
     tag: "Notes",
-    tagColor: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+    tagColor: "bg-emerald-500 text-white shadow-xs",
     title: "Practical Code Reference",
     subtitle: "Data Structures in C, Stacks, Queues, Binary Trees & Dijkstra code.",
     pages: "34 Pages",
@@ -67,7 +67,7 @@ const SUBJECT_OVERVIEW_CARDS = [
     id: "mat-4",
     code: "DBMS - EXAMS",
     tag: "Notes",
-    tagColor: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+    tagColor: "bg-emerald-500 text-white shadow-xs",
     title: "Interactive Data Sets",
     subtitle: "Relational Algebra, SQL triggers, 1NF-BCNF decomposition proofs.",
     pages: "22 Pages",
@@ -77,7 +77,7 @@ const SUBJECT_OVERVIEW_CARDS = [
     id: "mat-5",
     code: "AUTO - EXAMS",
     tag: "Exam",
-    tagColor: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20",
+    tagColor: "bg-blue-600 text-white shadow-xs",
     title: "Offline Syllabus Units",
     subtitle: "All units compiled into offline indexed high-yield summaries.",
     pages: "48 Pages",
@@ -87,13 +87,125 @@ const SUBJECT_OVERVIEW_CARDS = [
     id: "mat-6",
     code: "AUTO - EXAMS",
     tag: "Exam",
-    tagColor: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20",
+    tagColor: "bg-blue-600 text-white shadow-xs",
     title: "Project Guidelines",
     subtitle: "Semester capstone project formats, SRS templates, and viva questions.",
     pages: "16 Pages",
     fileSize: "1.1 MB",
   },
 ];
+
+function MaterialCardThumbnail({ id }: { id: string }) {
+  if (id === "mat-1") {
+    return (
+      <div className="w-full h-full rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-2 flex flex-col justify-between shadow-xs">
+        <div className="flex items-center justify-between pb-1 border-b border-slate-200 dark:border-slate-800">
+          <div className="w-12 h-1.5 rounded-full bg-emerald-500/80" />
+          <div className="w-4 h-1.5 rounded-full bg-slate-300 dark:bg-slate-700" />
+        </div>
+        <div className="space-y-1">
+          <div className="h-1.5 w-full rounded bg-slate-200 dark:bg-slate-800" />
+          <div className="h-1.5 w-4/5 rounded bg-slate-200 dark:bg-slate-800" />
+          <div className="h-1.5 w-3/4 rounded bg-slate-200 dark:bg-slate-800" />
+        </div>
+        <div className="pt-1 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-[9px] text-emerald-600 dark:text-emerald-400 font-mono font-bold">
+          <span>ROOM 302</span>
+          <span>OCT 26</span>
+        </div>
+      </div>
+    );
+  }
+  if (id === "mat-2") {
+    return (
+      <div className="w-full h-full rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-2 grid grid-cols-2 gap-1.5 shadow-xs">
+        <div className="border-r border-slate-200 dark:border-slate-800 pr-1 space-y-1">
+          <div className="h-1.5 w-3/4 rounded bg-indigo-500/70" />
+          <div className="h-1.5 w-full rounded bg-slate-200 dark:bg-slate-800" />
+          <div className="h-1.5 w-4/5 rounded bg-slate-200 dark:bg-slate-800" />
+          <div className="h-1.5 w-2/3 rounded bg-slate-200 dark:bg-slate-800" />
+        </div>
+        <div className="pl-1 space-y-1">
+          <div className="h-1.5 w-3/4 rounded bg-sky-500/70" />
+          <div className="h-1.5 w-full rounded bg-slate-200 dark:bg-slate-800" />
+          <div className="h-1.5 w-4/5 rounded bg-slate-200 dark:bg-slate-800" />
+          <div className="h-1.5 w-2/3 rounded bg-slate-200 dark:bg-slate-800" />
+        </div>
+      </div>
+    );
+  }
+  if (id === "mat-3") {
+    return (
+      <div className="w-full h-full rounded-xl bg-slate-900 text-slate-300 p-2 flex flex-col justify-between font-mono text-[9px] border border-slate-800 shadow-xs">
+        <div className="flex items-center gap-1 text-slate-500 pb-1 border-b border-slate-800">
+          <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+          <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+          <span className="text-[8px] text-slate-400 ml-1">dsa_queue.c</span>
+        </div>
+        <div className="space-y-0.5 text-indigo-300 text-[8px] leading-tight">
+          <p><span className="text-pink-400">void</span> enqueue(<span className="text-sky-300">int</span> x) &#123;</p>
+          <p className="pl-2 text-slate-400">waitQ[++rear] = x;</p>
+          <p>&#125;</p>
+        </div>
+        <div className="text-[8px] text-emerald-400 font-bold">✓ C99 Tested</div>
+      </div>
+    );
+  }
+  if (id === "mat-4") {
+    return (
+      <div className="w-full h-full rounded-xl bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/20 border border-amber-200/80 dark:border-amber-800/40 p-2 flex flex-col justify-between shadow-xs relative overflow-hidden">
+        <div className="absolute top-0 bottom-0 left-2 w-1 border-r border-dashed border-amber-400/60" />
+        <div className="pl-3 space-y-1">
+          <div className="h-1.5 w-14 rounded bg-amber-500/80" />
+          <div className="h-1 w-full rounded bg-amber-200 dark:bg-amber-900/60" />
+          <div className="h-1 w-4/5 rounded bg-amber-200 dark:bg-amber-900/60" />
+          <div className="h-1 w-3/4 rounded bg-amber-200 dark:bg-amber-900/60" />
+        </div>
+        <div className="pl-3 flex items-center justify-between text-[9px] font-bold text-amber-700 dark:text-amber-400">
+          <span>DBMS 302</span>
+          <span>SQL LAB</span>
+        </div>
+      </div>
+    );
+  }
+  if (id === "mat-5") {
+    return (
+      <div className="w-full h-full rounded-xl bg-slate-900 border border-indigo-500/30 p-2 flex flex-col justify-between shadow-xs text-white">
+        <div className="flex items-center justify-between text-[9px] text-indigo-400 font-mono font-bold">
+          <span>UNITS 1–4</span>
+          <span>OFFLINE</span>
+        </div>
+        <div className="text-center py-1">
+          <span className="text-[10px] font-black tracking-wider text-cyan-400 uppercase block font-mono">
+            SYLLABUS
+          </span>
+          <span className="text-[8px] text-slate-400 font-medium">SLS Baroda Univ</span>
+        </div>
+        <div className="flex justify-center">
+          <span className="px-2 py-0.5 rounded text-[8px] font-bold bg-indigo-600 text-white">
+            100% COMPLETE
+          </span>
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div className="w-full h-full rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/40 dark:to-indigo-950/20 border border-blue-200/80 dark:border-blue-800/40 p-2 flex flex-col justify-between shadow-xs">
+      <div className="flex items-center justify-between text-[9px] text-blue-600 dark:text-blue-400 font-bold">
+        <span>PROJECT SRS</span>
+        <span>FORMAT</span>
+      </div>
+      <div className="space-y-1">
+        <div className="h-1.5 w-12 rounded bg-blue-500/70" />
+        <div className="h-1 w-full rounded bg-blue-200 dark:bg-blue-900/60" />
+        <div className="h-1 w-3/4 rounded bg-blue-200 dark:bg-blue-900/60" />
+      </div>
+      <div className="text-[8px] text-slate-500 dark:text-slate-400 font-mono">
+        IEEE Standard · Capstone
+      </div>
+    </div>
+  );
+}
 
 // Question Banks Chart Data matching Screenshot 2
 const QUESTION_BANK_TREND_DATA = [
@@ -213,7 +325,7 @@ export default function MaterialsPage() {
               navigate("/imp-questions");
               toast.info("Navigating to Question Banks");
             }}
-            className="h-9 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md shadow-indigo-600/20 flex items-center gap-1.5 transition-all active:scale-95 shrink-0"
+            className="h-9 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-md shadow-blue-600/20 flex items-center gap-1.5 transition-all active:scale-95 shrink-0"
           >
             <Plus className="h-3.5 w-3.5" />
             <span>Add Sheet</span>
@@ -246,12 +358,12 @@ export default function MaterialsPage() {
                   </span>
                 </div>
 
-                {/* Simulated Document Preview Area */}
+                {/* Realistic Document Preview Thumbnail matching Screenshot 2 */}
                 <div 
                   onClick={() => setActivePreview(card)}
-                  className="h-24 rounded-xl bg-secondary/50 border border-border/60 flex items-center justify-center p-3 mb-3 cursor-pointer group-hover:bg-primary/5 transition-colors"
+                  className="h-28 rounded-xl overflow-hidden mb-3 cursor-pointer group-hover:ring-2 group-hover:ring-blue-500/40 transition-all"
                 >
-                  <FileText className="h-10 w-10 text-muted-foreground/60 group-hover:text-primary transition-colors" />
+                  <MaterialCardThumbnail id={card.id} />
                 </div>
 
                 <div className="text-[10px] font-mono font-bold text-primary mb-0.5">
@@ -267,7 +379,7 @@ export default function MaterialsPage() {
 
               <button
                 onClick={() => handleDownload(card)}
-                className="w-full h-8 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all active:scale-95 shadow-sm"
+                className="w-full h-8 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all active:scale-95 shadow-sm shadow-blue-600/20"
               >
                 <Download className="h-3 w-3" />
                 <span>Download</span>
@@ -284,7 +396,7 @@ export default function MaterialsPage() {
           <h3 className="font-bold text-sm text-foreground">Examination Materials</h3>
 
           <div className="space-y-1.5 text-xs font-semibold">
-            <button className="w-full p-2.5 rounded-xl bg-indigo-600 text-white font-bold flex items-center justify-between text-left shadow-xs">
+            <button className="w-full p-2.5 rounded-xl bg-blue-600 text-white font-bold flex items-center justify-between text-left shadow-md shadow-blue-600/20">
               <span className="flex items-center gap-2">
                 <CheckCircle className="h-4 w-4" />
                 <span>Student Materials</span>
@@ -434,7 +546,7 @@ export default function MaterialsPage() {
             onClick={() => {
               toast.success("Preparing offline bundle: 32 Notes & 515 Questions (24.8 MB)...");
             }}
-            className="w-full h-10 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md shadow-indigo-600/20"
+            className="w-full h-10 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md shadow-blue-600/20"
           >
             <FolderDown className="h-4 w-4" />
             <span>Get Revision Now (Download All)</span>
@@ -473,7 +585,7 @@ export default function MaterialsPage() {
                     <td className="py-3 text-muted-foreground">{item.subject}</td>
                     <td className="py-3 font-mono text-[11px] text-muted-foreground">{item.type}</td>
                     <td className="py-3 text-right">
-                      <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 font-mono">
+                      <span className="text-xs font-bold text-blue-600 dark:text-blue-400 font-mono">
                         {item.size}
                       </span>
                     </td>
@@ -504,7 +616,7 @@ export default function MaterialsPage() {
           <div className="pt-4 flex items-center justify-between">
             <button
               onClick={() => navigate("/imp-questions")}
-              className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md transition-all active:scale-95"
+              className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-md shadow-blue-600/20 transition-all active:scale-95"
             >
               Open Solved Bank &gt;
             </button>

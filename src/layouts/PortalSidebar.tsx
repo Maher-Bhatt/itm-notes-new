@@ -63,7 +63,7 @@ export function PortalSidebar({ isOpen = false, onClose }: PortalSidebarProps) {
   const sidebarContent = (
     <div className="flex flex-col h-full bg-[#0F172A] text-slate-300 select-none">
       {/* Brand Header */}
-      <div className="p-4 border-b border-slate-800/80 flex items-center justify-between">
+      <div className="p-4 border-b border-slate-800/80 flex items-center justify-between shrink-0">
         <Link to="/" onClick={onClose} className="flex items-center gap-3 group">
           <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-sky-400 p-0.5 shadow-md shadow-indigo-500/20 flex items-center justify-center">
             <img src={logo} alt="ITM Notes" className="w-full h-full object-contain p-1 invert" />
@@ -94,7 +94,7 @@ export function PortalSidebar({ isOpen = false, onClose }: PortalSidebarProps) {
       </div>
 
       {/* Main Navigation Links */}
-      <div className="flex-1 overflow-y-auto px-3 py-4 space-y-6 scrollbar-thin scrollbar-thumb-slate-800">
+      <div className="flex-1 overflow-y-auto px-3 py-3 space-y-4 scrollbar-thin scrollbar-thumb-slate-800">
         <div>
           <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 px-3 mb-2">
             Main Menu
@@ -187,7 +187,7 @@ export function PortalSidebar({ isOpen = false, onClose }: PortalSidebarProps) {
       </div>
 
       {/* User Footer Profile Card */}
-      <div className="p-3 border-t border-slate-800/80 bg-slate-950/40">
+      <div className="p-3 border-t border-slate-800/80 bg-slate-950/40 shrink-0">
         <div className="flex items-center justify-between gap-2 p-2 rounded-xl hover:bg-slate-800/50 transition-colors">
           <Link to="/profile" onClick={onClose} className="flex items-center gap-2.5 min-w-0 flex-1">
             <div className="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs ring-2 ring-indigo-400/30 shrink-0">
@@ -218,7 +218,7 @@ export function PortalSidebar({ isOpen = false, onClose }: PortalSidebarProps) {
   return (
     <>
       {/* Desktop Persistent Sidebar */}
-      <aside className="hidden md:flex flex-col w-60 shrink-0 h-screen sticky top-0 z-40 border-r border-slate-800 shadow-xl">
+      <aside className="hidden md:flex flex-col w-60 shrink-0 h-full border-r border-slate-800 shadow-xl z-20 select-none">
         {sidebarContent}
       </aside>
 
