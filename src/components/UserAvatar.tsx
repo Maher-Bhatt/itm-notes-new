@@ -8,19 +8,38 @@ interface UserAvatarProps {
   alt?: string;
 }
 
-// Canonical avatar fallback for platform owner Maher Bhatt
-export const MAHER_CANONICAL_AVATAR = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150";
+// Canonical avatar fallback for platform owner Maher Bhatt (authentic Supabase storage URL)
+export const MAHER_CANONICAL_AVATAR = "https://woclidkjrzlquncudfuj.supabase.co/storage/v1/object/public/avatars/7b21ccf3-85a1-4471-9f0e-64fc850df5d1/avatar-1791466601274.jpg";
 
-export function resolveAvatarUrl(profile?: { avatar_url?: string | null; display_name?: string | null } | null, user?: { email?: string | null; user_metadata?: any } | null): string | null {
-  if (profile?.avatar_url) return profile.avatar_url;
-  if (user?.user_metadata?.avatar_url) return user.user_metadata.avatar_url;
-  if (user?.user_metadata?.picture) return user.user_metadata.picture;
-  
+export function resolveAvatarUrl(
+  profile?: { avatar_url?: string | null; display_name?: string | null; email?: string | null } | null, 
+  user?: { email?: string | null; user_metadata?: any } | null
+): string | null {
   const isMaher = 
     user?.email?.toLowerCase() === "maherbhatt01@gmail.com" || 
+    user?.email?.toLowerCase() === "maher@gmail.com" ||
+    profile?.email?.toLowerCase() === "maherbhatt01@gmail.com" ||
+    profile?.email?.toLowerCase() === "maher@gmail.com" ||
     profile?.display_name?.toLowerCase().includes("maher");
+
+  // For Maher, always return his genuine uploaded photo rather than any old Unsplash stock photo or gradient
+  if (isMaher) {
+    if (profile?.avatar_url && !profile.avatar_url.startsWith("grad-") && !profile.avatar_url.includes("unsplash")) {
+      return profile.avatar_url;
+    }
+    return MAHER_CANONICAL_AVATAR;
+  }
+
+  if (profile?.avatar_url && !profile.avatar_url.includes("photo-1535713875002-d1d0cf377fde")) {
+    return profile.avatar_url;
+  }
+  if (user?.user_metadata?.avatar_url && !user.user_metadata.avatar_url.includes("photo-1535713875002-d1d0cf377fde")) {
+    return user.user_metadata.avatar_url;
+  }
+  if (user?.user_metadata?.picture) {
+    return user.user_metadata.picture;
+  }
   
-  if (isMaher) return MAHER_CANONICAL_AVATAR;
   return null;
 }
 
@@ -36,9 +55,21 @@ export function UserAvatar({
   const resolvedName = displayName || (email ? email.split("@")[0] : "Student");
   const isMaher = 
     email?.toLowerCase() === "maherbhatt01@gmail.com" || 
+    email?.toLowerCase() === "maher@gmail.com" || 
     resolvedName.toLowerCase().includes("maher");
 
-  const effectiveUrl = (!imageError && (avatarUrl || (isMaher ? MAHER_CANONICAL_AVATAR : null))) || null;
+  // Sanitize any legacy fake unsplash url
+  let rawUrl = avatarUrl;
+  if (rawUrl && rawUrl.includes("photo-1535713875002-d1d0cf377fde")) {
+    rawUrl = isMaher ? MAHER_CANONICAL_AVATAR : null;
+  }
+
+  // If this is Maher and avatarUrl is missing, or is a gradient string, use his canonical real photo
+  if (isMaher && (!rawUrl || rawUrl.startsWith("grad-"))) {
+    rawUrl = MAHER_CANONICAL_AVATAR;
+  }
+
+  const effectiveUrl = (!imageError && (rawUrl || (isMaher ? MAHER_CANONICAL_AVATAR : null))) || null;
 
   // 1. Valid Remote or Data URL
   if (effectiveUrl && (effectiveUrl.startsWith("http") || effectiveUrl.startsWith("data:image"))) {
@@ -53,7 +84,7 @@ export function UserAvatar({
   }
 
   // 2. Preset Gradient
-  if (avatarUrl && avatarUrl.startsWith("grad-")) {
+  if (rawUrl && rawUrl.startsWith("grad-")) {
     const gradients = [
       "from-indigo-600 via-purple-600 to-pink-500",
       "from-blue-600 via-teal-500 to-emerald-500",

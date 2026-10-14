@@ -229,7 +229,6 @@ export const INITIAL_POSTS: CommunityPost[] = [
     authorId: 'student-2',
     authorName: 'Aarav Patel',
     authorEmail: 'aarav.p@itm.ac.in',
-    authorAvatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150',
     authorBranch: 'B.Tech CSE Sem 3',
     isMasked: false,
     maskAlias: 'Aarav Patel',

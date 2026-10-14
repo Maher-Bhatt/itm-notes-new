@@ -140,7 +140,23 @@ export default function CommunityPage() {
       const cached = localStorage.getItem("itm_campus_feed_posts");
       if (cached) {
         const parsed = JSON.parse(cached);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed.map((p: CommunityPost) => {
+            const isMaher = 
+              p.authorName === "Maher Bhatt" || 
+              p.authorId === "admin-maher" ||
+              p.authorEmail?.toLowerCase() === "maherbhatt01@gmail.com" ||
+              p.authorEmail?.toLowerCase() === "maher@gmail.com" ||
+              p.id === "post-maher-verified";
+            if (isMaher) {
+              return { ...p, authorAvatar: MAHER_CANONICAL_AVATAR };
+            }
+            if (p.authorAvatar && p.authorAvatar.includes("photo-1535713875002-d1d0cf377fde")) {
+              return { ...p, authorAvatar: undefined };
+            }
+            return p;
+          });
+        }
       }
     } catch {
       // Fallback
@@ -769,8 +785,14 @@ export default function CommunityPage() {
 
             {filteredPosts.map((post) => {
               const isAuthor = user?.id && post.authorId === user.id;
-              const isMaher = post.authorName === "Maher Bhatt" || post.authorId === "admin-maher";
-              const postAvatar = isMaher ? (currentUserAvatar || MAHER_CANONICAL_AVATAR) : post.authorAvatar;
+              const isMaher = 
+                post.authorName === "Maher Bhatt" || 
+                post.authorId === "admin-maher" ||
+                post.authorEmail?.toLowerCase() === "maherbhatt01@gmail.com" ||
+                post.authorEmail?.toLowerCase() === "maher@gmail.com";
+              const postAvatar = isMaher 
+                ? (currentUserAvatar || MAHER_CANONICAL_AVATAR) 
+                : (post.authorAvatar?.includes("photo-1535713875002-d1d0cf377fde") ? undefined : post.authorAvatar);
               const isLiked = !!post.likedByMe;
               const commentsList = post.comments || [];
 

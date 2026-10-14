@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { supabase } from '@/integrations/supabase/client';
 import { CommunityPost, CommunityComment, INITIAL_POSTS } from '@/data/communityData';
+import { MAHER_CANONICAL_AVATAR } from '@/components/UserAvatar';
 
 const LOCAL_STORAGE_KEY = 'itm_campus_feed_posts';
 const LOCAL_FRIENDS_KEY = 'itm_user_friends_ids';
@@ -92,23 +93,46 @@ export async function fetchCommunityPosts(currentUserId?: string): Promise<Commu
     });
 
     // 4. Map DB posts into UI models
-    const remotePosts: CommunityPost[] = (dbPosts || []).map((p) => ({
-      id: p.id,
-      authorId: p.author_id,
-      authorName: p.author_name,
-      authorEmail: p.author_email || '',
-      authorAvatar: p.author_avatar || undefined,
-      authorBranch: p.author_branch || "Computer Science & Engineering",
-      isMasked: p.is_masked,
-      maskAlias: p.mask_alias || 'Anonymous Student 🎭',
-      category: p.category as any,
-      content: p.content,
-      createdAt: formatTimeAgo(p.created_at),
-      likes: p.likes || 0,
-      likedByMe: userLikedPostIds.has(p.id),
-      pinned: p.pinned || false,
-      comments: commentsByPostId[p.id] || [],
-    }));
+    const remotePosts: CommunityPost[] = (dbPosts || []).map((p) => {
+      const isMaher = 
+        p.author_name === 'Maher Bhatt' || 
+        p.author_id === 'admin-maher' ||
+        p.author_email?.toLowerCase() === 'maherbhatt01@gmail.com' ||
+        p.author_email?.toLowerCase() === 'maher@gmail.com';
+
+      let cleanAvatar = p.author_avatar;
+      if (isMaher) {
+        cleanAvatar = MAHER_CANONICAL_AVATAR;
+      } else if (cleanAvatar && cleanAvatar.includes('photo-1535713875002-d1d0cf377fde')) {
+        cleanAvatar = undefined;
+      }
+
+      return {
+        id: p.id,
+        authorId: p.author_id,
+        authorName: p.author_name,
+        authorEmail: p.author_email || '',
+        authorAvatar: cleanAvatar || undefined,
+        authorBranch: p.author_branch || "Computer Science & Engineering",
+        isMasked: p.is_masked,
+        maskAlias: p.mask_alias || 'Anonymous Student 🎭',
+        category: p.category as any,
+        content: p.content,
+        createdAt: formatTimeAgo(p.created_at),
+        likes: p.likes || 0,
+        likedByMe: userLikedPostIds.has(p.id),
+        pinned: p.pinned || false,
+        comments: (commentsByPostId[p.id] || []).map((c) => {
+          const isMaherComment = c.authorName === 'Maher Bhatt' || c.authorEmail === 'maherbhatt01@gmail.com';
+          return {
+            ...c,
+            authorAvatar: isMaherComment 
+              ? MAHER_CANONICAL_AVATAR 
+              : (c.authorAvatar?.includes('photo-1535713875002-d1d0cf377fde') ? undefined : c.authorAvatar),
+          };
+        }),
+      };
+    });
 
     // 5. Check if user had any local-only posts from previous sessions that are missing in Supabase
     const localPosts = getLocalCachedPosts();
@@ -446,7 +470,25 @@ export function subscribeToCommunityFeed(onFeedChange: () => void) {
 function getLocalCachedPosts(): CommunityPost[] {
   try {
     const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
+    if (raw) {
+      const posts: CommunityPost[] = JSON.parse(raw);
+      if (Array.isArray(posts)) {
+        return posts.map((p) => {
+          const isMaher = 
+            p.authorName === 'Maher Bhatt' || 
+            p.authorId === 'admin-maher' ||
+            p.authorEmail?.toLowerCase() === 'maherbhatt01@gmail.com' ||
+            p.authorEmail?.toLowerCase() === 'maher@gmail.com';
+          if (isMaher) {
+            return { ...p, authorAvatar: MAHER_CANONICAL_AVATAR };
+          }
+          if (p.authorAvatar && p.authorAvatar.includes('photo-1535713875002-d1d0cf377fde')) {
+            return { ...p, authorAvatar: undefined };
+          }
+          return p;
+        });
+      }
+    }
   } catch (e) {
     console.warn('Failed to read cached posts from localStorage:', e);
   }

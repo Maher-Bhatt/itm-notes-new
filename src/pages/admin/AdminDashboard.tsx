@@ -48,6 +48,7 @@ import {
   Cell,
 } from "recharts";
 import { toast } from "sonner";
+import { UserAvatar } from "@/components/UserAvatar";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -807,13 +808,12 @@ export default function AdminDashboard() {
                           <tr key={u.id} className="hover:bg-slate-700/30 transition-colors">
                             <td className="px-4 py-3">
                               <div className="flex items-center gap-2.5">
-                                <div className="h-8 w-8 rounded-full bg-[#183F36] flex items-center justify-center text-[#D6E85D] text-xs font-bold shrink-0 overflow-hidden">
-                                  {u.avatarUrl ? (
-                                    <img src={u.avatarUrl} alt={u.name} className="h-full w-full object-cover" />
-                                  ) : (
-                                    u.name.charAt(0).toUpperCase()
-                                  )}
-                                </div>
+                                <UserAvatar
+                                  avatarUrl={u.avatarUrl}
+                                  displayName={u.name}
+                                  email={u.email}
+                                  className="h-8 w-8 text-xs shrink-0"
+                                />
                                 <span className="font-semibold text-white">{u.name}</span>
                               </div>
                             </td>

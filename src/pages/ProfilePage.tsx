@@ -36,6 +36,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { subjects, getAllTopicIds } from '@/data/subjects';
+import { MAHER_CANONICAL_AVATAR } from '@/components/UserAvatar';
 
 export interface GradientAvatar {
   id: string;
@@ -53,16 +54,25 @@ export const GRADIENT_AVATARS: GradientAvatar[] = [
 ];
 
 export const renderAvatarBox = (url: string | null | undefined, name: string, sizeClass = "w-20 h-20 text-3xl") => {
-  if (url && (url.startsWith('data:image') || url.startsWith('http'))) {
+  let effectiveUrl = url;
+  const isMaher = name?.toLowerCase().includes('maher');
+  if (effectiveUrl && effectiveUrl.includes('photo-1535713875002-d1d0cf377fde')) {
+    effectiveUrl = MAHER_CANONICAL_AVATAR;
+  }
+  if (isMaher && (!effectiveUrl || effectiveUrl.startsWith('grad-'))) {
+    effectiveUrl = MAHER_CANONICAL_AVATAR;
+  }
+
+  if (effectiveUrl && (effectiveUrl.startsWith('data:image') || effectiveUrl.startsWith('http'))) {
     return (
       <img
-        src={url}
+        src={effectiveUrl}
         alt={name}
         className={`${sizeClass} rounded-2xl object-cover shadow-md border-2 border-primary/50 bg-secondary`}
       />
     );
   }
-  const matched = GRADIENT_AVATARS.find(g => g.id === url || url?.includes(g.id));
+  const matched = GRADIENT_AVATARS.find(g => g.id === effectiveUrl || effectiveUrl?.includes(g.id));
   const gradientClass = matched ? matched.bgClass : 'from-indigo-600 via-purple-600 to-pink-500';
   const initial = name?.trim() ? name.trim().charAt(0).toUpperCase() : 'S';
 
