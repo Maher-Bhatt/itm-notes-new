@@ -112,15 +112,18 @@ interface MarkdownRendererProps {
 function preprocessMarkdownMath(text: string): string {
   if (!text) return "";
 
-  // 1. Multiline blocks where $$ has \begin{...} on the same line without a closing $$ on that line
-  let res = text.replace(/^(\s*)\$\$(\\begin\{[a-zA-Z*]+\}.*)$/gm, (match, indent, rest) => {
+  // 1. Separate single-line display math $$...$$ onto dedicated clean block lines so remark-math isolates it properly
+  let res = text.replace(/^[ \t]*\$\$([^\n$]+?)\$\$[ \t]*$/gm, "\n\n$$\n$1\n$$\n\n");
+
+  // 2. Multiline blocks where $$ has \begin{...} on the same line without a closing $$ on that line
+  res = res.replace(/^(\s*)\$\$(\\begin\{[a-zA-Z*]+\}.*)$/gm, (match, indent, rest) => {
     if (rest.trimEnd().endsWith("$$")) {
       return match;
     }
     return `${indent}$$\n${indent}${rest}`;
   });
 
-  // 2. Multiline blocks where \end{...}$$ has no newline before $$
+  // 3. Multiline blocks where \end{...}$$ has no newline before $$
   res = res.replace(/^(\s*)(.*\\end\{[a-zA-Z*]+\})\$\$$/gm, (match, indent, rest) => {
     if (rest.trimStart().startsWith("$$")) {
       return match;

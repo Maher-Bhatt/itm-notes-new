@@ -517,3 +517,13 @@ html, body {
 
 
 
+
+/* KaTeX error graceful rendering */
+.katex-error {
+  color: inherit !important;
+  background: transparent !important;
+  font-family: inherit !important;
+  font-size: 0.95em;
+  font-style: italic;
+  padding: 0 2px;
+}

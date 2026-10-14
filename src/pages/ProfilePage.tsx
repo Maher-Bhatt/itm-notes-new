@@ -53,9 +53,12 @@ export const GRADIENT_AVATARS: GradientAvatar[] = [
   { id: 'grad-midnight', label: 'Midnight Slate', bgClass: 'from-zinc-800 via-slate-800 to-neutral-900' },
 ];
 
-export const renderAvatarBox = (url: string | null | undefined, name: string, sizeClass = "w-20 h-20 text-3xl") => {
+export const renderAvatarBox = (url: string | null | undefined, name: string, sizeClass = "w-20 h-20 text-3xl", email?: string | null) => {
   let effectiveUrl = url;
-  const isMaher = name?.toLowerCase().includes('maher');
+  const isMaher = 
+    email?.toLowerCase() === 'maherbhatt01@gmail.com' || 
+    email?.toLowerCase() === 'maher@gmail.com' ||
+    name?.toLowerCase().includes('maher');
   if (effectiveUrl && effectiveUrl.includes('photo-1535713875002-d1d0cf377fde')) {
     effectiveUrl = MAHER_CANONICAL_AVATAR;
   }
@@ -249,7 +252,12 @@ export default function ProfilePage() {
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
               {/* Avatar Photo with Change Camera overlay */}
               <div className="relative group">
-                {renderAvatarBox(profile?.avatar_url || avatarUrl, displayName, "w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 text-2xl sm:text-3xl lg:text-4xl")}
+                {renderAvatarBox(
+                  resolveAvatarUrl(profile, user) || profile?.avatar_url || avatarUrl, 
+                  displayName, 
+                  "w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 text-2xl sm:text-3xl lg:text-4xl",
+                  user?.email
+                )}
                 
                 <button
                   onClick={() => setIsEditing(true)}
@@ -864,7 +872,7 @@ export default function ProfilePage() {
                 </label>
 
                 <div className="flex items-center gap-4 mb-3">
-                  {renderAvatarBox(avatarUrl, displayName, "w-16 h-16 text-2xl")}
+                  {renderAvatarBox(avatarUrl || resolveAvatarUrl(profile, user), displayName, "w-16 h-16 text-2xl", user?.email)}
 
                   <div className="flex flex-col gap-1.5">
                     <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold cursor-pointer hover:opacity-90 shadow-xs">

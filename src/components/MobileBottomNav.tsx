@@ -22,10 +22,9 @@ export function MobileBottomNav() {
       return false;
     }
   })();
-  const isAdmin = user?.email === 'maherbhatt01@gmail.com';
-  const isBypassed = typeof window !== 'undefined' && sessionStorage.getItem('itm_admin_bypassed') === 'true';
+  const isAdmin = user?.email?.toLowerCase() === 'maherbhatt01@gmail.com';
 
-  if (isMaintenanceActive && !isAdmin && !isBypassed) {
+  if (isMaintenanceActive && !isAdmin) {
     return null;
   }
 
