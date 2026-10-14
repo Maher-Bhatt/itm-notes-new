@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useGamification } from "@/hooks/useGamification";
 import { useAcademic } from "@/contexts/AcademicContext";
-import { subjects } from "@/data/subjects";
+import { subjects, getAllTopicIds } from "@/data/subjects";
 import { useProgress } from "@/hooks/useProgress";
 import { 
   Sparkles, 
@@ -24,7 +24,10 @@ import {
   Flame,
   CheckCircle2,
   Users,
-  LogIn
+  LogIn,
+  Code2,
+  Zap,
+  Bookmark
 } from "lucide-react";
 import { 
   ResponsiveContainer, 
@@ -55,12 +58,27 @@ export default function DashboardPage() {
 
   const [activeShortcutTab, setActiveShortcutTab] = useState<"overview" | "tools">("overview");
   const [selectedCourseFilter, setSelectedCourseFilter] = useState("all");
+  const [subjectSemFilter, setSubjectSemFilter] = useState<number | "all">(profile?.semester || 3);
 
   const studentDisplayName = profile?.display_name || user?.email?.split("@")[0] || null;
   const activeSemester = profile?.semester || semesterNumber || 3;
   const completedTopicsCount = progress?.completedTopics?.length || 0;
   const totalModulesCount = 8;
   const completedModulesCount = user ? Math.min(totalModulesCount, Math.round(completedTopicsCount / 2)) : 0;
+
+  // Filter core subjects based on selected semester and subject filter
+  const displayedSubjects = useMemo(() => {
+    return subjects.filter((s) => {
+      if (subjectSemFilter !== "all" && s.semester !== subjectSemFilter) return false;
+      if (selectedCourseFilter !== "all") {
+        if (selectedCourseFilter === "dsa" && !s.id.includes("dsa")) return false;
+        if (selectedCourseFilter === "dbms" && !s.id.includes("dbms")) return false;
+        if (selectedCourseFilter === "ca" && !s.id.includes("coanmp") && !s.id.includes("architecture")) return false;
+        if (selectedCourseFilter === "java" && !s.id.includes("java")) return false;
+      }
+      return true;
+    });
+  }, [subjectSemFilter, selectedCourseFilter]);
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-[1600px] mx-auto space-y-6 animate-fade-in">
@@ -172,25 +190,49 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* 2. Academic Overview Secondary Card */}
-          <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-4">
+          {/* 2. Core Academic Subjects & Interactive Notes Grid */}
+          <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <h3 className="font-bold text-base text-foreground">Academic Overview</h3>
+                <div className="flex items-center gap-2">
+                  <h3 className="font-bold text-base text-foreground font-display">
+                    Core Academic Subjects & Detailed Notes
+                  </h3>
+                  <span className="px-2 py-0.5 rounded-full bg-[#D6E85D]/20 text-[#183F36] dark:text-[#D6E85D] text-[10px] font-bold border border-[#D6E85D]/30">
+                    Syllabus 2026
+                  </span>
+                </div>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  See how you currently benchmark across modules, verified exam papers, and practical labs.
+                  Select any course to read comprehensive unit theory, code implementations, diagrams, and cheat sheets.
                 </p>
               </div>
 
-              <div className="flex items-center gap-2">
-                <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold text-xs border border-emerald-500/20 flex items-center gap-1.5">
-                  <CheckCircle className="h-3.5 w-3.5" />
-                  <span>
-                    {user 
-                      ? `Completed ${completedModulesCount}/${totalModulesCount} modules` 
-                      : `${totalModulesCount} Core Syllabus Modules`}
-                  </span>
-                </span>
+              {/* Semester Filter Tabs & Course Dropdown */}
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="flex items-center gap-1 bg-secondary/60 p-1 rounded-xl border border-border/60">
+                  {[
+                    { label: "Sem 3 (Core)", val: 3 },
+                    { label: "Sem 1", val: 1 },
+                    { label: "Sem 2", val: 2 },
+                    { label: "All", val: "all" },
+                  ].map((item) => {
+                    const isActive = subjectSemFilter === item.val;
+                    return (
+                      <button
+                        key={String(item.val)}
+                        type="button"
+                        onClick={() => setSubjectSemFilter(item.val as any)}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all shrink-0 cursor-pointer ${
+                          isActive
+                            ? "bg-[#183F36] text-[#D6E85D] font-bold shadow-xs"
+                            : "text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        {item.label}
+                      </button>
+                    );
+                  })}
+                </div>
 
                 <select 
                   value={selectedCourseFilter}
@@ -208,10 +250,108 @@ export default function DashboardPage() {
                   onClick={() => navigate("/materials")}
                   className="text-xs text-primary hover:underline font-semibold flex items-center gap-1"
                 >
-                  <span>See all</span>
+                  <span>Materials & PDFs</span>
                   <ExternalLink className="h-3 w-3" />
                 </button>
               </div>
+            </div>
+
+            {/* Grid of Subject Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {displayedSubjects.map((sub) => {
+                const totalUnits = sub.units?.length || 0;
+                const totalTopics = sub.units?.reduce((acc, u) => acc + (u.topics?.length || 0), 0) || 0;
+                const allTopicIds = getAllTopicIds(sub.id);
+                const userCompletedInSub = progress?.completedTopics?.filter((tid) => allTopicIds.includes(tid))?.length || 0;
+                const progressPct = totalTopics > 0 ? Math.round((userCompletedInSub / totalTopics) * 100) : 0;
+                const firstTopicId = sub.units?.[0]?.topics?.[0]?.id;
+
+                return (
+                  <div
+                    key={sub.id}
+                    className="group relative rounded-xl border border-border/80 bg-card hover:bg-secondary/20 hover:border-primary/40 transition-all p-4.5 flex flex-col justify-between gap-3.5 shadow-xs"
+                  >
+                    <div>
+                      {/* Top Header Row */}
+                      <div className="flex items-start justify-between gap-2 mb-2">
+                        <div className="flex items-center gap-2">
+                          <span className="px-2 py-0.5 rounded-md font-mono text-[10px] font-bold bg-primary/10 text-primary border border-primary/20">
+                            {sub.code || "SUB"}
+                          </span>
+                          <span className="text-[10px] font-semibold text-muted-foreground">
+                            Semester {sub.semester}
+                          </span>
+                        </div>
+                        <span className="text-[10px] font-bold text-muted-foreground flex items-center gap-1">
+                          <BookOpen className="h-3 w-3 text-[#D6E85D]" />
+                          {totalUnits} Units · {totalTopics} Topics
+                        </span>
+                      </div>
+
+                      {/* Title & Description */}
+                      <h4 className="font-bold text-sm text-foreground group-hover:text-primary transition-colors leading-snug">
+                        {sub.name}
+                      </h4>
+                      <p className="text-[11px] text-muted-foreground mt-1 line-clamp-2 leading-relaxed">
+                        {sub.description || "Detailed syllabus notes, algorithmic proofs, diagrams, and exam review questions."}
+                      </p>
+
+                      {/* Units Snapshot */}
+                      <div className="flex flex-wrap gap-1 mt-3">
+                        {sub.units?.slice(0, 3).map((u) => (
+                          <span
+                            key={u.id}
+                            className="text-[10px] px-2 py-0.5 rounded-md bg-secondary text-foreground/80 font-medium truncate max-w-[180px]"
+                            title={u.title}
+                          >
+                            U{u.number}: {u.title}
+                          </span>
+                        ))}
+                        {totalUnits > 3 && (
+                          <span className="text-[10px] px-1.5 py-0.5 rounded text-muted-foreground font-semibold">
+                            +{totalUnits - 3} more
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Footer Actions */}
+                    <div className="pt-3 border-t border-border/60 flex items-center justify-between gap-2 text-xs">
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => navigate(`/subject/${sub.id}`)}
+                          className="px-3 py-1.5 rounded-lg bg-[#183F36] hover:bg-[#12332C] text-[#F5F1E8] font-bold text-xs shadow-xs transition-all flex items-center gap-1.5 cursor-pointer font-display"
+                        >
+                          <BookOpen className="h-3.5 w-3.5 text-[#D6E85D]" />
+                          <span>View Detailed Notes</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => navigate(`/subject/${sub.id}/cheat-sheet`)}
+                          className="px-2.5 py-1.5 rounded-lg border border-border text-foreground hover:bg-secondary text-xs font-semibold transition-colors cursor-pointer"
+                          title="Quick Formulas & Cheat Sheet"
+                        >
+                          <span>Cheat Sheet</span>
+                        </button>
+                      </div>
+
+                      {firstTopicId && (
+                        <button
+                          type="button"
+                          onClick={() => navigate(`/subject/${sub.id}/topic/${firstTopicId}`)}
+                          className="text-primary hover:underline font-semibold text-[11px] flex items-center gap-0.5 cursor-pointer"
+                          title="Start Topic 1"
+                        >
+                          <span>Start Unit 1</span>
+                          <ArrowRight className="h-3 w-3" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
 

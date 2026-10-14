@@ -16,7 +16,9 @@ import {
   X,
   Maximize2,
   Minimize2,
-  LogIn
+  LogIn,
+  PanelLeftOpen,
+  PanelLeftClose
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useGamification } from "@/hooks/useGamification";
@@ -90,6 +92,7 @@ export function PortalTopNav({
 
   const topTabs = [
     { label: "Dashboard", path: "/dashboard" },
+    { label: "Subjects & Notes", path: "/subject/sem3-dsa" },
     { label: "Materials", path: "/materials" },
     { label: "Coding Lab", path: "/coding-lab" },
     { label: "Exam Questions", path: "/imp-questions" },
@@ -98,8 +101,8 @@ export function PortalTopNav({
 
   return (
     <header className="sticky top-0 z-30 h-14 bg-card/80 backdrop-blur-md border-b border-border px-4 sm:px-6 flex items-center justify-between transition-colors">
-      {/* Left: Mobile Sidebar Trigger + Primary Nav Tabs */}
-      <div className="flex items-center gap-4">
+      {/* Left: Mobile Sidebar Trigger + Desktop Sidebar Toggle + Primary Nav Tabs */}
+      <div className="flex items-center gap-3">
         <button
           onClick={onToggleSidebar}
           className="md:hidden p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
@@ -108,10 +111,32 @@ export function PortalTopNav({
           <Menu className="h-5 w-5" />
         </button>
 
+        {/* Desktop Sidebar Minimize / Expand Button */}
+        {onToggleFocusMode && (
+          <button
+            onClick={onToggleFocusMode}
+            className={`hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-semibold transition-all cursor-pointer ${
+              isFocusMode
+                ? "bg-[#D6E85D]/20 text-[#183F36] dark:text-[#D6E85D] border-[#D6E85D]/40 font-bold"
+                : "border-border/80 text-muted-foreground hover:text-foreground hover:bg-secondary/60"
+            }`}
+            title={isFocusMode ? "Expand Sidebar (F)" : "Minimize Sidebar (F)"}
+          >
+            {isFocusMode ? (
+              <>
+                <PanelLeftOpen className="h-4 w-4 text-[#183F36] dark:text-[#D6E85D]" />
+                <span className="text-[11px] font-bold">Sidebar</span>
+              </>
+            ) : (
+              <PanelLeftClose className="h-4 w-4" />
+            )}
+          </button>
+        )}
+
         {/* Top Horizontal Tabs */}
         <nav className="hidden sm:flex items-center gap-1 font-display">
           {topTabs.map((tab) => {
-            const active = location.pathname === tab.path;
+            const active = location.pathname === tab.path || (tab.path.startsWith("/subject") && location.pathname.startsWith("/subject"));
             return (
               <Link
                 key={tab.label}

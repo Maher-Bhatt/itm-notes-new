@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useCallback } from "react";
+import React, { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useGamification } from "@/hooks/useGamification";
@@ -26,7 +26,9 @@ import {
   Heart,
   Loader2,
   Check,
-  Award
+  Award,
+  Trophy,
+  X
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -39,8 +41,9 @@ import {
   fetchUserFriends,
   toggleFriendInDb,
 } from "@/services/communityService";
-import { CommunityPost, CommunityComment } from "@/data/communityData";
+import { CommunityPost, CommunityComment, ClassmateProfile, INITIAL_CLASSMATES } from "@/data/communityData";
 import { SharePostModal } from "@/components/SharePostModal";
+import { FriendComparisonModal } from "@/components/FriendComparisonModal";
 import { UserAvatar, resolveAvatarUrl, MAHER_CANONICAL_AVATAR } from "@/components/UserAvatar";
 
 // Initial seed posts matching Screenshot 5 design
@@ -150,8 +153,10 @@ export default function CommunityPage() {
   const [sortFilter, setSortFilter] = useState("Latest Posts");
   const [postCardType, setPostCardType] = useState<"Campus" | "Videos" | "Polls">("Campus");
 
-  // Create Post State
+  // Create Post State & Image Attachment
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [newPostText, setNewPostText] = useState("");
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isMaskedPost, setIsMaskedPost] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -160,6 +165,25 @@ export default function CommunityPage() {
   const [commentInput, setCommentInput] = useState("");
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
   const [shareModalPost, setShareModalPost] = useState<CommunityPost | null>(null);
+  const [comparisonFriend, setComparisonFriend] = useState<ClassmateProfile | null>(null);
+
+  const handleImageFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image file size should be less than 5MB");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const result = event.target?.result as string;
+      setSelectedImage(result);
+      toast.success("Image attached! Ready to publish.");
+    };
+    reader.readAsDataURL(file);
+  };
 
   // Study Friends State
   const [connectedFriendIds, setConnectedFriendIds] = useState<Set<string>>(() => {
@@ -229,7 +253,7 @@ export default function CommunityPage() {
   // Create Post
   const handleCreatePost = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newPostText.trim()) return;
+    if (!newPostText.trim() && !selectedImage) return;
 
     setIsSubmitting(true);
     const postCategory = activeCategoryFilter === "Confessions" ? "Campus Confessions" : "College Feedback";
@@ -244,6 +268,7 @@ export default function CommunityPage() {
       maskAlias: isMaskedPost || activeCategoryFilter === "Confessions" ? "Anonymous Student 🎭" : currentUserName,
       category: postCategory,
       content: newPostText.trim(),
+      mediaUrl: selectedImage || undefined,
     };
 
     // Optimistic UI insert
@@ -258,6 +283,7 @@ export default function CommunityPage() {
       maskAlias: newPostData.maskAlias,
       category: newPostData.category as any,
       content: newPostData.content,
+      mediaUrl: selectedImage || undefined,
       createdAt: "Just now",
       likes: 1,
       likedByMe: true,
@@ -267,6 +293,8 @@ export default function CommunityPage() {
 
     setPosts((prev) => [tempPost, ...prev]);
     setNewPostText("");
+    setSelectedImage(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
     setIsSubmitting(false);
     addXp(25);
     toast.success("Post published to Campus Pulse! +25 XP 🔥");
@@ -641,45 +669,92 @@ export default function CommunityPage() {
 
         {/* ── COLUMN 2: MAIN SOCIAL FEED (lg:col-span-6) ── */}
         <div className="lg:col-span-6 space-y-5">
-          {/* 1. Create Post Input Box with Canonical User Avatar */}
+          {/* 1. Create Post Input Box with Canonical User Avatar & Image Attachment */}
           <div className="bg-card border border-border rounded-2xl p-4 shadow-sm space-y-3">
-            <form onSubmit={handleCreatePost} className="flex items-center gap-3">
-              <UserAvatar
-                avatarUrl={currentUserAvatar}
-                displayName={currentUserName}
-                email={user?.email}
-                className="w-9 h-9 text-xs"
-              />
+            <form onSubmit={handleCreatePost} className="space-y-3">
+              <div className="flex items-center gap-3">
+                <UserAvatar
+                  avatarUrl={currentUserAvatar}
+                  displayName={currentUserName}
+                  email={user?.email}
+                  className="w-9 h-9 text-xs"
+                />
 
-              <input
-                id="post-composer-input"
-                type="text"
-                placeholder={
-                  activeCategoryFilter === "Confessions"
-                    ? "Post an anonymous campus confession..."
-                    : "Write a new comment or share something with campus..."
-                }
-                value={newPostText}
-                onChange={(e) => setNewPostText(e.target.value)}
-                className="flex-1 h-10 px-4 rounded-full border border-input bg-secondary/40 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
-              />
+                <input
+                  id="post-composer-input"
+                  type="text"
+                  placeholder={
+                    activeCategoryFilter === "Confessions"
+                      ? "Post an anonymous campus confession..."
+                      : "Write a new question, share campus news or upload notes screenshot..."
+                  }
+                  value={newPostText}
+                  onChange={(e) => setNewPostText(e.target.value)}
+                  className="flex-1 h-10 px-4 rounded-full border border-input bg-secondary/40 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                />
 
-              <button
-                type="button"
-                onClick={() => setNewPostText((prev) => prev + " 😊 ")}
-                className="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer"
-                title="Add Emoji"
-              >
-                <Smile className="h-5 w-5" />
-              </button>
+                {/* Hidden Image File Input */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleImageFileSelect}
+                />
 
-              <button
-                type="submit"
-                disabled={isSubmitting || !newPostText.trim()}
-                className="px-4 py-2 rounded-full bg-brand-forest hover:bg-brand-deep text-white text-xs font-bold shadow-md shadow-brand-forest/20 border border-brand-chartreuse/30 disabled:opacity-50 transition-all shrink-0 cursor-pointer"
-              >
-                {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : "Post"}
-              </button>
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className={`p-2 rounded-full transition-colors cursor-pointer ${
+                    selectedImage ? "text-primary bg-primary/10" : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                  }`}
+                  title="Attach Photo / Diagram / Screenshot"
+                >
+                  <ImageIcon className="h-5 w-5" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setNewPostText((prev) => prev + " 😊 ")}
+                  className="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer"
+                  title="Add Emoji"
+                >
+                  <Smile className="h-5 w-5" />
+                </button>
+
+                <button
+                  type="submit"
+                  disabled={isSubmitting || (!newPostText.trim() && !selectedImage)}
+                  className="px-4 py-2 rounded-full bg-brand-forest hover:bg-brand-deep text-white text-xs font-bold shadow-md shadow-brand-forest/20 border border-brand-chartreuse/30 disabled:opacity-50 transition-all shrink-0 cursor-pointer"
+                >
+                  {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : "Post"}
+                </button>
+              </div>
+
+              {/* Image Preview thumbnail if selected */}
+              {selectedImage && (
+                <div className="relative inline-flex items-center gap-2 p-2 rounded-xl bg-secondary/60 border border-border">
+                  <img
+                    src={selectedImage}
+                    alt="Selected Upload Preview"
+                    className="h-20 w-28 object-cover rounded-lg border border-border/80 shadow-xs"
+                  />
+                  <div className="text-xs space-y-0.5">
+                    <p className="font-bold text-foreground">Photo Attachment Attached</p>
+                    <p className="text-[10px] text-muted-foreground">Will be published with your post</p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedImage(null);
+                        if (fileInputRef.current) fileInputRef.current.value = "";
+                      }}
+                      className="text-[10px] text-rose-500 hover:underline font-bold flex items-center gap-1 cursor-pointer pt-1"
+                    >
+                      <Trash2 className="h-3 w-3" /> Remove
+                    </button>
+                  </div>
+                </div>
+              )}
             </form>
           </div>
 
@@ -770,12 +845,13 @@ export default function CommunityPage() {
                   )}
 
                   {/* Optional Photo Attachment */}
-                  {post.mediaUrl && (
-                    <div className="rounded-xl overflow-hidden border border-border max-h-72 mt-2">
+                  {(post.mediaUrl || (post as any).imageUrl) && (
+                    <div className="rounded-xl overflow-hidden border border-border max-h-80 mt-2 bg-slate-950/20">
                       <img
-                        src={post.mediaUrl}
+                        src={post.mediaUrl || (post as any).imageUrl}
                         alt="Post Attachment"
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover max-h-80 hover:scale-[1.01] transition-transform cursor-pointer"
+                        onClick={() => window.open(post.mediaUrl || (post as any).imageUrl, "_blank")}
                       />
                     </div>
                   )}
@@ -857,7 +933,65 @@ export default function CommunityPage() {
 
         {/* ── COLUMN 3: TRENDING TOPICS & BUDDIES (lg:col-span-3) ── */}
         <div className="lg:col-span-3 space-y-5">
-          {/* 1. Post Card Types Selector */}
+          {/* 1. Classmate Rivalry & Top Rankers Leaderboard */}
+          <div className="bg-card border border-border rounded-2xl p-4 sm:p-5 shadow-sm space-y-3.5">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-500">
+                  <Trophy className="h-4 w-4" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-sm text-foreground">Top Rankers & Rivalry</h3>
+                  <p className="text-[10px] text-muted-foreground">Classmate Head-to-Head Comparison</p>
+                </div>
+              </div>
+              <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-bold border border-primary/20">
+                Live Rank
+              </span>
+            </div>
+
+            <div className="space-y-2">
+              {INITIAL_CLASSMATES.slice(0, 4).map((cm, idx) => {
+                const badgeStyles = [
+                  "bg-amber-400 text-black shadow-xs",
+                  "bg-slate-300 text-black shadow-xs",
+                  "bg-amber-700 text-white shadow-xs",
+                  "bg-secondary text-muted-foreground"
+                ];
+
+                return (
+                  <div
+                    key={cm.id}
+                    className="p-2.5 rounded-xl border border-border/80 bg-secondary/20 hover:bg-secondary/50 transition-all flex items-center justify-between gap-2 text-xs group"
+                  >
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className={`w-5 h-5 rounded-full flex items-center justify-center font-black text-[10px] shrink-0 ${badgeStyles[idx] || badgeStyles[3]}`}>
+                        #{idx + 1}
+                      </span>
+                      <div className="min-w-0">
+                        <p className="font-bold text-foreground truncate">{cm.name}</p>
+                        <p className="text-[10px] text-muted-foreground truncate">
+                          Lvl {cm.level} · {cm.xp} XP · 🔥 {cm.streakDays}d
+                        </p>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setComparisonFriend(cm)}
+                      className="px-2.5 py-1 rounded-lg bg-primary/10 hover:bg-primary text-primary hover:text-primary-foreground border border-primary/20 text-[10px] font-bold transition-all shrink-0 cursor-pointer flex items-center gap-1"
+                      title={`Compare your stats with ${cm.name}`}
+                    >
+                      <span>Compare</span>
+                      <ChevronRight className="h-3 w-3" />
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* 2. Post Card Types Selector */}
           <div className="bg-card border border-border rounded-2xl p-4 shadow-sm space-y-3">
             <h3 className="font-bold text-xs uppercase tracking-wider text-muted-foreground">Post Card Types</h3>
             <div className="flex items-center gap-1.5">
@@ -900,7 +1034,7 @@ export default function CommunityPage() {
             </div>
           </div>
 
-          {/* 2. Trending Topics Widget */}
+          {/* 3. Trending Topics Widget */}
           <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-3">
             <div className="flex items-center justify-between">
               <h3 className="font-bold text-sm text-foreground">Trending Topics</h3>
@@ -959,6 +1093,15 @@ export default function CommunityPage() {
           isOpen={!!shareModalPost}
           onClose={() => setShareModalPost(null)}
           post={shareModalPost}
+        />
+      )}
+
+      {/* Classmate Rivalry & Head-to-Head Comparison Modal */}
+      {comparisonFriend && (
+        <FriendComparisonModal
+          isOpen={!!comparisonFriend}
+          onClose={() => setComparisonFriend(null)}
+          friend={comparisonFriend}
         />
       )}
     </div>

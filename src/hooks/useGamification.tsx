@@ -289,6 +289,27 @@ export const INITIAL_ACHIEVEMENTS: Achievement[] = [
     unlockedAt: null,
     xpReward: 500,
   },
+  // ── STUDY BOOST BADGE & EXCELLENCE ──
+  {
+    id: 'boost-ignited',
+    title: 'Knowledge Booster',
+    description: 'Activate your 2x Academic XP Boost to supercharge your study session.',
+    icon: '🚀',
+    tier: 'gold',
+    category: 'learning',
+    unlockedAt: null,
+    xpReward: 200,
+  },
+  {
+    id: 'boost-streak-master',
+    title: 'Supercharged Scholar',
+    description: 'Complete 3 study sessions while your 2x Knowledge Boost is active.',
+    icon: '⚡',
+    tier: 'legendary',
+    category: 'learning',
+    unlockedAt: null,
+    xpReward: 350,
+  },
   // ── ADMIN ONLY ──
   {
     id: 'admin-god-mode',

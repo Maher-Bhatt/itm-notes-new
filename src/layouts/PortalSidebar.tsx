@@ -21,11 +21,13 @@ import {
   X,
   LogIn,
   GraduationCap,
-  Building2
+  Building2,
+  PanelLeftClose
 } from "lucide-react";
 import { ItmMoocsLogo } from "@/components/brand/ItmMoocsLogo";
 import { useAuth } from "@/contexts/AuthContext";
 import { useGamification } from "@/hooks/useGamification";
+import { useFocusMode } from "@/contexts/FocusModeContext";
 import { UserAvatar, resolveAvatarUrl } from "@/components/UserAvatar";
 
 interface PortalSidebarProps {
@@ -39,6 +41,7 @@ export function PortalSidebar({ isOpen = false, onClose, isCollapsed = false }: 
   const navigate = useNavigate();
   const { user, profile, role, signOut } = useAuth();
   const { state: game, levelInfo } = useGamification();
+  const { toggleFocusMode } = useFocusMode();
 
   const currentPath = location.pathname;
 
@@ -51,9 +54,10 @@ export function PortalSidebar({ isOpen = false, onClose, isCollapsed = false }: 
   const navItems = [
     { name: "Home", path: "/", icon: Home },
     { name: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
+    { name: "Subjects & Notes", path: "/subject/sem3-dsa", icon: BookOpen, badge: "CORE" },
     { name: "Materials", path: "/materials", icon: Layers, badge: "NEW" },
     { name: "Projects & Lab", path: "/coding-lab", icon: Code2 },
-    { name: "My Reads", path: "/imp-questions", icon: BookOpen },
+    { name: "Question Banks", path: "/imp-questions", icon: HelpCircle },
     { name: "Communities", path: "/community", icon: Users, hasSubmenu: true },
   ];
 
@@ -73,15 +77,26 @@ export function PortalSidebar({ isOpen = false, onClose, isCollapsed = false }: 
           <ItmMoocsLogo variant="live" size="md" inverted={true} showTagline={true} />
         </Link>
 
-        {onClose && (
+        <div className="flex items-center gap-1">
           <button 
-            onClick={onClose}
-            className="md:hidden p-1.5 rounded-lg text-[#A2BAAF] hover:text-white hover:bg-[#1F4A40] transition-colors"
-            title="Close Sidebar"
+            type="button"
+            onClick={toggleFocusMode}
+            className="hidden md:flex p-1.5 rounded-lg text-[#A2BAAF] hover:text-[#D6E85D] hover:bg-[#1F4A40] transition-colors cursor-pointer"
+            title="Minimize Sidebar / Focus Mode (F)"
           >
-            <X className="h-5 w-5" />
+            <PanelLeftClose className="h-4 w-4" />
           </button>
-        )}
+
+          {onClose && (
+            <button 
+              onClick={onClose}
+              className="md:hidden p-1.5 rounded-lg text-[#A2BAAF] hover:text-white hover:bg-[#1F4A40] transition-colors"
+              title="Close Sidebar"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Multi-University Institution Context Banner */}

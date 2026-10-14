@@ -27,9 +27,15 @@ import {
   HelpCircle,
   Loader2,
   FileCheck2,
-  IdCard
+  IdCard,
+  Rocket,
+  CheckCircle2,
+  TrendingUp,
+  ShieldCheck,
+  BarChart2
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { subjects, getAllTopicIds } from '@/data/subjects';
 
 export interface GradientAvatar {
   id: string;
@@ -77,6 +83,24 @@ export default function ProfilePage() {
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [activeTierFilter, setActiveTierFilter] = useState<'all' | 'unlocked' | 'bronze' | 'silver' | 'gold' | 'legendary' | 'mythic'>('all');
+  const [activeProfileTab, setActiveProfileTab] = useState<'achievements' | 'academic' | 'focus' | 'bookmarks'>('achievements');
+  const [isBoostActive, setIsBoostActive] = useState(() => {
+    try {
+      const exp = localStorage.getItem('itm_xp_boost_expires');
+      if (exp && Number(exp) > Date.now()) return true;
+    } catch {}
+    return true;
+  });
+
+  const handleActivateBoost = () => {
+    const expiresAt = Date.now() + 30 * 60 * 1000;
+    try {
+      localStorage.setItem('itm_xp_boost_expires', String(expiresAt));
+    } catch {}
+    setIsBoostActive(true);
+    unlockAchievement('boost-ignited');
+    toast.success('⚡ 2x Knowledge Boost Activated! (+100% bonus XP for 30 minutes)');
+  };
 
   const [displayName, setDisplayName] = useState('');
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
@@ -298,57 +322,393 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* 2-Column Dashboard Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column: Stats & Achievements */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Real Stats Metric Cards */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
-              <div className="bg-card border border-border/80 rounded-2xl p-4 shadow-xs">
-                <div className="flex items-center gap-2 text-primary mb-1">
-                  <Flame className="h-4 w-4" />
-                  <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Streak</span>
-                </div>
-                <p className="text-2xl font-black text-foreground font-mono">{game.streakDays}d</p>
-                <p className="text-[11px] text-muted-foreground mt-0.5">Consecutive active</p>
-              </div>
+        {/* Real Stats Metric Cards — Single Source of Truth */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 mb-8">
+          <div className="bg-card border border-border/80 rounded-2xl p-4 shadow-xs">
+            <div className="flex items-center gap-2 text-primary mb-1">
+              <Flame className="h-4 w-4" />
+              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Streak</span>
+            </div>
+            <p className="text-2xl font-black text-foreground font-mono">{game.streakDays}d</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">Consecutive active</p>
+          </div>
 
-              <div className="bg-card border border-border/80 rounded-2xl p-4 shadow-xs">
-                <div className="flex items-center gap-2 text-amber-500 mb-1">
-                  <Sparkles className="h-4 w-4" />
-                  <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Total XP</span>
-                </div>
-                <p className="text-2xl font-black text-foreground font-mono">{game.xp}</p>
-                <p className="text-[11px] text-muted-foreground mt-0.5">Earned from study</p>
-              </div>
+          <div className="bg-card border border-border/80 rounded-2xl p-4 shadow-xs">
+            <div className="flex items-center gap-2 text-amber-500 mb-1">
+              <Sparkles className="h-4 w-4" />
+              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Total XP</span>
+            </div>
+            <p className="text-2xl font-black text-foreground font-mono">{game.xp}</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">Earned from study</p>
+          </div>
 
-              <div className="bg-card border border-border/80 rounded-2xl p-4 shadow-xs">
-                <div className="flex items-center gap-2 text-blue-500 mb-1">
-                  <BookOpen className="h-4 w-4" />
-                  <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Mastered</span>
-                </div>
-                <p className="text-2xl font-black text-foreground font-mono">{progress.completedTopics.length}</p>
-                <p className="text-[11px] text-muted-foreground mt-0.5">Syllabus topics</p>
-              </div>
+          <div className="bg-card border border-border/80 rounded-2xl p-4 shadow-xs">
+            <div className="flex items-center gap-2 text-blue-500 mb-1">
+              <BookOpen className="h-4 w-4" />
+              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Mastered</span>
+            </div>
+            <p className="text-2xl font-black text-foreground font-mono">{progress.completedTopics.length}</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">Syllabus topics</p>
+          </div>
 
-              <div className="bg-card border border-border/80 rounded-2xl p-4 shadow-xs">
-                <div className="flex items-center gap-2 text-emerald-500 mb-1">
-                  <Clock className="h-4 w-4" />
-                  <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Focus</span>
+          <div className="bg-card border border-border/80 rounded-2xl p-4 shadow-xs">
+            <div className="flex items-center gap-2 text-emerald-500 mb-1">
+              <Clock className="h-4 w-4" />
+              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Focus</span>
+            </div>
+            <p className="text-2xl font-black text-foreground font-mono">
+              {Math.round((game.totalStudyMinutes / 60) * 10) / 10}h
+            </p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">Pomodoro logged</p>
+          </div>
+        </div>
+
+        {/* Navigation Tabs Bar */}
+        <div className="flex items-center gap-2 border-b border-border/70 pb-3 mb-6 overflow-x-auto scrollbar-none font-display">
+          {[
+            { id: 'achievements', label: '🏆 Badges & Study Boost', count: `${unlockedCount}/${game.achievements.length}` },
+            { id: 'academic', label: '📊 Academic Progress & CGPA', badge: '75% SAFE' },
+            { id: 'focus', label: '⏱️ Deep Focus & Quizzes', count: `${quizScores.length} Quizzes` },
+            { id: 'bookmarks', label: '🔖 Bookmarked Notes', count: `${progress.bookmarkedTopics.length}` },
+          ].map((tab) => {
+            const isActive = activeProfileTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setActiveProfileTab(tab.id as any)}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 cursor-pointer ${
+                  isActive
+                    ? 'bg-[#183F36] text-[#D6E85D] shadow-sm shadow-[#183F36]/30'
+                    : 'bg-secondary/60 text-muted-foreground hover:text-foreground hover:bg-secondary'
+                }`}
+              >
+                <span>{tab.label}</span>
+                {tab.count && (
+                  <span className={`text-[10px] px-1.5 py-0.2 rounded-md ${
+                    isActive ? 'bg-[#D6E85D]/20 text-[#D6E85D]' : 'bg-background/80 text-muted-foreground'
+                  }`}>
+                    {tab.count}
+                  </span>
+                )}
+                {tab.badge && (
+                  <span className="text-[9px] px-1.5 py-0.2 rounded-md bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-mono font-bold">
+                    {tab.badge}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* TAB 1: ACHIEVEMENTS & KNOWLEDGE BOOST */}
+        {activeProfileTab === 'achievements' && (
+          <div className="space-y-6 animate-fade-in">
+            {/* ⚡ Active Knowledge Booster Hero Card */}
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#183F36] via-[#12332C] to-[#183F36] border border-[#D6E85D]/40 p-5 sm:p-6 text-[#F5F1E8] shadow-lg">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-[#D6E85D]/10 rounded-full blur-3xl pointer-events-none" />
+
+              <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-[#D6E85D]/20 border border-[#D6E85D]/40 flex items-center justify-center text-[#D6E85D] shrink-0 shadow-inner">
+                    <Rocket className="h-6 w-6 animate-pulse" />
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-[#D6E85D] text-[#183F36] font-display">
+                        ⚡ 2.0x Boost Multiplier Active
+                      </span>
+                      <span className="text-[11px] text-[#A2BAAF] font-semibold">
+                        Mid-Sem Sprint
+                      </span>
+                    </div>
+                    <h3 className="text-lg font-black text-[#F5F1E8] font-display">
+                      Knowledge Booster & Active XP Multiplier
+                    </h3>
+                    <p className="text-xs text-[#E8EDE4]/80 max-w-xl leading-relaxed">
+                      Double XP (+100% bonus) is awarded for completing curriculum unit notes, taking topic practice quizzes, and running code in the University Coding Lab.
+                    </p>
+                  </div>
                 </div>
-                <p className="text-2xl font-black text-foreground font-mono">
-                  {Math.round((game.totalStudyMinutes / 60) * 10) / 10}h
-                </p>
-                <p className="text-[11px] text-muted-foreground mt-0.5">Pomodoro logged</p>
+
+                <div className="flex items-center gap-3 shrink-0">
+                  <button
+                    type="button"
+                    onClick={handleActivateBoost}
+                    className="px-4 py-2.5 rounded-xl bg-[#D6E85D] hover:bg-[#C8DC47] text-[#183F36] font-extrabold text-xs shadow-md shadow-[#D6E85D]/20 transition-all hover:scale-102 active:scale-98 flex items-center gap-2 cursor-pointer font-display"
+                  >
+                    <Zap className="h-4 w-4 fill-current" />
+                    <span>Activate 2x Boost (30m)</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleCopyStudyStats}
+                    className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-[#F5F1E8] border border-white/20 transition-all cursor-pointer"
+                    title="Share Academic Passport"
+                  >
+                    <Share2 className="h-4 w-4" />
+                  </button>
+                </div>
               </div>
             </div>
 
+            {/* Badges & Achievements Grid */}
+            <div className="bg-card border border-border/80 rounded-2xl p-5 sm:p-6 shadow-sm space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <Trophy className="h-5 w-5 text-amber-500" />
+                    <h2 className="text-lg font-bold text-foreground font-display">Badges & Hall of Fame</h2>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Click any unlocked badge to view and replay your achievement celebration story.
+                  </p>
+                </div>
+                <span className="text-xs font-bold px-3 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 self-start sm:self-auto font-mono">
+                  {unlockedCount} / {game.achievements.length} Unlocked
+                </span>
+              </div>
+
+              {/* Tier Filter Tabs */}
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-2 text-xs font-semibold scrollbar-none">
+                {[
+                  { id: 'all', label: `All (${game.achievements.length})` },
+                  { id: 'unlocked', label: `Unlocked (${unlockedCount})` },
+                  { id: 'bronze', label: 'Bronze' },
+                  { id: 'silver', label: 'Silver' },
+                  { id: 'gold', label: 'Gold' },
+                  { id: 'legendary', label: 'Legendary' },
+                  { id: 'mythic', label: 'Mythic' },
+                ].map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTierFilter(tab.id as any)}
+                    className={`px-3 py-1.5 rounded-lg whitespace-nowrap transition-all border cursor-pointer ${
+                      activeTierFilter === tab.id
+                        ? 'bg-primary text-primary-foreground border-primary shadow-xs font-bold'
+                        : 'bg-secondary/40 text-muted-foreground hover:text-foreground border-border/60 hover:bg-secondary'
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Achievement Cards Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 pt-1">
+                {filteredAchievements.map((ach) => {
+                  const isUnlocked = !!ach.unlockedAt;
+                  const tierColors = {
+                    mythic: 'border-rose-500/60 bg-gradient-to-br from-rose-500/10 to-card shadow-rose-500/10 shadow-md',
+                    legendary: 'border-purple-500/60 bg-gradient-to-br from-purple-500/10 to-card shadow-purple-500/10 shadow-md',
+                    gold: 'border-amber-500/60 bg-gradient-to-br from-amber-500/10 to-card shadow-amber-500/10 shadow-md',
+                    silver: 'border-slate-400/50 bg-gradient-to-br from-slate-400/10 to-card',
+                    bronze: 'border-amber-700/40 bg-gradient-to-br from-amber-700/10 to-card',
+                  };
+
+                  const tierBadges = {
+                    mythic: 'bg-rose-500/20 text-rose-500 border-rose-500/30',
+                    legendary: 'bg-purple-600/20 text-purple-600 border-purple-500/30',
+                    gold: 'bg-amber-500/20 text-amber-600 border-amber-500/30',
+                    silver: 'bg-slate-400/20 text-slate-600 dark:text-slate-300 border-slate-400/30',
+                    bronze: 'bg-amber-700/20 text-amber-700 border-amber-700/30',
+                  };
+
+                  return (
+                    <div
+                      key={ach.id}
+                      onClick={() => isUnlocked && handleOpenAchievementStory(ach)}
+                      className={`p-4 rounded-xl border transition-all flex flex-col justify-between gap-3 relative ${
+                        isUnlocked
+                          ? `${tierColors[ach.tier]} hover:scale-[1.01] cursor-pointer group`
+                          : 'border-border/40 bg-secondary/10 opacity-60'
+                      }`}
+                    >
+                      <div className="flex items-start gap-3">
+                        <span className="text-3xl shrink-0 mt-0.5 filter drop-shadow-sm">{ach.icon}</span>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between gap-1 mb-1">
+                            <h4 className="font-bold text-sm text-foreground truncate group-hover:text-primary transition-colors">
+                              {ach.title}
+                            </h4>
+                            <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-full border ${tierBadges[ach.tier]}`}>
+                              {ach.tier}
+                            </span>
+                          </div>
+                          <p className="text-xs text-muted-foreground leading-snug">{ach.description}</p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between pt-2 border-t border-border/40 text-[11px]">
+                        <span className="font-bold text-amber-500 font-mono">+{ach.xpReward} XP</span>
+                        {isUnlocked ? (
+                          <span className="text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
+                            <CheckCircle2 className="h-3.5 w-3.5" /> Unlocked
+                          </span>
+                        ) : (
+                          <span className="text-muted-foreground flex items-center gap-1">
+                            Locked
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 2: ACADEMIC PROGRESS & CGPA */}
+        {activeProfileTab === 'academic' && (
+          <div className="space-y-6 animate-fade-in">
+            {/* Top Row: Attendance Safeguard & CGPA Targets */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* 75% Attendance Safeguard */}
+              <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck className="h-5 w-5 text-emerald-500" />
+                    <h3 className="font-bold text-sm text-foreground font-display">75% Attendance Safeguard</h3>
+                  </div>
+                  <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold border border-emerald-500/20 font-mono">
+                    Criteria Met
+                  </span>
+                </div>
+
+                <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-4">
+                  <div className="text-3xl font-black text-emerald-600 dark:text-emerald-400 font-mono">
+                    91%
+                  </div>
+                  <div className="space-y-0.5 min-w-0 flex-1">
+                    <p className="text-xs font-bold text-foreground">Safe Attendance Margin</p>
+                    <p className="text-[11px] text-muted-foreground">
+                      You can safely miss up to <strong>8 more lectures</strong> without breaching the 75% university eligibility requirement.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="pt-1 flex items-center justify-between text-xs text-muted-foreground">
+                  <span>Conducted: 48 classes</span>
+                  <span>Attended: 44 classes</span>
+                  <Link to="/calculator" className="text-primary hover:underline font-semibold">
+                    Open Calculator →
+                  </Link>
+                </div>
+              </div>
+
+              {/* Target Academic CGPA */}
+              <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Target className="h-5 w-5 text-primary" />
+                    <h3 className="font-bold text-sm text-foreground font-display">Academic Targets & Goals</h3>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setIsEditing(true)}
+                    className="text-xs text-primary hover:underline font-semibold cursor-pointer"
+                  >
+                    Edit Targets
+                  </button>
+                </div>
+
+                <div className="p-4 rounded-xl bg-secondary/30 border border-border/60 space-y-2 text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Target SGPA:</span>
+                    <span className="font-extrabold text-foreground text-sm font-mono">{targetCgpa}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Major Exam Focus:</span>
+                    <span className="font-semibold text-foreground truncate max-w-[200px]">{goal}</span>
+                  </div>
+                  <div className="flex items-center justify-between pt-1 border-t border-border/40">
+                    <span className="text-muted-foreground">Department:</span>
+                    <span className="font-semibold text-foreground">{program} {branch}</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between text-xs text-muted-foreground pt-1">
+                  <span>SLS Baroda University</span>
+                  <span className="font-mono">Semester {semester}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Semester 3 Core Syllabus Coverage Breakdown */}
+            <div className="bg-card border border-border/80 rounded-2xl p-5 sm:p-6 shadow-sm space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-bold text-base text-foreground font-display">
+                    Semester {semester} Core Syllabus Coverage
+                  </h3>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Track your verified topic notes completion across all courses.
+                  </p>
+                </div>
+                <Link to="/materials" className="text-xs text-primary font-semibold hover:underline">
+                  All Materials →
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+                {subjects.filter((s) => s.semester === semester).map((sub) => {
+                  const allTopicIds = getAllTopicIds(sub.id);
+                  const completedInSub = progress.completedTopics.filter((id) => allTopicIds.includes(id)).length;
+                  const totalInSub = allTopicIds.length;
+                  const pct = totalInSub > 0 ? Math.round((completedInSub / totalInSub) * 100) : 0;
+
+                  return (
+                    <div
+                      key={sub.id}
+                      className="p-4 rounded-xl border border-border/80 bg-secondary/20 hover:bg-secondary/40 transition-all flex flex-col justify-between gap-3"
+                    >
+                      <div>
+                        <div className="flex items-center justify-between gap-2 mb-1">
+                          <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">
+                            {sub.code || "SUB"}
+                          </span>
+                          <span className="text-xs font-mono font-bold text-foreground">
+                            {completedInSub} / {totalInSub} Topics
+                          </span>
+                        </div>
+                        <h4 className="font-bold text-sm text-foreground">{sub.name}</h4>
+                        <p className="text-[11px] text-muted-foreground line-clamp-1 mt-0.5">
+                          {sub.units.length} Units · {sub.description || "Detailed syllabus notes"}
+                        </p>
+                      </div>
+
+                      <div className="space-y-1.5 pt-1">
+                        <div className="h-2 rounded-full bg-secondary overflow-hidden">
+                          <div
+                            className="h-full bg-[#D6E85D] rounded-full transition-all duration-500"
+                            style={{ width: `${Math.max(5, pct)}%` }}
+                          />
+                        </div>
+                        <div className="flex items-center justify-between text-[11px]">
+                          <span className="text-muted-foreground">{pct}% Completed</span>
+                          <Link to={`/subject/${sub.id}`} className="text-primary hover:underline font-bold">
+                            View Units →
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 3: DEEP FOCUS WORKSTATION & QUIZZES */}
+        {activeProfileTab === 'focus' && (
+          <div className="space-y-6 animate-fade-in">
             {/* Pomodoro Focus Station */}
             <div className="bg-card border border-border/80 rounded-2xl p-6 shadow-sm">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <Clock className="h-5 w-5 text-primary" />
-                  <h2 className="text-lg font-bold text-foreground">Deep Focus Workstation</h2>
+                  <h2 className="text-lg font-bold text-foreground font-display">Deep Focus Workstation</h2>
                 </div>
                 <span className="text-xs font-semibold text-muted-foreground">
                   Official 25/5 Pomodoro Cycle
@@ -357,12 +717,12 @@ export default function ProfilePage() {
               <PomodoroTimer />
             </div>
 
-            {/* Real Subject Quiz Breakdown */}
+            {/* Subject Quiz Performance Breakdown */}
             <div className="bg-card border border-border/80 rounded-2xl p-6 shadow-sm">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <Award className="h-5 w-5 text-primary" />
-                  <h2 className="text-lg font-bold text-foreground">Subject Quiz Performance</h2>
+                  <h2 className="text-lg font-bold text-foreground font-display">Subject Quiz Accuracy Scores</h2>
                 </div>
                 <Link to="/quiz" className="text-xs text-primary font-semibold hover:underline">
                   Take a Quiz →
@@ -414,231 +774,55 @@ export default function ProfilePage() {
                 </div>
               )}
             </div>
+          </div>
+        )}
 
-            {/* Badges & Achievements */}
-            <div className="bg-card border border-border/80 rounded-2xl p-6 shadow-sm">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <Trophy className="h-5 w-5 text-amber-500" />
-                    <h2 className="text-lg font-bold text-foreground">Badges & Hall of Fame</h2>
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    Real persistent achievements synced with your university student profile.
-                  </p>
-                </div>
-                <span className="text-xs font-bold px-3 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 self-start sm:self-auto">
-                  {unlockedCount} / {game.achievements.length} Unlocked
-                </span>
+        {/* TAB 4: SAVED BOOKMARKS */}
+        {activeProfileTab === 'bookmarks' && (
+          <div className="bg-card border border-border/80 rounded-2xl p-6 shadow-sm space-y-4 animate-fade-in">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Bookmark className="h-5 w-5 text-amber-500 fill-amber-500" />
+                <h3 className="font-bold text-base text-foreground font-display">
+                  Saved Bookmarks ({progress.bookmarkedTopics.length})
+                </h3>
               </div>
+              <Link to="/bookmarks" className="text-xs text-primary font-semibold hover:underline">
+                Manage All Bookmarks →
+              </Link>
+            </div>
 
-              {/* Tier Filter Tabs */}
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-2 mb-4 text-xs font-semibold -mx-4 px-4 sm:mx-0 sm:px-0">
-                {[
-                  { id: 'all', label: `All (${game.achievements.length})` },
-                  { id: 'unlocked', label: `Unlocked (${unlockedCount})` },
-                  { id: 'bronze', label: 'Bronze' },
-                  { id: 'silver', label: 'Silver' },
-                  { id: 'gold', label: 'Gold' },
-                  { id: 'legendary', label: 'Legendary' },
-                  { id: 'mythic', label: 'Mythic' },
-                ].map((tab) => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTierFilter(tab.id as any)}
-                    className={`px-3 py-1.5 rounded-lg whitespace-nowrap transition-all border ${
-                      activeTierFilter === tab.id
-                        ? 'bg-primary text-primary-foreground border-primary shadow-xs'
-                        : 'bg-secondary/40 text-muted-foreground hover:text-foreground border-border/60 hover:bg-secondary'
-                    }`}
+            {progress.bookmarkedTopics.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {progress.bookmarkedTopics.map((topicId) => (
+                  <div
+                    key={topicId}
+                    className="p-3 rounded-xl border border-border/70 bg-secondary/20 hover:bg-secondary/50 transition-colors flex items-center justify-between gap-3 text-xs"
                   >
-                    {tab.label}
-                  </button>
+                    <div className="flex items-center gap-2 min-w-0">
+                      <Bookmark className="h-3.5 w-3.5 text-amber-500 fill-amber-500 shrink-0" />
+                      <span className="font-semibold text-foreground truncate">{topicId}</span>
+                    </div>
+                    <Link
+                      to="/imp-questions"
+                      className="text-primary hover:underline font-bold text-[11px] shrink-0"
+                    >
+                      Review
+                    </Link>
+                  </div>
                 ))}
               </div>
-
-              {/* Achievement Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                {filteredAchievements.map((ach) => {
-                  const isUnlocked = !!ach.unlockedAt;
-                  return (
-                    <div
-                      key={ach.id}
-                      onClick={() => isUnlocked && handleOpenAchievementStory(ach)}
-                      className={`p-4 rounded-xl border transition-all flex flex-col justify-between gap-3 relative ${
-                        isUnlocked
-                          ? 'border-amber-500/50 bg-gradient-to-br from-amber-500/5 to-card shadow-sm hover:border-amber-500 hover:shadow-md cursor-pointer group'
-                          : 'border-border/40 bg-secondary/10 opacity-60'
-                      }`}
-                    >
-                      <div className="flex items-start gap-3">
-                        <span className="text-3xl shrink-0 mt-0.5">{ach.icon}</span>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between gap-1 mb-1">
-                            <h4 className="font-bold text-sm text-foreground truncate">{ach.title}</h4>
-                            <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${
-                              ach.tier === 'mythic'
-                                ? 'bg-rose-500/20 text-rose-500 border border-rose-500/30'
-                                : ach.tier === 'legendary'
-                                ? 'bg-purple-600/20 text-purple-600 border border-purple-500/30'
-                                : ach.tier === 'gold'
-                                ? 'bg-amber-500/20 text-amber-600 border border-amber-500/30'
-                                : ach.tier === 'silver'
-                                ? 'bg-zinc-400/20 text-zinc-600 dark:text-zinc-300 border border-zinc-400/30'
-                                : 'bg-amber-700/20 text-amber-700 border border-amber-700/30'
-                            }`}>
-                              {ach.tier}
-                            </span>
-                          </div>
-                          <p className="text-xs text-muted-foreground leading-snug">{ach.description}</p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center justify-between pt-2 border-t border-border/40 text-[11px]">
-                        <span className="font-bold text-amber-500 font-mono">+{ach.xpReward} XP</span>
-                        {isUnlocked ? (
-                          <span className="text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
-                            <CheckCircle className="h-3 w-3" /> Unlocked
-                          </span>
-                        ) : (
-                          <span className="text-muted-foreground flex items-center gap-1">
-                            Locked
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-
-          {/* Right Column: Academic Goals & Bookmarks */}
-          <div className="space-y-6">
-            {/* Study Stats Share Card */}
-            <div className="bg-gradient-to-br from-zinc-950 via-zinc-900 to-indigo-950 border border-primary/40 rounded-2xl p-6 shadow-xl text-white relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-2xl pointer-events-none" />
-              
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-[10px] uppercase tracking-widest font-black text-primary px-2 py-0.5 rounded bg-primary/10 border border-primary/20">
-                  ITM Academic Passport
-                </span>
-                <span className="text-[10px] text-zinc-400 font-mono">{program} {branch}</span>
-              </div>
-
-              <div className="flex items-center gap-3.5 mb-5">
-                {renderAvatarBox(profile?.avatar_url || avatarUrl, displayName, "w-14 h-14 text-2xl")}
-                <div className="min-w-0">
-                  <h4 className="font-extrabold text-base text-white truncate">{displayName}</h4>
-                  <p className="text-xs text-indigo-300 font-medium">Level {levelInfo.level} • {levelInfo.title}</p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-2.5 p-3 rounded-xl bg-white/5 border border-white/10 mb-4 text-xs">
-                <div>
-                  <span className="text-[10px] text-zinc-400 block uppercase font-bold">Total XP</span>
-                  <span className="font-black text-amber-400 font-mono text-sm">{game.xp} XP</span>
-                </div>
-                <div>
-                  <span className="text-[10px] text-zinc-400 block uppercase font-bold">Streak</span>
-                  <span className="font-black text-rose-400 font-mono text-sm">🔥 {game.streakDays} Days</span>
-                </div>
-                <div>
-                  <span className="text-[10px] text-zinc-400 block uppercase font-bold">Target CGPA</span>
-                  <span className="font-black text-emerald-400 font-mono text-sm">{targetCgpa}</span>
-                </div>
-                <div>
-                  <span className="text-[10px] text-zinc-400 block uppercase font-bold">Completed</span>
-                  <span className="font-black text-cyan-400 font-mono text-sm">{progress.completedTopics.length} Topics</span>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                onClick={handleCopyStudyStats}
-                className="w-full py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md apple-press"
-              >
-                <Copy className="h-3.5 w-3.5" />
-                <span>Share Study Stats</span>
-              </button>
-            </div>
-
-            {/* Student Targets */}
-            <div className="bg-card border border-border/80 rounded-2xl p-6 shadow-sm">
-              <h3 className="font-bold text-sm uppercase tracking-wider text-muted-foreground mb-4">
-                Academic Targets
-              </h3>
-              <div className="space-y-4 text-xs">
-                <div>
-                  <span className="text-muted-foreground block mb-1">Target Semester GPA:</span>
-                  <span className="font-bold text-base text-foreground">{targetCgpa}</span>
-                </div>
-                <div>
-                  <span className="text-muted-foreground block mb-1">Current Major Exam Goal:</span>
-                  <p className="font-semibold text-foreground leading-relaxed">{goal}</p>
-                </div>
-                <div className="pt-3 border-t border-border/60">
-                  <span className="text-muted-foreground block mb-1">Program & University:</span>
-                  <span className="font-medium text-foreground">
-                    {program} ({branch})<br />
-                    ITM (SLS) Baroda University
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Bookmarked Topics */}
-            <div className="bg-card border border-border/80 rounded-2xl p-6 shadow-sm">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <Bookmark className="h-4 w-4 text-amber-500 fill-amber-500" />
-                  <h3 className="font-bold text-sm text-foreground">
-                    Saved Topics ({progress.bookmarkedTopics.length})
-                  </h3>
-                </div>
-                <Link to="/bookmarks" className="text-xs text-primary font-semibold hover:underline">
-                  View All
-                </Link>
-              </div>
-
-              {progress.bookmarkedTopics.length > 0 ? (
-                <div className="space-y-2">
-                  {progress.bookmarkedTopics.slice(0, 4).map((topicId) => (
-                    <div
-                      key={topicId}
-                      className="p-2.5 rounded-lg bg-secondary/40 text-xs font-medium text-foreground truncate flex items-center justify-between"
-                    >
-                      <span className="truncate">{topicId}</span>
-                      <ChevronRight className="h-3.5 w-3.5 text-muted-foreground shrink-0 ml-2" />
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-xs text-muted-foreground py-2">
-                  No bookmarks yet. Bookmark key topics while studying for quick exam revision.
+            ) : (
+              <div className="text-center py-10 rounded-xl border border-dashed border-border/70 bg-secondary/10">
+                <Bookmark className="h-8 w-8 mx-auto text-muted-foreground/40 mb-2" />
+                <p className="text-sm font-semibold text-foreground">No bookmarked topics yet</p>
+                <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">
+                  Click the bookmark icon while reading syllabus topics or reviewing question banks to save them here.
                 </p>
-              )}
-            </div>
-
-            {/* Academic Tools Quick Links */}
-            <div className="space-y-2 text-xs">
-              <Link
-                to="/materials"
-                className="flex items-center justify-between p-3 rounded-xl bg-card border border-border hover:border-primary/40 transition-colors font-medium text-foreground"
-              >
-                <span>Browse Exam Question Banks & Notes</span>
-                <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
-              </Link>
-              <Link
-                to="/calculator"
-                className="flex items-center justify-between p-3 rounded-xl bg-card border border-border hover:border-primary/40 transition-colors font-medium text-foreground"
-              >
-                <span>ITM Attendance & SGPA Calculator</span>
-                <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
-              </Link>
-            </div>
+              </div>
+            )}
           </div>
-        </div>
+        )}
 
       {/* Edit Profile & Photo Modal */}
       {isEditing && (
