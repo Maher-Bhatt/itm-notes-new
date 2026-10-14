@@ -37,7 +37,10 @@ import {
   Database,
   Power,
   Lock,
+  KeyRound,
+  Copy,
 } from "lucide-react";
+import { generateUniqueMaintenanceKey } from "@/components/MaintenanceBanner";
 import {
   ResponsiveContainer,
   BarChart,
@@ -361,11 +364,29 @@ export default function AdminDashboard() {
     return "ITM Notes is currently undergoing a scheduled infrastructure upgrade. We will be back shortly.";
   });
   const [maintenanceCountdown, setMaintenanceCountdown] = useState(30);
+  const [maintenancePasskey, setMaintenancePasskey] = useState<string>(() => {
+    try {
+      const stored = localStorage.getItem("itm_maintenance_config");
+      if (stored) {
+        const cfg = JSON.parse(stored);
+        return cfg.passkey || "";
+      }
+    } catch {}
+    return "";
+  });
+  const [customKeyInput, setCustomKeyInput] = useState("");
 
   const toggleMaintenance = () => {
     const next = !maintenanceOn;
     setMaintenanceOn(next);
     localStorage.setItem("itm_maintenance_mode", String(next));
+
+    // When starting maintenance, automatically generate a fresh unique key!
+    const key = next ? (maintenancePasskey || generateUniqueMaintenanceKey()) : "";
+    if (next) {
+      setMaintenancePasskey(key);
+    }
+
     // Also save full config so MaintenanceBanner picks it up
     const cfg = {
       active: next,
@@ -374,6 +395,7 @@ export default function AdminDashboard() {
       endTime: next
         ? new Date(Date.now() + maintenanceCountdown * 60 * 1000).toISOString()
         : null,
+      passkey: key,
     };
     localStorage.setItem("itm_maintenance_config", JSON.stringify(cfg));
     window.dispatchEvent(new Event("itm_maintenance_updated"));
@@ -391,8 +413,56 @@ export default function AdminDashboard() {
       .then(() => {});
 
     toast[next ? "warning" : "success"](
-      next ? "Maintenance mode is now ACTIVE globally — students are blocked." : "Maintenance mode is OFF — site is live globally."
+      next ? `Maintenance mode ACTIVE! Dynamic Access Key: ${key}` : "Maintenance mode is OFF — site is live globally."
     );
+  };
+
+  const regenerateKey = () => {
+    const newKey = generateUniqueMaintenanceKey();
+    setMaintenancePasskey(newKey);
+    const stored = localStorage.getItem("itm_maintenance_config");
+    const existing = stored ? JSON.parse(stored) : {};
+    const updated = { ...existing, passkey: newKey };
+    localStorage.setItem("itm_maintenance_config", JSON.stringify(updated));
+    window.dispatchEvent(new Event("itm_maintenance_updated"));
+    try {
+      const bc = new BroadcastChannel("itm_maintenance_channel");
+      bc.postMessage(updated);
+      bc.close();
+    } catch {}
+    if (maintenanceOn) {
+      supabase
+        .from("profiles")
+        .update({ status: `MAINTENANCE:${JSON.stringify(updated)}` })
+        .eq("email", "maherbhatt01@gmail.com")
+        .then(() => {});
+    }
+    toast.success(`Generated new dynamic maintenance key: ${newKey}`);
+  };
+
+  const setCustomKey = (key: string) => {
+    if (!key.trim()) return;
+    const cleanKey = key.trim().toUpperCase();
+    setMaintenancePasskey(cleanKey);
+    const stored = localStorage.getItem("itm_maintenance_config");
+    const existing = stored ? JSON.parse(stored) : {};
+    const updated = { ...existing, passkey: cleanKey };
+    localStorage.setItem("itm_maintenance_config", JSON.stringify(updated));
+    window.dispatchEvent(new Event("itm_maintenance_updated"));
+    try {
+      const bc = new BroadcastChannel("itm_maintenance_channel");
+      bc.postMessage(updated);
+      bc.close();
+    } catch {}
+    if (maintenanceOn) {
+      supabase
+        .from("profiles")
+        .update({ status: `MAINTENANCE:${JSON.stringify(updated)}` })
+        .eq("email", "maherbhatt01@gmail.com")
+        .then(() => {});
+    }
+    setCustomKeyInput("");
+    toast.success(`Custom maintenance access key applied: ${cleanKey}`);
   };
 
   const saveMaintenanceMessage = () => {
@@ -943,6 +1013,97 @@ export default function AdminDashboard() {
                 />
                 <p className="text-[11px] text-slate-400 mt-1">
                   Sets the live countdown timer displayed to students on the lock screen.
+                </p>
+              </div>
+            </div>
+
+            {/* Dynamic Access Key (OTP) Management */}
+            <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6 space-y-4">
+              <div className="flex items-center justify-between">
+                <h2 className="font-bold text-base text-white flex items-center gap-2">
+                  <KeyRound className="h-4 w-4 text-[#D6E85D]" />
+                  Dynamic Maintenance Access Key (OTP)
+                </h2>
+                <span className="text-[11px] px-2 py-0.5 rounded-md font-mono bg-slate-700 text-slate-300 border border-slate-600">
+                  Zero-Trust Tester Key
+                </span>
+              </div>
+
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Every time maintenance starts, a random, secure one-time key is automatically generated. Testers and faculty can use this key to unlock temporary preview access to the student portal. <strong className="text-amber-300 font-semibold">It never grants access to this Admin Panel.</strong>
+              </p>
+
+              {/* Active Key Display */}
+              <div className="p-4 bg-slate-900/80 rounded-xl border border-slate-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div>
+                  <span className="text-[11px] uppercase tracking-wider text-slate-400 font-bold block mb-1">
+                    Current Active Passkey
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-xl sm:text-2xl font-black text-[#D6E85D] tracking-widest bg-slate-800/80 px-3 py-1 rounded-lg border border-slate-600">
+                      {maintenancePasskey || (maintenanceOn ? "GENERATING..." : "NO KEY (SITE LIVE)")}
+                    </span>
+                    {maintenancePasskey && (
+                      <span className="text-xs px-2 py-0.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-md font-medium">
+                        Active
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  {maintenancePasskey && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        navigator.clipboard.writeText(maintenancePasskey);
+                        toast.success("Maintenance passkey copied to clipboard!");
+                      }}
+                      className="flex-1 sm:flex-none px-3.5 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-colors border border-slate-600 cursor-pointer"
+                    >
+                      <Copy className="h-3.5 w-3.5" />
+                      <span>Copy</span>
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={regenerateKey}
+                    className="flex-1 sm:flex-none px-3.5 py-2 bg-[#D6E85D] hover:bg-[#c2d54e] text-[#183F36] rounded-xl text-xs font-extrabold flex items-center justify-center gap-1.5 transition-all shadow-sm cursor-pointer"
+                  >
+                    <RefreshCw className="h-3.5 w-3.5" />
+                    <span>Regenerate Key</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Custom Key Setter */}
+              <div className="pt-2 border-t border-slate-700/80 flex flex-col sm:flex-row gap-2">
+                <input
+                  type="text"
+                  placeholder="Set custom key (e.g. ITM-EXAM-TEST)..."
+                  value={customKeyInput}
+                  onChange={(e) => setCustomKeyInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      setCustomKey(customKeyInput);
+                    }
+                  }}
+                  className="flex-1 bg-slate-700 border border-slate-600 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-[#D6E85D]/60 uppercase font-mono tracking-wider"
+                />
+                <button
+                  type="button"
+                  onClick={() => setCustomKey(customKeyInput)}
+                  disabled={!customKeyInput.trim()}
+                  className="px-4 py-2.5 bg-slate-700 hover:bg-slate-600 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-xl text-xs font-bold transition-colors border border-slate-600 shrink-0 cursor-pointer"
+                >
+                  Apply Custom Key
+                </button>
+              </div>
+
+              <div className="flex items-start gap-2 p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-xs text-amber-200/90">
+                <Lock className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" />
+                <p>
+                  <strong>Zero-Trust Guarantee:</strong> Anyone using this key on the maintenance lock screen will only gain read-only preview access to the student study dashboard. The <span className="font-mono text-amber-300">/admin</span> portal strictly requires your authenticated Google Admin credentials (<span className="underline">maherbhatt01@gmail.com</span>).
                 </p>
               </div>
             </div>

@@ -27,6 +27,14 @@ export interface MaintenanceConfig {
   title: string;
   message: string;
   endTime: string | null;
+  passkey?: string;
+}
+
+export function generateUniqueMaintenanceKey(): string {
+  const letters = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+  const randomChars = Array.from({ length: 4 }, () => letters[Math.floor(Math.random() * letters.length)]).join("");
+  const randomDigits = Math.floor(100 + Math.random() * 900);
+  return `ITM-${randomChars}-${randomDigits}`;
 }
 
 const DEFAULT_CONFIG: MaintenanceConfig = {
@@ -34,6 +42,7 @@ const DEFAULT_CONFIG: MaintenanceConfig = {
   title: "We are building something incredible.",
   message: "ITM Notes is currently undergoing a scheduled infrastructure upgrade to bring you a faster, more intelligent learning experience. We will be back online shortly.",
   endTime: null,
+  passkey: "",
 };
 
 export function MaintenanceBanner() {
@@ -59,6 +68,17 @@ export function MaintenanceBanner() {
       return false;
     }
   });
+
+  const [visitorAccessKey, setVisitorAccessKey] = useState<string>(() => {
+    try {
+      return sessionStorage.getItem('itm_maintenance_access_key') || '';
+    } catch {
+      return '';
+    }
+  });
+  const [inputKey, setInputKey] = useState('');
+  const [showKeyPrompt, setShowKeyPrompt] = useState(false);
+  const [keyError, setKeyError] = useState(false);
 
   const [timeLeft, setTimeLeft] = useState<{ hours: number; minutes: number; seconds: number } | null>(null);
 
@@ -204,7 +224,13 @@ export function MaintenanceBanner() {
   }, [config.endTime, config.active]);
 
   // 3. Overflow Management & Locking Decision
-  const isBlocking = (config.active && !isAdmin) || (isAdmin && isPreviewingAsStudent);
+  const isKeyValid = Boolean(
+    config.passkey &&
+    visitorAccessKey &&
+    visitorAccessKey.trim().toUpperCase() === config.passkey.trim().toUpperCase()
+  );
+
+  const isBlocking = (config.active && !isAdmin && !isKeyValid) || (isAdmin && isPreviewingAsStudent);
 
   useEffect(() => {
     if (isBlocking) {
@@ -214,6 +240,24 @@ export function MaintenanceBanner() {
     }
     return () => { document.body.style.overflow = ''; };
   }, [isBlocking]);
+
+  const handleUnlockWithKey = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!config.passkey) {
+      toast.error('No emergency access key has been configured by the administrator.');
+      return;
+    }
+    if (inputKey.trim().toUpperCase() === config.passkey.trim().toUpperCase()) {
+      sessionStorage.setItem('itm_maintenance_access_key', config.passkey);
+      setVisitorAccessKey(config.passkey);
+      setKeyError(false);
+      setShowKeyPrompt(false);
+      toast.success('Access key verified! Entering preview session.');
+    } else {
+      setKeyError(true);
+      toast.error('Invalid or expired maintenance access key.');
+    }
+  };
 
   const handleDeactivate = async () => {
     const updated = { ...config, active: false, endTime: null };
@@ -279,6 +323,26 @@ export function MaintenanceBanner() {
           </button>
         </div>
       </aside>
+    );
+  }
+
+  // Visitor Preview Active Ribbon (When visitor entered a valid dynamic key)
+  if (config.active && !isAdmin && isKeyValid) {
+    return (
+      <div className="fixed bottom-4 right-4 z-[9999] bg-[#183F36]/90 border border-[#D6E85D]/60 text-[#F5F1E8] px-3.5 py-2 rounded-2xl shadow-2xl flex items-center gap-2.5 text-xs font-semibold backdrop-blur-md animate-fade-in">
+        <KeyRound className="h-4 w-4 text-[#D6E85D]" />
+        <span>Tester Preview Session Active</span>
+        <button
+          onClick={() => {
+            sessionStorage.removeItem('itm_maintenance_access_key');
+            setVisitorAccessKey('');
+            toast.info('Session ended. Locked back to maintenance screen.');
+          }}
+          className="ml-2 text-[10px] font-bold px-2 py-0.5 rounded-lg bg-[#D6E85D] text-[#183F36] hover:bg-[#c2d54e] transition-colors cursor-pointer"
+        >
+          Relock Screen
+        </button>
+      </div>
     );
   }
 
@@ -396,6 +460,68 @@ export function MaintenanceBanner() {
                 <span>Our engineering team is actively upgrading the server cluster. Stand by for instant restoration.</span>
               </div>
             )}
+
+            {/* Tester / Staff Key Access Form */}
+            <div className="max-w-md mx-auto lg:mx-0 pt-2">
+              {!showKeyPrompt ? (
+                <button
+                  type="button"
+                  onClick={() => setShowKeyPrompt(true)}
+                  className="text-xs text-[#A6C4BC] hover:text-[#D6E85D] transition-colors flex items-center gap-1.5 mx-auto lg:mx-0 font-medium cursor-pointer"
+                >
+                  <KeyRound className="h-3.5 w-3.5 text-[#D6E85D]" />
+                  <span>Have a Tester Access Key? Unlock preview</span>
+                </button>
+              ) : (
+                <form
+                  onSubmit={handleUnlockWithKey}
+                  className="p-4 rounded-2xl bg-[#12332C]/95 border border-[#23584C] backdrop-blur-md space-y-2.5 animate-fade-in text-left shadow-2xl"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-bold text-[#D6E85D] uppercase tracking-wider flex items-center gap-1.5 font-display">
+                      <KeyRound className="h-3.5 w-3.5" />
+                      Dynamic Access Key Verification
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setShowKeyPrompt(false)}
+                      className="text-[#A6C4BC] hover:text-white p-0.5 cursor-pointer"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={inputKey}
+                      onChange={(e) => {
+                        setInputKey(e.target.value);
+                        setKeyError(false);
+                      }}
+                      placeholder="Enter Access Key (e.g. ITM-XXXX-123)"
+                      className={`flex-1 h-9 px-3 rounded-xl bg-[#0A1A16] border text-xs font-mono text-white placeholder:text-[#A6C4BC]/60 focus:outline-none ${
+                        keyError ? "border-rose-500 focus:border-rose-500" : "border-[#23584C] focus:border-[#D6E85D]"
+                      }`}
+                    />
+                    <button
+                      type="submit"
+                      className="h-9 px-4 rounded-xl bg-[#D6E85D] hover:bg-[#c2d54e] text-[#183F36] font-extrabold text-xs transition-transform active:scale-95 shadow-sm cursor-pointer"
+                    >
+                      Unlock
+                    </button>
+                  </div>
+                  {keyError ? (
+                    <p className="text-[10px] text-rose-400 font-medium">
+                      Invalid or expired access key. Check with administrator.
+                    </p>
+                  ) : (
+                    <p className="text-[10px] text-[#A6C4BC]/80">
+                      Unlocks the student portal for inspection. Administrative features remain locked.
+                    </p>
+                  )}
+                </form>
+              )}
+            </div>
           </div>
 
           {/* Right Column: 3D Animated Orbital Core + Telemetry */}
