@@ -1,8 +1,5 @@
-// @ts-nocheck
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import { useAuth } from "@/contexts/AuthContext";
 import { subjects } from "@/data/subjects";
 import { supabase } from "@/integrations/supabase/client";
@@ -472,10 +469,8 @@ export default function AdminDashboard() {
   );
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <Header />
-
-      <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-10 animate-fade-in">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-[1600px] mx-auto space-y-8 animate-fade-in text-foreground">
+      <div className="w-full">
         {/* ── Top Header ── */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
           <div>
@@ -913,44 +908,75 @@ export default function AdminDashboard() {
                 </button>
               </div>
 
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                  <h4 className="font-bold text-sm text-foreground">Maintenance Mode</h4>
-                  <p className="text-xs text-muted-foreground">
-                    Temporarily display a maintenance banner to non-admin users during big updates.
+                  <h4 className="font-bold text-sm text-foreground flex items-center gap-2">
+                    <span>Global Maintenance Mode</span>
+                    {maintenanceMode && (
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/10 text-rose-500 border border-rose-500/20">
+                        Active Lockdown
+                      </span>
+                    )}
+                  </h4>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Locks down access for all students with countdown timer and updates across all browsers.
                   </p>
                 </div>
-                <button
-                  onClick={() => {
-                    const next = !maintenanceMode;
-                    setMaintenanceMode(next);
-                    try {
-                      localStorage.setItem('itm_maintenance_mode', String(next));
-                      window.dispatchEvent(new Event('itm_maintenance_updated'));
-                      supabase.channel('platform_maintenance').send({
-                        type: 'broadcast',
-                        event: 'status_change',
-                        payload: { active: next },
-                      });
-                    } catch (e) {
-                      console.warn('Failed to persist maintenance mode:', e);
-                    }
-                    if (next) {
-                      toast.warning("Maintenance mode activated! A banner is now displayed across the site.");
-                    } else {
-                      toast.success("Maintenance mode deactivated! Banner removed.");
-                    }
-                  }}
-                  className={`w-12 h-6 rounded-full transition-colors p-1 ${
-                    maintenanceMode ? "bg-destructive" : "bg-secondary"
-                  }`}
-                >
-                  <div
-                    className={`w-4 h-4 rounded-full bg-white transition-transform ${
-                      maintenanceMode ? "translate-x-6" : ""
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => {
+                      const next = !maintenanceMode;
+                      setMaintenanceMode(next);
+                      const config = {
+                        active: next,
+                        title: "We are building something incredible.",
+                        message: "ITM Notes is undergoing scheduled infrastructure upgrades to bring you a faster, more intelligent learning experience. We will be back shortly.",
+                        endTime: next ? new Date(Date.now() + 60 * 60 * 1000).toISOString() : null,
+                      };
+
+                      try {
+                        localStorage.setItem('itm_maintenance_mode', String(next));
+                        localStorage.setItem('itm_maintenance_config', JSON.stringify(config));
+                        window.dispatchEvent(new Event('itm_maintenance_updated'));
+                        
+                        try {
+                          const bc = new BroadcastChannel('itm_maintenance_channel');
+                          bc.postMessage(config);
+                          bc.close();
+                        } catch {}
+
+                        supabase.channel('platform_maintenance_v2').send({
+                          type: 'broadcast',
+                          event: 'status_change',
+                          payload: config,
+                        });
+
+                        supabase.from('app_settings' as any).upsert({
+                          key: 'maintenance_mode',
+                          value: config,
+                          updated_at: new Date().toISOString(),
+                        }).then(() => {});
+                      } catch (e) {
+                        console.warn('Failed to persist maintenance mode:', e);
+                      }
+
+                      if (next) {
+                        toast.warning("Global maintenance mode activated! All student sessions locked with countdown.");
+                      } else {
+                        toast.success("Maintenance mode deactivated! Full access restored.");
+                      }
+                    }}
+                    className={`w-12 h-6 rounded-full transition-colors p-1 cursor-pointer ${
+                      maintenanceMode ? "bg-destructive" : "bg-secondary"
                     }`}
-                  />
-                </button>
+                  >
+                    <div
+                      className={`w-4 h-4 rounded-full bg-white transition-transform ${
+                        maintenanceMode ? "translate-x-6" : ""
+                      }`}
+                    />
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -1584,9 +1610,7 @@ export default function AdminDashboard() {
             </div>
           </div>
         )}
-      </main>
-
-      <Footer />
+      </div>
     </div>
   );
 }

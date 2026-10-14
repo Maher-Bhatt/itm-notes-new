@@ -18,11 +18,13 @@ import {
   Award,
   Layers,
   Calendar,
-  X
+  X,
+  LogIn
 } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { useAuth } from "@/contexts/AuthContext";
 import { useGamification } from "@/hooks/useGamification";
+import { UserAvatar, resolveAvatarUrl } from "@/components/UserAvatar";
 
 interface PortalSidebarProps {
   isOpen?: boolean;
@@ -165,53 +167,89 @@ export function PortalSidebar({ isOpen = false, onClose, isCollapsed = false }: 
         </div>
 
         {/* Academic Status Card */}
-        <div className="p-3.5 rounded-xl bg-gradient-to-br from-slate-800/80 to-slate-900 border border-slate-800 text-xs">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] font-bold text-white flex items-center gap-1.5">
-              <Sparkles className="h-3.5 w-3.5 text-amber-400" />
-              Academic Status
+        {!user ? (
+          <div className="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 text-xs text-center space-y-1.5">
+            <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">
+              Student Knowledge Hub
             </span>
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-400/10 text-amber-400 font-bold border border-amber-400/20">
-              🔥 {game.streakDays}d Streak
-            </span>
+            <p className="text-[11px] text-slate-300 font-medium leading-relaxed">
+              Explore university notes, practical codes, and exam models.
+            </p>
           </div>
-          <p className="text-[11px] text-slate-400 mb-2 leading-relaxed">
-            Level {levelInfo.level} · {levelInfo.title}
-          </p>
-          <div className="h-1.5 rounded-full bg-slate-700/60 overflow-hidden">
-            <div 
-              className="h-full bg-indigo-500 rounded-full transition-all duration-500"
-              style={{ width: `${Math.min(100, Math.round(levelInfo.progressPercent))}%` }}
-            />
+        ) : (
+          <div className="p-3.5 rounded-xl bg-gradient-to-br from-slate-800/80 to-slate-900 border border-slate-800 text-xs">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[11px] font-bold text-white flex items-center gap-1.5">
+                <Sparkles className="h-3.5 w-3.5 text-amber-400" />
+                Academic Status
+              </span>
+              <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-400/10 text-amber-400 font-bold border border-amber-400/20">
+                🔥 {game.streakDays}d Streak
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-400 mb-2 leading-relaxed">
+              Level {levelInfo.level} · {levelInfo.title}
+            </p>
+            <div className="h-1.5 rounded-full bg-slate-700/60 overflow-hidden">
+              <div 
+                className="h-full bg-indigo-500 rounded-full transition-all duration-500"
+                style={{ width: `${Math.min(100, Math.round(levelInfo.progressPercent))}%` }}
+              />
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* User Footer Profile Card */}
       <div className="p-3 border-t border-slate-800/80 bg-slate-950/40 shrink-0">
-        <div className="flex items-center justify-between gap-2 p-2 rounded-xl hover:bg-slate-800/50 transition-colors">
-          <Link to="/profile" onClick={onClose} className="flex items-center gap-2.5 min-w-0 flex-1">
-            <div className="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs ring-2 ring-indigo-400/30 shrink-0">
-              {profile?.display_name ? profile.display_name.charAt(0).toUpperCase() : user?.email ? user.email.charAt(0).toUpperCase() : "M"}
+        {!user ? (
+          <div className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg bg-primary/20 text-primary flex items-center justify-center font-black text-xs">
+                ITM
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-bold text-white truncate">Guest Visitor</p>
+                <p className="text-[10px] text-slate-400 truncate">Previewing Portal</p>
+              </div>
             </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-xs font-bold text-white truncate leading-tight">
-                {profile?.display_name || user?.email?.split("@")[0] || "Maher Bhatt"}
-              </p>
-              <p className="text-[10px] text-slate-400 truncate leading-tight">
-                {role === "admin" ? "Director / Admin" : `Semester ${profile?.semester || 3} · CS`}
-              </p>
-            </div>
-          </Link>
+            <Link
+              to="/auth"
+              onClick={onClose}
+              className="w-full h-8 flex items-center justify-center gap-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-bold hover:opacity-90 transition-opacity"
+            >
+              <LogIn className="h-3.5 w-3.5" />
+              <span>Sign In / Join</span>
+            </Link>
+          </div>
+        ) : (
+          <div className="flex items-center justify-between gap-2 p-2 rounded-xl hover:bg-slate-800/50 transition-colors">
+            <Link to="/profile" onClick={onClose} className="flex items-center gap-2.5 min-w-0 flex-1">
+              <UserAvatar
+                avatarUrl={resolveAvatarUrl(profile, user)}
+                displayName={profile?.display_name}
+                email={user?.email}
+                className="w-8 h-8 text-xs ring-2 ring-indigo-400/30"
+              />
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-bold text-white truncate leading-tight">
+                  {profile?.display_name || user?.email?.split("@")[0] || "Student"}
+                </p>
+                <p className="text-[10px] text-slate-400 truncate leading-tight">
+                  {role === "admin" ? "Director / Admin" : `Semester ${profile?.semester || 1} · ${profile?.branch ? profile.branch.split(" ")[0] : "CS"}`}
+                </p>
+              </div>
+            </Link>
 
-          <button
-            onClick={() => signOut()}
-            title="Sign Out"
-            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition-colors shrink-0"
-          >
-            <LogOut className="h-4 w-4" />
-          </button>
-        </div>
+            <button
+              onClick={() => signOut()}
+              title="Sign Out"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition-colors shrink-0 cursor-pointer"
+            >
+              <LogOut className="h-4 w-4" />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
