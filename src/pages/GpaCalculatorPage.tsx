@@ -1,7 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
-import { Header } from '@/components/Header';
-import { Footer } from '@/components/Footer';
-import { BackToTop } from '@/components/BackToTop';
+import { useAuth } from '@/contexts/AuthContext';
+import { TIMETABLE_DATA } from '@/data/timetableData';
 import { 
   Calculator, 
   Sparkles, 
@@ -154,7 +153,8 @@ function getGradeFromPercentage(percentage: number): { grade: string; points: nu
 }
 
 export default function GpaCalculatorPage() {
-  const [activeTab, setActiveTab] = useState<'sgpa' | 'cgpa' | 'attendance'>('sgpa');
+  const { user, profile, updateProfile } = useAuth();
+  const [activeTab, setActiveTab] = useState<'sgpa' | 'cgpa' | 'attendance' | 'milestones'>('sgpa');
 
   // Subjects list with localStorage persistence
   const [subjects, setSubjects] = useState<SubjectGrade[]>(() => {
@@ -179,8 +179,30 @@ export default function GpaCalculatorPage() {
     }
   }, [subjects]);
 
-  // Target SGPA for Goal Planner
-  const [targetSgpa, setTargetSgpa] = useState<number>(8.5);
+  // Target SGPA / CGPA for Goal Planner synced to Supabase profile
+  const [targetSgpa, setTargetSgpa] = useState<number>(() => {
+    if (profile?.target_cgpa) {
+      const val = parseFloat(profile.target_cgpa);
+      if (!isNaN(val) && val > 0) return val;
+    }
+    const saved = localStorage.getItem('itm_target_cgpa');
+    return saved ? parseFloat(saved) : 8.5;
+  });
+
+  const handleUpdateTarget = async (newVal: number) => {
+    setTargetSgpa(newVal);
+    localStorage.setItem('itm_target_cgpa', String(newVal));
+    if (user) {
+      try {
+        await updateProfile({ target_cgpa: String(newVal) });
+        toast.success(`Target CGPA (${newVal.toFixed(1)}) saved to your profile!`);
+      } catch {
+        toast.success(`Target CGPA (${newVal.toFixed(1)}) saved locally.`);
+      }
+    } else {
+      toast.success(`Target CGPA (${newVal.toFixed(1)}) saved.`);
+    }
+  };
 
   // Subject Selector Modal State
   const [isCatalogOpen, setIsCatalogOpen] = useState(false);
@@ -567,63 +589,70 @@ export default function GpaCalculatorPage() {
   }, [catalogSemester, catalogFilter, searchQuery]);
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <Header />
-
-      <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-10 animate-fade-in">
-        {/* Banner Section */}
-        <div className="bg-card border border-border rounded-3xl p-6 sm:p-8 mb-8 shadow-sm">
-          <div className="flex flex-wrap items-center gap-2 mb-3">
-            <span className="text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20">
-              ITM SLS Baroda University
-            </span>
-            <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-              10-Point Relative Grading System
-            </span>
-          </div>
-
-          <h1 className="text-2xl sm:text-4xl font-extrabold text-foreground mb-2 tracking-tight flex items-center gap-2.5">
-            <Calculator className="h-7 w-7 sm:h-8 sm:w-8 text-primary" />
-            SGPA, CGPA & 75% Attendance Predictor
-          </h1>
-          <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-3xl mb-6">
-            Select your subjects from the official university catalog, input your internal CIE and external ESE marks, and track your attendance to guarantee exam hall ticket clearance.
-          </p>
-
-          {/* Quick Tabs */}
-          <div className="flex flex-wrap gap-2 border-b border-border/80 pb-1">
-            <button
-              onClick={() => setActiveTab('sgpa')}
-              className={`px-4 py-2 text-xs sm:text-sm font-bold rounded-lg transition-all ${
-                activeTab === 'sgpa'
-                  ? 'bg-primary text-primary-foreground shadow-sm'
-                  : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
-              }`}
-            >
-              Semester SGPA Predictor ({subjects.length} Courses)
-            </button>
-            <button
-              onClick={() => setActiveTab('attendance')}
-              className={`px-4 py-2 text-xs sm:text-sm font-bold rounded-lg transition-all flex items-center gap-1.5 ${
-                activeTab === 'attendance'
-                  ? 'bg-primary text-primary-foreground shadow-sm'
-                  : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
-              }`}
-            >
-              <Clock className="h-4 w-4" /> 75% Attendance Guard
-            </button>
-            <button
-              onClick={() => setActiveTab('cgpa')}
-              className={`px-4 py-2 text-xs sm:text-sm font-bold rounded-lg transition-all ${
-                activeTab === 'cgpa'
-                  ? 'bg-primary text-primary-foreground shadow-sm'
-                  : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
-              }`}
-            >
-              Cumulative CGPA History
-            </button>
-          </div>
+    <div className="p-4 sm:p-6 lg:p-8 max-w-[1600px] mx-auto space-y-6 animate-fade-in">
+      {/* Banner Section */}
+      <div className="bg-card border border-border rounded-3xl p-6 sm:p-8 shadow-sm">
+        <div className="flex flex-wrap items-center gap-2 mb-3">
+          <span className="text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20">
+            ITM SLS Baroda University
+          </span>
+          <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+            10-Point Relative Grading System
+          </span>
         </div>
+
+        <h1 className="text-2xl sm:text-4xl font-extrabold text-foreground mb-2 tracking-tight flex items-center gap-2.5">
+          <Calculator className="h-7 w-7 sm:h-8 sm:w-8 text-primary" />
+          Academic Planner, SGPA & 75% Attendance Guard
+        </h1>
+        <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-3xl mb-6">
+          Select courses from the official university curriculum, simulate your target CGPA, track attendance to guarantee examination hall ticket clearance, and view mid-semester exam dates.
+        </p>
+
+        {/* Quick Tabs */}
+        <div className="flex flex-wrap gap-2 border-b border-border/80 pb-1">
+          <button
+            onClick={() => setActiveTab('sgpa')}
+            className={`px-4 py-2 text-xs sm:text-sm font-bold rounded-lg transition-all ${
+              activeTab === 'sgpa'
+                ? 'bg-primary text-primary-foreground shadow-sm'
+                : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
+            }`}
+          >
+            Semester SGPA Predictor ({subjects.length} Courses)
+          </button>
+          <button
+            onClick={() => setActiveTab('attendance')}
+            className={`px-4 py-2 text-xs sm:text-sm font-bold rounded-lg transition-all flex items-center gap-1.5 ${
+              activeTab === 'attendance'
+                ? 'bg-primary text-primary-foreground shadow-sm'
+                : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
+            }`}
+          >
+            <Clock className="h-4 w-4" /> 75% Attendance Guard
+          </button>
+          <button
+            onClick={() => setActiveTab('cgpa')}
+            className={`px-4 py-2 text-xs sm:text-sm font-bold rounded-lg transition-all ${
+              activeTab === 'cgpa'
+                ? 'bg-primary text-primary-foreground shadow-sm'
+                : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
+            }`}
+          >
+            Cumulative CGPA History
+          </button>
+          <button
+            onClick={() => setActiveTab('milestones')}
+            className={`px-4 py-2 text-xs sm:text-sm font-bold rounded-lg transition-all flex items-center gap-1.5 ${
+              activeTab === 'milestones'
+                ? 'bg-primary text-primary-foreground shadow-sm'
+                : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
+            }`}
+          >
+            <Calendar className="h-4 w-4" /> Exam Milestones & Reminders
+          </button>
+        </div>
+      </div>
 
         {/* ── Summary Result Cards ── */}
         {activeTab === 'attendance' ? (
@@ -836,7 +865,7 @@ export default function GpaCalculatorPage() {
                     max="10.0"
                     step="0.1"
                     value={targetSgpa}
-                    onChange={(e) => setTargetSgpa(parseFloat(e.target.value))}
+                    onChange={(e) => handleUpdateTarget(parseFloat(e.target.value))}
                     className="w-24 sm:w-32 accent-primary cursor-pointer"
                   />
                   <input
@@ -847,7 +876,7 @@ export default function GpaCalculatorPage() {
                     value={targetSgpa}
                     onChange={(e) => {
                       const val = parseFloat(e.target.value);
-                      if (!isNaN(val)) setTargetSgpa(Math.max(4.0, Math.min(10.0, val)));
+                      if (!isNaN(val)) handleUpdateTarget(Math.max(4.0, Math.min(10.0, val)));
                     }}
                     className="w-14 h-7 text-xs font-mono font-bold text-center rounded-lg border border-input bg-secondary/50 focus:ring-1 focus:ring-primary"
                   />
@@ -857,7 +886,7 @@ export default function GpaCalculatorPage() {
                   {[7.5, 8.0, 8.5, 9.0].map((t) => (
                     <button
                       key={t}
-                      onClick={() => setTargetSgpa(t)}
+                      onClick={() => handleUpdateTarget(t)}
                       className={`px-2 py-1 rounded-lg text-xs font-bold transition-all ${
                         targetSgpa === t
                           ? 'bg-primary text-primary-foreground shadow-sm'
@@ -867,6 +896,14 @@ export default function GpaCalculatorPage() {
                       {t.toFixed(1)}
                     </button>
                   ))}
+                  <button
+                    onClick={() => handleUpdateTarget(targetSgpa)}
+                    className="px-2.5 py-1 rounded-lg text-xs font-bold bg-primary/10 text-primary hover:bg-primary/20 transition-all flex items-center gap-1"
+                    title="Sync to Supabase Profile"
+                  >
+                    <BookmarkCheck className="h-3.5 w-3.5" />
+                    <span className="hidden sm:inline">Save</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -1730,6 +1767,83 @@ export default function GpaCalculatorPage() {
           </div>
         )}
 
+        {/* ── TAB 4: EXAM MILESTONES & REMINDERS ── */}
+        {activeTab === 'milestones' && (
+          <div className="space-y-6 animate-fade-in">
+            {/* Top Countdown Banner */}
+            <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 border border-slate-800 rounded-2xl p-6 text-white shadow-lg flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="space-y-1 text-center md:text-left">
+                <div className="flex items-center justify-center md:justify-start gap-2">
+                  <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                    Official Milestone
+                  </span>
+                  <span className="text-xs text-slate-400">SLS Baroda University Exam Cell</span>
+                </div>
+                <h3 className="text-xl font-black">Mid-Semester Test (CET-2 / MST 2026)</h3>
+                <p className="text-xs text-slate-300">
+                  Hall Ticket Eligibility: Mandatory Minimum 75% Cumulative Attendance Criteria.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className={`p-4 rounded-xl border text-center ${
+                  attendanceStats.isSafe ? 'bg-emerald-950/60 border-emerald-500/40 text-emerald-400' : 'bg-rose-950/60 border-rose-500/40 text-rose-400'
+                }`}>
+                  <span className="text-[10px] font-bold uppercase tracking-wider block">Hall Ticket Status</span>
+                  <span className="text-base font-black font-mono">
+                    {attendanceStats.isSafe ? 'CLEARANCE GRANTED' : 'SHORTAGE ALERT'}
+                  </span>
+                  <span className="text-[10px] block mt-0.5 opacity-80">
+                    {attendanceStats.currentPercent}% Current Attendance
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* University Timetable Schedule */}
+            <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-border">
+                <div>
+                  <h4 className="font-bold text-sm text-foreground">Semester 3 Examination Schedule</h4>
+                  <p className="text-xs text-muted-foreground">Theory & Practical Examination Papers</p>
+                </div>
+                <span className="text-xs font-mono text-primary font-bold">CET-2 / MST Session</span>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead className="text-[10px] font-bold text-muted-foreground uppercase border-b border-border">
+                    <tr>
+                      <th className="pb-2.5">Date</th>
+                      <th className="pb-2.5">Course Code</th>
+                      <th className="pb-2.5">Course Name</th>
+                      <th className="pb-2.5">Time Slot</th>
+                      <th className="pb-2.5 text-right">Hall Clearance</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border/60">
+                    {(TIMETABLE_DATA[3]?.exams || TIMETABLE_DATA[0].exams).map((exam, idx) => (
+                      <tr key={idx} className="hover:bg-secondary/20 transition-colors">
+                        <td className="py-3 font-semibold text-foreground font-mono">{exam.date}</td>
+                        <td className="py-3 font-mono font-bold text-primary">{exam.courseCode}</td>
+                        <td className="py-3 font-medium text-foreground">{exam.courseName}</td>
+                        <td className="py-3 text-muted-foreground font-mono">{exam.time}</td>
+                        <td className="py-3 text-right">
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                            attendanceStats.isSafe ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-500 border border-rose-500/20'
+                          }`}>
+                            {attendanceStats.isSafe ? 'Eligible' : 'At Risk'}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* ── Official ITM Grading Scale Reference ── */}
         <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-sm">
           <h4 className="font-bold text-sm text-foreground mb-3 flex items-center gap-2">
@@ -1755,7 +1869,6 @@ export default function GpaCalculatorPage() {
             ))}
           </div>
         </div>
-      </main>
 
       {/* ── Course Catalog Selection Modal ── */}
       {isCatalogOpen && (
@@ -1928,9 +2041,6 @@ export default function GpaCalculatorPage() {
           </div>
         </div>
       )}
-
-      <BackToTop />
-      <Footer />
     </div>
   );
 }

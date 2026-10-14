@@ -13,7 +13,9 @@ import {
   Sparkles,
   Layers,
   Calendar,
-  X
+  X,
+  Maximize2,
+  Minimize2
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useGamification } from "@/hooks/useGamification";
@@ -30,9 +32,16 @@ import {
 interface PortalTopNavProps {
   onToggleSidebar?: () => void;
   onOpenSearch?: () => void;
+  isFocusMode?: boolean;
+  onToggleFocusMode?: () => void;
 }
 
-export function PortalTopNav({ onToggleSidebar, onOpenSearch }: PortalTopNavProps) {
+export function PortalTopNav({ 
+  onToggleSidebar, 
+  onOpenSearch,
+  isFocusMode = false,
+  onToggleFocusMode
+}: PortalTopNavProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, profile, role, signOut } = useAuth();
@@ -147,8 +156,32 @@ export function PortalTopNav({ onToggleSidebar, onOpenSearch }: PortalTopNavProp
           <span className="font-mono text-[11px]">
             {isRunning 
               ? `${Math.floor(timeLeft / 60).toString().padStart(2, '0')}:${(timeLeft % 60).toString().padStart(2, '0')}` 
-              : "Focus"}
+              : "Timer"}
           </span>
+        </button>
+
+        {/* Fullscreen Focus Mode Toggle Button */}
+        <button
+          onClick={onToggleFocusMode}
+          className={`flex items-center gap-1.5 h-9 px-3 rounded-full text-xs font-semibold border transition-all cursor-pointer ${
+            isFocusMode
+              ? "bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-600/30 font-bold animate-pulse"
+              : "bg-secondary/80 hover:bg-secondary text-muted-foreground hover:text-foreground border-border/60"
+          }`}
+          title={isFocusMode ? "Exit Focus Mode (Press F or Esc)" : "Focus Mode: Hide Sidebar & Expand Fullscreen (Press F)"}
+        >
+          {isFocusMode ? (
+            <>
+              <Minimize2 className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Exit Focus</span>
+            </>
+          ) : (
+            <>
+              <Maximize2 className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Focus</span>
+              <kbd className="hidden lg:inline-flex items-center px-1 text-[9px] font-mono bg-background/50 rounded border border-border/60">F</kbd>
+            </>
+          )}
         </button>
 
         {/* Notifications Dropdown matching Screenshot */}

@@ -14,22 +14,44 @@ export function PortalLayout() {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const [isFocusMode, setIsFocusMode] = useState(false);
+
   // Close mobile sidebar on route change
   useEffect(() => {
     setSidebarOpen(false);
   }, [location.pathname]);
 
-  // Global keyboard shortcut listener for Cmd+K / Ctrl+K
+  // Global keyboard shortcuts: Cmd+K (search), 'F' (Fullscreen Focus Mode)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      const isInput = target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable;
+
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
         setSearchOpen((prev) => !prev);
+      } else if ((e.key === "f" || e.key === "F") && !e.ctrlKey && !e.metaKey && !isInput) {
+        e.preventDefault();
+        setIsFocusMode((prev) => {
+          const next = !prev;
+          toast.info(next ? "🎯 Focus Mode Enabled (Sidebar Hidden)" : "Focus Mode Disabled");
+          return next;
+        });
+      } else if (e.key === "Escape" && isFocusMode) {
+        setIsFocusMode(false);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [isFocusMode]);
+
+  const handleToggleFocusMode = () => {
+    setIsFocusMode((prev) => {
+      const next = !prev;
+      toast.info(next ? "🎯 Focus Mode Enabled (Sidebar Hidden)" : "Focus Mode Disabled");
+      return next;
+    });
+  };
 
   const handleSendQuickSupport = (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,10 +63,11 @@ export function PortalLayout() {
 
   return (
     <div className="h-screen w-screen overflow-hidden bg-slate-50 dark:bg-background text-foreground flex antialiased">
-      {/* 1. Persistent Left Dark-Navy Sidebar */}
+      {/* 1. Persistent Left Dark-Navy Sidebar (Collapsible in Focus Mode) */}
       <PortalSidebar 
         isOpen={sidebarOpen} 
         onClose={() => setSidebarOpen(false)} 
+        isCollapsed={isFocusMode}
       />
 
       {/* 2. Main Content Viewport */}
@@ -53,6 +76,8 @@ export function PortalLayout() {
         <PortalTopNav 
           onToggleSidebar={() => setSidebarOpen((prev) => !prev)}
           onOpenSearch={() => setSearchOpen(true)}
+          isFocusMode={isFocusMode}
+          onToggleFocusMode={handleToggleFocusMode}
         />
 
         {/* Dynamic Page Content - Dedicated smooth scroll container */}

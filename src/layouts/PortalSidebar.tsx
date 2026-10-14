@@ -27,9 +27,10 @@ import { useGamification } from "@/hooks/useGamification";
 interface PortalSidebarProps {
   isOpen?: boolean;
   onClose?: () => void;
+  isCollapsed?: boolean;
 }
 
-export function PortalSidebar({ isOpen = false, onClose }: PortalSidebarProps) {
+export function PortalSidebar({ isOpen = false, onClose, isCollapsed = false }: PortalSidebarProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, profile, role, signOut } = useAuth();
@@ -217,8 +218,10 @@ export function PortalSidebar({ isOpen = false, onClose }: PortalSidebarProps) {
 
   return (
     <>
-      {/* Desktop Persistent Sidebar */}
-      <aside className="hidden md:flex flex-col w-60 shrink-0 h-full border-r border-slate-800 shadow-xl z-20 select-none">
+      {/* Desktop Persistent Sidebar (Collapsible in Focus Mode) */}
+      <aside className={`hidden md:flex flex-col transition-all duration-300 ease-in-out shrink-0 h-full border-r border-slate-800 shadow-xl z-20 select-none overflow-hidden ${
+        isCollapsed ? "w-0 -translate-x-full opacity-0 pointer-events-none border-r-0" : "w-60 translate-x-0 opacity-100"
+      }`}>
         {sidebarContent}
       </aside>
 

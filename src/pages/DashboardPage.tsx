@@ -451,68 +451,38 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* 3. Faculty / Subject Mentors Quick List matching Screenshot 1 */}
-          <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-3">
-            <h3 className="font-bold text-sm text-foreground">Faculty & Subject Mentors</h3>
+          {/* 3. Faculty / Subject Mentors Card - Coming Soon as requested */}
+          <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="font-bold text-sm text-foreground">Faculty & Subject Mentors</h3>
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                Coming Soon
+              </span>
+            </div>
 
-            <div className="space-y-3">
-              {/* Mentor 1 */}
-              <div className="p-3 rounded-xl border border-border/80 bg-secondary/20 flex items-center justify-between gap-3">
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="w-8 h-8 rounded-full bg-purple-500/20 text-purple-600 font-bold text-xs flex items-center justify-center shrink-0">
-                    AM
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-xs font-bold text-foreground truncate">Aniket Manjrekar Trek</p>
-                    <p className="text-[10px] text-muted-foreground truncate">Data Structures & Algo · BCA</p>
-                  </div>
+            <div className="p-4 rounded-xl bg-gradient-to-br from-secondary/40 to-secondary/10 border border-border/70 space-y-3">
+              <div className="flex items-start gap-3">
+                <div className="w-9 h-9 rounded-xl bg-blue-600/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 mt-0.5">
+                  <Users className="h-5 w-5" />
                 </div>
-                <button 
-                  onClick={() => toast.info("Opening Aniket Manjrekar's course guide...")}
-                  className="px-2.5 py-1 rounded-lg border border-border text-[11px] font-semibold text-foreground hover:bg-secondary transition-colors shrink-0"
-                >
-                  View More
-                </button>
+                <div className="space-y-1">
+                  <h4 className="font-bold text-xs text-foreground">
+                    Direct Faculty Guidance & Office Hours
+                  </h4>
+                  <p className="text-[11px] text-muted-foreground leading-relaxed">
+                    Official faculty office hours and direct 1-on-1 viva guidance from ITM SLS Baroda University professors will be published once departmental timetables are finalized.
+                  </p>
+                </div>
               </div>
 
-              {/* Mentor 2 */}
-              <div className="p-3 rounded-xl border border-border/80 bg-secondary/20 flex items-center justify-between gap-3">
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="w-8 h-8 rounded-full bg-blue-500/20 text-blue-600 font-bold text-xs flex items-center justify-center shrink-0">
-                    BT
-                  </div>
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-1.5">
-                      <p className="text-xs font-bold text-foreground truncate">Bcs Tracking</p>
-                      <span className="text-[9px] px-1 rounded bg-emerald-500/20 text-emerald-600 font-bold">PRO</span>
-                    </div>
-                    <p className="text-[10px] text-muted-foreground truncate">Database Sys, App Development</p>
-                  </div>
-                </div>
-                <button 
-                  onClick={() => toast.info("Opening DBMS practical portal...")}
-                  className="px-2.5 py-1 rounded-lg border border-border text-[11px] font-semibold text-foreground hover:bg-secondary transition-colors shrink-0"
+              <div className="pt-2 border-t border-border/50 flex items-center justify-between text-[11px]">
+                <span className="text-muted-foreground font-medium">SLS CS Dept Portal</span>
+                <button
+                  type="button"
+                  onClick={() => toast.success("You'll be notified when faculty office hours are published!")}
+                  className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold text-[10px] shadow-sm shadow-blue-600/20 transition-all active:scale-95"
                 >
-                  View More
-                </button>
-              </div>
-
-              {/* Mentor 3 */}
-              <div className="p-3 rounded-xl border border-border/80 bg-secondary/20 flex items-center justify-between gap-3">
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="w-8 h-8 rounded-full bg-amber-500/20 text-amber-600 font-bold text-xs flex items-center justify-center shrink-0">
-                    AS
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-xs font-bold text-foreground truncate">Applied Science</p>
-                    <p className="text-[10px] text-muted-foreground truncate">Engineering Chem, Assignment 2</p>
-                  </div>
-                </div>
-                <button 
-                  onClick={() => toast.info("Opening Chemistry assignment tracker...")}
-                  className="px-2.5 py-1 rounded-lg border border-border text-[11px] font-semibold text-foreground hover:bg-secondary transition-colors shrink-0"
-                >
-                  View More
+                  Notify Me
                 </button>
               </div>
             </div>

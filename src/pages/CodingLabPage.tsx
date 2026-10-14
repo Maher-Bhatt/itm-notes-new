@@ -8,7 +8,6 @@ import {
   Maximize2, Minimize2, Trash2, Send, Bot, GraduationCap, ArrowLeft, ArrowRight,
   X, ExternalLink, Cpu
 } from 'lucide-react';
-import { Header } from '@/components/Header';
 import { useGamification } from '@/hooks/useGamification';
 import { useAcademic } from '@/contexts/AcademicContext';
 import { toast } from 'sonner';
@@ -734,8 +733,7 @@ export default function CodingLabPage() {
     (selectedDifficulty !== 'all' ? 1 : 0);
 
   return (
-    <div className="min-h-screen flex flex-col bg-background selection:bg-primary/20">
-      <Header />
+    <div className="flex-1 flex flex-col bg-background selection:bg-primary/20">
       
       {/* ─────────────────────────────────────────────────────────────
           TOP BRANDING & GLOBAL STATS HEADER
@@ -844,6 +842,23 @@ export default function CodingLabPage() {
               selectedSubject === 'all' ? 'bg-primary-foreground/20 text-primary-foreground' : 'bg-secondary text-muted-foreground'
             }`}>
               {CODING_PROBLEMS.length}
+            </span>
+          </button>
+
+          {/* 1-Click Spotlight: Practical 3 Railway Reservation Queue */}
+          <button
+            onClick={() => {
+              setSelectedSemester(3);
+              setSelectedSubject('Data Structures (DSA301)');
+              const p3 = CODING_PROBLEMS.find(p => p.id === 'dsa-38-railway-reservation-queue-c' || p.id.includes('railway'));
+              if (p3) handleSelectProblem(p3);
+            }}
+            className="px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 transition-all border flex items-center gap-1.5 bg-emerald-500/10 border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/20 shadow-xs"
+          >
+            <span>🚂</span>
+            <span>Practical 3: Railway Queue (C / Java)</span>
+            <span className="text-[10px] px-1.5 py-0.2 rounded-full font-mono bg-emerald-500/20 text-emerald-300 font-bold">
+              HOT
             </span>
           </button>
 
@@ -1494,6 +1509,34 @@ export default function CodingLabPage() {
                     <span className="font-mono text-xs font-semibold text-zinc-300 ml-1.5 bg-zinc-800 px-2 py-0.5 rounded border border-zinc-700/60">
                       {currentProblem.fileName}
                     </span>
+
+                    {/* C / Java Hot-Swap Toggle for Practical 3 */}
+                    {(currentProblem.id.includes('railway') || currentProblem.id.includes('dsa-38') || currentProblem.id.includes('dsa-39')) && (
+                      <div className="flex items-center bg-zinc-800 rounded-lg p-0.5 border border-zinc-700 text-xs">
+                        <button
+                          onClick={() => {
+                            const cProb = CODING_PROBLEMS.find(p => p.id === 'dsa-38-railway-reservation-queue-c');
+                            if (cProb) handleSelectProblem(cProb);
+                          }}
+                          className={`px-2 py-0.5 text-[10px] font-bold rounded transition-all ${
+                            currentProblem.language === 'c' ? 'bg-blue-600 text-white shadow-xs' : 'text-zinc-400 hover:text-zinc-200'
+                          }`}
+                        >
+                          C99
+                        </button>
+                        <button
+                          onClick={() => {
+                            const javaProb = CODING_PROBLEMS.find(p => p.id === 'dsa-39-railway-reservation-queue-java');
+                            if (javaProb) handleSelectProblem(javaProb);
+                          }}
+                          className={`px-2 py-0.5 text-[10px] font-bold rounded transition-all ${
+                            currentProblem.language === 'java' ? 'bg-amber-600 text-white shadow-xs' : 'text-zinc-400 hover:text-zinc-200'
+                          }`}
+                        >
+                          Java OOP
+                        </button>
+                      </div>
+                    )}
                   </div>
                   <div className="flex items-center gap-2">
                     <Button 
