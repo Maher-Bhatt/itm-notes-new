@@ -59,6 +59,8 @@ export default function DashboardPage() {
   const studentDisplayName = profile?.display_name || user?.email?.split("@")[0] || null;
   const activeSemester = profile?.semester || semesterNumber || 3;
   const completedTopicsCount = progress?.completedTopics?.length || 0;
+  const totalModulesCount = 8;
+  const completedModulesCount = user ? Math.min(totalModulesCount, Math.round(completedTopicsCount / 2)) : 0;
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-[1600px] mx-auto space-y-6 animate-fade-in">
@@ -180,7 +182,11 @@ export default function DashboardPage() {
               <div className="flex items-center gap-2">
                 <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold text-xs border border-emerald-500/20 flex items-center gap-1.5">
                   <CheckCircle className="h-3.5 w-3.5" />
-                  <span>Complete {completedModulesCount}/{totalModulesCount} modules</span>
+                  <span>
+                    {user 
+                      ? `Completed ${completedModulesCount}/${totalModulesCount} modules` 
+                      : `${totalModulesCount} Core Syllabus Modules`}
+                  </span>
                 </span>
 
                 <select 
