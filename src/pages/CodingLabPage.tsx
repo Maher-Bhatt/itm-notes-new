@@ -746,7 +746,7 @@ export default function CodingLabPage() {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-base sm:text-lg font-bold tracking-tight">University Coding Lab</h1>
+                <h1 className="text-base sm:text-lg font-bold tracking-tight">ITM MOOCs Practical & Coding Lab</h1>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-semibold">
                   154 Practicals Live
                 </span>

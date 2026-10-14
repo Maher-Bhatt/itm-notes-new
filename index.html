@@ -7,50 +7,48 @@
       (function() {
         try {
           var saved = localStorage.getItem('theme') || localStorage.getItem('vite-ui-theme');
-          // Default first-time experience is strictly LIGHT unless explicitly saved as 'dark'
           var isDark = saved === 'dark';
           if (isDark) {
             document.documentElement.classList.add('dark');
-            document.documentElement.style.backgroundColor = '#09090b';
+            document.documentElement.style.backgroundColor = '#12221E';
             document.documentElement.style.colorScheme = 'dark';
           } else {
             document.documentElement.classList.remove('dark');
-            document.documentElement.style.backgroundColor = '#ffffff';
+            document.documentElement.style.backgroundColor = '#F5F1E8';
             document.documentElement.style.colorScheme = 'light';
           }
         } catch (e) {}
       })();
     </script>
-    <title>ITM Notes | Study Portal for ITM (SLS) Baroda University & ITM GNUMS</title>
-    <meta name="description" content="Official student-led study platform for ITM (SLS) Baroda University and ITM GNUMS. Access verified B.Tech CSE & BCA semester notes, MST Question Banks, 75% attendance buffer calculator, SGPA predictor, and interactive coding lab." />
-    <meta name="keywords" content="ITM, ITM SLS, ITM SLS Baroda, ITM SLS Baroda University, ITM GNUMS, ITMBU, ITM student notes, ITM notes, ITM CSE notes, ITM study material, ITM important questions, ITM exam timetable, attendance calculator ITM, Maher Bhatt" />
-    <meta name="author" content="Maher Bhatt" />
+    <title>ITM MOOCs | Learn Beyond Borders — Multi-University Learning Platform</title>
+    <meta name="description" content="ITM MOOCs is a calm, modern multi-university learning hub. Access verified syllabus notes, solved MST question banks, interactive C & Java coding labs, and 75% attendance criteria tools across universities." />
+    <meta name="keywords" content="ITM MOOCs, Learn Beyond Borders, ITM SLS Baroda University, multi-university learning platform, engineering notes, CSE notes, coding lab, attendance tracker, question banks, Maher Bhatt" />
+    <meta name="author" content="ITM MOOCs" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#09090b" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#183F36" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#12332C" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" media="print" onload="this.media='all'" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=Manrope:wght@400..800&display=swap" />
     <link rel="canonical" href="https://itm-notes-new.vercel.app/" />
-    <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" href="/favicon.png" type="image/png" />
-    <link rel="apple-touch-icon" href="/logo.png" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
 
     <!-- Open Graph / Facebook / WhatsApp -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://itm-notes-new.vercel.app/" />
-    <meta property="og:site_name" content="ITM Notes" />
-    <meta property="og:title" content="ITM Notes | Academic Portal for ITM (SLS) Baroda University" />
-    <meta property="og:description" content="Ace your ITM SLS Baroda University semester examinations with syllabus notes, MST question banks, interactive coding lab, and 75% attendance calculator." />
-    <meta property="og:image" content="https://itm-notes-new.vercel.app/logo.png" />
+    <meta property="og:site_name" content="ITM MOOCs" />
+    <meta property="og:title" content="ITM MOOCs | Learn Beyond Borders" />
+    <meta property="og:description" content="A calm, modern multi-university learning hub. Verified semester notes, MST question banks, interactive practical coding labs, and attendance protection." />
+    <meta property="og:image" content="https://itm-notes-new.vercel.app/icon-512.png" />
 
     <!-- Twitter / X Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content="https://itm-notes-new.vercel.app/" />
-    <meta name="twitter:title" content="ITM Notes | Academic Portal for ITM (SLS) Baroda University" />
-    <meta name="twitter:description" content="Ace your ITM SLS Baroda University semester examinations with syllabus notes, MST question banks, interactive coding lab, and 75% attendance calculator." />
-    <meta name="twitter:image" content="https://itm-notes-new.vercel.app/logo.png" />
+    <meta name="twitter:title" content="ITM MOOCs | Learn Beyond Borders" />
+    <meta name="twitter:description" content="A calm, modern multi-university learning hub. Verified semester notes, MST question banks, interactive practical coding labs, and attendance protection." />
+    <meta name="twitter:image" content="https://itm-notes-new.vercel.app/icon-512.png" />
 
     <!-- Structured Data (JSON-LD) for Google SEO -->
     <script type="application/ld+json">

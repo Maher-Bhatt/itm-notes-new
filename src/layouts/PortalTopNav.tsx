@@ -89,14 +89,15 @@ export function PortalTopNav({
   };
 
   const topTabs = [
-    { label: "Home", path: "/" },
-    { label: "Schedules", path: "/materials" },
-    { label: "Activities", path: "/coding-lab" },
-    { label: "Reminders", path: "/calculator" },
+    { label: "Dashboard", path: "/dashboard" },
+    { label: "Materials", path: "/materials" },
+    { label: "Coding Lab", path: "/coding-lab" },
+    { label: "Exam Questions", path: "/imp-questions" },
+    { label: "Quizzes", path: "/quiz" },
   ];
 
   return (
-    <header className="sticky top-0 z-30 h-14 bg-background/95 backdrop-blur-md border-b border-border/80 px-4 sm:px-6 flex items-center justify-between transition-colors">
+    <header className="sticky top-0 z-30 h-14 bg-card/80 backdrop-blur-md border-b border-border px-4 sm:px-6 flex items-center justify-between transition-colors">
       {/* Left: Mobile Sidebar Trigger + Primary Nav Tabs */}
       <div className="flex items-center gap-4">
         <button
@@ -107,8 +108,8 @@ export function PortalTopNav({
           <Menu className="h-5 w-5" />
         </button>
 
-        {/* Top Horizontal Tabs matching Screenshot */}
-        <nav className="hidden sm:flex items-center gap-1">
+        {/* Top Horizontal Tabs */}
+        <nav className="hidden sm:flex items-center gap-1 font-display">
           {topTabs.map((tab) => {
             const active = location.pathname === tab.path;
             return (
@@ -117,7 +118,7 @@ export function PortalTopNav({
                 to={tab.path}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all relative ${
                   active 
-                    ? "text-primary font-bold after:absolute after:bottom-[-8px] after:left-3 after:right-3 after:h-0.5 after:bg-primary after:rounded-full" 
+                    ? "text-primary font-bold after:absolute after:bottom-[-8px] after:left-3 after:right-3 after:h-0.5 after:bg-[#D6E85D] after:rounded-full" 
                     : "text-muted-foreground hover:text-foreground hover:bg-secondary/60"
                 }`}
               >
@@ -130,16 +131,16 @@ export function PortalTopNav({
 
       {/* Right: Search Input + Focus Timer + Bell + Theme + Profile */}
       <div className="flex items-center gap-2.5 sm:gap-3">
-        {/* Universal Search Pill matching Screenshot */}
+        {/* Universal Search Pill */}
         <button
           onClick={onOpenSearch}
-          className="flex items-center gap-2 h-9 px-3.5 rounded-full bg-secondary/80 hover:bg-secondary text-muted-foreground hover:text-foreground border border-border/60 text-xs transition-all shadow-xs cursor-pointer group"
-          title="Search Notes and Questions (Ctrl + K)"
+          className="flex items-center gap-2 h-9 px-3.5 rounded-full bg-card hover:bg-secondary/80 text-muted-foreground hover:text-foreground border border-border text-xs transition-all shadow-xs cursor-pointer group"
+          title="Search Notes, Practicals and Question Banks (Ctrl + K)"
         >
           <Search className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
-          <span className="hidden md:inline font-medium">Search Note...</span>
+          <span className="hidden md:inline font-medium">Search Courses & Notes...</span>
           <span className="md:hidden font-medium">Search...</span>
-          <kbd className="hidden lg:inline-flex items-center px-1.5 py-0.5 text-[10px] font-mono font-semibold bg-background border border-border/80 rounded-md text-muted-foreground">
+          <kbd className="hidden lg:inline-flex items-center px-1.5 py-0.5 text-[10px] font-mono font-semibold bg-background border border-border rounded-md text-muted-foreground">
             ⌘K
           </kbd>
         </button>
@@ -149,16 +150,16 @@ export function PortalTopNav({
           onClick={() => setIsModalOpen(true)}
           className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
             isRunning 
-              ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30 animate-pulse" 
-              : "bg-secondary/60 text-muted-foreground hover:text-foreground border-border/60"
+              ? "bg-[#D6E85D]/20 text-[#183F36] dark:text-[#D6E85D] border-[#D6E85D]/40 animate-pulse font-bold" 
+              : "bg-card text-muted-foreground hover:text-foreground border-border"
           }`}
           title="Study Focus Timer"
         >
-          <Clock className={`h-3.5 w-3.5 ${isRunning ? "text-amber-500" : ""}`} />
+          <Clock className={`h-3.5 w-3.5 ${isRunning ? "text-[#183F36] dark:text-[#D6E85D]" : ""}`} />
           <span className="font-mono text-[11px]">
             {isRunning 
               ? `${Math.floor(timeLeft / 60).toString().padStart(2, '0')}:${(timeLeft % 60).toString().padStart(2, '0')}` 
-              : "Timer"}
+              : "Focus"}
           </span>
         </button>
 
@@ -167,8 +168,8 @@ export function PortalTopNav({
           onClick={onToggleFocusMode}
           className={`flex items-center gap-1.5 h-9 px-3 rounded-full text-xs font-semibold border transition-all cursor-pointer ${
             isFocusMode
-              ? "bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-600/30 font-bold animate-pulse"
-              : "bg-secondary/80 hover:bg-secondary text-muted-foreground hover:text-foreground border-border/60"
+              ? "bg-[#183F36] text-[#D6E85D] border-[#183F36] shadow-md font-bold"
+              : "bg-card hover:bg-secondary text-muted-foreground hover:text-foreground border-border"
           }`}
           title={isFocusMode ? "Exit Focus Mode (Press F or Esc)" : "Focus Mode: Hide Sidebar & Expand Fullscreen (Press F)"}
         >

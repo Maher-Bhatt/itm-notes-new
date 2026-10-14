@@ -119,52 +119,55 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* ── LEFT / MAIN CONTENT (~68% width -> lg:col-span-8) ── */}
         <div className="lg:col-span-8 space-y-6">
-          {/* 1. Hero Academic Overview Card matching Screenshot 1 */}
-          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-indigo-950 to-indigo-900 text-white p-6 sm:p-8 shadow-xl border border-slate-800">
+          {/* 1. Hero Academic Overview Card — Forest Green & Chartreuse */}
+          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#183F36] via-[#12332C] to-[#183F36] text-[#F5F1E8] p-6 sm:p-8 shadow-xl border border-[#1D4A3F]">
+            {/* Subtle brand arch pattern accent */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[#D6E85D]/10 rounded-full blur-3xl pointer-events-none" />
+
             <div className="relative z-10 max-w-xl space-y-3">
-              <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-indigo-500/30 text-indigo-200 border border-indigo-400/30 inline-block">
-                {user ? `Semester ${activeSemester} Active Term` : "Guest / Explorer Mode"}
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
+              <div className="flex items-center gap-2">
+                <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#D6E85D]/20 text-[#D6E85D] border border-[#D6E85D]/30 inline-flex items-center gap-1.5 font-display">
+                  <Sparkles className="h-3 w-3" />
+                  {user ? `Semester ${activeSemester} Active Term` : "Guest / Explorer Mode"}
+                </span>
+                <span className="text-[10px] text-[#A2BAAF] font-medium hidden sm:inline">
+                  ITM (SLS) Baroda University Hub
+                </span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#F5F1E8] font-display">
                 {user ? "Academic Overview" : "Explore University Curriculum"}
               </h2>
-              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal">
+              <p className="text-xs sm:text-sm text-[#E8EDE4]/90 leading-relaxed font-normal">
                 {user 
-                  ? "Tune into your study on blast with the fastest access to any syllabus topic, high-yield question bank, or practical reference across BCA & MCA."
-                  : "Welcome to ITM Notes! Access comprehensive university notes, solved practical codes (DSA C & Java), past exam questions, and study calculators. Sign in to track your syllabus and sync your progress."}
+                  ? "Access verified syllabus topics, high-yield question banks, or practical codes across B.Tech CSE & BCA. Quietly confident and exam-ready."
+                  : "Welcome to ITM MOOCs! Access verified university notes, solved practical codes (DSA in C & Java), past exam questions, and study calculators across universities."}
               </p>
               <div className="pt-2 flex flex-wrap items-center gap-3">
                 <button
                   onClick={() => navigate("/materials")}
-                  className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-lg shadow-indigo-600/30 transition-all hover:scale-105 active:scale-95 flex items-center gap-2 cursor-pointer"
+                  className="px-5 py-2.5 rounded-xl bg-[#D6E85D] hover:bg-[#C8DC47] text-[#183F36] font-bold text-xs shadow-md shadow-[#D6E85D]/20 transition-all hover:scale-102 active:scale-98 flex items-center gap-2 cursor-pointer font-display"
                 >
-                  <span>{user ? "See Section Now" : "Explore Study Materials"}</span>
+                  <span>{user ? "Explore Course Materials" : "Browse Syllabus Notes"}</span>
                   <ArrowRight className="h-3.5 w-3.5" />
                 </button>
                 {!user && (
                   <button
                     onClick={() => navigate("/auth")}
-                    className="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs border border-white/20 transition-all flex items-center gap-2 cursor-pointer"
+                    className="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs border border-white/20 transition-all flex items-center gap-2 cursor-pointer font-display"
                   >
-                    <LogIn className="h-3.5 w-3.5" />
+                    <LogIn className="h-3.5 w-3.5 text-[#D6E85D]" />
                     <span>Sign In / Create Account</span>
                   </button>
                 )}
               </div>
             </div>
 
-            {/* 3D Visual Art Illustration (Simulated via SVG Graphic) */}
-            <div className="absolute right-4 -bottom-6 sm:bottom-0 opacity-80 sm:opacity-100 pointer-events-none hidden sm:block">
-              <svg width="220" height="180" viewBox="0 0 220 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="30" y="20" width="130" height="150" rx="16" fill="#1E293B" stroke="#6366F1" strokeWidth="2" />
-                <rect x="45" y="40" width="100" height="12" rx="6" fill="#475569" />
-                <rect x="45" y="60" width="70" height="10" rx="5" fill="#6366F1" fillOpacity="0.6" />
-                <rect x="45" y="80" width="90" height="10" rx="5" fill="#475569" fillOpacity="0.8" />
-                <rect x="45" y="100" width="80" height="10" rx="5" fill="#475569" fillOpacity="0.8" />
-                <circle cx="160" cy="50" r="28" fill="#F59E0B" />
-                <path d="M152 50L158 56L170 44" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
-                <rect x="135" y="105" width="55" height="14" rx="4" transform="rotate(-35 135 105)" fill="#38BDF8" />
-                <polygon points="120,125 125,115 132,122" fill="#F43F5E" />
+            {/* Subtle Abstract Arch Graphic */}
+            <div className="absolute right-4 -bottom-6 sm:bottom-0 opacity-40 pointer-events-none hidden sm:block">
+              <svg width="200" height="160" viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M40 160V80C40 45 70 20 100 20C130 20 160 45 160 80V160" stroke="#D6E85D" strokeWidth="4" strokeLinecap="round" strokeDasharray="8 8" opacity="0.6" />
+                <path d="M65 160V90C65 65 80 50 100 50C120 50 135 65 135 90V160" stroke="#FFFFFF" strokeWidth="3" opacity="0.4" />
+                <circle cx="100" cy="90" r="12" fill="#D6E85D" opacity="0.8" />
               </svg>
             </div>
           </div>
@@ -339,7 +342,7 @@ export default function DashboardPage() {
                   </div>
                   <div className="h-1.5 rounded-full bg-secondary overflow-hidden">
                     <div 
-                      className="h-full bg-indigo-500 rounded-full transition-all duration-500" 
+                      className="h-full bg-[#D6E85D] rounded-full transition-all duration-500" 
                       style={{ width: user ? `${Math.min(100, Math.max(12, completedTopicsCount * 8))}%` : "15%" }} 
                     />
                   </div>
@@ -353,7 +356,7 @@ export default function DashboardPage() {
                     </span>
                   </div>
                   <div className="h-1.5 rounded-full bg-secondary overflow-hidden">
-                    <div className="h-full bg-sky-500 rounded-full" style={{ width: "85%" }} />
+                    <div className="h-full bg-[#183F36] dark:bg-[#D6E85D] rounded-full" style={{ width: "85%" }} />
                   </div>
                 </div>
 
@@ -363,38 +366,38 @@ export default function DashboardPage() {
                     <span className="text-foreground font-mono">75% Mandatory</span>
                   </div>
                   <div className="h-1.5 rounded-full bg-secondary overflow-hidden">
-                    <div className="h-full bg-emerald-500 rounded-full" style={{ width: "88%" }} />
+                    <div className="h-full bg-[#267653] dark:bg-[#D6E85D] rounded-full" style={{ width: "88%" }} />
                   </div>
                 </div>
               </div>
 
-              {/* Spline Area Chart matching Screenshot 1 */}
+              {/* Spline Area Chart with Forest Green & Chartreuse */}
               <div className="h-28 w-full pt-2">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={STUDY_ACTIVITY_DATA}>
                     <defs>
-                      <linearGradient id="purpleGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#6366F1" stopOpacity={0.4} />
-                        <stop offset="95%" stopColor="#6366F1" stopOpacity={0.0} />
+                      <linearGradient id="forestGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#183F36" stopOpacity={0.35} />
+                        <stop offset="95%" stopColor="#D6E85D" stopOpacity={0.0} />
                       </linearGradient>
                     </defs>
-                    <XAxis dataKey="time" stroke="#94A3B8" fontSize={9} tickLine={false} axisLine={false} />
+                    <XAxis dataKey="time" stroke="#68716B" fontSize={9} tickLine={false} axisLine={false} />
                     <YAxis hide domain={[0, 100]} />
                     <Tooltip 
                       contentStyle={{ 
                         backgroundColor: "hsl(var(--card))", 
                         borderColor: "hsl(var(--border))",
-                        borderRadius: "0.5rem",
+                        borderRadius: "0.75rem",
                         fontSize: "11px",
                       }} 
                     />
                     <Area 
                       type="monotone" 
                       dataKey="hours" 
-                      stroke="#6366F1" 
+                      stroke="#183F36" 
                       strokeWidth={2.5}
                       fillOpacity={1} 
-                      fill="url(#purpleGradient)" 
+                      fill="url(#forestGradient)" 
                     />
                   </AreaChart>
                 </ResponsiveContainer>
@@ -415,22 +418,22 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <div className="p-4 rounded-xl bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200/50 dark:border-indigo-800/30 flex items-start gap-3">
-              <div className="p-2.5 rounded-xl bg-indigo-600 text-white shrink-0">
+            <div className="p-4 rounded-xl bg-[#E8EDE4] dark:bg-[#183F36]/30 border border-[#E0E2D9] dark:border-[#1D4A3F] flex items-start gap-3">
+              <div className="p-2.5 rounded-xl bg-[#183F36] text-[#D6E85D] shrink-0">
                 <BookOpen className="h-5 w-5" />
               </div>
               <div className="space-y-1">
                 <p className="text-xs font-medium text-foreground leading-relaxed">
                   Feed your student notes to help improve your grading for mid exams preparation.
                 </p>
-                <Link to="/materials" className="text-xs text-indigo-600 dark:text-indigo-400 font-bold hover:underline inline-block pt-1">
+                <Link to="/materials" className="text-xs text-[#183F36] dark:text-[#D6E85D] font-bold hover:underline inline-block pt-1">
                   Learn more &gt;
                 </Link>
               </div>
             </div>
           </div>
 
-          {/* 2. Radial Donut Dual Gauges matching Screenshot 1 (30% & 91%) */}
+          {/* 2. Radial Donut Dual Gauges with Forest Green & Chartreuse */}
           <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="font-bold text-sm text-foreground">Study Progress</h3>
@@ -451,7 +454,7 @@ export default function DashboardPage() {
                       d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                     />
                     <path
-                      className="text-indigo-600 stroke-current transition-all duration-1000"
+                      className="text-[#183F36] dark:text-[#D6E85D] stroke-current transition-all duration-1000"
                       strokeDasharray="30, 100"
                       strokeWidth="3.5"
                       strokeLinecap="round"
@@ -478,7 +481,7 @@ export default function DashboardPage() {
                       d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                     />
                     <path
-                      className="text-sky-500 stroke-current transition-all duration-1000"
+                      className="text-[#267653] dark:text-[#D6E85D] stroke-current transition-all duration-1000"
                       strokeDasharray="91, 100"
                       strokeWidth="3.5"
                       strokeLinecap="round"
@@ -507,11 +510,11 @@ export default function DashboardPage() {
 
             <div className="p-4 rounded-xl bg-gradient-to-br from-secondary/40 to-secondary/10 border border-border/70 space-y-3">
               <div className="flex items-start gap-3">
-                <div className="w-9 h-9 rounded-xl bg-blue-600/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 mt-0.5">
+                <div className="w-9 h-9 rounded-xl bg-[#183F36]/10 text-[#183F36] dark:text-[#D6E85D] flex items-center justify-center shrink-0 mt-0.5">
                   <Users className="h-5 w-5" />
                 </div>
                 <div className="space-y-1">
-                  <h4 className="font-bold text-xs text-foreground">
+                  <h4 className="font-bold text-xs text-foreground font-display">
                     Direct Faculty Guidance & Office Hours
                   </h4>
                   <p className="text-[11px] text-muted-foreground leading-relaxed">
@@ -525,7 +528,7 @@ export default function DashboardPage() {
                 <button
                   type="button"
                   onClick={() => toast.success("You'll be notified when faculty office hours are published!")}
-                  className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold text-[10px] shadow-sm shadow-blue-600/20 transition-all active:scale-95"
+                  className="px-3 py-1.5 rounded-lg bg-[#183F36] hover:bg-[#12332C] text-white font-bold text-[10px] shadow-sm shadow-[#183F36]/20 transition-all active:scale-95 cursor-pointer font-display"
                 >
                   Notify Me
                 </button>

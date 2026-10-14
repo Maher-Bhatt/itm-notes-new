@@ -6,97 +6,106 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 0%;
+    /* ITM MOOCs Brand Tokens — Warm Ivory & Forest Green */
+    --itm-forest: #183F36;
+    --itm-forest-deep: #12332C;
+    --itm-forest-soft: #315B4F;
+    --itm-chartreuse: #D6E85D;
+    --itm-chartreuse-hover: #C8DC47;
+    --itm-ivory: #F5F1E8;
+    --itm-paper: #FFFEFA;
+    --itm-graphite: #202522;
+    --itm-muted: #68716B;
+    --itm-border: #E0E2D9;
+    --itm-surface-green: #E8EDE4;
+    --itm-surface-lime: #F2F5D9;
 
-    --card: 0 0% 98%;
-    --card-foreground: 0 0% 0%;
+    /* Theme Variables */
+    --background: 42 35% 94%; /* #F5F1E8 Warm Ivory */
+    --foreground: 144 7% 14%; /* #202522 Graphite */
 
-    --popover: 0 0% 98%;
-    --popover-foreground: 0 0% 0%;
+    --card: 48 100% 99%; /* #FFFEFA Paper */
+    --card-foreground: 144 7% 14%;
 
-    --primary: 211 100% 50%;
+    --popover: 48 100% 99%;
+    --popover-foreground: 144 7% 14%;
+
+    --primary: 166 45% 17%; /* #183F36 Forest Green */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 0 0% 95%;
-    --secondary-foreground: 0 0% 0%;
+    --secondary: 93 19% 91%; /* #E8EDE4 Soft Green */
+    --secondary-foreground: 166 45% 17%;
 
-    --muted: 0 0% 95%;
-    --muted-foreground: 0 0% 50%;
+    --muted: 93 19% 91%;
+    --muted-foreground: 140 4% 43%; /* #68716B */
 
-    --accent: 0 0% 90%;
-    --accent-foreground: 0 0% 0%;
+    --accent: 68 74% 64%; /* #D6E85D Chartreuse */
+    --accent-foreground: 166 45% 17%;
 
-    --destructive: 0 72% 51%;
+    --destructive: 0 44% 50%; /* #B64747 */
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 0% / 0.1;
-    --input: 0 0% 98%;
-    --ring: 211 100% 50%;
+    --border: 73 14% 87%; /* #E0E2D9 */
+    --input: 73 14% 87%;
+    --ring: 166 45% 17%;
 
-    --radius: 0.5rem;
+    --radius: 0.875rem; /* 14px modern rounded */
 
-    --success: 142 71% 45%;
+    --success: 154 51% 31%; /* #267653 */
     --success-foreground: 0 0% 100%;
-    --warning: 38 92% 50%;
-    --warning-foreground: 0 0% 0%;
-    --info: 211 100% 50%;
+    --warning: 34 70% 38%; /* #A66A1D */
+    --warning-foreground: 0 0% 100%;
+    --info: 166 45% 17%;
     --info-foreground: 0 0% 100%;
 
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 0 0% 0%;
-    --sidebar-primary: 211 100% 50%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 0 0% 95%;
-    --sidebar-accent-foreground: 0 0% 0%;
-    --sidebar-border: 0 0% 0% / 0.1;
-    --sidebar-ring: 211 100% 50%;
+    /* Dedicated Forest Green Sidebar */
+    --sidebar-background: 166 45% 17%; /* #183F36 Deep Forest */
+    --sidebar-foreground: 42 35% 94%; /* #F5F1E8 Ivory */
+    --sidebar-primary: 68 74% 64%; /* #D6E85D Chartreuse */
+    --sidebar-primary-foreground: 166 45% 17%;
+    --sidebar-accent: 167 48% 14%; /* #12332C */
+    --sidebar-accent-foreground: 42 35% 94%;
+    --sidebar-border: 166 35% 23%; /* #1D3B34 */
+    --sidebar-ring: 68 74% 64%;
   }
 
   .dark {
-    --background: 240 10% 4%;
-    --foreground: 0 0% 98%;
+    --background: 165 31% 10%; /* #12221E Deep Forest Slate */
+    --foreground: 42 35% 94%; /* #F5F1E8 Warm Ivory */
 
-    --card: 240 10% 6%;
-    --card-foreground: 0 0% 98%;
+    --card: 166 31% 14%; /* #182E29 Deep Paper */
+    --card-foreground: 42 35% 94%;
 
-    --popover: 240 10% 6%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 166 31% 14%;
+    --popover-foreground: 42 35% 94%;
 
-    --primary: 211 100% 50%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 68 74% 64%; /* #D6E85D Chartreuse */
+    --primary-foreground: 166 45% 17%;
 
-    --secondary: 240 10% 12%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 166 35% 20%;
+    --secondary-foreground: 42 35% 94%;
 
-    --muted: 240 10% 12%;
-    --muted-foreground: 240 5% 65%;
+    --muted: 166 35% 18%;
+    --muted-foreground: 160 15% 65%;
 
-    --accent: 240 10% 15%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 68 74% 64%;
+    --accent-foreground: 166 45% 17%;
 
-    --destructive: 0 62% 30%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 0 55% 42%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 240 10% 20%;
-    --input: 240 10% 12%;
-    --ring: 211 100% 50%;
+    --border: 166 25% 24%;
+    --input: 166 25% 24%;
+    --ring: 68 74% 64%;
 
-    --success: 142 71% 45%;
-    --success-foreground: 0 0% 100%;
-    --warning: 38 92% 50%;
-    --warning-foreground: 0 0% 0%;
-    --info: 211 100% 50%;
-    --info-foreground: 0 0% 100%;
-
-    --sidebar-background: 240 10% 6%;
-    --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 211 100% 50%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 10% 12%;
-    --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 240 10% 20%;
-    --sidebar-ring: 211 100% 50%;
+    --sidebar-background: 167 48% 12%; /* #0E2822 */
+    --sidebar-foreground: 42 35% 94%;
+    --sidebar-primary: 68 74% 64%;
+    --sidebar-primary-foreground: 166 45% 17%;
+    --sidebar-accent: 167 48% 16%;
+    --sidebar-accent-foreground: 42 35% 94%;
+    --sidebar-border: 166 25% 20%;
+    --sidebar-ring: 68 74% 64%;
   }
 }
 
@@ -117,11 +126,14 @@
     overflow-x: hidden;
   }
 
-  /* Apply safe-area padding only to the body for iPhone notch/dynamic island */
-  body {
-    padding-top: env(safe-area-inset-top);
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
+  h1, h2, h3, h4, .font-heading, .display {
+    font-family: 'Manrope', 'Inter', system-ui, -apple-system, sans-serif;
+    letter-spacing: -0.025em;
+  }
+
+  :focus-visible {
+    outline: 2px solid hsl(var(--accent));
+    outline-offset: 2px;
   }
 }
 

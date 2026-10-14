@@ -1,0 +1,47 @@
+/* ITM MOOCs — brand tokens (temporary brand identity)
+   Palette: Forest Green, Chartreuse, Ivory, Graphite. */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+:root {
+  color-scheme: light;
+  --itm-forest: #183F36;
+  --itm-forest-deep: #12332C;
+  --itm-forest-soft: #315B4F;
+  --itm-chartreuse: #D6E85D;
+  --itm-chartreuse-hover: #C8DC47;
+  --itm-ivory: #F5F1E8;
+  --itm-paper: #FFFEFA;
+  --itm-graphite: #202522;
+  --itm-muted: #68716B;
+  --itm-border: #E0E2D9;
+  --itm-surface-green: #E8EDE4;
+  --itm-surface-lime: #F2F5D9;
+  --itm-success: #267653;
+  --itm-warning: #A66A1D;
+  --itm-danger: #B64747;
+
+  --font-display: 'Manrope', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-body: 'DM Sans', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --radius-xl: 28px;
+  --shadow-card: 0 8px 30px rgba(24, 63, 54, 0.055);
+  --shadow-raised: 0 14px 36px rgba(24, 63, 54, 0.09);
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+}
+
+html, body { background: var(--itm-ivory); color: var(--itm-graphite); }
+body { font-family: var(--font-body); }
+h1, h2, h3, h4, .display { font-family: var(--font-display); letter-spacing: -0.035em; }
+:focus-visible { outline: 3px solid var(--itm-chartreuse); outline-offset: 3px; }

@@ -477,11 +477,11 @@ export default function AdminDashboard() {
             <div className="flex items-center gap-2 mb-1">
               <Shield className="h-6 w-6 text-primary" />
               <h1 className="text-3xl font-extrabold text-foreground tracking-tight">
-                Platform Admin Command Center
+                ITM MOOCs Admin Command Center
               </h1>
             </div>
             <p className="text-sm text-muted-foreground">
-              Manage curriculum contents, student accounts, system health, and database synchronization.
+              Manage multi-university curriculum contents, student accounts, system health, and database synchronization.
             </p>
           </div>
 

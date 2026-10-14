@@ -67,7 +67,7 @@ export default function ImpQuestionsSubjectsPage() {
             <span>·</span>
             <span>Question Banks</span>
             <span>·</span>
-            <span>ITM</span>
+            <span>ITM MOOCs</span>
             <span>·</span>
             <span className="text-foreground font-semibold">Sem 3</span>
           </div>
@@ -365,10 +365,10 @@ export default function ImpQuestionsSubjectsPage() {
                   <Line 
                     type="monotone" 
                     dataKey="inquiries" 
-                    stroke="#6366F1" 
+                    stroke="#183F36" 
                     strokeWidth={2.5} 
-                    dot={{ fill: "#6366F1", r: 4 }} 
-                    activeDot={{ r: 6 }} 
+                    dot={{ fill: "#183F36", r: 4 }} 
+                    activeDot={{ r: 6, fill: "#D6E85D" }} 
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -399,7 +399,7 @@ export default function ImpQuestionsSubjectsPage() {
                 <span className="text-[10px] text-muted-foreground uppercase font-semibold">Notes</span>
               </div>
               <div>
-                <span className="text-base font-black font-mono text-indigo-600 block">67</span>
+                <span className="text-base font-black font-mono text-brand-forest dark:text-emerald-400 block">67</span>
                 <span className="text-[10px] text-muted-foreground uppercase font-semibold">MCQs</span>
               </div>
               <div>
@@ -407,11 +407,11 @@ export default function ImpQuestionsSubjectsPage() {
                 <span className="text-[10px] text-muted-foreground uppercase font-semibold">Prac</span>
               </div>
               <div>
-                <span className="text-base font-black font-mono text-purple-600 block">515</span>
+                <span className="text-base font-black font-mono text-brand-forest dark:text-emerald-400 block">515</span>
                 <span className="text-[10px] text-muted-foreground uppercase font-semibold">Quest</span>
               </div>
               <div>
-                <span className="text-base font-black font-mono text-emerald-600 block">50%</span>
+                <span className="text-base font-black font-mono text-emerald-600 dark:text-brand-chartreuse block">50%</span>
                 <span className="text-[10px] text-muted-foreground uppercase font-semibold">Solved</span>
               </div>
 
@@ -443,9 +443,9 @@ export default function ImpQuestionsSubjectsPage() {
             onClick={() => {
               toast.success("Preparing full 515-question solved revision pack...");
             }}
-            className="w-full h-10 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md shadow-blue-600/20"
+            className="w-full h-10 rounded-xl bg-brand-forest hover:bg-brand-deep text-white font-bold text-xs flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md shadow-brand-forest/20"
           >
-            <FolderDown className="h-4 w-4" />
+            <FolderDown className="h-4 w-4 text-brand-chartreuse" />
             <span>Get Revision Now</span>
           </button>
         </div>

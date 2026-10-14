@@ -367,17 +367,17 @@ export default function MaterialsPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-border/60">
         <div>
           <h1 className="text-2xl font-black tracking-tight text-foreground flex items-center gap-2">
-            <span>ITM Notes Materials</span>
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border border-emerald-500/20 font-bold">
+            <span>ITM MOOCs Materials & Repositories</span>
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-bold">
               Authentic PDFs Ready
             </span>
           </h1>
           <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5 font-medium">
             <span>Academic resources</span>
             <span>·</span>
-            <span>Study materials</span>
+            <span>Multi-University syllabus & courseware</span>
             <span>·</span>
-            <span>SLS Baroda University</span>
+            <span>SLS Baroda University & Partner Curricula</span>
             <span>·</span>
             <span className="text-foreground font-semibold">Sem 3 Hub</span>
           </div>
@@ -560,10 +560,10 @@ export default function MaterialsPage() {
                 <Line
                   type="monotone"
                   dataKey="count"
-                  stroke="#3b82f6"
+                  stroke="#183F36"
                   strokeWidth={2.5}
-                  dot={{ r: 3, fill: '#3b82f6' }}
-                  activeDot={{ r: 5 }}
+                  dot={{ r: 3, fill: '#183F36' }}
+                  activeDot={{ r: 5, fill: '#D6E85D' }}
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -585,7 +585,7 @@ export default function MaterialsPage() {
                 <span className="text-[10px] text-muted-foreground uppercase font-semibold">Notes</span>
               </div>
               <div>
-                <span className="text-base font-black font-mono text-indigo-600 block">67</span>
+                <span className="text-base font-black font-mono text-brand-forest dark:text-emerald-400 block">67</span>
                 <span className="text-[10px] text-muted-foreground uppercase font-semibold">MCQs</span>
               </div>
               <div>
@@ -593,11 +593,11 @@ export default function MaterialsPage() {
                 <span className="text-[10px] text-muted-foreground uppercase font-semibold">Prac</span>
               </div>
               <div>
-                <span className="text-base font-black font-mono text-purple-600 block">515</span>
+                <span className="text-base font-black font-mono text-brand-forest dark:text-emerald-400 block">515</span>
                 <span className="text-[10px] text-muted-foreground uppercase font-semibold">Quest</span>
               </div>
               <div>
-                <span className="text-base font-black font-mono text-emerald-600 block">50%</span>
+                <span className="text-base font-black font-mono text-emerald-600 dark:text-brand-chartreuse block">50%</span>
                 <span className="text-[10px] text-muted-foreground uppercase font-semibold">Solved</span>
               </div>
 
@@ -635,9 +635,9 @@ export default function MaterialsPage() {
               a.click();
               document.body.removeChild(a);
             }}
-            className="w-full h-10 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md shadow-blue-600/20"
+            className="w-full h-10 rounded-xl bg-brand-forest hover:bg-brand-deep text-white font-bold text-xs flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md shadow-brand-forest/20"
           >
-            <FolderDown className="h-4 w-4" />
+            <FolderDown className="h-4 w-4 text-brand-chartreuse" />
             <span>Get Revision Now (Download Master PDF)</span>
           </button>
         </div>
@@ -759,11 +759,11 @@ export default function MaterialsPage() {
           <div className="pt-4 flex items-center justify-between">
             <button
               onClick={() => navigate("/imp-questions")}
-              className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-md shadow-blue-600/20 transition-all active:scale-95"
+              className="px-4 py-2 rounded-xl bg-brand-forest hover:bg-brand-deep text-white font-bold text-xs shadow-md shadow-brand-forest/20 transition-all active:scale-95"
             >
               Open Solved Bank &gt;
             </button>
-            <span className="text-[11px] text-emerald-400 font-semibold font-mono">
+            <span className="text-[11px] text-brand-chartreuse font-semibold font-mono">
               ✓ 100% Verified
             </span>
           </div>

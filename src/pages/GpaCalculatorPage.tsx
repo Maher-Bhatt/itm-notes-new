@@ -594,7 +594,7 @@ export default function GpaCalculatorPage() {
       <div className="bg-card border border-border rounded-3xl p-6 sm:p-8 shadow-sm">
         <div className="flex flex-wrap items-center gap-2 mb-3">
           <span className="text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20">
-            ITM SLS Baroda University
+            ITM MOOCs · SLS Baroda University
           </span>
           <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
             10-Point Relative Grading System

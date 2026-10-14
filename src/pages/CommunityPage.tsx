@@ -451,7 +451,7 @@ export default function CommunityPage() {
               onClick={() => setActiveCategoryFilter(pill.value)}
               className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all shadow-xs cursor-pointer ${
                 isActive
-                  ? "bg-blue-600 text-white shadow-blue-600/30 scale-[1.02]"
+                  ? "bg-brand-forest text-white shadow-brand-forest/30 scale-[1.02] border border-brand-chartreuse/40"
                   : "bg-secondary text-foreground hover:bg-secondary/80 border border-border/60"
               }`}
             >
@@ -676,7 +676,7 @@ export default function CommunityPage() {
               <button
                 type="submit"
                 disabled={isSubmitting || !newPostText.trim()}
-                className="px-4 py-2 rounded-full bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-md shadow-blue-600/20 disabled:opacity-50 transition-all shrink-0 cursor-pointer"
+                className="px-4 py-2 rounded-full bg-brand-forest hover:bg-brand-deep text-white text-xs font-bold shadow-md shadow-brand-forest/20 border border-brand-chartreuse/30 disabled:opacity-50 transition-all shrink-0 cursor-pointer"
               >
                 {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : "Post"}
               </button>
@@ -718,7 +718,7 @@ export default function CommunityPage() {
                           <span className="font-bold text-sm text-foreground">{post.authorName}</span>
                           {(post.verified || isMaher || isAdmin) && (
                             <span
-                              className="w-4 h-4 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px] shadow-xs"
+                              className="w-4 h-4 rounded-full bg-brand-forest text-brand-chartreuse flex items-center justify-center text-[10px] font-bold shadow-xs border border-brand-chartreuse/40"
                               title="Verified Campus Contributor"
                             >
                               ✓
