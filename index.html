@@ -19,6 +19,25 @@
           }
         } catch (e) {}
       })();
+      // Global fallback for resolveAvatarUrl to protect against any cached PWA service worker chunks
+      window.resolveAvatarUrl = function(profile, user) {
+        try {
+          var isMaher = 
+            (user && user.email && (user.email.toLowerCase() === "maherbhatt01@gmail.com" || user.email.toLowerCase() === "maher@gmail.com")) ||
+            (profile && profile.email && (profile.email.toLowerCase() === "maherbhatt01@gmail.com" || profile.email.toLowerCase() === "maher@gmail.com")) ||
+            (profile && profile.display_name && profile.display_name.toLowerCase().indexOf("maher") !== -1);
+          if (isMaher) {
+            if (profile && profile.avatar_url && profile.avatar_url.indexOf("grad-") !== 0 && profile.avatar_url.indexOf("unsplash") === -1) {
+              return profile.avatar_url;
+            }
+            return "https://woclidkjrzlquncudfuj.supabase.co/storage/v1/object/public/avatars/7b21ccf3-85a1-4471-9f0e-64fc850df5d1/avatar-1791466601274.jpg";
+          }
+          if (profile && profile.avatar_url && profile.avatar_url.indexOf("photo-1535713875002-d1d0cf377fde") === -1) return profile.avatar_url;
+          if (user && user.user_metadata && user.user_metadata.avatar_url && user.user_metadata.avatar_url.indexOf("photo-1535713875002-d1d0cf377fde") === -1) return user.user_metadata.avatar_url;
+          if (user && user.user_metadata && user.user_metadata.picture) return user.user_metadata.picture;
+        } catch (e) {}
+        return null;
+      };
     </script>
     <title>ITM Notes | Your Academic Companion — Study Smarter</title>
     <meta name="description" content="ITM Notes is a modern student academic hub for ITM SLS Baroda University. Access verified semester notes, solved MST question banks, interactive coding labs, quiz practice, and attendance tracking tools." />
