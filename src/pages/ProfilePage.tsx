@@ -36,7 +36,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { subjects, getAllTopicIds } from '@/data/subjects';
-import { MAHER_CANONICAL_AVATAR } from '@/components/UserAvatar';
+import { MAHER_CANONICAL_AVATAR, resolveAvatarUrl } from '@/components/UserAvatar';
 
 export interface GradientAvatar {
   id: string;
