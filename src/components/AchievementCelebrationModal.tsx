@@ -6,9 +6,9 @@ import { UserAvatar, resolveAvatarUrl, MAHER_CANONICAL_AVATAR } from '@/componen
 import { 
   X, Download, Share2, Sparkles, Check, 
   Instagram, MessageCircle, Copy, Award, Flame, ExternalLink, Loader2,
-  Trophy, ShieldCheck, Smartphone, Eye
+  Trophy, ShieldCheck, Smartphone, Eye, Volume2, VolumeX, RotateCw,
+  FileCheck2, CheckCircle2, Star, Ribbon, Compass
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
 interface UnlockedEventDetail {
@@ -26,7 +26,12 @@ export function AchievementCelebrationModal() {
   const { state: game, levelInfo } = useGamification();
   const [activeAchievement, setActiveAchievement] = useState<Achievement | null>(null);
   const [eventData, setEventData] = useState<UnlockedEventDetail | null>(null);
-  const [activeView, setActiveView] = useState<'trophy' | 'story'>('trophy');
+  
+  // View mode: 'trophy' (3D card) | 'certificate' (formal diploma back) | 'story' (9:16 mobile canvas)
+  const [activeView, setActiveView] = useState<'trophy' | 'certificate' | 'story'>('trophy');
+  const [isFlipped, setIsFlipped] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(true);
+
   const [isGenerating, setIsGenerating] = useState(false);
   const [storyPreviewUrl, setStoryPreviewUrl] = useState<string | null>(null);
   const [storyBlob, setStoryBlob] = useState<Blob | null>(null);
@@ -40,14 +45,15 @@ export function AchievementCelebrationModal() {
 
   // Play triumph fanfare sound using Web Audio API
   const playVictoryFanfare = () => {
+    if (!soundEnabled) return;
     try {
       const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
       const ctx = new AudioCtx();
       const notes = [
         { f: 523.25, t: 0.0, d: 0.15 }, // C5
         { f: 659.25, t: 0.12, d: 0.15 }, // E5
-        { f: 783.99, t: 0.24, d: 0.15 }, // G5
-        { f: 1046.50, t: 0.38, d: 0.45 }, // C6
+        { f: 783.99, t: 0.24, d: 0.18 }, // G5
+        { f: 1046.50, t: 0.38, d: 0.55 }, // C6
       ];
 
       notes.forEach(({ f, t, d }) => {
@@ -132,6 +138,7 @@ export function AchievementCelebrationModal() {
         setActiveAchievement(detail.achievement);
         setEventData(detail);
         setActiveView('trophy');
+        setIsFlipped(false);
         if (!detail.isReplay) {
           playVictoryFanfare();
           setTimeout(() => startConfetti(), 100);
@@ -144,7 +151,7 @@ export function AchievementCelebrationModal() {
       window.removeEventListener('itm_achievement_unlocked', handleUnlock);
       if (confettiAnimRef.current) cancelAnimationFrame(confettiAnimRef.current);
     };
-  }, []);
+  }, [soundEnabled]);
 
   // Pre-generate the 1080x1920 Story Card when modal opens
   useEffect(() => {
@@ -196,6 +203,9 @@ export function AchievementCelebrationModal() {
   const effectiveAvatar = resolveAvatarUrl(profile, user) || MAHER_CANONICAL_AVATAR;
   const shareText = `🎓 I just unlocked "${activeAchievement.title}" (+${activeAchievement.xpReward} XP) on ITM Notes! Check out our verified Semester 3 Computer Engineering Notes: https://itm-notes-new.vercel.app`;
 
+  // Compute a deterministic accreditation serial number based on student name and achievement ID
+  const certSerial = `ITM-ENG-2026-${(activeAchievement.id.split('').reduce((acc, c) => acc + c.charCodeAt(0), 1000) * 7).toString(16).toUpperCase()}`;
+
   // Handle 3D mouse tilt
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -222,52 +232,76 @@ export function AchievementCelebrationModal() {
   // Tier specific luxury styling
   const tierConfig = {
     bronze: {
-      border: 'border-[#E07A5F]/60',
-      glow: 'shadow-[0_0_50px_rgba(224,122,95,0.35)]',
-      pill: 'bg-gradient-to-r from-[#C25E38] to-[#E07A5F] text-white',
-      badge: '★ BRONZE SCHOLAR ★',
+      border: 'border-[#E07A5F]/70',
+      glow: 'shadow-[0_0_60px_rgba(224,122,95,0.45)]',
+      pill: 'bg-gradient-to-r from-[#C25E38] via-[#E07A5F] to-[#8C3B1E] text-white',
+      badge: '★ BRONZE SCHOLAR · TIER I ★',
+      rarity: 'COMMON ACADEMIC HONORS',
+      percentile: 'TOP 45% OF COHORT',
       ringColor: '#E07A5F',
       accentText: 'text-[#E07A5F]',
+      metalBg: 'from-[#C25E38]/30 via-[#E07A5F]/20 to-[#8C3B1E]/40',
+      foilGlare: 'rgba(224, 122, 95, 0.4)',
     },
     silver: {
-      border: 'border-slate-300/60',
-      glow: 'shadow-[0_0_50px_rgba(226,232,240,0.35)]',
-      pill: 'bg-gradient-to-r from-slate-300 to-slate-100 text-slate-900',
-      badge: '★ SILVER VIRTUOSO ★',
+      border: 'border-slate-300/80',
+      glow: 'shadow-[0_0_60px_rgba(226,232,240,0.45)]',
+      pill: 'bg-gradient-to-r from-slate-300 via-white to-slate-400 text-slate-900',
+      badge: '★ SILVER VIRTUOSO · TIER II ★',
+      rarity: 'RARE ENGINEERING DISTINCTION',
+      percentile: 'TOP 15% OF COHORT',
       ringColor: '#E2E8F0',
       accentText: 'text-slate-200',
+      metalBg: 'from-slate-400/30 via-slate-200/20 to-slate-600/40',
+      foilGlare: 'rgba(226, 232, 240, 0.5)',
     },
     gold: {
-      border: 'border-[#D6E85D]/70',
-      glow: 'shadow-[0_0_60px_rgba(214,232,93,0.4)]',
-      pill: 'bg-gradient-to-r from-[#D6E85D] to-[#F59E0B] text-[#183F36]',
-      badge: '★ 24K GOLD MASTER ★',
+      border: 'border-[#D6E85D]',
+      glow: 'shadow-[0_0_70px_rgba(214,232,93,0.5)]',
+      pill: 'bg-gradient-to-r from-[#D6E85D] via-[#FEF08A] to-[#F59E0B] text-[#183F36]',
+      badge: '★ 24K GOLD MASTER · TIER III ★',
+      rarity: 'EPIC SCHOLASTIC MERIT',
+      percentile: 'TOP 5% OF COHORT',
       ringColor: '#D6E85D',
       accentText: 'text-[#D6E85D]',
+      metalBg: 'from-[#F59E0B]/30 via-[#D6E85D]/20 to-[#D97706]/40',
+      foilGlare: 'rgba(214, 232, 93, 0.6)',
     },
     legendary: {
-      border: 'border-purple-500/70',
-      glow: 'shadow-[0_0_60px_rgba(168,85,247,0.4)]',
-      pill: 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white',
-      badge: '★ LEGENDARY TRIUMPH ★',
+      border: 'border-purple-400',
+      glow: 'shadow-[0_0_70px_rgba(168,85,247,0.5)]',
+      pill: 'bg-gradient-to-r from-purple-500 via-fuchsia-400 to-indigo-600 text-white',
+      badge: '★ LEGENDARY HONORS · TIER IV ★',
+      rarity: 'MYTHIC PEER EXCELLENCE',
+      percentile: 'TOP 1% OF STUDENTS',
       ringColor: '#C084FC',
       accentText: 'text-purple-300',
+      metalBg: 'from-purple-600/30 via-fuchsia-400/20 to-indigo-900/40',
+      foilGlare: 'rgba(192, 132, 252, 0.6)',
     },
     mythic: {
       border: 'border-[#D6E85D]',
-      glow: 'shadow-[0_0_70px_rgba(214,232,93,0.5)]',
+      glow: 'shadow-[0_0_80px_rgba(214,232,93,0.65)]',
       pill: 'bg-gradient-to-r from-[#D6E85D] via-emerald-400 to-[#183F36] text-[#183F36]',
-      badge: '★ MYTHIC ARCHITECT ★',
+      badge: '★ MYTHIC ARCHITECT · APEX TIER ★',
+      rarity: 'FOUNDER & ARCHITECT MASTER',
+      percentile: 'UNIQUE VALEDICTORIAN',
       ringColor: '#D6E85D',
       accentText: 'text-[#D6E85D]',
+      metalBg: 'from-[#D6E85D]/30 via-emerald-400/20 to-[#183F36]/50',
+      foilGlare: 'rgba(214, 232, 93, 0.75)',
     },
   }[activeAchievement.tier] || {
-    border: 'border-[#D6E85D]/60',
-    glow: 'shadow-[0_0_50px_rgba(214,232,93,0.3)]',
+    border: 'border-[#D6E85D]/70',
+    glow: 'shadow-[0_0_60px_rgba(214,232,93,0.4)]',
     pill: 'bg-[#D6E85D] text-[#183F36]',
     badge: '★ ACADEMIC HONORS ★',
+    rarity: 'ACADEMIC ACHIEVEMENT',
+    percentile: 'VERIFIED MILESTONE',
     ringColor: '#D6E85D',
     accentText: 'text-[#D6E85D]',
+    metalBg: 'from-[#183F36]/40 to-black/40',
+    foilGlare: 'rgba(214, 232, 93, 0.4)',
   };
 
   // 1-Click Share to Instagram Stories
@@ -299,7 +333,7 @@ export function AchievementCelebrationModal() {
 
     handleDownloadStory();
     toast.info('Story image saved! Select it in Instagram Story camera.', {
-      description: 'Image saved to your camera roll in 1080x1920 HD quality.',
+      description: 'Image saved to your device in 1080x1920 HD quality.',
     });
     window.location.href = 'instagram://story';
     setTimeout(() => {
@@ -359,31 +393,48 @@ export function AchievementCelebrationModal() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const toggleFlip = () => {
+    setIsFlipped(!isFlipped);
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/85 backdrop-blur-xl animate-fade-in overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/90 backdrop-blur-2xl animate-fade-in overflow-y-auto">
       {/* Full-screen Confetti Canvas */}
       <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-10 w-full h-full" />
 
       {/* Main Luxury Modal Container */}
-      <div className="relative z-20 w-full max-w-2xl bg-gradient-to-b from-[#12332C]/95 via-[#0A1A16]/95 to-black border border-[#23584C] rounded-3xl p-5 sm:p-7 shadow-[0_0_80px_rgba(24,63,54,0.6)] flex flex-col gap-5 text-center my-auto backdrop-blur-2xl">
+      <div className="relative z-20 w-full max-w-2xl bg-gradient-to-b from-[#12332C]/95 via-[#081814]/98 to-black border border-[#23584C] rounded-3xl p-5 sm:p-7 shadow-[0_0_90px_rgba(24,63,54,0.7)] flex flex-col gap-4 text-center my-auto backdrop-blur-3xl">
         
-        {/* Close Button */}
-        <button
-          onClick={() => setActiveAchievement(null)}
-          className="absolute right-4 top-4 p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-[#E8EDE4] transition-all z-30 cursor-pointer shadow-md"
-          title="Close"
-        >
-          <X className="h-4 w-4" />
-        </button>
+        {/* Top Controls: Sound Fanfare & Close Button */}
+        <div className="absolute right-4 top-4 flex items-center gap-2 z-30">
+          <button
+            onClick={() => {
+              setSoundEnabled(!soundEnabled);
+              if (!soundEnabled) playVictoryFanfare();
+            }}
+            className="p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-[#E8EDE4] transition-all cursor-pointer shadow-md"
+            title={soundEnabled ? "Mute Fanfare Sound" : "Enable Fanfare Sound"}
+          >
+            {soundEnabled ? <Volume2 className="h-4 w-4 text-[#D6E85D]" /> : <VolumeX className="h-4 w-4 text-slate-400" />}
+          </button>
+
+          <button
+            onClick={() => setActiveAchievement(null)}
+            className="p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-[#E8EDE4] transition-all cursor-pointer shadow-md"
+            title="Close"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
 
         {/* Modal Top Header */}
         <div className="flex flex-col items-center">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D6E85D]/15 border border-[#D6E85D]/30 text-[#D6E85D] text-[11px] font-bold uppercase tracking-wider mb-1.5">
-            <Sparkles className="h-3.5 w-3.5 animate-spin [animation-duration:10s]" />
-            <span>{eventData?.isReplay ? 'Honors Gallery • Achievement Story' : 'New Milestone Unlocked!'}</span>
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D6E85D]/15 border border-[#D6E85D]/30 text-[#D6E85D] text-[11px] font-black uppercase tracking-widest mb-1.5 font-display">
+            <Sparkles className="h-3.5 w-3.5 text-[#D6E85D] animate-spin [animation-duration:10s]" />
+            <span>{eventData?.isReplay ? 'OFFICIAL ACADEMIC DISTINCTION' : 'NEW MILESTONE UNLOCKED'}</span>
           </div>
 
-          <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight font-display">
+          <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight font-display bg-gradient-to-r from-white via-slate-100 to-[#D6E85D] bg-clip-text text-transparent">
             {eventData?.isReplay ? 'Your Academic Triumph' : 'Academic Triumph!'}
           </h2>
           <p className="text-xs text-[#A2BAAF] flex items-center gap-1.5 mt-0.5 font-medium">
@@ -391,24 +442,46 @@ export function AchievementCelebrationModal() {
             <span>ITM SLS Baroda University • Department of Computer Science</span>
           </p>
 
-          {/* View Mode Switcher: 3D Trophy vs 9:16 Social Story */}
-          <div className="inline-flex p-1 rounded-2xl bg-black/40 border border-white/10 mt-3 gap-1">
+          {/* View Mode Switcher: 3D Trophy Medal vs Certificate of Excellence vs 9:16 Social Story */}
+          <div className="inline-flex p-1 rounded-2xl bg-black/50 border border-white/10 mt-3 gap-1">
             <button
-              onClick={() => setActiveView('trophy')}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-                activeView === 'trophy'
-                  ? 'bg-[#183F36] text-[#D6E85D] shadow-md border border-[#D6E85D]/30'
+              onClick={() => {
+                setActiveView('trophy');
+                setIsFlipped(false);
+              }}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                activeView === 'trophy' && !isFlipped
+                  ? 'bg-[#183F36] text-[#D6E85D] shadow-md border border-[#D6E85D]/40'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
               <Trophy className="h-3.5 w-3.5" />
               <span>3D Trophy Medal</span>
             </button>
+
             <button
-              onClick={() => setActiveView('story')}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+              onClick={() => {
+                setActiveView('certificate');
+                setIsFlipped(true);
+              }}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                activeView === 'certificate' || isFlipped
+                  ? 'bg-[#183F36] text-[#D6E85D] shadow-md border border-[#D6E85D]/40'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <FileCheck2 className="h-3.5 w-3.5" />
+              <span>University Certificate</span>
+            </button>
+
+            <button
+              onClick={() => {
+                setActiveView('story');
+                setIsFlipped(false);
+              }}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeView === 'story'
-                  ? 'bg-[#183F36] text-[#D6E85D] shadow-md border border-[#D6E85D]/30'
+                  ? 'bg-[#183F36] text-[#D6E85D] shadow-md border border-[#D6E85D]/40'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -419,124 +492,247 @@ export function AchievementCelebrationModal() {
         </div>
 
         {/* ── CARD DISPLAY VIEWPORT ── */}
-        {activeView === 'trophy' ? (
-          /* 1. 3D Interactive Holographic Trophy Card */
+        {activeView !== 'story' ? (
+          /* 1 & 2. 3D Interactive Flippable Card: Front (Trophy) and Back (Certificate) */
           <div 
-            className="[perspective:1000px] flex items-center justify-center my-1 select-none"
+            className="[perspective:1200px] flex items-center justify-center my-1 select-none"
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
           >
             <div 
               style={{
-                transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
-                transition: tilt.x === 0 ? 'transform 0.5s ease-out' : 'none',
+                transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y + (isFlipped ? 180 : 0)}deg)`,
+                transformStyle: 'preserve-3d',
+                transition: tilt.x === 0 ? 'transform 0.7s cubic-bezier(0.4, 0, 0.2, 1)' : 'transform 0.08s ease-out',
               }}
-              className={`relative mx-auto w-full max-w-[340px] sm:max-w-[380px] rounded-3xl overflow-hidden border-2 ${tierConfig.border} ${tierConfig.glow} bg-gradient-to-br from-[#183F36]/90 via-[#0F2B24]/95 to-[#081714] p-5 sm:p-6 text-white flex flex-col justify-between aspect-[9/13.5] shadow-2xl backdrop-blur-md`}
+              className={`relative mx-auto w-full max-w-[340px] sm:max-w-[380px] rounded-3xl aspect-[9/13.5] shadow-2xl cursor-pointer group`}
+              onClick={toggleFlip}
+              title="Click card to flip between 3D Trophy Medal and University Certificate"
             >
-              {/* Dynamic Glare Shimmer across the surface */}
+              {/* ──────────────── FRONT FACE: 3D HOLOGRAPHIC TROPHY CARD ──────────────── */}
               <div 
-                className="absolute inset-0 pointer-events-none opacity-25 mix-blend-overlay transition-opacity duration-300"
-                style={{
-                  background: `radial-gradient(circle at ${tilt.glareX}% ${tilt.glareY}%, rgba(255,255,255,0.8) 0%, rgba(214,232,93,0.3) 35%, transparent 70%)`
-                }}
-              />
+                style={{ backfaceVisibility: 'hidden' }}
+                className={`absolute inset-0 rounded-3xl overflow-hidden border-2 ${tierConfig.border} ${tierConfig.glow} bg-gradient-to-br from-[#12332C]/95 via-[#0A1A16]/98 to-[#050E0C] p-5 sm:p-6 text-white flex flex-col justify-between backdrop-blur-xl`}
+              >
+                {/* Dynamic Holographic Foil Glare that shimmers with mouse movement */}
+                <div 
+                  className="absolute inset-0 pointer-events-none opacity-30 mix-blend-color-dodge transition-opacity duration-300"
+                  style={{
+                    background: `radial-gradient(circle at ${tilt.glareX}% ${tilt.glareY}%, rgba(255,255,255,0.9) 0%, ${tierConfig.foilGlare} 35%, transparent 75%)`
+                  }}
+                />
 
-              {/* Ambient Background Glows */}
-              <div className="absolute -top-16 -left-16 w-44 h-44 bg-[#D6E85D]/20 rounded-full blur-3xl pointer-events-none" />
-              <div className="absolute -bottom-16 -right-16 w-44 h-44 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none" />
+                {/* Iridescent Rainbow Sheen Waves */}
+                <div 
+                  className="absolute inset-0 pointer-events-none opacity-15 mix-blend-overlay"
+                  style={{
+                    backgroundImage: 'linear-gradient(135deg, rgba(255,0,128,0.3) 0%, rgba(0,255,255,0.3) 25%, rgba(214,232,93,0.3) 50%, rgba(168,85,247,0.3) 75%, rgba(255,0,128,0.3) 100%)',
+                    backgroundSize: '200% 200%',
+                    transform: `translateX(${(tilt.glareX - 50) * 0.5}%) translateY(${(tilt.glareY - 50) * 0.5}%)`,
+                  }}
+                />
 
-              {/* Card Header: Student & University Branding */}
-              <div className="w-full flex items-center justify-between border-b border-white/10 pb-3 z-10">
-                <div className="flex items-center gap-2.5 text-left">
-                  <div className="relative">
-                    <UserAvatar
-                      avatarUrl={effectiveAvatar}
-                      displayName={studentName}
-                      email={user?.email}
-                      className="w-11 h-11 text-xs ring-2 ring-[#D6E85D]"
+                {/* Ambient Corner Flare Orbs */}
+                <div className="absolute -top-16 -left-16 w-48 h-48 bg-[#D6E85D]/15 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute -bottom-16 -right-16 w-48 h-48 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none" />
+
+                {/* Card Top: Student & University Engineering Passport */}
+                <div className="w-full flex items-center justify-between border-b border-white/10 pb-3 z-10">
+                  <div className="flex items-center gap-2.5 text-left">
+                    <div className="relative">
+                      <UserAvatar
+                        avatarUrl={effectiveAvatar}
+                        displayName={studentName}
+                        email={user?.email}
+                        className="w-11 h-11 text-xs ring-2 ring-[#D6E85D] shadow-md"
+                      />
+                      <div className="absolute -bottom-1 -right-1 bg-amber-500 text-white rounded-full p-0.5 shadow-md">
+                        <Flame className="h-3 w-3" />
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex items-center gap-1.5">
+                        <h4 className="font-bold text-sm text-white leading-tight font-display">{studentName}</h4>
+                        <span className="w-3.5 h-3.5 rounded-full bg-[#D6E85D] text-[#183F36] flex items-center justify-center text-[9px] font-black">✓</span>
+                      </div>
+                      <p className="text-[11px] text-[#D6E85D] font-semibold mt-0.5">
+                        Level {eventData?.level || levelInfo.level} · {eventData?.levelTitle || levelInfo.title}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="text-right">
+                    <span className="text-[9px] font-black text-[#D6E85D] tracking-wider block font-display">ITM SLS BARODA</span>
+                    <span className="text-[8px] text-[#A2BAAF] font-mono">B.TECH CSE '26</span>
+                  </div>
+                </div>
+
+                {/* Card Center: Sculpted 3D Minted Medallion Emblem */}
+                <div className="flex flex-col items-center my-auto py-2 z-10">
+                  {/* Embossed Tier Banner */}
+                  <span className={`text-[10px] font-black uppercase tracking-widest px-3.5 py-1 rounded-full mb-3 shadow-lg border border-white/20 font-display ${tierConfig.pill}`}>
+                    {tierConfig.badge}
+                  </span>
+
+                  {/* 3D Concentric Sculpted Medallion */}
+                  <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full flex items-center justify-center my-1">
+                    {/* Outer Rotating Dash & Celestial Stars Ring */}
+                    <div 
+                      className="absolute inset-0 rounded-full border-2 border-dashed animate-spin [animation-duration:26s] opacity-75"
+                      style={{ borderColor: tierConfig.ringColor }}
                     />
-                    <div className="absolute -bottom-1 -right-1 bg-amber-500 text-white rounded-full p-0.5 shadow-md">
-                      <Flame className="h-3 w-3" />
+                    
+                    {/* Outer Laurel Wreath Ring */}
+                    <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-40 animate-pulse [animation-duration:4s]" viewBox="0 0 100 100">
+                      <circle cx="50" cy="50" r="44" fill="none" stroke={tierConfig.ringColor} strokeWidth="1" strokeDasharray="3 3" />
+                      <circle cx="50" cy="50" r="41" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="0.5" />
+                    </svg>
+
+                    {/* Middle Sculpted Metallic Dish */}
+                    <div 
+                      className={`absolute inset-2 rounded-full border-2 bg-gradient-to-tr ${tierConfig.metalBg} shadow-[0_0_35px_rgba(214,232,93,0.35)] flex items-center justify-center backdrop-blur-md`}
+                      style={{ borderColor: tierConfig.ringColor }}
+                    >
+                      {/* Inner Polished Bevel Core */}
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-black/60 border border-white/20 flex items-center justify-center shadow-inner">
+                        {/* 3D Floating Icon with specular drop shadow */}
+                        <div className="text-4xl sm:text-5xl drop-shadow-[0_8px_16px_rgba(0,0,0,0.7)] animate-bounce [animation-duration:3.2s]">
+                          {activeAchievement.icon || '🏆'}
+                        </div>
+                      </div>
                     </div>
                   </div>
 
+                  {/* Rarity & Percentile Badge */}
+                  <div className="flex items-center gap-1.5 mt-2 mb-1">
+                    <span className="text-[9px] font-black uppercase tracking-wider text-slate-300 bg-white/10 px-2 py-0.5 rounded-md border border-white/15">
+                      {tierConfig.rarity}
+                    </span>
+                    <span className="text-[9px] font-bold text-[#D6E85D] bg-[#183F36]/80 px-2 py-0.5 rounded-md border border-[#D6E85D]/30 font-mono">
+                      {tierConfig.percentile}
+                    </span>
+                  </div>
+
+                  {/* Achievement Title */}
+                  <h3 className="text-lg sm:text-xl font-black text-white leading-tight mb-1 font-display tracking-tight drop-shadow-sm">
+                    {activeAchievement.title}
+                  </h3>
+
+                  {/* Description */}
+                  <p className="text-xs text-slate-200 max-w-[280px] leading-relaxed line-clamp-2">
+                    {activeAchievement.description}
+                  </p>
+
+                  {/* XP Reward Capsule */}
+                  <div className="mt-3 inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#D6E85D]/20 border border-[#D6E85D]/60 text-[#D6E85D] font-black text-xs shadow-inner animate-pulse">
+                    <Sparkles className="h-3.5 w-3.5" />
+                    <span>+{activeAchievement.xpReward} XP CREDITED</span>
+                  </div>
+                </div>
+
+                {/* Card Footer: Verified Watermark & Flip Hint */}
+                <div className="w-full pt-3 border-t border-white/10 flex items-center justify-between text-[10px] text-[#A2BAAF] z-10 font-mono">
+                  <span className="flex items-center gap-1 font-bold text-white">
+                    🔥 {eventData?.streakDays || game.streakDays} Day Streak
+                  </span>
+                  <span className="text-[#D6E85D] font-bold flex items-center gap-1">
+                    <RotateCw className="h-3 w-3" /> Flip for Certificate ↗
+                  </span>
+                </div>
+              </div>
+
+              {/* ──────────────── BACK FACE: OFFICIAL UNIVERSITY CERTIFICATE ──────────────── */}
+              <div 
+                style={{ 
+                  backfaceVisibility: 'hidden',
+                  transform: 'rotateY(180deg)',
+                }}
+                className="absolute inset-0 rounded-3xl overflow-hidden border-2 border-[#D6E85D]/70 bg-gradient-to-b from-[#0F2D25] via-[#091C17] to-black p-5 sm:p-6 text-white flex flex-col justify-between shadow-2xl backdrop-blur-xl"
+              >
+                {/* Guilloche Certificate Outer Frame */}
+                <div className="absolute inset-2 border border-[#D6E85D]/30 rounded-2xl pointer-events-none" />
+                <div className="absolute inset-3 border border-white/10 rounded-xl pointer-events-none" />
+
+                {/* Certificate Header */}
+                <div className="text-center pt-2 z-10">
+                  <div className="w-9 h-9 rounded-full bg-[#D6E85D]/20 border border-[#D6E85D]/50 flex items-center justify-center mx-auto mb-1 text-[#D6E85D]">
+                    <Ribbon className="h-5 w-5" />
+                  </div>
+                  <h4 className="text-[10px] font-black tracking-widest text-[#D6E85D] uppercase font-display">
+                    ITM SLS BARODA UNIVERSITY
+                  </h4>
+                  <p className="text-[8px] text-[#A2BAAF] uppercase tracking-wider font-semibold">
+                    Department of Computer Science & Engineering
+                  </p>
+                  <div className="w-24 h-0.5 bg-gradient-to-r from-transparent via-[#D6E85D]/50 to-transparent mx-auto mt-1" />
+                </div>
+
+                {/* Certificate Body Text */}
+                <div className="text-center my-auto py-2 px-2 z-10 space-y-1.5">
+                  <span className="text-[9px] uppercase tracking-wider text-slate-300 font-bold block">
+                    Certificate of Academic Mastery
+                  </span>
+                  
+                  <p className="text-[11px] text-[#A2BAAF]">This is to certify that</p>
+                  
+                  <h3 className="text-lg sm:text-xl font-black text-white font-display text-[#D6E85D] tracking-tight">
+                    {studentName}
+                  </h3>
+
+                  <p className="text-[10px] text-slate-300 leading-snug max-w-[280px] mx-auto">
+                    has officially satisfied curriculum requirements and demonstrated verifiable practical skill in:
+                  </p>
+
+                  <div className="p-2.5 rounded-xl bg-black/40 border border-white/15 my-2">
+                    <span className="text-xs font-black text-white block font-display">
+                      {activeAchievement.title}
+                    </span>
+                    <span className="text-[9px] text-[#A2BAAF] mt-0.5 block">
+                      {tierConfig.badge} · {activeAchievement.category.toUpperCase()}
+                    </span>
+                  </div>
+
+                  <div className="inline-flex items-center gap-2 text-[10px] text-emerald-400 font-mono font-bold">
+                    <CheckCircle2 className="h-3.5 w-3.5" />
+                    <span>+{activeAchievement.xpReward} XP Formally Endorsed</span>
+                  </div>
+                </div>
+
+                {/* Certificate Footer: Serial, Signature, and Stamp */}
+                <div className="pt-2 border-t border-white/10 z-10 flex items-end justify-between text-left">
                   <div>
-                    <div className="flex items-center gap-1.5">
-                      <h4 className="font-bold text-sm text-white leading-tight font-display">{studentName}</h4>
-                      <span className="w-3.5 h-3.5 rounded-full bg-[#D6E85D] text-[#183F36] flex items-center justify-center text-[9px] font-black">✓</span>
+                    <span className="text-[8px] uppercase tracking-wider text-slate-400 block font-mono">
+                      Accreditation ID
+                    </span>
+                    <span className="text-[9px] font-mono text-[#D6E85D] font-bold block">
+                      {certSerial}
+                    </span>
+                    <span className="text-[8px] text-slate-400 font-mono">
+                      Issued: {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                    </span>
+                  </div>
+
+                  <div className="text-right">
+                    <div className="text-[11px] font-serif italic text-slate-200 border-b border-white/30 pb-0.5">
+                      Dean & Faculty Council
                     </div>
-                    <p className="text-[11px] text-[#D6E85D] font-semibold mt-0.5">
-                      Level {eventData?.level || levelInfo.level} · {eventData?.levelTitle || levelInfo.title}
-                    </p>
+                    <span className="text-[8px] text-[#A2BAAF] block mt-0.5">
+                      CSE Department • ITM SLS
+                    </span>
                   </div>
                 </div>
-
-                <div className="text-right">
-                  <span className="text-[9px] font-black text-[#D6E85D] tracking-wider block">ITM SLS BARODA</span>
-                  <span className="text-[8px] text-[#A2BAAF] font-mono">B.TECH CSE '26</span>
-                </div>
-              </div>
-
-              {/* Card Center: Sculpted 3D Medallion Emblem */}
-              <div className="flex flex-col items-center my-auto py-2 z-10">
-                {/* Embossed Tier Banner */}
-                <span className={`text-[10px] font-black uppercase tracking-widest px-3.5 py-1 rounded-full mb-3 shadow-md border border-white/20 ${tierConfig.pill}`}>
-                  {tierConfig.badge}
-                </span>
-
-                {/* 3D Concentric Medal Rings */}
-                <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full flex items-center justify-center my-2">
-                  {/* Outer Orbit Dash Ring */}
-                  <div 
-                    className="absolute inset-0 rounded-full border-2 border-dashed animate-spin [animation-duration:24s]"
-                    style={{ borderColor: tierConfig.ringColor }}
-                  />
-                  {/* Middle Glowing Metallic Ring */}
-                  <div 
-                    className="absolute inset-2 rounded-full border-2 bg-gradient-to-tr from-black/80 to-[#183F36]/80 shadow-[0_0_30px_rgba(214,232,93,0.3)] flex items-center justify-center"
-                    style={{ borderColor: tierConfig.ringColor }}
-                  >
-                    {/* Inner Centerpiece Icon with floating drop shadow */}
-                    <div className="text-5xl sm:text-6xl drop-shadow-[0_8px_16px_rgba(0,0,0,0.6)] animate-bounce [animation-duration:3s]">
-                      {activeAchievement.icon || '🏆'}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Achievement Title */}
-                <h3 className="text-lg sm:text-xl font-black text-white leading-tight mb-1 font-display mt-2 tracking-tight">
-                  {activeAchievement.title}
-                </h3>
-
-                {/* Description */}
-                <p className="text-xs text-[#C2D6CF] max-w-[280px] leading-relaxed line-clamp-2">
-                  {activeAchievement.description}
-                </p>
-
-                {/* XP Reward Capsule */}
-                <div className="mt-3 inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#D6E85D]/20 border border-[#D6E85D]/50 text-[#D6E85D] font-black text-xs shadow-inner animate-pulse">
-                  <Sparkles className="h-3.5 w-3.5" />
-                  <span>+{activeAchievement.xpReward} XP CREDITED</span>
-                </div>
-              </div>
-
-              {/* Card Footer: Verified Watermark */}
-              <div className="w-full pt-3 border-t border-white/10 flex items-center justify-between text-[10px] text-[#A2BAAF] z-10 font-mono">
-                <span className="flex items-center gap-1 font-bold text-white">
-                  🔥 {eventData?.streakDays || game.streakDays} Day Streak
-                </span>
-                <span className="text-[#D6E85D] font-bold">✨ itm-notes-new.vercel.app</span>
               </div>
             </div>
           </div>
         ) : (
-          /* 2. Real High-Res 9:16 Social Story Preview */
+          /* 3. Real High-Res 9:16 Social Story Preview */
           <div className="flex items-center justify-center my-1">
             <div className="relative mx-auto w-full max-w-[280px] sm:max-w-[320px] rounded-3xl overflow-hidden border-2 border-[#D6E85D]/60 shadow-2xl bg-black aspect-[9/16] flex items-center justify-center">
               {isGenerating || !storyPreviewUrl ? (
                 <div className="p-6 text-center space-y-3">
                   <Loader2 className="h-8 w-8 animate-spin text-[#D6E85D] mx-auto" />
-                  <p className="text-xs text-[#A2BAAF] font-medium">Generating 1080x1920 HD Story Card...</p>
+                  <p className="text-xs text-[#A2BAAF] font-medium">Rendering 1080x1920 HD Story Card...</p>
                 </div>
               ) : (
                 <img
@@ -551,10 +747,23 @@ export function AchievementCelebrationModal() {
 
         {/* ── ACTION BAR ── */}
         <div className="flex flex-col gap-2.5 pt-1">
-          <p className="text-xs font-bold text-[#A2BAAF] uppercase tracking-wider flex items-center justify-center gap-1.5">
-            <Share2 className="h-3.5 w-3.5 text-[#D6E85D]" />
-            <span>Share Achievement with Classmates</span>
-          </p>
+          <div className="flex items-center justify-between px-1">
+            <p className="text-xs font-bold text-[#A2BAAF] uppercase tracking-wider flex items-center gap-1.5 font-display">
+              <Share2 className="h-3.5 w-3.5 text-[#D6E85D]" />
+              <span>Share Achievement with Classmates</span>
+            </p>
+
+            {activeView !== 'story' && (
+              <button
+                type="button"
+                onClick={toggleFlip}
+                className="text-xs text-[#D6E85D] hover:underline font-bold flex items-center gap-1 cursor-pointer"
+              >
+                <RotateCw className="h-3.5 w-3.5" />
+                <span>{isFlipped ? "View 3D Trophy" : "View Certificate"}</span>
+              </button>
+            )}
+          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             {/* Instagram Stories Button */}
@@ -591,7 +800,7 @@ export function AchievementCelebrationModal() {
             <button
               onClick={handleDownloadStory}
               disabled={isGenerating || !storyPreviewUrl}
-              className="h-9 border border-[#23584C] bg-[#12332C]/80 hover:bg-[#183F36] text-[#E8EDE4] text-xs font-semibold flex items-center justify-center gap-1.5 rounded-xl transition-all cursor-pointer disabled:opacity-50"
+              className="h-9 border border-[#23584C] bg-[#12332C]/80 hover:bg-[#183F36] text-[#E8EDE4] text-xs font-semibold flex items-center justify-center gap-1.5 rounded-xl transition-all cursor-pointer disabled:opacity-50 shadow-xs"
             >
               <Download className="h-3.5 w-3.5 text-[#D6E85D]" />
               <span>Download HD Story</span>
@@ -600,7 +809,7 @@ export function AchievementCelebrationModal() {
             {/* Copy Shareable Link */}
             <button
               onClick={handleCopyText}
-              className="h-9 border border-[#23584C] bg-[#12332C]/80 hover:bg-[#183F36] text-[#E8EDE4] text-xs font-semibold flex items-center justify-center gap-1.5 rounded-xl transition-all cursor-pointer"
+              className="h-9 border border-[#23584C] bg-[#12332C]/80 hover:bg-[#183F36] text-[#E8EDE4] text-xs font-semibold flex items-center justify-center gap-1.5 rounded-xl transition-all cursor-pointer shadow-xs"
             >
               {copied ? (
                 <>

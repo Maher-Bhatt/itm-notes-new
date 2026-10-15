@@ -19,11 +19,46 @@ export interface AchievementCardData {
 }
 
 const TIER_COLORS = {
-  bronze: { primary: '#E07A5F', secondary: '#9A3412', glow: 'rgba(224, 122, 95, 0.45)', label: '★ BRONZE SCHOLAR ★', ring: '#C25E38' },
-  silver: { primary: '#E2E8F0', secondary: '#64748B', glow: 'rgba(226, 232, 240, 0.45)', label: '★ SILVER VIRTUOSO ★', ring: '#94A3B8' },
-  gold: { primary: '#D6E85D', secondary: '#F59E0B', glow: 'rgba(214, 232, 93, 0.55)', label: '★ 24K GOLD MASTER ★', ring: '#EAB308' },
-  legendary: { primary: '#C084FC', secondary: '#7C3AED', glow: 'rgba(192, 132, 252, 0.55)', label: '★ LEGENDARY HONORS ★', ring: '#A855F7' },
-  mythic: { primary: '#D6E85D', secondary: '#F43F5E', glow: 'rgba(214, 232, 93, 0.75)', label: '★ MYTHIC ARCHITECT ★', ring: '#10B981' },
+  bronze: { 
+    primary: '#E07A5F', 
+    secondary: '#9A3412', 
+    glow: 'rgba(224, 122, 95, 0.45)', 
+    label: '★ BRONZE SCHOLAR ★', 
+    ring: '#C25E38',
+    medalGrad: ['#C25E38', '#E07A5F', '#8C3B1E']
+  },
+  silver: { 
+    primary: '#E2E8F0', 
+    secondary: '#64748B', 
+    glow: 'rgba(226, 232, 240, 0.45)', 
+    label: '★ SILVER VIRTUOSO ★', 
+    ring: '#94A3B8',
+    medalGrad: ['#94A3B8', '#F1F5F9', '#64748B']
+  },
+  gold: { 
+    primary: '#D6E85D', 
+    secondary: '#F59E0B', 
+    glow: 'rgba(214, 232, 93, 0.55)', 
+    label: '★ 24K GOLD MASTER ★', 
+    ring: '#EAB308',
+    medalGrad: ['#F59E0B', '#FEF08A', '#D97706']
+  },
+  legendary: { 
+    primary: '#C084FC', 
+    secondary: '#7C3AED', 
+    glow: 'rgba(192, 132, 252, 0.55)', 
+    label: '★ LEGENDARY HONORS ★', 
+    ring: '#A855F7',
+    medalGrad: ['#7C3AED', '#E879F9', '#4C1D95']
+  },
+  mythic: { 
+    primary: '#D6E85D', 
+    secondary: '#10B981', 
+    glow: 'rgba(214, 232, 93, 0.75)', 
+    label: '★ MYTHIC ARCHITECT ★', 
+    ring: '#10B981',
+    medalGrad: ['#D6E85D', '#34D399', '#052E25']
+  },
 };
 
 /**
@@ -44,15 +79,15 @@ export async function generateAchievementStoryCard(data: AchievementCardData): P
   // 1. Deep Forest Obsidian Gradient Background
   const bgGrad = ctx.createLinearGradient(0, 0, width, height);
   if (data.tier === 'mythic') {
-    bgGrad.addColorStop(0, '#051814');
-    bgGrad.addColorStop(0.3, '#102E27');
-    bgGrad.addColorStop(0.65, '#0E1F1A');
-    bgGrad.addColorStop(1, '#050D0B');
+    bgGrad.addColorStop(0, '#041410');
+    bgGrad.addColorStop(0.3, '#0E2721');
+    bgGrad.addColorStop(0.65, '#0B1D18');
+    bgGrad.addColorStop(1, '#040C0A');
   } else {
-    bgGrad.addColorStop(0, '#071A15');
+    bgGrad.addColorStop(0, '#061713');
     bgGrad.addColorStop(0.35, '#12332C');
-    bgGrad.addColorStop(0.7, '#0C241E');
-    bgGrad.addColorStop(1, '#050E0C');
+    bgGrad.addColorStop(0.7, '#0C231D');
+    bgGrad.addColorStop(1, '#050D0B');
   }
   ctx.fillStyle = bgGrad;
   ctx.fillRect(0, 0, width, height);
@@ -68,13 +103,13 @@ export async function generateAchievementStoryCard(data: AchievementCardData): P
     ctx.fill();
   };
 
-  drawGlow(width * 0.5, 420, 520, tierStyle.glow);
-  drawGlow(width * 0.2, 1250, 420, 'rgba(214, 232, 93, 0.12)');
-  drawGlow(width * 0.85, 1450, 420, 'rgba(52, 211, 153, 0.12)');
+  drawGlow(width * 0.5, 420, 540, tierStyle.glow);
+  drawGlow(width * 0.15, 1250, 440, 'rgba(214, 232, 93, 0.15)');
+  drawGlow(width * 0.85, 1450, 440, 'rgba(52, 211, 153, 0.15)');
 
   // 3. Elegant Outer Border Frame & Corner Flares
   ctx.save();
-  ctx.strokeStyle = 'rgba(214, 232, 93, 0.15)';
+  ctx.strokeStyle = 'rgba(214, 232, 93, 0.2)';
   ctx.lineWidth = 2;
   ctx.strokeRect(36, 36, width - 72, height - 72);
 
@@ -104,14 +139,11 @@ export async function generateAchievementStoryCard(data: AchievementCardData): P
   ctx.textAlign = 'center';
   ctx.fillStyle = '#D6E85D';
   ctx.font = '800 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.letterSpacing = '7px';
   ctx.fillText('ITM SLS BARODA UNIVERSITY', width / 2, 125);
 
   ctx.fillStyle = '#A2BAAF';
   ctx.font = '700 16px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.letterSpacing = '3px';
   ctx.fillText('DEPARTMENT OF COMPUTER SCIENCE & ENGINEERING', width / 2, 160);
-  ctx.letterSpacing = '0px';
 
   // 5. Divider Line with Center Diamond
   ctx.strokeStyle = 'rgba(214, 232, 93, 0.25)';
@@ -121,7 +153,17 @@ export async function generateAchievementStoryCard(data: AchievementCardData): P
   ctx.lineTo(width / 2 + 220, 195);
   ctx.stroke();
 
-  // 6. User Profile Card
+  // Center Diamond
+  ctx.fillStyle = tierStyle.primary;
+  ctx.beginPath();
+  ctx.moveTo(width / 2, 190);
+  ctx.lineTo(width / 2 + 6, 195);
+  ctx.lineTo(width / 2, 200);
+  ctx.lineTo(width / 2 - 6, 195);
+  ctx.closePath();
+  ctx.fill();
+
+  // 6. User Profile Section
   const avatarY = 315;
   const avatarRadius = 76;
 
@@ -174,7 +216,7 @@ export async function generateAchievementStoryCard(data: AchievementCardData): P
   ctx.arc(width / 2, avatarY, avatarRadius + 4, 0, Math.PI * 2);
   ctx.stroke();
 
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
   ctx.lineWidth = 1.5;
   ctx.beginPath();
   ctx.arc(width / 2, avatarY, avatarRadius + 9, 0, Math.PI * 2);
@@ -199,64 +241,82 @@ export async function generateAchievementStoryCard(data: AchievementCardData): P
 
   // Glassmorphic Shield Box
   const cardBoxGrad = ctx.createLinearGradient(boxX, boxY, boxX, boxY + boxHeight);
-  cardBoxGrad.addColorStop(0, 'rgba(18, 51, 44, 0.75)');
-  cardBoxGrad.addColorStop(1, 'rgba(8, 22, 19, 0.9)');
+  cardBoxGrad.addColorStop(0, 'rgba(18, 51, 44, 0.85)');
+  cardBoxGrad.addColorStop(1, 'rgba(8, 22, 19, 0.95)');
   ctx.fillStyle = cardBoxGrad;
   roundRect(ctx, boxX, boxY, boxWidth, boxHeight, 36);
   ctx.fill();
 
-  ctx.strokeStyle = 'rgba(214, 232, 93, 0.3)';
+  ctx.strokeStyle = 'rgba(214, 232, 93, 0.35)';
   ctx.lineWidth = 2;
   roundRect(ctx, boxX, boxY, boxWidth, boxHeight, 36);
   ctx.stroke();
 
   // Tier Pill
-  const pillWidth = 280;
-  const pillHeight = 46;
+  const pillWidth = 300;
+  const pillHeight = 48;
   const pillX = width / 2 - pillWidth / 2;
   const pillY = boxY + 42;
 
   ctx.fillStyle = tierStyle.primary;
-  roundRect(ctx, pillX, pillY, pillWidth, pillHeight, 23);
+  roundRect(ctx, pillX, pillY, pillWidth, pillHeight, 24);
   ctx.fill();
 
   ctx.fillStyle = '#183F36';
   ctx.font = '900 17px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText(tierStyle.label, width / 2, pillY + 29);
+  ctx.fillText(tierStyle.label, width / 2, pillY + 31);
 
   // 3D Orbital Emblem Ring for the Icon
   const emblemY = boxY + 230;
+  const emblemRadius = 100;
+
   ctx.save();
-  ctx.fillStyle = 'rgba(214, 232, 93, 0.08)';
+  // Ambient radial glow behind emblem
+  const medalGrad = ctx.createRadialGradient(width / 2, emblemY, 10, width / 2, emblemY, emblemRadius);
+  medalGrad.addColorStop(0, tierStyle.medalGrad[1]);
+  medalGrad.addColorStop(0.7, tierStyle.medalGrad[0]);
+  medalGrad.addColorStop(1, tierStyle.medalGrad[2] || '#000000');
+  
+  ctx.fillStyle = medalGrad;
   ctx.beginPath();
-  ctx.arc(width / 2, emblemY, 95, 0, Math.PI * 2);
+  ctx.arc(width / 2, emblemY, emblemRadius, 0, Math.PI * 2);
   ctx.fill();
 
+  // Outer dashed orbit
   ctx.strokeStyle = tierStyle.primary;
-  ctx.lineWidth = 3;
-  ctx.setLineDash([8, 8]);
+  ctx.lineWidth = 3.5;
+  ctx.setLineDash([8, 6]);
   ctx.beginPath();
-  ctx.arc(width / 2, emblemY, 95, 0, Math.PI * 2);
+  ctx.arc(width / 2, emblemY, emblemRadius + 10, 0, Math.PI * 2);
   ctx.stroke();
   ctx.restore();
 
-  // Achievement Icon
+  // Inner metallic rim
+  ctx.save();
+  ctx.strokeStyle = '#FFFFFF';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(width / 2, emblemY, emblemRadius - 6, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.restore();
+
+  // Achievement Icon in Center
   ctx.font = '115px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif';
   ctx.fillText(data.achievementIcon || '🏆', width / 2, emblemY + 40);
 
   // Achievement Title
   ctx.fillStyle = '#FFFFFF';
   ctx.font = '900 48px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText(data.achievementTitle, width / 2, boxY + 395);
+  ctx.fillText(data.achievementTitle, width / 2, boxY + 400);
 
   // Description
   ctx.fillStyle = '#C2D6CF';
   ctx.font = '500 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  wrapText(ctx, data.achievementDescription, width / 2, boxY + 450, boxWidth - 100, 36);
+  wrapText(ctx, data.achievementDescription, width / 2, boxY + 455, boxWidth - 100, 36);
 
   // XP Reward Badge inside Box
   const xpPillY = boxY + 560;
-  const xpPillW = 340;
+  const xpPillW = 360;
   const xpPillH = 64;
   const xpPillX = width / 2 - xpPillW / 2;
 
@@ -283,16 +343,16 @@ export async function generateAchievementStoryCard(data: AchievementCardData): P
   const stats = [
     { label: 'STUDY STREAK', val: `🔥 ${data.streakDays} Days` },
     { label: 'TOTAL EXP', val: `✨ ${data.totalXp} XP` },
-    { label: 'DISCIPLINE', val: `B.Tech CSE '26` },
+    { label: 'DEPARTMENT', val: `B.Tech CSE '26` },
   ];
 
   stats.forEach((s, idx) => {
     const x = startStatX + idx * (statBoxW + gap);
-    ctx.fillStyle = 'rgba(18, 51, 44, 0.65)';
+    ctx.fillStyle = 'rgba(18, 51, 44, 0.75)';
     roundRect(ctx, x, statsY, statBoxW, statBoxH, 20);
     ctx.fill();
 
-    ctx.strokeStyle = 'rgba(214, 232, 93, 0.2)';
+    ctx.strokeStyle = 'rgba(214, 232, 93, 0.25)';
     ctx.lineWidth = 1.5;
     roundRect(ctx, x, statsY, statBoxW, statBoxH, 20);
     ctx.stroke();
@@ -329,10 +389,8 @@ export async function generateAchievementStoryCard(data: AchievementCardData): P
 
   ctx.fillStyle = '#D6E85D';
   ctx.font = '900 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.letterSpacing = '2px';
   ctx.fillText('VERIFIED', width / 2, 1745);
   ctx.fillText('HONORS', width / 2, 1763);
-  ctx.letterSpacing = '0px';
 
   const dataUrl = canvas.toDataURL('image/png');
   const blob = await new Promise<Blob>((resolve) => canvas.toBlob((b) => resolve(b!), 'image/png'));
@@ -346,7 +404,7 @@ function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: numbe
   ctx.arcTo(x + w, y, x + w, y + h, r);
   ctx.arcTo(x + w, y + h, x, y + h, r);
   ctx.arcTo(x, y + h, x, y, r);
-  ctx.arcTo(x, y + x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
   ctx.closePath();
 }
 

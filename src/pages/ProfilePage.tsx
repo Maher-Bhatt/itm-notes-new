@@ -96,6 +96,7 @@ export default function ProfilePage() {
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [activeTierFilter, setActiveTierFilter] = useState<'all' | 'unlocked' | 'bronze' | 'silver' | 'gold' | 'legendary' | 'mythic'>('all');
+  const [activeCategoryFilter, setActiveCategoryFilter] = useState<'all' | 'coding' | 'quiz' | 'streak' | 'time' | 'learning'>('all');
   const [activeProfileTab, setActiveProfileTab] = useState<'achievements' | 'academic' | 'focus' | 'bookmarks'>('achievements');
   const [isBoostActive, setIsBoostActive] = useState(() => {
     try {
@@ -104,6 +105,32 @@ export default function ProfilePage() {
     } catch {}
     return true;
   });
+  const [boostTimeLeft, setBoostTimeLeft] = useState<{ minutes: number; seconds: number } | null>(null);
+
+  // Live countdown timer for 2x Knowledge Boost
+  useEffect(() => {
+    const checkBoostTimer = () => {
+      try {
+        const exp = localStorage.getItem('itm_xp_boost_expires');
+        if (exp) {
+          const diff = Number(exp) - Date.now();
+          if (diff > 0) {
+            setIsBoostActive(true);
+            const m = Math.floor(diff / 60000);
+            const s = Math.floor((diff % 60000) / 1000);
+            setBoostTimeLeft({ minutes: m, seconds: s });
+            return;
+          }
+        }
+      } catch {}
+      setIsBoostActive(false);
+      setBoostTimeLeft(null);
+    };
+
+    checkBoostTimer();
+    const interval = setInterval(checkBoostTimer, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleActivateBoost = () => {
     const expiresAt = Date.now() + 30 * 60 * 1000;
@@ -111,6 +138,7 @@ export default function ProfilePage() {
       localStorage.setItem('itm_xp_boost_expires', String(expiresAt));
     } catch {}
     setIsBoostActive(true);
+    setBoostTimeLeft({ minutes: 30, seconds: 0 });
     unlockAchievement('boost-ignited');
     toast.success('⚡ 2x Knowledge Boost Activated! (+100% bonus XP for 30 minutes)');
   };
@@ -235,12 +263,9 @@ export default function ProfilePage() {
   const unlockedCount = game.achievements.filter((a) => a.unlockedAt).length;
 
   const filteredAchievements = game.achievements.filter((ach) => {
-    if (activeTierFilter === 'unlocked') return !!ach.unlockedAt;
-    if (activeTierFilter === 'bronze') return ach.tier === 'bronze';
-    if (activeTierFilter === 'silver') return ach.tier === 'silver';
-    if (activeTierFilter === 'gold') return ach.tier === 'gold';
-    if (activeTierFilter === 'legendary') return ach.tier === 'legendary';
-    if (activeTierFilter === 'mythic') return ach.tier === 'mythic';
+    if (activeTierFilter === 'unlocked' && !ach.unlockedAt) return false;
+    if (activeTierFilter !== 'all' && activeTierFilter !== 'unlocked' && ach.tier !== activeTierFilter) return false;
+    if (activeCategoryFilter !== 'all' && ach.category !== activeCategoryFilter) return false;
     return true;
   });
 
@@ -423,28 +448,45 @@ export default function ProfilePage() {
         {activeProfileTab === 'achievements' && (
           <div className="space-y-6 animate-fade-in">
             {/* ⚡ Active Knowledge Booster Hero Card */}
-            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#183F36] via-[#12332C] to-[#183F36] border border-[#D6E85D]/40 p-5 sm:p-6 text-[#F5F1E8] shadow-lg">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-[#D6E85D]/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#183F36] via-[#12332C] to-[#0A1A16] border border-[#D6E85D]/50 p-5 sm:p-7 text-[#F5F1E8] shadow-2xl">
+              <div className="absolute top-0 right-0 w-80 h-80 bg-[#D6E85D]/15 rounded-full blur-3xl pointer-events-none" />
+              <div className="absolute bottom-0 left-1/3 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
               <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-[#D6E85D]/20 border border-[#D6E85D]/40 flex items-center justify-center text-[#D6E85D] shrink-0 shadow-inner">
-                    <Rocket className="h-6 w-6 animate-pulse" />
-                  </div>
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-[#D6E85D] text-[#183F36] font-display">
-                        ⚡ 2.0x Boost Multiplier Active
-                      </span>
-                      <span className="text-[11px] text-[#A2BAAF] font-semibold">
-                        Mid-Sem Sprint
-                      </span>
+                  <div className="relative">
+                    <div className="w-14 h-14 rounded-2xl bg-[#D6E85D]/20 border border-[#D6E85D]/40 flex items-center justify-center text-[#D6E85D] shrink-0 shadow-inner">
+                      <Rocket className="h-7 w-7 animate-pulse" />
                     </div>
-                    <h3 className="text-lg font-black text-[#F5F1E8] font-display">
-                      Knowledge Booster & Active XP Multiplier
+                    {isBoostActive && (
+                      <span className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-400 rounded-full border-2 border-[#183F36] animate-ping" />
+                    )}
+                  </div>
+
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full font-display border ${
+                        isBoostActive
+                          ? 'bg-[#D6E85D] text-[#183F36] border-[#D6E85D] shadow-sm'
+                          : 'bg-white/10 text-white border-white/20'
+                      }`}>
+                        {isBoostActive ? '⚡ 2.0x Boost Active' : '⚡ 2.0x Boost Ready'}
+                      </span>
+                      {boostTimeLeft ? (
+                        <span className="text-xs text-[#D6E85D] font-mono font-bold bg-black/40 px-2 py-0.5 rounded-md border border-[#D6E85D]/30">
+                          ⏱️ {boostTimeLeft.minutes}m {String(boostTimeLeft.seconds).padStart(2, '0')}s remaining
+                        </span>
+                      ) : (
+                        <span className="text-xs text-[#A2BAAF] font-semibold">
+                          Mid-Sem Sprint Mode
+                        </span>
+                      )}
+                    </div>
+                    <h3 className="text-xl font-black text-[#F5F1E8] font-display">
+                      Knowledge Booster & Academic XP Multiplier
                     </h3>
                     <p className="text-xs text-[#E8EDE4]/80 max-w-xl leading-relaxed">
-                      Double XP (+100% bonus) is awarded for completing curriculum unit notes, taking topic practice quizzes, and running code in the University Coding Lab.
+                      Double XP (+100% bonus) is awarded across all curriculum unit notes, topic practice quizzes, and verified practicals in the University Coding Lab.
                     </p>
                   </div>
                 </div>
@@ -453,15 +495,15 @@ export default function ProfilePage() {
                   <button
                     type="button"
                     onClick={handleActivateBoost}
-                    className="px-4 py-2.5 rounded-xl bg-[#D6E85D] hover:bg-[#C8DC47] text-[#183F36] font-extrabold text-xs shadow-md shadow-[#D6E85D]/20 transition-all hover:scale-102 active:scale-98 flex items-center gap-2 cursor-pointer font-display"
+                    className="px-5 py-3 rounded-2xl bg-[#D6E85D] hover:bg-[#C8DC47] text-[#183F36] font-extrabold text-xs shadow-lg shadow-[#D6E85D]/25 transition-all hover:scale-102 active:scale-98 flex items-center gap-2 cursor-pointer font-display"
                   >
                     <Zap className="h-4 w-4 fill-current" />
-                    <span>Activate 2x Boost (30m)</span>
+                    <span>{isBoostActive ? 'Extend 2x Boost (+30m)' : 'Activate 2x Boost (30m)'}</span>
                   </button>
                   <button
                     type="button"
                     onClick={handleCopyStudyStats}
-                    className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-[#F5F1E8] border border-white/20 transition-all cursor-pointer"
+                    className="p-3 rounded-2xl bg-white/10 hover:bg-white/20 text-[#F5F1E8] border border-white/20 transition-all cursor-pointer shadow-md"
                     title="Share Academic Passport"
                   >
                     <Share2 className="h-4 w-4" />
@@ -471,27 +513,57 @@ export default function ProfilePage() {
             </div>
 
             {/* Badges & Achievements Grid */}
-            <div className="bg-card border border-border/80 rounded-2xl p-5 sm:p-6 shadow-sm space-y-4">
+            <div className="bg-card border border-border/80 rounded-3xl p-5 sm:p-7 shadow-sm space-y-5">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                   <div className="flex items-center gap-2">
                     <Trophy className="h-5 w-5 text-amber-500" />
-                    <h2 className="text-lg font-bold text-foreground font-display">Badges & Hall of Fame</h2>
+                    <h2 className="text-xl font-bold text-foreground font-display">Badges & Hall of Fame</h2>
                   </div>
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    Click any unlocked badge to view and replay your achievement celebration story.
+                    Click any unlocked badge to view and inspect your 3D Holographic Trophy & University Certificate.
                   </p>
                 </div>
-                <span className="text-xs font-bold px-3 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 self-start sm:self-auto font-mono">
-                  {unlockedCount} / {game.achievements.length} Unlocked
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold px-3 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 font-mono">
+                    {unlockedCount} / {game.achievements.length} Unlocked
+                  </span>
+                  <span className="text-xs font-bold px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-mono">
+                    {game.achievements.filter(a => a.unlockedAt).reduce((acc, a) => acc + a.xpReward, 0)} XP Earned
+                  </span>
+                </div>
+              </div>
+
+              {/* Category Filter Tabs */}
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs font-semibold scrollbar-none">
+                {[
+                  { id: 'all', label: 'All Categories', count: game.achievements.length },
+                  { id: 'coding', label: '💻 Coding Lab', count: game.achievements.filter(a => a.category === 'coding').length },
+                  { id: 'quiz', label: '🧠 Quizzes', count: game.achievements.filter(a => a.category === 'quiz').length },
+                  { id: 'streak', label: '🔥 Streaks', count: game.achievements.filter(a => a.category === 'streak').length },
+                  { id: 'time', label: '⏱️ Deep Focus', count: game.achievements.filter(a => a.category === 'time').length },
+                  { id: 'learning', label: '📚 Curriculum', count: game.achievements.filter(a => a.category === 'learning').length },
+                ].map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveCategoryFilter(tab.id as any)}
+                    className={`px-3 py-1.5 rounded-xl whitespace-nowrap transition-all border cursor-pointer flex items-center gap-1.5 ${
+                      activeCategoryFilter === tab.id
+                        ? 'bg-[#183F36] text-[#D6E85D] border-[#D6E85D]/50 shadow-sm font-bold'
+                        : 'bg-secondary/40 text-muted-foreground hover:text-foreground border-border/60 hover:bg-secondary'
+                    }`}
+                  >
+                    <span>{tab.label}</span>
+                    <span className="text-[10px] opacity-75 font-mono">({tab.count})</span>
+                  </button>
+                ))}
               </div>
 
               {/* Tier Filter Tabs */}
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-2 text-xs font-semibold scrollbar-none">
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-2 text-xs font-semibold scrollbar-none border-b border-border/60">
                 {[
-                  { id: 'all', label: `All (${game.achievements.length})` },
-                  { id: 'unlocked', label: `Unlocked (${unlockedCount})` },
+                  { id: 'all', label: `All Tiers (${game.achievements.length})` },
+                  { id: 'unlocked', label: `Unlocked Only (${unlockedCount})` },
                   { id: 'bronze', label: 'Bronze' },
                   { id: 'silver', label: 'Silver' },
                   { id: 'gold', label: 'Gold' },
@@ -501,10 +573,10 @@ export default function ProfilePage() {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTierFilter(tab.id as any)}
-                    className={`px-3 py-1.5 rounded-lg whitespace-nowrap transition-all border cursor-pointer ${
+                    className={`px-3 py-1 rounded-lg whitespace-nowrap transition-all border cursor-pointer ${
                       activeTierFilter === tab.id
                         ? 'bg-primary text-primary-foreground border-primary shadow-xs font-bold'
-                        : 'bg-secondary/40 text-muted-foreground hover:text-foreground border-border/60 hover:bg-secondary'
+                        : 'bg-secondary/30 text-muted-foreground hover:text-foreground border-transparent hover:bg-secondary/60'
                     }`}
                   >
                     {tab.label}
@@ -513,47 +585,66 @@ export default function ProfilePage() {
               </div>
 
               {/* Achievement Cards Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 pt-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-1">
                 {filteredAchievements.map((ach) => {
                   const isUnlocked = !!ach.unlockedAt;
                   const tierColors = {
-                    mythic: 'border-[#D6E85D]/80 bg-gradient-to-br from-[#183F36]/50 via-card to-card shadow-[0_0_20px_rgba(214,232,93,0.15)] ring-1 ring-[#D6E85D]/40',
-                    legendary: 'border-purple-500/70 bg-gradient-to-br from-purple-500/15 via-card to-card shadow-[0_0_20px_rgba(168,85,247,0.15)] ring-1 ring-purple-500/30',
-                    gold: 'border-amber-500/70 bg-gradient-to-br from-amber-500/15 via-card to-card shadow-[0_0_20px_rgba(245,158,11,0.15)] ring-1 ring-amber-500/30',
-                    silver: 'border-slate-300/60 bg-gradient-to-br from-slate-400/10 via-card to-card ring-1 ring-slate-400/20',
-                    bronze: 'border-[#E07A5F]/60 bg-gradient-to-br from-[#E07A5F]/10 via-card to-card ring-1 ring-[#E07A5F]/20',
+                    mythic: 'border-[#D6E85D] bg-gradient-to-br from-[#183F36]/60 via-card to-card shadow-[0_0_25px_rgba(214,232,93,0.2)] ring-1 ring-[#D6E85D]/50',
+                    legendary: 'border-purple-400 bg-gradient-to-br from-purple-500/20 via-card to-card shadow-[0_0_25px_rgba(168,85,247,0.2)] ring-1 ring-purple-500/40',
+                    gold: 'border-[#D6E85D]/80 bg-gradient-to-br from-amber-500/20 via-card to-card shadow-[0_0_25px_rgba(245,158,11,0.2)] ring-1 ring-amber-500/40',
+                    silver: 'border-slate-300 bg-gradient-to-br from-slate-300/15 via-card to-card ring-1 ring-slate-300/30',
+                    bronze: 'border-[#E07A5F] bg-gradient-to-br from-[#E07A5F]/15 via-card to-card ring-1 ring-[#E07A5F]/30',
                   };
 
                   const tierBadges = {
-                    mythic: 'bg-[#D6E85D]/20 text-[#D6E85D] border-[#D6E85D]/40 font-black',
-                    legendary: 'bg-purple-600/20 text-purple-400 border-purple-500/40 font-black',
-                    gold: 'bg-amber-500/20 text-amber-400 border-amber-500/40 font-black',
-                    silver: 'bg-slate-400/20 text-slate-300 border-slate-400/40 font-black',
-                    bronze: 'bg-[#E07A5F]/20 text-[#E07A5F] border-[#E07A5F]/40 font-black',
+                    mythic: 'bg-[#D6E85D]/20 text-[#D6E85D] border-[#D6E85D]/50 font-black',
+                    legendary: 'bg-purple-600/20 text-purple-400 border-purple-500/50 font-black',
+                    gold: 'bg-amber-500/20 text-amber-400 border-amber-500/50 font-black',
+                    silver: 'bg-slate-400/20 text-slate-300 border-slate-400/50 font-black',
+                    bronze: 'bg-[#E07A5F]/20 text-[#E07A5F] border-[#E07A5F]/50 font-black',
                   };
+
+                  // Navigation target helper for locked achievements
+                  const getUnlockTarget = () => {
+                    switch (ach.category) {
+                      case 'coding': return { label: 'Go to Coding Lab →', path: '/coding-lab' };
+                      case 'quiz': return { label: 'Take Topic Quiz →', path: '/quiz' };
+                      case 'learning': return { label: 'Explore Notes →', path: '/subjects' };
+                      default: return null;
+                    }
+                  };
+
+                  const targetAction = getUnlockTarget();
 
                   return (
                     <div
                       key={ach.id}
                       onClick={() => isUnlocked && handleOpenAchievementStory(ach)}
-                      className={`p-4 rounded-2xl border transition-all flex flex-col justify-between gap-3 relative overflow-hidden ${
+                      className={`p-5 rounded-3xl border transition-all flex flex-col justify-between gap-3.5 relative overflow-hidden ${
                         isUnlocked
-                          ? `${tierColors[ach.tier]} hover:scale-[1.02] hover:-translate-y-0.5 cursor-pointer group shadow-lg`
-                          : 'border-border/40 bg-secondary/15 opacity-60'
+                          ? `${tierColors[ach.tier]} hover:scale-[1.02] hover:-translate-y-1 cursor-pointer group shadow-xl`
+                          : 'border-border/50 bg-secondary/20 opacity-70 hover:opacity-90'
                       }`}
                     >
-                      <div className="flex items-start gap-3">
-                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shrink-0 shadow-inner ${
-                          isUnlocked ? 'bg-black/30 border border-white/10 group-hover:scale-110 transition-transform' : 'bg-secondary/30 grayscale'
+                      <div className="flex items-start gap-3.5">
+                        {/* 3D Medallion Emblem Thumbnail */}
+                        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-3xl shrink-0 shadow-md relative ${
+                          isUnlocked 
+                            ? 'bg-black/40 border-2 border-white/20 group-hover:scale-110 transition-transform' 
+                            : 'bg-secondary/40 grayscale border border-border/40'
                         }`}>
                           {ach.icon}
+                          {isUnlocked && (
+                            <span className="absolute -top-1 -right-1 w-3 h-3 bg-[#D6E85D] rounded-full border border-black animate-pulse" />
+                          )}
                         </div>
+
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between gap-1 mb-1">
                             <h4 className="font-bold text-sm text-foreground truncate group-hover:text-primary transition-colors font-display">
                               {ach.title}
                             </h4>
-                            <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-full border ${tierBadges[ach.tier]}`}>
+                            <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-full border font-display ${tierBadges[ach.tier]}`}>
                               {ach.tier}
                             </span>
                           </div>
@@ -561,16 +652,28 @@ export default function ProfilePage() {
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between pt-2.5 border-t border-border/40 text-[11px]">
-                        <span className="font-extrabold text-[#D6E85D] font-mono bg-[#183F36]/60 px-2 py-0.5 rounded-md border border-[#D6E85D]/20">
+                      <div className="flex items-center justify-between pt-3 border-t border-border/40 text-[11px]">
+                        <span className="font-black text-[#D6E85D] font-mono bg-[#183F36] px-2.5 py-1 rounded-lg border border-[#D6E85D]/30 shadow-xs">
                           +{ach.xpReward} XP
                         </span>
+
                         {isUnlocked ? (
-                          <span className="text-[#D6E85D] font-bold flex items-center gap-1 group-hover:underline">
-                            <Sparkles className="h-3.5 w-3.5" /> View Story ↗
+                          <span className="text-[#D6E85D] font-black flex items-center gap-1 group-hover:underline font-display">
+                            <Sparkles className="h-3.5 w-3.5" /> View 3D Trophy ↗
                           </span>
+                        ) : targetAction ? (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(targetAction.path);
+                            }}
+                            className="text-xs font-bold text-primary hover:underline flex items-center gap-1"
+                          >
+                            <span>{targetAction.label}</span>
+                          </button>
                         ) : (
-                          <span className="text-muted-foreground flex items-center gap-1 text-[10px]">
+                          <span className="text-muted-foreground flex items-center gap-1 text-[11px] font-mono">
                             🔒 Locked
                           </span>
                         )}
