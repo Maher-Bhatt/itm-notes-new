@@ -134,44 +134,20 @@ export async function fetchCommunityPosts(currentUserId?: string): Promise<Commu
       };
     });
 
-    // 5. Check if user had any local-only posts from previous sessions that are missing in Supabase
-    const localPosts = getLocalCachedPosts();
-    const existingIds = new Set(remotePosts.map((p) => p.id));
-    const missingLocalPosts = localPosts.filter((lp) => !existingIds.has(lp.id));
+    // 5. Clean out any legacy mock/seed posts completely
+    const LEGACY_DUMMY_IDS = new Set(['post-1', 'post-2', 'post-3', 'post-4', 'post-5', 'post-maher-verified', 'post-study-buddies']);
+    const cleanRemotePosts = remotePosts.filter(
+      (p) => !LEGACY_DUMMY_IDS.has(p.id) && !p.content?.includes('checkitoutlive')
+    );
 
-    if (missingLocalPosts.length > 0) {
-      // Sync these local posts up to Supabase in background
-      for (const missing of missingLocalPosts) {
-        try {
-          await supabase.from('community_posts').insert({
-            id: missing.id,
-            author_id: missing.authorId || currentUserId || 'student-local',
-            author_name: missing.authorName,
-            author_email: missing.authorEmail || null,
-            author_avatar: missing.authorAvatar || null,
-            author_branch: missing.authorBranch || "Computer Science & Engineering",
-            is_masked: missing.isMasked,
-            mask_alias: missing.maskAlias,
-            category: missing.category,
-            content: missing.content,
-            likes: missing.likes || 0,
-            pinned: missing.pinned || false,
-          });
-          remotePosts.unshift(missing);
-        } catch (syncErr) {
-          console.warn('Failed to sync legacy post:', syncErr);
-        }
-      }
-    }
-
-    // Save combined posts to local cache
+    // Save cleaned posts to local cache
     try {
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(remotePosts));
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(cleanRemotePosts));
     } catch (e) {
       console.warn('Failed to cache community posts in localStorage:', e);
     }
 
-    return remotePosts.length > 0 ? remotePosts : INITIAL_POSTS;
+    return cleanRemotePosts;
   } catch (error) {
     console.error('Error fetching community posts:', error);
     return getLocalCachedPosts();
@@ -486,13 +462,17 @@ function getLocalCachedPosts(): CommunityPost[] {
             return { ...p, authorAvatar: undefined };
           }
           return p;
+        })
+        .filter((p: CommunityPost) => {
+          const dummyIds = new Set(['post-1', 'post-2', 'post-3', 'post-4', 'post-5', 'post-maher-verified', 'post-study-buddies']);
+          return !dummyIds.has(p.id) && !p.content?.includes('checkitoutlive');
         });
       }
     }
   } catch (e) {
     console.warn('Failed to read cached posts from localStorage:', e);
   }
-  return INITIAL_POSTS;
+  return [];
 }
 
 function getLocalFriendIds(): string[] {

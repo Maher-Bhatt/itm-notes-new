@@ -31,6 +31,7 @@ export function AchievementCelebrationModal() {
   const [activeView, setActiveView] = useState<'trophy' | 'certificate' | 'story'>('trophy');
   const [isFlipped, setIsFlipped] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const [storyTheme, setStoryTheme] = useState<'obsidian' | 'gold' | 'cyber'>('obsidian');
 
   const [isGenerating, setIsGenerating] = useState(false);
   const [storyPreviewUrl, setStoryPreviewUrl] = useState<string | null>(null);
@@ -179,6 +180,7 @@ export function AchievementCelebrationModal() {
       xpReward: activeAchievement.xpReward,
       totalXp: eventData?.totalXp || game.xp,
       streakDays: eventData?.streakDays || game.streakDays,
+      theme: storyTheme,
     })
       .then(({ dataUrl, blob }) => {
         if (isMounted) {
@@ -195,7 +197,7 @@ export function AchievementCelebrationModal() {
     return () => {
       isMounted = false;
     };
-  }, [activeAchievement, profile, user, levelInfo, game, eventData]);
+  }, [activeAchievement, profile, user, levelInfo, game, eventData, storyTheme]);
 
   if (!activeAchievement) return null;
 
@@ -384,6 +386,25 @@ export function AchievementCelebrationModal() {
     a.click();
     document.body.removeChild(a);
     toast.success('HD Instagram & WhatsApp Story Card (1080x1920) downloaded!');
+  };
+
+  const handleCopyCardImage = async () => {
+    if (!storyBlob) {
+      toast.error('Card is still generating, please wait a moment.');
+      return;
+    }
+    try {
+      if (navigator.clipboard && (window as any).ClipboardItem) {
+        await navigator.clipboard.write([
+          new (window as any).ClipboardItem({ 'image/png': storyBlob })
+        ]);
+        toast.success('HD Story Card copied to clipboard! Paste directly into WhatsApp, Discord, or Instagram.');
+        return;
+      }
+    } catch (e) {
+      console.warn('Clipboard write image failed, downloading instead:', e);
+    }
+    handleDownloadStory();
   };
 
   const handleCopyText = () => {
@@ -727,18 +748,39 @@ export function AchievementCelebrationModal() {
           </div>
         ) : (
           /* 3. Real High-Res 9:16 Social Story Preview */
-          <div className="flex items-center justify-center my-1">
-            <div className="relative mx-auto w-full max-w-[280px] sm:max-w-[320px] rounded-3xl overflow-hidden border-2 border-[#D6E85D]/60 shadow-2xl bg-black aspect-[9/16] flex items-center justify-center">
+          <div className="flex flex-col items-center justify-center my-1 gap-3">
+            {/* Theme Selector Pills */}
+            <div className="flex items-center justify-center gap-1.5 p-1 rounded-2xl bg-black/60 border border-white/10 backdrop-blur-md">
+              <span className="text-[10px] text-[#A2BAAF] font-bold uppercase tracking-wider px-2">Theme:</span>
+              {(['obsidian', 'gold', 'cyber'] as const).map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() => setStoryTheme(t)}
+                  className={`px-3 py-1 rounded-xl text-xs font-bold transition-all border cursor-pointer ${
+                    storyTheme === t
+                      ? 'bg-[#D6E85D] text-[#183F36] border-[#D6E85D] shadow-sm scale-105'
+                      : 'bg-transparent text-slate-400 border-transparent hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  {t === 'obsidian' ? '🌌 Emerald' : t === 'gold' ? '👑 24K Gold' : '⚡ Cyber'}
+                </button>
+              ))}
+            </div>
+
+            {/* High-Resolution Preview Frame */}
+            <div className="relative mx-auto w-full max-w-[320px] sm:max-w-[360px] rounded-3xl overflow-hidden border border-[#D6E85D]/60 shadow-[0_0_60px_rgba(24,63,54,0.7)] bg-[#030E0B] aspect-[9/16] flex items-center justify-center group">
               {isGenerating || !storyPreviewUrl ? (
-                <div className="p-6 text-center space-y-3">
-                  <Loader2 className="h-8 w-8 animate-spin text-[#D6E85D] mx-auto" />
-                  <p className="text-xs text-[#A2BAAF] font-medium">Rendering 1080x1920 HD Story Card...</p>
+                <div className="p-8 text-center space-y-3">
+                  <Loader2 className="h-9 w-9 animate-spin text-[#D6E85D] mx-auto" />
+                  <p className="text-xs text-[#A2BAAF] font-bold">Rendering 1080x1920 HD Story Card...</p>
+                  <p className="text-[11px] text-slate-500">Applying 3D metallic medal, foil light beams & university watermark</p>
                 </div>
               ) : (
                 <img
                   src={storyPreviewUrl}
                   alt="Story Card Preview"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.01]"
                 />
               )}
             </div>
@@ -795,21 +837,32 @@ export function AchievementCelebrationModal() {
             </button>
           </div>
 
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="grid grid-cols-3 gap-2">
             {/* Download HD Card */}
             <button
               onClick={handleDownloadStory}
               disabled={isGenerating || !storyPreviewUrl}
-              className="h-9 border border-[#23584C] bg-[#12332C]/80 hover:bg-[#183F36] text-[#E8EDE4] text-xs font-semibold flex items-center justify-center gap-1.5 rounded-xl transition-all cursor-pointer disabled:opacity-50 shadow-xs"
+              className="h-10 border border-[#23584C] bg-[#12332C]/80 hover:bg-[#183F36] text-[#E8EDE4] text-xs font-semibold flex items-center justify-center gap-1.5 rounded-xl transition-all cursor-pointer disabled:opacity-50 shadow-xs"
             >
               <Download className="h-3.5 w-3.5 text-[#D6E85D]" />
-              <span>Download HD Story</span>
+              <span>Download HD</span>
+            </button>
+
+            {/* Copy Card Image to Clipboard */}
+            <button
+              onClick={handleCopyCardImage}
+              disabled={isGenerating || !storyBlob}
+              className="h-10 border border-[#23584C] bg-[#12332C]/80 hover:bg-[#183F36] text-[#E8EDE4] text-xs font-semibold flex items-center justify-center gap-1.5 rounded-xl transition-all cursor-pointer disabled:opacity-50 shadow-xs"
+              title="Copy card image directly to paste in WhatsApp, Discord, etc."
+            >
+              <Eye className="h-3.5 w-3.5 text-[#D6E85D]" />
+              <span>Copy Image</span>
             </button>
 
             {/* Copy Shareable Link */}
             <button
               onClick={handleCopyText}
-              className="h-9 border border-[#23584C] bg-[#12332C]/80 hover:bg-[#183F36] text-[#E8EDE4] text-xs font-semibold flex items-center justify-center gap-1.5 rounded-xl transition-all cursor-pointer shadow-xs"
+              className="h-10 border border-[#23584C] bg-[#12332C]/80 hover:bg-[#183F36] text-[#E8EDE4] text-xs font-semibold flex items-center justify-center gap-1.5 rounded-xl transition-all cursor-pointer shadow-xs"
             >
               {copied ? (
                 <>
@@ -819,7 +872,7 @@ export function AchievementCelebrationModal() {
               ) : (
                 <>
                   <Copy className="h-3.5 w-3.5 text-[#D6E85D]" />
-                  <span>Copy Share Text</span>
+                  <span>Copy Text</span>
                 </>
               )}
             </button>

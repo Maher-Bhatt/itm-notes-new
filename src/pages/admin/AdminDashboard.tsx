@@ -39,6 +39,18 @@ import {
   Lock,
   KeyRound,
   Copy,
+  Sparkles,
+  Award,
+  Pin,
+  PinOff,
+  UserCheck,
+  ExternalLink,
+  Plus,
+  Send,
+  X,
+  SlidersHorizontal,
+  FileCheck,
+  Compass,
 } from "lucide-react";
 import { generateUniqueMaintenanceKey } from "@/components/MaintenanceBanner";
 import {
@@ -53,7 +65,7 @@ import {
 import { toast } from "sonner";
 import { UserAvatar } from "@/components/UserAvatar";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+// ─── Interfaces ───────────────────────────────────────────────────────────────
 
 interface UserRow {
   id: string;
@@ -62,7 +74,15 @@ interface UserRow {
   email: string;
   role: string;
   xp: number;
+  level: number;
+  streakDays: number;
+  branch: string;
+  semester: number;
+  enrollmentNo: string;
+  targetCgpa: string;
+  bio: string;
   joined: string;
+  status: string;
   avatarUrl?: string;
 }
 
@@ -76,13 +96,27 @@ interface Announcement {
   createdAt: string;
 }
 
-interface CommunityPost {
+interface CommunityPostItem {
   id: string;
   content: string;
+  authorId: string;
   authorName: string;
-  upvotes: number;
+  authorEmail?: string;
+  authorAvatar?: string;
+  authorBranch?: string;
+  likes: number;
+  pinned: boolean;
   createdAt: string;
+  category?: string;
   isFlagged?: boolean;
+}
+
+interface AuditLog {
+  id: string;
+  action: string;
+  detail: string;
+  timestamp: string;
+  type: "security" | "user" | "content" | "announcement";
 }
 
 type TabId =
@@ -90,124 +124,165 @@ type TabId =
   | "users"
   | "maintenance"
   | "announcements"
+  | "moderation"
   | "platform"
-  | "moderation";
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+  | "audit";
 
 const TABS: { id: TabId; label: string; icon: React.FC<{ className?: string }> }[] = [
-  { id: "overview", label: "Overview", icon: LayoutDashboard },
-  { id: "users", label: "Users", icon: Users },
-  { id: "maintenance", label: "Maintenance", icon: Wrench },
-  { id: "announcements", label: "Announcements", icon: Megaphone },
-  { id: "platform", label: "Platform Data", icon: BarChart3 },
-  { id: "moderation", label: "Moderation", icon: MessageSquare },
+  { id: "overview", label: "Executive Overview", icon: LayoutDashboard },
+  { id: "users", label: "Student Registry", icon: Users },
+  { id: "maintenance", label: "Maintenance & OTP", icon: Wrench },
+  { id: "announcements", label: "Campus Broadcasts", icon: Megaphone },
+  { id: "moderation", label: "Community Moderation", icon: MessageSquare },
+  { id: "platform", label: "Curriculum & Notes", icon: BarChart3 },
+  { id: "audit", label: "Audit & Security", icon: Shield },
 ];
 
 const TYPE_COLORS = {
-  info: "#3b82f6",
-  warning: "#f59e0b",
-  success: "#22c55e",
-  error: "#ef4444",
+  info: "#38BDF8",
+  warning: "#F59E0B",
+  success: "#10B981",
+  error: "#EF4444",
 };
 
-// ─── Stat Card ────────────────────────────────────────────────────────────────
+// ─── Stat Card Component ──────────────────────────────────────────────────────
 
-function StatCard({
+function ExecutiveStatCard({
   icon: Icon,
   label,
   value,
-  accent,
+  subtext,
+  accent = "#D6E85D",
 }: {
   icon: React.FC<{ className?: string }>;
   label: string;
   value: string | number;
+  subtext?: string;
   accent?: string;
 }) {
   return (
-    <div className="bg-slate-800 border border-slate-700 rounded-2xl p-5 flex items-center gap-4 shadow-sm">
-      <div
-        className="h-11 w-11 rounded-xl flex items-center justify-center shrink-0"
-        style={{ background: accent ? `${accent}22` : "#D6E85D22" }}
-      >
-        <Icon
-          className="h-5 w-5"
-          style={{ color: accent ?? "#D6E85D" }}
-        />
+    <div className="bg-[#0B201A] border border-[#1A4237] hover:border-[#D6E85D]/40 rounded-2xl p-5 flex items-start justify-between shadow-lg transition-all hover:scale-[1.01]">
+      <div className="space-y-1">
+        <p className="text-[11px] text-[#A2BAAF] font-bold uppercase tracking-wider">{label}</p>
+        <p className="text-2xl sm:text-3xl font-black text-white leading-tight font-display">{value}</p>
+        {subtext && <p className="text-[11px] text-[#D6E85D] font-medium pt-0.5">{subtext}</p>}
       </div>
-      <div>
-        <p className="text-xs text-slate-400 font-medium uppercase tracking-wide">{label}</p>
-        <p className="text-2xl font-extrabold text-white leading-tight">{value}</p>
+      <div
+        className="h-12 w-12 rounded-2xl flex items-center justify-center shrink-0 border border-white/10 shadow-inner"
+        style={{ background: `${accent}18` }}
+      >
+        <Icon className="h-6 w-6" style={{ color: accent }} />
       </div>
     </div>
   );
 }
 
-// ─── Main Component ───────────────────────────────────────────────────────────
+// ─── Main Admin Component ─────────────────────────────────────────────────────
 
 export default function AdminDashboard() {
   const { role, user } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<TabId>("overview");
 
-  // Redirect non-admins
+  // Redirect unauthorized visitors
   useEffect(() => {
     if (role !== null && role !== "admin") {
       navigate("/");
     }
   }, [role, navigate]);
 
-  // ── Platform stats ──────────────────────────────────────────────────────────
+  // ── Global State & Telemetry ────────────────────────────────────────────────
   const [totalUsers, setTotalUsers] = useState<number | null>(null);
   const [totalPosts, setTotalPosts] = useState<number | null>(null);
+  const [dbLatency, setDbLatency] = useState<number | null>(null);
   const [supabaseOk, setSupabaseOk] = useState<boolean | null>(null);
-  const [recentActivity, setRecentActivity] = useState<CommunityPost[]>([]);
+  const [recentActivity, setRecentActivity] = useState<CommunityPostItem[]>([]);
   const [statsLoading, setStatsLoading] = useState(true);
 
-  // Curriculum stats (computed from local data)
+  // Audit Log State
+  const [auditLogs, setAuditLogs] = useState<AuditLog[]>(() => {
+    try {
+      const stored = localStorage.getItem("itm_admin_audit_logs");
+      if (stored) return JSON.parse(stored);
+    } catch {}
+    return [
+      {
+        id: "log-init",
+        action: "Admin Session Authenticated",
+        detail: `Root Administrator ${user?.email || "Founder"} accessed Command Center`,
+        timestamp: new Date().toISOString(),
+        type: "security",
+      },
+    ];
+  });
+
+  const recordAudit = (action: string, detail: string, type: AuditLog["type"] = "security") => {
+    const entry: AuditLog = {
+      id: `log-${Date.now()}`,
+      action,
+      detail,
+      timestamp: new Date().toISOString(),
+      type,
+    };
+    setAuditLogs((prev) => {
+      const next = [entry, ...prev].slice(0, 50);
+      try {
+        localStorage.setItem("itm_admin_audit_logs", JSON.stringify(next));
+      } catch {}
+      return next;
+    });
+  };
+
+  // ── Campus 2x XP Booster Controller ─────────────────────────────────────────
+  const [isCampusBoostActive, setIsCampusBoostActive] = useState(() => {
+    try {
+      const exp = localStorage.getItem("itm_xp_boost_expires");
+      return exp && Number(exp) > Date.now();
+    } catch {
+      return false;
+    }
+  });
+
+  const triggerCampusBoost = (minutes: number = 60) => {
+    const expiresAt = Date.now() + minutes * 60 * 1000;
+    try {
+      localStorage.setItem("itm_xp_boost_expires", String(expiresAt));
+      localStorage.setItem("itm_campus_boost_active", "true");
+      window.dispatchEvent(new Event("itm_boost_updated"));
+    } catch {}
+    setIsCampusBoostActive(true);
+    recordAudit("Campus 2x Boost Activated", `Campus-wide XP multiplier activated for ${minutes} minutes`, "user");
+    toast.success(`⚡ University-wide 2x XP Boost activated for ${minutes} minutes!`);
+  };
+
+  // ── Curriculum Stats (Local master data) ─────────────────────────────────────
   const totalSubjects = subjects.length;
   const totalUnits = subjects.reduce((a, s) => a + (s.units?.length ?? 0), 0);
   const totalTopics = subjects.reduce(
-    (a, s) =>
-      a + (s.units?.reduce((ua, u) => ua + (u.topics?.length ?? 0), 0) ?? 0),
+    (a, s) => a + (s.units?.reduce((ua, u) => ua + (u.topics?.length ?? 0), 0) ?? 0),
     0
   );
   const totalMcqs = subjects.reduce(
     (a, s) =>
       a +
       (s.units?.reduce(
-        (ua, u) =>
-          ua + (u.topics?.reduce((ta, t) => ta + (t.mcqs?.length ?? 0), 0) ?? 0),
-        0
-      ) ?? 0),
-    0
-  );
-  const totalPracticals = subjects.reduce(
-    (a, s) =>
-      a +
-      (s.units?.reduce(
-        (ua, u) =>
-          ua +
-          (u.topics?.reduce(
-            (ta, t) => ta + (t.examples?.length ?? 0),
-            0
-          ) ?? 0),
+        (ua, u) => ua + (u.topics?.reduce((ta, t) => ta + (t.mcqs?.length ?? 0), 0) ?? 0),
         0
       ) ?? 0),
     0
   );
 
-  // Chart data: MCQ count per subject (top 10)
   const mcqChartData = useMemo(
     () =>
       subjects
         .map((s) => ({
           name: s.code ?? s.name.slice(0, 6),
-          mcqs: s.units?.reduce(
-            (ua, u) =>
-              ua + (u.topics?.reduce((ta, t) => ta + (t.mcqs?.length ?? 0), 0) ?? 0),
-            0
-          ) ?? 0,
+          fullName: s.name,
+          mcqs:
+            s.units?.reduce(
+              (ua, u) => ua + (u.topics?.reduce((ta, t) => ta + (t.mcqs?.length ?? 0), 0) ?? 0),
+              0
+            ) ?? 0,
         }))
         .filter((d) => d.mcqs > 0)
         .sort((a, b) => b.mcqs - a.mcqs)
@@ -224,21 +299,26 @@ export default function AdminDashboard() {
         supabase.from("community_posts").select("id", { count: "exact", head: true }),
         supabase
           .from("community_posts")
-          .select("id, content, created_at, upvotes_count")
+          .select("id, author_id, author_name, author_branch, content, likes, pinned, created_at")
           .order("created_at", { ascending: false })
           .limit(5),
       ]);
       const latency = Math.round(performance.now() - start);
+      setDbLatency(latency);
       setSupabaseOk(latency < 5000 && !usersRes.error);
       setTotalUsers(usersRes.count ?? 0);
       setTotalPosts(postsRes.count ?? 0);
+
       if (activityRes.data) {
         setRecentActivity(
           activityRes.data.map((p: any) => ({
             id: p.id,
+            authorId: p.author_id,
+            authorName: p.author_name || "Verified Student",
+            authorBranch: p.author_branch || "Computer Science",
             content: p.content ?? "",
-            authorName: "Community User",
-            upvotes: p.upvotes_count ?? 0,
+            likes: p.likes ?? 0,
+            pinned: p.pinned ?? false,
             createdAt: p.created_at,
           }))
         );
@@ -254,19 +334,29 @@ export default function AdminDashboard() {
     loadOverviewStats();
   }, []);
 
-  // ── User Management ─────────────────────────────────────────────────────────
+  // ── User Management State & Actions ─────────────────────────────────────────
   const [users, setUsers] = useState<UserRow[]>([]);
   const [usersLoading, setUsersLoading] = useState(false);
   const [userSearch, setUserSearch] = useState("");
+  const [userRoleFilter, setUserRoleFilter] = useState<string>("all");
+  const [userSemesterFilter, setUserSemesterFilter] = useState<string>("all");
   const [userPage, setUserPage] = useState(1);
   const USERS_PER_PAGE = 10;
+
+  // Modals for User Management
+  const [inspectUser, setInspectUser] = useState<UserRow | null>(null);
+  const [awardXpTarget, setAwardXpTarget] = useState<UserRow | null>(null);
+  const [awardXpAmount, setAwardXpAmount] = useState<number>(100);
+  const [awardXpReason, setAwardXpReason] = useState<string>("Academic Excellence Recognition");
 
   const loadUsers = async () => {
     setUsersLoading(true);
     try {
       const { data, error } = await supabase
         .from("profiles")
-        .select("id, user_id, display_name, email, role, xp, created_at, avatar_url")
+        .select(
+          "id, user_id, display_name, email, role, xp, level, streak_days, branch, semester, enrollment_no, target_cgpa, bio, status, created_at, avatar_url"
+        )
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -275,10 +365,18 @@ export default function AdminDashboard() {
           data.map((p: any) => ({
             id: p.id,
             userId: p.user_id,
-            name: p.display_name ?? p.email?.split("@")[0] ?? "Student",
-            email: p.email ?? "—",
-            role: p.role ?? "student",
-            xp: p.xp ?? 0,
+            name: p.display_name || p.email?.split("@")[0] || "Student",
+            email: p.email || "—",
+            role: p.role || "student",
+            xp: p.xp || 0,
+            level: p.level || 1,
+            streakDays: p.streak_days || 0,
+            branch: p.branch || "Computer Science & Engineering",
+            semester: p.semester || 1,
+            enrollmentNo: p.enrollment_no || "—",
+            targetCgpa: p.target_cgpa || "8.5+",
+            bio: p.bio || "ITM SLS Baroda University Student",
+            status: p.status || "Active",
             joined: p.created_at
               ? new Date(p.created_at).toLocaleDateString("en-IN", {
                   day: "2-digit",
@@ -292,7 +390,7 @@ export default function AdminDashboard() {
       }
     } catch (err) {
       console.error("Failed to load users:", err);
-      toast.error("Could not fetch users from Supabase.");
+      toast.error("Could not fetch user records.");
     } finally {
       setUsersLoading(false);
     }
@@ -302,50 +400,79 @@ export default function AdminDashboard() {
     if (activeTab === "users") loadUsers();
   }, [activeTab]);
 
-  const filteredUsers = useMemo(
-    () =>
-      users.filter(
-        (u) =>
-          u.name.toLowerCase().includes(userSearch.toLowerCase()) ||
-          u.email.toLowerCase().includes(userSearch.toLowerCase())
-      ),
-    [users, userSearch]
-  );
-  const pagedUsers = filteredUsers.slice(
-    (userPage - 1) * USERS_PER_PAGE,
-    userPage * USERS_PER_PAGE
-  );
+  const filteredUsers = useMemo(() => {
+    return users.filter((u) => {
+      const matchQuery =
+        u.name.toLowerCase().includes(userSearch.toLowerCase()) ||
+        u.email.toLowerCase().includes(userSearch.toLowerCase()) ||
+        u.enrollmentNo.toLowerCase().includes(userSearch.toLowerCase());
+      const matchRole = userRoleFilter === "all" || u.role.toLowerCase() === userRoleFilter.toLowerCase();
+      const matchSemester = userSemesterFilter === "all" || String(u.semester) === userSemesterFilter;
+      return matchQuery && matchRole && matchSemester;
+    });
+  }, [users, userSearch, userRoleFilter, userSemesterFilter]);
+
+  const pagedUsers = filteredUsers.slice((userPage - 1) * USERS_PER_PAGE, userPage * USERS_PER_PAGE);
   const totalPages = Math.ceil(filteredUsers.length / USERS_PER_PAGE);
 
   const handleRoleChange = async (profileId: string, userId: string, newRole: string) => {
     setUsers((prev) => prev.map((u) => (u.id === profileId ? { ...u, role: newRole } : u)));
     try {
       await supabase.from("profiles").update({ role: newRole }).eq("id", profileId);
-      const appRole = newRole === "admin" ? "admin" : "user";
-      await supabase.from("user_roles").upsert({ user_id: userId, role: appRole as any });
+      await supabase.from("user_roles").upsert({ user_id: userId, role: newRole as any });
+      recordAudit("User Role Updated", `Updated ${profileId} role to ${newRole.toUpperCase()}`, "user");
       toast.success(`Role updated to ${newRole.toUpperCase()}`);
     } catch {
-      toast.error("Failed to update role.");
+      toast.error("Failed to update role in Supabase.");
       loadUsers();
     }
   };
 
+  const submitAwardXp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!awardXpTarget) return;
+    const newXp = (awardXpTarget.xp || 0) + Number(awardXpAmount);
+
+    try {
+      const { error } = await supabase.from("profiles").update({ xp: newXp }).eq("id", awardXpTarget.id);
+      if (error) throw error;
+
+      setUsers((prev) => prev.map((u) => (u.id === awardXpTarget.id ? { ...u, xp: newXp } : u)));
+      recordAudit("XP Awarded", `Awarded +${awardXpAmount} XP to ${awardXpTarget.name} (${awardXpReason})`, "user");
+      toast.success(`Successfully awarded +${awardXpAmount} XP to ${awardXpTarget.name}!`);
+      setAwardXpTarget(null);
+    } catch {
+      toast.error("Failed to update student XP.");
+    }
+  };
+
   const exportUsersCSV = () => {
-    const headers = ["Name", "Email", "Role", "XP", "Joined"];
+    const headers = ["Name", "Email", "Enrollment", "Branch", "Semester", "Role", "XP", "Streak", "Joined"];
     const rows = filteredUsers.map((u) =>
-      [`"${u.name}"`, `"${u.email}"`, u.role, u.xp, `"${u.joined}"`].join(",")
+      [
+        `"${u.name}"`,
+        `"${u.email}"`,
+        `"${u.enrollmentNo}"`,
+        `"${u.branch}"`,
+        u.semester,
+        u.role,
+        u.xp,
+        u.streakDays,
+        `"${u.joined}"`,
+      ].join(",")
     );
     const csv = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows].join("\n");
     const link = document.createElement("a");
     link.href = encodeURI(csv);
-    link.download = `itm_users_${new Date().toISOString().slice(0, 10)}.csv`;
+    link.download = `itm_notes_students_${new Date().toISOString().slice(0, 10)}.csv`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    toast.success(`Exported ${filteredUsers.length} user records`);
+    recordAudit("Registry Exported", `Exported CSV of ${filteredUsers.length} student records`, "user");
+    toast.success(`Exported ${filteredUsers.length} student records`);
   };
 
-  // ── Maintenance Mode ────────────────────────────────────────────────────────
+  // ── Maintenance Mode State & Actions ────────────────────────────────────────
   const [maintenanceOn, setMaintenanceOn] = useState(() => {
     try {
       return localStorage.getItem("itm_maintenance_mode") === "true";
@@ -353,16 +480,18 @@ export default function AdminDashboard() {
       return false;
     }
   });
+
   const [maintenanceMsg, setMaintenanceMsg] = useState(() => {
     try {
       const stored = localStorage.getItem("itm_maintenance_config");
       if (stored) {
         const cfg = JSON.parse(stored);
-        return cfg.message ?? "";
+        return cfg.message || "";
       }
     } catch {}
-    return "ITM Notes is currently undergoing a scheduled infrastructure upgrade. We will be back shortly.";
+    return "ITM Notes is currently undergoing a scheduled infrastructure upgrade. We will be back online shortly.";
   });
+
   const [maintenanceCountdown, setMaintenanceCountdown] = useState(30);
   const [maintenancePasskey, setMaintenancePasskey] = useState<string>(() => {
     try {
@@ -381,36 +510,39 @@ export default function AdminDashboard() {
     setMaintenanceOn(next);
     localStorage.setItem("itm_maintenance_mode", String(next));
 
-    // When starting maintenance, automatically generate a fresh unique key!
-    const key = next ? (maintenancePasskey || generateUniqueMaintenanceKey()) : "";
+    const key = next ? maintenancePasskey || generateUniqueMaintenanceKey() : "";
     if (next) {
       setMaintenancePasskey(key);
     }
 
-    // Also save full config so MaintenanceBanner picks it up
     const cfg = {
       active: next,
       title: "We are building something incredible.",
       message: maintenanceMsg,
-      endTime: next
-        ? new Date(Date.now() + maintenanceCountdown * 60 * 1000).toISOString()
-        : null,
+      endTime: next ? new Date(Date.now() + maintenanceCountdown * 60 * 1000).toISOString() : null,
       passkey: key,
     };
+
     localStorage.setItem("itm_maintenance_config", JSON.stringify(cfg));
     window.dispatchEvent(new Event("itm_maintenance_updated"));
+
     try {
       const bc = new BroadcastChannel("itm_maintenance_channel");
       bc.postMessage(cfg);
       bc.close();
     } catch {}
 
-    // Synchronize globally via Supabase profiles for instant multi-device sync
     supabase
       .from("profiles")
       .update({ status: next ? `MAINTENANCE:${JSON.stringify(cfg)}` : "Active" })
       .eq("email", "maherbhatt01@gmail.com")
       .then(() => {});
+
+    recordAudit(
+      next ? "Maintenance Activated" : "Maintenance Deactivated",
+      next ? `System locked globally with OTP: ${key}` : "Site restored to active public access",
+      "security"
+    );
 
     toast[next ? "warning" : "success"](
       next ? `Maintenance mode ACTIVE! Dynamic Access Key: ${key}` : "Maintenance mode is OFF — site is live globally."
@@ -425,11 +557,13 @@ export default function AdminDashboard() {
     const updated = { ...existing, passkey: newKey };
     localStorage.setItem("itm_maintenance_config", JSON.stringify(updated));
     window.dispatchEvent(new Event("itm_maintenance_updated"));
+
     try {
       const bc = new BroadcastChannel("itm_maintenance_channel");
       bc.postMessage(updated);
       bc.close();
     } catch {}
+
     if (maintenanceOn) {
       supabase
         .from("profiles")
@@ -437,6 +571,8 @@ export default function AdminDashboard() {
         .eq("email", "maherbhatt01@gmail.com")
         .then(() => {});
     }
+
+    recordAudit("Maintenance Key Regenerated", `Invalidated prior key; new OTP: ${newKey}`, "security");
     toast.success(`Generated new dynamic maintenance key: ${newKey}`);
   };
 
@@ -449,11 +585,13 @@ export default function AdminDashboard() {
     const updated = { ...existing, passkey: cleanKey };
     localStorage.setItem("itm_maintenance_config", JSON.stringify(updated));
     window.dispatchEvent(new Event("itm_maintenance_updated"));
+
     try {
       const bc = new BroadcastChannel("itm_maintenance_channel");
       bc.postMessage(updated);
       bc.close();
     } catch {}
+
     if (maintenanceOn) {
       supabase
         .from("profiles")
@@ -462,6 +600,7 @@ export default function AdminDashboard() {
         .then(() => {});
     }
     setCustomKeyInput("");
+    recordAudit("Custom Key Set", `Custom passkey applied: ${cleanKey}`, "security");
     toast.success(`Custom maintenance access key applied: ${cleanKey}`);
   };
 
@@ -469,10 +608,7 @@ export default function AdminDashboard() {
     const stored = localStorage.getItem("itm_maintenance_config");
     const existing = stored ? JSON.parse(stored) : {};
     const updated = { ...existing, message: maintenanceMsg };
-    localStorage.setItem(
-      "itm_maintenance_config",
-      JSON.stringify(updated)
-    );
+    localStorage.setItem("itm_maintenance_config", JSON.stringify(updated));
     window.dispatchEvent(new Event("itm_maintenance_updated"));
 
     if (maintenanceOn) {
@@ -482,7 +618,7 @@ export default function AdminDashboard() {
         .eq("email", "maherbhatt01@gmail.com")
         .then(() => {});
     }
-    toast.success("Maintenance message saved and synced.");
+    toast.success("Maintenance message saved and broadcast globally.");
   };
 
   const launchStudentPreview = () => {
@@ -491,14 +627,25 @@ export default function AdminDashboard() {
     toast.info("Launching student maintenance lock screen...");
   };
 
-  // ── Announcements ───────────────────────────────────────────────────────────
+  // ── Announcements State & Global Sync ───────────────────────────────────────
   const [announcements, setAnnouncements] = useState<Announcement[]>(() => {
     try {
       const raw = localStorage.getItem("itm_announcements");
       if (raw) return JSON.parse(raw);
     } catch {}
-    return [];
+    return [
+      {
+        id: "ann-mst-prep",
+        title: "Semester 3 MST & Final Exam Prep Live",
+        message: "Comprehensive lecture notes, solved IMP question banks, and MCQ mock quizzes are fully verified for all CSE subjects!",
+        type: "info",
+        audience: "all",
+        active: true,
+        createdAt: new Date().toISOString(),
+      },
+    ];
   });
+
   const [annTitle, setAnnTitle] = useState("");
   const [annMessage, setAnnMessage] = useState("");
   const [annType, setAnnType] = useState<Announcement["type"]>("info");
@@ -508,12 +655,17 @@ export default function AdminDashboard() {
     setAnnouncements(list);
     localStorage.setItem("itm_announcements", JSON.stringify(list));
     window.dispatchEvent(new Event("itm_announcement_updated"));
+    try {
+      const bc = new BroadcastChannel("itm_announcements_channel");
+      bc.postMessage(list);
+      bc.close();
+    } catch {}
   };
 
   const createAnnouncement = (e: React.FormEvent) => {
     e.preventDefault();
     if (!annTitle.trim() || !annMessage.trim()) {
-      toast.error("Title and message are required.");
+      toast.error("Announcement title and message are required.");
       return;
     }
     const entry: Announcement = {
@@ -528,7 +680,15 @@ export default function AdminDashboard() {
     saveAnnouncements([entry, ...announcements]);
     setAnnTitle("");
     setAnnMessage("");
-    toast.success(`Announcement "${entry.title}" published!`);
+    recordAudit("Announcement Published", `Published announcement: "${entry.title}"`, "announcement");
+    toast.success(`Announcement "${entry.title}" broadcast to all students!`);
+  };
+
+  const applyAnnouncementPreset = (preset: { title: string; message: string; type: Announcement["type"] }) => {
+    setAnnTitle(preset.title);
+    setAnnMessage(preset.message);
+    setAnnType(preset.type);
+    toast.info("Loaded preset announcement template.");
   };
 
   const deleteAnnouncement = (id: string) => {
@@ -540,33 +700,48 @@ export default function AdminDashboard() {
     saveAnnouncements(announcements.map((a) => (a.id === id ? { ...a, active: !a.active } : a)));
   };
 
-  // ── Community Moderation ─────────────────────────────────────────────────────
-  const [communityPosts, setCommunityPosts] = useState<CommunityPost[]>([]);
+  // ── Community Moderation State & Real DB Actions ─────────────────────────────
+  const [communityPosts, setCommunityPosts] = useState<CommunityPostItem[]>([]);
   const [moderationLoading, setModerationLoading] = useState(false);
-  const [flagged, setFlagged] = useState<Set<string>>(new Set());
+  const [modFilter, setModFilter] = useState<"all" | "pinned" | "flagged">("all");
+  const [flaggedPosts, setFlaggedPosts] = useState<Set<string>>(() => {
+    try {
+      const stored = localStorage.getItem("itm_flagged_posts");
+      if (stored) return new Set(JSON.parse(stored));
+    } catch {}
+    return new Set();
+  });
 
   const loadCommunityPosts = async () => {
     setModerationLoading(true);
     try {
       const { data, error } = await supabase
         .from("community_posts")
-        .select("id, content, created_at, upvotes_count")
+        .select("id, author_id, author_name, author_email, author_avatar, author_branch, content, likes, pinned, created_at, category")
         .order("created_at", { ascending: false })
-        .limit(30);
+        .limit(40);
+
       if (error) throw error;
       if (data) {
         setCommunityPosts(
           data.map((p: any) => ({
             id: p.id,
+            authorId: p.author_id,
+            authorName: p.author_name || "Verified Student",
+            authorEmail: p.author_email,
+            authorAvatar: p.author_avatar,
+            authorBranch: p.author_branch || "Computer Science",
             content: p.content ?? "",
-            authorName: "Community User",
-            upvotes: p.upvotes_count ?? 0,
+            likes: p.likes ?? 0,
+            pinned: p.pinned ?? false,
             createdAt: p.created_at,
+            category: p.category || "Campus Life",
+            isFlagged: flaggedPosts.has(p.id),
           }))
         );
       }
     } catch {
-      toast.error("Could not load community posts.");
+      toast.error("Could not load community discussions.");
     } finally {
       setModerationLoading(false);
     }
@@ -578,66 +753,151 @@ export default function AdminDashboard() {
 
   const deletePost = async (id: string) => {
     try {
-      await supabase.from("community_posts").delete().eq("id", id);
+      const { error } = await supabase.from("community_posts").delete().eq("id", id);
+      if (error) throw error;
       setCommunityPosts((prev) => prev.filter((p) => p.id !== id));
-      toast.success("Post deleted.");
+      recordAudit("Community Post Deleted", `Deleted post ID: ${id}`, "content");
+      toast.success("Community post permanently deleted from database.");
     } catch {
-      toast.error("Failed to delete post.");
+      toast.error("Failed to delete post from Supabase.");
     }
   };
 
-  const toggleFlag = (id: string) => {
-    setFlagged((prev) => {
+  const togglePinPost = async (id: string, currentPin: boolean) => {
+    try {
+      const { error } = await supabase.from("community_posts").update({ pinned: !currentPin }).eq("id", id);
+      if (error) throw error;
+      setCommunityPosts((prev) => prev.map((p) => (p.id === id ? { ...p, pinned: !currentPin } : p)));
+      recordAudit("Post Pin Toggled", `Post ${id} pinned status: ${!currentPin}`, "content");
+      toast.success(!currentPin ? "Post pinned to top of campus feed!" : "Post unpinned.");
+    } catch {
+      toast.error("Failed to update post pin status.");
+    }
+  };
+
+  const toggleFlagPost = (id: string) => {
+    setFlaggedPosts((prev) => {
       const next = new Set(prev);
       if (next.has(id)) next.delete(id);
       else next.add(id);
+      try {
+        localStorage.setItem("itm_flagged_posts", JSON.stringify(Array.from(next)));
+      } catch {}
       return next;
     });
   };
 
-  // ── Render ──────────────────────────────────────────────────────────────────
+  const filteredCommunityPosts = useMemo(() => {
+    return communityPosts.filter((p) => {
+      if (modFilter === "pinned") return p.pinned;
+      if (modFilter === "flagged") return flaggedPosts.has(p.id);
+      return true;
+    });
+  }, [communityPosts, modFilter, flaggedPosts]);
+
+  // ── Curriculum & Notes Explorer State ────────────────────────────────────────
+  const [topicSearchQuery, setTopicSearchQuery] = useState("");
+  const allCurriculumTopics = useMemo(() => {
+    const list: { subjectName: string; subjectCode: string; semester: number; unitTitle: string; topicTitle: string; mcqsCount: number }[] = [];
+    subjects.forEach((s) => {
+      s.units?.forEach((u) => {
+        u.topics?.forEach((t) => {
+          list.push({
+            subjectName: s.name,
+            subjectCode: s.code || "",
+            semester: s.semester || 1,
+            unitTitle: u.title,
+            topicTitle: t.title,
+            mcqsCount: t.mcqs?.length || 0,
+          });
+        });
+      });
+    });
+    return list;
+  }, []);
+
+  const filteredTopics = useMemo(() => {
+    if (!topicSearchQuery.trim()) return allCurriculumTopics.slice(0, 15);
+    const q = topicSearchQuery.toLowerCase();
+    return allCurriculumTopics.filter(
+      (t) =>
+        t.topicTitle.toLowerCase().includes(q) ||
+        t.subjectName.toLowerCase().includes(q) ||
+        t.subjectCode.toLowerCase().includes(q) ||
+        t.unitTitle.toLowerCase().includes(q)
+    );
+  }, [allCurriculumTopics, topicSearchQuery]);
+
   return (
-    <div className="min-h-screen bg-slate-900 text-white">
-      {/* Header */}
-      <div className="border-b border-slate-700 bg-slate-900/90 sticky top-0 z-30 backdrop-blur">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="h-9 w-9 rounded-xl bg-[#D6E85D]/20 flex items-center justify-center">
+    <div className="min-h-screen bg-[#051410] text-[#F5F1E8] font-sans">
+      {/* ── TOP EXECUTIVE COMMAND BAR ── */}
+      <div className="border-b border-[#1A4237] bg-[#071914]/95 sticky top-0 z-40 backdrop-blur-xl shadow-xl">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5">
+            <div className="h-10 w-10 rounded-2xl bg-[#D6E85D]/20 border border-[#D6E85D]/40 flex items-center justify-center shadow-inner">
               <Shield className="h-5 w-5 text-[#D6E85D]" />
             </div>
             <div>
-              <h1 className="text-base sm:text-lg font-extrabold text-white leading-none">
-                ITM Notes Admin
-              </h1>
-              <p className="text-[11px] text-slate-400 font-medium mt-0.5">
-                🛡️ Platform Admin &middot; {user?.email}
+              <div className="flex items-center gap-2">
+                <h1 className="text-base sm:text-lg font-black text-white leading-none font-display">
+                  ITM Notes Command Center
+                </h1>
+                <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-[#D6E85D]/15 text-[#D6E85D] border border-[#D6E85D]/30 uppercase font-mono">
+                  v3.2 Executive
+                </span>
+              </div>
+              <p className="text-xs text-[#A2BAAF] font-medium mt-0.5 flex items-center gap-1.5">
+                <span>Maher Bhatt &middot; {user?.email}</span>
+                <span className="text-emerald-400 font-bold font-mono">
+                  {dbLatency ? `(${dbLatency}ms latency)` : "(DB Connected)"}
+                </span>
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            {/* Maintenance quick badge */}
-            <span
-              className={`hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold border ${
+
+          <div className="flex items-center gap-2.5">
+            {/* Campus 2x Boost Quick Trigger */}
+            <button
+              onClick={() => triggerCampusBoost(60)}
+              className={`hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border cursor-pointer ${
+                isCampusBoostActive
+                  ? "bg-[#D6E85D] text-[#183F36] border-[#D6E85D] shadow-md shadow-[#D6E85D]/20"
+                  : "bg-[#0B201A] text-slate-300 border-[#1A4237] hover:border-[#D6E85D]/50 hover:text-white"
+              }`}
+              title="Trigger a campus-wide 2x study sprint boost"
+            >
+              <Zap className="h-3.5 w-3.5 fill-current" />
+              <span>{isCampusBoostActive ? "⚡ 2x Boost Active" : "Ignite 2x Boost"}</span>
+            </button>
+
+            {/* Maintenance Status Quick Badge */}
+            <button
+              onClick={() => {
+                toggleMaintenance();
+                setActiveTab("maintenance");
+              }}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition-colors cursor-pointer ${
                 maintenanceOn
-                  ? "bg-amber-500/10 text-amber-400 border-amber-500/30"
-                  : "bg-emerald-500/10 text-emerald-400 border-emerald-500/30"
+                  ? "bg-amber-500/20 text-amber-300 border-amber-500/40 animate-pulse"
+                  : "bg-emerald-500/15 text-emerald-300 border-emerald-500/30"
               }`}
             >
-              <span className={`w-1.5 h-1.5 rounded-full ${maintenanceOn ? "bg-amber-400 animate-pulse" : "bg-emerald-400"}`} />
-              {maintenanceOn ? "Maintenance ON" : "Site Live"}
-            </span>
+              <span className={`w-2 h-2 rounded-full ${maintenanceOn ? "bg-amber-400 animate-ping" : "bg-emerald-400"}`} />
+              <span>{maintenanceOn ? "Lockdown Active" : "Site Live Globally"}</span>
+            </button>
+
             <button
               onClick={() => navigate("/admin/seed")}
-              className="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 border border-slate-600 rounded-xl text-xs font-semibold text-slate-200 flex items-center gap-1.5 transition-colors"
+              className="px-3 py-1.5 bg-[#0B201A] hover:bg-[#12332A] border border-[#1A4237] rounded-xl text-xs font-bold text-slate-200 flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
             >
-              <Database className="h-3.5 w-3.5" />
-              Seed DB
+              <Database className="h-3.5 w-3.5 text-[#D6E85D]" />
+              <span>Seed Database</span>
             </button>
           </div>
         </div>
 
-        {/* Tabs */}
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 flex gap-0.5 overflow-x-auto pb-px">
+        {/* Executive Tab Switcher */}
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 flex gap-1 overflow-x-auto pb-px scrollbar-none font-display">
           {TABS.map((tab) => {
             const Icon = tab.icon;
             const active = activeTab === tab.id;
@@ -645,262 +905,362 @@ export default function AdminDashboard() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-1.5 px-4 py-2.5 text-xs font-semibold rounded-t-lg border-b-2 transition-all whitespace-nowrap ${
+                className={`flex items-center gap-2 px-4 py-2.5 text-xs font-bold rounded-t-xl border-b-2 transition-all whitespace-nowrap cursor-pointer ${
                   active
-                    ? "border-[#D6E85D] text-[#D6E85D] bg-slate-800/60"
-                    : "border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
+                    ? "border-[#D6E85D] text-[#D6E85D] bg-[#0B201A]"
+                    : "border-transparent text-slate-400 hover:text-white hover:bg-white/5"
                 }`}
               >
                 <Icon className="h-3.5 w-3.5" />
-                {tab.label}
+                <span>{tab.label}</span>
               </button>
             );
           })}
         </div>
       </div>
 
-      {/* Content */}
+      {/* ── MAIN CONTENT CONTAINER ── */}
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-6 space-y-6">
 
-        {/* ── TAB: OVERVIEW ─────────────────────────────────────────────────────── */}
+        {/* ════════════════════ TAB 1: EXECUTIVE OVERVIEW ════════════════════ */}
         {activeTab === "overview" && (
           <div className="space-y-6 animate-fade-in">
-            {/* Stat cards */}
+            {/* Stat Cards Grid */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              <StatCard
+              <ExecutiveStatCard
                 icon={Users2}
-                label="Total Users"
-                value={statsLoading ? "…" : (totalUsers ?? "—")}
+                label="Registered Students"
+                value={statsLoading ? "…" : (totalUsers ?? 0)}
+                subtext="Verified ITM SLS Profiles"
                 accent="#D6E85D"
               />
-              <StatCard
+              <ExecutiveStatCard
                 icon={MessageSquare}
-                label="Community Posts"
-                value={statsLoading ? "…" : (totalPosts ?? "—")}
-                accent="#60a5fa"
+                label="Community Discussions"
+                value={statsLoading ? "…" : (totalPosts ?? 0)}
+                subtext="Campus Pulse Threads"
+                accent="#38BDF8"
               />
-              <StatCard
+              <ExecutiveStatCard
                 icon={BookOpen}
-                label="Total Subjects"
+                label="Engineering Subjects"
                 value={totalSubjects}
-                accent="#a78bfa"
+                subtext="Across Semesters 1 to 4"
+                accent="#A855F7"
               />
-              <StatCard
+              <ExecutiveStatCard
                 icon={Hash}
-                label="Total MCQs"
+                label="Verified Practice MCQs"
                 value={totalMcqs.toLocaleString()}
-                accent="#f472b6"
+                subtext="Curated for MST & End-Sem"
+                accent="#10B981"
               />
             </div>
 
-            {/* System health + recent activity */}
-            <div className="grid lg:grid-cols-2 gap-4">
-              {/* System health */}
-              <div className="bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-4">
+            {/* Middle Row: System Health + Quick Actions */}
+            <div className="grid lg:grid-cols-2 gap-5">
+              {/* System Health Card */}
+              <div className="bg-[#0B201A] border border-[#1A4237] rounded-3xl p-6 space-y-4 shadow-xl">
                 <div className="flex items-center justify-between">
-                  <h2 className="font-bold text-base text-white flex items-center gap-2">
+                  <h2 className="font-bold text-base text-white flex items-center gap-2 font-display">
                     <Activity className="h-4 w-4 text-[#D6E85D]" />
-                    System Health
+                    Live System Health & Infrastructure
                   </h2>
                   <button
                     onClick={loadOverviewStats}
                     disabled={statsLoading}
-                    className="p-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 transition-colors disabled:opacity-50"
+                    className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 transition-colors disabled:opacity-50 cursor-pointer"
                   >
-                    <RefreshCw className={`h-3.5 w-3.5 text-slate-300 ${statsLoading ? "animate-spin" : ""}`} />
+                    <RefreshCw className={`h-3.5 w-3.5 ${statsLoading ? "animate-spin" : ""}`} />
                   </button>
                 </div>
 
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-slate-700/50 border border-slate-600">
-                    <span className="text-sm text-slate-300 font-medium">Supabase Connection</span>
-                    <span className="flex items-center gap-1.5 text-xs font-bold">
-                      {supabaseOk === null ? (
-                        <span className="text-slate-500">Checking…</span>
-                      ) : supabaseOk ? (
+                <div className="space-y-2.5">
+                  <div className="flex items-center justify-between p-3.5 rounded-2xl bg-black/40 border border-[#1A4237]">
+                    <div className="flex items-center gap-2.5">
+                      <Database className="h-4 w-4 text-[#D6E85D]" />
+                      <span className="text-xs font-semibold text-slate-200">Supabase Cloud Database</span>
+                    </div>
+                    <span className="flex items-center gap-1.5 text-xs font-bold font-mono">
+                      {supabaseOk ? (
                         <>
-                          <span className="w-2 h-2 rounded-full bg-emerald-400" />
-                          <span className="text-emerald-400">Connected</span>
+                          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                          <span className="text-emerald-400">Optimal ({dbLatency}ms)</span>
                         </>
                       ) : (
                         <>
-                          <span className="w-2 h-2 rounded-full bg-red-400 animate-pulse" />
-                          <span className="text-red-400">Error</span>
+                          <span className="w-2 h-2 rounded-full bg-red-400" />
+                          <span className="text-red-400">Connecting...</span>
                         </>
                       )}
                     </span>
                   </div>
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-slate-700/50 border border-slate-600">
-                    <span className="text-sm text-slate-300 font-medium">Maintenance Mode</span>
-                    <span className={`flex items-center gap-1.5 text-xs font-bold ${maintenanceOn ? "text-amber-400" : "text-emerald-400"}`}>
-                      <span className={`w-2 h-2 rounded-full ${maintenanceOn ? "bg-amber-400 animate-pulse" : "bg-emerald-400"}`} />
-                      {maintenanceOn ? "ON" : "OFF"}
+
+                  <div className="flex items-center justify-between p-3.5 rounded-2xl bg-black/40 border border-[#1A4237]">
+                    <div className="flex items-center gap-2.5">
+                      <Power className="h-4 w-4 text-amber-400" />
+                      <span className="text-xs font-semibold text-slate-200">Global Maintenance Status</span>
+                    </div>
+                    <span className={`text-xs font-bold font-mono ${maintenanceOn ? "text-amber-400" : "text-emerald-400"}`}>
+                      {maintenanceOn ? "SYSTEM LOCKED (OTP ACTIVE)" : "SITE ONLINE (NORMAL)"}
                     </span>
                   </div>
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-slate-700/50 border border-slate-600">
-                    <span className="text-sm text-slate-300 font-medium">Active Announcements</span>
-                    <span className="text-xs font-bold text-[#D6E85D]">
-                      {announcements.filter((a) => a.active).length}
+
+                  <div className="flex items-center justify-between p-3.5 rounded-2xl bg-black/40 border border-[#1A4237]">
+                    <div className="flex items-center gap-2.5">
+                      <Zap className="h-4 w-4 text-[#D6E85D]" />
+                      <span className="text-xs font-semibold text-slate-200">2x Knowledge Boost Multiplier</span>
+                    </div>
+                    <span className="text-xs font-bold text-[#D6E85D] font-mono">
+                      {isCampusBoostActive ? "⚡ ACTIVE (DOUBLE XP)" : "READY TO IGNITE"}
                     </span>
                   </div>
                 </div>
 
-                {/* Quick actions */}
-                <div className="pt-2 border-t border-slate-700">
-                  <p className="text-[11px] text-slate-500 font-semibold uppercase mb-2">Quick Actions</p>
+                {/* Quick Action Buttons */}
+                <div className="pt-3 border-t border-[#1A4237]/80">
+                  <p className="text-[11px] text-[#A2BAAF] font-bold uppercase tracking-wider mb-2.5">
+                    Executive Quick Actions
+                  </p>
                   <div className="flex flex-wrap gap-2">
                     <button
                       onClick={() => setActiveTab("users")}
-                      className="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 border border-slate-600 rounded-lg text-xs font-semibold text-slate-200 transition-colors"
+                      className="px-3.5 py-2 bg-[#12332C] hover:bg-[#183F36] border border-[#23584C] rounded-xl text-xs font-bold text-slate-200 transition-all cursor-pointer shadow-xs"
                     >
-                      View Users
+                      Inspect Students
                     </button>
                     <button
                       onClick={() => setActiveTab("announcements")}
-                      className="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 border border-slate-600 rounded-lg text-xs font-semibold text-slate-200 transition-colors"
+                      className="px-3.5 py-2 bg-[#12332C] hover:bg-[#183F36] border border-[#23584C] rounded-xl text-xs font-bold text-slate-200 transition-all cursor-pointer shadow-xs"
                     >
-                      Post Announcement
+                      Broadcast Announcement
                     </button>
                     <button
-                      onClick={() => {
-                        toggleMaintenance();
-                        setActiveTab("maintenance");
-                      }}
-                      className={`px-3 py-1.5 border rounded-lg text-xs font-semibold transition-colors ${
-                        maintenanceOn
-                          ? "bg-amber-500/10 border-amber-500/30 text-amber-400 hover:bg-amber-500/20"
-                          : "bg-slate-700 border-slate-600 text-slate-200 hover:bg-slate-600"
-                      }`}
+                      onClick={() => triggerCampusBoost(60)}
+                      className="px-3.5 py-2 bg-[#D6E85D] hover:bg-[#C8DC47] text-[#183F36] rounded-xl text-xs font-extrabold transition-all cursor-pointer shadow-md"
                     >
-                      {maintenanceOn ? "Disable Maintenance" : "Toggle Maintenance"}
+                      ⚡ Ignite Campus 2x Sprint
                     </button>
                   </div>
                 </div>
               </div>
 
-              {/* Recent activity feed */}
-              <div className="bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-3">
-                <h2 className="font-bold text-base text-white flex items-center gap-2">
-                  <Clock className="h-4 w-4 text-[#D6E85D]" />
-                  Recent Community Posts
-                </h2>
-                {statsLoading ? (
-                  <div className="flex items-center justify-center h-32 text-slate-500 text-sm">
-                    Loading…
+              {/* Recent Community Feed Card */}
+              <div className="bg-[#0B201A] border border-[#1A4237] rounded-3xl p-6 space-y-4 shadow-xl flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <h2 className="font-bold text-base text-white flex items-center gap-2 font-display">
+                      <MessageSquare className="h-4 w-4 text-[#D6E85D]" />
+                      Live Campus Discussions
+                    </h2>
+                    <button
+                      onClick={() => setActiveTab("moderation")}
+                      className="text-xs text-[#D6E85D] hover:underline font-bold"
+                    >
+                      Moderate All ↗
+                    </button>
                   </div>
-                ) : recentActivity.length === 0 ? (
-                  <p className="text-slate-500 text-sm text-center py-8">No recent posts.</p>
-                ) : (
-                  <div className="space-y-2">
-                    {recentActivity.map((post) => (
-                      <div
-                        key={post.id}
-                        className="p-3 rounded-xl bg-slate-700/50 border border-slate-600 text-sm"
-                      >
-                        <p className="text-slate-200 line-clamp-2">{post.content}</p>
-                        <div className="flex items-center gap-3 mt-1.5 text-[11px] text-slate-500">
-                          <span className="flex items-center gap-1">
-                            <ThumbsUp className="h-3 w-3" /> {post.upvotes}
-                          </span>
-                          <span>{new Date(post.createdAt).toLocaleDateString("en-IN")}</span>
+
+                  {statsLoading ? (
+                    <div className="py-12 text-center text-slate-500 text-sm">Loading discussions…</div>
+                  ) : recentActivity.length === 0 ? (
+                    <p className="text-slate-500 text-sm text-center py-8">No community posts yet.</p>
+                  ) : (
+                    <div className="space-y-2.5">
+                      {recentActivity.slice(0, 3).map((post) => (
+                        <div key={post.id} className="p-3.5 rounded-2xl bg-black/40 border border-[#1A4237] text-xs space-y-1.5">
+                          <div className="flex items-center justify-between text-[11px] text-[#A2BAAF]">
+                            <span className="font-bold text-white font-display">{post.authorName}</span>
+                            <span>{new Date(post.createdAt).toLocaleDateString("en-IN")}</span>
+                          </div>
+                          <p className="text-slate-300 line-clamp-2">{post.content}</p>
+                          <div className="flex items-center gap-2 text-[10px] text-[#D6E85D] font-mono">
+                            <ThumbsUp className="h-3 w-3" />
+                            <span>{post.likes} Upvotes</span>
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="pt-3 border-t border-[#1A4237]/80 text-[11px] text-[#A2BAAF] flex items-center justify-between font-mono">
+                  <span>Audit Logs Count: {auditLogs.length}</span>
+                  <button onClick={() => setActiveTab("audit")} className="text-[#D6E85D] hover:underline font-bold">
+                    View Security Trail ↗
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         )}
 
-        {/* ── TAB: USERS ────────────────────────────────────────────────────────── */}
+        {/* ════════════════════ TAB 2: STUDENT REGISTRY ════════════════════ */}
         {activeTab === "users" && (
           <div className="space-y-4 animate-fade-in">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
-                <input
-                  value={userSearch}
-                  onChange={(e) => { setUserSearch(e.target.value); setUserPage(1); }}
-                  placeholder="Search by name or email…"
-                  className="w-full pl-9 pr-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#D6E85D]/60"
-                />
+            {/* Filter and Action Bar */}
+            <div className="bg-[#0B201A] border border-[#1A4237] rounded-3xl p-4 sm:p-5 shadow-xl space-y-3">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                {/* Search Bar */}
+                <div className="relative flex-1">
+                  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <input
+                    value={userSearch}
+                    onChange={(e) => {
+                      setUserSearch(e.target.value);
+                      setUserPage(1);
+                    }}
+                    placeholder="Search students by name, email, or enrollment number…"
+                    className="w-full pl-10 pr-4 py-2.5 bg-black/40 border border-[#1A4237] rounded-2xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#D6E85D]"
+                  />
+                </div>
+
+                <div className="flex items-center gap-2 flex-wrap">
+                  {/* Role Filter */}
+                  <select
+                    value={userRoleFilter}
+                    onChange={(e) => {
+                      setUserRoleFilter(e.target.value);
+                      setUserPage(1);
+                    }}
+                    className="bg-black/40 border border-[#1A4237] rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-[#D6E85D] cursor-pointer"
+                  >
+                    <option value="all">All Roles</option>
+                    <option value="student">Students</option>
+                    <option value="admin">Admins</option>
+                    <option value="guest">Guests</option>
+                  </select>
+
+                  {/* Semester Filter */}
+                  <select
+                    value={userSemesterFilter}
+                    onChange={(e) => {
+                      setUserSemesterFilter(e.target.value);
+                      setUserPage(1);
+                    }}
+                    className="bg-black/40 border border-[#1A4237] rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-[#D6E85D] cursor-pointer"
+                  >
+                    <option value="all">All Semesters</option>
+                    <option value="1">Semester 1</option>
+                    <option value="2">Semester 2</option>
+                    <option value="3">Semester 3</option>
+                    <option value="4">Semester 4</option>
+                  </select>
+
+                  <button
+                    onClick={loadUsers}
+                    className="p-2.5 bg-black/40 border border-[#1A4237] rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
+                    title="Refresh student records"
+                  >
+                    <RefreshCw className={`h-4 w-4 ${usersLoading ? "animate-spin" : ""}`} />
+                  </button>
+
+                  <button
+                    onClick={exportUsersCSV}
+                    className="flex items-center gap-1.5 px-3.5 py-2 bg-[#D6E85D] text-[#183F36] rounded-xl text-xs font-extrabold hover:bg-[#C8DC47] transition-all cursor-pointer shadow-md"
+                  >
+                    <Download className="h-3.5 w-3.5" />
+                    <span>Export CSV</span>
+                  </button>
+                </div>
               </div>
-              <button
-                onClick={loadUsers}
-                className="flex items-center gap-1.5 px-3 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-xs font-semibold text-slate-300 hover:bg-slate-700 transition-colors"
-              >
-                <RefreshCw className={`h-3.5 w-3.5 ${usersLoading ? "animate-spin" : ""}`} />
-                Refresh
-              </button>
-              <button
-                onClick={exportUsersCSV}
-                className="flex items-center gap-1.5 px-3 py-2.5 bg-[#D6E85D]/10 border border-[#D6E85D]/30 rounded-xl text-xs font-semibold text-[#D6E85D] hover:bg-[#D6E85D]/20 transition-colors"
-              >
-                <Download className="h-3.5 w-3.5" />
-                Export CSV
-              </button>
             </div>
 
-            <div className="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden">
+            {/* Students Table */}
+            <div className="bg-[#0B201A] border border-[#1A4237] rounded-3xl overflow-hidden shadow-2xl">
               {usersLoading ? (
-                <div className="flex items-center justify-center py-16 text-slate-500">Loading users…</div>
+                <div className="flex items-center justify-center py-20 text-slate-400 text-xs font-bold">
+                  Loading verified student records from Supabase…
+                </div>
               ) : (
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left text-sm">
-                    <thead className="bg-slate-700/60 text-slate-400 uppercase text-[11px] font-bold border-b border-slate-700">
+                  <table className="w-full text-left text-xs">
+                    <thead className="bg-black/50 text-[#A2BAAF] uppercase text-[10px] font-bold border-b border-[#1A4237] tracking-wider font-display">
                       <tr>
-                        <th className="px-4 py-3">User</th>
-                        <th className="px-4 py-3">Email</th>
-                        <th className="px-4 py-3">Role</th>
-                        <th className="px-4 py-3">XP</th>
-                        <th className="px-4 py-3">Joined</th>
-                        <th className="px-4 py-3">Actions</th>
+                        <th className="px-5 py-3.5">Student</th>
+                        <th className="px-4 py-3.5">Enrollment No</th>
+                        <th className="px-4 py-3.5">Branch & Sem</th>
+                        <th className="px-4 py-3.5">Role</th>
+                        <th className="px-4 py-3.5">Experience (XP)</th>
+                        <th className="px-4 py-3.5">Joined Date</th>
+                        <th className="px-4 py-3.5 text-right">Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-700/50">
+                    <tbody className="divide-y divide-[#1A4237]/60">
                       {pagedUsers.length === 0 ? (
                         <tr>
-                          <td colSpan={6} className="py-12 text-center text-slate-500">
-                            No users found.
+                          <td colSpan={7} className="py-16 text-center text-slate-400">
+                            No students match your filter criteria.
                           </td>
                         </tr>
                       ) : (
                         pagedUsers.map((u) => (
-                          <tr key={u.id} className="hover:bg-slate-700/30 transition-colors">
-                            <td className="px-4 py-3">
-                              <div className="flex items-center gap-2.5">
+                          <tr key={u.id} className="hover:bg-white/5 transition-colors">
+                            <td className="px-5 py-3.5">
+                              <div className="flex items-center gap-3">
                                 <UserAvatar
                                   avatarUrl={u.avatarUrl}
                                   displayName={u.name}
                                   email={u.email}
-                                  className="h-8 w-8 text-xs shrink-0"
+                                  className="h-8 w-8 text-xs shrink-0 ring-1 ring-[#D6E85D]/40"
                                 />
-                                <span className="font-semibold text-white">{u.name}</span>
+                                <div>
+                                  <span className="font-bold text-white block">{u.name}</span>
+                                  <span className="text-[11px] text-slate-400 font-mono">{u.email}</span>
+                                </div>
                               </div>
                             </td>
-                            <td className="px-4 py-3 text-slate-400 font-mono text-xs">{u.email}</td>
-                            <td className="px-4 py-3">
-                              <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold border ${
-                                u.role === "admin"
-                                  ? "bg-[#D6E85D]/10 text-[#D6E85D] border-[#D6E85D]/30"
-                                  : "bg-slate-700 text-slate-300 border-slate-600"
-                              }`}>
-                                {u.role}
+                            <td className="px-4 py-3.5 font-mono text-slate-300">{u.enrollmentNo}</td>
+                            <td className="px-4 py-3.5 text-slate-300">
+                              <span className="block font-semibold">{u.branch}</span>
+                              <span className="text-[10px] text-[#D6E85D] font-mono">Semester {u.semester}</span>
+                            </td>
+                            <td className="px-4 py-3.5">
+                              <span
+                                className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border font-mono ${
+                                  u.role === "admin"
+                                    ? "bg-[#D6E85D]/15 text-[#D6E85D] border-[#D6E85D]/40"
+                                    : "bg-white/5 text-slate-300 border-white/10"
+                                }`}
+                              >
+                                {u.role.toUpperCase()}
                               </span>
                             </td>
-                            <td className="px-4 py-3 text-slate-300 font-mono text-xs">{u.xp.toLocaleString()}</td>
-                            <td className="px-4 py-3 text-slate-400 text-xs">{u.joined}</td>
-                            <td className="px-4 py-3">
-                              <select
-                                value={u.role}
-                                onChange={(e) => handleRoleChange(u.id, u.userId, e.target.value)}
-                                className="bg-slate-700 border border-slate-600 rounded-lg text-xs text-slate-200 px-2 py-1 focus:outline-none focus:border-[#D6E85D]/60 cursor-pointer"
-                              >
-                                <option value="student">Student</option>
-                                <option value="admin">Admin</option>
-                                <option value="guest">Guest</option>
-                              </select>
+                            <td className="px-4 py-3.5 font-mono text-[#D6E85D] font-bold">
+                              ✨ {u.xp.toLocaleString()} XP
+                            </td>
+                            <td className="px-4 py-3.5 text-slate-400 font-mono">{u.joined}</td>
+                            <td className="px-4 py-3.5 text-right">
+                              <div className="inline-flex items-center gap-1.5">
+                                {/* Award XP Button */}
+                                <button
+                                  onClick={() => setAwardXpTarget(u)}
+                                  className="px-2.5 py-1 rounded-lg bg-[#D6E85D]/15 hover:bg-[#D6E85D]/30 text-[#D6E85D] border border-[#D6E85D]/30 font-bold text-[10px] transition-colors cursor-pointer"
+                                  title="Award custom bonus XP"
+                                >
+                                  +XP
+                                </button>
+
+                                {/* Inspect Button */}
+                                <button
+                                  onClick={() => setInspectUser(u)}
+                                  className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white transition-colors cursor-pointer"
+                                  title="View complete student passport"
+                                >
+                                  <Eye className="h-3.5 w-3.5" />
+                                </button>
+
+                                {/* Role Selector */}
+                                <select
+                                  value={u.role}
+                                  onChange={(e) => handleRoleChange(u.id, u.userId, e.target.value)}
+                                  className="bg-black/40 border border-[#1A4237] rounded-lg text-[10px] text-slate-200 px-2 py-1 focus:outline-none focus:border-[#D6E85D] cursor-pointer"
+                                >
+                                  <option value="student">Student</option>
+                                  <option value="admin">Admin</option>
+                                  <option value="guest">Guest</option>
+                                </select>
+                              </div>
                             </td>
                           </tr>
                         ))
@@ -909,63 +1269,228 @@ export default function AdminDashboard() {
                   </table>
                 </div>
               )}
+
+              {/* Table Pagination */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-between px-5 py-4 border-t border-[#1A4237]/80 bg-black/30">
+                  <p className="text-xs text-[#A2BAAF] font-mono">
+                    Showing {pagedUsers.length} of {filteredUsers.length} students &middot; Page {userPage} of {totalPages}
+                  </p>
+                  <div className="flex gap-2">
+                    <button
+                      disabled={userPage === 1}
+                      onClick={() => setUserPage((p) => p - 1)}
+                      className="p-2 rounded-xl bg-white/5 border border-white/10 text-slate-300 hover:bg-white/10 disabled:opacity-40 transition-colors cursor-pointer"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </button>
+                    <button
+                      disabled={userPage === totalPages}
+                      onClick={() => setUserPage((p) => p + 1)}
+                      className="p-2 rounded-xl bg-white/5 border border-white/10 text-slate-300 hover:bg-white/10 disabled:opacity-40 transition-colors cursor-pointer"
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
 
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="flex items-center justify-between">
-                <p className="text-xs text-slate-500">
-                  {filteredUsers.length} users &middot; Page {userPage} of {totalPages}
-                </p>
-                <div className="flex gap-2">
+            {/* ── MODAL: INSPECT USER PROFILE ── */}
+            {inspectUser && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+                <div className="bg-[#0B201A] border border-[#23584C] rounded-3xl p-6 max-w-lg w-full space-y-5 shadow-2xl relative">
                   <button
-                    disabled={userPage === 1}
-                    onClick={() => setUserPage((p) => p - 1)}
-                    className="p-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-700 disabled:opacity-40 transition-colors"
+                    onClick={() => setInspectUser(null)}
+                    className="absolute right-4 top-4 p-2 rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white"
                   >
-                    <ChevronLeft className="h-4 w-4" />
+                    <X className="h-4 w-4" />
                   </button>
-                  <button
-                    disabled={userPage === totalPages}
-                    onClick={() => setUserPage((p) => p + 1)}
-                    className="p-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-700 disabled:opacity-40 transition-colors"
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                  </button>
+
+                  <div className="flex items-center gap-4">
+                    <UserAvatar
+                      avatarUrl={inspectUser.avatarUrl}
+                      displayName={inspectUser.name}
+                      email={inspectUser.email}
+                      className="w-16 h-16 text-xl ring-2 ring-[#D6E85D]"
+                    />
+                    <div>
+                      <h3 className="text-xl font-black text-white font-display">{inspectUser.name}</h3>
+                      <p className="text-xs text-[#D6E85D] font-mono font-bold">
+                        Level {inspectUser.level} &middot; {inspectUser.role.toUpperCase()}
+                      </p>
+                      <p className="text-xs text-slate-400 font-mono">{inspectUser.email}</p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3 p-4 bg-black/40 rounded-2xl border border-[#1A4237] text-xs">
+                    <div>
+                      <span className="text-[10px] text-slate-400 uppercase tracking-wider block">Enrollment No</span>
+                      <span className="font-bold text-white font-mono">{inspectUser.enrollmentNo}</span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-400 uppercase tracking-wider block">Branch</span>
+                      <span className="font-bold text-white">{inspectUser.branch}</span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-400 uppercase tracking-wider block">Current Semester</span>
+                      <span className="font-bold text-[#D6E85D] font-mono">Sem {inspectUser.semester}</span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-400 uppercase tracking-wider block">Target CGPA</span>
+                      <span className="font-bold text-emerald-400 font-mono">{inspectUser.targetCgpa}</span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-400 uppercase tracking-wider block">Total Experience</span>
+                      <span className="font-bold text-[#D6E85D] font-mono">{inspectUser.xp} XP</span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-400 uppercase tracking-wider block">Active Streak</span>
+                      <span className="font-bold text-amber-400 font-mono">🔥 {inspectUser.streakDays} Days</span>
+                    </div>
+                  </div>
+
+                  {inspectUser.bio && (
+                    <div className="p-3 bg-black/30 rounded-xl border border-white/5 text-xs text-slate-300">
+                      <span className="text-[10px] text-slate-400 uppercase block mb-0.5">Bio</span>
+                      <p>{inspectUser.bio}</p>
+                    </div>
+                  )}
+
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        const target = inspectUser;
+                        setInspectUser(null);
+                        setAwardXpTarget(target);
+                      }}
+                      className="flex-1 py-2.5 bg-[#D6E85D] text-[#183F36] rounded-xl text-xs font-bold hover:bg-[#C8DC47] transition-all cursor-pointer"
+                    >
+                      Award Custom Bonus XP
+                    </button>
+                    <button
+                      onClick={() => setInspectUser(null)}
+                      className="px-4 py-2.5 bg-white/5 border border-white/10 text-slate-300 rounded-xl text-xs font-bold hover:bg-white/10"
+                    >
+                      Close
+                    </button>
+                  </div>
                 </div>
+              </div>
+            )}
+
+            {/* ── MODAL: AWARD XP TO USER ── */}
+            {awardXpTarget && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+                <form
+                  onSubmit={submitAwardXp}
+                  className="bg-[#0B201A] border border-[#23584C] rounded-3xl p-6 max-w-md w-full space-y-4 shadow-2xl relative"
+                >
+                  <button
+                    type="button"
+                    onClick={() => setAwardXpTarget(null)}
+                    className="absolute right-4 top-4 p-2 rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+
+                  <h3 className="text-lg font-black text-white flex items-center gap-2 font-display">
+                    <Sparkles className="h-5 w-5 text-[#D6E85D]" />
+                    Award Bonus Academic XP
+                  </h3>
+                  <p className="text-xs text-slate-300">
+                    Granting verified XP directly to <strong className="text-white">{awardXpTarget.name}</strong> ({awardXpTarget.email}).
+                  </p>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-400 mb-1">XP Amount</label>
+                    <div className="grid grid-cols-4 gap-2 mb-2">
+                      {[50, 100, 250, 500].map((amt) => (
+                        <button
+                          key={amt}
+                          type="button"
+                          onClick={() => setAwardXpAmount(amt)}
+                          className={`py-1.5 rounded-xl text-xs font-bold border cursor-pointer ${
+                            awardXpAmount === amt
+                              ? "bg-[#D6E85D] text-[#183F36] border-[#D6E85D]"
+                              : "bg-black/30 text-slate-300 border-white/10"
+                          }`}
+                        >
+                          +{amt}
+                        </button>
+                      ))}
+                    </div>
+                    <input
+                      type="number"
+                      min={10}
+                      max={10000}
+                      value={awardXpAmount}
+                      onChange={(e) => setAwardXpAmount(Number(e.target.value))}
+                      className="w-full bg-black/40 border border-[#1A4237] rounded-xl px-4 py-2.5 text-xs text-white font-mono"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-400 mb-1">Reason / Citation</label>
+                    <input
+                      type="text"
+                      value={awardXpReason}
+                      onChange={(e) => setAwardXpReason(e.target.value)}
+                      placeholder="e.g. Hackathon Winner, Class Ambassador..."
+                      className="w-full bg-black/40 border border-[#1A4237] rounded-xl px-4 py-2.5 text-xs text-white"
+                    />
+                  </div>
+
+                  <div className="flex gap-2 pt-2">
+                    <button
+                      type="submit"
+                      className="flex-1 py-2.5 bg-[#D6E85D] text-[#183F36] rounded-xl text-xs font-bold hover:bg-[#C8DC47] transition-all cursor-pointer shadow-md"
+                    >
+                      Confirm & Credit XP
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setAwardXpTarget(null)}
+                      className="px-4 py-2.5 bg-white/5 border border-white/10 text-slate-300 rounded-xl text-xs font-bold hover:bg-white/10 cursor-pointer"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
               </div>
             )}
           </div>
         )}
 
-        {/* ── TAB: MAINTENANCE ──────────────────────────────────────────────────── */}
+        {/* ════════════════════ TAB 3: MAINTENANCE & OTP ════════════════════ */}
         {activeTab === "maintenance" && (
-          <div className="space-y-6 animate-fade-in max-w-2xl">
-            {/* Big toggle */}
-            <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6 space-y-5">
+          <div className="space-y-6 animate-fade-in max-w-2xl mx-auto">
+            <div className="bg-[#0B201A] border border-[#1A4237] rounded-3xl p-6 space-y-5 shadow-2xl">
               <div className="flex items-center justify-between">
-                <h2 className="font-bold text-base text-white flex items-center gap-2">
-                  <Power className="h-4 w-4 text-[#D6E85D]" />
+                <h2 className="font-bold text-base text-white flex items-center gap-2 font-display">
+                  <Power className="h-5 w-5 text-[#D6E85D]" />
                   Global Maintenance Protocol
                 </h2>
-                <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${
-                  maintenanceOn
-                    ? "bg-amber-500/20 text-amber-300 border-amber-500/40 animate-pulse"
-                    : "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
-                }`}>
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-bold border font-mono ${
+                    maintenanceOn
+                      ? "bg-amber-500/20 text-amber-300 border-amber-500/40 animate-pulse"
+                      : "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
+                  }`}
+                >
                   {maintenanceOn ? "SYSTEM LOCKED" : "ONLINE LIVE"}
                 </span>
               </div>
 
-              <div className="flex items-center justify-between p-5 bg-slate-700/50 rounded-xl border border-slate-600">
+              <div className="flex items-center justify-between p-5 bg-black/40 rounded-2xl border border-[#1A4237]">
                 <div>
-                  <p className="font-bold text-white text-lg flex items-center gap-2">
-                    <span>{maintenanceOn ? "🔴 Maintenance is ON" : "🟢 Site is Live"}</span>
+                  <p className="font-bold text-white text-lg">
+                    {maintenanceOn ? "🔴 Maintenance Mode is Active" : "🟢 Portal is Online Globally"}
                   </p>
-                  <p className="text-xs sm:text-sm text-slate-300 mt-1">
+                  <p className="text-xs text-slate-300 mt-1 max-w-md leading-relaxed">
                     {maintenanceOn
-                      ? "All students and visitors are blocked globally. Admins have bypass access."
-                      : "All courses, coding labs, and materials are fully accessible to everyone."}
+                      ? "All non-admin students and guests are blocked with a full-screen 3D lockout countdown. Admins retain full bypass access."
+                      : "All curriculum topics, PDF notes, and Coding Labs are fully accessible to students."}
                   </p>
                 </div>
                 <button
@@ -973,7 +1498,7 @@ export default function AdminDashboard() {
                   className={`relative w-14 h-7 rounded-full transition-colors focus:outline-none border-2 shrink-0 cursor-pointer ${
                     maintenanceOn
                       ? "bg-amber-500 border-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.5)]"
-                      : "bg-slate-600 border-slate-500"
+                      : "bg-slate-700 border-slate-600"
                   }`}
                   title={maintenanceOn ? "Deactivate Maintenance" : "Activate Maintenance"}
                 >
@@ -985,23 +1510,22 @@ export default function AdminDashboard() {
                 </button>
               </div>
 
-              {/* Action Buttons: Live Preview & Full Lockout */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                 <button
                   type="button"
                   onClick={launchStudentPreview}
-                  className="px-4 py-3 bg-[#D6E85D] hover:bg-[#c2d54e] text-[#183F36] rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer group w-full"
+                  className="px-4 py-3 bg-[#D6E85D] hover:bg-[#C8DC47] text-[#183F36] rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer w-full"
                 >
-                  <Eye className="h-4 w-4 group-hover:scale-110 transition-transform" />
-                  <span>Launch 3D Student Preview</span>
+                  <Eye className="h-4 w-4" />
+                  <span>Launch 3D Student Lockout Preview</span>
                 </button>
               </div>
 
-              {/* Countdown timer */}
-              <div className="pt-2 border-t border-slate-700/80">
+              {/* Countdown Timer */}
+              <div className="pt-2 border-t border-[#1A4237]">
                 <label className="block text-xs font-semibold text-slate-300 mb-1 flex items-center justify-between">
-                  <span>Estimated Duration (Minutes)</span>
-                  <span className="text-[#D6E85D] font-mono font-bold">{maintenanceCountdown} mins</span>
+                  <span>Estimated Downtime Duration</span>
+                  <span className="text-[#D6E85D] font-mono font-bold">{maintenanceCountdown} minutes</span>
                 </label>
                 <input
                   type="number"
@@ -1009,39 +1533,35 @@ export default function AdminDashboard() {
                   max={480}
                   value={maintenanceCountdown}
                   onChange={(e) => setMaintenanceCountdown(Number(e.target.value))}
-                  className="w-full bg-slate-700 border border-slate-600 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-[#D6E85D]/60"
+                  className="w-full bg-black/40 border border-[#1A4237] rounded-xl px-4 py-2.5 text-xs text-white font-mono"
                 />
-                <p className="text-[11px] text-slate-400 mt-1">
-                  Sets the live countdown timer displayed to students on the lock screen.
-                </p>
               </div>
             </div>
 
             {/* Dynamic Access Key (OTP) Management */}
-            <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6 space-y-4">
+            <div className="bg-[#0B201A] border border-[#1A4237] rounded-3xl p-6 space-y-4 shadow-2xl">
               <div className="flex items-center justify-between">
-                <h2 className="font-bold text-base text-white flex items-center gap-2">
-                  <KeyRound className="h-4 w-4 text-[#D6E85D]" />
+                <h2 className="font-bold text-base text-white flex items-center gap-2 font-display">
+                  <KeyRound className="h-5 w-5 text-[#D6E85D]" />
                   Dynamic Maintenance Access Key (OTP)
                 </h2>
-                <span className="text-[11px] px-2 py-0.5 rounded-md font-mono bg-slate-700 text-slate-300 border border-slate-600">
-                  Zero-Trust Tester Key
+                <span className="text-[11px] px-2.5 py-0.5 rounded-md font-mono bg-black/40 text-slate-300 border border-white/10">
+                  Zero-Trust Key
                 </span>
               </div>
 
               <p className="text-xs text-slate-300 leading-relaxed">
-                Every time maintenance starts, a random, secure one-time key is automatically generated. Testers and faculty can use this key to unlock temporary preview access to the student portal. <strong className="text-amber-300 font-semibold">It never grants access to this Admin Panel.</strong>
+                When maintenance is active, this key allows authorized faculty or test cohort members to preview the student portal. <strong className="text-amber-300">It never grants access to this Admin Panel.</strong>
               </p>
 
-              {/* Active Key Display */}
-              <div className="p-4 bg-slate-900/80 rounded-xl border border-slate-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div className="p-4 bg-black/50 rounded-2xl border border-[#1A4237] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                 <div>
-                  <span className="text-[11px] uppercase tracking-wider text-slate-400 font-bold block mb-1">
-                    Current Active Passkey
+                  <span className="text-[11px] uppercase tracking-wider text-[#A2BAAF] font-bold block mb-1">
+                    Live Active Passkey
                   </span>
                   <div className="flex items-center gap-2">
-                    <span className="font-mono text-xl sm:text-2xl font-black text-[#D6E85D] tracking-widest bg-slate-800/80 px-3 py-1 rounded-lg border border-slate-600">
-                      {maintenancePasskey || (maintenanceOn ? "GENERATING..." : "NO KEY (SITE LIVE)")}
+                    <span className="font-mono text-xl sm:text-2xl font-black text-[#D6E85D] tracking-widest bg-[#0A1C16] px-3.5 py-1.5 rounded-xl border border-[#1A4237]">
+                      {maintenancePasskey || (maintenanceOn ? "GENERATING..." : "NO KEY ACTIVE")}
                     </span>
                     {maintenancePasskey && (
                       <span className="text-xs px-2 py-0.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-md font-medium">
@@ -1059,7 +1579,7 @@ export default function AdminDashboard() {
                         navigator.clipboard.writeText(maintenancePasskey);
                         toast.success("Maintenance passkey copied to clipboard!");
                       }}
-                      className="flex-1 sm:flex-none px-3.5 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-colors border border-slate-600 cursor-pointer"
+                      className="flex-1 sm:flex-none px-3.5 py-2 bg-white/5 hover:bg-white/10 text-slate-200 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-colors border border-white/10 cursor-pointer"
                     >
                       <Copy className="h-3.5 w-3.5" />
                       <span>Copy</span>
@@ -1068,376 +1588,352 @@ export default function AdminDashboard() {
                   <button
                     type="button"
                     onClick={regenerateKey}
-                    className="flex-1 sm:flex-none px-3.5 py-2 bg-[#D6E85D] hover:bg-[#c2d54e] text-[#183F36] rounded-xl text-xs font-extrabold flex items-center justify-center gap-1.5 transition-all shadow-sm cursor-pointer"
+                    className="flex-1 sm:flex-none px-3.5 py-2 bg-[#D6E85D] hover:bg-[#C8DC47] text-[#183F36] rounded-xl text-xs font-extrabold flex items-center justify-center gap-1.5 transition-all shadow-sm cursor-pointer"
                   >
                     <RefreshCw className="h-3.5 w-3.5" />
-                    <span>Regenerate Key</span>
+                    <span>Regenerate</span>
                   </button>
                 </div>
               </div>
 
               {/* Custom Key Setter */}
-              <div className="pt-2 border-t border-slate-700/80 flex flex-col sm:flex-row gap-2">
+              <div className="pt-2 border-t border-[#1A4237] flex flex-col sm:flex-row gap-2">
                 <input
                   type="text"
-                  placeholder="Set custom key (e.g. ITM-EXAM-TEST)..."
+                  placeholder="Set custom key (e.g. ITM-FACULTY-2026)..."
                   value={customKeyInput}
                   onChange={(e) => setCustomKeyInput(e.target.value)}
                   onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      setCustomKey(customKeyInput);
-                    }
+                    if (e.key === "Enter") setCustomKey(customKeyInput);
                   }}
-                  className="flex-1 bg-slate-700 border border-slate-600 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-[#D6E85D]/60 uppercase font-mono tracking-wider"
+                  className="flex-1 bg-black/40 border border-[#1A4237] rounded-xl px-4 py-2.5 text-xs text-white uppercase font-mono tracking-wider focus:outline-none focus:border-[#D6E85D]"
                 />
                 <button
                   type="button"
                   onClick={() => setCustomKey(customKeyInput)}
                   disabled={!customKeyInput.trim()}
-                  className="px-4 py-2.5 bg-slate-700 hover:bg-slate-600 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-xl text-xs font-bold transition-colors border border-slate-600 shrink-0 cursor-pointer"
+                  className="px-4 py-2.5 bg-white/5 hover:bg-white/10 disabled:opacity-40 text-white rounded-xl text-xs font-bold transition-colors border border-white/10 shrink-0 cursor-pointer"
                 >
-                  Apply Custom Key
+                  Apply Key
                 </button>
-              </div>
-
-              <div className="flex items-start gap-2 p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-xs text-amber-200/90">
-                <Lock className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" />
-                <p>
-                  <strong>Zero-Trust Guarantee:</strong> Anyone using this key on the maintenance lock screen will only gain read-only preview access to the student study dashboard. The <span className="font-mono text-amber-300">/admin</span> portal strictly requires your authenticated Google Admin credentials (<span className="underline">maherbhatt01@gmail.com</span>).
-                </p>
               </div>
             </div>
 
-            {/* Message editor */}
-            <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6 space-y-4">
-              <h2 className="font-bold text-base text-white flex items-center gap-2">
+            {/* Public Message Editor */}
+            <div className="bg-[#0B201A] border border-[#1A4237] rounded-3xl p-6 space-y-4 shadow-2xl">
+              <h2 className="font-bold text-base text-white flex items-center gap-2 font-display">
                 <FileText className="h-4 w-4 text-[#D6E85D]" />
-                Public Maintenance Message
+                Public Lockout Message
               </h2>
               <textarea
                 value={maintenanceMsg}
                 onChange={(e) => setMaintenanceMsg(e.target.value)}
                 rows={3}
-                className="w-full bg-slate-700 border border-slate-600 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#D6E85D]/60 resize-none"
-                placeholder="Enter the message students will see during maintenance…"
+                className="w-full bg-black/40 border border-[#1A4237] rounded-xl px-4 py-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#D6E85D] resize-none"
+                placeholder="Enter the broadcast message displayed to students on the lock screen…"
               />
               <div className="flex items-center justify-between">
-                <p className="text-xs text-slate-400">
-                  Broadcasts in real-time to all connected devices.
-                </p>
+                <p className="text-[11px] text-[#A2BAAF]">Broadcasts across all tabs in real-time.</p>
                 <button
                   onClick={saveMaintenanceMessage}
-                  className="px-4 py-2 bg-[#D6E85D] text-[#183F36] rounded-xl text-xs font-bold hover:opacity-90 transition-opacity cursor-pointer shadow-xs"
+                  className="px-4 py-2 bg-[#D6E85D] text-[#183F36] rounded-xl text-xs font-bold hover:bg-[#C8DC47] transition-all cursor-pointer"
                 >
                   Save & Broadcast
                 </button>
               </div>
             </div>
-
-            {/* Quick Status Notice */}
-            <div className="p-4 rounded-xl bg-slate-800/80 border border-slate-700 text-xs text-slate-300 space-y-1.5">
-              <p className="font-bold text-white flex items-center gap-1.5">
-                <Shield className="h-3.5 w-3.5 text-[#D6E85D]" />
-                Zero-Trust Lockdown Policy:
-              </p>
-              <ul className="list-disc pl-4 space-y-1 text-slate-400">
-                <li>Authenticated platform administrators (Founder Maher Bhatt) retain full access automatically.</li>
-                <li>Normal users, students, and unauthenticated guests are completely blocked with zero client-side bypass.</li>
-                <li>Turning maintenance OFF restores instant real-time access globally across all student sessions.</li>
-              </ul>
-            </div>
           </div>
         )}
 
-        {/* ── TAB: ANNOUNCEMENTS ────────────────────────────────────────────────── */}
+        {/* ════════════════════ TAB 4: CAMPUS BROADCASTS ════════════════════ */}
         {activeTab === "announcements" && (
-          <div className="space-y-6 animate-fade-in">
-            {/* Create form */}
+          <div className="space-y-6 animate-fade-in max-w-3xl mx-auto">
+            {/* Create Announcement Form */}
             <form
               onSubmit={createAnnouncement}
-              className="bg-slate-800 border border-slate-700 rounded-2xl p-6 space-y-4"
+              className="bg-[#0B201A] border border-[#1A4237] rounded-3xl p-6 space-y-4 shadow-2xl"
             >
-              <h2 className="font-bold text-base text-white flex items-center gap-2">
-                <Bell className="h-4 w-4 text-[#D6E85D]" />
-                New Announcement
-              </h2>
+              <div className="flex items-center justify-between">
+                <h2 className="font-bold text-base text-white flex items-center gap-2 font-display">
+                  <Megaphone className="h-5 w-5 text-[#D6E85D]" />
+                  Broadcast New Campus Alert
+                </h2>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[11px] text-[#A2BAAF] font-bold">Presets:</span>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      applyAnnouncementPreset({
+                        title: "Semester 3 MST Exam Dates Released",
+                        message: "The official timetable for Mid-Semester Exam 1 is now published in Materials & Study Schedule.",
+                        type: "warning",
+                      })
+                    }
+                    className="px-2 py-0.5 rounded-lg bg-white/5 hover:bg-white/10 text-[10px] text-amber-300 font-bold border border-white/10 cursor-pointer"
+                  >
+                    MST Exam
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      applyAnnouncementPreset({
+                        title: "New Practical Problems Live in Coding Lab",
+                        message: "Queues and Dynamic Linked List practicals for Semester 3 DSA have been uploaded with test cases.",
+                        type: "success",
+                      })
+                    }
+                    className="px-2 py-0.5 rounded-lg bg-white/5 hover:bg-white/10 text-[10px] text-emerald-300 font-bold border border-white/10 cursor-pointer"
+                  >
+                    Coding Lab
+                  </button>
+                </div>
+              </div>
+
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-400 mb-1">Title</label>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">Title</label>
                   <input
                     value={annTitle}
                     onChange={(e) => setAnnTitle(e.target.value)}
-                    placeholder="Announcement title…"
-                    className="w-full bg-slate-700 border border-slate-600 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#D6E85D]/60"
+                    placeholder="Alert headline…"
+                    className="w-full bg-black/40 border border-[#1A4237] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#D6E85D]"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-400 mb-1">Type</label>
+                    <label className="block text-xs font-semibold text-slate-300 mb-1">Severity</label>
                     <select
                       value={annType}
                       onChange={(e) => setAnnType(e.target.value as Announcement["type"])}
-                      className="w-full bg-slate-700 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-[#D6E85D]/60"
+                      className="w-full bg-black/40 border border-[#1A4237] rounded-xl px-3 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-[#D6E85D] cursor-pointer"
                     >
-                      <option value="info">Info</option>
-                      <option value="warning">Warning</option>
-                      <option value="success">Success</option>
-                      <option value="error">Error</option>
+                      <option value="info">Info (Blue)</option>
+                      <option value="warning">Warning (Amber)</option>
+                      <option value="success">Success (Emerald)</option>
+                      <option value="error">Critical (Red)</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-400 mb-1">Audience</label>
+                    <label className="block text-xs font-semibold text-slate-300 mb-1">Audience</label>
                     <select
                       value={annAudience}
                       onChange={(e) => setAnnAudience(e.target.value as Announcement["audience"])}
-                      className="w-full bg-slate-700 border border-slate-600 rounded-xl px-3 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-[#D6E85D]/60"
+                      className="w-full bg-black/40 border border-[#1A4237] rounded-xl px-3 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-[#D6E85D] cursor-pointer"
                     >
-                      <option value="all">All</option>
-                      <option value="students">Students</option>
-                      <option value="admins">Admins</option>
+                      <option value="all">All Students</option>
+                      <option value="students">Students Only</option>
+                      <option value="admins">Admins Only</option>
                     </select>
                   </div>
                 </div>
               </div>
+
               <div>
-                <label className="block text-xs font-semibold text-slate-400 mb-1">Message</label>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">Detailed Message</label>
                 <textarea
                   value={annMessage}
                   onChange={(e) => setAnnMessage(e.target.value)}
                   rows={3}
-                  placeholder="Write your announcement message…"
-                  className="w-full bg-slate-700 border border-slate-600 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#D6E85D]/60 resize-none"
+                  placeholder="Compose your alert message…"
+                  className="w-full bg-black/40 border border-[#1A4237] rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-[#D6E85D] resize-none"
                 />
               </div>
+
               <button
                 type="submit"
-                className="px-5 py-2.5 bg-[#D6E85D] text-[#183F36] rounded-xl text-sm font-bold hover:opacity-90 transition-opacity"
+                className="px-5 py-2.5 bg-[#D6E85D] text-[#183F36] rounded-xl text-xs font-extrabold hover:bg-[#C8DC47] transition-all cursor-pointer shadow-md flex items-center gap-2"
               >
-                Publish Announcement
+                <Send className="h-3.5 w-3.5" />
+                <span>Publish Alert Broadcast</span>
               </button>
             </form>
 
-            {/* List */}
+            {/* List of Published Announcements */}
             <div className="space-y-3">
-              {announcements.length === 0 ? (
-                <p className="text-slate-500 text-sm text-center py-10">No announcements yet.</p>
-              ) : (
-                announcements.map((ann) => {
-                  const color = TYPE_COLORS[ann.type];
-                  return (
-                    <div
-                      key={ann.id}
-                      className={`bg-slate-800 border border-slate-700 rounded-xl p-4 flex items-start justify-between gap-3 ${
-                        !ann.active ? "opacity-50" : ""
-                      }`}
-                    >
-                      <div className="flex items-start gap-3 flex-1 min-w-0">
+              <h3 className="text-xs font-bold text-[#A2BAAF] uppercase tracking-wider px-1">
+                Active Broadcast Queue ({announcements.length})
+              </h3>
+              {announcements.map((ann) => (
+                <div
+                  key={ann.id}
+                  className={`bg-[#0B201A] border border-[#1A4237] rounded-2xl p-4 flex items-start justify-between gap-3 shadow-lg ${
+                    !ann.active ? "opacity-45" : ""
+                  }`}
+                >
+                  <div className="flex items-start gap-3 flex-1 min-w-0">
+                    <span
+                      className="mt-1 flex-shrink-0 h-3 w-3 rounded-full shadow-sm"
+                      style={{ background: TYPE_COLORS[ann.type] }}
+                    />
+                    <div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <p className="font-bold text-white text-sm font-display">{ann.title}</p>
                         <span
-                          className="mt-0.5 flex-shrink-0 h-2.5 w-2.5 rounded-full"
-                          style={{ background: color }}
-                        />
-                        <div className="min-w-0">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <p className="font-semibold text-white text-sm">{ann.title}</p>
-                            <span
-                              className="text-[10px] font-bold px-1.5 py-0.5 rounded uppercase"
-                              style={{ background: `${color}22`, color }}
-                            >
-                              {ann.type}
-                            </span>
-                            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-700 text-slate-400 uppercase">
-                              {ann.audience}
-                            </span>
-                          </div>
-                          <p className="text-xs text-slate-400 mt-0.5 line-clamp-2">{ann.message}</p>
-                          <p className="text-[11px] text-slate-600 mt-1">
-                            {new Date(ann.createdAt).toLocaleString("en-IN")}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-1.5 shrink-0">
-                        <button
-                          onClick={() => toggleAnnouncement(ann.id)}
-                          title={ann.active ? "Deactivate" : "Activate"}
-                          className="p-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 transition-colors"
+                          className="text-[9px] font-black px-2 py-0.5 rounded-full uppercase font-mono"
+                          style={{ background: `${TYPE_COLORS[ann.type]}22`, color: TYPE_COLORS[ann.type] }}
                         >
-                          {ann.active ? (
-                            <Eye className="h-3.5 w-3.5 text-[#D6E85D]" />
-                          ) : (
-                            <CheckCheck className="h-3.5 w-3.5 text-slate-500" />
-                          )}
-                        </button>
-                        <button
-                          onClick={() => deleteAnnouncement(ann.id)}
-                          className="p-1.5 rounded-lg bg-slate-700 hover:bg-red-900/40 transition-colors"
-                        >
-                          <Trash2 className="h-3.5 w-3.5 text-red-400" />
-                        </button>
+                          {ann.type}
+                        </span>
+                        <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-white/5 text-slate-300 uppercase font-mono">
+                          {ann.audience}
+                        </span>
                       </div>
+                      <p className="text-xs text-slate-300 mt-1 leading-relaxed">{ann.message}</p>
+                      <p className="text-[10px] text-slate-500 mt-1.5 font-mono">
+                        Published: {new Date(ann.createdAt).toLocaleString("en-IN")}
+                      </p>
                     </div>
-                  );
-                })
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* ── TAB: PLATFORM DATA ────────────────────────────────────────────────── */}
-        {activeTab === "platform" && (
-          <div className="space-y-6 animate-fade-in">
-            {/* Curriculum stats */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-              {[
-                { label: "Subjects", value: totalSubjects, icon: BookOpen, accent: "#D6E85D" },
-                { label: "Units", value: totalUnits, icon: Layers, accent: "#60a5fa" },
-                { label: "Topics", value: totalTopics, icon: FileText, accent: "#a78bfa" },
-                { label: "MCQs", value: totalMcqs, icon: Hash, accent: "#f472b6" },
-                { label: "Examples", value: totalPracticals, icon: Zap, accent: "#34d399" },
-              ].map((s) => (
-                <StatCard key={s.label} icon={s.icon} label={s.label} value={s.value.toLocaleString()} accent={s.accent} />
+                  </div>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <button
+                      onClick={() => toggleAnnouncement(ann.id)}
+                      title={ann.active ? "Deactivate" : "Activate"}
+                      className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 transition-colors cursor-pointer"
+                    >
+                      {ann.active ? <Eye className="h-4 w-4 text-[#D6E85D]" /> : <CheckCheck className="h-4 w-4 text-slate-500" />}
+                    </button>
+                    <button
+                      onClick={() => deleteAnnouncement(ann.id)}
+                      className="p-2 rounded-xl bg-white/5 hover:bg-red-500/20 text-red-400 transition-colors cursor-pointer"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
               ))}
             </div>
-
-            {/* Bar chart */}
-            <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6 space-y-4">
-              <h2 className="font-bold text-base text-white flex items-center gap-2">
-                <BarChart3 className="h-4 w-4 text-[#D6E85D]" />
-                MCQ Count per Subject
-              </h2>
-              <ResponsiveContainer width="100%" height={280}>
-                <BarChart data={mcqChartData} margin={{ top: 4, right: 8, left: 0, bottom: 40 }}>
-                  <XAxis
-                    dataKey="name"
-                    tick={{ fill: "#94a3b8", fontSize: 11 }}
-                    angle={-35}
-                    textAnchor="end"
-                    interval={0}
-                    height={60}
-                  />
-                  <YAxis tick={{ fill: "#94a3b8", fontSize: 11 }} />
-                  <Tooltip
-                    contentStyle={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 10, color: "#fff" }}
-                    cursor={{ fill: "#ffffff10" }}
-                  />
-                  <Bar dataKey="mcqs" radius={[6, 6, 0, 0]}>
-                    {mcqChartData.map((_, i) => (
-                      <Cell
-                        key={i}
-                        fill={i % 2 === 0 ? "#D6E85D" : "#183F36"}
-                      />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-
-            {/* Subject breakdown table */}
-            <div className="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden">
-              <div className="p-5 border-b border-slate-700">
-                <h2 className="font-bold text-base text-white">Subject Breakdown</h2>
-              </div>
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm">
-                  <thead className="bg-slate-700/60 text-slate-400 uppercase text-[11px] font-bold border-b border-slate-700">
-                    <tr>
-                      <th className="px-4 py-3">Subject</th>
-                      <th className="px-4 py-3">Code</th>
-                      <th className="px-4 py-3">Semester</th>
-                      <th className="px-4 py-3">Units</th>
-                      <th className="px-4 py-3">Topics</th>
-                      <th className="px-4 py-3">MCQs</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-700/50">
-                    {subjects.map((s) => {
-                      const sTopics = s.units?.reduce((a, u) => a + (u.topics?.length ?? 0), 0) ?? 0;
-                      const sMcqs = s.units?.reduce(
-                        (a, u) => a + (u.topics?.reduce((ta, t) => ta + (t.mcqs?.length ?? 0), 0) ?? 0),
-                        0
-                      ) ?? 0;
-                      return (
-                        <tr key={s.id} className="hover:bg-slate-700/30 transition-colors">
-                          <td className="px-4 py-3 font-semibold text-white">{s.name}</td>
-                          <td className="px-4 py-3 text-slate-400 font-mono text-xs">{s.code}</td>
-                          <td className="px-4 py-3 text-slate-400">Sem {s.semester}</td>
-                          <td className="px-4 py-3 text-slate-300">{s.units?.length ?? 0}</td>
-                          <td className="px-4 py-3 text-slate-300">{sTopics}</td>
-                          <td className="px-4 py-3">
-                            <span className="text-[#D6E85D] font-bold">{sMcqs}</span>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
           </div>
         )}
 
-        {/* ── TAB: COMMUNITY MODERATION ─────────────────────────────────────────── */}
+        {/* ════════════════════ TAB 5: COMMUNITY MODERATION ════════════════════ */}
         {activeTab === "moderation" && (
-          <div className="space-y-4 animate-fade-in">
-            <div className="flex items-center justify-between">
-              <h2 className="font-bold text-base text-white flex items-center gap-2">
-                <MessageSquare className="h-4 w-4 text-[#D6E85D]" />
-                Community Posts
-              </h2>
-              <button
-                onClick={loadCommunityPosts}
-                className="flex items-center gap-1.5 px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs font-semibold text-slate-300 hover:bg-slate-700 transition-colors"
-              >
-                <RefreshCw className={`h-3.5 w-3.5 ${moderationLoading ? "animate-spin" : ""}`} />
-                Refresh
-              </button>
+          <div className="space-y-4 animate-fade-in max-w-4xl mx-auto">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#0B201A] border border-[#1A4237] rounded-3xl p-4 sm:p-5 shadow-xl">
+              <div className="flex items-center gap-2">
+                <MessageSquare className="h-5 w-5 text-[#D6E85D]" />
+                <h2 className="font-bold text-base text-white font-display">Campus Community Moderation Hub</h2>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="flex p-1 rounded-xl bg-black/40 border border-white/10 text-xs">
+                  <button
+                    onClick={() => setModFilter("all")}
+                    className={`px-3 py-1 rounded-lg font-bold transition-all ${
+                      modFilter === "all" ? "bg-[#D6E85D] text-[#183F36]" : "text-slate-400"
+                    }`}
+                  >
+                    All ({communityPosts.length})
+                  </button>
+                  <button
+                    onClick={() => setModFilter("pinned")}
+                    className={`px-3 py-1 rounded-lg font-bold transition-all ${
+                      modFilter === "pinned" ? "bg-[#D6E85D] text-[#183F36]" : "text-slate-400"
+                    }`}
+                  >
+                    Pinned ({communityPosts.filter((p) => p.pinned).length})
+                  </button>
+                  <button
+                    onClick={() => setModFilter("flagged")}
+                    className={`px-3 py-1 rounded-lg font-bold transition-all ${
+                      modFilter === "flagged" ? "bg-[#D6E85D] text-[#183F36]" : "text-slate-400"
+                    }`}
+                  >
+                    Flagged ({flaggedPosts.size})
+                  </button>
+                </div>
+                <button
+                  onClick={loadCommunityPosts}
+                  className="p-2 bg-white/5 hover:bg-white/10 rounded-xl text-slate-300 transition-colors"
+                >
+                  <RefreshCw className={`h-4 w-4 ${moderationLoading ? "animate-spin" : ""}`} />
+                </button>
+              </div>
             </div>
 
+            {/* Posts Feed */}
             {moderationLoading ? (
-              <div className="flex items-center justify-center py-16 text-slate-500">Loading posts…</div>
-            ) : communityPosts.length === 0 ? (
-              <p className="text-slate-500 text-sm text-center py-12">No community posts found.</p>
+              <div className="py-20 text-center text-slate-400 text-xs font-bold">
+                Loading campus discussion threads from Supabase…
+              </div>
+            ) : filteredCommunityPosts.length === 0 ? (
+              <div className="py-20 text-center text-slate-400 text-xs">
+                No discussion posts match the current filter.
+              </div>
             ) : (
               <div className="space-y-3">
-                {communityPosts.map((post) => {
-                  const isFl = flagged.has(post.id);
+                {filteredCommunityPosts.map((post) => {
+                  const isFl = flaggedPosts.has(post.id);
                   return (
                     <div
                       key={post.id}
-                      className={`bg-slate-800 border rounded-xl p-4 flex items-start justify-between gap-3 ${
-                        isFl ? "border-amber-500/40 bg-amber-900/10" : "border-slate-700"
+                      className={`bg-[#0B201A] border rounded-2xl p-4 sm:p-5 flex items-start justify-between gap-4 shadow-lg transition-all ${
+                        post.pinned
+                          ? "border-[#D6E85D]/60 bg-gradient-to-r from-[#12332C] to-[#0B201A]"
+                          : isFl
+                          ? "border-amber-500/50 bg-amber-950/20"
+                          : "border-[#1A4237]"
                       }`}
                     >
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm text-slate-200 line-clamp-3">{post.content}</p>
-                        <div className="flex items-center gap-3 mt-2 text-[11px] text-slate-500">
-                          <span className="flex items-center gap-1">
-                            <ThumbsUp className="h-3 w-3" /> {post.upvotes}
-                          </span>
-                          <span>{new Date(post.createdAt).toLocaleString("en-IN")}</span>
+                      <div className="flex-1 min-w-0 space-y-2">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-bold text-white text-xs font-display">{post.authorName}</span>
+                          <span className="text-[10px] text-[#A2BAAF] font-mono">{post.authorBranch}</span>
+                          {post.pinned && (
+                            <span className="text-[9px] px-2 py-0.5 rounded-full bg-[#D6E85D]/20 text-[#D6E85D] font-bold border border-[#D6E85D]/40 font-mono">
+                              PINNED
+                            </span>
+                          )}
                           {isFl && (
-                            <span className="flex items-center gap-1 text-amber-400 font-semibold">
-                              <AlertTriangle className="h-3 w-3" /> Flagged
+                            <span className="text-[9px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold border border-amber-500/40 font-mono">
+                              FLAGGED FOR REVIEW
                             </span>
                           )}
                         </div>
+
+                        <p className="text-xs sm:text-sm text-slate-200 leading-relaxed">{post.content}</p>
+
+                        <div className="flex items-center gap-3 text-[11px] text-slate-400 font-mono pt-1">
+                          <span className="flex items-center gap-1 text-[#D6E85D]">
+                            <ThumbsUp className="h-3 w-3" /> {post.likes} Upvotes
+                          </span>
+                          <span>{new Date(post.createdAt).toLocaleDateString("en-IN")}</span>
+                          <span className="text-slate-500">ID: {post.id.slice(0, 8)}...</span>
+                        </div>
                       </div>
+
                       <div className="flex items-center gap-1.5 shrink-0">
+                        {/* Pin / Unpin */}
                         <button
-                          onClick={() => toggleFlag(post.id)}
-                          title={isFl ? "Unflag" : "Flag post"}
-                          className={`p-1.5 rounded-lg transition-colors ${
-                            isFl
-                              ? "bg-amber-500/20 text-amber-400"
-                              : "bg-slate-700 hover:bg-amber-500/20 text-slate-400 hover:text-amber-400"
+                          onClick={() => togglePinPost(post.id, post.pinned)}
+                          title={post.pinned ? "Unpin Post" : "Pin Post to Top"}
+                          className={`p-2 rounded-xl border transition-colors cursor-pointer ${
+                            post.pinned
+                              ? "bg-[#D6E85D] text-[#183F36] border-[#D6E85D]"
+                              : "bg-white/5 text-slate-400 hover:text-white border-white/10"
                           }`}
                         >
-                          <Flag className="h-3.5 w-3.5" />
+                          <Pin className="h-4 w-4" />
                         </button>
+
+                        {/* Flag / Unflag */}
+                        <button
+                          onClick={() => toggleFlagPost(post.id)}
+                          title={isFl ? "Remove Flag" : "Flag Post"}
+                          className={`p-2 rounded-xl border transition-colors cursor-pointer ${
+                            isFl
+                              ? "bg-amber-500/20 text-amber-300 border-amber-500/40"
+                              : "bg-white/5 text-slate-400 hover:text-amber-300 border-white/10"
+                          }`}
+                        >
+                          <Flag className="h-4 w-4" />
+                        </button>
+
+                        {/* Delete Post */}
                         <button
                           onClick={() => deletePost(post.id)}
-                          className="p-1.5 rounded-lg bg-slate-700 hover:bg-red-900/40 text-red-400 transition-colors"
+                          title="Delete Post permanently"
+                          className="p-2 rounded-xl bg-white/5 hover:bg-red-500/20 text-red-400 border border-white/10 transition-colors cursor-pointer"
                         >
-                          <Trash2 className="h-3.5 w-3.5" />
+                          <Trash2 className="h-4 w-4" />
                         </button>
                       </div>
                     </div>
@@ -1447,6 +1943,136 @@ export default function AdminDashboard() {
             )}
           </div>
         )}
+
+        {/* ════════════════════ TAB 6: CURRICULUM & NOTES ════════════════════ */}
+        {activeTab === "platform" && (
+          <div className="space-y-6 animate-fade-in">
+            {/* Top Stats */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <ExecutiveStatCard icon={BookOpen} label="Core Subjects" value={totalSubjects} accent="#D6E85D" />
+              <ExecutiveStatCard icon={Layers} label="Syllabus Units" value={totalUnits} accent="#38BDF8" />
+              <ExecutiveStatCard icon={FileText} label="Detailed Topics" value={totalTopics} accent="#A855F7" />
+              <ExecutiveStatCard icon={Hash} label="Verified MCQs" value={totalMcqs.toLocaleString()} accent="#10B981" />
+            </div>
+
+            {/* MCQ Breakdown Chart */}
+            <div className="bg-[#0B201A] border border-[#1A4237] rounded-3xl p-6 space-y-4 shadow-xl">
+              <h2 className="font-bold text-base text-white flex items-center gap-2 font-display">
+                <BarChart3 className="h-4 w-4 text-[#D6E85D]" />
+                MCQ Question Bank Distribution
+              </h2>
+              <ResponsiveContainer width="100%" height={260}>
+                <BarChart data={mcqChartData} margin={{ top: 10, right: 10, left: -10, bottom: 40 }}>
+                  <XAxis dataKey="name" tick={{ fill: "#A2BAAF", fontSize: 11 }} angle={-30} textAnchor="end" interval={0} height={50} />
+                  <YAxis tick={{ fill: "#A2BAAF", fontSize: 11 }} />
+                  <Tooltip
+                    contentStyle={{ background: "#0B201A", border: "1px solid #1A4237", borderRadius: 12, color: "#fff" }}
+                    cursor={{ fill: "rgba(255,255,255,0.05)" }}
+                  />
+                  <Bar dataKey="mcqs" radius={[8, 8, 0, 0]}>
+                    {mcqChartData.map((_, i) => (
+                      <Cell key={i} fill={i % 2 === 0 ? "#D6E85D" : "#10B981"} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+
+            {/* Topic & Notes Search Explorer */}
+            <div className="bg-[#0B201A] border border-[#1A4237] rounded-3xl p-6 space-y-4 shadow-xl">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <h3 className="font-bold text-base text-white flex items-center gap-2 font-display">
+                  <Search className="h-4 w-4 text-[#D6E85D]" />
+                  Curriculum Topic & Notes Inspector
+                </h3>
+                <input
+                  value={topicSearchQuery}
+                  onChange={(e) => setTopicSearchQuery(e.target.value)}
+                  placeholder="Search 350+ topics across DSA, DBMS, Java, COA..."
+                  className="bg-black/40 border border-[#1A4237] rounded-xl px-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#D6E85D] w-full sm:w-80"
+                />
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-black/50 text-[#A2BAAF] uppercase text-[10px] font-bold border-b border-[#1A4237] font-display">
+                    <tr>
+                      <th className="px-4 py-3">Subject</th>
+                      <th className="px-4 py-3">Unit</th>
+                      <th className="px-4 py-3">Topic Title</th>
+                      <th className="px-4 py-3 text-right">MCQs</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#1A4237]/60">
+                    {filteredTopics.map((t, idx) => (
+                      <tr key={idx} className="hover:bg-white/5 transition-colors">
+                        <td className="px-4 py-3 font-semibold text-white">
+                          <span>{t.subjectName}</span>
+                          <span className="text-[10px] text-[#A2BAAF] font-mono block">Sem {t.semester} &middot; {t.subjectCode}</span>
+                        </td>
+                        <td className="px-4 py-3 text-slate-300">{t.unitTitle}</td>
+                        <td className="px-4 py-3 text-slate-200 font-medium">{t.topicTitle}</td>
+                        <td className="px-4 py-3 text-right font-mono text-[#D6E85D] font-bold">
+                          {t.mcqsCount} MCQs
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ════════════════════ TAB 7: AUDIT & SECURITY TRAIL ════════════════════ */}
+        {activeTab === "audit" && (
+          <div className="space-y-4 animate-fade-in max-w-4xl mx-auto">
+            <div className="bg-[#0B201A] border border-[#1A4237] rounded-3xl p-5 shadow-xl flex items-center justify-between">
+              <div>
+                <h2 className="font-bold text-base text-white flex items-center gap-2 font-display">
+                  <Shield className="h-5 w-5 text-[#D6E85D]" />
+                  Executive Audit & Security Trail
+                </h2>
+                <p className="text-xs text-[#A2BAAF] mt-0.5">
+                  Chronological tamper-resistant record of administrative operations on ITM Notes.
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  setAuditLogs([]);
+                  localStorage.removeItem("itm_admin_audit_logs");
+                  toast.info("Audit log history cleared.");
+                }}
+                className="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-red-500/20 text-red-300 text-xs font-bold border border-white/10 transition-colors"
+              >
+                Clear History
+              </button>
+            </div>
+
+            <div className="space-y-2.5">
+              {auditLogs.map((log) => (
+                <div
+                  key={log.id}
+                  className="bg-[#0B201A] border border-[#1A4237] rounded-2xl p-4 flex items-start justify-between gap-3 text-xs"
+                >
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-white font-display">{log.action}</span>
+                      <span className="text-[9px] uppercase tracking-wider px-2 py-0.5 rounded-full font-mono bg-white/5 text-[#D6E85D] border border-white/10">
+                        {log.type}
+                      </span>
+                    </div>
+                    <p className="text-slate-300">{log.detail}</p>
+                  </div>
+                  <span className="text-[10px] text-slate-500 font-mono shrink-0">
+                    {new Date(log.timestamp).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
       </div>
     </div>
   );

@@ -170,25 +170,25 @@ export function PortalTopNav({
           </kbd>
         </button>
 
-        {/* Pomodoro Focus Pill */}
+        {/* Pomodoro Study Timer Pill */}
         <button
           onClick={() => setIsModalOpen(true)}
           className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
             isRunning 
               ? "bg-[#D6E85D]/20 text-[#183F36] dark:text-[#D6E85D] border-[#D6E85D]/40 animate-pulse font-bold" 
-              : "bg-card text-muted-foreground hover:text-foreground border-border"
+              : "bg-card text-muted-foreground hover:text-foreground border-border hover:border-primary/40"
           }`}
-          title="Study Focus Timer"
+          title="Pomodoro Study Timer"
         >
-          <Clock className={`h-3.5 w-3.5 ${isRunning ? "text-[#183F36] dark:text-[#D6E85D]" : ""}`} />
+          <Clock className={`h-3.5 w-3.5 ${isRunning ? "text-[#183F36] dark:text-[#D6E85D]" : "text-muted-foreground"}`} />
           <span className="font-mono text-[11px]">
             {isRunning 
               ? `${Math.floor(timeLeft / 60).toString().padStart(2, '0')}:${(timeLeft % 60).toString().padStart(2, '0')}` 
-              : "Focus"}
+              : "Study Timer"}
           </span>
         </button>
 
-        {/* Fullscreen Focus Mode Toggle Button */}
+        {/* Fullscreen / Focus Mode Toggle Button */}
         <button
           onClick={onToggleFocusMode}
           className={`flex items-center gap-1.5 h-9 px-3 rounded-full text-xs font-semibold border transition-all cursor-pointer ${
@@ -206,7 +206,7 @@ export function PortalTopNav({
           ) : (
             <>
               <Maximize2 className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">Focus</span>
+              <span className="hidden sm:inline">Focus Mode</span>
               <kbd className="hidden lg:inline-flex items-center px-1 text-[9px] font-mono bg-background/50 rounded border border-border/60">F</kbd>
             </>
           )}
