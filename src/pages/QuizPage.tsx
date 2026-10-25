@@ -71,6 +71,10 @@ export default function QuizPage() {
   const [isReviewMode, setIsReviewMode] = useState(false);
   const [reviewFilter, setReviewFilter] = useState<"all" | "missed" | "flagged">("all");
   const [showReportModal, setShowReportModal] = useState(false);
+  const [isCustomBuilderOpen, setIsCustomBuilderOpen] = useState(false);
+  const [customPool, setCustomPool] = useState<EnrichedMCQ[] | null>(null);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+
 
   // Timing state
   const [totalTimerSeconds, setTotalTimerSeconds] = useState(0);
@@ -129,6 +133,9 @@ export default function QuizPage() {
 
   // Active question pool based on selected subject and topic search
   const activeQuizPool = useMemo(() => {
+    if (customPool && customPool.length > 0) {
+      return customPool.slice(0, questionCount > 0 ? questionCount : customPool.length);
+    }
     let pool: EnrichedMCQ[] = [];
     if (selectedSubject === "all-sem3") {
       pool = [...allSem3Mcqs];
@@ -165,7 +172,7 @@ export default function QuizPage() {
     }
 
     return pool.slice(0, questionCount > 0 ? questionCount : pool.length);
-  }, [selectedSubject, selectedUnitFilter, searchTopicInput, questionCount, allSem3Mcqs]);
+  }, [selectedSubject, selectedUnitFilter, searchTopicInput, questionCount, allSem3Mcqs, customPool]);
 
   const currentQuestion = activeQuizPool[currentIdx];
 
@@ -215,7 +222,80 @@ export default function QuizPage() {
   }, [quizStarted, quizFinished, isAnswerSubmitted, currentQuestion, selectedChoice, currentIdx]);
 
   // Start new quiz session
+  const handleStartCustomQuiz = (config: CustomQuizConfig) => {
+    let customQuestions: EnrichedMCQ[] = [];
+    config.selectedSubjectIds.forEach(subId => {
+      const subj = subjects.find(s => s.id === subId);
+      if (subj) {
+        subj.units.forEach(u => {
+          if (config.selectedUnits.includes(u.unitNumber)) {
+            u.topics.forEach(t => {
+              if (t.mcqs) {
+                const tagged = t.mcqs.map(m => ({
+                  ...m,
+                  subjectId: subj.id,
+                  subjectName: subj.name,
+                  topicId: t.id,
+                  topicTitle: t.title,
+                  unitTitle: u.title,
+                }));
+                customQuestions.push(...tagged);
+              }
+            });
+          }
+        });
+      }
+    });
+
+    if (customQuestions.length === 0) {
+      toast.error('No MCQs found for this custom selection.');
+      return;
+    }
+
+    customQuestions = customQuestions.sort(() => Math.random() - 0.5);
+    const chosen = customQuestions.slice(0, config.questionCount);
+    setCustomPool(chosen);
+    setQuestionCount(config.questionCount);
+    setIsCustomBuilderOpen(false);
+
+    setCurrentIdx(0);
+    setSelectedChoice(null);
+    setIsAnswerSubmitted(false);
+    setScore(0);
+    setQuizAnswers([]);
+    setFlaggedIndices(new Set());
+    setQuizFinished(false);
+    setIsReviewMode(false);
+    setTotalTimerSeconds(0);
+    setQuestionTimerSeconds(0);
+    setIsTimerPaused(false);
+    setQuizStarted(true);
+    toast.success(`Custom Quiz started with ${chosen.length} questions across ${config.selectedSubjectIds.length} subjects!`);
+  };
+
+  const currentAttemptReviewData: QuizAttemptReviewData = useMemo(() => {
+    return {
+      quizTitle: selectedSubject === 'all-sem3' ? 'Semester 3 Grand Mock Drill' : selectedSubject.toUpperCase(),
+      subjectCode: selectedSubject.toUpperCase(),
+      score: score,
+      totalQuestions: activeQuizPool.length,
+      dateAttempted: new Date().toLocaleDateString(),
+      questions: activeQuizPool.map((q, idx) => {
+        const rec = quizAnswers.find(a => a.question === q);
+        return {
+          questionNumber: idx + 1,
+          questionText: q.question,
+          options: q.options,
+          userSelectedIndex: rec ? rec.selectedChoice : -1,
+          correctIndex: q.correctAnswer,
+          explanation: q.explanation || 'Refer to the corresponding unit topic for in-depth concepts.',
+        };
+      })
+    };
+  }, [score, activeQuizPool, quizAnswers, selectedSubject]);
+
   const handleStartQuiz = () => {
+    setCustomPool(null);
     if (activeQuizPool.length === 0) {
       toast.error("No questions found for this topic filter. Please broaden your selection.");
       return;
@@ -502,8 +582,16 @@ export default function QuizPage() {
               </div>
             </div>
 
-            {/* Launch Button */}
-            <div className="pt-2 flex justify-end">
+            {/* Launch & Custom Quiz Buttons */}
+            <div className="pt-2 flex flex-wrap items-center justify-between gap-3">
+              <button
+                type="button"
+                onClick={() => setIsCustomBuilderOpen(true)}
+                className="px-4 py-2.5 rounded-xl border border-[#D6E85D]/40 bg-[#183F36]/20 hover:bg-[#183F36]/40 text-[#D6E85D] font-bold text-xs transition-all flex items-center gap-2 cursor-pointer"
+              >
+                <Sparkles className="h-4 w-4" />
+                <span>Custom Quiz Builder (Mixed Units)</span>
+              </button>
               <button
                 type="button"
                 onClick={handleStartQuiz}
@@ -983,6 +1071,13 @@ export default function QuizPage() {
                 <span>{isReviewMode ? "Hide Questions Review" : "Review All Questions"}</span>
               </button>
               <button
+                onClick={() => setIsReviewModalOpen(true)}
+                className="px-5 py-2.5 rounded-xl bg-[#183F36] hover:bg-[#12332C] text-[#D6E85D] border border-[#D6E85D]/40 font-bold text-xs shadow-md flex items-center gap-2 cursor-pointer"
+              >
+                <Award className="h-3.5 w-3.5" />
+                <span>Detailed Review & Retry Mistakes</span>
+              </button>
+              <button
                 onClick={() => setQuizStarted(false)}
                 className="px-5 py-2.5 rounded-xl bg-slate-800/50 hover:bg-slate-800 text-slate-400 hover:text-white font-semibold text-xs border border-slate-700/60 cursor-pointer"
               >
@@ -1091,6 +1186,16 @@ export default function QuizPage() {
           </div>
         </div>
       )}
+      <CustomQuizBuilderModal 
+        isOpen={isCustomBuilderOpen} 
+        onClose={() => setIsCustomBuilderOpen(false)} 
+        onStartCustomQuiz={handleStartCustomQuiz} 
+      />
+      <QuizAttemptReviewModal 
+        isOpen={isReviewModalOpen} 
+        onClose={() => setIsReviewModalOpen(false)} 
+        data={currentAttemptReviewData} 
+      />
     </div>
   );
 }

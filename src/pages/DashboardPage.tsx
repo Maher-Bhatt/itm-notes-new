@@ -27,8 +27,10 @@ import {
   LogIn,
   Code2,
   Zap,
-  Bookmark
+  Bookmark,
+  Bot
 } from "lucide-react";
+import { AiDoubtSolverModal } from "@/components/AiDoubtSolverModal";
 import { 
   ResponsiveContainer, 
   AreaChart, 
@@ -61,6 +63,7 @@ export default function DashboardPage() {
   const [activeShortcutTab, setActiveShortcutTab] = useState<"overview" | "tools">("overview");
   const [selectedCourseFilter, setSelectedCourseFilter] = useState("all");
   const [subjectSemFilter, setSubjectSemFilter] = useState<number | "all">(profile?.semester || 3);
+  const [aiDoubtOpen, setAiDoubtOpen] = useState(false);
 
   const studentDisplayName = profile?.display_name || user?.email?.split("@")[0] || null;
   const activeSemester = profile?.semester || semesterNumber || 3;
@@ -272,6 +275,105 @@ export default function DashboardPage() {
                 <circle cx="100" cy="90" r="12" fill="#D6E85D" opacity="0.8" />
               </svg>
             </div>
+          </div>
+
+          {/* Quick Academic Power Tools Row */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
+            <button
+              onClick={() => setAiDoubtOpen(true)}
+              className="p-3 rounded-2xl bg-card border border-border/80 hover:border-primary/50 text-left transition-all flex flex-col justify-between apple-press group"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <span className="w-7 h-7 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold">
+                  <Bot className="h-4 w-4" />
+                </span>
+                <span className="text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/15 text-emerald-600 font-bold">24/7</span>
+              </div>
+              <div>
+                <h4 className="text-xs font-bold text-foreground group-hover:text-primary transition-colors">AI Doubt Solver</h4>
+                <p className="text-[10px] text-muted-foreground">Ask 2 AM exam queries</p>
+              </div>
+            </button>
+
+            <button
+              onClick={() => navigate("/pyq-papers")}
+              className="p-3 rounded-2xl bg-card border border-border/80 hover:border-primary/50 text-left transition-all flex flex-col justify-between apple-press group"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <span className="w-7 h-7 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center font-bold">
+                  <FileText className="h-4 w-4" />
+                </span>
+                <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-500/15 text-amber-600 font-bold">SOLVED</span>
+              </div>
+              <div>
+                <h4 className="text-xs font-bold text-foreground group-hover:text-primary transition-colors">PYQ Papers</h4>
+                <p className="text-[10px] text-muted-foreground">Real GTU/ITM papers</p>
+              </div>
+            </button>
+
+            <button
+              onClick={() => navigate("/mock-exam")}
+              className="p-3 rounded-2xl bg-card border border-border/80 hover:border-primary/50 text-left transition-all flex flex-col justify-between apple-press group"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <span className="w-7 h-7 rounded-lg bg-purple-500/10 text-purple-500 flex items-center justify-center font-bold">
+                  <Trophy className="h-4 w-4" />
+                </span>
+                <span className="text-[9px] px-1.5 py-0.2 rounded bg-purple-500/15 text-purple-600 font-bold">TIMED</span>
+              </div>
+              <div>
+                <h4 className="text-xs font-bold text-foreground group-hover:text-primary transition-colors">Mock Exams</h4>
+                <p className="text-[10px] text-muted-foreground">90-min test simulator</p>
+              </div>
+            </button>
+
+            <button
+              onClick={() => navigate("/study-planner")}
+              className="p-3 rounded-2xl bg-card border border-border/80 hover:border-primary/50 text-left transition-all flex flex-col justify-between apple-press group"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <span className="w-7 h-7 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center font-bold">
+                  <Calendar className="h-4 w-4" />
+                </span>
+                <span className="text-[9px] px-1.5 py-0.2 rounded bg-blue-500/15 text-blue-600 font-bold">AUTO</span>
+              </div>
+              <div>
+                <h4 className="text-xs font-bold text-foreground group-hover:text-primary transition-colors">Study Planner</h4>
+                <p className="text-[10px] text-muted-foreground">Exam target roadmap</p>
+              </div>
+            </button>
+
+            <button
+              onClick={() => navigate("/rapid-revision")}
+              className="p-3 rounded-2xl bg-card border border-border/80 hover:border-primary/50 text-left transition-all flex flex-col justify-between apple-press group"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <span className="w-7 h-7 rounded-lg bg-pink-500/10 text-pink-500 flex items-center justify-center font-bold">
+                  <Zap className="h-4 w-4" />
+                </span>
+                <span className="text-[9px] px-1.5 py-0.2 rounded bg-pink-500/15 text-pink-600 font-bold">30 MIN</span>
+              </div>
+              <div>
+                <h4 className="text-xs font-bold text-foreground group-hover:text-primary transition-colors">Rapid Revision</h4>
+                <p className="text-[10px] text-muted-foreground">High-yield cram cards</p>
+              </div>
+            </button>
+
+            <button
+              onClick={() => navigate("/formulas")}
+              className="p-3 rounded-2xl bg-card border border-border/80 hover:border-primary/50 text-left transition-all flex flex-col justify-between apple-press group"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <span className="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center font-bold">
+                  <BookOpen className="h-4 w-4" />
+                </span>
+                <span className="text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/15 text-emerald-600 font-bold">KaTeX</span>
+              </div>
+              <div>
+                <h4 className="text-xs font-bold text-foreground group-hover:text-primary transition-colors">Formula Bank</h4>
+                <p className="text-[10px] text-muted-foreground">Searchable definitions</p>
+              </div>
+            </button>
           </div>
 
           {/* 2. Core Academic Subjects & Interactive Notes Grid */}
@@ -788,6 +890,12 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
+
+      {/* AI Syllabus Doubt Solver Modal */}
+      <AiDoubtSolverModal
+        isOpen={aiDoubtOpen}
+        onClose={() => setAiDoubtOpen(false)}
+      />
     </div>
   );
 }

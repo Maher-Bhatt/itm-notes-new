@@ -45,6 +45,7 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCapacitorNative } from "@/hooks/useCapacitorNative";
 import { AppStartupSplashScreen } from "@/components/AppStartupSplashScreen";
+import { requestNotificationPermission, scheduleDailyStudyReminder } from "@/utils/studyReminders";
 
 /**
  * Resilient lazy loader: if a new deployment removed old hashed chunks,
@@ -81,10 +82,16 @@ function lazyWithRetry<T extends React.ComponentType<any>>(
 const CodingLabPage = lazyWithRetry(() => import("./pages/CodingLabPage"));
 const CommunityPage = lazyWithRetry(() => import("./pages/CommunityPage"));
 const AdminDashboard = lazyWithRetry(() => import("./pages/admin/AdminDashboard"));
+const PyqPapersPage = lazyWithRetry(() => import("./pages/PyqPapersPage"));
+const MockExamPage = lazyWithRetry(() => import("./pages/MockExamPage"));
+const RapidRevisionPage = lazyWithRetry(() => import("./pages/RapidRevisionPage"));
+const FormulaBankPage = lazyWithRetry(() => import("./pages/FormulaBankPage"));
+const LearningAnalyticsPage = lazyWithRetry(() => import("./pages/LearningAnalyticsPage"));
+const StudyPlannerPage = lazyWithRetry(() => import("./pages/StudyPlannerPage"));
 
 const queryClient = new QueryClient();
 
-/** Runs once on app startup when user is authenticated to maintain streak. */
+/** Runs once on app startup when user is authenticated to maintain streak & schedule reminders. */
 function AppStartup() {
   const { user } = useAuth();
   const { checkDailyStreak } = useGamification();
@@ -92,6 +99,8 @@ function AppStartup() {
   useEffect(() => {
     if (user) {
       checkDailyStreak();
+      requestNotificationPermission();
+      scheduleDailyStudyReminder();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
@@ -174,6 +183,15 @@ const App = () => (
                           <Route path="/subjects" element={<ProtectedRoute><SubjectsPage /></ProtectedRoute>} />
                           <Route path="/subject/:subjectId" element={<SubjectDashboard />} />
                           <Route path="/subject/:subjectId/cheat-sheet" element={<SubjectCheatSheetPage />} />
+
+                          {/* 32 High-Value Features Routes */}
+                          <Route path="/pyq-papers" element={<ProtectedRoute><PyqPapersPage /></ProtectedRoute>} />
+                          <Route path="/mock-exam" element={<ProtectedRoute><MockExamPage /></ProtectedRoute>} />
+                          <Route path="/rapid-revision" element={<ProtectedRoute><RapidRevisionPage /></ProtectedRoute>} />
+                          <Route path="/formulas" element={<ProtectedRoute><FormulaBankPage /></ProtectedRoute>} />
+                          <Route path="/analytics" element={<ProtectedRoute><LearningAnalyticsPage /></ProtectedRoute>} />
+                          <Route path="/study-planner" element={<ProtectedRoute><StudyPlannerPage /></ProtectedRoute>} />
+
                           <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminDashboard /></ProtectedRoute>} />
                           <Route path="/admin/seed" element={<ProtectedRoute requireAdmin><SeedPage /></ProtectedRoute>} />
                           <Route path="/explore" element={<Index />} />
@@ -196,4 +214,3 @@ const App = () => (
 );
 
 export default App;
-

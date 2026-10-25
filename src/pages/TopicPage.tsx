@@ -7,11 +7,41 @@ import { useTopic, useSubject } from "@/hooks/useAcademicData";
 import { MCQQuiz } from "@/components/MCQQuiz";
 import { TestMe } from "@/components/TestMe";
 import { MarkdownRenderer, extractTOC } from "@/components/MarkdownRenderer";
-import { Bookmark, CheckCircle, BookOpen, ChevronLeft, ChevronRight, Menu, X, Copy, Check, Maximize2, Minimize2, Loader2, HelpCircle, Clock, Printer, Layers, Sparkles, MoreVertical } from "lucide-react";
+import { 
+  Bookmark, 
+  CheckCircle, 
+  BookOpen, 
+  ChevronLeft, 
+  ChevronRight, 
+  Menu, 
+  X, 
+  Copy, 
+  Check, 
+  Maximize2, 
+  Minimize2, 
+  Loader2, 
+  HelpCircle, 
+  Clock, 
+  Printer, 
+  Layers, 
+  Sparkles, 
+  MoreVertical,
+  Share2,
+  Highlighter,
+  MessageSquare,
+  Flag,
+  Trash2,
+  Plus
+} from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { usePomodoro } from "@/contexts/PomodoroContext";
 import { AudioNotesPlayer } from "@/components/AudioNotesPlayer";
 import { FlashcardsModal, Flashcard } from "@/components/FlashcardsModal";
+import { BilingualExplanation } from "@/components/BilingualExplanation";
+import { VivaOralPrepModal } from "@/components/VivaOralPrepModal";
+import { ReportErrataModal } from "@/components/ReportErrataModal";
+import { useAnnotations } from "@/hooks/useAnnotations";
+import { shareTopicToSocial, shareToWhatsApp } from "@/utils/shareUtils";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useState, useEffect, useCallback, useMemo, useRef, memo } from "react";
 import { SearchDialog } from "@/components/SearchDialog";
@@ -46,7 +76,7 @@ const XcodeBlock = memo(function XcodeBlock({ code, label, variant }: { code: st
   );
 });
 
-/* ── Isolated top reading progress bar (does NOT cause TopicPage to re-render on scroll) ── */
+/* ── Isolated top reading progress bar ── */
 const ReadingProgressBar = memo(function ReadingProgressBar() {
   const barRef = useRef<HTMLDivElement>(null);
 
@@ -82,7 +112,7 @@ const ReadingProgressBar = memo(function ReadingProgressBar() {
   );
 });
 
-/* ── In-page TOC sidebar for rich content (self-contained scroll spy) ── */
+/* ── In-page TOC sidebar for rich content ── */
 const ContentTOC = memo(function ContentTOC({ markdown }: { markdown: string }) {
   const [activeId, setActiveId] = useState("");
   const toc = useMemo(() => extractTOC(markdown), [markdown]);
@@ -140,6 +170,10 @@ export default function TopicPage() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [focusMode, setFocusMode] = useState(false);
+  const [vivaModalOpen, setVivaModalOpen] = useState(false);
+  const [errataModalOpen, setErrataModalOpen] = useState(false);
+  const [annotationsDrawerOpen, setAnnotationsDrawerOpen] = useState(false);
+  const [newStickyNote, setNewStickyNote] = useState("");
 
   // 1. Static lookup
   const staticResult = useMemo(() => getTopic(subjectId || "", topicId || ""), [subjectId, topicId]);
@@ -228,6 +262,10 @@ export default function TopicPage() {
 
   const [flashcardsOpen, setFlashcardsOpen] = useState(false);
 
+  // Annotations & Sticky Notes Hook
+  const currentTopicId = resolvedTopic?.topic.id || topicId || "global";
+  const { annotations, addHighlight, addPersonalNote, removeAnnotation } = useAnnotations(currentTopicId);
+
   const flashcards = useMemo<Flashcard[]>(() => {
     const list: Flashcard[] = [];
     if (resolvedTopic?.topic.keyPoints) {
@@ -264,7 +302,7 @@ export default function TopicPage() {
     return list;
   }, [resolvedTopic]);
 
-  // Check daily streak when user visits topic & unlock MST Survivor for CA
+  // Check daily streak when user visits topic
   useEffect(() => {
     try {
       checkDailyStreak();
@@ -299,94 +337,38 @@ export default function TopicPage() {
     return () => window.removeEventListener("keydown", handler);
   }, [focusMode, resolvedTopic?.topic.id, isBookmarked, toggleBookmark]);
 
-  // Scroll to top ONLY on explicit topic/subject navigation
-  useEffect(() => {
-    setSidebarOpen(false);
-    window.scrollTo(0, 0);
-  }, [topicId, subjectId]);
+  const handleShare = () => {
+    if (!resolvedTopic) return;
+    shareTopicToSocial({
+      subjectName: subject?.name || 'ITM Notes',
+      topicTitle: resolvedTopic.topic.title,
+      url: window.location.href,
+      unitTitle: resolvedTopic.unitTitle,
+    });
+  };
 
-  // Track last visited topic without triggering scroll resets
-  useEffect(() => {
-    if (resolvedTopic?.topic?.id) {
-      try {
-        localStorage.setItem(
-          "itm_last_visited_topic",
-          JSON.stringify({
-            topicId: resolvedTopic.topic.id,
-            topicTitle: resolvedTopic.topic.title,
-            subjectId: subjectId,
-            subjectName: subject?.name || "Unknown Subject",
-          })
-        );
-      } catch (e) {
-        console.warn('Failed to save last visited topic to localStorage:', e);
-      }
-    }
-  }, [subjectId, resolvedTopic?.topic?.id, resolvedTopic?.topic?.title, subject?.name]);
-
-  // Comprehensive audio script including title, overview, exam points, in-depth lecture notes, examples, and revision
-  const fullAudioLectureScript = useMemo(() => {
-    if (!resolvedTopic?.topic) return "";
-    const { topic, unitTitle } = resolvedTopic;
-    const sections: string[] = [];
-
-    sections.push(`Topic: ${topic.title}. From unit: ${unitTitle}. Subject: ${subject?.name || ""}.`);
-
-    if (topic.simpleExplanation) {
-      sections.push(`High level summary: ${topic.simpleExplanation}`);
-    }
-
-    if (topic.keyPoints && topic.keyPoints.length > 0) {
-      sections.push(`Key exam scoring points to remember: ${topic.keyPoints.join(". ")}.`);
-    }
-
-    const detailRaw = topic.richContent || topic.detailedExplanation || "";
-    if (detailRaw) {
-      const cleanedDetail = detailRaw
-        .replace(/```[\s\S]*?```/g, "")
-        .replace(/<[^>]*>/g, "")
-        .replace(/#{1,6}\s+/g, "")
-        .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
-        .replace(/[*_~`]/g, "")
-        .replace(/\|[^\n]+\|/g, "")
-        .trim();
-      if (cleanedDetail) {
-        sections.push(`In-depth lecture notes: ${cleanedDetail}`);
-      }
-    }
-
-    if (topic.examples && topic.examples.length > 0) {
-      const examplesSummary = topic.examples
-        .map((ex, i) => `Example ${i + 1}: ${ex.title}. ${ex.problem}. Solution explanation: ${ex.explanation}`)
-        .join(". ");
-      sections.push(`Worked practical examples: ${examplesSummary}`);
-    }
-
-    if (topic.shortNotes) {
-      sections.push(`Quick revision recap: ${topic.shortNotes}`);
-    }
-
-    return sections.join(" ");
-  }, [resolvedTopic, subject]);
+  const handleSaveNote = () => {
+    if (!newStickyNote.trim()) return;
+    addPersonalNote(newStickyNote.trim());
+    setNewStickyNote("");
+    toast.success("Personal study note saved! 📝");
+  };
 
   if (isTopicLoading || isSubjectLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center animate-fade-in flex flex-col items-center gap-3">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <p className="text-sm text-muted-foreground">Loading topic notes...</p>
-        </div>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin text-primary" />
       </div>
     );
   }
 
-  if (!resolvedTopic) {
+  if (!resolvedTopic || !subject) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center animate-fade-in">
-          <h2 className="text-xl font-bold mb-2">Topic not found</h2>
-          <p className="text-sm text-muted-foreground mb-4">We couldn't find the requested topic.</p>
-          <Link to="/" className="text-primary hover:underline text-sm font-medium">← Back to home</Link>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-2 text-foreground">Topic not found</h2>
+          <p className="text-muted-foreground mb-4">The topic you're looking for doesn't exist.</p>
+          <Link to="/" className="text-primary hover:underline">Back to Home</Link>
         </div>
       </div>
     );
@@ -395,7 +377,9 @@ export default function TopicPage() {
   const { topic, unitTitle } = resolvedTopic;
   const completed = isCompleted(topic.id);
   const bookmarked = isBookmarked(topic.id);
-  const hasRichContent = true;
+  const hasRichContent = Boolean(topic.richContent || topic.detailedExplanation);
+
+  const fullAudioLectureScript = `${topic.title}. From Unit: ${unitTitle}. Subject: ${subject.name}. Overview: ${topic.simpleExplanation}. ${topic.keyPoints && topic.keyPoints.length > 0 ? "Key exam points to remember: " + topic.keyPoints.join(". ") : ""}`;
 
   const handleComplete = () => {
     if (!completed) {
@@ -442,6 +426,8 @@ export default function TopicPage() {
               <span className="hidden sm:inline">{completed ? "Completed" : "Mark Complete"}</span>
             </button>
             <TestMe mcqs={topic.mcqs} topicId={topic.id} topicTitle={topic.title} />
+
+            {/* Focus Sprint */}
             <button
               onClick={() => {
                 if (!isPomodoroRunning) {
@@ -464,7 +450,8 @@ export default function TopicPage() {
                   : "Focus 25m"}
               </span>
             </button>
-            {/* Flashcards Trigger - hidden on very small screens */}
+
+            {/* Flashcards Trigger */}
             <button
               onClick={() => setFlashcardsOpen(true)}
               title="Active Recall Flashcards"
@@ -474,7 +461,30 @@ export default function TopicPage() {
               <span className="hidden lg:inline">Flashcards</span>
             </button>
 
-            {/* Print / Save to PDF - hidden on mobile */}
+            {/* Share to Class / WhatsApp */}
+            <button
+              onClick={handleShare}
+              title="Share Topic Link with Classmates"
+              className="hidden sm:inline-flex p-1.5 sm:p-2 rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors apple-press"
+            >
+              <Share2 className="h-4 w-4 sm:h-5 sm:w-5" />
+            </button>
+
+            {/* Personal Notes Drawer Trigger */}
+            <button
+              onClick={() => setAnnotationsDrawerOpen(true)}
+              title={`Personal Notes & Highlights (${annotations.length})`}
+              className="relative p-1.5 sm:p-2 rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors apple-press"
+            >
+              <Highlighter className="h-4 w-4 sm:h-5 sm:w-5 text-amber-500" />
+              {annotations.length > 0 && (
+                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary text-primary-foreground font-bold text-[9px] flex items-center justify-center">
+                  {annotations.length}
+                </span>
+              )}
+            </button>
+
+            {/* Print / Save to PDF */}
             <button
               onClick={() => window.print()}
               title="Save Topic as PDF / Print Exam Guide"
@@ -490,6 +500,7 @@ export default function TopicPage() {
             >
               {focusMode ? <Minimize2 className="h-4 w-4 sm:h-5 sm:w-5" /> : <Maximize2 className="h-4 w-4 sm:h-5 sm:w-5" />}
             </button>
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button className="sm:hidden p-1.5 rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors">
@@ -501,16 +512,29 @@ export default function TopicPage() {
                   <Layers className="mr-2 h-4 w-4 text-amber-500" />
                   <span>Flashcards</span>
                 </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleShare}>
+                  <Share2 className="mr-2 h-4 w-4 text-emerald-500" />
+                  <span>Share Topic</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setAnnotationsDrawerOpen(true)}>
+                  <Highlighter className="mr-2 h-4 w-4 text-amber-500" />
+                  <span>My Notes ({annotations.length})</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setVivaModalOpen(true)}>
+                  <HelpCircle className="mr-2 h-4 w-4 text-primary" />
+                  <span>Oral / Viva Prep</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setErrataModalOpen(true)}>
+                  <Flag className="mr-2 h-4 w-4 text-rose-500" />
+                  <span>Report Error (+25 XP)</span>
+                </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => window.print()}>
                   <Printer className="mr-2 h-4 w-4 text-muted-foreground" />
                   <span>Save / Print PDF</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setFocusMode(!focusMode)}>
-                  {focusMode ? <Minimize2 className="mr-2 h-4 w-4 text-muted-foreground" /> : <Maximize2 className="mr-2 h-4 w-4 text-muted-foreground" />}
-                  <span>{focusMode ? 'Exit Focus Mode' : 'Focus Mode'}</span>
-                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+
             <button onClick={() => toggleBookmark(topic.id)} className="p-1.5 sm:p-2 rounded-md hover:bg-secondary transition-colors">
               <Bookmark className={`h-4 w-4 sm:h-5 sm:w-5 ${bookmarked ? "fill-amber-500 text-amber-500" : "text-muted-foreground hover:text-foreground"}`} />
             </button>
@@ -523,29 +547,33 @@ export default function TopicPage() {
         <aside className={`${focusMode ? "hidden" : ""} ${sidebarOpen ? "fixed inset-0 z-40 lg:relative" : "hidden lg:block"} lg:w-72 lg:shrink-0`}>
           {sidebarOpen && <div className="fixed inset-0 bg-black/40 backdrop-blur-sm lg:hidden z-40" onClick={() => setSidebarOpen(false)} />}
           <div className={`${sidebarOpen ? "fixed left-0 top-14 bottom-0 w-72 z-50 bg-background shadow-xl" : ""} lg:sticky lg:top-14 lg:h-[calc(100vh-3.5rem)] overflow-y-auto border-r border-border p-4 custom-scrollbar`}>
-            <p className="text-[12px] font-bold text-muted-foreground uppercase tracking-widest mb-4 px-2">Table of Contents</p>
-            {allUnits.map((unit) => (
-              <div key={unit.id} className="mb-6">
-                <p className="text-[13px] font-bold text-foreground/80 px-2 mb-2 leading-tight">{unit.title}</p>
-                <div className="space-y-1">
+            <div className="mb-4 pb-3 border-b border-border">
+              <h3 className="font-bold text-sm text-foreground truncate">{subject?.name}</h3>
+              <p className="text-[11px] text-muted-foreground">{subject?.code} • Semester {subject?.semester}</p>
+            </div>
+            {allUnits.map((unit, uIdx) => (
+              <div key={unit.id} className="mb-4">
+                <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider mb-1.5 px-2">
+                  Unit {uIdx + 1}: {unit.title}
+                </p>
+                <div className="space-y-0.5">
                   {unit.topics.map((t) => {
-                    const isCurrent = t.id === topic.id;
-                    const tCompleted = isCompleted(t.id);
+                    const isActive = t.id === topic.id;
+                    const isDone = isCompleted(t.id);
                     return (
-                      <button
+                      <Link
                         key={t.id}
-                        onClick={() => { navigate(`/subject/${subjectId}/topic/${t.id}`); setSidebarOpen(false); }}
-                        className={`w-full text-left px-3 py-2 rounded-md text-[14px] flex items-start gap-3 transition-all ${
-                          isCurrent ? "bg-primary text-primary-foreground font-medium shadow-sm" : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground"
+                        to={`/subject/${subjectId}/topic/${t.id}`}
+                        onClick={() => setSidebarOpen(false)}
+                        className={`flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg transition-colors ${
+                          isActive
+                            ? "bg-primary text-primary-foreground font-semibold shadow-sm"
+                            : "text-muted-foreground hover:text-foreground hover:bg-secondary/60"
                         }`}
                       >
-                        {tCompleted ? (
-                          <CheckCircle className={`h-4 w-4 shrink-0 mt-0.5 ${isCurrent ? "text-primary-foreground/90" : "text-emerald-500"}`} />
-                        ) : (
-                          <BookOpen className={`h-4 w-4 shrink-0 mt-0.5 ${isCurrent ? "text-primary-foreground/70" : "opacity-40"}`} />
-                        )}
-                        <span className="leading-snug">{t.title}</span>
-                      </button>
+                        <span className="truncate pr-2">{t.title}</span>
+                        {isDone && <CheckCircle className={`h-3.5 w-3.5 shrink-0 ${isActive ? "text-primary-foreground" : "text-emerald-500"}`} />}
+                      </Link>
                     );
                   })}
                 </div>
@@ -571,11 +599,32 @@ export default function TopicPage() {
             </div>
           )}
 
-          <div className={`flex gap-0 ${focusMode ? "" : ""}`}>
+          <div className="flex gap-0">
             {/* Reading column */}
             <div className={`${focusMode ? "max-w-4xl mx-auto" : "flex-1 min-w-0"} px-4 sm:px-6 md:px-12 py-6 sm:py-10 transition-all duration-300`}>
-              <p className="text-[11px] sm:text-[13px] text-primary font-bold uppercase tracking-widest mb-3 sm:mb-4">{unitTitle}</p>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold mb-3 sm:mb-4 leading-tight text-foreground tracking-tight">{topic.title}</h1>
+              <div className="flex items-center justify-between gap-2 mb-3">
+                <p className="text-[11px] sm:text-[13px] text-primary font-bold uppercase tracking-widest">{unitTitle}</p>
+                
+                {/* Topic Action Pills */}
+                <div className="flex items-center gap-1.5">
+                  <button
+                    onClick={() => setVivaModalOpen(true)}
+                    className="px-2.5 py-1 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary text-[11px] font-bold inline-flex items-center gap-1 transition-all apple-press"
+                  >
+                    <HelpCircle className="h-3 w-3" /> Viva Prep
+                  </button>
+                  <button
+                    onClick={() => setErrataModalOpen(true)}
+                    className="px-2 py-1 rounded-lg bg-secondary hover:bg-secondary/80 text-muted-foreground hover:text-foreground text-[11px] font-medium inline-flex items-center gap-1 transition-all"
+                  >
+                    <Flag className="h-3 w-3 text-rose-500" /> Report Typo
+                  </button>
+                </div>
+              </div>
+
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold mb-3 sm:mb-4 leading-tight text-foreground tracking-tight">
+                {topic.title}
+              </h1>
 
               {/* Print Only Official Document Header */}
               <div className="hidden print-header mb-6">
@@ -587,14 +636,19 @@ export default function TopicPage() {
                 <p className="text-xs text-gray-700">{subject?.name} ({subject?.code}) · {unitTitle}</p>
               </div>
 
-              {/* Audio Notes Player (Listen to Complete Notes) */}
+              {/* Hindi & Gujarati Native Language Conceptual Explanation */}
+              <div className="mb-4">
+                <BilingualExplanation topicTitle={topic.title} />
+              </div>
+
+              {/* Audio Notes Player */}
               <AudioNotesPlayer
                 title={topic.title}
                 textToRead={fullAudioLectureScript}
               />
 
               {/* ── Rich Content Mode ── */}
-              <div className="topic-rich-content-wrapper max-w-[900px]">
+              <div className="topic-rich-content-wrapper max-w-[900px] mt-6">
                 <Tabs defaultValue="detailed" className="w-full">
                   <TabsList className="mb-6 sm:mb-8 w-full max-w-[400px] h-10 sm:h-12 p-1 bg-secondary/50 rounded-lg">
                     <TabsTrigger value="detailed" className="text-[12px] sm:text-[14px] font-medium rounded-md h-full data-[state=active]:shadow-sm">Detailed Notes</TabsTrigger>
@@ -648,10 +702,10 @@ export default function TopicPage() {
                         <div className="space-y-5">
                           <p className="text-amber-700/80 dark:text-amber-400/80 font-medium">Key formulas and definitions to remember before an exam.</p>
                           <ul className="space-y-3">
-                            {topic.keyPoints.map((kp, idx) => (
-                              <li key={idx} className="flex items-start gap-3">
-                                <span className="text-amber-500 mt-1.5">•</span>
-                                <span className="text-[16px] leading-relaxed text-amber-900 dark:text-amber-100">{kp}</span>
+                            {topic.keyPoints && topic.keyPoints.map((point, index) => (
+                              <li key={index} className="flex items-start gap-3">
+                                <span className="h-2 w-2 rounded-full bg-amber-500 mt-2 shrink-0" />
+                                <span className="text-foreground/90">{point}</span>
                               </li>
                             ))}
                           </ul>
@@ -661,96 +715,29 @@ export default function TopicPage() {
                   </TabsContent>
                 </Tabs>
 
-                {topic.examples && topic.examples.length > 0 && (
-                  <div className="mt-16">
-                    <h2 className="text-2xl font-extrabold mb-8 pb-3 border-b border-border text-foreground">Worked Examples</h2>
-                    <div className="space-y-8">
-                      {topic.examples.map((ex, i) => (
-                        <div key={i} className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
-                          <div className="px-6 py-4 bg-secondary/30 border-b border-border">
-                            <h4 className="font-bold text-[16px] text-foreground">{ex.title}</h4>
-                            <p className="text-[14px] text-muted-foreground mt-1">{ex.problem}</p>
-                          </div>
-                          <div className="p-6 space-y-5">
-                            <p className="text-[15px] text-foreground/90 leading-relaxed">{ex.explanation}</p>
-                            {ex.code && <XcodeBlock code={ex.code} />}
-                            {ex.output && <XcodeBlock code={ex.output} variant="output" />}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {topic.keyPoints && topic.keyPoints.length > 0 && (
-                  <div className="mt-16">
-                    <h2 className="text-2xl font-extrabold mb-6 pb-3 border-b border-border text-foreground">Key Points</h2>
-                    <div className="space-y-3 bg-secondary/20 rounded-xl p-6 border border-border/50">
-                      {topic.keyPoints.map((point, i) => (
-                        <div key={i} className="flex items-start gap-4">
-                          <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[12px] font-bold shrink-0 mt-0.5">{i + 1}</span>
-                          <span className="text-[16px] text-foreground/90 leading-relaxed font-medium">{point}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
+                {/* Theory questions */}
                 {topic.theoryQuestions && topic.theoryQuestions.length > 0 && (
-                  <div className="mt-16">
-                    <div className="flex items-center justify-between pb-3 border-b border-border mb-6">
-                      <h2 className="text-2xl font-extrabold text-foreground flex items-center gap-2.5">
-                        <HelpCircle className="h-6 w-6 text-primary" />
-                        Exam Theory Questions ({topic.theoryQuestions.length})
-                      </h2>
-                      <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-primary/10 text-primary">
-                        University Exam Pattern
-                      </span>
-                    </div>
-                    <div className="space-y-4">
-                      {topic.theoryQuestions.map((tq, i) => (
-                        <details
-                          key={i}
-                          className="group bg-card border border-border/80 rounded-xl p-5 open:bg-secondary/15 open:border-primary/40 transition-colors shadow-sm"
-                        >
-                          <summary className="font-bold text-[15px] sm:text-[16px] text-foreground cursor-pointer flex items-center justify-between gap-4 select-none">
-                            <div className="flex items-start gap-3">
-                              <span className="w-6 h-6 rounded-md bg-primary/10 text-primary text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
-                                Q{i + 1}
-                              </span>
-                              <span>{tq.question}</span>
-                            </div>
-                            <span className={`text-[11px] px-2.5 py-0.5 rounded-full font-bold shrink-0 ${
-                              tq.marks === '2 Marks' || tq.marks === '3 Marks'
-                                ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
-                                : tq.marks === '5 Marks'
-                                ? 'bg-purple-500/10 text-purple-600 dark:text-purple-400'
-                                : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
-                            }`}>
-                              {tq.marks}
+                  <div className="mt-12 sm:mt-16">
+                    <h2 className="text-xl sm:text-2xl font-extrabold mb-4 sm:mb-6 pb-2 sm:pb-3 border-b border-border text-foreground">Important Exam Questions</h2>
+                    <Accordion type="single" collapsible className="w-full space-y-2 sm:space-y-3">
+                      {topic.theoryQuestions.map((q, idx) => (
+                        <AccordionItem key={idx} value={`item-${idx}`} className="border rounded-xl px-4 sm:px-5 bg-card/50">
+                          <AccordionTrigger className="text-left font-bold text-[13px] sm:text-[15px] hover:no-underline py-3 sm:py-4">
+                            <span className="flex items-center gap-2">
+                              <span className="text-xs px-2 py-0.5 rounded bg-primary/10 text-primary font-mono">{q.marks}</span>
+                              {q.question}
                             </span>
-                          </summary>
-                          <div className="mt-4 pt-4 border-t border-border/60 text-[15px] leading-relaxed text-foreground/90 rich-content prose-base max-w-none">
-                            <MarkdownRenderer content={tq.answer} />
-                            {tq.keyPoints && tq.keyPoints.length > 0 && (
-                              <div className="mt-4 p-3.5 bg-secondary/30 rounded-lg border border-border/50">
-                                <p className="text-[11px] font-bold text-primary uppercase tracking-wider mb-2">
-                                  Mark-Scoring Key Points:
-                                </p>
-                                <ul className="list-disc pl-5 space-y-1 text-xs text-muted-foreground">
-                                  {tq.keyPoints.map((kp, kIdx) => (
-                                    <li key={kIdx}>{kp}</li>
-                                  ))}
-                                </ul>
-                              </div>
-                            )}
-                          </div>
-                        </details>
+                          </AccordionTrigger>
+                          <AccordionContent className="pt-2 pb-4 text-muted-foreground text-xs sm:text-sm leading-relaxed border-t border-border/50">
+                            <MarkdownRenderer content={q.answer} />
+                          </AccordionContent>
+                        </AccordionItem>
                       ))}
-                    </div>
+                    </Accordion>
                   </div>
                 )}
 
+                {/* MCQs */}
                 {topic.mcqs && topic.mcqs.length > 0 && (
                   <div className="mt-16 mb-8">
                     <h2 className="text-2xl font-extrabold mb-6 pb-3 border-b border-border text-foreground">Practice Quiz ({topic.mcqs.length} MCQs)</h2>
@@ -766,7 +753,7 @@ export default function TopicPage() {
                 )}
               </div>
 
-              {/* Nav */}
+              {/* Prev / Next Navigation */}
               <div className="flex items-center justify-between mt-12 pt-8 border-t border">
                 {adjacent.prev ? (
                   <button onClick={() => navigate(`/subject/${subjectId}/topic/${adjacent.prev!.id}`)} className="apple-press inline-flex items-center gap-1.5 text-[14px] text-muted-foreground hover:text-foreground transition-colors">
@@ -781,7 +768,7 @@ export default function TopicPage() {
               </div>
             </div>
 
-            {/* Right sidebar — In-page TOC for rich content */}
+            {/* Right sidebar — In-page TOC */}
             {hasRichContent && !focusMode && (
               <aside className="hidden xl:block w-52 shrink-0 sticky top-12 self-start h-[calc(100vh-3rem)] overflow-y-auto p-4 border-l border">
                 <ContentTOC markdown={topic.richContent || topic.detailedExplanation || ""} />
@@ -802,6 +789,117 @@ export default function TopicPage() {
         topicTitle={topic.title}
         cards={flashcards}
       />
+
+      {/* Viva / Oral Prep Modal */}
+      <VivaOralPrepModal
+        isOpen={vivaModalOpen}
+        onClose={() => setVivaModalOpen(false)}
+        subjectFilter={subject?.name}
+      />
+
+      {/* Report Errata / Typo Modal */}
+      <ReportErrataModal
+        isOpen={errataModalOpen}
+        onClose={() => setErrataModalOpen(false)}
+        topicId={topic.id}
+        topicTitle={topic.title}
+      />
+
+      {/* Personal Notes & Highlights Drawer */}
+      {annotationsDrawerOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-end p-0 bg-black/60 backdrop-blur-sm animate-fade-in">
+          <div className="bg-card border-l border-border h-full max-w-md w-full p-6 shadow-2xl flex flex-col animate-slide-in-right">
+            <div className="flex items-center justify-between pb-4 border-b border-border/80">
+              <div className="flex items-center gap-2.5">
+                <span className="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center font-bold">
+                  <Highlighter className="h-4 w-4" />
+                </span>
+                <div>
+                  <h3 className="font-bold text-sm text-foreground">My Topic Notes & Highlights</h3>
+                  <p className="text-[11px] text-muted-foreground">{annotations.length} items saved on this topic</p>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setAnnotationsDrawerOpen(false)}
+                className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* Add Sticky Note */}
+            <div className="py-4 border-b border-border/60 space-y-2">
+              <label className="text-xs font-bold text-foreground block">
+                Add Sticky Exam Note:
+              </label>
+              <textarea
+                value={newStickyNote}
+                onChange={(e) => setNewStickyNote(e.target.value)}
+                placeholder="e.g. Asked in 2024 MST-2 paper! Remember time complexity is O(N log N)..."
+                rows={3}
+                className="w-full rounded-xl bg-secondary/50 border border-border p-3 text-xs text-foreground placeholder:text-muted-foreground focus:ring-1 focus:ring-primary resize-none"
+              />
+              <button
+                onClick={handleSaveNote}
+                disabled={!newStickyNote.trim()}
+                className="w-full py-2 rounded-xl bg-primary text-primary-foreground font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm hover:opacity-90 disabled:opacity-50 transition-all apple-press"
+              >
+                <Plus className="h-4 w-4" /> Save Sticky Note
+              </button>
+            </div>
+
+            {/* List of Annotations */}
+            <div className="flex-1 overflow-y-auto py-4 space-y-3 custom-scrollbar pr-1">
+              {annotations.length === 0 ? (
+                <div className="py-12 text-center">
+                  <MessageSquare className="h-8 w-8 text-muted-foreground/40 mx-auto mb-2" />
+                  <p className="text-xs font-bold text-foreground">No notes or highlights yet</p>
+                  <p className="text-[11px] text-muted-foreground mt-1 px-4">
+                    Type a personal exam note above to review when revising before tests.
+                  </p>
+                </div>
+              ) : (
+                annotations.map((ann) => (
+                  <div
+                    key={ann.id}
+                    className="p-3 rounded-2xl bg-secondary/40 border border-border/80 space-y-2 relative group"
+                  >
+                    <div className="flex items-center justify-between text-[10px] text-muted-foreground">
+                      <span className="font-mono font-bold uppercase">
+                        {ann.type === 'sticky_note' ? '📝 Personal Note' : '🟨 Text Highlight'}
+                      </span>
+                      <button
+                        onClick={() => removeAnnotation(ann.id)}
+                        className="p-1 rounded hover:bg-rose-500/10 text-muted-foreground hover:text-rose-500 transition-colors"
+                        title="Delete Note"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+
+                    {ann.highlightedText && (
+                      <blockquote className="border-l-2 border-primary/60 pl-2 text-xs italic text-muted-foreground bg-primary/5 p-1.5 rounded">
+                        "{ann.highlightedText}"
+                      </blockquote>
+                    )}
+
+                    {ann.noteText && (
+                      <p className="text-xs font-medium text-foreground leading-relaxed whitespace-pre-line">
+                        {ann.noteText}
+                      </p>
+                    )}
+
+                    <span className="text-[9px] text-muted-foreground block text-right">
+                      {new Date(ann.createdAt).toLocaleDateString()}
+                    </span>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

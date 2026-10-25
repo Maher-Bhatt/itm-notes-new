@@ -33,6 +33,7 @@ export interface GamificationState {
   quizzesCompletedCount: number;
   perfectQuizzesCount: number;
   pomodoroSessionsCount: number;
+  streakFreezeCount?: number;
   achievements: Achievement[];
   dailyQuests: DailyQuest[];
   questDate: string;
@@ -101,32 +102,42 @@ export const INITIAL_ACHIEVEMENTS: Achievement[] = [
     unlockedAt: null,
     xpReward: 100,
   },
+  {
+    id: 'endsem-warrior',
+    title: 'End-Sem Warrior',
+    description: 'Complete all Units in OOPJ, DSA, and CA with all practice problems.',
+    icon: '⚔️',
+    tier: 'legendary',
+    category: 'learning',
+    unlockedAt: null,
+    xpReward: 600,
+  },
 
   // ── STREAKS & HABITS ──
   {
     id: 'streak-2',
-    title: 'Spark Ignite',
-    description: 'Maintain a 2-day consecutive study streak.',
-    icon: '⚡',
+    title: 'Habit Builder',
+    description: 'Study 2 days in a row.',
+    icon: '🔥',
     tier: 'bronze',
     category: 'streak',
     unlockedAt: null,
-    xpReward: 50,
+    xpReward: 40,
   },
   {
     id: 'streak-5',
-    title: 'On Fire',
-    description: 'Maintain a 5-day consecutive study streak.',
-    icon: '🔥',
+    title: 'Consistent Scholar',
+    description: 'Maintain a 5-day study streak.',
+    icon: '⚡',
     tier: 'silver',
     category: 'streak',
     unlockedAt: null,
-    xpReward: 120,
+    xpReward: 100,
   },
   {
     id: 'streak-14',
-    title: 'Unstoppable Force',
-    description: 'Maintain a 14-day continuous study habit.',
+    title: 'Two-Week Discipline',
+    description: 'Reach a 14-day study streak without breaking habit.',
     icon: '🌟',
     tier: 'gold',
     category: 'streak',
@@ -135,9 +146,9 @@ export const INITIAL_ACHIEVEMENTS: Achievement[] = [
   },
   {
     id: 'streak-30',
-    title: 'Exam Immortal',
-    description: 'Maintain an elite 30-day non-stop study streak.',
-    icon: '👑',
+    title: 'Unstoppable Mind',
+    description: 'Achieve a legendary 30-day streak.',
+    icon: '💎',
     tier: 'legendary',
     category: 'streak',
     unlockedAt: null,
@@ -146,57 +157,47 @@ export const INITIAL_ACHIEVEMENTS: Achievement[] = [
 
   // ── QUIZZES & ACTIVE RECALL ──
   {
-    id: 'quiz-initiate',
-    title: 'Quiz Initiate',
-    description: 'Complete your first practice topic quiz.',
-    icon: '💡',
+    id: 'quiz-starter',
+    title: 'Recall Novice',
+    description: 'Complete your first practice quiz.',
+    icon: '📝',
     tier: 'bronze',
     category: 'quiz',
     unlockedAt: null,
     xpReward: 50,
   },
   {
-    id: 'quiz-master',
-    title: 'Quiz Wizard',
-    description: 'Score 100% on any topic practice quiz.',
-    icon: '🧠',
+    id: 'perfect-quiz',
+    title: 'Bullseye',
+    description: 'Score 100% on any practice quiz without mistakes.',
+    icon: '🎯',
     tier: 'silver',
     category: 'quiz',
     unlockedAt: null,
     xpReward: 100,
   },
   {
-    id: 'quiz-veteran',
+    id: 'quiz-master',
     title: 'Quiz Master',
-    description: 'Score 100% on 5 different practice quizzes.',
-    icon: '🎓',
+    description: 'Complete 10 different practice quizzes.',
+    icon: '🧠',
     tier: 'gold',
     category: 'quiz',
     unlockedAt: null,
     xpReward: 250,
   },
   {
-    id: 'recall-grandmaster',
-    title: 'Recall Grandmaster',
-    description: 'Score 100% on 15 topic practice quizzes.',
-    icon: '🎖️',
-    tier: 'legendary',
+    id: 'speed-demon',
+    title: 'Speed Demon',
+    description: 'Complete a timed mock exam with >80% score.',
+    icon: '🏎️',
+    tier: 'gold',
     category: 'quiz',
     unlockedAt: null,
-    xpReward: 500,
-  },
-  {
-    id: 'flashcard-pro',
-    title: 'Active Recall Ace',
-    description: 'Master 10 topic flashcards in 3D study mode.',
-    icon: '🃏',
-    tier: 'silver',
-    category: 'quiz',
-    unlockedAt: null,
-    xpReward: 100,
+    xpReward: 200,
   },
 
-  // ── POMODORO & FOCUS ──
+  // ── FOCUS & POMODORO ──
   {
     id: 'focus-hero',
     title: 'Deep Focus',
@@ -289,83 +290,52 @@ export const INITIAL_ACHIEVEMENTS: Achievement[] = [
     unlockedAt: null,
     xpReward: 500,
   },
-  // ── STUDY BOOST BADGE & EXCELLENCE ──
-  {
-    id: 'boost-ignited',
-    title: 'Knowledge Booster',
-    description: 'Activate your 2x Academic XP Boost to supercharge your study session.',
-    icon: '🚀',
-    tier: 'gold',
-    category: 'learning',
-    unlockedAt: null,
-    xpReward: 200,
-  },
-  {
-    id: 'boost-streak-master',
-    title: 'Supercharged Scholar',
-    description: 'Complete 3 study sessions while your 2x Knowledge Boost is active.',
-    icon: '⚡',
-    tier: 'legendary',
-    category: 'learning',
-    unlockedAt: null,
-    xpReward: 350,
-  },
-  // ── ADMIN ONLY ──
-  {
-    id: 'admin-god-mode',
-    title: 'The Architect',
-    description: 'Platform Creator & Lead Developer. Full administrative capabilities.',
-    icon: '⚡',
-    tier: 'mythic',
-    category: 'admin',
-    unlockedAt: null,
-    xpReward: 9999,
-  }
 ];
 
-const INITIAL_QUESTS: DailyQuest[] = [
+export const INITIAL_QUESTS: DailyQuest[] = [
   {
-    id: 'quest-read-2',
-    title: 'Daily Scholar',
-    description: 'Read 2 syllabus topics today',
-    target: 2,
-    current: 0,
-    xpReward: 40,
-    claimed: false,
-  },
-  {
-    id: 'quest-quiz-1',
-    title: 'Knowledge Check',
-    description: 'Test yourself with 1 practice quiz',
+    id: 'quest-read-topic',
+    title: 'Daily Curriculum Read',
+    description: 'Read and master at least 1 academic topic today.',
     target: 1,
     current: 0,
     xpReward: 30,
     claimed: false,
   },
   {
-    id: 'quest-study-15m',
-    title: 'Focus Hour',
-    description: 'Study for at least 15 minutes',
-    target: 15,
+    id: 'quest-pomodoro',
+    title: 'Focus Sprint',
+    description: 'Log at least 1 Pomodoro study session (25 mins).',
+    target: 1,
     current: 0,
-    xpReward: 50,
+    xpReward: 40,
+    claimed: false,
+  },
+  {
+    id: 'quest-quiz',
+    title: 'Knowledge Drill',
+    description: 'Complete 1 practice quiz or active recall drill.',
+    target: 1,
+    current: 0,
+    xpReward: 35,
     claimed: false,
   },
 ];
 
 export const LEVEL_TITLES = [
-  { level: 1, title: 'Fresher Novice', minXp: 0, maxXp: 150 },
-  { level: 2, title: 'Code Apprentice', minXp: 150, maxXp: 400 },
-  { level: 3, title: 'Silicon Explorer', minXp: 400, maxXp: 800 },
-  { level: 4, title: 'Algorithm Artisan', minXp: 800, maxXp: 1500 },
-  { level: 5, title: 'Architecture Ace', minXp: 1500, maxXp: 2500 },
-  { level: 6, title: 'Semester Master', minXp: 2500, maxXp: 4000 },
-  { level: 7, title: "Dean's Scholar", minXp: 4000, maxXp: 6500 },
-  { level: 8, title: 'University Legend', minXp: 6500, maxXp: 10000 },
-  { level: 9, title: 'The Architect', minXp: 10000, maxXp: 25000 },
+  { level: 1, title: 'Freshman Scholar', minXp: 0, maxXp: 300 },
+  { level: 2, title: 'Curriculum Apprentice', minXp: 300, maxXp: 800 },
+  { level: 3, title: 'Semester Specialist', minXp: 800, maxXp: 1600 },
+  { level: 4, title: 'Honor Roll Candidate', minXp: 1600, maxXp: 2800 },
+  { level: 5, title: 'Department Topper', minXp: 2800, maxXp: 4500 },
+  { level: 6, title: 'Dean’s List Fellow', minXp: 4500, maxXp: 7000 },
+  { level: 7, title: 'University Valedictorian', minXp: 7000, maxXp: 10500 },
+  { level: 8, title: 'Research Scholar', minXp: 10500, maxXp: 15000 },
+  { level: 9, title: 'Engineering Grandmaster', minXp: 15000, maxXp: 22000 },
+  { level: 10, title: 'Legendary ITM Academic', minXp: 22000, maxXp: 99999 },
 ];
 
-const STORAGE_KEY = 'itm_notes_gamification_v2';
+const STORAGE_KEY = 'itm_gamification_v2';
 
 function getTodayString(): string {
   const d = new Date();
@@ -374,6 +344,11 @@ function getTodayString(): string {
 
 interface GamificationContextType {
   state: GamificationState;
+  streak: number;
+  xp: number;
+  level: number;
+  streakFreezeCount: number;
+  buyStreakFreeze: () => boolean;
   levelInfo: {
     level: number;
     title: string;
@@ -390,7 +365,7 @@ interface GamificationContextType {
   addStudyMinutes: (minutes: number) => void;
   recordTopicRead: (topicId: string) => void;
   recordTopicCompleted: (topicId?: string) => void;
-  recordQuizCompleted: (isPerfect: boolean) => void;
+  recordQuizCompleted: (scoreOrIsPerfect: number | boolean, total?: number) => void;
   claimQuest: (questId: string) => void;
 }
 
@@ -426,11 +401,12 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
           if ((parsed.xp || 0) >= lvl.minXp) correctLevel = lvl.level;
         }
         parsed.level = correctLevel;
+        parsed.streakFreezeCount = parsed.streakFreezeCount ?? 1;
 
         return parsed;
       }
     } catch (e) {
-      console.error('Failed to load gamification state from cache:', e);
+      console.error('Failed to load gamification state:', e);
     }
 
     return {
@@ -443,6 +419,7 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
       quizzesCompletedCount: 0,
       perfectQuizzesCount: 0,
       pomodoroSessionsCount: 0,
+      streakFreezeCount: 1,
       achievements: INITIAL_ACHIEVEMENTS,
       dailyQuests: INITIAL_QUESTS,
       questDate: getTodayString(),
@@ -450,69 +427,16 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
     };
   });
 
-  // Sync with Supabase on mount
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      const userId = session?.user?.id;
-      if (!userId) return;
-
-      // 1. Fetch user_achievements from database
-      supabase
-        .from('user_achievements')
-        .select('*')
-        .eq('user_id', userId)
-        .then(({ data: achRows, error: achErr }) => {
-          if (!achErr && achRows && achRows.length > 0) {
-            const remoteMap = new Map(achRows.map((r: { achievement_id: string; unlocked_at: string }) => [r.achievement_id, r.unlocked_at]));
-            setState((prev) => {
-              const updatedAchievements = prev.achievements.map((a) => {
-                const remoteUnlocked = remoteMap.get(a.id);
-                if (remoteUnlocked) {
-                  return { ...a, unlockedAt: remoteUnlocked };
-                }
-                return a;
-              });
-              return { ...prev, achievements: updatedAchievements };
-            });
-          }
-        });
-
-      // 2. Fetch real XP & Level & Streak from profiles
-      supabase
-        .from('profiles')
-        .select('xp, level, streak_days')
-        .eq('user_id', userId)
-        .maybeSingle()
-        .then(({ data: pData, error: pErr }) => {
-          if (!pErr && pData) {
-            setState((prev) => {
-              const realXp = pData.xp !== null && pData.xp !== undefined ? pData.xp : prev.xp;
-              let realLevel = pData.level || prev.level;
-              for (const lvl of LEVEL_TITLES) {
-                if (realXp >= lvl.minXp) realLevel = lvl.level;
-              }
-              return {
-                ...prev,
-                xp: realXp,
-                level: realLevel,
-                streakDays: pData.streak_days !== null && pData.streak_days !== undefined ? pData.streak_days : prev.streakDays,
-              };
-            });
-          }
-        });
-    });
-  }, []);
-
-  // Save to localStorage as offline cache
+  // Save to localStorage on changes
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     } catch (e) {
-      console.error('Failed to save gamification state:', e);
+      console.error('Failed to persist gamification state:', e);
     }
   }, [state]);
 
-  // Compute Current Level details
+  // Level info helper
   const levelInfo = useMemo(() => {
     let current = LEVEL_TITLES[0];
     for (const lvl of LEVEL_TITLES) {
@@ -533,7 +457,7 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
     };
   }, [state.xp]);
 
-  // Add XP with automatic Level-Up calculation and Supabase synchronization
+  // Add XP
   const addXp = useCallback((amount: number, reason?: string) => {
     if (amount <= 0) return;
 
@@ -557,24 +481,6 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
         }
       }
 
-      // Sync XP and Level to Supabase
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        const userId = session?.user?.id;
-        if (userId) {
-          supabase
-            .from('profiles')
-            .update({
-              xp: newXp,
-              level: newLevel,
-              updated_at: new Date().toISOString(),
-            })
-            .eq('user_id', userId)
-            .then(({ error }) => {
-              if (error) console.error('Failed to sync XP to profile:', error);
-            });
-        }
-      });
-
       return {
         ...prev,
         xp: newXp,
@@ -587,7 +493,25 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
     }
   }, []);
 
-  // Unlock an Achievement with celebration and database persistence
+  // Buy Streak Freeze (Feature 25)
+  const buyStreakFreeze = useCallback(() => {
+    if (state.xp < 100) {
+      toast.error('Not enough XP! A Streak Freeze costs 100 XP.');
+      return false;
+    }
+
+    setState(prev => ({
+      ...prev,
+      xp: prev.xp - 100,
+      streakFreezeCount: (prev.streakFreezeCount || 0) + 1,
+    }));
+    toast.success('❄️ Streak Freeze Purchased! (-100 XP)', {
+      description: 'Your streak will be automatically saved if you miss a study day.',
+    });
+    return true;
+  }, [state.xp]);
+
+  // Unlock an Achievement
   const unlockAchievement = useCallback((id: string) => {
     setState((prev) => {
       const ach = prev.achievements.find((a) => a.id === id);
@@ -597,67 +521,26 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
       const updatedAch = { ...ach, unlockedAt: now };
       const updated = prev.achievements.map((a) => (a.id === id ? updatedAch : a));
 
-      // Trigger global event for celebration modal
       try {
         window.dispatchEvent(
           new CustomEvent('itm_achievement_unlocked', {
             detail: {
-              achievement: updatedAch,
-              xp: prev.xp + ach.xpReward,
-              totalXp: prev.xp + ach.xpReward,
-              streakDays: prev.streakDays,
-              level: prev.level,
-              levelTitle: LEVEL_TITLES.find((l) => l.level === prev.level)?.title || 'Scholar',
+              id: ach.id,
+              title: ach.title,
+              description: ach.description,
+              icon: ach.icon,
+              tier: ach.tier,
+              xpReward: ach.xpReward,
             },
           })
         );
-      } catch (err) {
-        console.error('Failed to dispatch achievement celebration:', err);
-      }
-
-      toast.success(`🏆 Achievement Unlocked: ${ach.title}!`, {
-        description: `${ach.description} (+${ach.xpReward} XP)`,
-      });
+      } catch {}
 
       const newXp = prev.xp + ach.xpReward;
       let newLevel = prev.level;
       for (const lvl of LEVEL_TITLES) {
         if (newXp >= lvl.minXp) newLevel = lvl.level;
       }
-
-      // Persist achievement and XP to Supabase
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        const userId = session?.user?.id;
-        if (userId) {
-          supabase
-            .from('user_achievements')
-            .upsert({
-              user_id: userId,
-              achievement_id: ach.id,
-              title: ach.title,
-              description: ach.description,
-              icon: ach.icon,
-              tier: ach.tier,
-              xp_reward: ach.xpReward,
-              unlocked_at: now,
-            })
-            .then(({ error }) => {
-              if (error) console.error('Failed to persist achievement to Supabase:', error);
-            });
-
-          supabase
-            .from('profiles')
-            .update({
-              xp: newXp,
-              level: newLevel,
-              updated_at: new Date().toISOString(),
-            })
-            .eq('user_id', userId)
-            .then(({ error }) => {
-              if (error) console.error('Failed to update profile XP:', error);
-            });
-        }
-      });
 
       return {
         ...prev,
@@ -666,11 +549,9 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
         level: newLevel,
       };
     });
-  // unlockAchievement intentionally omitted from deps to avoid infinite loop
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Check and update daily streak
+  // Check and update daily streak with Streak Freeze Protection (Feature 25)
   const checkDailyStreak = useCallback(() => {
     const today = getTodayString();
     setState((prev) => {
@@ -681,10 +562,18 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
       const yesterdayStr = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`;
 
       let newStreak = prev.streakDays;
+      let newFreezes = prev.streakFreezeCount ?? 1;
+
       if (prev.lastActiveDate === yesterdayStr) {
         newStreak += 1;
         toast.success(`🔥 Streak Maintained!`, {
           description: `You are on a ${newStreak}-day learning streak! +20 XP awarded.`,
+        });
+      } else if (newFreezes > 0) {
+        // Protect streak using Freeze
+        newFreezes -= 1;
+        toast.info(`❄️ Streak Freeze Protected Your Streak!`, {
+          description: `Your ${newStreak}-day streak was saved from resetting. (${newFreezes} freezes remaining)`,
         });
       } else {
         newStreak = 1;
@@ -695,27 +584,11 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
       if (newStreak >= 14) unlockAchievement('streak-14');
       if (newStreak >= 30) unlockAchievement('streak-30');
 
-      // Sync streak to Supabase
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        const userId = session?.user?.id;
-        if (userId) {
-          supabase
-            .from('profiles')
-            .update({
-              streak_days: newStreak,
-              updated_at: new Date().toISOString(),
-            })
-            .eq('user_id', userId)
-            .then(({ error }) => {
-              if (error) console.error('Failed to sync streak to profile:', error);
-            });
-        }
-      });
-
       return {
         ...prev,
         streakDays: newStreak,
         lastActiveDate: today,
+        streakFreezeCount: newFreezes,
       };
     });
   }, [unlockAchievement]);
@@ -725,82 +598,77 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
     (minutes: number) => {
       if (minutes <= 0) return;
       const today = getTodayString();
-      const currentHour = new Date().getHours();
 
       setState((prev) => {
         const newTotal = prev.totalStudyMinutes + minutes;
-        const currentToday = prev.activityHistory[today] || 0;
-        const newHistory = { ...prev.activityHistory, [today]: currentToday + minutes };
+        const history = { ...prev.activityHistory };
+        history[today] = (history[today] || 0) + minutes;
 
-        if (newTotal >= 25) unlockAchievement('focus-hero');
-        if (newTotal >= 250) unlockAchievement('focus-monk');
-        if (newTotal >= 1000) unlockAchievement('hyperfocus-titan');
-        if (currentHour >= 22) unlockAchievement('night-owl');
+        if (minutes >= 25) {
+          unlockAchievement('focus-hero');
+        }
+        if (newTotal >= 1000) {
+          unlockAchievement('hyperfocus-titan');
+        }
 
         return {
           ...prev,
           totalStudyMinutes: newTotal,
-          activityHistory: newHistory,
+          activityHistory: history,
         };
       });
-
-      addXp(Math.round(minutes * 2), `${minutes}m Focus Session`);
     },
-    [addXp, unlockAchievement]
+    [unlockAchievement]
   );
 
   // Record a topic read
   const recordTopicRead = useCallback(
     (topicId: string) => {
-      const today = getTodayString();
       setState((prev) => {
-        const newCount = prev.topicsReadCount + 1;
-        if (newCount >= 1) unlockAchievement('first-step');
-        if (newCount >= 5) unlockAchievement('scholar-5');
-        if (newCount >= 15) unlockAchievement('subject-specialist');
-        if (newCount >= 50) unlockAchievement('century-scholar');
-        if (newCount >= 100) unlockAchievement('syllabus-conqueror');
+        const count = prev.topicsReadCount + 1;
+        addXp(25, 'Studied Academic Topic Notes');
 
-        const currentToday = prev.activityHistory[today] || 0;
+        if (count >= 1) unlockAchievement('first-step');
+        if (count >= 5) unlockAchievement('scholar-5');
+        if (count >= 15) unlockAchievement('subject-specialist');
+        if (count >= 50) unlockAchievement('century-scholar');
+        if (count >= 100) unlockAchievement('syllabus-conqueror');
+
         return {
           ...prev,
-          topicsReadCount: newCount,
-          activityHistory: { ...prev.activityHistory, [today]: currentToday + 1 },
+          topicsReadCount: count,
         };
       });
-      addXp(15, 'Read Topic Notes');
     },
     [addXp, unlockAchievement]
   );
 
-  // Record a completed quiz
+  // Record quiz completion
   const recordQuizCompleted = useCallback(
-    (isPerfect: boolean) => {
-      const today = getTodayString();
+    (scoreOrIsPerfect: number | boolean, total?: number) => {
+      const isPerfect = typeof scoreOrIsPerfect === 'boolean' 
+        ? scoreOrIsPerfect 
+        : (total !== undefined && total > 0 && scoreOrIsPerfect === total);
+
       setState((prev) => {
-        const newQuizzes = prev.quizzesCompletedCount + 1;
-        const newPerfect = isPerfect ? prev.perfectQuizzesCount + 1 : prev.perfectQuizzesCount;
+        const totalQuizzes = prev.quizzesCompletedCount + 1;
+        const perfectCount = isPerfect ? prev.perfectQuizzesCount + 1 : prev.perfectQuizzesCount;
 
-        if (newQuizzes >= 1) unlockAchievement('quiz-initiate');
-        if (newPerfect >= 1) unlockAchievement('quiz-master');
-        if (newPerfect >= 5) unlockAchievement('quiz-veteran');
-        if (newPerfect >= 15) unlockAchievement('recall-grandmaster');
+        unlockAchievement('quiz-starter');
+        if (isPerfect) unlockAchievement('perfect-quiz');
+        if (totalQuizzes >= 10) unlockAchievement('quiz-master');
 
-        const currentToday = prev.activityHistory[today] || 0;
         return {
           ...prev,
-          quizzesCompletedCount: newQuizzes,
-          perfectQuizzesCount: newPerfect,
-          activityHistory: { ...prev.activityHistory, [today]: currentToday + 1 },
+          quizzesCompletedCount: totalQuizzes,
+          perfectQuizzesCount: perfectCount,
         };
       });
-
-      addXp(isPerfect ? 50 : 25, isPerfect ? 'Perfect Quiz Score! 🎯' : 'Quiz Completed');
     },
-    [addXp, unlockAchievement]
+    [unlockAchievement]
   );
 
-  // Claim a quest reward
+  // Claim quest
   const claimQuest = useCallback(
     (questId: string) => {
       setState((prev) => {
@@ -808,7 +676,6 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
         if (!quest || quest.claimed || quest.current < quest.target) return prev;
 
         const updatedQuests = prev.dailyQuests.map((q) => (q.id === questId ? { ...q, claimed: true } : q));
-
         addXp(quest.xpReward, `Completed Quest: ${quest.title}`);
 
         return {
@@ -823,6 +690,11 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
   return (
     <GamificationContext.Provider value={{
       state,
+      streak: state.streakDays,
+      xp: state.xp,
+      level: state.level,
+      streakFreezeCount: state.streakFreezeCount ?? 1,
+      buyStreakFreeze,
       levelInfo,
       addXp,
       unlockAchievement,

@@ -35,6 +35,7 @@ import {
   BarChart2
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { DataExportDeleteModal } from '@/components/DataExportDeleteModal';
 import { subjects, getAllTopicIds } from '@/data/subjects';
 import { MAHER_CANONICAL_AVATAR, resolveAvatarUrl } from '@/components/UserAvatar';
 
@@ -92,6 +93,7 @@ export default function ProfilePage() {
   const { state: game, levelInfo, unlockAchievement } = useGamification();
   const { progress } = useProgress();
 
+  const [isDataExportOpen, setIsDataExportOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
@@ -341,6 +343,13 @@ export default function ProfilePage() {
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-primary-foreground font-bold text-xs shadow-sm hover:opacity-90 transition-opacity apple-press"
               >
                 <BookOpen className="h-4 w-4" /> My Dashboard
+              </button>
+              <button
+                onClick={() => setIsDataExportOpen(true)}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-border/80 hover:bg-secondary/80 text-muted-foreground hover:text-foreground font-semibold text-xs transition-colors apple-press"
+                title="Export or delete your personal study data"
+              >
+                <ShieldCheck className="h-4 w-4 text-emerald-500" /> Data & Privacy
               </button>
             </div>
           </div>
@@ -1164,6 +1173,7 @@ export default function ProfilePage() {
           </div>
         </div>
       )}
+      <DataExportDeleteModal isOpen={isDataExportOpen} onClose={() => setIsDataExportOpen(false)} />
     </div>
   );
 }

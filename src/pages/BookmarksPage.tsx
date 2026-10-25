@@ -13,7 +13,11 @@ import {
   ArrowUpDown, 
   Layers, 
   Trash2,
-  Check
+  Check,
+  FolderPlus,
+  Folder,
+  Tag,
+  Plus
 } from "lucide-react";
 import { subjects } from "@/data/subjects";
 import { toast } from "sonner";
@@ -28,12 +32,42 @@ interface BookmarkedItem {
   readTimeMinutes: number;
 }
 
+const DEFAULT_FOLDERS = [
+  "All",
+  "MST Must-Revise",
+  "Tricky Viva Questions",
+  "Formulas & Codes",
+  "End-Sem Priority"
+];
+
 export default function BookmarksPage() {
   const navigate = useNavigate();
   const { isBookmarked, toggleBookmark } = useProgress();
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<'recent' | 'subject' | 'unit'>('recent');
   const [viewMode, setViewMode] = useState<'grouped' | 'list'>('grouped');
+
+  // Custom Folders State
+  const [folders, setFolders] = useState<string[]>(() => {
+    try {
+      const raw = localStorage.getItem('itm_bookmark_folders');
+      if (raw) return JSON.parse(raw);
+    } catch {}
+    return DEFAULT_FOLDERS;
+  });
+
+  const [selectedFolder, setSelectedFolder] = useState<string>("All");
+  const [newFolderName, setNewFolderName] = useState("");
+  const [showAddFolder, setShowAddFolder] = useState(false);
+
+  // Map of topicId -> folderName
+  const [itemFolders, setItemFolders] = useState<Record<string, string>>(() => {
+    try {
+      const raw = localStorage.getItem('itm_bookmark_item_folders');
+      if (raw) return JSON.parse(raw);
+    } catch {}
+    return {};
+  });
 
   // Notes state stored in localStorage
   const [notes, setNotes] = useState<Record<string, string>>(() => {
@@ -48,17 +82,49 @@ export default function BookmarksPage() {
 
   const [activeNoteEditing, setActiveNoteEditing] = useState<string | null>(null);
   const [editingNoteText, setEditingNoteText] = useState("");
-
-  // Track collapsed/expanded subjects in grouped mode
   const [expandedSubjects, setExpandedSubjects] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     try {
       localStorage.setItem('itm_bookmark_notes', JSON.stringify(notes));
     } catch (e) {
-      console.warn('Failed to save bookmark notes to localStorage:', e);
+      console.warn('Failed to save bookmark notes:', e);
     }
   }, [notes]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('itm_bookmark_folders', JSON.stringify(folders));
+    } catch {}
+  }, [folders]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('itm_bookmark_item_folders', JSON.stringify(itemFolders));
+    } catch {}
+  }, [itemFolders]);
+
+  const handleCreateFolder = () => {
+    const trimmed = newFolderName.trim();
+    if (!trimmed) return;
+    if (folders.includes(trimmed)) {
+      toast.error('Folder already exists');
+      return;
+    }
+    setFolders(prev => [...prev, trimmed]);
+    setSelectedFolder(trimmed);
+    setNewFolderName("");
+    setShowAddFolder(false);
+    toast.success(`Created folder: ${trimmed}`);
+  };
+
+  const handleAssignFolder = (topicId: string, folder: string) => {
+    setItemFolders(prev => ({
+      ...prev,
+      [topicId]: folder
+    }));
+    toast.success(`Moved to "${folder}"`);
+  };
 
   // Extract all bookmarked topics from subjects data
   const bookmarkedItems: BookmarkedItem[] = useMemo(() => {
@@ -87,20 +153,29 @@ export default function BookmarksPage() {
 
   // Filtered & Sorted items
   const processedItems = useMemo(() => {
-    const list = bookmarkedItems.filter((item) =>
-      item.topicTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.subjectName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.unitTitle.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const list = bookmarkedItems.filter((item) => {
+      // Folder filter
+      if (selectedFolder !== "All") {
+        const itemF = itemFolders[item.topicId];
+        if (itemF !== selectedFolder) return false;
+      }
+
+      // Search query
+      const matchesSearch = 
+        item.topicTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.subjectName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.unitTitle.toLowerCase().includes(searchQuery.toLowerCase());
+
+      return matchesSearch;
+    });
 
     if (sortBy === 'subject') {
       list.sort((a, b) => a.subjectName.localeCompare(b.subjectName));
     } else if (sortBy === 'unit') {
       list.sort((a, b) => a.unitTitle.localeCompare(b.unitTitle));
     }
-    // 'recent' retains reverse insertion / default bookmarked order
     return list;
-  }, [bookmarkedItems, searchQuery, sortBy]);
+  }, [bookmarkedItems, searchQuery, sortBy, selectedFolder, itemFolders]);
 
   // Group items by Subject
   const groupedBySubject = useMemo(() => {
@@ -153,22 +228,87 @@ export default function BookmarksPage() {
         {/* Header Title & Counter */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center shrink-0">
               <Bookmark className="h-5 w-5 fill-amber-500" />
             </div>
             <div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground">Your Saved Bookmarks</h1>
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground">Saved Bookmarks & Collections</h1>
               <p className="text-xs text-muted-foreground mt-0.5">
-                Quick access to critical exam concepts, personal notes & study materials
+                Organize your study bookmarks into custom folders for MST and End-Sem revision
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold px-3 py-1 rounded-full bg-secondary border border-border text-foreground">
-              {bookmarkedItems.length} Saved Topic{bookmarkedItems.length === 1 ? '' : 's'}
+            <span className="text-xs font-bold px-3 py-1.5 rounded-full bg-secondary border border-border text-foreground">
+              {bookmarkedItems.length} Saved Topics
             </span>
           </div>
+        </div>
+
+        {/* Custom Folder Tabs Bar */}
+        <div className="flex flex-wrap items-center gap-2 mb-4">
+          {folders.map(f => {
+            const isSelected = selectedFolder === f;
+            const countInFolder = f === "All" 
+              ? bookmarkedItems.length 
+              : bookmarkedItems.filter(i => itemFolders[i.topicId] === f).length;
+
+            return (
+              <button
+                key={f}
+                onClick={() => setSelectedFolder(f)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border flex items-center gap-1.5 apple-press ${
+                  isSelected
+                    ? 'bg-primary text-primary-foreground border-primary shadow-sm'
+                    : 'bg-card border-border/80 text-muted-foreground hover:text-foreground hover:bg-secondary'
+                }`}
+              >
+                <Folder className="h-3.5 w-3.5" />
+                <span>{f}</span>
+                <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${isSelected ? 'bg-primary-foreground/20' : 'bg-secondary'}`}>
+                  {countInFolder}
+                </span>
+              </button>
+            );
+          })}
+
+          {/* Add Folder Button */}
+          {!showAddFolder ? (
+            <button
+              onClick={() => setShowAddFolder(true)}
+              className="px-3 py-1.5 rounded-xl text-xs font-bold border border-dashed border-border hover:border-primary/50 text-muted-foreground hover:text-foreground flex items-center gap-1 transition-all"
+            >
+              <Plus className="h-3.5 w-3.5" /> Add Folder
+            </button>
+          ) : (
+            <div className="flex items-center gap-1.5 bg-card border border-border rounded-xl p-1">
+              <input
+                type="text"
+                placeholder="Folder name..."
+                value={newFolderName}
+                onChange={(e) => setNewFolderName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') handleCreateFolder();
+                  if (e.key === 'Escape') setShowAddFolder(false);
+                }}
+                className="h-7 px-2 text-xs bg-transparent border-none focus:outline-none w-32"
+                autoFocus
+              />
+              <button
+                onClick={handleCreateFolder}
+                className="px-2 py-1 rounded-lg bg-primary text-primary-foreground text-[10px] font-bold"
+              >
+                Create
+              </button>
+              <button
+                onClick={() => setShowAddFolder(false)}
+                className="p-1 text-muted-foreground hover:text-foreground text-[10px]"
+              >
+                ✕
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Filter & Controls Toolbar */}
@@ -212,7 +352,7 @@ export default function BookmarksPage() {
                   }`}
                   title="Group topics by Subject"
                 >
-                  Subject Accordion
+                  Accordion
                 </button>
                 <button
                   onClick={() => setViewMode('list')}
@@ -235,12 +375,12 @@ export default function BookmarksPage() {
           <div className="text-center py-20 bg-card border border-dashed border-border rounded-3xl p-8">
             <Bookmark className="h-12 w-12 mx-auto mb-4 text-muted-foreground/30" />
             <h3 className="text-base font-bold text-foreground mb-1">
-              {bookmarkedItems.length === 0 ? "You haven't bookmarked any topics yet" : "No matching bookmarks found"}
+              {bookmarkedItems.length === 0 ? "You haven't bookmarked any topics yet" : `No bookmarks found in "${selectedFolder}"`}
             </h3>
             <p className="text-xs text-muted-foreground max-w-sm mx-auto mb-6">
               {bookmarkedItems.length === 0
                 ? "Tap the bookmark icon on any topic page or subject notes while studying to save it here for fast revision."
-                : "Try adjusting your search query or clear the filter to see your saved study topics."}
+                : "Try switching to 'All' folder or clearing your search filter."}
             </p>
             {bookmarkedItems.length === 0 ? (
               <button
@@ -251,10 +391,13 @@ export default function BookmarksPage() {
               </button>
             ) : (
               <button
-                onClick={() => setSearchQuery("")}
+                onClick={() => {
+                  setSelectedFolder("All");
+                  setSearchQuery("");
+                }}
                 className="px-4 py-2 rounded-xl bg-secondary text-foreground text-xs font-semibold hover:bg-secondary/80"
               >
-                Clear Search
+                View All Bookmarks
               </button>
             )}
           </div>
@@ -298,102 +441,48 @@ export default function BookmarksPage() {
                   {!isCollapsed && (
                     <div className="p-3 sm:p-4 space-y-3 divide-y divide-border/40">
                       {group.topics.map((item) => (
-                        <div key={item.topicId} className="pt-3 first:pt-0">
-                          <div
-                            onClick={() => navigate(`/subject/${item.subjectId}/topic/${item.topicId}`)}
-                            className="group p-3 rounded-xl hover:bg-secondary/40 transition-colors flex items-start justify-between gap-3 cursor-pointer"
-                          >
-                            <div className="flex-1 min-w-0">
-                              <div className="flex flex-wrap items-center gap-2 mb-1">
-                                <h3 className="font-bold text-sm text-foreground group-hover:text-primary transition-colors truncate">
-                                  {item.topicTitle}
-                                </h3>
-                                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-secondary text-muted-foreground">
-                                  {item.unitTitle}
+                        <div
+                          key={item.topicId}
+                          onClick={() => navigate(`/subject/${item.subjectId}/topic/${item.topicId}`)}
+                          className="pt-3 first:pt-0 p-3 rounded-xl hover:bg-secondary/30 transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-3 group"
+                        >
+                          <div className="space-y-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <h3 className="font-bold text-xs sm:text-sm text-foreground group-hover:text-primary transition-colors truncate">
+                                {item.topicTitle}
+                              </h3>
+                              {itemFolders[item.topicId] && (
+                                <span className="text-[10px] px-2 py-0.2 rounded-md bg-secondary text-primary font-medium">
+                                  {itemFolders[item.topicId]}
                                 </span>
-                              </div>
-
-                              <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
-                                <span className="flex items-center gap-1">
-                                  <Clock className="h-3 w-3 text-primary" />
-                                  <span>{item.readTimeMinutes} min read</span>
-                                </span>
-
-                                {notes[item.topicId] && (
-                                  <span className="text-amber-500 font-semibold flex items-center gap-1">
-                                    <span>📝 Note added</span>
-                                  </span>
-                                )}
-                              </div>
+                              )}
                             </div>
-
-                            <div className="flex items-center gap-2 shrink-0">
-                              <button
-                                type="button"
-                                onClick={(e) => handleStartEditNote(item.topicId, e)}
-                                className="p-1.5 rounded-lg bg-secondary hover:bg-secondary/80 text-muted-foreground hover:text-foreground transition-colors"
-                                title="Add or edit personal revision note"
-                              >
-                                <Edit3 className="h-3.5 w-3.5" />
-                              </button>
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  toggleBookmark(item.topicId);
-                                  toast.info('Bookmark removed');
-                                }}
-                                className="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors"
-                                title="Remove bookmark"
-                              >
-                                <Trash2 className="h-3.5 w-3.5" />
-                              </button>
-                              <ChevronRight className="h-4 w-4 text-muted-foreground/60 group-hover:text-primary transition-colors" />
-                            </div>
+                            <p className="text-[11px] text-muted-foreground">
+                              {item.unitTitle} • ~{item.readTimeMinutes} min read
+                            </p>
                           </div>
 
-                          {/* Personal Note Display & Inline Editor */}
-                          {activeNoteEditing === item.topicId ? (
-                            <div className="mt-2 p-3 bg-secondary/30 rounded-xl border border-border space-y-2">
-                              <label className="text-[11px] font-bold text-foreground block">
-                                Personal Revision Note for {item.topicTitle}:
-                              </label>
-                              <textarea
-                                value={editingNoteText}
-                                onChange={(e) => setEditingNoteText(e.target.value)}
-                                placeholder="E.g. Formula: S = P + Q. Focus on derivation for 7-mark question..."
-                                rows={2}
-                                className="w-full p-2.5 text-xs rounded-lg border border-input bg-background focus:outline-none focus:ring-1 focus:ring-primary"
-                              />
-                              <div className="flex justify-end gap-2">
-                                <button
-                                  type="button"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setActiveNoteEditing(null);
-                                  }}
-                                  className="px-2.5 py-1 text-xs rounded-lg text-muted-foreground hover:bg-secondary"
-                                >
-                                  Cancel
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={(e) => handleSaveNote(item.topicId, e)}
-                                  className="px-3 py-1 text-xs font-bold rounded-lg bg-primary text-primary-foreground hover:opacity-90 flex items-center gap-1 shadow-xs"
-                                >
-                                  <Save className="h-3 w-3" /> Save Note
-                                </button>
-                              </div>
-                            </div>
-                          ) : notes[item.topicId] ? (
-                            <div 
-                              onClick={(e) => handleStartEditNote(item.topicId, e)}
-                              className="mt-1.5 mx-3 p-2.5 bg-amber-500/10 border border-amber-500/20 rounded-xl text-xs text-amber-950 dark:text-amber-200 cursor-pointer hover:bg-amber-500/15 transition-colors flex items-start justify-between gap-2"
+                          <div className="flex items-center gap-2 self-end sm:self-auto" onClick={(e) => e.stopPropagation()}>
+                            {/* Move to folder selector */}
+                            <select
+                              value={itemFolders[item.topicId] || ""}
+                              onChange={(e) => handleAssignFolder(item.topicId, e.target.value)}
+                              className="text-[10px] h-7 px-2 rounded-lg bg-secondary border border-border text-foreground font-medium"
                             >
-                              <p className="italic">"{notes[item.topicId]}"</p>
-                              <Edit3 className="h-3 w-3 shrink-0 text-amber-500 mt-0.5" />
-                            </div>
-                          ) : null}
+                              <option value="">Move to Folder...</option>
+                              {folders.filter(f => f !== "All").map(f => (
+                                <option key={f} value={f}>{f}</option>
+                              ))}
+                            </select>
+
+                            <button
+                              onClick={() => toggleBookmark(item.topicId)}
+                              className="p-1.5 rounded-lg text-muted-foreground hover:text-rose-500 hover:bg-rose-500/10 transition-colors"
+                              title="Remove Bookmark"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -404,93 +493,48 @@ export default function BookmarksPage() {
           </div>
         ) : (
           /* ── Flat List View ── */
-          <div className="space-y-3">
+          <div className="space-y-2">
             {processedItems.map((item) => (
-              <div key={item.topicId} className="bg-card border border-border rounded-2xl p-4 shadow-xs">
-                <div
-                  onClick={() => navigate(`/subject/${item.subjectId}/topic/${item.topicId}`)}
-                  className="group flex items-start justify-between gap-3 cursor-pointer"
-                >
-                  <div className="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                    <BookOpen className="h-4 w-4" />
-                  </div>
-
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-sm text-foreground group-hover:text-primary transition-colors truncate">
+              <div
+                key={item.topicId}
+                onClick={() => navigate(`/subject/${item.subjectId}/topic/${item.topicId}`)}
+                className="p-4 rounded-2xl bg-card border border-border hover:border-primary/40 transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-3 group"
+              >
+                <div className="space-y-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-bold text-xs sm:text-sm text-foreground group-hover:text-primary transition-colors truncate">
                       {item.topicTitle}
                     </h3>
-                    <p className="text-xs text-muted-foreground truncate mb-1">
-                      {item.subjectName} • {item.unitTitle}
-                    </p>
-                    <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
-                      <Clock className="h-3 w-3 text-primary" />
-                      <span>{item.readTimeMinutes} min read</span>
-                    </span>
+                    {itemFolders[item.topicId] && (
+                      <span className="text-[10px] px-2 py-0.2 rounded-md bg-secondary text-primary font-medium">
+                        {itemFolders[item.topicId]}
+                      </span>
+                    )}
                   </div>
-
-                  <div className="flex items-center gap-2 shrink-0">
-                    <button
-                      type="button"
-                      onClick={(e) => handleStartEditNote(item.topicId, e)}
-                      className="p-1.5 rounded-lg bg-secondary hover:bg-secondary/80 text-muted-foreground hover:text-foreground transition-colors"
-                      title="Add note"
-                    >
-                      <Edit3 className="h-3.5 w-3.5" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleBookmark(item.topicId);
-                        toast.info('Bookmark removed');
-                      }}
-                      className="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors"
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
-                    <ChevronRight className="h-4 w-4 text-muted-foreground/60 group-hover:text-primary transition-colors" />
-                  </div>
+                  <p className="text-[11px] text-muted-foreground">
+                    {item.subjectName} • {item.unitTitle}
+                  </p>
                 </div>
 
-                {/* Personal Note */}
-                {activeNoteEditing === item.topicId ? (
-                  <div className="mt-3 p-3 bg-secondary/30 rounded-xl border border-border space-y-2">
-                    <textarea
-                      value={editingNoteText}
-                      onChange={(e) => setEditingNoteText(e.target.value)}
-                      placeholder="Add personal note..."
-                      rows={2}
-                      className="w-full p-2.5 text-xs rounded-lg border border-input bg-background focus:outline-none focus:ring-1 focus:ring-primary"
-                    />
-                    <div className="flex justify-end gap-2">
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setActiveNoteEditing(null);
-                        }}
-                        className="px-2.5 py-1 text-xs rounded-lg text-muted-foreground hover:bg-secondary"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        type="button"
-                        onClick={(e) => handleSaveNote(item.topicId, e)}
-                        className="px-3 py-1 text-xs font-bold rounded-lg bg-primary text-primary-foreground hover:opacity-90 flex items-center gap-1 shadow-xs"
-                      >
-                        <Save className="h-3 w-3" /> Save Note
-                      </button>
-                    </div>
-                  </div>
-                ) : notes[item.topicId] ? (
-                  <div 
-                    onClick={(e) => handleStartEditNote(item.topicId, e)}
-                    className="mt-2 p-2 bg-amber-500/10 border border-amber-500/20 rounded-xl text-xs text-amber-950 dark:text-amber-200 cursor-pointer hover:bg-amber-500/15 transition-colors flex items-start justify-between gap-2"
+                <div className="flex items-center gap-2 self-end sm:self-auto" onClick={(e) => e.stopPropagation()}>
+                  <select
+                    value={itemFolders[item.topicId] || ""}
+                    onChange={(e) => handleAssignFolder(item.topicId, e.target.value)}
+                    className="text-[10px] h-7 px-2 rounded-lg bg-secondary border border-border text-foreground font-medium"
                   >
-                    <p className="italic">"{notes[item.topicId]}"</p>
-                    <Edit3 className="h-3 w-3 shrink-0 text-amber-500 mt-0.5" />
-                  </div>
-                ) : null}
+                    <option value="">Move to Folder...</option>
+                    {folders.filter(f => f !== "All").map(f => (
+                      <option key={f} value={f}>{f}</option>
+                    ))}
+                  </select>
+
+                  <button
+                    onClick={() => toggleBookmark(item.topicId)}
+                    className="p-1.5 rounded-lg text-muted-foreground hover:text-rose-500 hover:bg-rose-500/10 transition-colors"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
               </div>
             ))}
           </div>

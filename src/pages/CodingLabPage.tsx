@@ -12,6 +12,8 @@ import { useGamification } from '@/hooks/useGamification';
 import { useAcademic } from '@/contexts/AcademicContext';
 import { useFocusMode } from '@/contexts/FocusModeContext';
 import { toast } from 'sonner';
+import { Printer } from 'lucide-react';
+import { LabManualPrintModal, LabManualData } from '@/components/LabManualPrintModal';
 import { CodingProblem, ALL_CODING_PROBLEMS as CODING_PROBLEMS } from '@/data/codingLabData';
 
 export interface SubjectMeta {
@@ -256,6 +258,7 @@ export default function CodingLabPage() {
   const [output, setOutput] = useState<string | null>(null);
   const [status, setStatus] = useState<'idle' | 'compiling' | 'running' | 'success' | 'failed'>('idle');
   const [showSolution, setShowSolution] = useState(false);
+  const [isLabManualOpen, setIsLabManualOpen] = useState(false);
   
   // Interactive Terminal State
   const [terminalInput, setTerminalInput] = useState<string>('');
@@ -372,6 +375,38 @@ export default function CodingLabPage() {
     if (found) return found;
     return filteredProblems[0] || CODING_PROBLEMS[0];
   }, [activeProblemId, filteredProblems]);
+
+
+  const labManualData: LabManualData = useMemo(() => {
+    return {
+      practicalNumber: (currentIndex >= 0 ? currentIndex + 1 : 1),
+      subjectCode: currentProblem?.category?.toUpperCase() || 'ITM-LAB',
+      subjectName: currentProblem?.subjectName || 'Computer Science Laboratory',
+      title: currentProblem?.title || 'Practical Implementation',
+      aim: currentProblem?.description || 'Implement the algorithm and verify test cases.',
+      theory: `Theory & Concepts: This laboratory exercise explores practical concepts in ${currentProblem?.subjectName || 'Computer Science'}. Students analyze problem constraints, implement efficient algorithms, and verify edge cases.`,
+      algorithm: [
+        'Step 1: Parse and validate input data structures.',
+        'Step 2: Apply the algorithm logic maintaining time and space complexity constraints.',
+        'Step 3: Execute boundary and test condition checks.',
+        'Step 4: Output the formatted results to stdout.'
+      ],
+      code: code || currentProblem?.starterCode || '',
+      sampleInput: 'Sample standard inputs as defined in test suite.',
+      sampleOutput: currentProblem?.expectedOutput || 'Execution completed with 0 errors.',
+      vivaQuestions: [
+        {
+          q: `What is the time complexity of ${currentProblem?.title}?`,
+          a: `Typically analyzed based on input size: loops and traversals contribute to O(N) or O(N log N) scaling.`
+        },
+        {
+          q: 'What potential edge conditions must be handled in production?',
+          a: 'Null or empty inputs, integer overflow, index out of bounds, and memory deallocation.'
+        }
+      ]
+    };
+  }, [currentProblem, currentIndex, code]);
+
 
   const currentIndex = useMemo(() => {
     return filteredProblems.findIndex(p => p.id === currentProblem?.id);
@@ -1577,6 +1612,14 @@ export default function CodingLabPage() {
                     >
                       <FileText className="h-3.5 w-3.5 mr-1" /> Export Lab Record
                     </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={() => setIsLabManualOpen(true)}
+                      className="h-7 text-xs text-emerald-400 hover:text-emerald-300 hover:bg-emerald-950/40 hidden md:flex border border-emerald-500/20"
+                    >
+                      <Printer className="h-3.5 w-3.5 mr-1" /> Print Manual
+                    </Button>
                     <Button variant="ghost" size="sm" onClick={handleResetCode} className="h-7 text-xs text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800">
                       <RotateCcw className="h-3.5 w-3.5 mr-1" /> Reset
                     </Button>
@@ -1844,6 +1887,7 @@ export default function CodingLabPage() {
           </button>
         </div>
       )}
+      <LabManualPrintModal isOpen={isLabManualOpen} onClose={() => setIsLabManualOpen(false)} data={labManualData} />
     </div>
   );
 }

@@ -22,7 +22,8 @@ import {
   LogIn,
   GraduationCap,
   Building2,
-  PanelLeftClose
+  PanelLeftClose,
+  FileText
 } from "lucide-react";
 import { ItmMoocsLogo } from "@/components/brand/ItmMoocsLogo";
 import { useAuth } from "@/contexts/AuthContext";
@@ -71,6 +72,12 @@ export function PortalSidebar({ isOpen = false, onClose, isCollapsed = false }: 
       badge: "LIVE", 
       action: () => openTimetable("viva") 
     },
+    { name: "Solved PYQ Papers", path: "/pyq-papers", icon: FileText, badge: "SOLVED" },
+    { name: "Timed Mock Exams", path: "/mock-exam", icon: Trophy, badge: "TEST" },
+    { name: "Study Planner", path: "/study-planner", icon: Calendar },
+    { name: "Rapid Revision (30m)", path: "/rapid-revision", icon: Sparkles },
+    { name: "Formula & Definition Bank", path: "/formulas", icon: BookOpen },
+    { name: "Learning Analytics", path: "/analytics", icon: Award },
     { name: "Practice Quizzes", path: "/quiz", icon: Trophy },
     { name: "Attendance & SGPA", path: "/calculator", icon: Calculator },
     { name: "Saved Bookmarks", path: "/bookmarks", icon: Bookmark },
@@ -148,7 +155,6 @@ export function PortalSidebar({ isOpen = false, onClose, isCollapsed = false }: 
                   </div>
 
                   <div className="flex items-center gap-1.5">
-                    {/* Small energetic Chartreuse indicator for active item */}
                     {active && (
                       <span className="w-1.5 h-1.5 rounded-full bg-[#D6E85D] shadow-sm shadow-[#D6E85D]/50" />
                     )}
@@ -170,7 +176,7 @@ export function PortalSidebar({ isOpen = false, onClose, isCollapsed = false }: 
         {/* Resources & Preferences */}
         <div>
           <div className="text-[10px] font-bold uppercase tracking-wider text-[#A2BAAF]/70 px-3 mb-2 font-display">
-            Tools & Records
+            Tools & High-Yield Exams
           </div>
           <nav className="space-y-1">
             {secondaryItems.map((item) => {

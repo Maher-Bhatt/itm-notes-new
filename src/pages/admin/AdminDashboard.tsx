@@ -91,7 +91,8 @@ type TabId =
   | "maintenance"
   | "announcements"
   | "platform"
-  | "moderation";
+  | "moderation"
+  | "errata";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -102,6 +103,7 @@ const TABS: { id: TabId; label: string; icon: React.FC<{ className?: string }> }
   { id: "announcements", label: "Announcements", icon: Megaphone },
   { id: "platform", label: "Platform Data", icon: BarChart3 },
   { id: "moderation", label: "Moderation", icon: MessageSquare },
+  { id: "errata", label: "Reports & Errata", icon: Flag },
 ];
 
 const TYPE_COLORS = {
@@ -149,6 +151,68 @@ export default function AdminDashboard() {
   const { role, user } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<TabId>("overview");
+  // Errata & Student Contributions State
+  const [errataReports, setErrataReports] = useState<any[]>(() => {
+    try {
+      return JSON.parse(localStorage.getItem("itm_errata_reports") || "[]");
+    } catch {
+      return [];
+    }
+  });
+
+  const [studentContributions, setStudentContributions] = useState<any[]>(() => {
+    try {
+      return JSON.parse(localStorage.getItem("itm_student_contributions") || "[]");
+    } catch {
+      return [];
+    }
+  });
+
+  const refreshReports = () => {
+    try {
+      setErrataReports(JSON.parse(localStorage.getItem("itm_errata_reports") || "[]"));
+      setStudentContributions(JSON.parse(localStorage.getItem("itm_student_contributions") || "[]"));
+      toast.success("Reports and student submissions refreshed");
+    } catch (e) {
+      toast.error("Failed to refresh reports");
+    }
+  };
+
+  const handleResolveErrata = (id: string) => {
+    const updated = errataReports.map((r) => (r.id === id ? { ...r, status: "resolved" } : r));
+    setErrataReports(updated);
+    localStorage.setItem("itm_errata_reports", JSON.stringify(updated));
+    toast.success("Errata report marked as resolved!");
+  };
+
+  const handleDeleteErrata = (id: string) => {
+    const updated = errataReports.filter((r) => r.id !== id);
+    setErrataReports(updated);
+    localStorage.setItem("itm_errata_reports", JSON.stringify(updated));
+    toast.info("Errata report deleted");
+  };
+
+  const handleApproveContribution = (id: string) => {
+    const updated = studentContributions.map((c) => (c.id === id ? { ...c, status: "approved" } : c));
+    setStudentContributions(updated);
+    localStorage.setItem("itm_student_contributions", JSON.stringify(updated));
+    toast.success("Contribution approved! Student rewarded +200 XP.");
+  };
+
+  const handleRejectContribution = (id: string) => {
+    const updated = studentContributions.map((c) => (c.id === id ? { ...c, status: "rejected" } : c));
+    setStudentContributions(updated);
+    localStorage.setItem("itm_student_contributions", JSON.stringify(updated));
+    toast.info("Contribution rejected");
+  };
+
+  const handleDeleteContribution = (id: string) => {
+    const updated = studentContributions.filter((c) => c.id !== id);
+    setStudentContributions(updated);
+    localStorage.setItem("itm_student_contributions", JSON.stringify(updated));
+    toast.info("Contribution deleted");
+  };
+
 
   // Redirect non-admins
   useEffect(() => {
@@ -1445,6 +1509,198 @@ export default function AdminDashboard() {
                 })}
               </div>
             )}
+          </div>
+        )}
+
+        {activeTab === "errata" && (
+          <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-700/80">
+              <div>
+                <h2 className="text-xl font-black text-white flex items-center gap-2">
+                  <Flag className="h-5 w-5 text-amber-400" />
+                  <span>Student Errata Reports & Content Contributions</span>
+                </h2>
+                <p className="text-xs text-slate-400">
+                  Review student-submitted typo corrections, formula fixes, code bugs, and study material submissions
+                </p>
+              </div>
+              <button
+                onClick={refreshReports}
+                className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold flex items-center gap-1.5 border border-slate-700 self-start cursor-pointer"
+              >
+                <RefreshCw className="h-3.5 w-3.5" />
+                <span>Refresh Queue</span>
+              </button>
+            </div>
+
+            {/* Section 1: Errata & Bug Reports */}
+            <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="font-bold text-sm text-white flex items-center gap-2">
+                  <AlertTriangle className="h-4 w-4 text-rose-400" />
+                  <span>Reported Errata & Bugs ({errataReports.length})</span>
+                </h3>
+                <span className="text-xs text-slate-400">
+                  {errataReports.filter(r => r.status === "open").length} Open • {errataReports.filter(r => r.status === "resolved").length} Resolved
+                </span>
+              </div>
+
+              {errataReports.length === 0 ? (
+                <div className="p-8 text-center text-slate-500 bg-slate-800/30 rounded-xl border border-dashed border-slate-700/60 text-xs">
+                  No errata reports submitted yet. Everything is running smoothly!
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {errataReports.map((report) => (
+                    <div
+                      key={report.id}
+                      className={`p-4 rounded-xl border transition-all ${
+                        report.status === "resolved"
+                          ? "bg-emerald-950/20 border-emerald-500/30 opacity-75"
+                          : "bg-slate-800/80 border-slate-700"
+                      }`}
+                    >
+                      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                        <div className="space-y-1 min-w-0">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                              {report.issueType?.replace("_", " ") || "Bug"}
+                            </span>
+                            <span className="font-bold text-xs text-white">
+                              Topic: {report.topicTitle || report.topicId}
+                            </span>
+                            <span className={`px-1.5 py-0.2 rounded text-[10px] font-bold ${
+                              report.status === "resolved" ? "bg-emerald-500/20 text-emerald-400" : "bg-rose-500/20 text-rose-400"
+                            }`}>
+                              {report.status?.toUpperCase() || "OPEN"}
+                            </span>
+                          </div>
+                          <p className="text-xs text-slate-300 pt-1 leading-relaxed">{report.description}</p>
+                          {report.suggestedFix && (
+                            <p className="text-xs text-emerald-400/90 font-mono bg-emerald-950/40 p-2 rounded border border-emerald-900/50 mt-1">
+                              <strong>Suggested Fix:</strong> {report.suggestedFix}
+                            </p>
+                          )}
+                          <div className="flex items-center gap-3 text-[10px] text-slate-400 pt-1">
+                            <span>Reported by: <strong>{report.reportedBy}</strong></span>
+                            <span>•</span>
+                            <span>{new Date(report.createdAt).toLocaleString("en-IN")}</span>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2 shrink-0">
+                          {report.status !== "resolved" && (
+                            <button
+                              onClick={() => handleResolveErrata(report.id)}
+                              className="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-1 cursor-pointer shadow-sm"
+                            >
+                              <CheckCircle className="h-3.5 w-3.5" />
+                              <span>Mark Fixed</span>
+                            </button>
+                          )}
+                          <button
+                            onClick={() => handleDeleteErrata(report.id)}
+                            className="p-1.5 rounded-lg bg-slate-700 hover:bg-rose-900/40 text-rose-400 cursor-pointer"
+                            title="Delete Report"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Section 2: Student Content Contributions */}
+            <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="font-bold text-sm text-white flex items-center gap-2">
+                  <BookOpen className="h-4 w-4 text-sky-400" />
+                  <span>Student Content Submissions ({studentContributions.length})</span>
+                </h3>
+                <span className="text-xs text-slate-400">
+                  {studentContributions.filter(c => c.status === "pending").length} Pending Review
+                </span>
+              </div>
+
+              {studentContributions.length === 0 ? (
+                <div className="p-8 text-center text-slate-500 bg-slate-800/30 rounded-xl border border-dashed border-slate-700/60 text-xs">
+                  No student study notes or cheat sheets submitted yet.
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {studentContributions.map((contrib) => (
+                    <div
+                      key={contrib.id}
+                      className={`p-4 rounded-xl border transition-all ${
+                        contrib.status === "approved"
+                          ? "bg-emerald-950/20 border-emerald-500/30"
+                          : contrib.status === "rejected"
+                          ? "bg-rose-950/20 border-rose-500/30 opacity-75"
+                          : "bg-slate-800/80 border-slate-700"
+                      }`}
+                    >
+                      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                        <div className="space-y-1 min-w-0">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-sky-500/20 text-sky-300 border border-sky-500/30">
+                              {contrib.subjectId?.toUpperCase()} • Unit {contrib.unitNumber}
+                            </span>
+                            <span className="font-bold text-xs text-white">{contrib.title}</span>
+                            <span className={`px-1.5 py-0.2 rounded text-[10px] font-bold ${
+                              contrib.status === "approved"
+                                ? "bg-emerald-500/20 text-emerald-400"
+                                : contrib.status === "rejected"
+                                ? "bg-rose-500/20 text-rose-400"
+                                : "bg-amber-500/20 text-amber-400"
+                            }`}>
+                              {contrib.status?.toUpperCase() || "PENDING"}
+                            </span>
+                          </div>
+                          <p className="text-xs text-slate-300 font-mono bg-slate-900/70 p-2.5 rounded border border-slate-800 max-h-32 overflow-y-auto whitespace-pre-wrap">
+                            {contrib.content}
+                          </p>
+                          <div className="flex items-center gap-3 text-[10px] text-slate-400 pt-1">
+                            <span>Author: <strong>{contrib.studentName}</strong> ({contrib.studentEmail || "student"})</span>
+                            <span>•</span>
+                            <span>{new Date(contrib.submittedAt).toLocaleString("en-IN")}</span>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2 shrink-0">
+                          {contrib.status === "pending" && (
+                            <>
+                              <button
+                                onClick={() => handleApproveContribution(contrib.id)}
+                                className="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-1 cursor-pointer shadow-sm"
+                              >
+                                <CheckCircle className="h-3.5 w-3.5" />
+                                <span>Approve (+200 XP)</span>
+                              </button>
+                              <button
+                                onClick={() => handleRejectContribution(contrib.id)}
+                                className="px-2.5 py-1.5 rounded-lg bg-slate-700 hover:bg-rose-900/50 text-rose-300 text-xs font-semibold cursor-pointer"
+                              >
+                                <span>Reject</span>
+                              </button>
+                            </>
+                          )}
+                          <button
+                            onClick={() => handleDeleteContribution(contrib.id)}
+                            className="p-1.5 rounded-lg bg-slate-700 hover:bg-rose-900/40 text-rose-400 cursor-pointer"
+                            title="Delete Submission"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>
