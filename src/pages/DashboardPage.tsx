@@ -38,6 +38,8 @@ import {
   Tooltip 
 } from "recharts";
 import { toast } from "sonner";
+import { openTimetable } from "@/components/GlobalTimetableModal";
+import { FACULTY_DIRECTORY } from "@/data/timetableData";
 
 // Chart Activity Data matching Screenshot 1 spline curve
 const STUDY_ACTIVITY_DATA = [
@@ -130,6 +132,79 @@ export default function DashboardPage() {
               <span>Add Sheet</span>
             </button>
           )}
+        </div>
+      </div>
+
+      {/* ── OFFICIAL EXAM & VIVA ALERT BANNER ── */}
+      <div className="bg-gradient-to-r from-[#183F36] via-[#1F4E43] to-[#12332C] text-white p-4 sm:p-5 rounded-3xl border border-[#D6E85D]/30 shadow-lg relative overflow-hidden">
+        <div className="absolute right-0 top-0 w-80 h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#D6E85D]/15 via-transparent to-transparent pointer-events-none" />
+        
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#D6E85D] text-[#183F36] shadow-xs flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#183F36] animate-ping" />
+                Notice Live
+              </span>
+              <span className="text-xs text-[#D6E85D] font-mono font-bold">
+                Odd Sem 2026-2027 · Oct 26 – Nov 03
+              </span>
+            </div>
+            <h2 className="text-base sm:text-lg font-black text-white font-display">
+              B.Tech Sem 3 Submission Viva & Remedial Examinations
+            </h2>
+            <p className="text-xs text-[#A2BAAF] leading-relaxed max-w-2xl">
+              Practical file submissions & viva start <strong className="text-white">10:00 AM onwards</strong>. Check your assigned location (NL-2, JAVA LAB, NL-6, EB-39, EB-25) and subject faculty.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={() => openTimetable("viva")}
+              className="px-4 py-2.5 rounded-xl bg-[#D6E85D] hover:bg-[#c8dc4e] text-[#183F36] font-black text-xs shadow-md shadow-[#D6E85D]/20 flex items-center gap-2 transition-all active:scale-95 cursor-pointer font-display"
+            >
+              <Calendar className="h-4 w-4" />
+              <span>Open Timetables</span>
+            </button>
+            <button
+              onClick={() => openTimetable("remedial")}
+              className="px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs border border-white/20 flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer"
+            >
+              <span>Remedials</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Quick Cohort Class Jump Pills */}
+        <div className="mt-4 pt-3 border-t border-white/15 flex items-center gap-2 overflow-x-auto no-scrollbar relative z-10">
+          <span className="text-[11px] font-bold text-[#A2BAAF] uppercase tracking-wider shrink-0">
+            Quick Jump:
+          </span>
+          {[
+            { cls: 1 as const, room: "NL-2" },
+            { cls: 2 as const, room: "JAVA LAB" },
+            { cls: 3 as const, room: "NL-6" },
+            { cls: 4 as const, room: "EB-39" },
+            { cls: 5 as const, room: "EB-25" },
+          ].map((item) => (
+            <button
+              key={item.cls}
+              onClick={() => openTimetable("viva", item.cls)}
+              className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-[#D6E85D] hover:text-[#183F36] text-white/90 text-xs font-semibold transition-all shrink-0 flex items-center gap-1.5 cursor-pointer border border-white/10"
+            >
+              <span>Class {item.cls}</span>
+              <span className="text-[10px] px-1 py-0.2 rounded bg-black/30 font-mono text-[#D6E85D]">
+                {item.room}
+              </span>
+            </button>
+          ))}
+          <button
+            onClick={() => openTimetable("faculty")}
+            className="px-2.5 py-1 rounded-lg bg-[#D6E85D]/20 hover:bg-[#D6E85D] hover:text-[#183F36] text-[#D6E85D] text-xs font-bold transition-all shrink-0 flex items-center gap-1 cursor-pointer border border-[#D6E85D]/30 ml-auto"
+          >
+            <Users className="h-3 w-3" />
+            <span>View Faculty Venues</span>
+          </button>
         </div>
       </div>
 
@@ -412,7 +487,7 @@ export default function DashboardPage() {
 
                   {/* Shortcut 2 */}
                   <div 
-                    onClick={() => navigate("/materials")}
+                    onClick={() => openTimetable("viva")}
                     className="p-3 rounded-xl border border-border/80 bg-secondary/20 hover:bg-secondary/50 cursor-pointer transition-all flex items-start gap-3"
                   >
                     <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-500 shrink-0 mt-0.5">
@@ -421,14 +496,14 @@ export default function DashboardPage() {
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between">
                         <h4 className="font-bold text-xs text-foreground truncate">
-                          Internal Continuous Tests & Exams
+                          Submission Viva & Remedial Timetable
                         </h4>
                         <span className="text-[10px] px-1.5 py-0.2 rounded bg-emerald-500/10 text-emerald-600 font-bold border border-emerald-500/20">
-                          ✓ Active
+                          ✓ Live Now
                         </span>
                       </div>
                       <p className="text-[11px] text-muted-foreground truncate">
-                        October 26, 2026 – Due Nov 11, 2026
+                        Oct 26 – Nov 03, 2026 · Classes 1–5 & Remedials
                       </p>
                     </div>
                   </div>
@@ -648,40 +723,58 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* 3. Faculty / Subject Mentors Card - Coming Soon as requested */}
+          {/* 3. Faculty / Subject Mentors Card — LIVE Verified Mentors */}
           <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="font-bold text-sm text-foreground">Faculty & Subject Mentors</h3>
-              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-                Coming Soon
+              <div>
+                <h3 className="font-bold text-sm text-foreground">Faculty & Subject Mentors</h3>
+                <span className="text-[11px] text-muted-foreground">School of CSET · Active Viva Panel</span>
+              </div>
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                12 Faculty Mentors
               </span>
             </div>
 
-            <div className="p-4 rounded-xl bg-gradient-to-br from-secondary/40 to-secondary/10 border border-border/70 space-y-3">
-              <div className="flex items-start gap-3">
-                <div className="w-9 h-9 rounded-xl bg-[#183F36]/10 text-[#183F36] dark:text-[#D6E85D] flex items-center justify-center shrink-0 mt-0.5">
-                  <Users className="h-5 w-5" />
-                </div>
-                <div className="space-y-1">
-                  <h4 className="font-bold text-xs text-foreground font-display">
-                    Direct Faculty Guidance & Office Hours
-                  </h4>
-                  <p className="text-[11px] text-muted-foreground leading-relaxed">
-                    Official faculty office hours and direct 1-on-1 viva guidance from ITM SLS Baroda University professors will be published once departmental timetables are finalized.
-                  </p>
-                </div>
-              </div>
-
-              <div className="pt-2 border-t border-border/50 flex items-center justify-between text-[11px]">
-                <span className="text-muted-foreground font-medium">SLS CS Dept Portal</span>
-                <button
-                  type="button"
-                  onClick={() => toast.success("You'll be notified when faculty office hours are published!")}
-                  className="px-3 py-1.5 rounded-lg bg-[#183F36] hover:bg-[#12332C] text-white font-bold text-[10px] shadow-sm shadow-[#183F36]/20 transition-all active:scale-95 cursor-pointer font-display"
+            <div className="space-y-2.5">
+              {FACULTY_DIRECTORY.slice(0, 4).map((f) => (
+                <div
+                  key={f.id}
+                  onClick={() => openTimetable("faculty")}
+                  className="p-3 rounded-xl border border-border/80 bg-secondary/30 hover:bg-secondary/70 transition-all cursor-pointer flex items-center justify-between gap-3 group"
                 >
-                  Notify Me
-                </button>
-              </div>
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="w-8 h-8 rounded-xl bg-[#183F36] text-[#D6E85D] flex items-center justify-center font-bold text-[11px] shrink-0">
+                      {f.name.split(" ").slice(1).map((n) => n[0]).join("")}
+                    </div>
+                    <div className="min-w-0">
+                      <h4 className="font-bold text-xs text-foreground group-hover:text-primary transition-colors truncate">
+                        {f.name}
+                      </h4>
+                      <p className="text-[10px] text-muted-foreground truncate">
+                        {f.subjects[0]}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="text-right shrink-0">
+                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-background border border-border font-mono font-bold text-foreground">
+                      {f.vivaRooms[0]}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="pt-2 border-t border-border/50 flex items-center justify-between text-[11px]">
+              <span className="text-muted-foreground font-medium">Venues: NL-2, JAVA LAB, NL-6, EB-39, EB-25</span>
+              <button
+                type="button"
+                onClick={() => openTimetable("faculty")}
+                className="px-3 py-1.5 rounded-lg bg-[#183F36] hover:bg-[#12332C] text-white font-bold text-[10px] shadow-sm shadow-[#183F36]/20 transition-all active:scale-95 cursor-pointer font-display flex items-center gap-1"
+              >
+                <span>All Mentors</span>
+                <ChevronRight className="h-3 w-3" />
+              </button>
             </div>
           </div>
         </div>

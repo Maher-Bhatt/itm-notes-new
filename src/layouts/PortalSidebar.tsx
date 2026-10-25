@@ -29,6 +29,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useGamification } from "@/hooks/useGamification";
 import { useFocusMode } from "@/contexts/FocusModeContext";
 import { UserAvatar, resolveAvatarUrl } from "@/components/UserAvatar";
+import { openTimetable } from "@/components/GlobalTimetableModal";
 
 interface PortalSidebarProps {
   isOpen?: boolean;
@@ -63,6 +64,13 @@ export function PortalSidebar({ isOpen = false, onClose, isCollapsed = false }: 
   ];
 
   const secondaryItems = [
+    { 
+      name: "Exam & Viva Schedule", 
+      path: "/materials", 
+      icon: Calendar, 
+      badge: "LIVE", 
+      action: () => openTimetable("viva") 
+    },
     { name: "Practice Quizzes", path: "/quiz", icon: Trophy },
     { name: "Attendance & SGPA", path: "/calculator", icon: Calculator },
     { name: "Saved Bookmarks", path: "/bookmarks", icon: Bookmark },
@@ -172,7 +180,13 @@ export function PortalSidebar({ isOpen = false, onClose, isCollapsed = false }: 
                 <Link
                   key={item.name}
                   to={item.path}
-                  onClick={onClose}
+                  onClick={(e) => {
+                    if (item.action) {
+                      e.preventDefault();
+                      item.action();
+                    }
+                    onClose?.();
+                  }}
                   className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all duration-150 relative ${
                     active
                       ? "bg-[#224E43] text-[#F5F1E8] font-bold shadow-sm shadow-[#12332C]/30"
@@ -184,9 +198,16 @@ export function PortalSidebar({ isOpen = false, onClose, isCollapsed = false }: 
                     <span>{item.name}</span>
                   </div>
 
-                  {active && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#D6E85D] shadow-sm shadow-[#D6E85D]/50" />
-                  )}
+                  <div className="flex items-center gap-1.5">
+                    {active && (
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#D6E85D] shadow-sm shadow-[#D6E85D]/50" />
+                    )}
+                    {item.badge && (
+                      <span className="px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider bg-[#D6E85D] text-[#183F36]">
+                        {item.badge}
+                      </span>
+                    )}
+                  </div>
                 </Link>
               );
             })}

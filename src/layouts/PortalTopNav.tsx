@@ -25,6 +25,7 @@ import { useGamification } from "@/hooks/useGamification";
 import { usePomodoro } from "@/contexts/PomodoroContext";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { UserAvatar, resolveAvatarUrl } from "@/components/UserAvatar";
+import { openTimetable } from "@/components/GlobalTimetableModal";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -176,6 +177,17 @@ export function PortalTopNav({
           <kbd className="hidden lg:inline-flex items-center px-1.5 py-0.5 text-[10px] font-mono font-semibold bg-background border border-border rounded-md text-muted-foreground">
             ⌘K
           </kbd>
+        </button>
+
+        {/* Timetables / Viva Schedule Pill */}
+        <button
+          onClick={() => openTimetable("viva")}
+          className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border transition-all bg-[#183F36]/10 text-[#183F36] dark:text-[#D6E85D] dark:bg-[#183F36]/30 border-[#183F36]/20 hover:bg-[#183F36] hover:text-[#D6E85D] shadow-xs cursor-pointer"
+          title="View Official Remedial & Viva Timetables (Oct 26 - Nov 3)"
+        >
+          <Calendar className="h-3.5 w-3.5 text-primary" />
+          <span>Timetable</span>
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
         </button>
 
         {/* Pomodoro Focus Pill */}

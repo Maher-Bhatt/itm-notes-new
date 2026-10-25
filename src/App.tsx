@@ -36,6 +36,7 @@ import { PomodoroFloatingWidget } from "@/components/PomodoroFloatingWidget";
 import { AchievementCelebrationModal } from "@/components/AchievementCelebrationModal";
 import { AnnouncementBanner } from "@/components/AnnouncementBanner";
 import { MaintenanceBanner } from "@/components/MaintenanceBanner";
+import { GlobalTimetableModal } from "@/components/GlobalTimetableModal";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 import { PageFallback } from "@/components/PageSkeletonLoaders";
@@ -139,6 +140,7 @@ const App = () => (
                     <PWAInstallPrompt />
                     <PomodoroFloatingWidget />
                     <AchievementCelebrationModal />
+                    <GlobalTimetableModal />
                     <Suspense fallback={<PageFallback />}>
                       <Routes>
                         {/* Standalone Landing, Authentication & Onboarding */}

@@ -22,6 +22,9 @@ import {
   Layers,
   Filter,
   CheckCircle2,
+  Calendar,
+  MapPin,
+  UserCheck,
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -32,7 +35,13 @@ import {
   Tooltip,
 } from "recharts";
 import { toast } from "sonner";
-import { TIMETABLE_DATA } from "@/data/timetableData";
+import { 
+  TIMETABLE_DATA, 
+  VIVA_SCHEDULE, 
+  REMEDIAL_EXAMS, 
+  VIVA_CLASS_LOCATIONS 
+} from "@/data/timetableData";
+import { openTimetable } from "@/components/GlobalTimetableModal";
 import { REAL_STUDY_MATERIALS, StudyMaterial } from "@/data/materialsData";
 import { fetchLiveMaterials } from "@/data/supabase/fetchMaterials";
 import { useEffect } from "react";
@@ -557,6 +566,9 @@ export default function MaterialsPage() {
   const [activePreview, setActivePreview] = useState<SubjectOverviewCard | null>(null);
   const [previewTab, setPreviewTab] = useState<"pdf" | "summary" | "questions" | "download">("pdf");
   const [selectedBatchId, setSelectedBatchId] = useState<string>("b.tech-sem3-cse");
+  const [timetableTab, setTimetableTab] = useState<"viva" | "remedial" | "mst">("viva");
+  const [vivaClassFilter, setVivaClassFilter] = useState<1 | 2 | 3 | 4 | 5>(1);
+  const [remedialBranchFilter, setRemedialBranchFilter] = useState<string>("all");
 
   // Live Materials State
   const [liveMaterials, setLiveMaterials] = useState<StudyMaterial[]>(REAL_STUDY_MATERIALS);
@@ -933,83 +945,291 @@ export default function MaterialsPage() {
         </div>
       </div>
 
-      {/* ── TIMETABLE TABLE ── */}
+      {/* ── TIMETABLE & VIVA HUB SECTION ── */}
       <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <h3 className="font-bold text-sm text-foreground">Official Examination Timetables</h3>
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 font-bold">
-              CET-2 / MST 2026
-            </span>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-border/70">
+          <div>
+            <div className="flex items-center gap-2">
+              <h3 className="font-bold text-sm sm:text-base text-foreground font-display">
+                Official Examination & Viva Schedules
+              </h3>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 font-bold">
+                Odd Sem 2026-27
+              </span>
+            </div>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              School of Computer Science Engineering & Technology · ITM (SLS) Baroda University
+            </p>
           </div>
-          <div className="flex flex-wrap items-center gap-1.5">
-            {TIMETABLE_DATA.map((batch) => (
-              <button
-                key={batch.id}
-                onClick={() => setSelectedBatchId(batch.id)}
-                className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all ${
-                  selectedBatchId === batch.id
-                    ? "bg-[#183F36] text-[#D6E85D] font-bold"
-                    : "bg-secondary text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {batch.id === "b.tech-sem3-cse"
-                  ? "B.Tech Sem 3"
-                  : batch.id === "bca-sem3"
-                  ? "BCA Sem 3"
-                  : batch.id === "mca-sem3"
-                  ? "MCA Sem 3"
-                  : batch.id === "b.tech-sem5-cse"
-                  ? "B.Tech Sem 5"
-                  : batch.name.split(" ")[0]}
-              </button>
-            ))}
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => openTimetable(timetableTab, vivaClassFilter)}
+              className="h-8 px-3 rounded-xl bg-[#183F36] text-[#D6E85D] hover:bg-[#12332C] font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer shadow-xs font-display"
+            >
+              <Calendar className="h-3.5 w-3.5" />
+              <span>Open Timetable Hub</span>
+            </button>
           </div>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="text-[10px] font-bold text-muted-foreground uppercase border-b border-border">
-              <tr>
-                <th className="pb-2.5">Date</th>
-                <th className="pb-2.5">Course Code</th>
-                <th className="pb-2.5">Course Name</th>
-                <th className="pb-2.5 text-right">Time Slot</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border/60">
-              {activeBatch.exams.map((exam, idx) => (
-                <tr key={idx} className="hover:bg-secondary/20 transition-colors">
-                  <td className="py-3 font-semibold text-foreground flex items-center gap-2">
-                    <FileCheck className="h-4 w-4 text-emerald-500 shrink-0" />
-                    <span className="font-mono">{exam.date}</span>
-                  </td>
-                  <td className="py-3 font-mono text-[11px] font-bold text-indigo-500 dark:text-indigo-400">
-                    {exam.courseCode}
-                  </td>
-                  <td className="py-3 font-medium text-foreground">{exam.courseName}</td>
-                  <td className="py-3 text-right">
-                    <span className="text-xs font-semibold text-muted-foreground font-mono">{exam.time}</span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        {/* Schedule Mode Selector Tabs */}
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar font-display">
+          <button
+            onClick={() => setTimetableTab("viva")}
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 flex items-center gap-1.5 cursor-pointer ${
+              timetableTab === "viva"
+                ? "bg-[#183F36] text-[#D6E85D] font-black shadow-xs"
+                : "bg-secondary text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <CheckCircle2 className="h-3.5 w-3.5" />
+            <span>Sem 3 Viva & Submissions</span>
+            <span className="px-1.5 py-0.2 rounded bg-black/20 text-[10px]">Oct 26 - Nov 3</span>
+          </button>
+
+          <button
+            onClick={() => setTimetableTab("remedial")}
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 flex items-center gap-1.5 cursor-pointer ${
+              timetableTab === "remedial"
+                ? "bg-[#183F36] text-[#D6E85D] font-black shadow-xs"
+                : "bg-secondary text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <span>Remedial Papers (Sem 3 & 5)</span>
+            <span className="px-1.5 py-0.2 rounded bg-black/20 text-[10px]">10:10 AM</span>
+          </button>
+
+          <button
+            onClick={() => setTimetableTab("mst")}
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 flex items-center gap-1.5 cursor-pointer ${
+              timetableTab === "mst"
+                ? "bg-[#183F36] text-[#D6E85D] font-black shadow-xs"
+                : "bg-secondary text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <span>MST Regular Archive</span>
+          </button>
         </div>
+
+        {/* ── MODE 1: VIVA & SUBMISSIONS ── */}
+        {timetableTab === "viva" && (
+          <div className="space-y-3">
+            {/* Class Pill Filters */}
+            <div className="flex flex-wrap items-center justify-between gap-2 p-2.5 rounded-xl bg-secondary/30 border border-border">
+              <div className="flex flex-wrap items-center gap-1.5">
+                <span className="text-[11px] font-bold text-muted-foreground mr-1">Class:</span>
+                {([1, 2, 3, 4, 5] as const).map((cls) => {
+                  const loc = VIVA_CLASS_LOCATIONS[cls];
+                  const isSel = vivaClassFilter === cls;
+                  return (
+                    <button
+                      key={cls}
+                      onClick={() => setVivaClassFilter(cls)}
+                      className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                        isSel
+                          ? "bg-[#183F36] text-[#D6E85D] font-bold shadow-xs"
+                          : "bg-background border border-border text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      <span>Class {cls}</span>
+                      <span className="text-[10px] font-mono opacity-80">({loc.room})</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <span className="text-[11px] text-muted-foreground flex items-center gap-1">
+                <MapPin className="h-3.5 w-3.5 text-indigo-500" />
+                Venue: <strong className="text-foreground">{VIVA_CLASS_LOCATIONS[vivaClassFilter].room}</strong> ({VIVA_CLASS_LOCATIONS[vivaClassFilter].block})
+              </span>
+            </div>
+
+            {/* Table */}
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead className="text-[10px] font-bold text-muted-foreground uppercase border-b border-border bg-secondary/20">
+                  <tr>
+                    <th className="p-2.5">Date</th>
+                    <th className="p-2.5">Subject</th>
+                    <th className="p-2.5">Faculty In-Charge</th>
+                    <th className="p-2.5">Venue</th>
+                    <th className="p-2.5 text-right">Submission</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border/60">
+                  {VIVA_SCHEDULE.filter((v) => v.classGroup === vivaClassFilter).map((item) => (
+                    <tr key={item.id} className="hover:bg-secondary/20 transition-colors">
+                      <td className="p-2.5 font-semibold text-foreground">
+                        <span className="font-mono">{item.date}</span>
+                      </td>
+                      <td className="p-2.5 font-medium text-foreground">
+                        <span className="font-bold text-primary mr-1.5 font-mono">{item.subjectCode}</span>
+                        <span>{item.subjectName}</span>
+                      </td>
+                      <td className="p-2.5 text-foreground flex items-center gap-1.5">
+                        <UserCheck className="h-3.5 w-3.5 text-primary shrink-0" />
+                        <span>{item.facultyName}</span>
+                      </td>
+                      <td className="p-2.5">
+                        <span className="px-2 py-0.5 rounded bg-secondary border border-border font-mono font-bold text-[11px]">
+                          {item.location}
+                        </span>
+                      </td>
+                      <td className="p-2.5 text-right">
+                        <span className="text-[10px] px-2 py-0.5 rounded bg-orange-500/10 text-orange-600 dark:text-orange-400 font-bold border border-orange-500/20">
+                          Physical File Required
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* ── MODE 2: REMEDIAL PAPERS ── */}
+        {timetableTab === "remedial" && (
+          <div className="space-y-3">
+            <div className="flex flex-wrap items-center gap-1.5 p-2 rounded-xl bg-secondary/30 border border-border">
+              {[
+                { id: "all", label: "All Remedials" },
+                { id: "3", label: "Sem 3 CSE & IT" },
+                { id: "CSE", label: "Sem 5 CSE" },
+                { id: "AI & DS", label: "Sem 5 AI & DS" },
+                { id: "CSN", label: "Sem 5 CSN" },
+              ].map((b) => (
+                <button
+                  key={b.id}
+                  onClick={() => setRemedialBranchFilter(b.id)}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                    remedialBranchFilter === b.id
+                      ? "bg-[#183F36] text-[#D6E85D] font-bold"
+                      : "bg-background border border-border text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {b.label}
+                </button>
+              ))}
+              <span className="text-[11px] text-muted-foreground ml-auto font-mono">
+                Duration: 10:10 AM - 11:40 AM (90 Mins)
+              </span>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead className="text-[10px] font-bold text-muted-foreground uppercase border-b border-border bg-secondary/20">
+                  <tr>
+                    <th className="p-2.5">Date</th>
+                    <th className="p-2.5">Sem & Branch</th>
+                    <th className="p-2.5">Course Code</th>
+                    <th className="p-2.5">Subject</th>
+                    <th className="p-2.5 text-right">Time Slot</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border/60">
+                  {REMEDIAL_EXAMS.filter((r) => {
+                    if (remedialBranchFilter !== "all" && r.branch !== remedialBranchFilter && `${r.semester}` !== remedialBranchFilter) {
+                      return false;
+                    }
+                    return true;
+                  }).map((item) => (
+                    <tr key={item.id} className="hover:bg-secondary/20 transition-colors">
+                      <td className="p-2.5 font-mono font-semibold text-foreground">
+                        {item.date}
+                        <span className="block text-[10px] text-muted-foreground">{item.dayOfWeek}</span>
+                      </td>
+                      <td className="p-2.5">
+                        <span className="px-1.5 py-0.5 rounded bg-secondary text-[10px] font-bold">
+                          Sem {item.semester} · {item.branch}
+                        </span>
+                      </td>
+                      <td className="p-2.5 font-mono font-bold text-indigo-500 dark:text-indigo-400">
+                        {item.courseCode}
+                      </td>
+                      <td className="p-2.5 font-medium text-foreground">{item.courseName}</td>
+                      <td className="p-2.5 text-right font-mono text-muted-foreground font-semibold">
+                        {item.timeSlot}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* ── MODE 3: MST REGULAR ARCHIVE ── */}
+        {timetableTab === "mst" && (
+          <div className="space-y-3">
+            <div className="flex flex-wrap items-center gap-1.5">
+              {TIMETABLE_DATA.map((batch) => (
+                <button
+                  key={batch.id}
+                  onClick={() => setSelectedBatchId(batch.id)}
+                  className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all ${
+                    selectedBatchId === batch.id
+                      ? "bg-[#183F36] text-[#D6E85D] font-bold"
+                      : "bg-secondary text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {batch.id === "b.tech-sem3-cse"
+                    ? "B.Tech Sem 3"
+                    : batch.id === "bca-sem3"
+                    ? "BCA Sem 3"
+                    : batch.id === "mca-sem3"
+                    ? "MCA Sem 3"
+                    : batch.id === "b.tech-sem5-cse"
+                    ? "B.Tech Sem 5"
+                    : batch.name.split(" ")[0]}
+                </button>
+              ))}
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead className="text-[10px] font-bold text-muted-foreground uppercase border-b border-border">
+                  <tr>
+                    <th className="pb-2.5">Date</th>
+                    <th className="pb-2.5">Course Code</th>
+                    <th className="pb-2.5">Course Name</th>
+                    <th className="pb-2.5 text-right">Time Slot</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border/60">
+                  {activeBatch.exams.map((exam, idx) => (
+                    <tr key={idx} className="hover:bg-secondary/20 transition-colors">
+                      <td className="py-3 font-semibold text-foreground flex items-center gap-2">
+                        <FileCheck className="h-4 w-4 text-emerald-500 shrink-0" />
+                        <span className="font-mono">{exam.date}</span>
+                      </td>
+                      <td className="py-3 font-mono text-[11px] font-bold text-indigo-500 dark:text-indigo-400">
+                        {exam.courseCode}
+                      </td>
+                      <td className="py-3 font-medium text-foreground">{exam.courseName}</td>
+                      <td className="py-3 text-right">
+                        <span className="text-xs font-semibold text-muted-foreground font-mono">{exam.time}</span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
 
         <div className="pt-2 flex items-center justify-between border-t border-border/60 text-xs">
           <span className="text-muted-foreground text-[11px]">
-            {activeBatch.exams.length} papers · {activeBatch.name}
+            ITM (SLS) Baroda University · Odd Semester 2026-2027
           </span>
-          <a
-            href="/materials/Time_Table_CET2_MST_2026.pdf"
-            target="_blank"
-            rel="noreferrer"
-            className="text-primary hover:underline font-semibold flex items-center gap-1 text-[11px]"
+          <button
+            onClick={() => openTimetable(timetableTab)}
+            className="text-primary hover:underline font-semibold flex items-center gap-1 text-[11px] cursor-pointer"
           >
-            <span>Download Timetable PDF</span>
+            <span>View Fullscreen & Export Timetable</span>
             <ExternalLink className="h-3 w-3" />
-          </a>
+          </button>
         </div>
       </div>
 

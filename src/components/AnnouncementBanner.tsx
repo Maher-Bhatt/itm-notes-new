@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { AlertCircle, AlertTriangle, Info, X } from 'lucide-react';
+import { AlertCircle, AlertTriangle, Info, X, Calendar } from 'lucide-react';
+import { openTimetable } from './GlobalTimetableModal';
 
 export interface Announcement {
   id: string;
@@ -11,10 +12,10 @@ export interface Announcement {
 }
 
 export const DEFAULT_ANNOUNCEMENT: Announcement = {
-  id: 'ann-welcome-exam-prep',
-  title: 'ITM SLS Baroda Semester 3 MST & Final Exam Prep',
-  body: 'Comprehensive lecture notes, solved IMP question banks, and MCQ mock quizzes are live for all CSE subjects!',
-  severity: 'info',
+  id: 'ann-viva-remedial-schedule-2026',
+  title: 'ITM SLS Baroda Submission Viva & Remedial Timetable Live',
+  body: 'B.Tech Sem 3 practical viva (Classes 1–5 in NL-2, JAVA LAB, NL-6, EB-39, EB-25) & Sem 5 Remedials start Oct 26.',
+  severity: 'warning',
   active: true,
   createdAt: new Date().toISOString(),
 };
@@ -116,7 +117,7 @@ export function AnnouncementBanner() {
   const style = severityStyles[announcement.severity] || severityStyles.info;
 
   return (
-    <div className={`relative z-40 border-b px-4 py-2.5 transition-all text-xs ${style.wrapper}`}>
+    <div className={`relative z-40 border-b px-4 py-2 transition-all text-xs ${style.wrapper}`}>
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
         <div className="flex items-center gap-2.5 min-w-0">
           {style.icon}
@@ -125,14 +126,24 @@ export function AnnouncementBanner() {
               {announcement.severity}
             </span>
             <span className="font-bold text-foreground text-[11px] sm:text-xs">{announcement.title}:</span>
-            <span className={`${style.text} font-medium text-[11px] sm:text-xs line-clamp-2 sm:line-clamp-1`}>{announcement.body}</span>
+            <span className={`${style.text} font-medium text-[11px] sm:text-xs line-clamp-2 sm:line-clamp-1`}>
+              {announcement.body}
+            </span>
+            <button
+              type="button"
+              onClick={() => openTimetable('viva')}
+              className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-[#183F36] text-[#D6E85D] hover:bg-[#12332C] font-bold text-[10px] shadow-xs cursor-pointer transition-all ml-1"
+            >
+              <Calendar className="h-3 w-3" />
+              <span>View Timetables</span>
+            </button>
           </div>
         </div>
 
         <button
           type="button"
           onClick={handleDismiss}
-          className="p-2.5 -mr-1 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 text-muted-foreground hover:text-foreground transition-colors shrink-0 min-w-[44px] min-h-[44px] flex items-center justify-center"
+          className="p-1.5 -mr-1 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 text-muted-foreground hover:text-foreground transition-colors shrink-0 flex items-center justify-center cursor-pointer"
           title="Dismiss announcement"
           aria-label="Dismiss announcement"
         >
