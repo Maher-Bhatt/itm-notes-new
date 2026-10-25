@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Calendar,
   Clock,
@@ -44,6 +45,7 @@ export function TimetableModal({
   initialTab = "viva",
   initialClass = 1,
 }: TimetableModalProps) {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"viva" | "remedial" | "faculty" | "mst">(initialTab);
   const [selectedClass, setSelectedClass] = useState<1 | 2 | 3 | 4 | 5>(initialClass);
   const [selectedBranch, setSelectedBranch] = useState<string>("all");
@@ -466,6 +468,34 @@ export function TimetableModal({
                   {pill.label}
                 </button>
               ))}
+            </div>
+
+            {/* OOPJ Remedial Question Bank Quick Access */}
+            <div className="p-3.5 rounded-2xl bg-gradient-to-r from-[#183F36] to-[#12332C] text-white flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-md border border-[#D6E85D]/30">
+              <div className="space-y-0.5">
+                <div className="flex items-center gap-1.5">
+                  <span className="px-2 py-0.2 rounded bg-[#D6E85D] text-[#183F36] text-[10px] font-black uppercase font-mono">
+                    Paper 1 · Oct 26
+                  </span>
+                  <h4 className="font-bold text-xs sm:text-sm text-white font-display">
+                    OOPJ (C2311C1) Solved Master Question Bank
+                  </h4>
+                </div>
+                <p className="text-[11px] text-[#A2BAAF]">
+                  38 fully solved questions with 5-mark code solutions, predict output dry runs, and Q1 MCQs.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  navigate("/imp-questions/oopj");
+                }}
+                className="h-8 px-3 rounded-xl bg-[#D6E85D] hover:bg-[#c8dc4e] text-[#183F36] font-bold text-xs flex items-center gap-1.5 transition-all shrink-0 cursor-pointer shadow-xs self-start sm:self-auto font-display"
+              >
+                <BookOpen className="h-3.5 w-3.5" />
+                <span>Open Question Bank</span>
+              </button>
             </div>
 
             {/* Remedial Papers Table */}

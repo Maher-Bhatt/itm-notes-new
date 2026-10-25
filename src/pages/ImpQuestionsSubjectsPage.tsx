@@ -117,8 +117,103 @@ export default function ImpQuestionsSubjectsPage() {
         </div>
       </div>
 
-      {/* ── TOP 3 SUBJECT CARDS GRID matching Screenshot 3 ── */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* ── FEATURED REMEDIAL SOLVED MASTER QUESTION BANK ── */}
+      <div className="p-5 sm:p-6 rounded-3xl bg-gradient-to-r from-[#183F36] via-[#1D4A3F] to-[#12332C] text-white shadow-xl border border-[#D6E85D]/40 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-80 h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#D6E85D]/20 via-transparent to-transparent pointer-events-none" />
+
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#D6E85D] text-[#183F36] shadow-xs flex items-center gap-1.5">
+                <Flame className="h-3 w-3 fill-[#183F36]" />
+                Remedial Exam Master Bank
+              </span>
+              <span className="text-xs font-mono font-bold text-[#D6E85D]">
+                C2311C1 · 38 Fully Solved Questions
+              </span>
+            </div>
+
+            <h2 className="text-lg sm:text-xl font-black text-white font-display">
+              OOPJ Solved Question Bank (Object-Oriented Programming with Java)
+            </h2>
+            <p className="text-xs text-[#A2BAAF] leading-relaxed max-w-2xl">
+              Complete step-by-step code, execution outputs, and exam strategies: 5 Predict Output with line-by-line traces, 15 5-mark programming questions, 18 3-mark theory proofs, and Q1 MCQ master revision.
+            </p>
+
+            <div className="flex flex-wrap items-center gap-2 pt-1 text-[11px] font-mono">
+              <span className="px-2 py-0.5 rounded-md bg-white/10 text-white/90">✓ Dynamic Dispatch</span>
+              <span className="px-2 py-0.5 rounded-md bg-white/10 text-white/90">✓ super & this Chaining</span>
+              <span className="px-2 py-0.5 rounded-md bg-white/10 text-white/90">✓ Interface Inheritance</span>
+              <span className="px-2 py-0.5 rounded-md bg-white/10 text-white/90">✓ Call Stack Traces</span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={() => navigate("/imp-questions/oopj")}
+              className="h-10 px-5 rounded-xl bg-[#D6E85D] hover:bg-[#c8dc4e] text-[#183F36] font-black text-xs shadow-md shadow-[#D6E85D]/20 flex items-center gap-2 transition-all active:scale-95 cursor-pointer font-display"
+            >
+              <BookOpen className="h-4 w-4" />
+              <span>Open OOPJ Question Bank</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* ── TOP SUBJECT CARDS GRID matching Screenshot 3 ── */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+        {/* Card 0: OOPJ Java ✨ */}
+        <div className="bg-card border-2 border-primary/40 rounded-2xl p-5 shadow-sm space-y-4 hover:border-primary transition-all relative">
+          <div className="absolute top-3 right-3 px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-600 text-[9px] font-black uppercase font-mono border border-amber-500/20">
+            Remedial Oct 26
+          </div>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="p-2 rounded-xl bg-[#183F36] text-[#D6E85D]">
+                <Coffee className="h-5 w-5" />
+              </div>
+              <div>
+                <h3 className="font-bold text-sm text-foreground flex items-center gap-1.5">
+                  <span>Java (OOPJ)</span>
+                  <Sparkles className="h-3.5 w-3.5 text-amber-500" />
+                </h3>
+                <span className="text-[10px] text-muted-foreground font-mono">C2311C1 · 38 Solved Questions</span>
+              </div>
+            </div>
+
+            <Link 
+              to="/imp-questions/oopj" 
+              className="text-xs text-primary font-semibold hover:underline"
+            >
+              View &gt;
+            </Link>
+          </div>
+
+          <div className="space-y-1.5 pt-1 text-xs">
+            <div 
+              onClick={() => navigate("/imp-questions/oopj")}
+              className="p-2 rounded-xl border border-border/80 bg-secondary/20 hover:bg-secondary/40 cursor-pointer flex items-center justify-between"
+            >
+              <span className="font-medium text-foreground">5 Output Traces (Part A)</span>
+              <span className="text-[10px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-600 font-bold font-mono">Traces</span>
+            </div>
+            <div 
+              onClick={() => navigate("/imp-questions/oopj")}
+              className="p-2 rounded-xl border border-border/80 bg-secondary/20 hover:bg-secondary/40 cursor-pointer flex items-center justify-between"
+            >
+              <span className="font-medium text-foreground">15 Programs (Part B)</span>
+              <span className="text-[10px] px-1.5 py-0.2 rounded bg-indigo-500/20 text-indigo-600 font-bold font-mono">5 Marks</span>
+            </div>
+            <div 
+              onClick={() => navigate("/imp-questions/oopj")}
+              className="p-2 rounded-xl border border-border/80 bg-secondary/20 hover:bg-secondary/40 cursor-pointer flex items-center justify-between"
+            >
+              <span className="font-medium text-foreground">18 Theory Qs (Part C)</span>
+              <span className="text-[10px] px-1.5 py-0.2 rounded bg-orange-500/20 text-orange-600 font-bold font-mono">3 Marks</span>
+            </div>
+          </div>
+        </div>
+
         {/* Card 1: Computer Architecture ✨ */}
         <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-4 hover:border-primary/50 transition-colors">
           <div className="flex items-center justify-between">

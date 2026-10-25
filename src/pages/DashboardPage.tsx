@@ -172,6 +172,15 @@ export default function DashboardPage() {
             >
               <span>Remedials</span>
             </button>
+            <button
+              onClick={() => navigate("/imp-questions/oopj")}
+              className="px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-[#D6E85D] hover:text-[#183F36] text-white font-bold text-xs border border-white/20 flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer font-display"
+              title="Open OOPJ (C2311C1) Solved Master Question Bank"
+            >
+              <BookOpen className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">OOPJ Solved Bank</span>
+              <span className="sm:hidden">OOPJ</span>
+            </button>
           </div>
         </div>
 

@@ -1117,6 +1117,28 @@ export default function MaterialsPage() {
               </span>
             </div>
 
+            {/* High-Yield OOPJ Remedial Question Bank Callout */}
+            <div className="p-3.5 rounded-2xl bg-[#183F36] text-[#E8EDE4] flex flex-col sm:flex-row sm:items-center justify-between gap-3 border border-[#D6E85D]/30 shadow-xs">
+              <div>
+                <span className="text-[10px] font-bold font-mono px-2 py-0.5 rounded bg-[#D6E85D] text-[#183F36] uppercase">
+                  Remedial Paper 1 · Oct 26
+                </span>
+                <h4 className="font-bold text-xs sm:text-sm text-white font-display mt-1">
+                  OOPJ (C2311C1) Solved Master Question Bank
+                </h4>
+                <p className="text-[11px] text-[#A2BAAF]">
+                  Line-by-line output traces, 15 5-mark code programs, 18 3-mark theory proofs & Q1 MCQs.
+                </p>
+              </div>
+              <button
+                onClick={() => navigate("/imp-questions/oopj")}
+                className="h-8 px-3.5 rounded-xl bg-[#D6E85D] text-[#183F36] hover:bg-[#c8dc4e] font-black text-xs flex items-center gap-1.5 transition-all cursor-pointer shrink-0 font-display shadow-xs self-start sm:self-auto"
+              >
+                <BookOpen className="h-3.5 w-3.5" />
+                <span>Open Solved Bank</span>
+              </button>
+            </div>
+
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead className="text-[10px] font-bold text-muted-foreground uppercase border-b border-border bg-secondary/20">

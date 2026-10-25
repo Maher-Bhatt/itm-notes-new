@@ -14,6 +14,7 @@ import NotFound from "./pages/NotFound";
 import ImpQuestionsSubjectsPage from "./pages/ImpQuestionsSubjectsPage";
 import CProgrammingImpQuestionsPage from "./pages/CProgrammingImpQuestionsPage";
 import PythonImpQuestionsPage from "./pages/PythonImpQuestionsPage";
+import OopjImpQuestionsPage from "./pages/OopjImpQuestionsPage";
 import AuthPage from "./pages/AuthPage";
 import LandingPage from "./pages/LandingPage";
 import DashboardPage from "./pages/DashboardPage";
@@ -160,6 +161,9 @@ const App = () => (
                           <Route path="/community" element={<ProtectedRoute><CommunityPage /></ProtectedRoute>} />
                           <Route path="/social" element={<ProtectedRoute><CommunityPage /></ProtectedRoute>} />
                           <Route path="/imp-questions" element={<ProtectedRoute><ImpQuestionsSubjectsPage /></ProtectedRoute>} />
+                          <Route path="/imp-questions/oopj" element={<ProtectedRoute><OopjImpQuestionsPage /></ProtectedRoute>} />
+                          <Route path="/imp-questions/c2311c1" element={<ProtectedRoute><OopjImpQuestionsPage /></ProtectedRoute>} />
+                          <Route path="/imp-questions/java" element={<ProtectedRoute><OopjImpQuestionsPage /></ProtectedRoute>} />
                           <Route path="/imp-questions/c-programming" element={<ProtectedRoute><CProgrammingImpQuestionsPage /></ProtectedRoute>} />
                           <Route path="/imp-questions/python" element={<ProtectedRoute><PythonImpQuestionsPage /></ProtectedRoute>} />
                           <Route path="/imp-questions/:subjectId" element={<ProtectedRoute><SubjectImpQuestionsPage /></ProtectedRoute>} />
