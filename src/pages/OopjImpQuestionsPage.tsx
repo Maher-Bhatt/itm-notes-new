@@ -62,30 +62,24 @@ export default function OopjImpQuestionsPage() {
     "unit2-class-object": true,
     "unit2-constructors": true,
   }));
-
-  const toggleTheoryExpand = (id: string) => {
-    setExpandedTheoryIds((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
-
-  const filteredTheorySections = useMemo(() => {
-    return REMEDIAL_SYLLABUS_SECTIONS.filter((topic) => {
-      const matchesUnit = theoryUnitFilter === "all" || topic.unit === theoryUnitFilter;
-      if (!searchQuery.trim()) return matchesUnit;
-      const q = searchQuery.toLowerCase();
-      const matchesSearch =
-        topic.topicTitle.toLowerCase().includes(q) ||
-        topic.beginnerConcept.toLowerCase().includes(q) ||
-        topic.detailedTheory.toLowerCase().includes(q) ||
-        topic.syllabusKeywords.some((k) => k.toLowerCase().includes(q));
-      return matchesUnit && matchesSearch;
-    });
-  }, [theoryUnitFilter, searchQuery]);
   const [searchQuery, setSearchQuery] = useState("");
   const [revealedOutputs, setRevealedOutputs] = useState<Record<string, boolean>>({});
   const [revealedMcqs, setRevealedMcqs] = useState<Record<number, boolean>>({});
   const [activeTraceStep, setActiveTraceStep] = useState<Record<string, number>>({});
   const [expandedTraps, setExpandedTraps] = useState<Record<string, boolean>>({});
   const [currentlySpeakingId, setCurrentlySpeakingId] = useState<string | null>(null);
+  const [masteredItems, setMasteredItems] = useState<Record<string, boolean>>(() => {
+    try {
+      const saved = localStorage.getItem("itm_oopj_mastered");
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
+
+  const toggleTheoryExpand = (id: string) => {
+    setExpandedTheoryIds((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
 
   const speakQuestion = (id: string, text: string) => {
     if (currentlySpeakingId === id) {
@@ -102,14 +96,20 @@ export default function OopjImpQuestionsPage() {
       });
     }
   };
-  const [masteredItems, setMasteredItems] = useState<Record<string, boolean>>(() => {
-    try {
-      const saved = localStorage.getItem("itm_oopj_mastered");
-      return saved ? JSON.parse(saved) : {};
-    } catch {
-      return {};
-    }
-  });
+
+  const filteredTheorySections = useMemo(() => {
+    return REMEDIAL_SYLLABUS_SECTIONS.filter((topic) => {
+      const matchesUnit = theoryUnitFilter === "all" || topic.unit === theoryUnitFilter;
+      if (!searchQuery.trim()) return matchesUnit;
+      const q = searchQuery.toLowerCase();
+      const matchesSearch =
+        topic.topicTitle.toLowerCase().includes(q) ||
+        topic.beginnerConcept.toLowerCase().includes(q) ||
+        topic.detailedTheory.toLowerCase().includes(q) ||
+        topic.syllabusKeywords.some((k) => k.toLowerCase().includes(q));
+      return matchesUnit && matchesSearch;
+    });
+  }, [theoryUnitFilter, searchQuery]);
 
   // Save mastered items to local storage
   useEffect(() => {
