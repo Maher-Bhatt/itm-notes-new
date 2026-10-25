@@ -45,10 +45,41 @@ import {
 import { openTimetable } from "@/components/GlobalTimetableModal";
 import { AudioNotesPlayer } from "@/components/AudioNotesPlayer";
 import { aiVoice } from "@/utils/aiVoiceEngine";
+import {
+  ZERO_TO_HERO_JAVA_FOUNDATION,
+  REMEDIAL_SYLLABUS_SECTIONS,
+  SyllabusTopicSection,
+} from "@/data/oopjRemedialMasterNotes";
+import { ShareRemedialModal } from "@/components/ShareRemedialModal";
+import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 
 export default function OopjImpQuestionsPage() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<"all" | "partA" | "partB" | "partC" | "partD">("all");
+  const [activeTab, setActiveTab] = useState<"theory" | "all" | "partA" | "partB" | "partC" | "partD">("theory");
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [theoryUnitFilter, setTheoryUnitFilter] = useState<"all" | 2 | 3>("all");
+  const [expandedTheoryIds, setExpandedTheoryIds] = useState<Record<string, boolean>>(() => ({
+    "unit2-class-object": true,
+    "unit2-constructors": true,
+  }));
+
+  const toggleTheoryExpand = (id: string) => {
+    setExpandedTheoryIds((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const filteredTheorySections = useMemo(() => {
+    return REMEDIAL_SYLLABUS_SECTIONS.filter((topic) => {
+      const matchesUnit = theoryUnitFilter === "all" || topic.unit === theoryUnitFilter;
+      if (!searchQuery.trim()) return matchesUnit;
+      const q = searchQuery.toLowerCase();
+      const matchesSearch =
+        topic.topicTitle.toLowerCase().includes(q) ||
+        topic.beginnerConcept.toLowerCase().includes(q) ||
+        topic.detailedTheory.toLowerCase().includes(q) ||
+        topic.syllabusKeywords.some((k) => k.toLowerCase().includes(q));
+      return matchesUnit && matchesSearch;
+    });
+  }, [theoryUnitFilter, searchQuery]);
   const [searchQuery, setSearchQuery] = useState("");
   const [revealedOutputs, setRevealedOutputs] = useState<Record<string, boolean>>({});
   const [revealedMcqs, setRevealedMcqs] = useState<Record<number, boolean>>({});
@@ -93,7 +124,9 @@ export default function OopjImpQuestionsPage() {
   useEffect(() => {
     const syncHash = () => {
       const hash = window.location.hash.toLowerCase();
-      if (hash === "#part-a" || hash === "#parta") setActiveTab("partA");
+      if (hash === "#theory" || hash === "#notes") setActiveTab("theory");
+      else if (hash === "#all") setActiveTab("all");
+      else if (hash === "#part-a" || hash === "#parta") setActiveTab("partA");
       else if (hash === "#part-b" || hash === "#partb") setActiveTab("partB");
       else if (hash === "#part-c" || hash === "#partc") setActiveTab("partC");
       else if (hash === "#part-d" || hash === "#partd") setActiveTab("partD");
@@ -208,6 +241,15 @@ export default function OopjImpQuestionsPage() {
           </button>
 
           <button
+            onClick={() => setIsShareModalOpen(true)}
+            className="h-9 px-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer shadow-md shadow-emerald-600/20 font-display"
+            title="Share Remedial Guide with Classmates"
+          >
+            <Share2 className="h-3.5 w-3.5" />
+            <span>Share Guide</span>
+          </button>
+
+          <button
             onClick={handlePrint}
             className="h-9 px-3.5 rounded-xl bg-[#183F36] text-[#D6E85D] hover:bg-[#12332C] font-black text-xs flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer shadow-md shadow-[#183F36]/20 font-display"
             title="Print or Save as PDF"
@@ -303,7 +345,8 @@ export default function OopjImpQuestionsPage() {
         {/* Navigation Tabs */}
         <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar font-display">
           {[
-            { id: "all", label: "All Sections" },
+            { id: "theory", label: "Zero-to-Hero Notes (Units 2 & 3)" },
+            { id: "all", label: "Full Guide (Theory + All Solved Qs)" },
             { id: "partA", label: "Part A: Predict Output (5)" },
             { id: "partB", label: "Part B: 5-Mark Coding (15)" },
             { id: "partC", label: "Part C: 3-Mark Theory (18)" },
@@ -343,6 +386,224 @@ export default function OopjImpQuestionsPage() {
           )}
         </div>
       </div>
+
+            {/* ─────────────────────────────────────────────────────────────────── */}
+      {/* ZERO-TO-HERO SYLLABUS THEORY NOTES (UNITS 2 & 3)                    */}
+      {/* ─────────────────────────────────────────────────────────────────── */}
+      {(activeTab === "theory" || activeTab === "all") && (
+        <div className="space-y-6">
+          {/* Header & Unit Filter */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-border/80">
+            <div>
+              <h2 className="text-xl font-black text-foreground font-display flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-amber-500" />
+                <span>Zero-to-Hero Syllabus Master Notes</span>
+              </h2>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Complete academic theory designed to guarantee a passing grade even if starting with zero Java knowledge.
+              </p>
+            </div>
+
+            {/* Filter by Unit 2 / Unit 3 */}
+            <div className="flex items-center gap-1.5 shrink-0 bg-secondary/60 p-1 rounded-xl border border-border">
+              <button
+                onClick={() => setTheoryUnitFilter("all")}
+                className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
+                  theoryUnitFilter === "all"
+                    ? "bg-[#183F36] text-[#D6E85D] shadow-xs"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                All Topics ({REMEDIAL_SYLLABUS_SECTIONS.length})
+              </button>
+              <button
+                onClick={() => setTheoryUnitFilter(2)}
+                className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
+                  theoryUnitFilter === 2
+                    ? "bg-[#183F36] text-[#D6E85D] shadow-xs"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                Unit 2: Classes & Methods
+              </button>
+              <button
+                onClick={() => setTheoryUnitFilter(3)}
+                className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
+                  theoryUnitFilter === 3
+                    ? "bg-[#183F36] text-[#D6E85D] shadow-xs"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                Unit 3: Inheritance & Interfaces
+              </button>
+            </div>
+          </div>
+
+          {/* Module 0: Beginner Zero-to-Hero Foundation Card */}
+          <div className="p-5 sm:p-6 rounded-3xl bg-card border border-primary/40 shadow-md space-y-4">
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-bold text-xs">
+                MODULE 0 · FOUNDATION
+              </span>
+              <span className="text-[11px] font-mono text-muted-foreground">
+                Read before proceeding to Units 2 & 3
+              </span>
+            </div>
+            <h3 className="text-lg font-bold text-foreground font-display">
+              {ZERO_TO_HERO_JAVA_FOUNDATION.title}
+            </h3>
+            <p className="text-xs text-muted-foreground">
+              {ZERO_TO_HERO_JAVA_FOUNDATION.subtitle}
+            </p>
+            <div className="prose dark:prose-invert max-w-none text-xs sm:text-sm">
+              <MarkdownRenderer content={ZERO_TO_HERO_JAVA_FOUNDATION.content} />
+            </div>
+          </div>
+
+          {/* Render All Theory Topics */}
+          <div className="space-y-5">
+            {filteredTheorySections.map((topic) => {
+              const isExpanded = expandedTheoryIds[topic.id] ?? false;
+              return (
+                <div
+                  key={topic.id}
+                  className="rounded-3xl border border-border bg-card shadow-sm hover:border-primary/40 transition-all overflow-hidden"
+                >
+                  {/* Topic Accordion Header */}
+                  <div
+                    onClick={() => toggleTheoryExpand(topic.id)}
+                    className="p-4 sm:p-5 flex items-start justify-between gap-4 cursor-pointer hover:bg-secondary/30 transition-colors"
+                  >
+                    <div className="space-y-1.5 flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="px-2 py-0.5 rounded-md bg-[#183F36] text-[#D6E85D] font-mono font-bold text-[10px]">
+                          Unit {topic.unit}
+                        </span>
+                        <span className="px-2 py-0.5 rounded-md bg-secondary text-foreground font-semibold text-[10px]">
+                          Weight: {topic.examMarksWeightage}
+                        </span>
+                        <div className="flex items-center gap-1 flex-wrap">
+                          {topic.syllabusKeywords.map((k, ki) => (
+                            <span key={ki} className="text-[10px] text-muted-foreground/80 font-mono">
+                              #{k}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      <h3 className="font-bold text-base sm:text-lg text-foreground font-display">
+                        {topic.topicTitle}
+                      </h3>
+                      <p className="text-xs text-muted-foreground line-clamp-2">
+                        {topic.beginnerConcept}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0 pt-1">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          speakQuestion(topic.id, `${topic.topicTitle}. ${topic.beginnerConcept}. ${topic.detailedTheory}`);
+                        }}
+                        className={`p-2 rounded-xl transition-all cursor-pointer ${
+                          currentlySpeakingId === topic.id
+                            ? "bg-amber-500 text-black animate-pulse"
+                            : "bg-secondary hover:bg-secondary/80 text-muted-foreground hover:text-foreground"
+                        }`}
+                        title="Listen with AI Voice"
+                      >
+                        <Volume2 className="h-4 w-4" />
+                      </button>
+                      <span className="p-1.5 rounded-xl bg-secondary/80 text-muted-foreground">
+                        {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Expanded Theory Body */}
+                  {isExpanded && (
+                    <div className="p-5 sm:p-6 border-t border-border/80 bg-background/50 space-y-6 animate-fade-in">
+                      {/* Beginner Intuition Callout */}
+                      <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-900 dark:text-amber-200 space-y-1">
+                        <p className="font-bold flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
+                          <Sparkles className="h-3.5 w-3.5" />
+                          <span>Beginner Concept (Plain-English Mental Model):</span>
+                        </p>
+                        <p className="leading-relaxed">{topic.beginnerConcept}</p>
+                      </div>
+
+                      {/* Detailed Academic Theory */}
+                      <div className="prose dark:prose-invert max-w-none text-xs sm:text-sm">
+                        <MarkdownRenderer content={topic.detailedTheory} />
+                      </div>
+
+                      {/* Code Sample with Copy */}
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between text-xs font-semibold text-muted-foreground">
+                          <span className="flex items-center gap-1.5 font-mono">
+                            <Code2 className="h-3.5 w-3.5 text-primary" />
+                            <span>Complete Compilable Java Example</span>
+                          </span>
+                          <button
+                            onClick={() => copyCode(topic.codeSnippet, topic.topicTitle)}
+                            className="px-2.5 py-1 rounded-lg bg-secondary hover:bg-secondary/80 text-foreground font-mono text-[11px] flex items-center gap-1 cursor-pointer"
+                          >
+                            <Copy className="h-3 w-3" />
+                            <span>Copy Code</span>
+                          </button>
+                        </div>
+
+                        <div className="rounded-2xl overflow-hidden border border-border/80 bg-slate-950 text-slate-100 font-mono text-xs p-4 shadow-inner">
+                          <pre className="overflow-x-auto custom-scrollbar whitespace-pre leading-relaxed">
+                            {topic.codeSnippet}
+                          </pre>
+                        </div>
+                      </div>
+
+                      {/* Expected Terminal Output */}
+                      <div className="space-y-1.5">
+                        <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+                          Exact Execution Output (Real Terminal):
+                        </span>
+                        <div className="p-3 rounded-xl bg-secondary/80 border border-border font-mono text-xs text-foreground whitespace-pre-wrap">
+                          {topic.output}
+                        </div>
+                      </div>
+
+                      {/* Common Mistakes & Key Takeaways Grid */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                        <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-xs space-y-2">
+                          <p className="font-bold text-rose-600 dark:text-rose-400 flex items-center gap-1.5">
+                            <AlertTriangle className="h-3.5 w-3.5" />
+                            <span>Common Examiner Traps to Avoid:</span>
+                          </p>
+                          <ul className="space-y-1 list-disc list-inside text-rose-900/90 dark:text-rose-200/90 leading-relaxed">
+                            {topic.commonMistakesToAvoid.map((m, mi) => (
+                              <li key={mi}>{m}</li>
+                            ))}
+                          </ul>
+                        </div>
+
+                        <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-xs space-y-2">
+                          <p className="font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                            <CheckCircle2 className="h-3.5 w-3.5" />
+                            <span>Key Exam Takeaways:</span>
+                          </p>
+                          <ul className="space-y-1 list-disc list-inside text-emerald-900/90 dark:text-emerald-200/90 leading-relaxed">
+                            {topic.keyTakeaways.map((k, ki) => (
+                              <li key={ki}>{k}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* ─────────────────────────────────────────────────────────────────── */}
       {/* SECTION A: PREDICT THE OUTPUT                                      */}

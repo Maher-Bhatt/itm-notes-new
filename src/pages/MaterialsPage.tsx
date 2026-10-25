@@ -67,6 +67,50 @@ export interface SubjectOverviewCard {
 
 const SUBJECT_OVERVIEW_CARDS: SubjectOverviewCard[] = [
   {
+    id: "mat-remedial-oopj",
+    code: "C2311C1 · JAVA",
+    tag: "Remedial Special",
+    tagColor: "bg-amber-500 text-[#183F36] font-bold shadow-xs",
+    title: "OOPJ Units 2 & 3 Remedial Special & Solved Question Bank",
+    subtitle:
+      "Complete Zero-to-Hero theory notes + all 38 solved questions (5 Output traces, 15 5-mark programs, 18 theory questions, & MCQs).",
+    pages: "30 Pages + Theory",
+    fileSize: "Complete Master Guide",
+    pdfUrl: "/imp-questions/oopj",
+    semester: 3,
+    subject: "Object-Oriented Programming with Java",
+    category: "Notes",
+    summary:
+      "Essential high-yield exam package combining complete Units 2 & 3 syllabus theory with the full 30-page Question Bank. Covers Classes, Object references, constructor chaining with this(), method overloading vs overriding, recursion & call stack unwinding, static members, finalize() deprecation, access control matrix, nested/inner classes, multilevel inheritance, super keyword, final keyword padlocks, interfaces, dynamic method dispatch, and abstract class vs interface. Guaranteed to guide any student from zero to a passing score.",
+    formulas: [
+      {
+        title: "Dynamic Method Dispatch",
+        formula: "Parent ref = new Child(); ref.overriddenMethod();",
+        note: "Resolved at runtime by JVM based on actual heap object, not reference type",
+      },
+      {
+        title: "Constructor Chaining Rule",
+        formula: "this(args);  OR  super(args);",
+        note: "Must be the very first statement in constructor; calls bottom-up, executes top-down",
+      },
+      {
+        title: "Interface Method Contract",
+        formula: "public abstract void method();",
+        note: "Subclasses must declare overriding methods as public to avoid weaker privileges",
+      },
+    ],
+    solvedQuestions: [
+      {
+        q: "Q: Why is Dynamic Method Dispatch called runtime polymorphism?",
+        a: "When a superclass reference points to a subclass object in the heap, the JVM resolves which version of an overridden method to execute at runtime by inspecting the actual object's Virtual Method Table (vtable), rather than relying on compile-time static binding.",
+      },
+      {
+        q: "Q: What is the difference between this() and super() in constructor chaining?",
+        a: "this() invokes an overloaded constructor of the same class, whereas super() invokes a constructor of the immediate parent class. Both must be the very first statement in their respective constructor body.",
+      },
+    ],
+  },
+  {
     id: "mat-1",
     code: "C2310C5 · DSA",
     tag: "Core Notes",
@@ -714,6 +758,33 @@ export default function MaterialsPage() {
             </button>
           )}
         </div>
+      </div>
+
+      {/* ── REMEDIAL SPECIAL HERO BANNER ── */}
+      <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#183F36] via-[#1D4A3F] to-[#12332C] text-white border border-[#D6E85D]/40 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#D6E85D] text-[#183F36]">
+              🔥 Remedial Special 2026
+            </span>
+            <span className="text-xs font-mono text-[#D6E85D] font-bold">
+              OOPJ (C2311C1) Units 2 & 3
+            </span>
+          </div>
+          <h2 className="text-base sm:text-lg font-bold text-white font-display">
+            Zero-to-Hero Remedial Master Notes & 30-Page Solved Question Bank
+          </h2>
+          <p className="text-xs text-[#A2BAAF] max-w-2xl leading-relaxed">
+            Designed for students who need to pass: complete syllabus theory from scratch (classes, objects, inheritance, interfaces) combined with all 5 Predict the Output traces, 15 Long Answer 5M programs, 18 Theory 3M proofs, and rapid MCQ revision.
+          </p>
+        </div>
+
+        <Link
+          to="/imp-questions/oopj"
+          className="px-4 py-2.5 rounded-xl bg-[#D6E85D] hover:bg-[#c4d64d] text-[#183F36] font-bold text-xs shrink-0 flex items-center justify-center gap-2 shadow-md transition-all active:scale-95 cursor-pointer font-display"
+        >
+          <span>Open Remedial Master Guide →</span>
+        </Link>
       </div>
 
       {/* ── STATS BAR ── */}

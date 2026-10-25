@@ -19,6 +19,31 @@ export interface StudyMaterial {
 
 export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
   {
+    id: "mat-oopj-remedial-special",
+    title: "OOPJ (C2311C1) Remedial Special: Units 2 & 3 Master Notes & Solved Question Bank",
+    subject: "Object-Oriented Programming with Java",
+    subjectCode: "C2311C1",
+    subjectId: "oopj-101",
+    semester: 3,
+    category: "Notes",
+    fileType: "PDF",
+    fileSize: "Complete Exam Package",
+    pages: "30-Page Question Bank + Full Syllabus Theory",
+    description: "Emergency high-yield exam guide combining complete Units 2 & 3 syllabus theory with fully solved 30-page Question Bank (5 Predict Outputs, 15 Long Answers, 18 Theory, and MCQ Revision). Designed to ensure any student passes even if starting from zero.",
+    topicsCovered: [
+      "Unit 2: Classes, Objects, Methods, this, static, finalize, access modifiers, inner classes",
+      "Unit 3: Inheritance, super, method overriding, final, interfaces, instanceof, dynamic method dispatch",
+      "Part A: 5 Predict the Output programs with step-by-step traces",
+      "Part B: 15 Long Answer 5-mark programming questions with full code & outputs",
+      "Part C: 18 Theory 3-mark questions with definitions, rules & comparison tables",
+      "Part D: High-scoring exam blueprint & rapid MCQ revision table"
+    ],
+    uploadedDate: "Oct 2026",
+    downloadUrl: "/imp-questions/oopj",
+    badge: "🔥 REMEDIAL SPECIAL",
+    badgeColor: "bg-amber-500/10 text-amber-600 border-amber-500/30"
+  },
+  {
     "id": "mat-timetable-2026",
     "title": "Official CET-2 & MST Exam Timetable 2026",
     "subject": "All Branches (SOCSET)",
