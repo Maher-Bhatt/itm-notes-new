@@ -29,7 +29,7 @@ import { toast } from "sonner";
 import { getDueCards, getSrsStatistics } from "@/utils/srsEngine";
 import { getActiveStudyPlan, togglePlanTask, StudyPlan } from "@/utils/studyPlannerEngine";
 import { VIVA_SCHEDULE_DATA, TIMETABLE_DATA } from "@/data/timetableData";
-import { FlashcardsModal } from "@/components/FlashcardsModal";
+import { FlashcardsModal, Flashcard } from "@/components/FlashcardsModal";
 
 export default function TodayPage() {
   const navigate = useNavigate();
@@ -121,6 +121,15 @@ export default function TodayPage() {
   const srsStats = useMemo(() => {
     return getSrsStatistics();
   }, [refreshKey]);
+
+  const flashcardDeck: Flashcard[] = useMemo(() => {
+    return (dueCards || []).map((c) => ({
+      id: c.cardId,
+      front: c.question,
+      back: c.answer,
+      category: c.subjectId,
+    }));
+  }, [dueCards]);
 
   // 4. Today's study plan items
   const todayPlanItems = useMemo(() => {
@@ -492,7 +501,12 @@ export default function TodayPage() {
         )}
       </div>
 
-      <FlashcardsModal isOpen={isFlashcardsOpen} onClose={() => setIsFlashcardsOpen(false)} />
+      <FlashcardsModal
+        isOpen={isFlashcardsOpen}
+        onClose={() => setIsFlashcardsOpen(false)}
+        topicTitle="Daily Active Recall SRS Queue"
+        cards={flashcardDeck}
+      />
     </div>
   );
 }

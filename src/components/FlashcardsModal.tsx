@@ -36,12 +36,18 @@ export interface Flashcard {
 interface FlashcardsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  topicTitle: string;
-  cards: Flashcard[];
+  topicTitle?: string;
+  cards?: Flashcard[];
 }
 
-export function FlashcardsModal({ isOpen, onClose, topicTitle, cards }: FlashcardsModalProps) {
-  const [deck, setDeck] = useState<Flashcard[]>(cards);
+export function FlashcardsModal({
+  isOpen,
+  onClose,
+  topicTitle = "Active Recall Flashcards",
+  cards = [],
+}: FlashcardsModalProps) {
+  const safeCards = cards || [];
+  const [deck, setDeck] = useState<Flashcard[]>(safeCards);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [showDueOnly, setShowDueOnly] = useState(false);
@@ -50,17 +56,18 @@ export function FlashcardsModal({ isOpen, onClose, topicTitle, cards }: Flashcar
 
   // Filter deck based on due cards if requested
   const activeDeck = useMemo(() => {
+    if (!deck || deck.length === 0) return [];
     if (!showDueOnly) return deck;
-    const dueCards = deck.filter(c => isCardDue(c.id));
+    const dueCards = deck.filter((c) => isCardDue(c.id));
     return dueCards.length > 0 ? dueCards : deck;
   }, [deck, showDueOnly, refreshTrigger]);
 
   const deckStats = useMemo(() => {
-    return getDeckStats(cards.map(c => c.id));
+    return getDeckStats((cards || []).map((c) => c.id));
   }, [cards, refreshTrigger]);
 
   useEffect(() => {
-    setDeck(cards);
+    setDeck(cards || []);
     setCurrentIndex(0);
     setIsFlipped(false);
   }, [cards, isOpen]);
