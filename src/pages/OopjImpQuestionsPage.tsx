@@ -27,6 +27,7 @@ import {
   EyeOff,
   Calendar,
   Share2,
+  Volume2,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -42,6 +43,8 @@ import {
   TheoryQuestion,
 } from "@/data/oopjQuestionBank";
 import { openTimetable } from "@/components/GlobalTimetableModal";
+import { AudioNotesPlayer } from "@/components/AudioNotesPlayer";
+import { aiVoice } from "@/utils/aiVoiceEngine";
 
 export default function OopjImpQuestionsPage() {
   const navigate = useNavigate();
@@ -51,6 +54,23 @@ export default function OopjImpQuestionsPage() {
   const [revealedMcqs, setRevealedMcqs] = useState<Record<number, boolean>>({});
   const [activeTraceStep, setActiveTraceStep] = useState<Record<string, number>>({});
   const [expandedTraps, setExpandedTraps] = useState<Record<string, boolean>>({});
+  const [currentlySpeakingId, setCurrentlySpeakingId] = useState<string | null>(null);
+
+  const speakQuestion = (id: string, text: string) => {
+    if (currentlySpeakingId === id) {
+      aiVoice.stop();
+      setCurrentlySpeakingId(null);
+      toast.info("Audio playback stopped");
+    } else {
+      aiVoice.speak(text, () => {
+        setCurrentlySpeakingId(null);
+      });
+      setCurrentlySpeakingId(id);
+      toast.success("Reading question with Studio AI Narrator", {
+        description: "Hands-free single AI voice lecture",
+      });
+    }
+  };
   const [masteredItems, setMasteredItems] = useState<Record<string, boolean>>(() => {
     try {
       const saved = localStorage.getItem("itm_oopj_mastered");
@@ -68,6 +88,20 @@ export default function OopjImpQuestionsPage() {
       console.warn("Failed to persist mastered state:", e);
     }
   }, [masteredItems]);
+
+  // Synchronize hash with activeTab (#part-a, #part-b, #part-c, #part-d)
+  useEffect(() => {
+    const syncHash = () => {
+      const hash = window.location.hash.toLowerCase();
+      if (hash === "#part-a" || hash === "#parta") setActiveTab("partA");
+      else if (hash === "#part-b" || hash === "#partb") setActiveTab("partB");
+      else if (hash === "#part-c" || hash === "#partc") setActiveTab("partC");
+      else if (hash === "#part-d" || hash === "#partd") setActiveTab("partD");
+    };
+    syncHash();
+    window.addEventListener("hashchange", syncHash);
+    return () => window.removeEventListener("hashchange", syncHash);
+  }, []);
 
   const toggleMastered = (id: string) => {
     setMasteredItems((prev) => {
@@ -258,6 +292,12 @@ export default function OopjImpQuestionsPage() {
         </div>
       </div>
 
+      {/* ── UNIFIED AI AUDIO LECTURE BAR ── */}
+      <AudioNotesPlayer
+        title="OOPJ Java Master Exam Audio Lecture"
+        textToRead="Welcome to the Object Oriented Programming with Java master audio lecture. In Java, dynamic method dispatch resolves at runtime based on the actual object created on the heap. super must be the very first statement in a constructor. In abstract classes, methods can have default or abstract signatures, while interfaces allow Java to achieve multiple inheritance without diamond ambiguity. Review the 5 output traces, 15 long programs, and 18 theory comparison tables."
+      />
+
       {/* ── SEARCH & SUB-NAVIGATION BAR ── */}
       <div className="p-3 sm:p-4 rounded-2xl bg-card border border-border shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
         {/* Navigation Tabs */}
@@ -359,6 +399,17 @@ export default function OopjImpQuestionsPage() {
                     </div>
 
                     <div className="flex items-center gap-2 shrink-0">
+                      <button
+                        onClick={() => speakQuestion(prog.id, `${prog.title}. Concept: ${prog.concept}. Rule: ${prog.rule}. Output: ${prog.output}`)}
+                        className={`p-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1 ${
+                          currentlySpeakingId === prog.id
+                            ? "bg-amber-500 text-white animate-pulse"
+                            : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                        }`}
+                        title="Listen to this problem"
+                      >
+                        <Volume2 className="h-4 w-4" />
+                      </button>
                       <button
                         onClick={() => copyCode(prog.code, `Program ${prog.programNumber}`)}
                         className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer"
@@ -499,13 +550,26 @@ export default function OopjImpQuestionsPage() {
                       </div>
                     </div>
 
-                    <button
-                      onClick={() => copyCode(q.code, q.title)}
-                      className="px-3 py-1.5 rounded-xl bg-secondary hover:bg-secondary/80 text-foreground font-bold text-xs flex items-center gap-1.5 transition-all border border-border cursor-pointer self-start sm:self-auto"
-                    >
-                      <Copy className="h-3.5 w-3.5" />
-                      <span>Copy Code</span>
-                    </button>
+                    <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
+                      <button
+                        onClick={() => speakQuestion(q.id, `${q.title}. Concept: ${q.concept}. Exam Tip: ${q.examNote}. Viva Trap: ${q.vivaTrap || ''}`)}
+                        className={`p-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 ${
+                          currentlySpeakingId === q.id
+                            ? "bg-amber-500 text-white animate-pulse"
+                            : "text-muted-foreground hover:text-foreground hover:bg-secondary border border-border/80"
+                        }`}
+                        title="Listen to this question"
+                      >
+                        <Volume2 className="h-4 w-4" />
+                      </button>
+                      <button
+                        onClick={() => copyCode(q.code, q.title)}
+                        className="px-3 py-1.5 rounded-xl bg-secondary hover:bg-secondary/80 text-foreground font-bold text-xs flex items-center gap-1.5 transition-all border border-border cursor-pointer"
+                      >
+                        <Copy className="h-3.5 w-3.5" />
+                        <span>Copy Code</span>
+                      </button>
+                    </div>
                   </div>
 
                   {/* Concept Definition (1 mark) */}
@@ -689,6 +753,18 @@ export default function OopjImpQuestionsPage() {
                           </h3>
                         </div>
                       </div>
+
+                      <button
+                        onClick={() => speakQuestion(th.id, `${th.title}. Definition: ${th.definition}. Exam Tip: ${th.examTip}`)}
+                        className={`p-1.5 rounded-lg text-xs font-bold transition-all shrink-0 ${
+                          currentlySpeakingId === th.id
+                            ? "bg-amber-500 text-white animate-pulse"
+                            : "text-muted-foreground hover:text-foreground hover:bg-secondary border border-border/80"
+                        }`}
+                        title="Listen to this answer"
+                      >
+                        <Volume2 className="h-3.5 w-3.5" />
+                      </button>
                     </div>
 
                     {/* Definition */}

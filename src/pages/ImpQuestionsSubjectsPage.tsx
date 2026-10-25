@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { 
   BookOpen, 
@@ -21,7 +21,13 @@ import {
   Flame,
   Search,
   Plus,
-  Eye
+  Eye,
+  Layers,
+  Volume2,
+  Mic,
+  Calendar,
+  Calculator,
+  Check
 } from "lucide-react";
 import { 
   ResponsiveContainer, 
@@ -32,84 +38,248 @@ import {
   Tooltip 
 } from "recharts";
 import { toast } from "sonner";
+import { openTimetable } from "@/components/GlobalTimetableModal";
 
-// Question Bank Activity Chart Data matching Screenshot 3
+// Question Bank Activity Chart Data
 const QUESTION_BANK_TREND_DATA = [
-  { date: "Oct 00", inquiries: 18 },
+  { date: "Oct 01", inquiries: 18 },
   { date: "Oct 08", inquiries: 32 },
   { date: "Oct 16", inquiries: 48 },
-  { date: "Oct 24", inquiries: 38 },
-  { date: "Oct 30", inquiries: 72 },
-  { date: "Nov 10", inquiries: 85 },
+  { date: "Oct 24", inquiries: 64 },
+  { date: "Oct 26", inquiries: 92 },
+  { date: "Nov 02", inquiries: 85 },
+];
+
+interface SubjectCardConfig {
+  id: string;
+  code: string;
+  name: string;
+  shortName: string;
+  badge: string;
+  badgeColor: string;
+  path: string;
+  icon: any;
+  colorScheme: {
+    iconBg: string;
+    iconColor: string;
+    borderHover: string;
+    cardBorder?: string;
+  };
+  description: string;
+  parts: {
+    partA: string;
+    partB: string;
+    partC: string;
+  };
+  highlights: string[];
+}
+
+const MASTER_SUBJECTS: SubjectCardConfig[] = [
+  {
+    id: "oopj",
+    code: "C2311C1",
+    name: "Object-Oriented Programming with Java",
+    shortName: "Java (OOPJ)",
+    badge: "Remedial Oct 26 · 38 Solved Qs",
+    badgeColor: "bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30",
+    path: "/imp-questions/oopj",
+    icon: Coffee,
+    colorScheme: {
+      iconBg: "bg-[#183F36] text-[#D6E85D]",
+      iconColor: "text-[#D6E85D]",
+      borderHover: "hover:border-[#183F36] dark:hover:border-[#D6E85D]/60",
+      cardBorder: "border-primary/40",
+    },
+    description: "Dynamic method dispatch, super/this constructor chaining, interface multiple inheritance, call stacks & Q1 MCQs.",
+    parts: {
+      partA: "5 Output Traces (Part A)",
+      partB: "15 Programs (Part B)",
+      partC: "18 Theory Proofs (Part C)",
+    },
+    highlights: ["Call Stack Traces", "5-Mark Code", "Viva Traps", "Exam Blueprint"],
+  },
+  {
+    id: "dsa",
+    code: "C2310C5",
+    name: "Data Structures and Algorithms",
+    shortName: "Data Structures (DSA)",
+    badge: "Core CS · 38 Solved Qs",
+    badgeColor: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30",
+    path: "/imp-questions/dsa",
+    icon: Database,
+    colorScheme: {
+      iconBg: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
+      iconColor: "text-emerald-500",
+      borderHover: "hover:border-emerald-500/60",
+    },
+    description: "Circular Queue modulo arithmetic, BST recursion traces, AVL LL/RR/LR/RL rotations, Dijkstra, Prim & Kruskal DSU.",
+    parts: {
+      partA: "5 Execution Traces (Part A)",
+      partB: "15 C Programs (Part B)",
+      partC: "18 Comparative Tables (Part C)",
+    },
+    highlights: ["Circular Modulo", "BST Inorder Sort", "AVL Rotations", "Graph MST"],
+  },
+  {
+    id: "ca",
+    code: "C2310C2",
+    name: "Computer Architecture & Organization",
+    shortName: "Architecture (CA)",
+    badge: "Hardware & RTL · 38 Solved Qs",
+    badgeColor: "bg-blue-500/15 text-blue-600 dark:text-blue-400 border-blue-500/30",
+    path: "/imp-questions/ca",
+    icon: Cpu,
+    colorScheme: {
+      iconBg: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
+      iconColor: "text-blue-500",
+      borderHover: "hover:border-blue-500/60",
+    },
+    description: "16-bit Common Bus RTL, Booth signed multiplication, 4-stage pipeline hazards, AMAT cache mapping & DMA cycle stealing.",
+    parts: {
+      partA: "5 RTL Traces (Part A)",
+      partB: "15 Hardware Qs (Part B)",
+      partC: "18 Theory Matrices (Part C)",
+    },
+    highlights: ["Common Bus RTL", "Booth Multiplier", "Pipeline Hazards", "AMAT Cache"],
+  },
+  {
+    id: "dbms",
+    code: "C2311C4",
+    name: "Database Management Systems",
+    shortName: "Database (DBMS)",
+    badge: "Relational & SQL · 38 Solved Qs",
+    badgeColor: "bg-orange-500/15 text-orange-600 dark:text-orange-400 border-orange-500/30",
+    path: "/imp-questions/dbms",
+    icon: Layers,
+    colorScheme: {
+      iconBg: "bg-orange-500/10 text-orange-600 dark:text-orange-400",
+      iconColor: "text-orange-500",
+      borderHover: "hover:border-orange-500/60",
+    },
+    description: "NULL 3-valued logic, BCNF lossless decomposition, Window functions, ACID WAL recovery, PL/SQL Triggers & B+ Trees.",
+    parts: {
+      partA: "5 SQL NULL Traces (Part A)",
+      partB: "15 Design & Queries (Part B)",
+      partC: "18 Comparative Tables (Part C)",
+    },
+    highlights: ["NULL 3-Valued Logic", "BCNF Decomposition", "ACID & WAL", "PL/SQL Triggers"],
+  },
+  {
+    id: "conmp",
+    code: "S2320C1",
+    name: "Computer Oriented Numerical Methods with Python",
+    shortName: "Numerical Python (CONMP)",
+    badge: "Applied Math · 38 Solved Qs",
+    badgeColor: "bg-purple-500/15 text-purple-600 dark:text-purple-400 border-purple-500/30",
+    path: "/imp-questions/conmp",
+    icon: Calculator,
+    colorScheme: {
+      iconBg: "bg-purple-500/10 text-purple-600 dark:text-purple-400",
+      iconColor: "text-purple-500",
+      borderHover: "hover:border-purple-500/60",
+    },
+    description: "Newton-Raphson quadratic trace, RK4 4th-order ODE, Simpson 1/3rd & 3/8th quadrature, Gauss-Seidel diagonal dominance.",
+    parts: {
+      partA: "5 Numerical Traces (Part A)",
+      partB: "15 Python Programs (Part B)",
+      partC: "18 Comparative Tables (Part C)",
+    },
+    highlights: ["Quadratic Trace", "RK4 Solver", "Simpson Quadrature", "Gauss-Seidel"],
+  },
 ];
 
 export default function ImpQuestionsSubjectsPage() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"all" | "exam" | "subject">("all");
-  const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({
-    "ca-q1": true,
-  });
+  const [searchFilter, setSearchFilter] = useState("");
 
-  const toggleCheck = (id: string) => {
-    setCheckedItems((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
+  const filteredSubjects = useMemo(() => {
+    let list = MASTER_SUBJECTS;
+    if (activeTab === "exam") {
+      list = list.filter((s) => s.id === "oopj" || s.id === "dsa" || s.id === "ca");
+    }
+    if (searchFilter.trim()) {
+      const q = searchFilter.toLowerCase();
+      list = list.filter(
+        (s) =>
+          s.name.toLowerCase().includes(q) ||
+          s.code.toLowerCase().includes(q) ||
+          s.shortName.toLowerCase().includes(q) ||
+          s.description.toLowerCase().includes(q)
+      );
+    }
+    return list;
+  }, [activeTab, searchFilter]);
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-[1600px] mx-auto space-y-8 animate-fade-in">
-      {/* ── TOP HEADER SECTION matching Screenshot 3 ── */}
+      {/* ── TOP HEADER SECTION ── */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-border/60">
         <div>
-          <h1 className="text-2xl font-black tracking-tight text-foreground">
-            Important Exam Questions
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-foreground font-display flex items-center gap-2">
+            <span>Important Exam Questions & Solved Banks</span>
+            <Sparkles className="h-5 w-5 text-amber-500" />
           </h1>
-          <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5 font-medium">
-            <span>Academic resources</span>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5 font-medium flex-wrap">
+            <span>Academic Resources</span>
             <span>·</span>
-            <span>Question Banks</span>
+            <span>University Question Banks</span>
             <span>·</span>
             <span>ITM Notes</span>
             <span>·</span>
-            <span className="text-foreground font-semibold">Sem 3</span>
+            <span className="text-foreground font-semibold">Semester 3 (B.Tech CSE)</span>
+            <span>·</span>
+            <span className="text-emerald-600 dark:text-emerald-400 font-bold">190 Master Solved Qs</span>
           </div>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
-          {/* Mode Filter Tabs matching Screenshot 3 */}
+          {/* Mode Filter Tabs */}
           <div className="flex rounded-xl bg-secondary p-1 border border-border text-xs font-semibold">
             <button
               onClick={() => setActiveTab("all")}
-              className={`px-3 py-1 rounded-lg transition-all ${
+              className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
                 activeTab === "all" ? "bg-background text-foreground shadow-xs font-bold" : "text-muted-foreground"
               }`}
             >
-              All Courses
+              All Subjects
             </button>
             <button
               onClick={() => setActiveTab("exam")}
-              className={`px-3 py-1 rounded-lg transition-all flex items-center gap-1 ${
+              className={`px-3 py-1 rounded-lg transition-all flex items-center gap-1 cursor-pointer ${
                 activeTab === "exam" ? "bg-background text-foreground shadow-xs font-bold" : "text-muted-foreground"
               }`}
             >
               <Flame className="h-3.5 w-3.5 text-amber-500" />
-              <span>Exam Banks</span>
+              <span>Remedial Banks</span>
             </button>
             <button
               onClick={() => setActiveTab("subject")}
-              className={`px-3 py-1 rounded-lg transition-all flex items-center gap-1 ${
+              className={`px-3 py-1 rounded-lg transition-all flex items-center gap-1 cursor-pointer ${
                 activeTab === "subject" ? "bg-background text-foreground shadow-xs font-bold" : "text-muted-foreground"
               }`}
             >
               <Folder className="h-3.5 w-3.5" />
-              <span>Subject Wise</span>
+              <span>Core Modules</span>
             </button>
           </div>
 
+          {/* Timetable Trigger */}
+          <button
+            onClick={() => openTimetable("remedial")}
+            className="h-9 px-3.5 rounded-xl bg-secondary hover:bg-secondary/80 text-foreground font-bold text-xs border border-border flex items-center gap-1.5 transition-all active:scale-95 shrink-0 cursor-pointer"
+          >
+            <Calendar className="h-3.5 w-3.5 text-primary" />
+            <span>Timetables</span>
+          </button>
+
+          {/* Practice Quiz Trigger */}
           <button
             onClick={() => {
               navigate("/quiz");
               toast.info("Navigating to Active Recall Quiz");
             }}
-            className="h-9 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md shadow-indigo-600/20 flex items-center gap-1.5 transition-all active:scale-95 shrink-0"
+            className="h-9 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md shadow-indigo-600/20 flex items-center gap-1.5 transition-all active:scale-95 shrink-0 cursor-pointer"
           >
             <Plus className="h-3.5 w-3.5" />
             <span>Practice Quiz</span>
@@ -117,331 +287,267 @@ export default function ImpQuestionsSubjectsPage() {
         </div>
       </div>
 
-      {/* ── FEATURED REMEDIAL SOLVED MASTER QUESTION BANK ── */}
-      <div className="p-5 sm:p-6 rounded-3xl bg-gradient-to-r from-[#183F36] via-[#1D4A3F] to-[#12332C] text-white shadow-xl border border-[#D6E85D]/40 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-80 h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#D6E85D]/20 via-transparent to-transparent pointer-events-none" />
+      {/* ── FEATURED HERO: 5-SUBJECT MASTER UNIVERSITY SOLVED BANKS ── */}
+      <div className="p-5 sm:p-7 rounded-3xl bg-gradient-to-r from-[#183F36] via-[#1D4A3F] to-[#12332C] text-white shadow-xl border border-[#D6E85D]/40 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#D6E85D]/20 via-transparent to-transparent pointer-events-none" />
 
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
-          <div className="space-y-2">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
+          <div className="space-y-3 max-w-3xl">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#D6E85D] text-[#183F36] shadow-xs flex items-center gap-1.5">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#D6E85D] text-[#183F36] shadow-xs flex items-center gap-1.5 font-display">
                 <Flame className="h-3 w-3 fill-[#183F36]" />
-                Remedial Exam Master Bank
+                University Model Solved Banks
               </span>
               <span className="text-xs font-mono font-bold text-[#D6E85D]">
-                C2311C1 · 38 Fully Solved Questions
+                190 Master Questions · 38 Solved Per Subject
+              </span>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white/10 text-white border border-white/20 flex items-center gap-1">
+                <Mic className="h-3 w-3 text-[#D6E85D]" />
+                Single Studio AI Voice Narrator
               </span>
             </div>
 
-            <h2 className="text-lg sm:text-xl font-black text-white font-display">
-              OOPJ Solved Question Bank (Object-Oriented Programming with Java)
+            <h2 className="text-xl sm:text-2xl font-black text-white font-display tracking-tight">
+              Complete Model Solutions for All 5 Semester 3 Subjects
             </h2>
-            <p className="text-xs text-[#A2BAAF] leading-relaxed max-w-2xl">
-              Complete step-by-step code, execution outputs, and exam strategies: 5 Predict Output with line-by-line traces, 15 5-mark programming questions, 18 3-mark theory proofs, and Q1 MCQ master revision.
+            <p className="text-xs sm:text-sm text-[#A2BAAF] leading-relaxed">
+              Every subject includes: <strong>Part A</strong> (5 Predict Output dry runs with line-by-line trace tables), <strong>Part B</strong> (15 5-mark complete code implementations with exact execution outputs & viva traps), <strong>Part C</strong> (18 3-mark comparative theory matrices), and <strong>Part D</strong> (University exam strategy, fatal mistakes & MCQs).
             </p>
 
-            <div className="flex flex-wrap items-center gap-2 pt-1 text-[11px] font-mono">
-              <span className="px-2 py-0.5 rounded-md bg-white/10 text-white/90">✓ Dynamic Dispatch</span>
-              <span className="px-2 py-0.5 rounded-md bg-white/10 text-white/90">✓ super & this Chaining</span>
-              <span className="px-2 py-0.5 rounded-md bg-white/10 text-white/90">✓ Interface Inheritance</span>
-              <span className="px-2 py-0.5 rounded-md bg-white/10 text-white/90">✓ Call Stack Traces</span>
+            {/* Quick subject jump pills */}
+            <div className="flex flex-wrap items-center gap-2 pt-1 text-xs">
+              <button
+                onClick={() => navigate("/imp-questions/oopj")}
+                className="px-3 py-1 rounded-xl bg-white/15 hover:bg-[#D6E85D] hover:text-[#183F36] text-white font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+              >
+                <span>Java (OOPJ)</span>
+                <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-500/30 text-amber-200">Oct 26</span>
+              </button>
+              <button
+                onClick={() => navigate("/imp-questions/dsa")}
+                className="px-3 py-1 rounded-xl bg-white/15 hover:bg-[#D6E85D] hover:text-[#183F36] text-white font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+              >
+                <span>DSA (C2310C5)</span>
+              </button>
+              <button
+                onClick={() => navigate("/imp-questions/ca")}
+                className="px-3 py-1 rounded-xl bg-white/15 hover:bg-[#D6E85D] hover:text-[#183F36] text-white font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+              >
+                <span>Architecture (CA)</span>
+              </button>
+              <button
+                onClick={() => navigate("/imp-questions/dbms")}
+                className="px-3 py-1 rounded-xl bg-white/15 hover:bg-[#D6E85D] hover:text-[#183F36] text-white font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+              >
+                <span>DBMS (C2311C4)</span>
+              </button>
+              <button
+                onClick={() => navigate("/imp-questions/conmp")}
+                className="px-3 py-1 rounded-xl bg-white/15 hover:bg-[#D6E85D] hover:text-[#183F36] text-white font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+              >
+                <span>Numerical Python (CONMP)</span>
+              </button>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex flex-col sm:flex-row lg:flex-col items-start lg:items-end gap-3 shrink-0">
             <button
               onClick={() => navigate("/imp-questions/oopj")}
-              className="h-10 px-5 rounded-xl bg-[#D6E85D] hover:bg-[#c8dc4e] text-[#183F36] font-black text-xs shadow-md shadow-[#D6E85D]/20 flex items-center gap-2 transition-all active:scale-95 cursor-pointer font-display"
+              className="h-11 px-5 rounded-2xl bg-[#D6E85D] hover:bg-[#c8dc4e] text-[#183F36] font-black text-xs shadow-lg shadow-[#D6E85D]/20 flex items-center gap-2 transition-all active:scale-95 cursor-pointer font-display"
             >
               <BookOpen className="h-4 w-4" />
-              <span>Open OOPJ Question Bank</span>
+              <span>Open Remedial Bank (OOPJ)</span>
             </button>
+            <span className="text-[11px] text-[#A2BAAF] font-medium">
+              Next paper: Oct 26, 2026 · 10:10 AM
+            </span>
           </div>
         </div>
       </div>
 
-      {/* ── TOP SUBJECT CARDS GRID matching Screenshot 3 ── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-        {/* Card 0: OOPJ Java ✨ */}
-        <div className="bg-card border-2 border-primary/40 rounded-2xl p-5 shadow-sm space-y-4 hover:border-primary transition-all relative">
-          <div className="absolute top-3 right-3 px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-600 text-[9px] font-black uppercase font-mono border border-amber-500/20">
-            Remedial Oct 26
-          </div>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="p-2 rounded-xl bg-[#183F36] text-[#D6E85D]">
-                <Coffee className="h-5 w-5" />
-              </div>
-              <div>
-                <h3 className="font-bold text-sm text-foreground flex items-center gap-1.5">
-                  <span>Java (OOPJ)</span>
-                  <Sparkles className="h-3.5 w-3.5 text-amber-500" />
-                </h3>
-                <span className="text-[10px] text-muted-foreground font-mono">C2311C1 · 38 Solved Questions</span>
-              </div>
-            </div>
-
-            <Link 
-              to="/imp-questions/oopj" 
-              className="text-xs text-primary font-semibold hover:underline"
-            >
-              View &gt;
-            </Link>
-          </div>
-
-          <div className="space-y-1.5 pt-1 text-xs">
-            <div 
-              onClick={() => navigate("/imp-questions/oopj")}
-              className="p-2 rounded-xl border border-border/80 bg-secondary/20 hover:bg-secondary/40 cursor-pointer flex items-center justify-between"
-            >
-              <span className="font-medium text-foreground">5 Output Traces (Part A)</span>
-              <span className="text-[10px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-600 font-bold font-mono">Traces</span>
-            </div>
-            <div 
-              onClick={() => navigate("/imp-questions/oopj")}
-              className="p-2 rounded-xl border border-border/80 bg-secondary/20 hover:bg-secondary/40 cursor-pointer flex items-center justify-between"
-            >
-              <span className="font-medium text-foreground">15 Programs (Part B)</span>
-              <span className="text-[10px] px-1.5 py-0.2 rounded bg-indigo-500/20 text-indigo-600 font-bold font-mono">5 Marks</span>
-            </div>
-            <div 
-              onClick={() => navigate("/imp-questions/oopj")}
-              className="p-2 rounded-xl border border-border/80 bg-secondary/20 hover:bg-secondary/40 cursor-pointer flex items-center justify-between"
-            >
-              <span className="font-medium text-foreground">18 Theory Qs (Part C)</span>
-              <span className="text-[10px] px-1.5 py-0.2 rounded bg-orange-500/20 text-orange-600 font-bold font-mono">3 Marks</span>
-            </div>
-          </div>
+      {/* ── SEARCH & FILTER BAR ── */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="relative w-full sm:w-96">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <input
+            type="text"
+            placeholder="Search subjects, codes, or topics..."
+            value={searchFilter}
+            onChange={(e) => setSearchFilter(e.target.value)}
+            className="w-full h-10 pl-10 pr-4 rounded-xl border border-border bg-card text-foreground placeholder:text-muted-foreground text-xs focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all"
+          />
         </div>
 
-        {/* Card 1: Computer Architecture ✨ */}
-        <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-4 hover:border-primary/50 transition-colors">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="p-2 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400">
-                <Cpu className="h-5 w-5" />
-              </div>
-              <div>
-                <h3 className="font-bold text-sm text-foreground flex items-center gap-1.5">
-                  <span>Computer Architecture</span>
-                  <Sparkles className="h-3.5 w-3.5 text-amber-500" />
-                </h3>
-                <span className="text-[10px] text-muted-foreground font-mono">CS401 · 46 Solved Questions</span>
-              </div>
-            </div>
-
-            <Link 
-              to="/imp-questions/ca-101" 
-              className="text-xs text-primary font-semibold hover:underline"
-            >
-              View All &gt;
-            </Link>
-          </div>
-
-          {/* Checklist Items matching Screenshot 3 */}
-          <div className="space-y-2 pt-1 text-xs">
-            <div 
-              onClick={() => toggleCheck("ca-q1")}
-              className="p-2.5 rounded-xl border border-border/80 bg-secondary/20 hover:bg-secondary/40 cursor-pointer flex items-center justify-between"
-            >
-              <div className="flex items-center gap-2">
-                <input 
-                  type="checkbox" 
-                  checked={checkedItems["ca-q1"] || false} 
-                  onChange={() => toggleCheck("ca-q1")}
-                  className="rounded text-primary focus:ring-0" 
-                />
-                <span className="font-medium text-foreground">Current Exam Questions (Units 1–6)</span>
-              </div>
-              <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
-            </div>
-
-            <div 
-              onClick={() => navigate("/imp-questions/ca-101")}
-              className="p-2.5 rounded-xl border border-border/80 bg-secondary/20 hover:bg-secondary/40 cursor-pointer flex items-center justify-between"
-            >
-              <div className="flex items-center gap-2">
-                <span className="w-4 h-4 rounded border border-border inline-block" />
-                <span className="font-medium text-foreground">L1 Computer Architecture (3016)</span>
-              </div>
-              <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
-            </div>
-
-            <div 
-              onClick={() => navigate("/imp-questions/ca-101")}
-              className="p-2.5 rounded-xl border border-border/80 bg-secondary/20 hover:bg-secondary/40 cursor-pointer flex items-center justify-between"
-            >
-              <div className="flex items-center gap-2">
-                <span className="w-4 h-4 rounded border border-border inline-block" />
-                <span className="font-medium text-foreground">Certain Exam Management (Net 2026)</span>
-              </div>
-              <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
-            </div>
-          </div>
-        </div>
-
-        {/* Card 2: Data Structures ✨ */}
-        <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-4 hover:border-primary/50 transition-colors">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-                <Database className="h-5 w-5" />
-              </div>
-              <div>
-                <h3 className="font-bold text-sm text-foreground flex items-center gap-1.5">
-                  <span>Data Structures</span>
-                  <Sparkles className="h-3.5 w-3.5 text-amber-500" />
-                </h3>
-                <span className="text-[10px] text-muted-foreground font-mono">DSA301 · Complexity & Code</span>
-              </div>
-            </div>
-
-            <Link 
-              to="/imp-questions/sem3-dsa" 
-              className="text-xs text-primary font-semibold hover:underline"
-            >
-              View All &gt;
-            </Link>
-          </div>
-
-          {/* Table Metrics matching Screenshot 3 */}
-          <div className="rounded-xl border border-border/80 bg-secondary/20 p-2.5 text-xs">
-            <div className="grid grid-cols-5 text-[10px] font-bold text-muted-foreground uppercase pb-1.5 border-b border-border/60">
-              <span>Date</span>
-              <span>Action</span>
-              <span>Stock</span>
-              <span>Link</span>
-              <span className="text-right">49</span>
-            </div>
-            <div className="grid grid-cols-5 py-2 items-center text-[11px] font-medium border-b border-border/40">
-              <span className="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-600 font-bold font-mono text-[10px] inline-block w-fit">~90</span>
-              <span>0</span>
-              <span className="font-mono">13</span>
-              <Eye className="h-3.5 w-3.5 text-muted-foreground" />
-              <ChevronRight className="h-3.5 w-3.5 text-muted-foreground ml-auto" />
-            </div>
-            <div className="grid grid-cols-5 py-2 items-center text-[11px] font-medium">
-              <span className="px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-600 font-bold font-mono text-[10px] inline-block w-fit">6</span>
-              <span>0</span>
-              <span className="font-mono">13</span>
-              <span className="text-muted-foreground">-</span>
-              <Eye className="h-3.5 w-3.5 text-muted-foreground ml-auto" />
-            </div>
-          </div>
-        </div>
-
-        {/* Card 3: Database Management Systems ✨ */}
-        <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-4 hover:border-primary/50 transition-colors">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="p-2 rounded-xl bg-orange-500/10 text-orange-600 dark:text-orange-400">
-                <Server className="h-5 w-5" />
-              </div>
-              <div>
-                <h3 className="font-bold text-sm text-foreground flex items-center gap-1.5">
-                  <span>Database Management</span>
-                  <Sparkles className="h-3.5 w-3.5 text-amber-500" />
-                </h3>
-                <span className="text-[10px] text-muted-foreground font-mono">DBMS302 · SQL & Normalization</span>
-              </div>
-            </div>
-
-            <Link 
-              to="/imp-questions/sem3-dbms" 
-              className="text-xs text-primary font-semibold hover:underline"
-            >
-              View All &gt;
-            </Link>
-          </div>
-
-          {/* Table Metrics matching Screenshot 3 */}
-          <div className="rounded-xl border border-border/80 bg-secondary/20 p-2.5 text-xs">
-            <div className="grid grid-cols-5 text-[10px] font-bold text-muted-foreground uppercase pb-1.5 border-b border-border/60">
-              <span>Owner</span>
-              <span>Section</span>
-              <span>Stock</span>
-              <span>Link</span>
-              <span className="text-right">46</span>
-            </div>
-            <div className="grid grid-cols-5 py-2 items-center text-[11px] font-medium border-b border-border/40">
-              <span className="px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-600 font-bold font-mono text-[10px] inline-block w-fit">-10.6</span>
-              <span>0</span>
-              <span className="text-muted-foreground">-</span>
-              <span className="text-[10px] font-mono text-muted-foreground">126 KB</span>
-              <ChevronRight className="h-3.5 w-3.5 text-muted-foreground ml-auto" />
-            </div>
-            <div className="grid grid-cols-5 py-2 items-center text-[11px] font-medium">
-              <span className="px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-600 font-bold font-mono text-[10px] inline-block w-fit">10</span>
-              <span>0</span>
-              <span className="text-muted-foreground">-</span>
-              <span className="text-[10px] font-mono text-muted-foreground">126 KB</span>
-              <ChevronRight className="h-3.5 w-3.5 text-muted-foreground ml-auto" />
-            </div>
-          </div>
+        <div className="text-xs text-muted-foreground self-end sm:self-auto font-medium">
+          Showing <span className="font-bold text-foreground">{filteredSubjects.length}</span> of {MASTER_SUBJECTS.length} subjects
         </div>
       </div>
 
-      {/* ── LOWER SECTION: EXAMINATION MATERIALS TREE + DBMS CHART + 5x2 RESOURCE MATRIX matching Screenshot 3 ── */}
+      {/* ── 5 MASTER SUBJECT CARDS GRID ── */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5">
+        {filteredSubjects.map((sub) => {
+          const IconComponent = sub.icon;
+          return (
+            <div
+              key={sub.id}
+              className={`bg-card border ${sub.colorScheme.cardBorder || "border-border"} rounded-2xl p-5 shadow-xs flex flex-col justify-between space-y-4 ${sub.colorScheme.borderHover} transition-all relative group`}
+            >
+              <div className="space-y-3.5">
+                {/* Header: Icon + Code + Badge */}
+                <div className="flex items-start justify-between gap-2">
+                  <div className={`p-2.5 rounded-xl ${sub.colorScheme.iconBg}`}>
+                    <IconComponent className="h-5 w-5" />
+                  </div>
+                  <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold font-mono border ${sub.badgeColor}`}>
+                    {sub.code}
+                  </span>
+                </div>
+
+                {/* Title & Description */}
+                <div>
+                  <h3 className="font-bold text-sm text-foreground group-hover:text-primary transition-colors flex items-center justify-between">
+                    <span>{sub.shortName}</span>
+                    <Sparkles className="h-3 w-3 text-amber-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </h3>
+                  <span className="text-[10px] text-muted-foreground font-mono block mt-0.5">
+                    38 Solved Questions · All 6 Units
+                  </span>
+                  <p className="text-[11px] text-muted-foreground leading-relaxed mt-2 line-clamp-3">
+                    {sub.description}
+                  </p>
+                </div>
+
+                {/* Part Links */}
+                <div className="space-y-1.5 pt-1 text-xs">
+                  <Link
+                    to={`${sub.path}#part-a`}
+                    className="p-2 rounded-xl border border-border/70 bg-secondary/20 hover:bg-secondary/60 flex items-center justify-between transition-colors cursor-pointer"
+                  >
+                    <span className="font-medium text-foreground text-[11px]">{sub.parts.partA}</span>
+                    <span className="text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold font-mono">
+                      Traces
+                    </span>
+                  </Link>
+
+                  <Link
+                    to={`${sub.path}#part-b`}
+                    className="p-2 rounded-xl border border-border/70 bg-secondary/20 hover:bg-secondary/60 flex items-center justify-between transition-colors cursor-pointer"
+                  >
+                    <span className="font-medium text-foreground text-[11px]">{sub.parts.partB}</span>
+                    <span className="text-[9px] px-1.5 py-0.2 rounded bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 font-bold font-mono">
+                      5 Marks
+                    </span>
+                  </Link>
+
+                  <Link
+                    to={`${sub.path}#part-c`}
+                    className="p-2 rounded-xl border border-border/70 bg-secondary/20 hover:bg-secondary/60 flex items-center justify-between transition-colors cursor-pointer"
+                  >
+                    <span className="font-medium text-foreground text-[11px]">{sub.parts.partC}</span>
+                    <span className="text-[9px] px-1.5 py-0.2 rounded bg-orange-500/20 text-orange-600 dark:text-orange-400 font-bold font-mono">
+                      3 Marks
+                    </span>
+                  </Link>
+                </div>
+              </div>
+
+              {/* Action Button */}
+              <div className="pt-2 border-t border-border/60">
+                <button
+                  onClick={() => navigate(sub.path)}
+                  className="w-full h-9 rounded-xl bg-secondary hover:bg-primary hover:text-primary-foreground text-foreground font-bold text-xs flex items-center justify-center gap-1.5 transition-all active:scale-98 cursor-pointer"
+                >
+                  <BookOpen className="h-3.5 w-3.5" />
+                  <span>Open 38 Solved Qs</span>
+                  <ChevronRight className="h-3.5 w-3.5 ml-auto opacity-70" />
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* ── LOWER SECTION: DIRECTORY + DBMS/EXAM TRENDS + METRIC PACK ── */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Column 1: Examination Materials Directory Tree */}
-        <div className="lg:col-span-3 bg-card border border-border rounded-2xl p-5 shadow-sm space-y-4">
-          <h3 className="font-bold text-sm text-foreground">Examination Materials</h3>
+        <div className="lg:col-span-3 bg-card border border-border rounded-2xl p-5 shadow-xs space-y-4">
+          <div className="flex items-center justify-between pb-1 border-b border-border/60">
+            <h3 className="font-bold text-sm text-foreground">Examination Materials</h3>
+            <span className="text-[10px] text-muted-foreground font-mono">Schedules & Notes</span>
+          </div>
 
           <div className="space-y-1.5 text-xs font-semibold">
-            <button className="w-full p-2.5 rounded-xl bg-blue-600 text-white font-bold flex items-center justify-between text-left shadow-md shadow-blue-600/20">
+            <button
+              onClick={() => navigate("/materials")}
+              className="w-full p-2.5 rounded-xl bg-[#183F36] text-[#D6E85D] font-bold flex items-center justify-between text-left shadow-xs cursor-pointer hover:bg-[#12332C] transition-all"
+            >
               <span className="flex items-center gap-2">
                 <CheckCircle className="h-4 w-4" />
-                <span>Student Materials</span>
+                <span>Student Notes & Materials</span>
               </span>
               <ChevronRight className="h-3.5 w-3.5 opacity-70" />
             </button>
 
             <button 
-              onClick={() => toast.info("Opening Attendance study materials...")}
-              className="w-full p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary/60 flex items-center justify-between text-left transition-colors"
+              onClick={() => openTimetable("remedial")}
+              className="w-full p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary/60 flex items-center justify-between text-left transition-colors cursor-pointer"
             >
               <span className="flex items-center gap-2">
-                <FileText className="h-4 w-4" />
-                <span>Attendance Materials</span>
+                <Calendar className="h-4 w-4 text-amber-500" />
+                <span>Remedial Timetable (Oct 26)</span>
+              </span>
+              <ChevronRight className="h-3.5 w-3.5 opacity-50" />
+            </button>
+
+            <button 
+              onClick={() => openTimetable("viva")}
+              className="w-full p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary/60 flex items-center justify-between text-left transition-colors cursor-pointer"
+            >
+              <span className="flex items-center gap-2">
+                <FileCheck className="h-4 w-4 text-emerald-500" />
+                <span>Practical Viva Timetable</span>
+              </span>
+              <ChevronRight className="h-3.5 w-3.5 opacity-50" />
+            </button>
+
+            <button 
+              onClick={() => openTimetable("mst")}
+              className="w-full p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary/60 flex items-center justify-between text-left transition-colors cursor-pointer"
+            >
+              <span className="flex items-center gap-2">
+                <FileText className="h-4 w-4 text-blue-500" />
+                <span>MST Mid-Semester Archive</span>
               </span>
               <ChevronRight className="h-3.5 w-3.5 opacity-50" />
             </button>
 
             <button 
               onClick={() => navigate("/calculator")}
-              className="w-full p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary/60 flex items-center justify-between text-left transition-colors"
+              className="w-full p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary/60 flex items-center justify-between text-left transition-colors cursor-pointer"
             >
               <span className="flex items-center gap-2">
-                <Folder className="h-4 w-4" />
-                <span>Attendance Tracker</span>
-              </span>
-              <ChevronRight className="h-3.5 w-3.5 opacity-50" />
-            </button>
-
-            <button 
-              onClick={() => navigate("/community")}
-              className="w-full p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary/60 flex items-center justify-between text-left transition-colors"
-            >
-              <span className="flex items-center gap-2">
-                <Folder className="h-4 w-4" />
-                <span>Community Topics</span>
+                <Calculator className="h-4 w-4 text-purple-500" />
+                <span>CGPA / Attendance Tracker</span>
               </span>
               <ChevronRight className="h-3.5 w-3.5 opacity-50" />
             </button>
           </div>
         </div>
 
-        {/* Column 2: Database Management Systems Line Chart */}
-        <div className="lg:col-span-5 bg-card border border-border rounded-2xl p-5 shadow-sm flex flex-col justify-between">
+        {/* Column 2: Database Management & Student Inquiries Line Chart */}
+        <div className="lg:col-span-5 bg-card border border-border rounded-2xl p-5 shadow-xs flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-1">
-              <h3 className="font-bold text-sm text-foreground">Database Management Systems</h3>
-              <span className="text-xs text-primary font-semibold hover:underline cursor-pointer">
-                View All &gt;
+              <h3 className="font-bold text-sm text-foreground">Solved Question Inquiries & Trends</h3>
+              <span 
+                onClick={() => navigate("/imp-questions/oopj")}
+                className="text-xs text-primary font-semibold hover:underline cursor-pointer"
+              >
+                View OOPJ &gt;
               </span>
             </div>
             <p className="text-[11px] text-muted-foreground">
-              Year Date Inquiries & Exam Question Analysis
+              Peak remedial exam revision activity across Semester 3 subjects
             </p>
 
             <div className="h-44 w-full pt-3">
@@ -471,77 +577,87 @@ export default function ImpQuestionsSubjectsPage() {
           </div>
 
           <div className="pt-3 border-t border-border/60 flex items-center justify-between text-xs">
-            <span className="text-muted-foreground">Question Bank Inquiries: 0 %</span>
-            <span className="text-primary hover:underline font-semibold flex items-center gap-1 cursor-pointer">
-              <span>Core Overviews</span>
+            <span className="text-muted-foreground">Solved Bank Coverage: 100 % (190 Questions)</span>
+            <span 
+              onClick={() => navigate("/materials")}
+              className="text-primary hover:underline font-semibold flex items-center gap-1 cursor-pointer"
+            >
+              <span>Notes Overviews</span>
               <ExternalLink className="h-3 w-3" />
             </span>
           </div>
         </div>
 
-        {/* Column 3: Downloadable Resources (5x2 Metric Grid) */}
-        <div className="lg:col-span-4 bg-card border border-border rounded-2xl p-5 shadow-sm flex flex-col justify-between">
+        {/* Column 3: Downloadable Resources & Studio Voice Hero Card */}
+        <div className="lg:col-span-4 bg-card border border-border rounded-2xl p-5 shadow-xs flex flex-col justify-between">
           <div>
-            <h3 className="font-bold text-sm text-foreground mb-1">Downloadable Resources</h3>
+            <div className="flex items-center justify-between mb-1">
+              <h3 className="font-bold text-sm text-foreground">University Solved Pack</h3>
+              <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold text-[10px] font-mono">
+                Sem 3 Verified
+              </span>
+            </div>
             <p className="text-[11px] text-muted-foreground mb-3">
-              Comprehensive offline pack for Semester 3.
+              5 subjects · 190 questions · 75 code implementations
             </p>
 
-            {/* 10 Critical Data Metrics Matrix matching Screenshot 3 */}
+            {/* 10 Critical Data Metrics Matrix */}
             <div className="grid grid-cols-5 gap-2 text-center p-3 rounded-xl bg-secondary/30 border border-border/60 mb-4">
               <div>
-                <span className="text-base font-black font-mono text-foreground block">32</span>
-                <span className="text-[10px] text-muted-foreground uppercase font-semibold">Notes</span>
+                <span className="text-base font-black font-mono text-foreground block">190</span>
+                <span className="text-[10px] text-muted-foreground uppercase font-semibold">Total Qs</span>
               </div>
               <div>
-                <span className="text-base font-black font-mono text-brand-forest dark:text-emerald-400 block">67</span>
-                <span className="text-[10px] text-muted-foreground uppercase font-semibold">MCQs</span>
+                <span className="text-base font-black font-mono text-[#183F36] dark:text-[#D6E85D] block">25</span>
+                <span className="text-[10px] text-muted-foreground uppercase font-semibold">Traces</span>
               </div>
               <div>
-                <span className="text-base font-black font-mono text-foreground block">31</span>
-                <span className="text-[10px] text-muted-foreground uppercase font-semibold">Prac</span>
+                <span className="text-base font-black font-mono text-foreground block">75</span>
+                <span className="text-[10px] text-muted-foreground uppercase font-semibold">5-Mark</span>
               </div>
               <div>
-                <span className="text-base font-black font-mono text-brand-forest dark:text-emerald-400 block">515</span>
-                <span className="text-[10px] text-muted-foreground uppercase font-semibold">Quest</span>
+                <span className="text-base font-black font-mono text-[#183F36] dark:text-[#D6E85D] block">90</span>
+                <span className="text-[10px] text-muted-foreground uppercase font-semibold">Theory</span>
               </div>
               <div>
-                <span className="text-base font-black font-mono text-emerald-600 dark:text-brand-chartreuse block">50%</span>
+                <span className="text-base font-black font-mono text-emerald-600 dark:text-emerald-400 block">100%</span>
                 <span className="text-[10px] text-muted-foreground uppercase font-semibold">Solved</span>
               </div>
 
               {/* Row 2 */}
               <div className="pt-2 border-t border-border/60">
-                <span className="text-xs font-bold font-mono text-foreground block">24</span>
-                <span className="text-[9px] text-muted-foreground">Files</span>
+                <span className="text-xs font-bold font-mono text-foreground block">5</span>
+                <span className="text-[9px] text-muted-foreground">Subjects</span>
               </div>
               <div className="pt-2 border-t border-border/60">
-                <span className="text-xs font-bold font-mono text-foreground block">4</span>
+                <span className="text-xs font-bold font-mono text-foreground block">30</span>
                 <span className="text-[9px] text-muted-foreground">Units</span>
               </div>
               <div className="pt-2 border-t border-border/60">
+                <span className="text-xs font-bold font-mono text-foreground block">50</span>
+                <span className="text-[9px] text-muted-foreground">MCQs</span>
+              </div>
+              <div className="pt-2 border-t border-border/60">
                 <span className="text-xs font-bold font-mono text-foreground block">5</span>
-                <span className="text-[9px] text-muted-foreground">Themes</span>
+                <span className="text-[9px] text-muted-foreground">Blueprints</span>
               </div>
               <div className="pt-2 border-t border-border/60">
-                <span className="text-xs font-bold font-mono text-foreground block">27</span>
-                <span className="text-[9px] text-muted-foreground">Images</span>
-              </div>
-              <div className="pt-2 border-t border-border/60">
-                <span className="text-xs font-bold font-mono text-foreground block">1.2k</span>
-                <span className="text-[9px] text-muted-foreground">Views</span>
+                <span className="text-xs font-bold font-mono text-foreground block">1</span>
+                <span className="text-[9px] text-muted-foreground">AI Voice</span>
               </div>
             </div>
           </div>
 
           <button
             onClick={() => {
-              toast.success("Preparing full 515-question solved revision pack...");
+              toast.success("All 5 Question Banks are fully loaded and ready online!", {
+                description: "Click any subject card to study model answers with code and AI narration.",
+              });
             }}
-            className="w-full h-10 rounded-xl bg-brand-forest hover:bg-brand-deep text-white font-bold text-xs flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md shadow-brand-forest/20"
+            className="w-full h-10 rounded-xl bg-[#183F36] hover:bg-[#12332C] text-white font-bold text-xs flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md shadow-[#183F36]/20 cursor-pointer font-display"
           >
-            <FolderDown className="h-4 w-4 text-brand-chartreuse" />
-            <span>Get Revision Now</span>
+            <FolderDown className="h-4 w-4 text-[#D6E85D]" />
+            <span>Revision Ready · 190 Master Qs</span>
           </button>
         </div>
       </div>

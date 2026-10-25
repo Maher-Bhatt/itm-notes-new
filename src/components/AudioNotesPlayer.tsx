@@ -1,181 +1,32 @@
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { Volume2, VolumeX, Play, Pause, RotateCcw, SkipForward, SkipBack, Sparkles } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Volume2, VolumeX, Play, Pause, RotateCcw, SkipForward, SkipBack, Sparkles, Mic } from 'lucide-react';
 import { toast } from 'sonner';
+import { aiVoice, VoicePlaybackState } from '@/utils/aiVoiceEngine';
 
 interface AudioNotesPlayerProps {
   title: string;
   textToRead: string;
+  className?: string;
 }
 
-export function AudioNotesPlayer({ title, textToRead }: AudioNotesPlayerProps) {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
-  const [rate, setRate] = useState<number>(1);
-  const [currentChunkIndex, setCurrentChunkIndex] = useState(0);
+export function AudioNotesPlayer({ title, textToRead, className = '' }: AudioNotesPlayerProps) {
+  const [voiceState, setVoiceState] = useState<VoicePlaybackState>(() => aiVoice.getState());
   const [isSupported, setIsSupported] = useState(true);
 
-  // Keep references to prevent garbage collection and closure stale state
-  const isPlayingRef = useRef(false);
-  const isPausedRef = useRef(false);
-  const currentChunkIndexRef = useRef(0);
-  const chunksRef = useRef<string[]>([]);
-  const keepAliveIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  // Clean raw text into natural, spoken English
-  const cleanSpeechText = useCallback((text: string) => {
-    return text
-      .replace(/```[\s\S]*?```/g, ' [Code example omitted for audio] ')
-      .replace(/`([^`]+)`/g, '$1')
-      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-      .replace(/!\[([^\]]*)\]\([^)]+\)/g, '')
-      .replace(/[#*_~>]/g, ' ')
-      .replace(/\\\[[\s\S]*?\\\]/g, ' [Formula] ')
-      .replace(/\\\([\s\S]*?\\\)/g, ' [Formula] ')
-      .replace(/\$\$[\s\S]*?\$\$/g, ' [Formula] ')
-      .replace(/\$([^$]+)\$/g, '$1')
-      .replace(/\|[^|\n]+\|/g, ' ')
-      .replace(/[-]{3,}/g, ' ')
-      .replace(/O\(([a-zA-Z0-9^ +*]+)\)/g, 'Big O of $1')
-      .replace(/->/g, ' leads to ')
-      .replace(/<-/g, ' is assigned ')
-      .replace(/!=/g, ' not equal to ')
-      .replace(/==/g, ' equals ')
-      .replace(/<=/g, ' less than or equal to ')
-      .replace(/>=/g, ' greater than or equal to ')
-      .replace(/\s+/g, ' ')
-      .trim();
-  }, []);
-
-  // Split into manageable sentence chunks (avoiding the 200-char browser cutoff limit)
-  const chunks = useMemo(() => {
-    const cleaned = cleanSpeechText(textToRead);
-    if (!cleaned) return [];
-
-    // Split on sentence boundaries (. ! ?) while keeping the punctuation
-    const rawSentences = cleaned.match(/[^.!?]+[.!?]+(\s+|$)|[^.!?]+$/g) || [cleaned];
-    const groupedChunks: string[] = [];
-    let currentBuffer = '';
-
-    for (const sentence of rawSentences) {
-      const trimmed = sentence.trim();
-      if (!trimmed) continue;
-
-      if ((currentBuffer + ' ' + trimmed).length < 220) {
-        currentBuffer = currentBuffer ? `${currentBuffer} ${trimmed}` : trimmed;
-      } else {
-        if (currentBuffer) groupedChunks.push(currentBuffer);
-        currentBuffer = trimmed;
-      }
-    }
-
-    if (currentBuffer) {
-      groupedChunks.push(currentBuffer);
-    }
-
-    return groupedChunks;
-  }, [textToRead, cleanSpeechText]);
-
   useEffect(() => {
-    chunksRef.current = chunks;
-    currentChunkIndexRef.current = 0;
-    setCurrentChunkIndex(0);
-  }, [chunks]);
-
-  // Chrome TTS Keep-Alive Workaround (prevents speech from cutting off after 15 seconds)
-  const startKeepAlive = useCallback(() => {
-    if (keepAliveIntervalRef.current) clearInterval(keepAliveIntervalRef.current);
-    keepAliveIntervalRef.current = setInterval(() => {
-      if (window.speechSynthesis && isPlayingRef.current && !isPausedRef.current) {
-        window.speechSynthesis.pause();
-        window.speechSynthesis.resume();
-      }
-    }, 9000);
-  }, []);
-
-  const stopKeepAlive = useCallback(() => {
-    if (keepAliveIntervalRef.current) {
-      clearInterval(keepAliveIntervalRef.current);
-      keepAliveIntervalRef.current = null;
-    }
-  }, []);
-
-  const stopPlayback = useCallback(() => {
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-    }
-    stopKeepAlive();
-    isPlayingRef.current = false;
-    isPausedRef.current = false;
-    setIsPlaying(false);
-    setIsPaused(false);
-  }, [stopKeepAlive]);
-
-  useEffect(() => {
-    if (!('speechSynthesis' in window)) {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
       setIsSupported(false);
-    }
-
-    return () => {
-      stopPlayback();
-    };
-  }, [stopPlayback]);
-
-  // Plays a specific chunk index sequentially
-  const speakChunk = useCallback((index: number) => {
-    if (!('speechSynthesis' in window)) return;
-    const allChunks = chunksRef.current;
-    if (index >= allChunks.length) {
-      // Reached the very end of notes
-      stopPlayback();
-      currentChunkIndexRef.current = 0;
-      setCurrentChunkIndex(0);
-      toast.success(`Completed audio notes for "${title}"!`);
       return;
     }
 
-    window.speechSynthesis.cancel();
+    const unsubscribe = aiVoice.subscribe((state) => {
+      setVoiceState(state);
+    });
 
-    currentChunkIndexRef.current = index;
-    setCurrentChunkIndex(index);
-    isPlayingRef.current = true;
-    isPausedRef.current = false;
-    setIsPlaying(true);
-    setIsPaused(false);
-
-    const chunkText = allChunks[index];
-    const utterance = new SpeechSynthesisUtterance(chunkText);
-    utterance.rate = rate;
-    utterance.pitch = 1.0;
-
-    // Pick best natural sounding English voice
-    const voices = window.speechSynthesis.getVoices();
-    const preferredVoice =
-      voices.find((v) => v.lang.startsWith('en') && (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Samantha') || v.name.includes('Siri'))) ||
-      voices.find((v) => v.lang.startsWith('en'));
-
-    if (preferredVoice) {
-      utterance.voice = preferredVoice;
-    }
-
-    utterance.onend = () => {
-      if (isPlayingRef.current && !isPausedRef.current) {
-        speakChunk(index + 1);
-      }
+    return () => {
+      unsubscribe();
     };
-
-    utterance.onerror = (e) => {
-      // Ignore user-initiated cancellation errors
-      if (e.error === 'interrupted' || e.error === 'canceled') return;
-      if (isPlayingRef.current && index + 1 < allChunks.length) {
-        speakChunk(index + 1);
-      } else {
-        stopPlayback();
-      }
-    };
-
-    startKeepAlive();
-    window.speechSynthesis.speak(utterance);
-  }, [rate, title, stopPlayback]);
+  }, []);
 
   const handlePlay = () => {
     if (!isSupported) {
@@ -183,91 +34,83 @@ export function AudioNotesPlayer({ title, textToRead }: AudioNotesPlayerProps) {
       return;
     }
 
-    if (isPaused) {
-      window.speechSynthesis.resume();
-      isPausedRef.current = false;
-      isPlayingRef.current = true;
-      setIsPaused(false);
-      setIsPlaying(true);
-      startKeepAlive();
+    if (voiceState.isPaused) {
+      aiVoice.resume();
+      toast.info('Resuming audio lecture');
       return;
     }
 
-    if (chunks.length === 0) {
+    if (!textToRead || textToRead.trim().length === 0) {
       toast.error('No readable text available for this topic.');
       return;
     }
 
-    speakChunk(currentChunkIndexRef.current);
+    aiVoice.speak(textToRead, () => {
+      toast.success(`Completed audio notes for "${title}"!`);
+    });
+
     toast.success(`Reading full audio notes for "${title}"`, {
-      description: `${chunks.length} sections · Listen hands-free with auto-progression.`,
+      description: `Studio AI Voice · Listen hands-free with auto-progression.`,
     });
   };
 
   const handlePause = () => {
-    if ('speechSynthesis' in window && isPlaying) {
-      window.speechSynthesis.pause();
-      stopKeepAlive();
-      isPausedRef.current = true;
-      isPlayingRef.current = false;
-      setIsPaused(true);
-      setIsPlaying(false);
-    }
+    aiVoice.pause();
   };
 
-  const handleNextChunk = () => {
-    if (currentChunkIndex + 1 < chunks.length) {
-      speakChunk(currentChunkIndex + 1);
-    }
+  const handleStop = () => {
+    aiVoice.stop();
   };
 
-  const handlePrevChunk = () => {
-    if (currentChunkIndex > 0) {
-      speakChunk(currentChunkIndex - 1);
-    } else {
-      speakChunk(0);
-    }
+  const handleNext = () => {
+    aiVoice.next();
+  };
+
+  const handlePrev = () => {
+    aiVoice.previous();
   };
 
   const toggleRate = () => {
-    const nextRate = rate === 1 ? 1.25 : rate === 1.25 ? 1.5 : rate === 1.5 ? 2 : rate === 2 ? 0.8 : 1;
-    setRate(nextRate);
-    if (isPlaying) {
-      speakChunk(currentChunkIndexRef.current);
-    }
+    const nextRate = voiceState.rate === 1 ? 1.25 : voiceState.rate === 1.25 ? 1.5 : voiceState.rate === 1.5 ? 0.8 : 1;
+    aiVoice.setRate(nextRate);
   };
 
   if (!isSupported) return null;
 
-  const progressPercent = chunks.length > 0 ? Math.round(((currentChunkIndex + 1) / chunks.length) * 100) : 0;
+  const progressPercent = voiceState.totalSentences > 0 
+    ? Math.min(100, Math.round(((voiceState.currentIndex + 1) / voiceState.totalSentences) * 100)) 
+    : 0;
 
   return (
-    <div className="print-hidden flex flex-col gap-2 p-3 sm:p-3.5 rounded-2xl bg-secondary/35 border border-border/80 my-5 shadow-sm hover:border-border transition-all">
+    <div className={`print-hidden flex flex-col gap-2 p-3 sm:p-3.5 rounded-2xl bg-secondary/35 border border-border/80 my-5 shadow-xs hover:border-border transition-all ${className}`}>
       <div className="flex items-center justify-between gap-3">
-        {/* Left Info & Icon */}
+        {/* Left Info & Voice Indicator */}
         <div className="flex items-center gap-2.5 min-w-0">
           <div
             className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all ${
-              isPlaying
+              voiceState.isPlaying && !voiceState.isPaused
                 ? 'bg-primary text-primary-foreground shadow-md ring-2 ring-primary/20 animate-pulse'
                 : 'bg-secondary text-muted-foreground'
             }`}
           >
-            {isPlaying ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+            {voiceState.isPlaying ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-1.5 flex-wrap">
               <span className="text-xs sm:text-sm font-bold text-foreground">Continuous Audio Lecture</span>
-              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-primary/10 text-primary flex items-center gap-1">
-                <Sparkles className="h-2.5 w-2.5" /> Full Topic
+              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center gap-1 border border-emerald-500/20">
+                <Mic className="h-2.5 w-2.5" /> Studio AI Narrator
+              </span>
+              <span className="text-[10px] font-mono text-muted-foreground hidden sm:inline">
+                ({voiceState.voiceName})
               </span>
             </div>
             <p className="text-[11px] text-muted-foreground truncate">
-              {isPlaying
-                ? `Reading section ${currentChunkIndex + 1} of ${chunks.length}...`
-                : isPaused
-                ? `Paused at section ${currentChunkIndex + 1}`
-                : `Complete audio narration (${chunks.length} sections · ~${Math.max(1, Math.round(chunks.length * 0.3))} min)`}
+              {voiceState.isPlaying && !voiceState.isPaused
+                ? `Reading sentence ${voiceState.currentIndex + 1} of ${voiceState.totalSentences}: "${voiceState.currentSentence.slice(0, 50)}..."`
+                : voiceState.isPaused
+                ? `Paused at sentence ${voiceState.currentIndex + 1} of ${voiceState.totalSentences}`
+                : `Complete audio narration · Single natural AI voice · Hands-free`}
             </p>
           </div>
         </div>
@@ -275,10 +118,10 @@ export function AudioNotesPlayer({ title, textToRead }: AudioNotesPlayerProps) {
         {/* Right Controls */}
         <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
           {/* Skip Back */}
-          {(isPlaying || isPaused) && (
+          {(voiceState.isPlaying || voiceState.isPaused) && (
             <button
-              onClick={handlePrevChunk}
-              disabled={currentChunkIndex === 0}
+              onClick={handlePrev}
+              disabled={voiceState.currentIndex === 0}
               className="p-1.5 rounded-lg bg-secondary/80 hover:bg-secondary text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:pointer-events-none transition-colors apple-press"
               title="Previous Sentence"
             >
@@ -292,14 +135,14 @@ export function AudioNotesPlayer({ title, textToRead }: AudioNotesPlayerProps) {
             className="text-xs font-mono font-bold px-2 py-1 rounded-lg bg-secondary hover:bg-secondary/80 text-foreground transition-colors apple-press"
             title="Change Playback Speed"
           >
-            {rate}x
+            {voiceState.rate}x
           </button>
 
           {/* Play / Pause Toggle */}
-          {isPlaying ? (
+          {voiceState.isPlaying && !voiceState.isPaused ? (
             <button
               onClick={handlePause}
-              className="p-2 rounded-xl bg-amber-500 text-white hover:bg-amber-600 transition-colors apple-press shadow-sm"
+              className="p-2 rounded-xl bg-amber-500 text-white hover:bg-amber-600 transition-colors apple-press shadow-xs"
               title="Pause Reading"
             >
               <Pause className="h-4 w-4" />
@@ -307,18 +150,18 @@ export function AudioNotesPlayer({ title, textToRead }: AudioNotesPlayerProps) {
           ) : (
             <button
               onClick={handlePlay}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary text-primary-foreground font-bold text-xs hover:opacity-90 transition-opacity apple-press shadow-sm"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary text-primary-foreground font-bold text-xs hover:opacity-90 transition-opacity apple-press shadow-xs"
             >
               <Play className="h-3.5 w-3.5 fill-current" />
-              <span>{isPaused ? 'Resume' : 'Listen All'}</span>
+              <span>{voiceState.isPaused ? 'Resume' : 'Listen All'}</span>
             </button>
           )}
 
           {/* Skip Forward */}
-          {(isPlaying || isPaused) && (
+          {(voiceState.isPlaying || voiceState.isPaused) && (
             <button
-              onClick={handleNextChunk}
-              disabled={currentChunkIndex + 1 >= chunks.length}
+              onClick={handleNext}
+              disabled={voiceState.currentIndex + 1 >= voiceState.totalSentences}
               className="p-1.5 rounded-lg bg-secondary/80 hover:bg-secondary text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:pointer-events-none transition-colors apple-press"
               title="Next Sentence"
             >
@@ -327,9 +170,9 @@ export function AudioNotesPlayer({ title, textToRead }: AudioNotesPlayerProps) {
           )}
 
           {/* Reset / Stop */}
-          {(isPlaying || isPaused) && (
+          {(voiceState.isPlaying || voiceState.isPaused) && (
             <button
-              onClick={stopPlayback}
+              onClick={handleStop}
               className="p-1.5 rounded-lg bg-secondary/80 hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors apple-press"
               title="Stop & Reset"
             >
@@ -339,8 +182,8 @@ export function AudioNotesPlayer({ title, textToRead }: AudioNotesPlayerProps) {
         </div>
       </div>
 
-      {/* Subtle Progress Bar when active */}
-      {(isPlaying || isPaused) && chunks.length > 0 && (
+      {/* Progress Bar when active */}
+      {(voiceState.isPlaying || voiceState.isPaused) && voiceState.totalSentences > 0 && (
         <div className="w-full mt-1">
           <div className="w-full bg-secondary h-1.5 rounded-full overflow-hidden">
             <div
@@ -349,7 +192,7 @@ export function AudioNotesPlayer({ title, textToRead }: AudioNotesPlayerProps) {
             />
           </div>
           <div className="flex justify-between items-center text-[10px] text-muted-foreground mt-1 font-mono">
-            <span>Section {currentChunkIndex + 1}/{chunks.length}</span>
+            <span>Sentence {voiceState.currentIndex + 1} of {voiceState.totalSentences}</span>
             <span>{progressPercent}% completed</span>
           </div>
         </div>
