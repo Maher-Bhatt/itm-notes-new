@@ -56,6 +56,8 @@ export function PortalLayout() {
     setIsChatOpen(false);
   };
 
+  const isCodingLab = location.pathname.startsWith("/coding-lab");
+
   return (
     <div className="h-screen w-full overflow-hidden bg-slate-50 dark:bg-background text-foreground flex antialiased">
       {/* 1. Persistent Left Dark-Navy Sidebar (Collapsible in Focus Mode) */}
@@ -75,8 +77,8 @@ export function PortalLayout() {
           onToggleFocusMode={handleToggleFocusMode}
         />
 
-        {/* Dynamic Page Content - Dedicated smooth scroll container */}
-        <main className="flex-1 overflow-y-auto overflow-x-hidden">
+        {/* Dynamic Page Content - Dedicated smooth scroll container with safe bottom padding for MobileBottomNav */}
+        <main className="flex-1 overflow-y-auto overflow-x-hidden pb-20 md:pb-6">
           <Outlet />
         </main>
       </div>
@@ -87,99 +89,101 @@ export function PortalLayout() {
         onOpenChange={setSearchOpen} 
       />
 
-      {/* 4. Global Floating Action Button (FAB) - Moved higher on mobile to avoid overlapping Bottom Nav */}
-      <div className="fixed bottom-[90px] md:bottom-6 right-4 sm:right-6 z-40">
-        <button
-          onClick={() => setIsChatOpen(!isChatOpen)}
-          className="w-12 h-12 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white shadow-xl shadow-indigo-600/30 flex items-center justify-center transition-transform hover:scale-105 active:scale-95 relative"
-          title="Campus Assistant & Study Help"
-        >
-          {isChatOpen ? (
-            <X className="h-5 w-5" />
-          ) : (
-            <>
-              <MessageSquare className="h-5 w-5" />
-              <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-500 text-[10px] font-black text-white flex items-center justify-center border-2 border-background">
-                1
-              </span>
-            </>
+      {/* 4. Global Floating Action Button (FAB) - Hidden on Coding Lab to keep interactive sandbox clear */}
+      {!isCodingLab && (
+        <div className="fixed bottom-[75px] md:bottom-6 right-4 sm:right-6 z-40">
+          <button
+            onClick={() => setIsChatOpen(!isChatOpen)}
+            className="w-12 h-12 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white shadow-xl shadow-indigo-600/30 flex items-center justify-center transition-transform hover:scale-105 active:scale-95 relative cursor-pointer"
+            title="Campus Assistant & Study Help"
+          >
+            {isChatOpen ? (
+              <X className="h-5 w-5" />
+            ) : (
+              <>
+                <MessageSquare className="h-5 w-5" />
+                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-500 text-[10px] font-black text-white flex items-center justify-center border-2 border-background">
+                  1
+                </span>
+              </>
+            )}
+          </button>
+
+          {/* Quick Assistant Popup */}
+          {isChatOpen && (
+            <div className="absolute bottom-16 right-0 w-80 sm:w-96 bg-card border border-border rounded-2xl shadow-2xl p-4 animate-scale-in">
+              <div className="flex items-center justify-between pb-3 border-b border-border mb-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center">
+                    <Sparkles className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-xs text-foreground font-display">ITM Notes Campus Desk</h4>
+                    <p className="text-[10px] text-muted-foreground">Ask doubts, find question banks, or get exam tips</p>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => setIsChatOpen(false)}
+                  className="text-muted-foreground hover:text-foreground p-1 cursor-pointer"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+
+              <div className="space-y-2 mb-3 max-h-48 overflow-y-auto text-xs">
+                <div className="p-2.5 rounded-xl bg-secondary/60 text-foreground">
+                  👋 Hello! Need help finding syllabus notes, timetables, or previous year questions?
+                </div>
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  <button
+                    onClick={() => {
+                      setIsChatOpen(false);
+                      navigate("/materials");
+                    }}
+                    className="px-2.5 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 font-semibold text-[11px] border border-indigo-200/40 cursor-pointer"
+                  >
+                    📚 View Study Materials
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIsChatOpen(false);
+                      navigate("/imp-questions");
+                    }}
+                    className="px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 font-semibold text-[11px] border border-emerald-200/40 cursor-pointer"
+                  >
+                    ⚡ Question Banks
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIsChatOpen(false);
+                      navigate("/community");
+                    }}
+                    className="px-2.5 py-1 rounded-lg bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 font-semibold text-[11px] border border-purple-200/40 cursor-pointer"
+                  >
+                    💬 Campus Pulse Feed
+                  </button>
+                </div>
+              </div>
+
+              <form onSubmit={handleSendQuickSupport} className="relative">
+                <input
+                  type="text"
+                  placeholder="Ask anything or request a note..."
+                  value={chatMessage}
+                  onChange={(e) => setChatMessage(e.target.value)}
+                  className="w-full h-10 pl-3 pr-10 rounded-xl border border-input bg-background text-xs focus:ring-1 focus:ring-primary outline-none"
+                />
+                <button
+                  type="submit"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition-opacity cursor-pointer"
+                >
+                  <Send className="h-3.5 w-3.5" />
+                </button>
+              </form>
+            </div>
           )}
-        </button>
-
-        {/* Quick Assistant Popup */}
-        {isChatOpen && (
-          <div className="absolute bottom-16 right-0 w-80 sm:w-96 bg-card border border-border rounded-2xl shadow-2xl p-4 animate-scale-in">
-            <div className="flex items-center justify-between pb-3 border-b border-border mb-3">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center">
-                  <Sparkles className="h-4 w-4" />
-                </div>
-                <div>
-                  <h4 className="font-bold text-xs text-foreground">ITM Campus Desk</h4>
-                  <p className="text-[10px] text-muted-foreground">Ask doubts, find question banks, or get exam tips</p>
-                </div>
-              </div>
-              <button 
-                onClick={() => setIsChatOpen(false)}
-                className="text-muted-foreground hover:text-foreground p-1"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-
-            <div className="space-y-2 mb-3 max-h-48 overflow-y-auto text-xs">
-              <div className="p-2.5 rounded-xl bg-secondary/60 text-foreground">
-                👋 Hello! Need help finding syllabus notes, timetables, or previous year questions?
-              </div>
-              <div className="flex flex-wrap gap-1.5 pt-1">
-                <button
-                  onClick={() => {
-                    setIsChatOpen(false);
-                    navigate("/materials");
-                  }}
-                  className="px-2.5 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 font-semibold text-[11px] border border-indigo-200/40"
-                >
-                  📚 View Study Materials
-                </button>
-                <button
-                  onClick={() => {
-                    setIsChatOpen(false);
-                    navigate("/imp-questions");
-                  }}
-                  className="px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 font-semibold text-[11px] border border-emerald-200/40"
-                >
-                  ⚡ Question Banks
-                </button>
-                <button
-                  onClick={() => {
-                    setIsChatOpen(false);
-                    navigate("/community");
-                  }}
-                  className="px-2.5 py-1 rounded-lg bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 font-semibold text-[11px] border border-purple-200/40"
-                >
-                  💬 Campus Pulse Feed
-                </button>
-              </div>
-            </div>
-
-            <form onSubmit={handleSendQuickSupport} className="relative">
-              <input
-                type="text"
-                placeholder="Ask anything or request a note..."
-                value={chatMessage}
-                onChange={(e) => setChatMessage(e.target.value)}
-                className="w-full h-10 pl-3 pr-10 rounded-xl border border-input bg-background text-xs focus:ring-1 focus:ring-primary outline-none"
-              />
-              <button
-                type="submit"
-                className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
-              >
-                <Send className="h-3.5 w-3.5" />
-              </button>
-            </form>
-          </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

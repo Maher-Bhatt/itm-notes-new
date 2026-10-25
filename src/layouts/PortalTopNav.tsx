@@ -112,12 +112,14 @@ export function PortalTopNav({
           <Menu className="h-5 w-5" />
         </button>
 
-        {/* Mobile Brand Logo Header */}
-        <Link to="/" className="md:hidden flex items-center gap-1.5 font-bold text-sm text-foreground">
-          <span className="w-6 h-6 rounded-lg bg-[#183F36] text-[#D6E85D] flex items-center justify-center font-black text-xs">
+        {/* Brand Logo Header — Clearly legible ITM Notes with zero clipping */}
+        <Link to="/" className="flex items-center gap-2 group select-none shrink-0" title="ITM Notes Portal">
+          <div className="h-7 px-2.5 rounded-lg bg-[#183F36] text-[#D6E85D] flex items-center justify-center font-black text-xs tracking-wider border border-[#D6E85D]/30 shadow-xs font-display">
             ITM
+          </div>
+          <span className="font-display font-black tracking-tight text-foreground text-sm sm:text-base">
+            Notes
           </span>
-          <span className="font-heading font-extrabold tracking-tight">Notes</span>
         </Link>
 
         {/* Desktop Sidebar Minimize / Expand Button */}
@@ -142,8 +144,8 @@ export function PortalTopNav({
           </button>
         )}
 
-        {/* Top Horizontal Tabs */}
-        <nav className="hidden sm:flex items-center gap-1 font-display">
+        {/* Top Horizontal Tabs — Shown only on wide desktop (xl+) to prevent tablet header overflow */}
+        <nav className="hidden xl:flex items-center gap-1 font-display">
           {topTabs.map((tab) => {
             const active = location.pathname === tab.path || (tab.path === "/subjects" && (location.pathname.startsWith("/subjects") || location.pathname.startsWith("/subject")));
             return (
@@ -182,7 +184,7 @@ export function PortalTopNav({
         {/* Timetables / Viva Schedule Pill */}
         <button
           onClick={() => openTimetable("viva")}
-          className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border transition-all bg-[#183F36]/10 text-[#183F36] dark:text-[#D6E85D] dark:bg-[#183F36]/30 border-[#183F36]/20 hover:bg-[#183F36] hover:text-[#D6E85D] shadow-xs cursor-pointer"
+          className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border transition-all bg-[#183F36]/10 text-[#183F36] dark:text-[#D6E85D] dark:bg-[#183F36]/30 border-[#183F36]/20 hover:bg-[#183F36] hover:text-[#D6E85D] shadow-xs cursor-pointer shrink-0"
           title="View Official Remedial & Viva Timetables (Oct 26 - Nov 3)"
         >
           <Calendar className="h-3.5 w-3.5 text-primary" />
@@ -193,7 +195,7 @@ export function PortalTopNav({
         {/* Pomodoro Focus Pill */}
         <button
           onClick={() => setIsModalOpen(true)}
-          className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
+          className={`hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all shrink-0 ${
             isRunning 
               ? "bg-[#D6E85D]/20 text-[#183F36] dark:text-[#D6E85D] border-[#D6E85D]/40 animate-pulse font-bold" 
               : "bg-card text-muted-foreground hover:text-foreground border-border"
