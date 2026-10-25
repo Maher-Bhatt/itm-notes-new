@@ -102,7 +102,7 @@ export function SearchDialog({ open, onOpenChange, onOpenAiDoubt }: SearchDialog
   // Log zero-result searches to Supabase and cache (A7 Content Analytics)
   useEffect(() => {
     const q = query.trim();
-    if (q.length >= 3 && results.totalCount === 0) {
+    if (q.length >= 3 && searchResults && searchResults.totalCount === 0) {
       const timer = setTimeout(() => {
         supabase.from('search_analytics').insert({
           query: q,
@@ -124,7 +124,7 @@ export function SearchDialog({ open, onOpenChange, onOpenAiDoubt }: SearchDialog
       }, 800);
       return () => clearTimeout(timer);
     }
-  }, [query, results.totalCount]);
+  }, [query, searchResults]);
 
   const handleNavigate = (path: string) => {
     navigate(path);
