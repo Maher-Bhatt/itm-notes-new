@@ -41,6 +41,8 @@ import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 import { PageFallback } from "@/components/PageSkeletonLoaders";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { useAuth } from "@/contexts/AuthContext";
+import { useCapacitorNative } from "@/hooks/useCapacitorNative";
+import { AppStartupSplashScreen } from "@/components/AppStartupSplashScreen";
 
 /**
  * Resilient lazy loader: if a new deployment removed old hashed chunks,
@@ -95,6 +97,12 @@ function AppStartup() {
   return null;
 }
 
+/** Handles native mobile Android behaviors like back button, status bar, splash screen */
+function NativeAppInitializer() {
+  useCapacitorNative();
+  return null;
+}
+
 /**
  * RootRoute: If guest/unauthenticated, renders the modern marketing LandingPage.
  * If student is signed in, redirects to the personalized /dashboard inside PortalLayout.
@@ -122,6 +130,8 @@ const App = () => (
                 <Toaster />
                 <Sonner />
                 <BrowserRouter>
+                  <NativeAppInitializer />
+                  <AppStartupSplashScreen />
                   <ErrorBoundary>
                     <AppStartup />
                     <MaintenanceBanner />

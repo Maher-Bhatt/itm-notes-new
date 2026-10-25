@@ -100,9 +100,9 @@ export function PortalTopNav({
   ];
 
   return (
-    <header className="sticky top-0 z-30 h-14 bg-card/80 backdrop-blur-md border-b border-border px-4 sm:px-6 flex items-center justify-between transition-colors">
+    <header className="shrink-0 z-30 bg-card/95 backdrop-blur-xl border-b border-border px-3 sm:px-6 flex items-center justify-between transition-all pt-[env(safe-area-inset-top,0px)] h-[calc(3.5rem+env(safe-area-inset-top,0px))] w-full">
       {/* Left: Mobile Sidebar Trigger + Desktop Sidebar Toggle + Primary Nav Tabs */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2.5 sm:gap-3">
         <button
           onClick={onToggleSidebar}
           className="md:hidden p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
@@ -110,6 +110,14 @@ export function PortalTopNav({
         >
           <Menu className="h-5 w-5" />
         </button>
+
+        {/* Mobile Brand Logo Header */}
+        <Link to="/" className="md:hidden flex items-center gap-1.5 font-bold text-sm text-foreground">
+          <span className="w-6 h-6 rounded-lg bg-[#183F36] text-[#D6E85D] flex items-center justify-center font-black text-xs">
+            ITM
+          </span>
+          <span className="font-heading font-extrabold tracking-tight">Notes</span>
+        </Link>
 
         {/* Desktop Sidebar Minimize / Expand Button */}
         {onToggleFocusMode && (
@@ -170,25 +178,25 @@ export function PortalTopNav({
           </kbd>
         </button>
 
-        {/* Pomodoro Study Timer Pill */}
+        {/* Pomodoro Focus Pill */}
         <button
           onClick={() => setIsModalOpen(true)}
           className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
             isRunning 
               ? "bg-[#D6E85D]/20 text-[#183F36] dark:text-[#D6E85D] border-[#D6E85D]/40 animate-pulse font-bold" 
-              : "bg-card text-muted-foreground hover:text-foreground border-border hover:border-primary/40"
+              : "bg-card text-muted-foreground hover:text-foreground border-border"
           }`}
-          title="Pomodoro Study Timer"
+          title="Study Focus Timer"
         >
-          <Clock className={`h-3.5 w-3.5 ${isRunning ? "text-[#183F36] dark:text-[#D6E85D]" : "text-muted-foreground"}`} />
+          <Clock className={`h-3.5 w-3.5 ${isRunning ? "text-[#183F36] dark:text-[#D6E85D]" : ""}`} />
           <span className="font-mono text-[11px]">
             {isRunning 
               ? `${Math.floor(timeLeft / 60).toString().padStart(2, '0')}:${(timeLeft % 60).toString().padStart(2, '0')}` 
-              : "Study Timer"}
+              : "Focus"}
           </span>
         </button>
 
-        {/* Fullscreen / Focus Mode Toggle Button */}
+        {/* Fullscreen Focus Mode Toggle Button */}
         <button
           onClick={onToggleFocusMode}
           className={`flex items-center gap-1.5 h-9 px-3 rounded-full text-xs font-semibold border transition-all cursor-pointer ${
@@ -206,7 +214,7 @@ export function PortalTopNav({
           ) : (
             <>
               <Maximize2 className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">Focus Mode</span>
+              <span className="hidden sm:inline">Focus</span>
               <kbd className="hidden lg:inline-flex items-center px-1 text-[9px] font-mono bg-background/50 rounded border border-border/60">F</kbd>
             </>
           )}

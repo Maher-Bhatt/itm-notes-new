@@ -307,18 +307,15 @@ export default function DashboardPage() {
 
                       {/* Units Snapshot */}
                       <div className="flex flex-wrap gap-1 mt-3">
-                        {sub.units?.slice(0, 3).map((u) => {
-                          const cleanTitle = (u.title || "").replace(/^Unit\s*\d+:\s*/i, "");
-                          return (
-                            <span
-                              key={u.id}
-                              className="text-[10px] px-2 py-0.5 rounded-md bg-secondary text-foreground/80 font-medium truncate max-w-[180px]"
-                              title={u.title}
-                            >
-                              Unit {u.number}: {cleanTitle}
-                            </span>
-                          );
-                        })}
+                        {sub.units?.slice(0, 3).map((u) => (
+                          <span
+                            key={u.id}
+                            className="text-[10px] px-2 py-0.5 rounded-md bg-secondary text-foreground/80 font-medium truncate max-w-[180px]"
+                            title={u.title}
+                          >
+                            U{u.number}: {u.title}
+                          </span>
+                        ))}
                         {totalUnits > 3 && (
                           <span className="text-[10px] px-1.5 py-0.5 rounded text-muted-foreground font-semibold">
                             +{totalUnits - 3} more
@@ -464,11 +461,11 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* Right Card: Study Activity & Velocity with Spline Area Chart matching Screenshot 1 */}
+            {/* Right Card: Study Progress with Spline Area Chart matching Screenshot 1 */}
             <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="font-bold text-sm text-foreground font-display">Study Velocity & Milestones</h3>
+                  <h3 className="font-bold text-sm text-foreground">Study Progress</h3>
                   <span className="text-[11px] text-muted-foreground">
                     {user ? `Level ${levelInfo.level} · ${levelInfo.title}` : "Guest Mode · Level 1"}
                   </span>
@@ -560,10 +557,35 @@ export default function DashboardPage() {
 
         {/* ── RIGHT COLUMN (~32% width -> lg:col-span-4) ── */}
         <div className="lg:col-span-4 space-y-6">
-          {/* 1. Radial Donut Dual Gauges with Forest Green & Chartreuse */}
+          {/* 1. Study Progress Advice Widget matching Screenshot 1 */}
+          <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-3">
+            <div className="flex items-center justify-between">
+              <h3 className="font-bold text-sm text-foreground">Study Progress</h3>
+              <div className="flex items-center gap-1 text-muted-foreground">
+                <button className="p-1 rounded hover:bg-secondary"><ChevronLeft className="h-4 w-4" /></button>
+                <button className="p-1 rounded hover:bg-secondary"><ChevronRight className="h-4 w-4" /></button>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-xl bg-[#E8EDE4] dark:bg-[#183F36]/30 border border-[#E0E2D9] dark:border-[#1D4A3F] flex items-start gap-3">
+              <div className="p-2.5 rounded-xl bg-[#183F36] text-[#D6E85D] shrink-0">
+                <BookOpen className="h-5 w-5" />
+              </div>
+              <div className="space-y-1">
+                <p className="text-xs font-medium text-foreground leading-relaxed">
+                  Feed your student notes to help improve your grading for mid exams preparation.
+                </p>
+                <Link to="/materials" className="text-xs text-[#183F36] dark:text-[#D6E85D] font-bold hover:underline inline-block pt-1">
+                  Learn more &gt;
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* 2. Radial Donut Dual Gauges with Forest Green & Chartreuse */}
           <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="font-bold text-sm text-foreground font-display">Academic Exam Readiness</h3>
+              <h3 className="font-bold text-sm text-foreground">Study Progress</h3>
               <Link to="/calculator" className="text-xs text-primary font-semibold hover:underline">
                 View All &gt;
               </Link>
@@ -620,33 +642,8 @@ export default function DashboardPage() {
                     <span className="text-xl font-black text-foreground font-mono">91%</span>
                   </div>
                 </div>
-                <span className="text-xs font-bold text-foreground mt-2">Attendance Safe</span>
+                <span className="text-xs font-bold text-foreground mt-2">Attendance</span>
                 <span className="text-[10px] text-emerald-600 font-semibold">Above 75% cutoff</span>
-              </div>
-            </div>
-          </div>
-
-          {/* 2. Study Preparation & Notes Guidance Widget matching Screenshot 1 */}
-          <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-3">
-            <div className="flex items-center justify-between">
-              <h3 className="font-bold text-sm text-foreground font-display">Notes & Revision Guidance</h3>
-              <div className="flex items-center gap-1 text-muted-foreground">
-                <button className="p-1 rounded hover:bg-secondary"><ChevronLeft className="h-4 w-4" /></button>
-                <button className="p-1 rounded hover:bg-secondary"><ChevronRight className="h-4 w-4" /></button>
-              </div>
-            </div>
-
-            <div className="p-4 rounded-xl bg-[#E8EDE4] dark:bg-[#183F36]/30 border border-[#E0E2D9] dark:border-[#1D4A3F] flex items-start gap-3">
-              <div className="p-2.5 rounded-xl bg-[#183F36] text-[#D6E85D] shrink-0">
-                <BookOpen className="h-5 w-5" />
-              </div>
-              <div className="space-y-1">
-                <p className="text-xs font-medium text-foreground leading-relaxed">
-                  Review verified course notes and chapter formula sheets to maximize performance in upcoming mid exams.
-                </p>
-                <Link to="/materials" className="text-xs text-[#183F36] dark:text-[#D6E85D] font-bold hover:underline inline-block pt-1">
-                  Explore Repository &gt;
-                </Link>
               </div>
             </div>
           </div>

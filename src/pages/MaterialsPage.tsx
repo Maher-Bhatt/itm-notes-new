@@ -34,6 +34,8 @@ import {
 import { toast } from "sonner";
 import { TIMETABLE_DATA } from "@/data/timetableData";
 import { REAL_STUDY_MATERIALS, StudyMaterial } from "@/data/materialsData";
+import { fetchLiveMaterials } from "@/data/supabase/fetchMaterials";
+import { useEffect } from "react";
 
 // ─── SubjectOverviewCard (rich modal with formulas + solved Q&A) ────────────
 export interface SubjectOverviewCard {
@@ -556,10 +558,32 @@ export default function MaterialsPage() {
   const [previewTab, setPreviewTab] = useState<"pdf" | "summary" | "questions" | "download">("pdf");
   const [selectedBatchId, setSelectedBatchId] = useState<string>("b.tech-sem3-cse");
 
+  // Live Materials State
+  const [liveMaterials, setLiveMaterials] = useState<StudyMaterial[]>(REAL_STUDY_MATERIALS);
+  const [isLoadingLive, setIsLoadingLive] = useState(false);
+
+  useEffect(() => {
+    async function load() {
+      setIsLoadingLive(true);
+      try {
+        const data = await fetchLiveMaterials();
+        if (data && data.length > 0) {
+          // Combine static + live or replace completely (Combining handles the fact that DB might only have a few initially)
+          setLiveMaterials([...data, ...REAL_STUDY_MATERIALS]);
+        }
+      } catch (e) {
+        console.warn("Could not fetch live materials, falling back to static", e);
+      } finally {
+        setIsLoadingLive(false);
+      }
+    }
+    load();
+  }, []);
+
   // Plain materials excluding those already covered by rich cards
   const plainMaterials = useMemo(
-    () => REAL_STUDY_MATERIALS.filter((m) => !RICH_CARD_PDF_URLS.has(m.downloadUrl ?? "")),
-    []
+    () => liveMaterials.filter((m) => !RICH_CARD_PDF_URLS.has(m.downloadUrl ?? "")),
+    [liveMaterials]
   );
 
   // All categories from plain materials
@@ -570,12 +594,12 @@ export default function MaterialsPage() {
 
   // Stats
   const stats = useMemo(() => {
-    const notes = REAL_STUDY_MATERIALS.filter((m) => m.category === "Notes").length + SUBJECT_OVERVIEW_CARDS.filter((c) => c.category === "Notes").length;
-    const labs = REAL_STUDY_MATERIALS.filter((m) => m.category === "Lab Manual").length + SUBJECT_OVERVIEW_CARDS.filter((c) => c.category === "Lab Manual").length;
-    const qps = REAL_STUDY_MATERIALS.filter((m) => m.category === "Question Paper").length;
-    const total = REAL_STUDY_MATERIALS.length + SUBJECT_OVERVIEW_CARDS.length;
+    const notes = liveMaterials.filter((m) => m.category === "Notes").length + SUBJECT_OVERVIEW_CARDS.filter((c) => c.category === "Notes").length;
+    const labs = liveMaterials.filter((m) => m.category === "Lab Manual").length + SUBJECT_OVERVIEW_CARDS.filter((c) => c.category === "Lab Manual").length;
+    const qps = liveMaterials.filter((m) => m.category === "Question Paper").length;
+    const total = liveMaterials.length + SUBJECT_OVERVIEW_CARDS.length;
     return { notes, labs, qps, total };
-  }, []);
+  }, [liveMaterials]);
 
   // Filter plain materials
   const filteredPlain = useMemo(() => {
@@ -702,18 +726,18 @@ export default function MaterialsPage() {
 
       {/* ── FILTER BAR ── */}
       <div className="flex flex-wrap items-center gap-3 p-3 bg-card border border-border rounded-2xl shadow-sm">
-        <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
+        <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground shrink-0">
           <Filter className="h-3.5 w-3.5" />
           <span>Filters:</span>
         </div>
 
         {/* Semester filter */}
-        <div className="flex rounded-xl bg-secondary p-0.5 border border-border text-xs font-semibold gap-0.5">
+        <div className="flex overflow-x-auto scrollbar-none rounded-xl bg-secondary p-0.5 border border-border text-xs font-semibold gap-0.5 shrink-0 max-w-full">
           {(["all", "1", "3"] as const).map((s) => (
             <button
               key={s}
               onClick={() => setSemesterFilter(s)}
-              className={`px-3 py-1 rounded-lg transition-all ${
+              className={`px-3 py-1 rounded-lg transition-all whitespace-nowrap ${
                 semesterFilter === s
                   ? "bg-[#183F36] text-[#D6E85D] font-bold"
                   : "text-muted-foreground hover:text-foreground"
@@ -725,12 +749,12 @@ export default function MaterialsPage() {
         </div>
 
         {/* Type filter */}
-        <div className="flex flex-wrap gap-1">
+        <div className="flex overflow-x-auto scrollbar-none gap-1 max-w-full shrink-0">
           {allCategories.map((cat) => (
             <button
               key={cat}
               onClick={() => setTypeFilter(cat)}
-              className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all border ${
+              className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all border whitespace-nowrap ${
                 typeFilter === cat
                   ? "bg-[#183F36] text-[#D6E85D] border-[#183F36]"
                   : "bg-secondary text-muted-foreground border-border hover:text-foreground"

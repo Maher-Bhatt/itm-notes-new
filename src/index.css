@@ -477,12 +477,49 @@ code {
   }
 }
 
-/* ── Enhanced Mobile & Laptop Experience ── */
+/* ── Enhanced Mobile & Tablet Glassmorphism & Touch Polish ── */
 html, body {
   overflow-x: hidden;
   max-width: 100vw;
   -webkit-tap-highlight-color: transparent;
   scroll-behavior: smooth;
+  touch-action: manipulation;
+}
+
+/* Glassmorphism Cards */
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(224, 226, 217, 0.6);
+}
+
+.dark .glass-card {
+  background: rgba(24, 46, 41, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(166, 222, 200, 0.15);
+}
+
+/* Modern Card Hover Scale & Focus Rings */
+.interactive-card {
+  transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.interactive-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.08);
+}
+
+.interactive-card:active {
+  transform: scale(0.98);
+}
+
+/* Touch-optimized Minimum Target Size for Buttons & Links */
+@media (max-width: 1024px) {
+  button, a, input, select, textarea {
+    min-height: 40px;
+  }
 }
 
 /* Prevent auto-zoom on mobile inputs in iOS Safari & ensure bottom clearance */
@@ -493,7 +530,14 @@ html, body {
   
   /* Ensure page content has clearance above the mobile bottom nav */
   main {
-    padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* Tablet Layout Spacing Optimizations (iPad/Galaxy Tab) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .tablet-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 

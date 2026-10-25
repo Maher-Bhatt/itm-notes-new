@@ -57,7 +57,7 @@ export function PortalLayout() {
   };
 
   return (
-    <div className="h-screen w-screen overflow-hidden bg-slate-50 dark:bg-background text-foreground flex antialiased">
+    <div className="h-screen w-full overflow-hidden bg-slate-50 dark:bg-background text-foreground flex antialiased">
       {/* 1. Persistent Left Dark-Navy Sidebar (Collapsible in Focus Mode) */}
       <PortalSidebar 
         isOpen={sidebarOpen} 
@@ -87,8 +87,8 @@ export function PortalLayout() {
         onOpenChange={setSearchOpen} 
       />
 
-      {/* 4. Global Floating Action Button (FAB) matching Screenshot */}
-      <div className="fixed bottom-6 right-6 z-40">
+      {/* 4. Global Floating Action Button (FAB) - Moved higher on mobile to avoid overlapping Bottom Nav */}
+      <div className="fixed bottom-[90px] md:bottom-6 right-4 sm:right-6 z-40">
         <button
           onClick={() => setIsChatOpen(!isChatOpen)}
           className="w-12 h-12 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white shadow-xl shadow-indigo-600/30 flex items-center justify-center transition-transform hover:scale-105 active:scale-95 relative"

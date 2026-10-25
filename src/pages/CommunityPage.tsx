@@ -46,61 +46,74 @@ import { SharePostModal } from "@/components/SharePostModal";
 import { FriendComparisonModal } from "@/components/FriendComparisonModal";
 import { UserAvatar, resolveAvatarUrl, MAHER_CANONICAL_AVATAR } from "@/components/UserAvatar";
 
-// Set of legacy placeholder/dummy IDs to strictly purge
-const LEGACY_DUMMY_IDS = new Set([
-  "post-1",
-  "post-2",
-  "post-3",
-  "post-4",
-  "post-5",
-  "post-maher-verified",
-  "post-study-buddies"
-]);
-
-// Interactive Campus Polls model
-export interface CampusPoll {
-  id: string;
-  question: string;
-  options: { id: string; text: string; votes: number }[];
-  totalVotes: number;
-  userVotedOptionId?: string;
-  category: string;
-}
-
-const DEFAULT_POLLS: CampusPoll[] = [
+// Initial seed posts matching Screenshot 5 design
+const INITIAL_RICH_POSTS: CommunityPost[] = [
   {
-    id: "poll-mst1-difficulty",
-    question: "Which Semester 3 core course has the toughest mid-sem (MST-1) syllabus?",
-    category: "Academic",
-    options: [
-      { id: "opt-dsa", text: "Data Structures & Algorithms (Trees, Graphs, Queues)", votes: 78 },
-      { id: "opt-coa", text: "Computer Architecture (Instruction Cycle & Microprogramming)", votes: 34 },
-      { id: "opt-dbms", text: "DBMS (Normalization 3NF/BCNF & Relational Algebra)", votes: 21 },
-      { id: "opt-coanmp", text: "COANMP (Numerical Methods with Python)", votes: 12 },
-    ],
-    totalVotes: 145,
+    id: "post-maher-verified",
+    authorId: "admin-maher",
+    authorName: "Maher Bhatt",
+    authorEmail: "maherbhatt01@gmail.com",
+    authorAvatar: MAHER_CANONICAL_AVATAR,
+    authorBranch: "Director / Admin · Computer Science",
+    isMasked: false,
+    maskAlias: "Maher Bhatt",
+    category: "College Feedback" as any,
+    createdAt: "Yesterday at 15:04",
+    likes: 42,
+    likedByMe: false,
+    pinned: true,
+    content: "Welcome to Campus Pulse! This campus community is made for all students to collaborate, exchange verified MST-1 question banks, and share exam insights. Feel free to request notes or discuss practicals here!",
+    linkUrl: "https://checkitoutlive.com",
+    verified: true,
+    comments: [
+      {
+        id: "c-101",
+        postId: "post-maher-verified",
+        authorId: "student-aarav",
+        authorName: "Aarav Patel",
+        authorEmail: "aarav.p@itm.ac.in",
+        authorAvatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=100",
+        isMasked: false,
+        maskAlias: "Aarav Patel",
+        content: "Super excited for this! The DSA questions bank is a lifesaver.",
+        createdAt: "Yesterday",
+        likes: 4
+      }
+    ]
   },
   {
-    id: "poll-lab-hours",
-    question: "Should the computer practical labs stay open till 6:30 PM before external practicals?",
-    category: "Campus Life",
-    options: [
-      { id: "opt-yes", text: "Yes, definitely! Need extra machine practice 💻", votes: 112 },
-      { id: "opt-no", text: "No, regular 4:30 PM schedule is enough 👍", votes: 18 },
-    ],
-    totalVotes: 130,
-  },
-  {
-    id: "poll-study-format",
-    question: "What format of study materials helps you prepare most effectively?",
-    category: "Study Tips",
-    options: [
-      { id: "opt-solved-mst", text: "Solved MST Question Banks with Mark Schemes", votes: 94 },
-      { id: "opt-short-notes", text: "Condensed Unit Formula Sheets & Diagrams", votes: 53 },
-      { id: "opt-mcq-drills", text: "Speed MCQ Drills with Explanations", votes: 31 },
-    ],
-    totalVotes: 178,
-  },
+    id: "post-study-buddies",
+    authorId: "group-buddies",
+    authorName: "Study Buddies",
+    authorEmail: "studybuddies@itm.ac.in",
+    authorAvatar: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=100",
+    authorBranch: "Campus Study Circle",
+    isMasked: false,
+    maskAlias: "Study Buddies",
+    category: "Community" as any,
+    createdAt: "Yesterday at 10:48",
+    likes: 88,
+    likedByMe: true,
+    pinned: false,
+    content: "Exciting thing for the semester! We are gathering for group study on Chapter 3 Matrix Algebra and Tree Traversal algorithms on the campus green lawn. Come join us! 😊",
+    mediaUrl: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&h=450&fit=crop",
+    verified: false,
+    comments: [
+      {
+        id: "c-102",
+        postId: "post-study-buddies",
+        authorId: "student-diya",
+        authorName: "Diya Sharma",
+        authorEmail: "diya.s@itm.ac.in",
+        authorAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100",
+        isMasked: false,
+        maskAlias: "Diya Sharma",
+        content: "Count me in! Bringing solved BCA question papers.",
+        createdAt: "Yesterday",
+        likes: 7
+      }
+    ]
+  }
 ];
 
 export default function CommunityPage() {
@@ -121,80 +134,40 @@ export default function CommunityPage() {
     return role === "admin" || user?.email?.toLowerCase() === "maherbhatt01@gmail.com";
   }, [role, user]);
 
-  // Feed State: strictly filter out any legacy dummy posts
+  // Feed State
   const [posts, setPosts] = useState<CommunityPost[]>(() => {
     try {
       const cached = localStorage.getItem("itm_campus_feed_posts");
       if (cached) {
         const parsed = JSON.parse(cached);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          const cleaned = parsed
-            .filter((p: CommunityPost) => !LEGACY_DUMMY_IDS.has(p.id) && !p.content?.includes("checkitoutlive"))
-            .map((p: CommunityPost) => {
-              const isMaher = 
-                p.authorName === "Maher Bhatt" || 
-                p.authorId === "admin-maher" ||
-                p.authorEmail?.toLowerCase() === "maherbhatt01@gmail.com" ||
-                p.authorEmail?.toLowerCase() === "maher@gmail.com";
-              if (isMaher) {
-                return { ...p, authorAvatar: MAHER_CANONICAL_AVATAR };
-              }
-              if (p.authorAvatar && p.authorAvatar.includes("photo-1535713875002-d1d0cf377fde")) {
-                return { ...p, authorAvatar: undefined };
-              }
-              return p;
-            });
-          localStorage.setItem("itm_campus_feed_posts", JSON.stringify(cleaned));
-          return cleaned;
+          return parsed.map((p: CommunityPost) => {
+            const isMaher = 
+              p.authorName === "Maher Bhatt" || 
+              p.authorId === "admin-maher" ||
+              p.authorEmail?.toLowerCase() === "maherbhatt01@gmail.com" ||
+              p.authorEmail?.toLowerCase() === "maher@gmail.com" ||
+              p.id === "post-maher-verified";
+            if (isMaher) {
+              return { ...p, authorAvatar: MAHER_CANONICAL_AVATAR };
+            }
+            if (p.authorAvatar && p.authorAvatar.includes("photo-1535713875002-d1d0cf377fde")) {
+              return { ...p, authorAvatar: undefined };
+            }
+            return p;
+          });
         }
       }
     } catch {
       // Fallback
     }
-    return [];
+    return INITIAL_RICH_POSTS;
   });
 
   const [isLoadingPosts, setIsLoadingPosts] = useState(false);
   const [activeCategoryFilter, setActiveCategoryFilter] = useState("Community");
-  const [postComposerCategory, setPostComposerCategory] = useState("General");
   const [sortFilter, setSortFilter] = useState("Latest Posts");
   const [postCardType, setPostCardType] = useState<"Campus" | "Videos" | "Polls">("Campus");
-
-  // Campus Polls State
-  const [polls, setPolls] = useState<CampusPoll[]>(() => {
-    try {
-      const raw = localStorage.getItem("itm_campus_polls");
-      if (raw) return JSON.parse(raw);
-    } catch {}
-    return DEFAULT_POLLS;
-  });
-
-  const handleVotePoll = (pollId: string, optionId: string) => {
-    setPolls((prev) => {
-      const updated = prev.map((p) => {
-        if (p.id !== pollId) return p;
-        if (p.userVotedOptionId) {
-          toast.info("You have already voted in this poll!");
-          return p;
-        }
-        const updatedOpts = p.options.map((opt) =>
-          opt.id === optionId ? { ...opt, votes: opt.votes + 1 } : opt
-        );
-        addXp(10);
-        toast.success("Vote recorded! +10 XP earned 🗳️");
-        return {
-          ...p,
-          options: updatedOpts,
-          totalVotes: p.totalVotes + 1,
-          userVotedOptionId: optionId,
-        };
-      });
-      try {
-        localStorage.setItem("itm_campus_polls", JSON.stringify(updated));
-      } catch {}
-      return updated;
-    });
-  };
 
   // Create Post State & Image Attachment
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -237,31 +210,33 @@ export default function CommunityPage() {
     return new Set(["friend-khalid"]);
   });
 
-  // Load feed from Supabase Backend with clean caching
+  // Load feed from Supabase Backend with local fallback
   const loadFeed = useCallback(async (showLoading = false) => {
     if (showLoading) setIsLoadingPosts(true);
     try {
       const remote = await fetchCommunityPosts(user?.id);
-      const cleaned = (remote || []).filter(
-        (p) => !LEGACY_DUMMY_IDS.has(p.id) && !p.content?.includes("checkitoutlive")
-      );
-      
-      // Dynamically inject current user's avatar for Maher Bhatt posts if missing
-      const normalized = cleaned.map((p) => {
-        if (p.authorName === "Maher Bhatt" || p.authorId === "admin-maher") {
-          return {
-            ...p,
-            authorAvatar: currentUserAvatar || MAHER_CANONICAL_AVATAR,
-            verified: true,
-          };
-        }
-        return p;
-      });
+      if (remote && remote.length > 0) {
+        // Merge with initial rich sample posts to guarantee verified design posts remain present
+        const combined = [...remote, ...INITIAL_RICH_POSTS];
+        const unique = Array.from(new Map(combined.map((p) => [p.id, p])).values());
+        
+        // Dynamically inject current user's avatar for Maher Bhatt posts if missing
+        const normalized = unique.map((p) => {
+          if (p.authorName === "Maher Bhatt" || p.authorId === "admin-maher") {
+            return {
+              ...p,
+              authorAvatar: currentUserAvatar || MAHER_CANONICAL_AVATAR,
+              verified: true,
+            };
+          }
+          return p;
+        });
 
-      setPosts(normalized);
-      try {
-        localStorage.setItem("itm_campus_feed_posts", JSON.stringify(normalized));
-      } catch {}
+        setPosts(normalized);
+        try {
+          localStorage.setItem("itm_campus_feed_posts", JSON.stringify(normalized));
+        } catch {}
+      }
     } catch (err) {
       console.warn("Using offline feed data:", err);
     } finally {
@@ -297,9 +272,7 @@ export default function CommunityPage() {
     if (!newPostText.trim() && !selectedImage) return;
 
     setIsSubmitting(true);
-    const postCategory = isMaskedPost || activeCategoryFilter === "Confessions" 
-      ? "Campus Confessions" 
-      : postComposerCategory;
+    const postCategory = activeCategoryFilter === "Confessions" ? "Campus Confessions" : "College Feedback";
 
     const newPostData = {
       authorId: user?.id || "student-local",
@@ -489,7 +462,7 @@ export default function CommunityPage() {
   ];
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-[1600px] mx-auto space-y-6 animate-fade-in text-foreground">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-[1600px] mx-auto w-full space-y-6 animate-fade-in text-foreground overflow-x-hidden">
       {/* ── TOP HEADER SECTION ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-border/60">
         <div>
@@ -712,97 +685,70 @@ export default function CommunityPage() {
 
         {/* ── COLUMN 2: MAIN SOCIAL FEED (lg:col-span-6) ── */}
         <div className="lg:col-span-6 space-y-5">
-          {/* 1. Create Post Input Box with Canonical User Avatar, Category Selector & Image Attachment */}
+          {/* 1. Create Post Input Box with Canonical User Avatar & Image Attachment */}
           <div className="bg-card border border-border rounded-2xl p-4 shadow-sm space-y-3">
             <form onSubmit={handleCreatePost} className="space-y-3">
-              <div className="flex items-center gap-3">
-                <UserAvatar
-                  avatarUrl={currentUserAvatar}
-                  displayName={currentUserName}
-                  email={user?.email}
-                  className="w-9 h-9 text-xs"
-                />
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3 w-full">
+                <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto flex-1 min-w-0">
+                  <UserAvatar
+                    avatarUrl={currentUserAvatar}
+                    displayName={currentUserName}
+                    email={user?.email}
+                    className="w-9 h-9 text-xs shrink-0"
+                  />
 
-                <input
-                  id="post-composer-input"
-                  type="text"
-                  placeholder={
-                    isMaskedPost || activeCategoryFilter === "Confessions"
-                      ? "Post an anonymous campus confession or doubt..."
-                      : "Write a question, share exam tips, or upload notes..."
-                  }
-                  value={newPostText}
-                  onChange={(e) => setNewPostText(e.target.value)}
-                  className="flex-1 h-10 px-4 rounded-full border border-input bg-secondary/40 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
-                />
-
-                {/* Hidden Image File Input */}
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleImageFileSelect}
-                />
-
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className={`p-2 rounded-full transition-colors cursor-pointer ${
-                    selectedImage ? "text-primary bg-primary/10" : "text-muted-foreground hover:text-foreground hover:bg-secondary"
-                  }`}
-                  title="Attach Photo / Diagram / Screenshot"
-                >
-                  <ImageIcon className="h-5 w-5" />
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setNewPostText((prev) => prev + " 😊 ")}
-                  className="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer"
-                  title="Add Emoji"
-                >
-                  <Smile className="h-5 w-5" />
-                </button>
-
-                <button
-                  type="submit"
-                  disabled={isSubmitting || (!newPostText.trim() && !selectedImage)}
-                  className="px-4 py-2 rounded-full bg-brand-forest hover:bg-brand-deep text-white text-xs font-bold shadow-md shadow-brand-forest/20 border border-brand-chartreuse/30 disabled:opacity-50 transition-all shrink-0 cursor-pointer"
-                >
-                  {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : "Post"}
-                </button>
-              </div>
-
-              {/* Category Pills & Anonymous Mask Toggle */}
-              <div className="pt-2 border-t border-border/50 flex flex-wrap items-center justify-between gap-2 text-xs">
-                <div className="flex flex-wrap items-center gap-1.5">
-                  <span className="text-[10px] font-bold text-muted-foreground uppercase mr-1">Category:</span>
-                  {["General", "Exam Tips", "Notes Request", "Projects & Lab", "College Feedback"].map((cat) => (
-                    <button
-                      key={cat}
-                      type="button"
-                      onClick={() => setPostComposerCategory(cat)}
-                      className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all cursor-pointer ${
-                        postComposerCategory === cat
-                          ? "bg-primary text-primary-foreground shadow-xs"
-                          : "bg-secondary/60 text-muted-foreground hover:text-foreground hover:bg-secondary"
-                      }`}
-                    >
-                      {cat}
-                    </button>
-                  ))}
+                  <input
+                    id="post-composer-input"
+                    type="text"
+                    placeholder={
+                      activeCategoryFilter === "Confessions"
+                        ? "Post an anonymous campus confession..."
+                        : "Write a new question, share campus news..."
+                    }
+                    value={newPostText}
+                    onChange={(e) => setNewPostText(e.target.value)}
+                    className="flex-1 min-w-0 h-10 px-3 sm:px-4 rounded-full border border-input bg-secondary/40 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                  />
                 </div>
 
-                <label className="flex items-center gap-1.5 text-[11px] text-muted-foreground cursor-pointer select-none hover:text-foreground">
+                <div className="flex items-center gap-1 sm:gap-2 self-end sm:self-auto shrink-0">
+                  {/* Hidden Image File Input */}
                   <input
-                    type="checkbox"
-                    checked={isMaskedPost}
-                    onChange={(e) => setIsMaskedPost(e.target.checked)}
-                    className="rounded border-border text-primary focus:ring-0 cursor-pointer"
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleImageFileSelect}
                   />
-                  <span>🎭 Post Anonymously</span>
-                </label>
+
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className={`p-2 rounded-full transition-colors cursor-pointer ${
+                      selectedImage ? "text-primary bg-primary/10" : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                    }`}
+                    title="Attach Photo / Diagram / Screenshot"
+                  >
+                    <ImageIcon className="h-5 w-5" />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setNewPostText((prev) => prev + " 😊 ")}
+                    className="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer"
+                    title="Add Emoji"
+                  >
+                    <Smile className="h-5 w-5" />
+                  </button>
+
+                  <button
+                    type="submit"
+                    disabled={isSubmitting || (!newPostText.trim() && !selectedImage)}
+                    className="px-4 py-2 ml-1 rounded-full bg-brand-forest hover:bg-brand-deep text-white text-xs font-bold shadow-md shadow-brand-forest/20 border border-brand-chartreuse/30 disabled:opacity-50 transition-all shrink-0 cursor-pointer"
+                  >
+                    {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : "Post"}
+                  </button>
+                </div>
               </div>
 
               {/* Image Preview thumbnail if selected */}
@@ -832,119 +778,14 @@ export default function CommunityPage() {
             </form>
           </div>
 
-          {/* 2. Campus Polls View (When Polls tab is selected) */}
-          {postCardType === "Polls" && (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between pb-1">
-                <div>
-                  <h3 className="font-bold text-base text-foreground">Active Campus Polls</h3>
-                  <p className="text-xs text-muted-foreground">Vote and see real-time opinions from ITM students</p>
-                </div>
-                <span className="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-mono text-[10px] font-bold border border-emerald-500/20">
-                  +10 XP / Vote
-                </span>
+          {/* 2. Feed Posts */}
+          <div className="space-y-4">
+            {isLoadingPosts && (
+              <div className="p-8 text-center bg-card rounded-2xl border border-border">
+                <Loader2 className="h-6 w-6 animate-spin mx-auto text-primary mb-2" />
+                <p className="text-xs text-muted-foreground">Loading verified campus pulse...</p>
               </div>
-
-              {polls.map((poll) => {
-                const hasVoted = !!poll.userVotedOptionId;
-                return (
-                  <div key={poll.id} className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-4">
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-primary/10 text-primary border border-primary/20">
-                          {poll.category}
-                        </span>
-                        <h4 className="font-bold text-sm text-foreground mt-1.5 leading-snug">
-                          {poll.question}
-                        </h4>
-                      </div>
-                      <span className="text-[11px] font-mono font-semibold text-muted-foreground shrink-0">
-                        {poll.totalVotes} votes
-                      </span>
-                    </div>
-
-                    <div className="space-y-2">
-                      {poll.options.map((opt) => {
-                        const pct = poll.totalVotes > 0 ? Math.round((opt.votes / poll.totalVotes) * 100) : 0;
-                        const isSelected = poll.userVotedOptionId === opt.id;
-                        return (
-                          <button
-                            key={opt.id}
-                            type="button"
-                            disabled={hasVoted}
-                            onClick={() => handleVotePoll(poll.id, opt.id)}
-                            className={`w-full text-left relative overflow-hidden rounded-xl border p-3 text-xs font-semibold transition-all ${
-                              isSelected
-                                ? "border-brand-forest bg-brand-forest/10 text-foreground ring-1 ring-brand-forest font-bold"
-                                : hasVoted
-                                ? "border-border/60 bg-secondary/20 text-foreground/90 cursor-default"
-                                : "border-border hover:border-primary/50 hover:bg-secondary/40 text-foreground cursor-pointer"
-                            }`}
-                          >
-                            {/* Animated progress bar fill if voted */}
-                            {hasVoted && (
-                              <div
-                                className={`absolute inset-y-0 left-0 transition-all duration-700 pointer-events-none ${
-                                  isSelected ? "bg-brand-forest/20" : "bg-secondary/50"
-                                }`}
-                                style={{ width: `${pct}%` }}
-                              />
-                            )}
-                            <div className="relative z-10 flex items-center justify-between gap-2">
-                              <span className="flex items-center gap-2">
-                                {isSelected && <Check className="h-3.5 w-3.5 text-brand-forest" />}
-                                <span>{opt.text}</span>
-                              </span>
-                              {hasVoted && (
-                                <span className="font-mono text-xs font-bold text-foreground shrink-0">
-                                  {pct}%
-                                </span>
-                              )}
-                            </div>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-
-          {/* 3. Feed Posts (When Campus or Videos is selected) */}
-          {postCardType !== "Polls" && (
-            <div className="space-y-4">
-              {isLoadingPosts && (
-                <div className="p-8 text-center bg-card rounded-2xl border border-border">
-                  <Loader2 className="h-6 w-6 animate-spin mx-auto text-primary mb-2" />
-                  <p className="text-xs text-muted-foreground">Loading verified campus pulse...</p>
-                </div>
-              )}
-
-              {!isLoadingPosts && filteredPosts.length === 0 && (
-                <div className="bg-card border border-border rounded-2xl p-10 text-center space-y-4 shadow-sm">
-                  <div className="w-14 h-14 rounded-2xl bg-[#183F36]/10 text-[#183F36] dark:text-[#D6E85D] flex items-center justify-center mx-auto">
-                    <Sparkles className="h-7 w-7" />
-                  </div>
-                  <div className="max-w-md mx-auto space-y-1">
-                    <h3 className="font-bold text-base text-foreground font-display">Campus Social Feed</h3>
-                    <p className="text-xs text-muted-foreground leading-relaxed">
-                      No posts in this category yet. Share an exam insight, question banks, or start a study discussion!
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const input = document.getElementById("post-composer-input");
-                      input?.focus();
-                    }}
-                    className="px-5 py-2.5 rounded-xl bg-brand-forest hover:bg-brand-deep text-white text-xs font-bold shadow-md shadow-brand-forest/20 inline-flex items-center gap-2 cursor-pointer transition-all"
-                  >
-                    <Plus className="h-4 w-4 text-brand-chartreuse" />
-                    <span>Create First Post</span>
-                  </button>
-                </div>
-              )}
+            )}
 
             {filteredPosts.map((post) => {
               const isAuthor = user?.id && post.authorId === user.id;
@@ -1113,8 +954,7 @@ export default function CommunityPage() {
                 </div>
               );
             })}
-            </div>
-          )}
+          </div>
         </div>
 
         {/* ── COLUMN 3: TRENDING TOPICS & BUDDIES (lg:col-span-3) ── */}

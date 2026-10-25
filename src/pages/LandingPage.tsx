@@ -365,7 +365,7 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
       <div className="min-h-screen bg-[#F5F1E8] dark:bg-[#12221E] text-[#202522] dark:text-[#F5F1E8] selection:bg-[#D6E85D] selection:text-[#183F36] font-sans antialiased">
 
         {/* ── TOP NAVBAR ─────────────────────────────────────────────────────── */}
-        <header className="sticky top-0 z-50 bg-[#183F36]/95 backdrop-blur-md border-b border-[#1D4A3F] px-4 sm:px-8 py-3.5 transition-colors">
+        <header className="sticky top-0 z-50 bg-[#183F36]/95 backdrop-blur-md border-b border-[#1D4A3F] px-4 sm:px-8 transition-colors pt-[calc(env(safe-area-inset-top,0px)+0.75rem)] pb-3">
           <div className="max-w-7xl mx-auto flex items-center justify-between">
             <Link to="/" className="flex items-center gap-2 group">
               <ItmMoocsLogo variant="live" size="md" showTagline={false} inverted={true} />

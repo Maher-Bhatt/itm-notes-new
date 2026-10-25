@@ -136,7 +136,7 @@ export default function SubjectsPage() {
         </div>
 
         {/* Quick Jump Bar */}
-        <div className="relative z-10 mt-6 pt-5 border-t border-white/10 flex flex-wrap items-center gap-2">
+        <div className="relative z-10 mt-6 pt-5 border-t border-white/10 flex items-center gap-2 overflow-x-auto scrollbar-none max-w-full pb-1">
           <span className="text-xs font-bold text-[#D6E85D] flex items-center gap-1.5 shrink-0">
             <Flame className="h-3.5 w-3.5" />
             Quick Access Sem 3:
@@ -145,7 +145,7 @@ export default function SubjectsPage() {
             <Link
               key={sub.id}
               to={`/subject/${sub.id}`}
-              className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-white/10 hover:bg-[#D6E85D] hover:text-[#183F36] text-white border border-white/15 transition-all"
+              className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-white/10 hover:bg-[#D6E85D] hover:text-[#183F36] text-white border border-white/15 transition-all shrink-0 whitespace-nowrap"
             >
               {sub.name.replace("Comprehensive University Syllabus for ", "").split("—")[0].trim()}
             </Link>
@@ -157,7 +157,7 @@ export default function SubjectsPage() {
       <div className="bg-card border border-border/80 rounded-2xl p-4 shadow-xs space-y-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           {/* Semester Filter Tabs */}
-          <div className="flex flex-wrap items-center gap-1.5 bg-secondary/60 p-1 rounded-xl border border-border/60">
+          <div className="flex items-center gap-1.5 bg-secondary/60 p-1 rounded-xl border border-border/60 overflow-x-auto scrollbar-none max-w-full">
             {[
               { label: "Semester 3 (Core)", val: 3 },
               { label: "Semester 2", val: 2 },

@@ -1,12 +1,25 @@
 import { useLocation, Link } from 'react-router-dom';
-import { BookOpen, LayoutDashboard, Code2, MessageSquare, User, Flame } from 'lucide-react';
+import { BookOpen, LayoutDashboard, Code2, MessageSquare, User } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useGamification } from '@/hooks/useGamification';
+import { Capacitor } from '@capacitor/core';
+import { Haptics, ImpactStyle } from '@capacitor/haptics';
 
 export function MobileBottomNav() {
   const location = useLocation();
   const { user } = useAuth();
   const { state: game } = useGamification();
+
+  // Trigger gentle native haptic feedback on mobile tap
+  const handleNavClick = async () => {
+    if (Capacitor.isNativePlatform()) {
+      try {
+        await Haptics.impact({ style: ImpactStyle.Light });
+      } catch (e) {
+        // Fallback silently if haptics fail
+      }
+    }
+  };
 
   // Hide on topic reading page to keep screen real estate 100% focused on reading
   if (location.pathname.includes('/topic/')) {
@@ -65,10 +78,10 @@ export function MobileBottomNav() {
   return (
     <nav 
       aria-label="Mobile Navigation"
-      className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-background/90 backdrop-blur-xl border-t border-border/80 shadow-lg"
-      style={{ paddingBottom: 'env(safe-area-inset-bottom, 6px)' }}
+      className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-2xl border-t border-border/80 shadow-2xl transition-all"
+      style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 8px) + 2px)' }}
     >
-      <div className="flex items-center justify-around h-14 max-w-lg mx-auto px-2">
+      <div className="flex items-center justify-around h-14 max-w-lg mx-auto px-3">
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = item.isActive;
@@ -76,16 +89,22 @@ export function MobileBottomNav() {
             <Link
               key={item.to}
               to={item.to}
-              className={`flex flex-col items-center justify-center flex-1 py-1 px-1 transition-all rounded-xl select-none apple-press min-h-[44px] ${
+              onClick={handleNavClick}
+              className={`flex flex-col items-center justify-center flex-1 py-1 px-1 transition-all rounded-2xl select-none apple-press min-h-[44px] relative ${
                 active 
-                  ? 'text-primary font-bold' 
+                  ? 'text-primary font-extrabold'
                   : 'text-muted-foreground hover:text-foreground font-medium'
               }`}
             >
+              {/* Active Pill Background Indicator */}
+              {active && (
+                <span className="absolute inset-y-1 inset-x-2 bg-primary/10 dark:bg-primary/20 rounded-xl -z-10 animate-scale-in" />
+              )}
+
               <div className="relative flex items-center justify-center">
-                <Icon className={`h-5 w-5 transition-transform ${active ? 'scale-110 stroke-[2.5]' : 'stroke-[1.8]'}`} />
+                <Icon className={`h-5 w-5 transition-transform duration-200 ${active ? 'scale-110 text-primary stroke-[2.5]' : 'stroke-[1.8]'}`} />
                 {item.badge && (
-                  <span className="absolute -top-1 -right-2 text-[9px] font-bold px-1 py-0.2 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30">
+                  <span className="absolute -top-1.5 -right-3 text-[9px] font-black px-1.5 py-0.2 rounded-full bg-amber-500 text-white shadow-xs">
                     {item.badge}
                   </span>
                 )}
