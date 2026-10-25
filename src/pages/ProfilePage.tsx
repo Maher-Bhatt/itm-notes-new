@@ -32,9 +32,20 @@ import {
   CheckCircle2,
   TrendingUp,
   ShieldCheck,
-  BarChart2
+  BarChart2,
+  Bell,
+  BellOff,
+  Shield,
+  Sliders,
+  CalendarDays
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { 
+  registerPushSubscription, 
+  unsubscribePush, 
+  getPushSubscriptionStatus, 
+  sendTestNotification 
+} from '@/services/pushNotificationService';
 import { DataExportDeleteModal } from '@/components/DataExportDeleteModal';
 import { subjects, getAllTopicIds } from '@/data/subjects';
 import { MAHER_CANONICAL_AVATAR, resolveAvatarUrl } from '@/components/UserAvatar';
@@ -90,7 +101,17 @@ export const renderAvatarBox = (url: string | null | undefined, name: string, si
 export default function ProfilePage() {
   const { user, profile, role, updateProfile, uploadAvatar } = useAuth();
   const navigate = useNavigate();
-  const { state: game, levelInfo, unlockAchievement } = useGamification();
+  const { 
+    state: game, 
+    levelInfo, 
+    unlockAchievement,
+    claimWeeklyFreeze,
+    setWeeklyGoal,
+    weeklyGoalDays,
+    weeklyStudyDaysCount,
+    weeklyGoalPercent,
+    streakFreezeCount,
+  } = useGamification();
   const { progress } = useProgress();
 
   const [isDataExportOpen, setIsDataExportOpen] = useState(false);
@@ -99,7 +120,98 @@ export default function ProfilePage() {
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [activeTierFilter, setActiveTierFilter] = useState<'all' | 'unlocked' | 'bronze' | 'silver' | 'gold' | 'legendary' | 'mythic'>('all');
   const [activeCategoryFilter, setActiveCategoryFilter] = useState<'all' | 'coding' | 'quiz' | 'streak' | 'time' | 'learning'>('all');
-  const [activeProfileTab, setActiveProfileTab] = useState<'achievements' | 'academic' | 'focus' | 'bookmarks'>('achievements');
+  const [activeProfileTab, setActiveProfileTab] = useState<'achievements' | 'academic' | 'focus' | 'bookmarks' | 'habits'>('achievements');
+  const [division, setDivision] = useState(profile?.division || 'Div A');
+  const [pushEnabled, setPushEnabled] = useState(false);
+  const [isPushLoading, setIsPushLoading] = useState(false);
+  const [motionReduced, setMotionReduced] = useState(() => {
+    try {
+      return localStorage.getItem('itm_reduced_motion') === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  useEffect(() => {
+    if (user?.id) {
+      getPushSubscriptionStatus(user.id).then(setPushEnabled);
+    }
+    if (profile?.division) {
+      setDivision(profile.division);
+    }
+  }, [user?.id, profile?.division]);
+
+  const handleTogglePush = async (enable: boolean) => {
+    if (!user?.id) {
+      toast.error('Please sign in to enable push notifications');
+      return;
+    }
+    setIsPushLoading(true);
+    try {
+      if (enable) {
+        const success = await registerPushSubscription(user.id);
+        if (success) {
+          setPushEnabled(true);
+          toast.success('Push notifications enabled for exam & study reminders!');
+        } else {
+          toast.error('Notification permission was blocked in browser settings.');
+        }
+      } else {
+        await unsubscribePush(user.id);
+        setPushEnabled(false);
+        toast.info('Push notifications disabled.');
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error('Could not update push notification settings.');
+    } finally {
+      setIsPushLoading(false);
+    }
+  };
+
+  const handleToggleMotion = async (enabled: boolean) => {
+    setMotionReduced(enabled);
+    try {
+      localStorage.setItem('itm_reduced_motion', String(enabled));
+      if (enabled) {
+        document.documentElement.setAttribute('data-reduced-motion', 'true');
+      } else {
+        document.documentElement.removeAttribute('data-reduced-motion');
+      }
+      await updateProfile({ motion_reduced: enabled });
+      toast.success(enabled ? 'Reduced motion enabled (battery saver & minimal animations)' : 'Standard animations enabled');
+    } catch {
+      toast.info('Motion preference saved');
+    }
+  };
+
+  const handleSelectDivision = async (newDiv: string) => {
+    setDivision(newDiv);
+    try {
+      await updateProfile({ division: newDiv });
+      toast.success(`Personal Timetable section set to ${newDiv}`);
+    } catch {
+      toast.info(`Timetable section set to ${newDiv}`);
+    }
+  };
+
+  const handleSetWeeklyGoalDays = async (days: number) => {
+    try {
+      await setWeeklyGoal(days);
+      toast.success(`Weekly study target updated to ${days} days per week!`);
+    } catch {
+      toast.error('Failed to update weekly goal');
+    }
+  };
+
+  const handleClaimFreeze = async () => {
+    const success = await claimWeeklyFreeze();
+    if (success) {
+      toast.success('🛡️ Weekly Streak Freeze claimed! Your study streak is protected.');
+    } else {
+      toast.info('Weekly freeze already claimed for this week. Returns on Monday!');
+    }
+  };
   const [isBoostActive, setIsBoostActive] = useState(() => {
     try {
       const exp = localStorage.getItem('itm_xp_boost_expires');
@@ -235,6 +347,8 @@ export default function ProfilePage() {
         enrollment_no: enrollmentNo,
         target_cgpa: targetCgpa,
         goal,
+        division,
+        weekly_goal_days: weeklyGoalDays,
       });
       setIsEditing(false);
       toast.success('Profile details saved to database successfully!');
@@ -422,6 +536,7 @@ export default function ProfilePage() {
             { id: 'academic', label: '📊 Academic Progress & CGPA', badge: '75% SAFE' },
             { id: 'focus', label: '⏱️ Deep Focus & Quizzes', count: `${quizScores.length} Quizzes` },
             { id: 'bookmarks', label: '🔖 Bookmarked Notes', count: `${progress.bookmarkedTopics.length}` },
+            { id: 'habits', label: '⚙️ Study Habits & Settings', badge: `${weeklyStudyDaysCount}/${weeklyGoalDays}d` },
           ].map((tab) => {
             const isActive = activeProfileTab === tab.id;
             return (
@@ -960,6 +1075,266 @@ export default function ProfilePage() {
           </div>
         )}
 
+        {/* TAB 5: STUDY HABITS, GOALS & APP SETTINGS */}
+        {activeProfileTab === 'habits' && (
+          <div className="space-y-6 animate-fade-in">
+            {/* 1. Weekly Study Goal & Streak Freeze Card (A4) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Weekly Goal Progress */}
+              <div className="bg-card border border-border/80 rounded-3xl p-6 shadow-sm space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-10 h-10 rounded-2xl bg-primary/10 text-primary flex items-center justify-center">
+                      <Target className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-base text-foreground font-display">Weekly Study Target</h3>
+                      <p className="text-xs text-muted-foreground">Self-set habit pacing for the week</p>
+                    </div>
+                  </div>
+                  <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/20">
+                    {weeklyStudyDaysCount} / {weeklyGoalDays} Days
+                  </span>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-muted-foreground font-medium">This Week's Completion</span>
+                    <span className="font-mono font-bold text-foreground">{weeklyGoalPercent}%</span>
+                  </div>
+                  <div className="h-2.5 rounded-full bg-secondary overflow-hidden">
+                    <div 
+                      className="h-full bg-primary rounded-full transition-all duration-500" 
+                      style={{ width: `${weeklyGoalPercent}%` }}
+                    />
+                  </div>
+                </div>
+
+                {/* Day selector pills 1 to 7 */}
+                <div>
+                  <label className="text-xs font-semibold text-muted-foreground block mb-2">
+                    Adjust target study days per week:
+                  </label>
+                  <div className="grid grid-cols-7 gap-1.5">
+                    {[1, 2, 3, 4, 5, 6, 7].map((days) => (
+                      <button
+                        key={days}
+                        type="button"
+                        onClick={() => handleSetWeeklyGoalDays(days)}
+                        className={`py-2 rounded-xl text-xs font-bold transition-all border cursor-pointer ${
+                          weeklyGoalDays === days
+                            ? 'bg-[#183F36] text-[#D6E85D] border-[#183F36] shadow-sm'
+                            : 'bg-secondary/50 text-foreground border-border hover:border-primary/40'
+                        }`}
+                      >
+                        {days}d
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-[11px] text-muted-foreground mt-2">
+                    {weeklyStudyDaysCount >= weeklyGoalDays 
+                      ? "🎉 Goal completed for this week! Great consistency."
+                      : `${weeklyGoalDays - weeklyStudyDaysCount} more study day${weeklyGoalDays - weeklyStudyDaysCount > 1 ? 's' : ''} needed to hit your target.`}
+                  </p>
+                </div>
+              </div>
+
+              {/* Streak Freeze Card (A4) */}
+              <div className="bg-card border border-border/80 rounded-3xl p-6 shadow-sm flex flex-col justify-between space-y-4">
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-10 h-10 rounded-2xl bg-blue-500/10 text-blue-500 flex items-center justify-center">
+                        <Shield className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-base text-foreground font-display">Streak Freeze Safeguard</h3>
+                        <p className="text-xs text-muted-foreground">Automated protection for study breaks</p>
+                      </div>
+                    </div>
+                    <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 flex items-center gap-1">
+                      <Shield className="h-3.5 w-3.5" />
+                      <span>{streakFreezeCount} Available</span>
+                    </span>
+                  </div>
+
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    A Streak Freeze automatically protects your daily study streak if you miss a day due to sick leave or exam travel. You can claim 1 freeze every week (max 2 banked).
+                  </p>
+                </div>
+
+                <div className="pt-2 border-t border-border/60 flex items-center justify-between">
+                  <span className="text-[11px] text-muted-foreground">
+                    Current Streak: <strong className="text-foreground">{game.streakDays} Days 🔥</strong>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleClaimFreeze}
+                    className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <Shield className="h-3.5 w-3.5" />
+                    <span>Claim Weekly Freeze</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* 2. Personal Class Timetable & Division (A6) */}
+            <div className="bg-card border border-border/80 rounded-3xl p-6 shadow-sm space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center">
+                    <CalendarDays className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-base text-foreground font-display">Personal Class Timetable & Division</h3>
+                    <p className="text-xs text-muted-foreground">Select your university class section to synchronize your daily schedule</p>
+                  </div>
+                </div>
+
+                <Link
+                  to="/today"
+                  className="px-4 py-2 rounded-xl bg-[#183F36] hover:bg-[#12332C] text-[#D6E85D] text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 self-start sm:self-auto"
+                >
+                  <span>Open Today's Hub</span>
+                  <ChevronRight className="h-3.5 w-3.5" />
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-2">
+                {[
+                  { div: 'Div A', label: 'Class 1', room: 'EB-15', floor: '1st Floor' },
+                  { div: 'Div B', label: 'Class 2', room: 'EB-16', floor: '1st Floor' },
+                  { div: 'Div C', label: 'Class 3', room: 'EB-20', floor: '2nd Floor' },
+                  { div: 'Div D', label: 'Class 4', room: 'EB-39', floor: '3rd Floor' },
+                  { div: 'Div E', label: 'Class 5', room: 'EB-25', floor: '2nd Floor' },
+                ].map((item) => {
+                  const isSelected = division?.toLowerCase() === item.div.toLowerCase() || (item.div.endsWith('A') && !division);
+                  return (
+                    <button
+                      key={item.div}
+                      type="button"
+                      onClick={() => handleSelectDivision(item.div)}
+                      className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer ${
+                        isSelected
+                          ? 'border-primary bg-primary/10 ring-2 ring-primary/30 shadow-sm'
+                          : 'border-border/80 bg-secondary/30 hover:bg-secondary hover:border-border'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="font-bold text-sm text-foreground">{item.div}</span>
+                        {isSelected && <Check className="h-4 w-4 text-primary" />}
+                      </div>
+                      <span className="text-xs text-muted-foreground block">{item.label}</span>
+                      <span className="text-[11px] font-mono text-primary font-semibold block mt-1">
+                        {item.room} · {item.floor}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* 3. Push Notifications & Reduced Motion (A1 & B6) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Push Notifications (A1) */}
+              <div className="bg-card border border-border/80 rounded-3xl p-6 shadow-sm space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
+                      <Bell className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-base text-foreground font-display">Push Notifications</h3>
+                      <p className="text-xs text-muted-foreground">Mobile & browser study reminders</p>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    disabled={isPushLoading}
+                    onClick={() => handleTogglePush(!pushEnabled)}
+                    className={`w-12 h-6 rounded-full transition-colors relative cursor-pointer ${
+                      pushEnabled ? 'bg-primary' : 'bg-secondary border border-border'
+                    }`}
+                  >
+                    <span 
+                      className={`block w-5 h-5 rounded-full bg-white shadow-md transform transition-transform ${
+                        pushEnabled ? 'translate-x-6' : 'translate-x-0.5'
+                      }`} 
+                    />
+                  </button>
+                </div>
+
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Real push notifications alert you about SRS flashcards due for review, daily streak reminders at 8:00 PM, and upcoming university exam slots.
+                </p>
+
+                <div className="pt-2 border-t border-border/60 flex items-center justify-between">
+                  <span className="text-[11px] text-muted-foreground font-mono">
+                    Status: <strong className={pushEnabled ? "text-emerald-600" : "text-muted-foreground"}>
+                      {pushEnabled ? "Subscribed to Backend" : "Disabled"}
+                    </strong>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={sendTestNotification}
+                    className="px-3 py-1.5 rounded-lg border border-border text-xs font-semibold text-foreground hover:bg-secondary transition-colors cursor-pointer"
+                  >
+                    Test Push Alert
+                  </button>
+                </div>
+              </div>
+
+              {/* Reduced Motion System (B6) */}
+              <div className="bg-card border border-border/80 rounded-3xl p-6 shadow-sm space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-10 h-10 rounded-2xl bg-purple-500/10 text-purple-500 flex items-center justify-center">
+                      <Sliders className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-base text-foreground font-display">Reduce Motion</h3>
+                      <p className="text-xs text-muted-foreground">Accessibility & battery saver mode</p>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => handleToggleMotion(!motionReduced)}
+                    className={`w-12 h-6 rounded-full transition-colors relative cursor-pointer ${
+                      motionReduced ? 'bg-primary' : 'bg-secondary border border-border'
+                    }`}
+                  >
+                    <span 
+                      className={`block w-5 h-5 rounded-full bg-white shadow-md transform transition-transform ${
+                        motionReduced ? 'translate-x-6' : 'translate-x-0.5'
+                      }`} 
+                    />
+                  </button>
+                </div>
+
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Disables non-essential 3D card flips, transition springs, and pulsating badges for students sensitive to motion or running on budget Android devices.
+                </p>
+
+                <div className="pt-2 border-t border-border/60 flex items-center justify-between">
+                  <span className="text-[11px] text-muted-foreground font-mono">
+                    Mode: <strong>{motionReduced ? "Reduced Animations" : "Full Dynamic Motion"}</strong>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setIsDataExportOpen(true)}
+                    className="text-xs text-muted-foreground hover:text-foreground underline transition-colors cursor-pointer"
+                  >
+                    Data & Privacy
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
       {/* Edit Profile & Photo Modal */}
       {isEditing && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in overflow-y-auto">
@@ -1092,6 +1467,23 @@ export default function ProfilePage() {
                     {[1, 2, 3, 4, 5, 6, 7, 8].map((s) => (
                       <option key={s} value={s}>Semester {s}</option>
                     ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-xs font-semibold text-muted-foreground block mb-1">
+                    Class Division / Section
+                  </label>
+                  <select
+                    value={division}
+                    onChange={(e) => setDivision(e.target.value)}
+                    className="w-full h-10 px-3 rounded-lg border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                  >
+                    <option value="Div A">Div A (Class 1 · EB-15)</option>
+                    <option value="Div B">Div B (Class 2 · EB-16)</option>
+                    <option value="Div C">Div C (Class 3 · EB-20)</option>
+                    <option value="Div D">Div D (Class 4 · EB-39)</option>
+                    <option value="Div E">Div E (Class 5 · EB-25)</option>
                   </select>
                 </div>
 

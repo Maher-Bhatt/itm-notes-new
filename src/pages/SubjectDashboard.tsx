@@ -88,6 +88,10 @@ export default function SubjectDashboard() {
 
   const { isCompleted, isBookmarked, getSubjectProgress } = useProgress();
 
+  const siblingSubjects = useMemo(
+    () => (subject ? subjects.filter((s) => s.semester === subject.semester) : []),
+    [subject?.semester]
+  );
   if (isDbLoading) {
     return <SubjectDashboardSkeleton />;
   }
@@ -106,11 +110,6 @@ export default function SubjectDashboard() {
 
   const topicIds = getAllTopicIds(subject.id);
   const progress = getSubjectProgress(topicIds);
-
-  const siblingSubjects = useMemo(
-    () => subjects.filter((s) => s.semester === subject.semester),
-    [subject.semester]
-  );
 
   const toggleUnit = (unitId: string) => {
     setCollapsedUnits((prev) =>

@@ -89,9 +89,21 @@ export async function fetchCommunityPosts(currentUserId?: string): Promise<Commu
         content: c.content,
         createdAt: formatTimeAgo(c.created_at),
         likes: c.likes || 0,
+        isVerified: Boolean(c.is_verified),
+        verifiedBy: c.verified_by,
+        verifiedAt: c.verified_at,
+        isAiGenerated: Boolean(c.is_ai_generated),
       });
     });
 
+    // Sort comments so verified answers appear on top
+    Object.keys(commentsByPostId).forEach((postId) => {
+      commentsByPostId[postId].sort((a, b) => {
+        if (a.isVerified && !b.isVerified) return -1;
+        if (!a.isVerified && b.isVerified) return 1;
+        return 0;
+      });
+    });
     // 4. Map DB posts into UI models
     const remotePosts: CommunityPost[] = (dbPosts || []).map((p) => {
       const isMaher = 
@@ -118,6 +130,9 @@ export async function fetchCommunityPosts(currentUserId?: string): Promise<Commu
         maskAlias: p.mask_alias || 'Anonymous Student 🎭',
         category: p.category as any,
         content: p.content,
+        isVerified: Boolean(p.is_verified),
+        verifiedBy: p.verified_by,
+        isAiGenerated: Boolean(p.is_ai_generated),
         createdAt: formatTimeAgo(p.created_at),
         likes: p.likes || 0,
         likedByMe: userLikedPostIds.has(p.id),
@@ -503,4 +518,21 @@ function getLocalFriendIds(): string[] {
     console.warn('Failed to read friend IDs from localStorage:', e);
   }
   return ['student-1', 'student-2'];
+}
+
+export async function verifyComment(commentId: string, verifierId: string, isVerified: boolean): Promise<boolean> {
+  try {
+    const { error } = await supabase
+      .from('community_comments')
+      .update({
+        is_verified: isVerified,
+        verified_by: isVerified ? verifierId : null,
+        verified_at: isVerified ? new Date().toISOString() : null,
+      })
+      .eq('id', commentId);
+    return !error;
+  } catch (err) {
+    console.error('Failed to verify comment in Supabase:', err);
+    return false;
+  }
 }

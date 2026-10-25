@@ -99,6 +99,33 @@ export function SearchDialog({ open, onOpenChange, onOpenAiDoubt }: SearchDialog
     };
   }, [query]);
 
+  // Log zero-result searches to Supabase and cache (A7 Content Analytics)
+  useEffect(() => {
+    const q = query.trim();
+    if (q.length >= 3 && results.totalCount === 0) {
+      const timer = setTimeout(() => {
+        supabase.from('search_analytics').insert({
+          query: q,
+          results_count: 0
+        }).then(() => {});
+
+        try {
+          const raw = localStorage.getItem('itm_zero_result_searches');
+          const list = raw ? JSON.parse(raw) : [];
+          const existing = list.find((item: any) => item.query.toLowerCase() === q.toLowerCase());
+          if (existing) {
+            existing.count = (existing.count || 1) + 1;
+            existing.lastSeen = new Date().toISOString();
+          } else {
+            list.unshift({ query: q, count: 1, lastSeen: new Date().toISOString() });
+          }
+          localStorage.setItem('itm_zero_result_searches', JSON.stringify(list.slice(0, 50)));
+        } catch {}
+      }, 800);
+      return () => clearTimeout(timer);
+    }
+  }, [query, results.totalCount]);
+
   const handleNavigate = (path: string) => {
     navigate(path);
     onOpenChange(false);

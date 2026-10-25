@@ -35,6 +35,10 @@ export interface GamificationState {
   perfectQuizzesCount: number;
   pomodoroSessionsCount: number;
   streakFreezeCount?: number;
+  lastFreezeClaimedWeek?: string;
+  weeklyGoalDays: number;
+  weeklyStudyDaysCount: number;
+  weeklyActiveDates: string[];
   achievements: Achievement[];
   dailyQuests: DailyQuest[];
   questDate: string;
@@ -338,6 +342,15 @@ export const LEVEL_TITLES = [
 
 const STORAGE_KEY = 'itm_gamification_v2';
 
+
+function getCurrentWeekString(): string {
+  const d = new Date();
+  const year = d.getFullYear();
+  const oneJan = new Date(year, 0, 1);
+  const numberOfDays = Math.floor((d.getTime() - oneJan.getTime()) / (24 * 60 * 60 * 1000));
+  const weekNumber = Math.ceil((d.getDay() + 1 + numberOfDays) / 7);
+  return `${year}-W${String(weekNumber).padStart(2, '0')}`;
+}
 function getTodayString(): string {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -350,6 +363,12 @@ interface GamificationContextType {
   level: number;
   streakFreezeCount: number;
   buyStreakFreeze: () => boolean;
+  weeklyGoalDays: number;
+  weeklyStudyDaysCount: number;
+  weeklyGoalPercent: number;
+  setWeeklyGoal: (days: number) => void;
+  claimWeeklyFreeze: () => boolean;
+  canClaimWeeklyFreeze: boolean;
   levelInfo: {
     level: number;
     title: string;
@@ -422,6 +441,10 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
       perfectQuizzesCount: 0,
       pomodoroSessionsCount: 0,
       streakFreezeCount: 1,
+      lastFreezeClaimedWeek: getCurrentWeekString(),
+      weeklyGoalDays: 5,
+      weeklyStudyDaysCount: 1,
+      weeklyActiveDates: [getTodayString()],
       achievements: INITIAL_ACHIEVEMENTS,
       dailyQuests: INITIAL_QUESTS,
       questDate: getTodayString(),
@@ -596,6 +619,57 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
       toast(`+${amount} XP: ${reason}`, { icon: '✨' });
     }
   }, [user]);
+
+  // Weekly Goal and Freeze claiming (Part A4)
+  const currentWeek = getCurrentWeekString();
+  const canClaimWeeklyFreeze = state.lastFreezeClaimedWeek !== currentWeek;
+
+  const claimWeeklyFreeze = useCallback(() => {
+    const curWeek = getCurrentWeekString();
+    if (state.lastFreezeClaimedWeek === curWeek) {
+      toast.info("Weekly Streak Freeze already claimed for this week. Check back next Monday!");
+      return false;
+    }
+
+    setState(prev => {
+      const nextFreezes = (prev.streakFreezeCount || 0) + 1;
+      if (user?.id) {
+        supabase.from('profiles').update({
+          streak_freeze_count: nextFreezes,
+          streak_freeze_last_claimed_week: curWeek,
+          updated_at: new Date().toISOString()
+        }).eq('user_id', user.id).then(() => {});
+      }
+      return {
+        ...prev,
+        streakFreezeCount: nextFreezes,
+        lastFreezeClaimedWeek: curWeek,
+      };
+    });
+    toast.success("❄️ Free Weekly Streak Freeze Claimed!", {
+      description: "One missed study day will automatically be protected this week."
+    });
+    return true;
+  }, [state.lastFreezeClaimedWeek, user?.id]);
+
+  const setWeeklyGoal = useCallback((days: number) => {
+    const clamped = Math.max(1, Math.min(7, days));
+    setState(prev => {
+      if (user?.id) {
+        supabase.from('profiles').update({
+          weekly_goal_days: clamped,
+          updated_at: new Date().toISOString()
+        }).eq('user_id', user.id).then(() => {});
+      }
+      return {
+        ...prev,
+        weeklyGoalDays: clamped,
+      };
+    });
+    toast.success(`🎯 Weekly Goal Updated: ${clamped} Study Days / Week`);
+  }, [user?.id]);
+
+  const weeklyGoalPercent = Math.min(100, Math.round(((state.weeklyStudyDaysCount || 1) / Math.max(1, state.weeklyGoalDays || 5)) * 100));
 
   // Buy Streak Freeze (Feature 25)
   const buyStreakFreeze = useCallback(() => {
@@ -832,6 +906,12 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
       level: state.level,
       streakFreezeCount: state.streakFreezeCount ?? 1,
       buyStreakFreeze,
+      weeklyGoalDays: state.weeklyGoalDays || 5,
+      weeklyStudyDaysCount: state.weeklyStudyDaysCount || 1,
+      weeklyGoalPercent,
+      setWeeklyGoal,
+      claimWeeklyFreeze,
+      canClaimWeeklyFreeze,
       levelInfo,
       addXp,
       unlockAchievement,

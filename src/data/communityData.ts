@@ -19,6 +19,10 @@ export interface CommunityComment {
   createdAt: string;
   likes: number;
   likedByMe?: boolean;
+  isVerified?: boolean;
+  verifiedBy?: string;
+  verifiedAt?: string;
+  isAiGenerated?: boolean;
 }
 
 export interface CommunityPost {
@@ -37,6 +41,9 @@ export interface CommunityPost {
   likedByMe?: boolean;
   comments: CommunityComment[];
   pinned?: boolean;
+  isVerified?: boolean;
+  verifiedBy?: string;
+  isAiGenerated?: boolean;
 }
 
 export interface ClassmateProfile {

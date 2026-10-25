@@ -88,6 +88,7 @@ const RapidRevisionPage = lazyWithRetry(() => import("./pages/RapidRevisionPage"
 const FormulaBankPage = lazyWithRetry(() => import("./pages/FormulaBankPage"));
 const LearningAnalyticsPage = lazyWithRetry(() => import("./pages/LearningAnalyticsPage"));
 const StudyPlannerPage = lazyWithRetry(() => import("./pages/StudyPlannerPage"));
+const TodayPage = lazyWithRetry(() => import("./pages/TodayPage"));
 
 const queryClient = new QueryClient();
 
@@ -185,6 +186,7 @@ const App = () => (
                           <Route path="/subject/:subjectId/cheat-sheet" element={<SubjectCheatSheetPage />} />
 
                           {/* 32 High-Value Features Routes */}
+                          <Route path="/today" element={<ProtectedRoute><TodayPage /></ProtectedRoute>} />
                           <Route path="/pyq-papers" element={<ProtectedRoute><PyqPapersPage /></ProtectedRoute>} />
                           <Route path="/mock-exam" element={<ProtectedRoute><MockExamPage /></ProtectedRoute>} />
                           <Route path="/rapid-revision" element={<ProtectedRoute><RapidRevisionPage /></ProtectedRoute>} />

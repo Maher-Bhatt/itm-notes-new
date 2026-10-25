@@ -29,7 +29,10 @@ import {
   Code2,
   Zap,
   Bookmark,
-  Bot
+  Bot,
+  Target,
+  Shield,
+  MapPin
 } from "lucide-react";
 import { AiDoubtSolverModal } from "@/components/AiDoubtSolverModal";
 import { 
@@ -58,7 +61,14 @@ export default function DashboardPage() {
   const navigate = useNavigate();
   const { user, profile } = useAuth();
   const { semesterNumber } = useAcademic();
-  const { state: game, levelInfo } = useGamification();
+  const { 
+    state: game, 
+    levelInfo, 
+    weeklyGoalDays, 
+    weeklyStudyDaysCount, 
+    weeklyGoalPercent, 
+    streakFreezeCount 
+  } = useGamification();
   const { progress } = useProgress();
 
   const [activeShortcutTab, setActiveShortcutTab] = useState<"overview" | "tools">("overview");
@@ -744,6 +754,93 @@ export default function DashboardPage() {
 
         {/* ── RIGHT COLUMN (~32% width -> lg:col-span-4) ── */}
         <div className="lg:col-span-4 space-y-6">
+          {/* Today's Schedule & Next Class Card (A5 & A6) */}
+          <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-3.5">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Calendar className="h-4 w-4 text-primary" />
+                <h3 className="font-bold text-sm text-foreground">Today's Schedule</h3>
+              </div>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
+                {profile?.division || "Div A"}
+              </span>
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-secondary/40 border border-border/80 flex items-start gap-3">
+              <div className="p-2.5 rounded-xl bg-primary/15 text-primary shrink-0 mt-0.5">
+                <Clock className="h-4 w-4" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center justify-between gap-1">
+                  <span className="text-[10px] font-mono font-bold text-primary">10:30 AM · LECTURE</span>
+                  <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-black/20 text-muted-foreground">
+                    {profile?.division?.includes('D') ? 'EB-39' : profile?.division?.includes('E') ? 'EB-25' : profile?.division?.includes('B') ? 'EB-16' : profile?.division?.includes('C') ? 'EB-20' : 'EB-15'}
+                  </span>
+                </div>
+                <h4 className="text-xs font-bold text-foreground truncate mt-0.5">
+                  Database Management Systems
+                </h4>
+                <p className="text-[11px] text-muted-foreground flex items-center gap-1 mt-0.5">
+                  <MapPin className="h-3 w-3" />
+                  <span>Room {profile?.division?.includes('D') ? 'EB-39' : profile?.division?.includes('E') ? 'EB-25' : profile?.division?.includes('B') ? 'EB-16' : profile?.division?.includes('C') ? 'EB-20' : 'EB-15'} · Prof. Hardik Vyas</span>
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between pt-1">
+              <Link 
+                to="/today" 
+                className="text-xs text-primary font-bold hover:underline flex items-center gap-1"
+              >
+                <span>Open Today's Mission & Schedule</span>
+                <ArrowRight className="h-3 w-3" />
+              </Link>
+              <button
+                type="button"
+                onClick={() => openTimetable("viva")}
+                className="text-[11px] text-muted-foreground hover:text-foreground"
+              >
+                All Timetables
+              </button>
+            </div>
+          </div>
+
+          {/* Weekly Study Goal & Streak Freeze Card (A4) */}
+          <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-3.5">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Target className="h-4 w-4 text-primary" />
+                <h3 className="font-bold text-sm text-foreground">Weekly Target</h3>
+              </div>
+              <span className="text-[10px] font-mono font-bold text-muted-foreground">
+                {weeklyStudyDaysCount} / {weeklyGoalDays} days
+              </span>
+            </div>
+
+            <div className="space-y-1.5">
+              <div className="flex justify-between text-[11px] font-medium text-muted-foreground">
+                <span>Progress: {weeklyGoalPercent}%</span>
+                <span>{weeklyStudyDaysCount >= weeklyGoalDays ? "Goal Met! 🎯" : `${weeklyGoalDays - weeklyStudyDaysCount} days left`}</span>
+              </div>
+              <div className="h-2 rounded-full bg-secondary overflow-hidden">
+                <div 
+                  className="h-full bg-primary rounded-full transition-all duration-500" 
+                  style={{ width: `${weeklyGoalPercent}%` }}
+                />
+              </div>
+            </div>
+
+            <div className="p-2.5 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-between text-xs">
+              <div className="flex items-center gap-2">
+                <Shield className="h-3.5 w-3.5 text-blue-500" />
+                <span className="font-semibold text-foreground">Streak Freezes</span>
+              </div>
+              <span className="font-mono font-bold text-blue-600 dark:text-blue-400">
+                {streakFreezeCount} Available
+              </span>
+            </div>
+          </div>
+
           {/* 1. Study Progress Advice Widget matching Screenshot 1 */}
           <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-3">
             <div className="flex items-center justify-between">

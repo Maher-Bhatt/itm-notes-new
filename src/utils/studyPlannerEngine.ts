@@ -181,6 +181,8 @@ export function getSavedStudyPlan(): GeneratedStudyPlan | null {
   }
 }
 
+export const getActiveStudyPlan = getSavedStudyPlan;
+
 export function saveStudyPlan(plan: GeneratedStudyPlan): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(plan));

@@ -183,6 +183,8 @@ export function getDueSrsCards(subjectId?: string): SrsCardState[] {
   });
 }
 
+export const getDueCards = getDueSrsCards;
+
 export function getDeckStats(cardIds: string[]): {
   totalCount: number;
   dueCount: number;

@@ -33,6 +33,7 @@ import {
 import { toast } from "sonner";
 import {
   fetchCommunityPosts,
+  verifyComment,
   createCommunityPost,
   toggleCommunityLike,
   addCommunityComment,
@@ -348,6 +349,33 @@ export default function CommunityPage() {
   };
 
   // Add Comment
+  const handleToggleVerifyComment = async (postId: string, commentId: string, currentVerified: boolean) => {
+    if (!user) {
+      toast.error("Please log in to verify community answers.");
+      return;
+    }
+    const canVerify = role === 'admin' || (levelInfo && levelInfo.level >= 7);
+    if (!canVerify) {
+      toast.error("Only Platform Admins and Senior Scholars (Level 7+) can verify answers.");
+      return;
+    }
+
+    const nextVerified = !currentVerified;
+    const success = await verifyComment(commentId, user.id, nextVerified);
+    if (success) {
+      setPosts(prev => prev.map(p => {
+        if (p.id !== postId) return p;
+        const updatedComments = (p.comments || []).map(c => 
+          c.id === commentId ? { ...c, isVerified: nextVerified, verifiedBy: nextVerified ? user.id : undefined } : c
+        );
+        return { ...p, comments: updatedComments };
+      }));
+      toast.success(nextVerified ? "Answer marked as Verified Solution! 🌟" : "Verification revoked.");
+    } else {
+      toast.error("Failed to update verification status.");
+    }
+  };
+
   const handleAddComment = async (postId: string) => {
     if (!commentInput.trim()) return;
 
@@ -444,6 +472,10 @@ export default function CommunityPage() {
       .filter((post) => {
         if (activeCategoryFilter === "Community") return true;
         if (activeCategoryFilter === "Confessions") return post.category === "Campus Confessions" || post.isMasked;
+        if (activeCategoryFilter === "Verified") return post.isVerified || (post.comments || []).some(c => c.isVerified);
+        if (activeCategoryFilter === "DSA") return post.content.toLowerCase().includes("dsa") || post.content.toLowerCase().includes("data structure") || post.content.toLowerCase().includes("tree") || post.content.toLowerCase().includes("graph");
+        if (activeCategoryFilter === "DBMS") return post.content.toLowerCase().includes("dbms") || post.content.toLowerCase().includes("sql") || post.content.toLowerCase().includes("database");
+        if (activeCategoryFilter === "Java") return post.content.toLowerCase().includes("java") || post.content.toLowerCase().includes("oop");
         return post.category === activeCategoryFilter;
       })
       .sort((a, b) => {
@@ -454,11 +486,12 @@ export default function CommunityPage() {
   }, [posts, activeCategoryFilter, sortFilter]);
 
   const categoryPills = [
-    { label: "👥 Community", value: "Community" },
+    { label: "👥 All Community", value: "Community" },
+    { label: "✓ Verified Solutions", value: "Verified" },
+    { label: "🌲 DSA Doubts", value: "DSA" },
+    { label: "🗄️ DBMS Doubts", value: "DBMS" },
+    { label: "☕ Java OOP", value: "Java" },
     { label: "💬 Confessions", value: "Confessions" },
-    { label: "🎓 Exchange", value: "Exchange" },
-    { label: "🏢 Standards", value: "Standards" },
-    { label: "🏆 Competition", value: "Competition" },
   ];
 
   return (
@@ -917,12 +950,49 @@ export default function CommunityPage() {
                       {commentsList.length > 0 ? (
                         <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
                           {commentsList.map((c, i) => (
-                            <div key={c.id || i} className="p-2.5 rounded-xl bg-secondary/40 text-xs space-y-1">
-                              <div className="flex items-center justify-between">
-                                <span className="font-bold text-foreground">{c.authorName}</span>
-                                <span className="text-[10px] text-muted-foreground">{c.createdAt}</span>
+                            <div 
+                              key={c.id || i} 
+                              className={`p-3 rounded-xl text-xs space-y-1.5 transition-all ${
+                                c.isVerified 
+                                  ? "bg-[#183F36]/15 border border-[#D6E85D]/60 shadow-xs" 
+                                  : "bg-secondary/40 border border-transparent"
+                              }`}
+                            >
+                              <div className="flex items-center justify-between gap-2">
+                                <div className="flex items-center gap-1.5 flex-wrap">
+                                  <span className="font-bold text-foreground">{c.authorName}</span>
+                                  {c.isVerified && (
+                                    <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#D6E85D] text-[#183F36] flex items-center gap-1 shadow-2xs">
+                                      <CheckCircle className="h-3 w-3 stroke-[2.5]" />
+                                      <span>Verified Solution</span>
+                                    </span>
+                                  )}
+                                  {c.isAiGenerated && (
+                                    <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-purple-500/15 text-purple-400 border border-purple-500/30 flex items-center gap-1">
+                                      <Sparkles className="h-3 w-3" />
+                                      <span>AI Answer</span>
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-[10px] text-muted-foreground">{c.createdAt}</span>
+                                  {(role === 'admin' || (levelInfo && levelInfo.level >= 7)) && (
+                                    <button
+                                      type="button"
+                                      onClick={() => handleToggleVerifyComment(post.id, c.id, !!c.isVerified)}
+                                      className={`text-[10px] font-bold px-1.5 py-0.5 rounded transition-all cursor-pointer ${
+                                        c.isVerified 
+                                          ? "text-rose-400 hover:bg-rose-500/10" 
+                                          : "text-[#D6E85D] bg-[#183F36] hover:bg-[#12332C]"
+                                      }`}
+                                      title="Admins and Senior Scholars can verify peer solutions"
+                                    >
+                                      {c.isVerified ? "Unverify" : "Verify ✓"}
+                                    </button>
+                                  )}
+                                </div>
                               </div>
-                              <p className="text-muted-foreground">{c.content}</p>
+                              <p className="text-muted-foreground leading-relaxed select-text">{c.content}</p>
                             </div>
                           ))}
                         </div>

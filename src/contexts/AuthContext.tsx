@@ -19,6 +19,11 @@ export interface UserProfile {
   level?: number;
   xp?: number;
   streak_days?: number;
+  division?: string | null;
+  weekly_goal_days?: number | null;
+  streak_freeze_count?: number | null;
+  push_enabled?: boolean | null;
+  motion_reduced?: boolean | null;
   role?: string | null;
   status?: string | null;
   created_at?: string;
@@ -233,6 +238,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (updates.xp !== undefined) payload.xp = updates.xp;
     if (updates.level !== undefined) payload.level = updates.level;
     if (updates.streak_days !== undefined) payload.streak_days = updates.streak_days;
+    if (updates.division !== undefined) payload.division = updates.division;
+    if (updates.weekly_goal_days !== undefined) payload.weekly_goal_days = updates.weekly_goal_days;
+    if (updates.streak_freeze_count !== undefined) payload.streak_freeze_count = updates.streak_freeze_count;
+    if (updates.push_enabled !== undefined) payload.push_enabled = updates.push_enabled;
+    if (updates.motion_reduced !== undefined) payload.motion_reduced = updates.motion_reduced;
 
     // Optimistic local state update
     setProfile(prev => {

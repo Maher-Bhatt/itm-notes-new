@@ -30,6 +30,13 @@ export interface Database {
           level: number | null
           streak_days: number | null
           status: string | null
+          division?: string | null
+          weekly_goal_days?: number | null
+          weekly_goal_completed_days?: number | null
+          streak_freeze_count?: number | null
+          streak_freeze_last_claimed_week?: string | null
+          push_enabled?: boolean | null
+          motion_reduced?: boolean | null
           created_at: string
           updated_at: string
         }
@@ -53,6 +60,13 @@ export interface Database {
           level?: number | null
           streak_days?: number | null
           status?: string | null
+          division?: string | null
+          weekly_goal_days?: number | null
+          weekly_goal_completed_days?: number | null
+          streak_freeze_count?: number | null
+          streak_freeze_last_claimed_week?: string | null
+          push_enabled?: boolean | null
+          motion_reduced?: boolean | null
           created_at?: string
           updated_at?: string
         }
@@ -76,6 +90,13 @@ export interface Database {
           level?: number | null
           streak_days?: number | null
           status?: string | null
+          division?: string | null
+          weekly_goal_days?: number | null
+          weekly_goal_completed_days?: number | null
+          streak_freeze_count?: number | null
+          streak_freeze_last_claimed_week?: string | null
+          push_enabled?: boolean | null
+          motion_reduced?: boolean | null
           created_at?: string
           updated_at?: string
         }
@@ -293,6 +314,93 @@ export interface Database {
           id?: string
           post_id?: string
           user_id?: string
+          created_at?: string
+        }
+      }
+      push_subscriptions: {
+        Row: {
+          id: string
+          user_id: string
+          platform: 'android' | 'web' | 'ios'
+          token: string
+          endpoint: string | null
+          p256dh: string | null
+          auth: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          platform: 'android' | 'web' | 'ios'
+          token: string
+          endpoint?: string | null
+          p256dh?: string | null
+          auth?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          platform?: 'android' | 'web' | 'ios'
+          token?: string
+          endpoint?: string | null
+          p256dh?: string | null
+          auth?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      bookmark_folders: {
+        Row: {
+          id: string
+          user_id: string
+          name: string
+          color: string | null
+          icon: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          name: string
+          color?: string | null
+          icon?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          name?: string
+          color?: string | null
+          icon?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      search_analytics: {
+        Row: {
+          id: string
+          user_id: string | null
+          query: string
+          results_count: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id?: string | null
+          query: string
+          results_count?: number
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string | null
+          query?: string
+          results_count?: number
           created_at?: string
         }
       }

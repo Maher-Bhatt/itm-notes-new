@@ -1082,3 +1082,5 @@ export const VIVA_INSTRUCTIONS = [
   "Bring your ITM SLS Baroda University Student Identity Card and syllabus tracking record.",
   "Students appearing for remedial exams in the 10:10 AM to 11:40 AM slot should coordinate with their class viva coordinator on overlapping dates.",
 ];
+
+export const VIVA_SCHEDULE_DATA = VIVA_SCHEDULE;

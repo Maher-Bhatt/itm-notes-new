@@ -57,6 +57,7 @@ export function PortalSidebar({ isOpen = false, onClose, isCollapsed = false }: 
   const navItems = [
     { name: "Home", path: "/", icon: Home },
     { name: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
+    { name: "Today's Hub", path: "/today", icon: Calendar, badge: "TODAY" },
     { name: "Subjects & Notes", path: "/subjects", icon: BookOpen, badge: "CORE" },
     { name: "Materials", path: "/materials", icon: Layers, badge: "NEW" },
     { name: "Projects & Lab", path: "/coding-lab", icon: Code2 },
