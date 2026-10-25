@@ -39,7 +39,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
       "Part D: High-scoring exam blueprint & rapid MCQ revision table"
     ],
     uploadedDate: "Oct 2026",
-    downloadUrl: "/imp-questions/oopj",
+    downloadUrl: "/materials/OOPJ_Remedial_Question_Bank_Solved.pdf",
     badge: "🔥 REMEDIAL SPECIAL",
     badgeColor: "bg-amber-500/10 text-amber-600 border-amber-500/30"
   },

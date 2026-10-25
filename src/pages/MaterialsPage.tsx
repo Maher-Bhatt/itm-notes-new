@@ -76,7 +76,7 @@ const SUBJECT_OVERVIEW_CARDS: SubjectOverviewCard[] = [
       "Complete Zero-to-Hero theory notes + all 38 solved questions (5 Output traces, 15 5-mark programs, 18 theory questions, & MCQs).",
     pages: "30 Pages + Theory",
     fileSize: "Complete Master Guide",
-    pdfUrl: "/imp-questions/oopj",
+    pdfUrl: "/materials/OOPJ_Remedial_Question_Bank_Solved.pdf",
     semester: 3,
     subject: "Object-Oriented Programming with Java",
     category: "Notes",
@@ -389,7 +389,13 @@ function fileTypeClass(fileType: string): string {
 
 // ─── Plain material card ───────────────────────────────────────────────────
 function PlainMaterialCard({ mat }: { mat: StudyMaterial }) {
+  const navigate = useNavigate();
+
   const handleOpen = () => {
+    if (mat.id === "mat-oopj-remedial-special" || mat.downloadUrl?.startsWith("/imp-questions")) {
+      navigate("/imp-questions/oopj");
+      return;
+    }
     if (mat.downloadUrl) {
       window.open(mat.downloadUrl, "_blank", "noreferrer");
     } else {
@@ -398,13 +404,16 @@ function PlainMaterialCard({ mat }: { mat: StudyMaterial }) {
   };
 
   const handleDownload = () => {
-    if (!mat.downloadUrl) {
+    const url = mat.id === "mat-oopj-remedial-special"
+      ? "/materials/OOPJ_Remedial_Question_Bank_Solved.pdf"
+      : mat.downloadUrl;
+    if (!url) {
       toast.error("No download URL available for this file.");
       return;
     }
     toast.success(`Downloading ${mat.title}…`);
     const a = document.createElement("a");
-    a.href = mat.downloadUrl;
+    a.href = url;
     a.download = mat.title.replace(/[^a-zA-Z0-9_-]/g, "_") + "." + mat.fileType.toLowerCase();
     document.body.appendChild(a);
     a.click();
@@ -498,6 +507,8 @@ function RichOverviewCard({
   onPreview: (card: SubjectOverviewCard) => void;
   onDownload: (card: SubjectOverviewCard) => void;
 }) {
+  const navigate = useNavigate();
+
   return (
     <div className="bg-card border border-border rounded-2xl p-4 shadow-sm hover:shadow-md hover:border-primary/30 transition-all flex flex-col gap-3 group relative overflow-hidden">
       {/* Top */}
@@ -533,16 +544,26 @@ function RichOverviewCard({
 
       {/* Actions */}
       <div className="flex items-center gap-1.5 pt-1 border-t border-border/50">
+        {item.id === "mat-remedial-oopj" && (
+          <button
+            onClick={() => navigate("/imp-questions/oopj")}
+            className="h-7 px-2.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-[11px] flex items-center justify-center gap-1 transition-colors cursor-pointer"
+            title="Open Interactive Master Guide"
+          >
+            <Sparkles className="h-3 w-3" />
+            <span>Guide</span>
+          </button>
+        )}
         <button
           onClick={() => onPreview(item)}
-          className="flex-1 h-7 rounded-lg bg-secondary hover:bg-secondary/80 text-foreground font-semibold text-[11px] flex items-center justify-center gap-1 transition-colors"
+          className="flex-1 h-7 rounded-lg bg-secondary hover:bg-secondary/80 text-foreground font-semibold text-[11px] flex items-center justify-center gap-1 transition-colors cursor-pointer"
         >
           <Eye className="h-3 w-3" />
           <span>View</span>
         </button>
         <button
           onClick={() => onDownload(item)}
-          className="flex-1 h-7 rounded-lg bg-[#183F36] hover:bg-[#122d26] text-white font-semibold text-[11px] flex items-center justify-center gap-1 transition-all active:scale-95"
+          className="flex-1 h-7 rounded-lg bg-[#183F36] hover:bg-[#122d26] text-white font-semibold text-[11px] flex items-center justify-center gap-1 transition-all active:scale-95 cursor-pointer"
         >
           <Download className="h-3 w-3 text-[#D6E85D]" />
           <span>PDF</span>

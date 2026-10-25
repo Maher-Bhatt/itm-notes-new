@@ -46,6 +46,35 @@ import {
 import { toast } from "sonner";
 import { openTimetable } from "@/components/GlobalTimetableModal";
 import { FACULTY_DIRECTORY } from "@/data/timetableData";
+import { StudentContributionModal } from "@/components/StudentContributionModal";
+
+// Actionable Study Advice Carousel Tips
+const STUDY_ADVICE_TIPS = [
+  {
+    icon: BookOpen,
+    text: "Feed your student notes to help improve your grading for mid exams preparation.",
+    linkText: "Learn more >",
+    linkTo: "/materials",
+  },
+  {
+    icon: Flame,
+    text: "Review the OOPJ Remedial Question Bank — all 38 solved questions with output traces.",
+    linkText: "Open Solved Bank >",
+    linkTo: "/imp-questions/oopj",
+  },
+  {
+    icon: Target,
+    text: "Keep attendance safely above 75% to avoid exam debarment — check your buffer count.",
+    linkText: "Check Attendance >",
+    linkTo: "/calculator",
+  },
+  {
+    icon: Sparkles,
+    text: "Practice 10 daily MCQs to build your streak, earn XP, and unlock student rank badges.",
+    linkText: "Start Quiz >",
+    linkTo: "/quiz",
+  },
+];
 
 // Chart Activity Data matching Screenshot 1 spline curve
 const STUDY_ACTIVITY_DATA = [
@@ -75,6 +104,8 @@ export default function DashboardPage() {
   const [selectedCourseFilter, setSelectedCourseFilter] = useState("all");
   const [subjectSemFilter, setSubjectSemFilter] = useState<number | "all">(profile?.semester || 3);
   const [aiDoubtOpen, setAiDoubtOpen] = useState(false);
+  const [isContributionModalOpen, setIsContributionModalOpen] = useState(false);
+  const [adviceIndex, setAdviceIndex] = useState(0);
 
   const studentDisplayName = profile?.display_name || user?.email?.split("@")[0] || null;
   const activeSemester = profile?.semester || semesterNumber || 3;
@@ -136,11 +167,9 @@ export default function DashboardPage() {
             </button>
           ) : (
             <button
-              onClick={() => {
-                navigate("/materials");
-                toast.info("Navigating to Academic Materials repository");
-              }}
-              className="h-9 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md shadow-indigo-600/20 flex items-center gap-2 transition-all active:scale-95 shrink-0"
+              onClick={() => setIsContributionModalOpen(true)}
+              className="h-9 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md shadow-indigo-600/20 flex items-center gap-2 transition-all active:scale-95 shrink-0 cursor-pointer"
+              title="Contribute student note or cheat sheet (+50 XP)"
             >
               <Plus className="h-3.5 w-3.5" />
               <span>Add Sheet</span>
@@ -841,30 +870,65 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* 1. Study Progress Advice Widget matching Screenshot 1 */}
-          <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-3">
-            <div className="flex items-center justify-between">
-              <h3 className="font-bold text-sm text-foreground">Study Progress</h3>
-              <div className="flex items-center gap-1 text-muted-foreground">
-                <button className="p-1 rounded hover:bg-secondary"><ChevronLeft className="h-4 w-4" /></button>
-                <button className="p-1 rounded hover:bg-secondary"><ChevronRight className="h-4 w-4" /></button>
-              </div>
-            </div>
+          {/* 1. Study Progress Advice Carousel Widget */}
+          {(() => {
+            const currentTip = STUDY_ADVICE_TIPS[adviceIndex % STUDY_ADVICE_TIPS.length];
+            const TipIcon = currentTip.icon;
+            return (
+              <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-bold text-sm text-foreground">Study Progress</h3>
+                    <div className="flex items-center gap-1">
+                      {STUDY_ADVICE_TIPS.map((_, dotIdx) => (
+                        <button
+                          key={dotIdx}
+                          type="button"
+                          onClick={() => setAdviceIndex(dotIdx)}
+                          className={`w-1.5 h-1.5 rounded-full transition-all cursor-pointer ${
+                            dotIdx === adviceIndex ? "bg-primary w-3" : "bg-muted-foreground/30 hover:bg-muted-foreground/60"
+                          }`}
+                          aria-label={`Go to tip ${dotIdx + 1}`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1 text-muted-foreground">
+                    <button
+                      type="button"
+                      onClick={() => setAdviceIndex((prev) => (prev > 0 ? prev - 1 : STUDY_ADVICE_TIPS.length - 1))}
+                      className="p-1 rounded hover:bg-secondary cursor-pointer transition-colors"
+                      title="Previous Study Tip"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setAdviceIndex((prev) => (prev + 1) % STUDY_ADVICE_TIPS.length)}
+                      className="p-1 rounded hover:bg-secondary cursor-pointer transition-colors"
+                      title="Next Study Tip"
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
 
-            <div className="p-4 rounded-xl bg-[#E8EDE4] dark:bg-[#183F36]/30 border border-[#E0E2D9] dark:border-[#1D4A3F] flex items-start gap-3">
-              <div className="p-2.5 rounded-xl bg-[#183F36] text-[#D6E85D] shrink-0">
-                <BookOpen className="h-5 w-5" />
+                <div className="p-4 rounded-xl bg-[#E8EDE4] dark:bg-[#183F36]/30 border border-[#E0E2D9] dark:border-[#1D4A3F] flex items-start gap-3 transition-all">
+                  <div className="p-2.5 rounded-xl bg-[#183F36] text-[#D6E85D] shrink-0">
+                    <TipIcon className="h-5 w-5" />
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-xs font-medium text-foreground leading-relaxed">
+                      {currentTip.text}
+                    </p>
+                    <Link to={currentTip.linkTo} className="text-xs text-[#183F36] dark:text-[#D6E85D] font-bold hover:underline inline-block pt-1">
+                      {currentTip.linkText}
+                    </Link>
+                  </div>
+                </div>
               </div>
-              <div className="space-y-1">
-                <p className="text-xs font-medium text-foreground leading-relaxed">
-                  Feed your student notes to help improve your grading for mid exams preparation.
-                </p>
-                <Link to="/materials" className="text-xs text-[#183F36] dark:text-[#D6E85D] font-bold hover:underline inline-block pt-1">
-                  Learn more &gt;
-                </Link>
-              </div>
-            </div>
-          </div>
+            );
+          })()}
 
           {/* 2. Radial Donut Dual Gauges with Forest Green & Chartreuse */}
           <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-4">
@@ -993,6 +1057,12 @@ export default function DashboardPage() {
       <AiDoubtSolverModal
         isOpen={aiDoubtOpen}
         onClose={() => setAiDoubtOpen(false)}
+      />
+
+      {/* Student Note & Sheet Contribution Modal */}
+      <StudentContributionModal
+        isOpen={isContributionModalOpen}
+        onClose={() => setIsContributionModalOpen(false)}
       />
     </div>
   );

@@ -297,6 +297,27 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
     }
   };
 
+  const handleForgotPassword = async () => {
+    if (!email.trim()) {
+      toast.error("Please enter your email address first, then click 'Forgot?' to receive a reset link.");
+      return;
+    }
+    try {
+      setLoading(true);
+      const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+        redirectTo: `${window.location.origin}/auth?mode=reset`,
+      });
+      if (error) throw error;
+      toast.success(`Password reset email sent to ${email.trim()}! Please check your inbox.`);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to send reset link.";
+      toast.error(message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
   // ── 75% Attendance calculation ───────────────────────────────────────────────
   const demoPercentage = demoTotalClasses > 0 ? (demoAttendedClasses / demoTotalClasses) * 100 : 0;
   const isDemoSafe = demoPercentage >= 75;
@@ -612,7 +633,7 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
                         {isLogin && (
                           <button
                             type="button"
-                            onClick={() => toast.info("Password reset available via Supabase email link.")}
+                            onClick={handleForgotPassword}
                             className="text-[11px] text-[#A2BAAF] hover:text-[#D6E85D]"
                           >
                             Forgot?
@@ -832,7 +853,7 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
                   <div className="flex items-center justify-between mb-1.5">
                     <label className="text-xs font-semibold text-[#202522] dark:text-[#E8EDE4]">Password</label>
                     {isLogin && (
-                      <button type="button" onClick={() => toast.info("Password reset available via Supabase email link.")} className="text-[11px] text-[#68716B] hover:text-[#183F36] dark:hover:text-[#D6E85D]">
+                      <button type="button" onClick={handleForgotPassword} className="text-[11px] text-[#68716B] hover:text-[#183F36] dark:hover:text-[#D6E85D]">
                         Forgot?
                       </button>
                     )}

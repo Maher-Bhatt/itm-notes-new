@@ -452,6 +452,10 @@ export default function TodayPage() {
                   <div className="flex items-center gap-3 min-w-0">
                     <button
                       type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleToggleTask(task.id);
+                      }}
                       className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
                         completed
                           ? "bg-emerald-500 text-white"

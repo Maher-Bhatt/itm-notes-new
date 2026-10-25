@@ -887,7 +887,11 @@ export default function QuizPage() {
               <div className="flex items-center justify-between">
                 <h3 className="font-bold text-sm text-white">Subject Questions</h3>
                 <div className="flex rounded-lg bg-slate-800/80 p-0.5 border border-slate-700/60 text-[10px] font-semibold">
-                  <button className="px-2 py-0.5 rounded bg-[#183F36] text-[#D6E85D] font-bold shadow-xs cursor-pointer">
+                  <button
+                    onClick={() => jumpToQuestion(currentQuestionIndex)}
+                    className="px-2 py-0.5 rounded bg-[#183F36] text-[#D6E85D] font-bold shadow-xs cursor-pointer hover:bg-[#1f4e43] transition-colors"
+                    title="Return to current active question"
+                  >
                     Current
                   </button>
                   <button

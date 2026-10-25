@@ -571,7 +571,11 @@ export default function CommunityPage() {
 
             <div className="absolute top-3 right-3">
               <button
-                onClick={() => toast.info("Opening ITM Campus Desk...")}
+                onClick={() => {
+                  const input = document.getElementById("post-composer-input");
+                  input?.focus();
+                  toast.info("Search & Post Composer ready — ask anything or share notes!");
+                }}
                 className="w-7 h-7 rounded-full bg-black/50 text-white flex items-center justify-center backdrop-blur-md hover:bg-black/80 transition-colors cursor-pointer"
                 title="Search campus"
               >
@@ -597,7 +601,10 @@ export default function CommunityPage() {
                 🔥 Campus
               </button>
               <button
-                onClick={() => toast.info("Filtering Academic Test discussions")}
+                onClick={() => {
+                  setActiveCategoryFilter("Academics");
+                  toast.success("Filtered to Academic & Exam Discussions");
+                }}
                 className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 hover:scale-105 transition-transform cursor-pointer"
               >
                 Academic Tests
@@ -707,7 +714,15 @@ export default function CommunityPage() {
 
             <div className="pt-2 border-t border-border/60">
               <button
-                onClick={() => toast.info("Discovering active campus study circles...")}
+                onClick={() => {
+                  setActiveCategoryFilter("Academics");
+                  const input = document.getElementById("post-composer-input");
+                  if (input) {
+                    (input as HTMLInputElement).value = "#StudyGroup: Looking for study partners for ";
+                    input.focus();
+                  }
+                  toast.info("Ready to form a study group! Complete your topic and post.");
+                }}
                 className="text-xs text-primary font-semibold hover:underline w-full text-center flex items-center justify-center gap-1 cursor-pointer"
               >
                 <span>Find for Groups &gt;</span>
@@ -1135,7 +1150,7 @@ export default function CommunityPage() {
             <div className="flex items-center justify-between">
               <h3 className="font-bold text-sm text-foreground">Trending Topics</h3>
               <span
-                onClick={() => toast.info("Displaying full trending leaderboard")}
+                onClick={() => navigate("/profile")}
                 className="text-xs text-primary font-semibold hover:underline cursor-pointer"
               >
                 See All

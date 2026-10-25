@@ -650,14 +650,14 @@ export default function ImpQuestionsSubjectsPage() {
 
           <button
             onClick={() => {
-              toast.success("All 5 Question Banks are fully loaded and ready online!", {
-                description: "Click any subject card to study model answers with code and AI narration.",
-              });
+              navigate("/rapid-revision");
+              toast.success("Opening Rapid Revision & Exam Blueprint Hub!");
             }}
             className="w-full h-10 rounded-xl bg-[#183F36] hover:bg-[#12332C] text-white font-bold text-xs flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md shadow-[#183F36]/20 cursor-pointer font-display"
+            title="Launch High-Yield Rapid Revision with 190 Master Exam Questions"
           >
             <FolderDown className="h-4 w-4 text-[#D6E85D]" />
-            <span>Revision Ready · 190 Master Qs</span>
+            <span>Launch Rapid Revision · 190 Master Qs</span>
           </button>
         </div>
       </div>
