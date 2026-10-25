@@ -33,6 +33,8 @@ import {
   Eye
 } from "lucide-react";
 import { toast } from "sonner";
+import { CustomQuizBuilderModal } from "@/components/CustomQuizBuilderModal";
+import { QuizAttemptReviewModal } from "@/components/QuizAttemptReviewModal";
 
 interface EnrichedMCQ extends MCQ {
   subjectId: string;
