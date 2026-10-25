@@ -100,29 +100,29 @@ export default function DashboardPage() {
     <div className="p-4 sm:p-6 lg:p-8 max-w-[1600px] mx-auto space-y-6 animate-fade-in">
       {/* ── TOP HEADER SECTION matching Screenshot 1 ── */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-border/60">
-        <div>
-          <h1 className="text-2xl font-black tracking-tight text-foreground">
+        <div className="min-w-0 flex-1">
+          <h1 className="text-xl sm:text-2xl font-black tracking-tight text-foreground truncate">
             {user ? `Welcome back, ${studentDisplayName || "Student"}` : "ITM Notes Student Dashboard"}
           </h1>
-          <p className="text-xs text-muted-foreground mt-0.5 font-medium">
+          <p className="text-xs text-muted-foreground mt-0.5 font-medium truncate">
             {user 
               ? `Student Dashboard · Active Enrollment (Semester ${activeSemester} · ${profile?.branch ? profile.branch.split(" ")[0] : "CS"})`
               : "Open Knowledge Repository · Semester 1 to 4 Course Packs & Practicals"}
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="relative">
+        <div className="flex items-center gap-2 sm:gap-3 flex-wrap sm:flex-nowrap shrink-0">
+          <div className="relative flex-1 sm:flex-initial">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
             <input
               type="text"
-              placeholder="Search for topics..."
+              placeholder="Search topics..."
               onClick={() => {
                 const event = new KeyboardEvent('keydown', { key: 'k', ctrlKey: true });
                 window.dispatchEvent(event);
               }}
               readOnly
-              className="h-9 pl-8 pr-3 w-44 sm:w-56 rounded-xl border border-input bg-card text-xs focus:outline-none cursor-pointer"
+              className="h-9 pl-8 pr-3 w-full sm:w-56 rounded-xl border border-input bg-card text-xs focus:outline-none cursor-pointer"
             />
           </div>
 

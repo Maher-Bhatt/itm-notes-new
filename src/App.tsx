@@ -46,6 +46,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useCapacitorNative } from "@/hooks/useCapacitorNative";
 import { AppStartupSplashScreen } from "@/components/AppStartupSplashScreen";
 import { requestNotificationPermission, scheduleDailyStudyReminder } from "@/utils/studyReminders";
+import { initGlobalErrorCapture } from "@/services/clientErrorService";
 
 /**
  * Resilient lazy loader: if a new deployment removed old hashed chunks,
@@ -98,6 +99,7 @@ function AppStartup() {
   const { checkDailyStreak } = useGamification();
 
   useEffect(() => {
+    initGlobalErrorCapture();
     if (user) {
       checkDailyStreak();
       requestNotificationPermission();
@@ -167,7 +169,7 @@ const App = () => (
                           <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
                           <Route path="/materials" element={<ProtectedRoute><MaterialsPage /></ProtectedRoute>} />
                           <Route path="/quiz" element={<ProtectedRoute><QuizPage /></ProtectedRoute>} />
-                          <Route path="/coding-lab" element={<ProtectedRoute><CodingLabPage /></ProtectedRoute>} />
+                          <Route path="/coding-lab" element={<ProtectedRoute><ErrorBoundary><CodingLabPage /></ErrorBoundary></ProtectedRoute>} />
                           <Route path="/community" element={<ProtectedRoute><CommunityPage /></ProtectedRoute>} />
                           <Route path="/social" element={<ProtectedRoute><CommunityPage /></ProtectedRoute>} />
                           <Route path="/imp-questions" element={<ProtectedRoute><ImpQuestionsSubjectsPage /></ProtectedRoute>} />

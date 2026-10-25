@@ -376,6 +376,13 @@ export default function CodingLabPage() {
     return filteredProblems[0] || CODING_PROBLEMS[0];
   }, [activeProblemId, filteredProblems]);
 
+  const currentIndex = useMemo(() => {
+    return filteredProblems.findIndex(p => p.id === currentProblem?.id);
+  }, [filteredProblems, currentProblem]);
+
+
+
+
 
   const labManualData: LabManualData = useMemo(() => {
     return {
@@ -408,9 +415,11 @@ export default function CodingLabPage() {
   }, [currentProblem, currentIndex, code]);
 
 
-  const currentIndex = useMemo(() => {
-    return filteredProblems.findIndex(p => p.id === currentProblem?.id);
-  }, [filteredProblems, currentProblem]);
+
+
+
+
+
 
   const goToPrevProblem = () => {
     if (currentIndex > 0) {

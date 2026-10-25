@@ -1,5 +1,6 @@
 import { Component, type ReactNode } from "react";
 import { Link } from "react-router-dom";
+import { reportClientError } from "@/services/clientErrorService";
 
 interface Props {
   children: ReactNode;
@@ -8,10 +9,12 @@ interface Props {
 interface State {
   hasError: boolean;
   error: Error | null;
+  reported: boolean;
+  isReporting: boolean;
 }
 
 export class ErrorBoundary extends Component<Props, State> {
-  state: State = { hasError: false, error: null };
+  state: State = { hasError: false, error: null, reported: false, isReporting: false };
 
   static getDerivedStateFromError(error: Error) {
     return { hasError: true, error };
@@ -19,6 +22,10 @@ export class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, info: React.ErrorInfo) {
     console.error("[ErrorBoundary]", error, info.componentStack);
+
+    // Automatically transmit telemetry to Client Error Inbox
+    reportClientError(error, window.location.pathname, info?.componentStack);
+
     const msg = error.message || "";
     const isChunkError =
       msg.includes("dynamically imported module") ||
@@ -43,6 +50,19 @@ export class ErrorBoundary extends Component<Props, State> {
       }
     }
   }
+
+  handleManualReport = async () => {
+    if (!this.state.error) return;
+    this.setState({ isReporting: true });
+    try {
+      await reportClientError(this.state.error, window.location.pathname);
+      this.setState({ reported: true });
+    } catch {
+      this.setState({ reported: true });
+    } finally {
+      this.setState({ isReporting: false });
+    }
+  };
 
   render() {
     if (this.state.hasError) {
@@ -77,7 +97,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 )}
               </div>
             )}
-            <div className="flex gap-3 justify-center">
+            <div className="flex flex-wrap gap-2.5 justify-center">
               <button
                 onClick={async () => {
                   try {
@@ -96,14 +116,32 @@ export class ErrorBoundary extends Component<Props, State> {
                   } catch {}
                   window.location.reload();
                 }}
-                className="pill-button apple-press bg-primary text-primary-foreground h-10 px-6 text-sm inline-flex items-center"
+                className="pill-button apple-press bg-primary text-primary-foreground h-10 px-5 text-xs font-bold inline-flex items-center cursor-pointer"
               >
                 Refresh Page
               </button>
+
+              <button
+                type="button"
+                onClick={this.handleManualReport}
+                disabled={this.state.reported || this.state.isReporting}
+                className={`pill-button apple-press h-10 px-4 text-xs font-bold inline-flex items-center border transition-all cursor-pointer ${
+                  this.state.reported
+                    ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/30"
+                    : "bg-secondary text-foreground border-border hover:bg-secondary/80"
+                }`}
+              >
+                {this.state.isReporting
+                  ? "Reporting..."
+                  : this.state.reported
+                  ? "✓ Issue Reported"
+                  : "Report Issue"}
+              </button>
+
               <Link
                 to="/"
                 onClick={() => this.setState({ hasError: false, error: null })}
-                className="pill-button apple-press surface-elevated-hover h-10 px-6 text-sm inline-flex items-center text-foreground"
+                className="pill-button apple-press surface-elevated-hover h-10 px-5 text-xs font-bold inline-flex items-center text-foreground cursor-pointer"
               >
                 Go Home
               </Link>

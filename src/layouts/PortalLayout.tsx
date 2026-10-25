@@ -6,6 +6,8 @@ import { SearchDialog } from "@/components/SearchDialog";
 import { MessageSquare, Sparkles, X, Send } from "lucide-react";
 import { toast } from "sonner";
 import { useFocusMode } from "@/contexts/FocusModeContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { createSupportTicket } from "@/services/adminOperationsService";
 
 export function PortalLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -16,6 +18,7 @@ export function PortalLayout() {
   const navigate = useNavigate();
 
   const { focusMode, toggleFocusMode, setFocusMode } = useFocusMode();
+  const { user, profile } = useAuth();
 
   // Close mobile sidebar on route change
   useEffect(() => {
@@ -48,12 +51,24 @@ export function PortalLayout() {
     toast.info(!focusMode ? "🎯 Focus Mode Enabled (Sidebar Hidden)" : "Focus Mode Disabled");
   };
 
-  const handleSendQuickSupport = (e: React.FormEvent) => {
+  const handleSendQuickSupport = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!chatMessage.trim()) return;
-    toast.success("Message dispatched to ITM Notes Campus Support!");
+    const msg = chatMessage.trim();
     setChatMessage("");
     setIsChatOpen(false);
+    toast.success("Message dispatched to ITM Notes Campus Support!");
+    try {
+      await createSupportTicket(
+        msg,
+        "Campus Desk Inquiry",
+        user?.email || undefined,
+        profile?.display_name || undefined,
+        user?.id
+      );
+    } catch {
+      // Ignored - fallback handled
+    }
   };
 
   const isCodingLab = location.pathname.startsWith("/coding-lab");
