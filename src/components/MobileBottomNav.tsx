@@ -2,7 +2,6 @@ import { useLocation, Link } from 'react-router-dom';
 import { BookOpen, LayoutDashboard, Code2, MessageSquare, User } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useGamification } from '@/hooks/useGamification';
-import { Capacitor } from '@capacitor/core';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 
 export function MobileBottomNav() {
@@ -12,12 +11,11 @@ export function MobileBottomNav() {
 
   // Trigger gentle native haptic feedback on mobile tap
   const handleNavClick = async () => {
-    if (Capacitor.isNativePlatform()) {
-      try {
-        await Haptics.impact({ style: ImpactStyle.Light });
-      } catch (e) {
-        // Fallback silently if haptics fail
-      }
+    // We do NOT use Capacitor core plugins here because it causes Rollup build issues on Vercel.
+    try {
+      await Haptics.impact({ style: ImpactStyle.Light });
+    } catch (e) {
+      // Fallback silently if haptics fail
     }
   };
 
