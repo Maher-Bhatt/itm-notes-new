@@ -42,80 +42,12 @@ import {
   fetchUserFriends,
   toggleFriendInDb,
 } from "@/services/communityService";
-import { CommunityPost, CommunityComment, ClassmateProfile, INITIAL_CLASSMATES } from "@/data/communityData";
+import { CommunityPost, CommunityComment, ClassmateProfile, INITIAL_CLASSMATES, isFakePost } from "@/data/communityData";
 import { SharePostModal } from "@/components/SharePostModal";
 import { FriendComparisonModal } from "@/components/FriendComparisonModal";
 import { UserAvatar, resolveAvatarUrl, MAHER_CANONICAL_AVATAR } from "@/components/UserAvatar";
 
-// Initial seed posts matching Screenshot 5 design
-const INITIAL_RICH_POSTS: CommunityPost[] = [
-  {
-    id: "post-maher-verified",
-    authorId: "admin-maher",
-    authorName: "Maher Bhatt",
-    authorEmail: "maherbhatt01@gmail.com",
-    authorAvatar: MAHER_CANONICAL_AVATAR,
-    authorBranch: "Director / Admin · Computer Science",
-    isMasked: false,
-    maskAlias: "Maher Bhatt",
-    category: "College Feedback" as any,
-    createdAt: "Yesterday at 15:04",
-    likes: 42,
-    likedByMe: false,
-    pinned: true,
-    content: "Welcome to Campus Pulse! This campus community is made for all students to collaborate, exchange verified MST-1 question banks, and share exam insights. Feel free to request notes or discuss practicals here!",
-    linkUrl: "https://checkitoutlive.com",
-    verified: true,
-    comments: [
-      {
-        id: "c-101",
-        postId: "post-maher-verified",
-        authorId: "student-aarav",
-        authorName: "Aarav Patel",
-        authorEmail: "aarav.p@itm.ac.in",
-        authorAvatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=100",
-        isMasked: false,
-        maskAlias: "Aarav Patel",
-        content: "Super excited for this! The DSA questions bank is a lifesaver.",
-        createdAt: "Yesterday",
-        likes: 4
-      }
-    ]
-  },
-  {
-    id: "post-study-buddies",
-    authorId: "group-buddies",
-    authorName: "Study Buddies",
-    authorEmail: "studybuddies@itm.ac.in",
-    authorAvatar: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=100",
-    authorBranch: "Campus Study Circle",
-    isMasked: false,
-    maskAlias: "Study Buddies",
-    category: "Community" as any,
-    createdAt: "Yesterday at 10:48",
-    likes: 88,
-    likedByMe: true,
-    pinned: false,
-    content: "Exciting thing for the semester! We are gathering for group study on Chapter 3 Matrix Algebra and Tree Traversal algorithms on the campus green lawn. Come join us! 😊",
-    mediaUrl: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&h=450&fit=crop",
-    verified: false,
-    comments: [
-      {
-        id: "c-102",
-        postId: "post-study-buddies",
-        authorId: "student-diya",
-        authorName: "Diya Sharma",
-        authorEmail: "diya.s@itm.ac.in",
-        authorAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100",
-        isMasked: false,
-        maskAlias: "Diya Sharma",
-        content: "Count me in! Bringing solved BCA question papers.",
-        createdAt: "Yesterday",
-        likes: 7
-      }
-    ]
-  }
-];
+// 100% real Supabase data — no fake/seed posts
 
 export default function CommunityPage() {
   const navigate = useNavigate();
@@ -142,13 +74,12 @@ export default function CommunityPage() {
       if (cached) {
         const parsed = JSON.parse(cached);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed.map((p: CommunityPost) => {
+          return parsed.filter((p) => !isFakePost(p)).map((p: CommunityPost) => {
             const isMaher = 
               p.authorName === "Maher Bhatt" || 
               p.authorId === "admin-maher" ||
               p.authorEmail?.toLowerCase() === "maherbhatt01@gmail.com" ||
-              p.authorEmail?.toLowerCase() === "maher@gmail.com" ||
-              p.id === "post-maher-verified";
+              p.authorEmail?.toLowerCase() === "maher@gmail.com";
             if (isMaher) {
               return { ...p, authorAvatar: MAHER_CANONICAL_AVATAR };
             }
@@ -162,7 +93,7 @@ export default function CommunityPage() {
     } catch {
       // Fallback
     }
-    return INITIAL_RICH_POSTS;
+    return [];
   });
 
   const [isLoadingPosts, setIsLoadingPosts] = useState(false);
@@ -208,7 +139,7 @@ export default function CommunityPage() {
       const raw = localStorage.getItem("itm_user_friends_ids");
       if (raw) return new Set(JSON.parse(raw));
     } catch {}
-    return new Set(["friend-khalid"]);
+    return new Set<string>();
   });
 
   // Load feed from Supabase Backend with local fallback
@@ -216,28 +147,23 @@ export default function CommunityPage() {
     if (showLoading) setIsLoadingPosts(true);
     try {
       const remote = await fetchCommunityPosts(user?.id);
-      if (remote && remote.length > 0) {
-        // Merge with initial rich sample posts to guarantee verified design posts remain present
-        const combined = [...remote, ...INITIAL_RICH_POSTS];
-        const unique = Array.from(new Map(combined.map((p) => [p.id, p])).values());
-        
-        // Dynamically inject current user's avatar for Maher Bhatt posts if missing
-        const normalized = unique.map((p) => {
-          if (p.authorName === "Maher Bhatt" || p.authorId === "admin-maher") {
-            return {
-              ...p,
-              authorAvatar: currentUserAvatar || MAHER_CANONICAL_AVATAR,
-              verified: true,
-            };
-          }
-          return p;
-        });
+      const authentic = (remote || []).filter((p) => !isFakePost(p));
+      
+      const normalized = authentic.map((p) => {
+        if (p.authorName === "Maher Bhatt" || p.authorId === "admin-maher") {
+          return {
+            ...p,
+            authorAvatar: currentUserAvatar || MAHER_CANONICAL_AVATAR,
+            verified: true,
+          };
+        }
+        return p;
+      });
 
-        setPosts(normalized);
-        try {
-          localStorage.setItem("itm_campus_feed_posts", JSON.stringify(normalized));
-        } catch {}
-      }
+      setPosts(normalized);
+      try {
+        localStorage.setItem("itm_campus_feed_posts", JSON.stringify(normalized));
+      } catch {}
     } catch (err) {
       console.warn("Using offline feed data:", err);
     } finally {
@@ -247,6 +173,17 @@ export default function CommunityPage() {
 
   // Initial feed load and Realtime Subscription
   useEffect(() => {
+    // Purge cached fake posts from localStorage
+    try {
+      const raw = localStorage.getItem("itm_campus_feed_posts");
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          const clean = parsed.filter((p) => !isFakePost(p));
+          localStorage.setItem("itm_campus_feed_posts", JSON.stringify(clean));
+        }
+      }
+    } catch {}
     loadFeed(true);
     const unsubscribe = subscribeToCommunityFeed(() => {
       loadFeed(false);
@@ -835,6 +772,18 @@ export default function CommunityPage() {
               </div>
             )}
 
+            {!isLoadingPosts && filteredPosts.length === 0 && (
+              <div className="p-10 text-center bg-card rounded-2xl border border-dashed border-border space-y-3">
+                <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto">
+                  <MessageSquare className="h-6 w-6" />
+                </div>
+                <h3 className="font-bold text-foreground text-sm">No community posts yet</h3>
+                <p className="text-xs text-muted-foreground max-w-sm mx-auto">
+                  Be the first to share an exam tip, ask a practical question, or drop campus feedback above!
+                </p>
+              </div>
+            )}
+
             {filteredPosts.map((post) => {
               const isAuthor = user?.id && post.authorId === user.id;
               const isMaher = 
@@ -1062,43 +1011,51 @@ export default function CommunityPage() {
             </div>
 
             <div className="space-y-2">
-              {INITIAL_CLASSMATES.slice(0, 4).map((cm, idx) => {
-                const badgeStyles = [
-                  "bg-amber-400 text-black shadow-xs",
-                  "bg-slate-300 text-black shadow-xs",
-                  "bg-amber-700 text-white shadow-xs",
-                  "bg-secondary text-muted-foreground"
-                ];
-
-                return (
-                  <div
-                    key={cm.id}
-                    className="p-2.5 rounded-xl border border-border/80 bg-secondary/20 hover:bg-secondary/50 transition-all flex items-center justify-between gap-2 text-xs group"
-                  >
-                    <div className="flex items-center gap-2 min-w-0">
-                      <span className={`w-5 h-5 rounded-full flex items-center justify-center font-black text-[10px] shrink-0 ${badgeStyles[idx] || badgeStyles[3]}`}>
-                        #{idx + 1}
-                      </span>
-                      <div className="min-w-0">
-                        <p className="font-bold text-foreground truncate">{cm.name}</p>
-                        <p className="text-[10px] text-muted-foreground truncate">
-                          Lvl {cm.level} · {cm.xp} XP · 🔥 {cm.streakDays}d
-                        </p>
-                      </div>
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() => setComparisonFriend(cm)}
-                      className="px-2.5 py-1 rounded-lg bg-primary/10 hover:bg-primary text-primary hover:text-primary-foreground border border-primary/20 text-[10px] font-bold transition-all shrink-0 cursor-pointer flex items-center gap-1"
-                      title={`Compare your stats with ${cm.name}`}
+              {INITIAL_CLASSMATES && INITIAL_CLASSMATES.length > 0 ? (
+                INITIAL_CLASSMATES.slice(0, 4).map((cm, idx) => {
+                  const badgeStyles = [
+                    "bg-amber-400 text-black shadow-xs",
+                    "bg-slate-300 text-black shadow-xs",
+                    "bg-amber-700 text-white shadow-xs",
+                    "bg-secondary text-muted-foreground"
+                  ];
+                  return (
+                    <div
+                      key={cm.id}
+                      className="p-2.5 rounded-xl border border-border/80 bg-secondary/20 hover:bg-secondary/50 transition-all flex items-center justify-between gap-2 text-xs group"
                     >
-                      <span>Compare</span>
-                      <ChevronRight className="h-3 w-3" />
-                    </button>
-                  </div>
-                );
-              })}
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className={`w-5 h-5 rounded-full flex items-center justify-center font-black text-[10px] shrink-0 ${badgeStyles[idx] || badgeStyles[3]}`}>
+                          #{idx + 1}
+                        </span>
+                        <div className="min-w-0">
+                          <p className="font-bold text-foreground truncate">{cm.name}</p>
+                          <p className="text-[10px] text-muted-foreground truncate">
+                            Lvl {cm.level} · {cm.xp} XP · 🔥 {cm.streakDays}d
+                          </p>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setComparisonFriend(cm)}
+                        className="px-2.5 py-1 rounded-lg bg-primary/10 hover:bg-primary text-primary hover:text-primary-foreground border border-primary/20 text-[10px] font-bold transition-all shrink-0 cursor-pointer flex items-center gap-1"
+                        title={`Compare your stats with ${cm.name}`}
+                      >
+                        <span>Compare</span>
+                        <ChevronRight className="h-3 w-3" />
+                      </button>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="p-4 text-center bg-secondary/15 rounded-xl border border-border/50 space-y-1">
+                  <Users className="h-5 w-5 mx-auto text-muted-foreground/40" />
+                  <p className="text-xs font-semibold text-foreground">Peer Leaderboard</p>
+                  <p className="text-[10px] text-muted-foreground leading-relaxed">
+                    Student rankings will appear here as peers take quizzes and earn XP.
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 

@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { supabase } from '@/integrations/supabase/client';
-import { CommunityPost, CommunityComment, INITIAL_POSTS } from '@/data/communityData';
+import { CommunityPost, CommunityComment, isFakePost } from '@/data/communityData';
 import { MAHER_CANONICAL_AVATAR } from '@/components/UserAvatar';
 
 const LOCAL_STORAGE_KEY = 'itm_campus_feed_posts';
@@ -105,7 +105,7 @@ export async function fetchCommunityPosts(currentUserId?: string): Promise<Commu
       });
     });
     // 4. Map DB posts into UI models
-    const remotePosts: CommunityPost[] = (dbPosts || []).map((p) => {
+    const remotePosts: CommunityPost[] = (validDbPosts || []).map((p) => {
       const isMaher = 
         p.author_name === 'Maher Bhatt' || 
         p.author_id === 'admin-maher' ||
@@ -152,7 +152,7 @@ export async function fetchCommunityPosts(currentUserId?: string): Promise<Commu
     // 5. Check if user had any local-only posts from previous sessions that are missing in Supabase
     const localPosts = getLocalCachedPosts();
     const existingIds = new Set(remotePosts.map((p) => p.id));
-    const missingLocalPosts = localPosts.filter((lp) => !existingIds.has(lp.id));
+    const missingLocalPosts = localPosts.filter((lp) => !existingIds.has(lp.id) && !isFakePost(lp));
 
     if (missingLocalPosts.length > 0) {
       // Sync these local posts up to Supabase in background
@@ -186,7 +186,7 @@ export async function fetchCommunityPosts(currentUserId?: string): Promise<Commu
       console.warn('Failed to cache community posts in localStorage:', e);
     }
 
-    return remotePosts.length > 0 ? remotePosts : INITIAL_POSTS;
+    return remotePosts;
   } catch (error) {
     console.error('Error fetching community posts:', error);
     return getLocalCachedPosts();
@@ -488,7 +488,8 @@ function getLocalCachedPosts(): CommunityPost[] {
     if (raw) {
       const posts: CommunityPost[] = JSON.parse(raw);
       if (Array.isArray(posts)) {
-        return posts.map((p) => {
+        const authentic = posts.filter((p) => !isFakePost(p));
+        return authentic.map((p) => {
           const isMaher = 
             p.authorName === 'Maher Bhatt' || 
             p.authorId === 'admin-maher' ||
@@ -507,7 +508,7 @@ function getLocalCachedPosts(): CommunityPost[] {
   } catch (e) {
     console.warn('Failed to read cached posts from localStorage:', e);
   }
-  return INITIAL_POSTS;
+  return [];
 }
 
 function getLocalFriendIds(): string[] {
@@ -517,7 +518,7 @@ function getLocalFriendIds(): string[] {
   } catch (e) {
     console.warn('Failed to read friend IDs from localStorage:', e);
   }
-  return ['student-1', 'student-2'];
+  return [];
 }
 
 export async function verifyComment(commentId: string, verifierId: string, isVerified: boolean): Promise<boolean> {
