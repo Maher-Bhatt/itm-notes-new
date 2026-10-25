@@ -79,14 +79,14 @@ export function AdminModerationTab() {
         try {
           const { data: userProfile } = await supabase
             .from("profiles")
-            .select("id, total_xp")
+            .select("id, xp")
             .eq("email", item.reporter_email)
             .maybeSingle();
 
           if (userProfile) {
             await supabase
               .from("profiles")
-              .update({ total_xp: (userProfile.total_xp || 0) + 150 })
+              .update({ xp: (((userProfile as any).xp || 0) + 150) })
               .eq("id", userProfile.id);
             toast.success(`Approved! Awarded +150 XP to ${item.reporter_name}`);
           } else {

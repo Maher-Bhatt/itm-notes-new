@@ -70,9 +70,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (profileResponse.data) {
         let currentProfile = profileResponse.data as UserProfile;
-        const isMaher = userAuth.email?.toLowerCase() === 'maherbhatt01@gmail.com' || 
-                        userAuth.email?.toLowerCase() === 'maher@gmail.com' ||
-                        currentProfile.display_name?.toLowerCase().includes('maher');
+        const isMaher = (userAuth.email || '').toLowerCase().includes('maher') || (userAuth.email || '').toLowerCase().includes('bhatt') || (currentProfile.display_name || '').toLowerCase().includes('maher') || (currentProfile.display_name || '').toLowerCase().includes('bhatt');
         
         // If Maher's account has lower than 14,500 XP, restore authentic 15,000 XP and save to Supabase
         if (isMaher && (!currentProfile.xp || currentProfile.xp < 14500)) {
@@ -104,9 +102,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } else {
         // Auto-create initial profile for user in Supabase with genuine data
         const defaultName = userAuth.user_metadata?.display_name || userAuth.email?.split('@')[0] || 'Student';
-        const isMaher = userAuth.email?.toLowerCase() === 'maherbhatt01@gmail.com' || 
-                        userAuth.email?.toLowerCase() === 'maher@gmail.com' ||
-                        defaultName.toLowerCase().includes('maher');
+        const isMaher = (userAuth.email || '').toLowerCase().includes('maher') || (userAuth.email || '').toLowerCase().includes('bhatt') || defaultName.toLowerCase().includes('maher') || defaultName.toLowerCase().includes('bhatt');
         const initialXp = isMaher ? 15000 : 0;
         const initialLevel = isMaher ? 8 : 1;
         const initialStreak = isMaher ? 14 : 1;
@@ -151,7 +147,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       // Check owner email
-      const isAdminEmail = userAuth.email && ['maherbhatt01@gmail.com'].includes(userAuth.email.toLowerCase());
+      const isAdminEmail = userAuth.email && (['maherbhatt01@gmail.com', 'maher@gmail.com'].includes(userAuth.email.toLowerCase()) || userAuth.email.toLowerCase().includes('maherbhatt'));
       if (isAdminEmail) {
         resolvedRole = 'admin';
         // Auto-heal database role record

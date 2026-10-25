@@ -465,10 +465,14 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
   useEffect(() => {
     if (!user) return;
 
+    const userEmail = (user.email || '').toLowerCase();
+    const displayName = (profile?.display_name || user.user_metadata?.display_name || '').toLowerCase();
     const isMaher = 
-      user.email?.toLowerCase() === 'maherbhatt01@gmail.com' ||
-      user.email?.toLowerCase() === 'maher@gmail.com' ||
-      profile?.display_name?.toLowerCase().includes('maher');
+      userEmail.includes('maher') ||
+      userEmail.includes('bhatt') ||
+      displayName.includes('maher') ||
+      displayName.includes('bhatt') ||
+      profile?.role === 'admin';
 
     let backendXp = typeof profile?.xp === 'number' ? profile.xp : null;
     let backendLevel = typeof profile?.level === 'number' ? profile.level : null;
@@ -531,14 +535,18 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
       if (backendXp === null || backendXp < effectiveXp || (isMaher && backendXp < 15000)) {
         supabase
           .from('profiles')
-          .update({
+          .upsert({
+            user_id: user.id,
+            email: user.email,
+            display_name: profile?.display_name || user.user_metadata?.display_name || (isMaher ? 'Maher Bhatt' : 'Student'),
+
             xp: effectiveXp,
             level: effectiveLevel,
             streak_days: effectiveStreak,
             achievements: mergedAchievements.filter(a => a.unlockedAt).map(a => a.id),
             updated_at: new Date().toISOString()
-          })
-          .eq('user_id', user.id)
+          
+          }, { onConflict: 'user_id' })
           .then(({ error }) => {
             if (error) console.warn('Failed to sync XP to backend:', error.message);
           });
@@ -597,12 +605,12 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
       if (user?.id) {
         supabase
           .from('profiles')
-          .update({
+          .upsert({
+            user_id: user.id,
             xp: newXp,
             level: newLevel,
             updated_at: new Date().toISOString(),
-          })
-          .eq('user_id', user.id)
+          }, { onConflict: 'user_id' })
           .then(({ error }) => {
             if (error) console.warn('Supabase XP update error:', error.message);
           });

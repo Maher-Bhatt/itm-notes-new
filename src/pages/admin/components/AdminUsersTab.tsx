@@ -97,12 +97,24 @@ export function AdminUsersTab({
   const handleToggleSuspend = async (u: AdminUser) => {
     const nextState = !u.is_suspended;
     try {
-      const { error } = await supabase
+      let updateError = null;
+      const { error: err1 } = await supabase
         .from("profiles")
         .update({ is_suspended: nextState } as any)
         .eq("id", u.id);
 
-      if (error) throw error;
+      if (err1) {
+        // Fallback to status column if is_suspended column is not yet migrated in database
+        const { error: err2 } = await supabase
+          .from("profiles")
+          .update({ status: nextState ? "Suspended" : "Active" } as any)
+          .eq("id", u.id);
+        if (err2) {
+          updateError = err1;
+        }
+      }
+
+      if (updateError) throw updateError;
 
       u.is_suspended = nextState;
       toast.success(
