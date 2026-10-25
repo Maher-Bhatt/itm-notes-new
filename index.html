@@ -38,6 +38,10 @@
         } catch (e) {}
         return null;
       };
+      // Global fallback for results to protect against cached PWA service worker chunks
+      try {
+        window.results = { totalCount: 0, tools: [], subjects: [], materials: [], topics: [], inContent: [] };
+      } catch (e) {}
     </script>
     <title>ITM Notes | Your Academic Companion — Study Smarter</title>
     <meta name="description" content="ITM Notes is a modern student academic hub for ITM SLS Baroda University. Access verified semester notes, solved MST question banks, interactive coding labs, quiz practice, and attendance tracking tools." />
