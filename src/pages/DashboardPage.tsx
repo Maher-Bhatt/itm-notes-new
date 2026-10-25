@@ -20,6 +20,7 @@ import {
   TrendingUp, 
   ChevronLeft,
   Award,
+  Trophy,
   Layers,
   Flame,
   CheckCircle2,

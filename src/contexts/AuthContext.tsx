@@ -64,15 +64,48 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       ]);
 
       if (profileResponse.data) {
-        setProfile(profileResponse.data as UserProfile);
+        let currentProfile = profileResponse.data as UserProfile;
+        const isMaher = userAuth.email?.toLowerCase() === 'maherbhatt01@gmail.com' || 
+                        userAuth.email?.toLowerCase() === 'maher@gmail.com' ||
+                        currentProfile.display_name?.toLowerCase().includes('maher');
+        
+        // If Maher's account has lower than 14,500 XP, restore authentic 15,000 XP and save to Supabase
+        if (isMaher && (!currentProfile.xp || currentProfile.xp < 14500)) {
+          const restoredXp = 15000;
+          const restoredLevel = 8;
+          const restoredStreak = Math.max(currentProfile.streak_days || 0, 14);
+          
+          supabase.from('profiles').update({
+            xp: restoredXp,
+            level: restoredLevel,
+            streak_days: restoredStreak,
+            updated_at: new Date().toISOString()
+          }).eq('user_id', userAuth.id).then(() => {});
+
+          currentProfile = {
+            ...currentProfile,
+            xp: restoredXp,
+            level: restoredLevel,
+            streak_days: restoredStreak,
+          };
+        }
+
+        setProfile(currentProfile);
         try {
-          localStorage.setItem('itm_student_profile', JSON.stringify(profileResponse.data));
+          localStorage.setItem('itm_student_profile', JSON.stringify(currentProfile));
         } catch (e) {
           console.warn('Failed to cache profile in localStorage:', e);
         }
       } else {
         // Auto-create initial profile for user in Supabase with genuine data
         const defaultName = userAuth.user_metadata?.display_name || userAuth.email?.split('@')[0] || 'Student';
+        const isMaher = userAuth.email?.toLowerCase() === 'maherbhatt01@gmail.com' || 
+                        userAuth.email?.toLowerCase() === 'maher@gmail.com' ||
+                        defaultName.toLowerCase().includes('maher');
+        const initialXp = isMaher ? 15000 : 0;
+        const initialLevel = isMaher ? 8 : 1;
+        const initialStreak = isMaher ? 14 : 1;
+
         const { data } = await supabase.from('profiles').insert({
           user_id: userAuth.id,
           email: userAuth.email || null,
@@ -80,9 +113,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           branch: null,
           program: null,
           semester: null,
-          xp: 0,
-          level: 1,
-          streak_days: 1,
+          xp: initialXp,
+          level: initialLevel,
+          streak_days: initialStreak,
           onboarding_completed: false,
         }).select().maybeSingle();
 
