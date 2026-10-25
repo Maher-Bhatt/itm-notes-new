@@ -157,7 +157,7 @@ export function QuizAttemptReviewModal({
 
                 {/* Options List */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                  {q.options.map((opt, optIdx) => {
+                  {(q.options || []).map((opt, optIdx) => {
                     const isUserPick = q.userSelectedIndex === optIdx;
                     const isAnswer = q.correctIndex === optIdx;
 

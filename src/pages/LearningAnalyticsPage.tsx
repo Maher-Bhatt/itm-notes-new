@@ -48,14 +48,14 @@ export default function LearningAnalyticsPage() {
 
   // Compute subject-wise completion & estimated study hours from localStorage
   const subjectAnalytics = useMemo(() => {
-    return subjects.map(s => {
+    return (subjects || []).map(s => {
       let totalTopics = 0;
-      s.units.forEach(u => totalTopics += u.topics.length);
+      (s.units || []).forEach(u => totalTopics += (u.topics || []).length);
 
       // Read completed topics from localStorage
       let completedCount = 0;
-      s.units.forEach(u => {
-        u.topics.forEach(t => {
+      (s.units || []).forEach(u => {
+        (u.topics || []).forEach(t => {
           if (localStorage.getItem(`topic_${t.id}_completed`) === 'true') {
             completedCount++;
           }

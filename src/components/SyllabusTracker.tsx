@@ -29,11 +29,12 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ subject }) => 
   const { isCompleted, toggleComplete } = useProgress();
 
   const unitStats = useMemo(() => {
-    return subject.units.map((unit, idx) => {
+    if (!subject || !subject.units) return [];
+    return (subject.units || []).map((unit, idx) => {
       const unitNumber = idx + 1;
       const expectedMarks = UNIT_MARKS_MAP[unitNumber] || 12;
-      const totalTopics = unit.topics.length;
-      const completedTopics = unit.topics.filter(t => isCompleted(t.id)).length;
+      const totalTopics = unit.topics?.length || 0;
+      const completedTopics = (unit.topics || []).filter(t => isCompleted(t.id)).length;
       const percent = totalTopics > 0 ? Math.round((completedTopics / totalTopics) * 100) : 0;
 
       return {
@@ -140,7 +141,7 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ subject }) => 
 
               {/* Topic Pills */}
               <div className="flex flex-wrap gap-1.5 pt-1">
-                {unit.topics.map((t) => {
+                {(unit.topics || []).map((t) => {
                   const done = isCompleted(t.id);
                   return (
                     <Link

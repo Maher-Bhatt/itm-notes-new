@@ -557,7 +557,7 @@ export default function TopicPage() {
                   Unit {uIdx + 1}: {unit.title}
                 </p>
                 <div className="space-y-0.5">
-                  {unit.topics.map((t) => {
+                  {(unit.topics || []).map((t) => {
                     const isActive = t.id === topic.id;
                     const isDone = isCompleted(t.id);
                     return (

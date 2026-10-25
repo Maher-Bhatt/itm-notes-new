@@ -309,9 +309,9 @@ export default function SubjectDashboard() {
 
         {/* Units — iOS inset grouped list */}
         <div className="space-y-6">
-          {subject.units.map((unit, unitIdx) => {
+          {(subject.units || []).map((unit, unitIdx) => {
             const isCollapsed = collapsedUnits.includes(unit.id);
-            const completedCount = unit.topics.filter((t) => isCompleted(t.id)).length;
+            const completedCount = (unit.topics || []).filter((t) => isCompleted(t.id)).length;
 
             return (
               <div key={unit.id} className="animate-fade-in" style={{ animationDelay: `${unitIdx * 60}ms` }}>
@@ -326,7 +326,7 @@ export default function SubjectDashboard() {
 
                 {!isCollapsed && (
                   <div className="inset-group">
-                    {unit.topics.map((topic) => {
+                    {(unit.topics || []).map((topic) => {
                       const completed = isCompleted(topic.id);
                       const bookmarked = isBookmarked(topic.id);
                       const mcqCount = topic.mcqs?.length ?? 0;

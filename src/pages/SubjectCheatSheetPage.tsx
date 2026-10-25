@@ -21,13 +21,13 @@ export default function SubjectCheatSheetPage() {
   const [activeUnit, setActiveUnit] = useState<string>('All');
 
   const allTopics = useMemo(() => {
-    if (!subject) return [];
-    return subject.units.flatMap((u) => u.topics);
+    if (!subject || !subject.units) return [];
+    return (subject.units || []).flatMap((u) => u.topics || []);
   }, [subject]);
 
   const units = useMemo(() => {
-    if (!subject) return [];
-    return ['All', ...subject.units.map((u) => u.title)];
+    if (!subject || !subject.units) return [];
+    return ['All', ...(subject.units || []).map((u) => u.title)];
   }, [subject]);
 
   if (!subject) {
@@ -152,7 +152,7 @@ export default function SubjectCheatSheetPage() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {unit.topics.map((t) => (
+                  {(unit.topics || []).map((t) => (
                     <div
                       key={t.id}
                       className="bg-card border border-border/80 rounded-2xl p-5 shadow-sm hover:border-primary/40 transition-colors flex flex-col justify-between"

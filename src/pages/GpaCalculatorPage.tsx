@@ -318,7 +318,7 @@ export default function GpaCalculatorPage() {
   const cgpaTrendData = useMemo(() => {
     let runningCredits = 0;
     let runningWeightedPoints = 0;
-    return prevSemesters.map((item) => {
+    return (prevSemesters || []).map((item) => {
       runningCredits += item.credits;
       runningWeightedPoints += item.sgpa * item.credits;
       const cgpa = runningCredits > 0 ? (runningWeightedPoints / runningCredits).toFixed(2) : item.sgpa.toFixed(2);
@@ -336,7 +336,7 @@ export default function GpaCalculatorPage() {
     let totalCredits = 0;
     let totalGradePoints = 0;
 
-    const breakdown = subjects.map((sub) => {
+    const breakdown = (subjects || []).map((sub) => {
       const internal = Number(sub.internalMarks) || 0;
       const external = Number(sub.externalMarks) || 0;
       const totalMarks = Math.min(100, Math.max(0, internal + external));

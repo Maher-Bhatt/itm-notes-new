@@ -85,8 +85,9 @@ interface ScatterPlotProps {
 
 export function ScatterPlot({ data, title, xLabel, yLabel, regressionLine }: ScatterPlotProps) {
   const lineData = useMemo(() => {
-    if (!regressionLine) return [];
-    const xs = data.map(d => d.x);
+    if (!regressionLine || !data || data.length === 0) return [];
+    const xs = (data || []).map(d => d.x);
+    if (xs.length === 0) return [];
     const minX = Math.min(...xs);
     const maxX = Math.max(...xs);
     return [

@@ -96,11 +96,11 @@ export default function QuizPage() {
 
   // Extract subjects with MCQs
   const availableSubjects = useMemo(() => {
-    return subjects
+    return (subjects || [])
       .map((s) => {
         let count = 0;
-        s.units.forEach((u) => {
-          u.topics.forEach((t) => {
+        (s.units || []).forEach((u) => {
+          (u.topics || []).forEach((t) => {
             if (t.mcqs) count += t.mcqs.length;
           });
         });
@@ -112,10 +112,10 @@ export default function QuizPage() {
   // Combined Sem 3 MCQs pool with full metadata
   const allSem3Mcqs = useMemo(() => {
     let pool: EnrichedMCQ[] = [];
-    const sem3Subjects = availableSubjects.filter((s) => s.semester === 3 || s.id.startsWith("sem3") || s.id === "ca-101");
+    const sem3Subjects = (availableSubjects || []).filter((s) => s.semester === 3 || s.id.startsWith("sem3") || s.id === "ca-101");
     sem3Subjects.forEach((s) => {
-      s.units.forEach((u) => {
-        u.topics.forEach((t) => {
+      (s.units || []).forEach((u) => {
+        (u.topics || []).forEach((t) => {
           if (t.mcqs && t.mcqs.length > 0) {
             const tagged = t.mcqs.map((m) => ({
               ...m,
@@ -144,7 +144,7 @@ export default function QuizPage() {
     } else {
       const subj = subjects.find((s) => s.id === selectedSubject);
       if (subj) {
-        subj.units.forEach((u) => {
+        (subj.units || []).forEach((u) => {
           if (selectedUnitFilter !== "all" && u.id !== selectedUnitFilter) return;
           u.topics.forEach((t) => {
             if (t.mcqs) {
@@ -282,7 +282,7 @@ export default function QuizPage() {
       score: score,
       totalQuestions: activeQuizPool.length,
       dateAttempted: new Date().toLocaleDateString(),
-      questions: activeQuizPool.map((q, idx) => {
+      questions: (activeQuizPool || []).map((q, idx) => {
         const rec = quizAnswers.find(a => a.question === q);
         return {
           questionNumber: idx + 1,

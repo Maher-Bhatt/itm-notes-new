@@ -189,7 +189,7 @@ export function MCQQuiz({ mcqs, topicId, onComplete }: MCQQuizProps) {
 
                   {/* Options state */}
                   <div className="space-y-1">
-                    {ans.question.options.map((opt, optIdx) => {
+                    {(ans.question.options || []).map((opt, optIdx) => {
                       const isUserPick = optIdx === ans.selectedIdx;
                       const isCorrect = optIdx === ans.question.correctIndex;
                       let badgeCls = "p-2 rounded-lg flex items-center justify-between text-xs ";
@@ -256,7 +256,7 @@ export function MCQQuiz({ mcqs, topicId, onComplete }: MCQQuizProps) {
       </h4>
 
       <div className="space-y-2.5 mb-6">
-        {mcq.options.map((opt, i) => {
+        {(mcq?.options || []).map((opt, i) => {
           let cls = "apple-press w-full text-left py-3 px-4 rounded-xl border transition-all text-xs sm:text-sm font-medium ";
           if (showResult) {
             if (i === mcq.correctIndex) cls += "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-bold ";

@@ -42,6 +42,33 @@
       try {
         window.results = { totalCount: 0, tools: [], subjects: [], materials: [], topics: [], inContent: [] };
       } catch (e) {}
+      // Automatic cache recovery for stale Service Worker / cached bundles
+      window.addEventListener('error', function(event) {
+        try {
+          if (event && event.message && (
+            event.message.indexOf("reading 'map'") !== -1 ||
+            event.message.indexOf("Cannot access") !== -1 ||
+            event.message.indexOf("Loading chunk") !== -1 ||
+            event.message.indexOf("Failed to fetch dynamically imported module") !== -1
+          )) {
+            var key = 'itm_auto_cache_reloaded_' + (event.filename || 'bundle');
+            if (!sessionStorage.getItem(key)) {
+              sessionStorage.setItem(key, '1');
+              if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(function(regs) {
+                  for (var i = 0; i < regs.length; i++) regs[i].unregister();
+                });
+              }
+              if ('caches' in window) {
+                caches.keys().then(function(keys) {
+                  for (var j = 0; j < keys.length; j++) caches.delete(keys[j]);
+                });
+              }
+              setTimeout(function() { window.location.reload(); }, 120);
+            }
+          }
+        } catch (err) {}
+      });
     </script>
     <title>ITM Notes | Your Academic Companion — Study Smarter</title>
     <meta name="description" content="ITM Notes is a modern student academic hub for ITM SLS Baroda University. Access verified semester notes, solved MST question banks, interactive coding labs, quiz practice, and attendance tracking tools." />
