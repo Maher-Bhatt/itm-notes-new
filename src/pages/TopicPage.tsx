@@ -7,31 +7,32 @@ import { useTopic, useSubject } from "@/hooks/useAcademicData";
 import { MCQQuiz } from "@/components/MCQQuiz";
 import { TestMe } from "@/components/TestMe";
 import { MarkdownRenderer, extractTOC } from "@/components/MarkdownRenderer";
-import { 
-  Bookmark, 
-  CheckCircle, 
-  BookOpen, 
-  ChevronLeft, 
-  ChevronRight, 
-  Menu, 
-  X, 
-  Copy, 
-  Check, 
-  Maximize2, 
-  Minimize2, 
-  Loader2, 
-  HelpCircle, 
-  Clock, 
-  Printer, 
-  Layers, 
-  Sparkles, 
+import {
+  Bookmark,
+  CheckCircle,
+  BookOpen,
+  ChevronLeft,
+  ChevronRight,
+  Menu,
+  X,
+  Copy,
+  Check,
+  Maximize2,
+  Minimize2,
+  Loader2,
+  HelpCircle,
+  Clock,
+  Printer,
+  Layers,
+  Zap,
   MoreVertical,
   Share2,
   Highlighter,
   MessageSquare,
   Flag,
   Trash2,
-  Plus
+  Plus,
+  Sparkles,
 } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { usePomodoro } from "@/contexts/PomodoroContext";
@@ -60,17 +61,17 @@ const XcodeBlock = memo(function XcodeBlock({ code, label, variant }: { code: st
   }, [code]);
 
   return (
-    <div className="xcode-block">
-      <div className="xcode-block-header">
-        <span className={`text-[11px] font-mono ${variant === "output" ? "text-success/70" : "text-muted-foreground"}`}>
+    <div className="rounded-lg border border-border bg-secondary overflow-hidden">
+      <div className="flex items-center justify-between px-3 py-2 bg-secondary/80 border-b border-border">
+        <span className={`text-[11px] font-mono ${variant === "output" ? "text-success-foreground" : "text-muted-foreground"}`}>
           {label || (variant === "output" ? "Output" : "Code")}
         </span>
-        <button onClick={handleCopy} className="text-muted-foreground hover:text-foreground transition-colors apple-press p-1 -m-1">
-          {copied ? <Check className="h-3.5 w-3.5 text-success" /> : <Copy className="h-3.5 w-3.5" />}
+        <button onClick={handleCopy} className="text-muted-foreground hover:text-foreground transition-colors press p-1 -m-1 rounded">
+          {copied ? <Check className="h-3.5 w-3.5 text-success-foreground" /> : <Copy className="h-3.5 w-3.5" />}
         </button>
       </div>
-      <div className="xcode-block-body">
-        <pre><code className={`text-[13px] leading-relaxed ${variant === "output" ? "text-success/80" : ""}`}>{code}</code></pre>
+      <div className="p-3 overflow-x-auto">
+        <pre><code className={`text-[13px] leading-relaxed ${variant === "output" ? "text-success-foreground/80" : ""}`}>{code}</code></pre>
       </div>
     </div>
   );
@@ -103,10 +104,10 @@ const ReadingProgressBar = memo(function ReadingProgressBar() {
 
   return (
     <div className="fixed top-0 left-0 right-0 h-1 z-[60] bg-transparent pointer-events-none">
-      <div 
+      <div
         ref={barRef}
-        className="h-full bg-primary transition-[width] duration-75 ease-out shadow-sm" 
-        style={{ width: "0%" }} 
+        className="h-full bg-primary transition-[width] duration-75 ease-out shadow-sm"
+        style={{ width: "0%" }}
       />
     </div>
   );
@@ -149,13 +150,13 @@ const ContentTOC = memo(function ContentTOC({ markdown }: { markdown: string }) 
         <a
           key={item.id}
           href={`#${item.id}`}
-          className={`block text-[12px] py-1 transition-colors rounded ${
+          className={`block text-[12px] py-1.5 transition-colors rounded-lg ${
             item.level === 3 ? "pl-6" : "pl-2"
           } ${
             activeId === item.id
               ? "text-primary font-medium bg-primary/8"
-              : "text-muted-foreground/60 hover:text-muted-foreground"
-          }`}
+              : "text-muted-foreground/60 hover:text-foreground hover:bg-secondary/50"
+          } press`}
         >
           {item.text}
         </a>
@@ -351,13 +352,16 @@ export default function TopicPage() {
     if (!newStickyNote.trim()) return;
     addPersonalNote(newStickyNote.trim());
     setNewStickyNote("");
-    toast.success("Personal study note saved! 📝");
+    toast.success("Personal study note saved!");
   };
 
   if (isTopicLoading || isSubjectLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="h-6 w-6 animate-spin text-primary" />
+        <div className="flex flex-col items-center gap-2">
+          <Loader2 className="h-6 w-6 animate-spin text-primary" />
+          <p className="text-xs text-muted-foreground">Loading topic…</p>
+        </div>
       </div>
     );
   }
@@ -366,9 +370,12 @@ export default function TopicPage() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
+          <div className="w-12 h-12 rounded-xl bg-secondary flex items-center justify-center mx-auto mb-4">
+            <BookOpen className="h-6 w-6 text-muted-foreground" />
+          </div>
           <h2 className="text-2xl font-bold mb-2 text-foreground">Topic not found</h2>
           <p className="text-muted-foreground mb-4">The topic you're looking for doesn't exist.</p>
-          <Link to="/" className="text-primary hover:underline">Back to Home</Link>
+          <Link to="/" className="text-primary hover:underline press">Back to Home</Link>
         </div>
       </div>
     );
@@ -398,19 +405,19 @@ export default function TopicPage() {
       <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
 
       {/* Header */}
-      <header className={`sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b transition-all duration-300 ${focusMode ? "opacity-0 pointer-events-none -translate-y-full" : ""}`}>
+      <header className={`sticky top-0 z-50 bg-card/80 backdrop-blur-md border-b border-border transition-all duration-300 ${focusMode ? "opacity-0 pointer-events-none -translate-y-full" : ""}`}>
         <div className="max-w-[1400px] mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <button onClick={() => setSidebarOpen(!sidebarOpen)} className="lg:hidden p-2 -ml-2 rounded-md hover:bg-secondary text-foreground">
+            <button onClick={() => setSidebarOpen(!sidebarOpen)} className="lg:hidden p-2 -ml-2 rounded-lg hover:bg-secondary text-foreground press">
               {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
-            <button onClick={() => navigate(`/subject/${subjectId}`)} className="p-1.5 -ml-1.5 rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors">
+            <button onClick={() => navigate(`/subject/${subjectId}`)} className="p-1.5 -ml-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors press">
               <ChevronLeft className="h-5 w-5" />
             </button>
             <nav className="hidden sm:flex items-center gap-2 text-[14px] text-muted-foreground font-medium">
-              <Link to="/" className="hover:text-foreground transition-colors">Home</Link>
+              <Link to="/" className="hover:text-foreground transition-colors press">Home</Link>
               <ChevronRight className="h-4 w-4 opacity-40" />
-              <Link to={`/subject/${subjectId}`} className="hover:text-foreground transition-colors">{subject?.name}</Link>
+              <Link to={`/subject/${subjectId}`} className="hover:text-foreground transition-colors press">{subject?.name}</Link>
               <ChevronRight className="h-4 w-4 opacity-40" />
               <span className="text-foreground truncate max-w-[250px]">{topic.title}</span>
             </nav>
@@ -418,8 +425,10 @@ export default function TopicPage() {
           <div className="flex items-center gap-1 sm:gap-2">
             <button
               onClick={handleComplete}
-              className={`h-8 sm:h-9 px-2.5 sm:px-4 rounded-md text-[12px] sm:text-[13px] font-semibold inline-flex items-center gap-1.5 sm:gap-2 transition-all ${
-                completed ? "bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20" : "bg-secondary hover:bg-secondary/80 text-foreground"
+              className={`h-8 sm:h-9 px-2.5 sm:px-4 rounded-lg text-[12px] sm:text-[13px] font-semibold inline-flex items-center gap-1.5 sm:gap-2 transition-all press ${
+                completed
+                  ? "bg-success/10 text-success-foreground hover:bg-success/20 border border-success/20"
+                  : "bg-secondary hover:bg-secondary/80 text-foreground border border-border"
               }`}
             >
               <CheckCircle className="h-4 w-4" />
@@ -437,13 +446,13 @@ export default function TopicPage() {
                 }
               }}
               title={isPomodoroRunning ? `Focus session active: ${Math.floor(pomodoroTimeLeft / 60)}m left` : "Start 25m Focus Sprint directly"}
-              className={`hidden sm:inline-flex h-8 sm:h-9 px-2.5 sm:px-3 rounded-md text-[12px] sm:text-[13px] font-semibold items-center gap-1.5 transition-all ${
+              className={`hidden sm:inline-flex h-8 sm:h-9 px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] font-semibold items-center gap-1.5 transition-all press ${
                 isPomodoroRunning
-                  ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 animate-pulse !inline-flex"
-                  : "bg-secondary hover:bg-secondary/80 text-foreground"
+                  ? "bg-success/15 text-success-foreground border border-success/30 animate-pulse"
+                  : "bg-secondary hover:bg-secondary/80 text-foreground border border-border"
               }`}
             >
-              <Clock className={`h-4 w-4 ${isPomodoroRunning ? "text-emerald-500" : "text-primary"}`} />
+              <Clock className={`h-4 w-4 ${isPomodoroRunning ? "text-success-foreground" : "text-primary"}`} />
               <span className="hidden md:inline font-mono">
                 {isPomodoroRunning
                   ? `${String(Math.floor(pomodoroTimeLeft / 60)).padStart(2, '0')}:${String(pomodoroTimeLeft % 60).padStart(2, '0')}`
@@ -455,9 +464,9 @@ export default function TopicPage() {
             <button
               onClick={() => setFlashcardsOpen(true)}
               title="Active Recall Flashcards"
-              className="hidden md:inline-flex h-8 sm:h-9 px-2.5 sm:px-3 rounded-md text-[12px] sm:text-[13px] font-semibold items-center gap-1.5 bg-secondary hover:bg-secondary/80 text-foreground transition-all apple-press"
+              className="hidden md:inline-flex h-8 sm:h-9 px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] font-semibold items-center gap-1.5 bg-secondary hover:bg-secondary/80 text-foreground transition-all press"
             >
-              <Layers className="h-4 w-4 text-amber-500" />
+              <Layers className="h-4 w-4 text-warning-foreground" />
               <span className="hidden lg:inline">Flashcards</span>
             </button>
 
@@ -465,7 +474,7 @@ export default function TopicPage() {
             <button
               onClick={handleShare}
               title="Share Topic Link with Classmates"
-              className="hidden sm:inline-flex p-1.5 sm:p-2 rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors apple-press"
+              className="hidden sm:inline-flex p-1.5 sm:p-2 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors press"
             >
               <Share2 className="h-4 w-4 sm:h-5 sm:w-5" />
             </button>
@@ -474,9 +483,9 @@ export default function TopicPage() {
             <button
               onClick={() => setAnnotationsDrawerOpen(true)}
               title={`Personal Notes & Highlights (${annotations.length})`}
-              className="relative p-1.5 sm:p-2 rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors apple-press"
+              className="relative p-1.5 sm:p-2 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors press"
             >
-              <Highlighter className="h-4 w-4 sm:h-5 sm:w-5 text-amber-500" />
+              <Highlighter className="h-4 w-4 sm:h-5 sm:w-5 text-warning-foreground" />
               {annotations.length > 0 && (
                 <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary text-primary-foreground font-bold text-[9px] flex items-center justify-center">
                   {annotations.length}
@@ -488,7 +497,7 @@ export default function TopicPage() {
             <button
               onClick={() => window.print()}
               title="Save Topic as PDF / Print Exam Guide"
-              className="hidden sm:inline-flex p-1.5 sm:p-2 rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+              className="hidden sm:inline-flex p-1.5 sm:p-2 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors press"
             >
               <Printer className="h-4 w-4 sm:h-5 sm:w-5" />
             </button>
@@ -496,47 +505,47 @@ export default function TopicPage() {
             <button
               onClick={() => setFocusMode(!focusMode)}
               title={focusMode ? "Exit Focus Mode (F)" : "Focus Mode (F)"}
-              className="hidden sm:inline-flex p-1.5 sm:p-2 rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+              className="hidden sm:inline-flex p-1.5 sm:p-2 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors press"
             >
               {focusMode ? <Minimize2 className="h-4 w-4 sm:h-5 sm:w-5" /> : <Maximize2 className="h-4 w-4 sm:h-5 sm:w-5" />}
             </button>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="sm:hidden p-1.5 rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors">
+                <button className="sm:hidden p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors press">
                   <MoreVertical className="h-4 w-4" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 sm:hidden">
-                <DropdownMenuItem onClick={() => setFlashcardsOpen(true)}>
-                  <Layers className="mr-2 h-4 w-4 text-amber-500" />
+              <DropdownMenuContent align="end" className="w-48 sm:hidden rounded-xl shadow-xl border border-border glass-strong">
+                <DropdownMenuItem onClick={() => setFlashcardsOpen(true)} className="press">
+                  <Layers className="mr-2 h-4 w-4 text-warning-foreground" />
                   <span>Flashcards</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleShare}>
-                  <Share2 className="mr-2 h-4 w-4 text-emerald-500" />
+                <DropdownMenuItem onClick={handleShare} className="press">
+                  <Share2 className="mr-2 h-4 w-4 text-success-foreground" />
                   <span>Share Topic</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setAnnotationsDrawerOpen(true)}>
-                  <Highlighter className="mr-2 h-4 w-4 text-amber-500" />
+                <DropdownMenuItem onClick={() => setAnnotationsDrawerOpen(true)} className="press">
+                  <Highlighter className="mr-2 h-4 w-4 text-warning-foreground" />
                   <span>My Notes ({annotations.length})</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setVivaModalOpen(true)}>
+                <DropdownMenuItem onClick={() => setVivaModalOpen(true)} className="press">
                   <HelpCircle className="mr-2 h-4 w-4 text-primary" />
                   <span>Oral / Viva Prep</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setErrataModalOpen(true)}>
-                  <Flag className="mr-2 h-4 w-4 text-rose-500" />
+                <DropdownMenuItem onClick={() => setErrataModalOpen(true)} className="press">
+                  <Flag className="mr-2 h-4 w-4 text-danger-foreground" />
                   <span>Report Error (+25 XP)</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => window.print()}>
+                <DropdownMenuItem onClick={() => window.print()} className="press">
                   <Printer className="mr-2 h-4 w-4 text-muted-foreground" />
                   <span>Save / Print PDF</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <button onClick={() => toggleBookmark(topic.id)} className="p-1.5 sm:p-2 rounded-md hover:bg-secondary transition-colors">
-              <Bookmark className={`h-4 w-4 sm:h-5 sm:w-5 ${bookmarked ? "fill-amber-500 text-amber-500" : "text-muted-foreground hover:text-foreground"}`} />
+            <button onClick={() => toggleBookmark(topic.id)} className="p-1.5 sm:p-2 rounded-lg hover:bg-secondary transition-colors press">
+              <Bookmark className={`h-4 w-4 sm:h-5 sm:w-5 ${bookmarked ? "fill-warning text-warning-foreground" : "text-muted-foreground hover:text-foreground"}`} />
             </button>
           </div>
         </div>
@@ -546,7 +555,7 @@ export default function TopicPage() {
         {/* Left sidebar — topic navigation */}
         <aside className={`${focusMode ? "hidden" : ""} ${sidebarOpen ? "fixed inset-0 z-40 lg:relative" : "hidden lg:block"} lg:w-72 lg:shrink-0`}>
           {sidebarOpen && <div className="fixed inset-0 bg-black/40 backdrop-blur-sm lg:hidden z-40" onClick={() => setSidebarOpen(false)} />}
-          <div className={`${sidebarOpen ? "fixed left-0 top-14 bottom-0 w-72 z-50 bg-background shadow-xl" : ""} lg:sticky lg:top-14 lg:h-[calc(100vh-3.5rem)] overflow-y-auto border-r border-border p-4 custom-scrollbar`}>
+          <div className={`${sidebarOpen ? "fixed left-0 top-14 bottom-0 w-72 z-50 bg-background shadow-xl" : ""} lg:sticky lg:top-14 lg:h-[calc(100vh-3.5rem)] overflow-y-auto border-r border-border p-4 scrollbar-thin`}>
             <div className="mb-4 pb-3 border-b border-border">
               <h3 className="font-bold text-sm text-foreground truncate">{subject?.name}</h3>
               <p className="text-[11px] text-muted-foreground">{subject?.code} • Semester {subject?.semester}</p>
@@ -565,14 +574,14 @@ export default function TopicPage() {
                         key={t.id}
                         to={`/subject/${subjectId}/topic/${t.id}`}
                         onClick={() => setSidebarOpen(false)}
-                        className={`flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg transition-colors ${
+                        className={`flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg transition-colors press ${
                           isActive
                             ? "bg-primary text-primary-foreground font-semibold shadow-sm"
                             : "text-muted-foreground hover:text-foreground hover:bg-secondary/60"
                         }`}
                       >
                         <span className="truncate pr-2">{t.title}</span>
-                        {isDone && <CheckCircle className={`h-3.5 w-3.5 shrink-0 ${isActive ? "text-primary-foreground" : "text-emerald-500"}`} />}
+                        {isDone && <CheckCircle className={`h-3.5 w-3.5 shrink-0 ${isActive ? "text-primary-foreground" : "text-success-foreground"}`} />}
                       </Link>
                     );
                   })}
@@ -586,13 +595,13 @@ export default function TopicPage() {
         <main className="flex-1 min-w-0 pb-20">
           {/* Focus Mode floating toolbar */}
           {focusMode && (
-            <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 bg-background/90 backdrop-blur-md border border-border rounded-full px-5 py-2.5 shadow-2xl animate-fade-in">
+            <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 bg-card/90 backdrop-blur-md border border-border rounded-full px-5 py-2.5 shadow-lg animate-fade-in glass-strong">
               <Minimize2 className="h-4 w-4 text-muted-foreground" />
               <span className="text-[13px] font-medium text-foreground">Focus Mode</span>
               <span className="text-[12px] text-muted-foreground/50 mx-1">·</span>
               <button
                 onClick={() => setFocusMode(false)}
-                className="text-[13px] text-primary font-bold hover:underline"
+                className="text-[13px] text-primary font-bold hover:underline press"
               >
                 Exit (Esc)
               </button>
@@ -604,20 +613,20 @@ export default function TopicPage() {
             <div className={`${focusMode ? "max-w-4xl mx-auto" : "flex-1 min-w-0"} px-4 sm:px-6 md:px-12 py-6 sm:py-10 transition-all duration-300`}>
               <div className="flex items-center justify-between gap-2 mb-3">
                 <p className="text-[11px] sm:text-[13px] text-primary font-bold uppercase tracking-widest">{unitTitle}</p>
-                
+
                 {/* Topic Action Pills */}
                 <div className="flex items-center gap-1.5">
                   <button
                     onClick={() => setVivaModalOpen(true)}
-                    className="px-2.5 py-1 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary text-[11px] font-bold inline-flex items-center gap-1 transition-all apple-press"
+                    className="px-2.5 py-1 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary text-[11px] font-bold inline-flex items-center gap-1 transition-all press"
                   >
                     <HelpCircle className="h-3 w-3" /> Viva Prep
                   </button>
                   <button
                     onClick={() => setErrataModalOpen(true)}
-                    className="px-2 py-1 rounded-lg bg-secondary hover:bg-secondary/80 text-muted-foreground hover:text-foreground text-[11px] font-medium inline-flex items-center gap-1 transition-all"
+                    className="px-2 py-1 rounded-lg bg-secondary hover:bg-secondary/80 text-muted-foreground hover:text-foreground text-[11px] font-medium inline-flex items-center gap-1 transition-all press"
                   >
-                    <Flag className="h-3 w-3 text-rose-500" /> Report Typo
+                    <Flag className="h-3 w-3 text-danger-foreground" /> Report Typo
                   </button>
                 </div>
               </div>
@@ -630,10 +639,10 @@ export default function TopicPage() {
               <div className="hidden print-header mb-6">
                 <div className="flex justify-between items-center mb-1">
                   <span className="font-extrabold text-lg text-black">ITM SLS BARODA UNIVERSITY</span>
-                  <span className="text-xs text-gray-600 font-semibold">B.Tech CSE · Semester 3</span>
+                  <span className="text-xs text-black/60 font-semibold">B.Tech CSE · Semester 3</span>
                 </div>
                 <h1 className="text-2xl font-black text-black">{topic.title}</h1>
-                <p className="text-xs text-gray-700">{subject?.name} ({subject?.code}) · {unitTitle}</p>
+                <p className="text-xs text-black/70">{subject?.name} ({subject?.code}) · {unitTitle}</p>
               </div>
 
               {/* Hindi & Gujarati Native Language Conceptual Explanation */}
@@ -650,34 +659,34 @@ export default function TopicPage() {
               {/* ── Rich Content Mode ── */}
               <div className="topic-rich-content-wrapper max-w-[900px] mt-6">
                 <Tabs defaultValue="detailed" className="w-full">
-                  <TabsList className="mb-6 sm:mb-8 w-full max-w-[400px] h-10 sm:h-12 p-1 bg-secondary/50 rounded-lg">
-                    <TabsTrigger value="detailed" className="text-[12px] sm:text-[14px] font-medium rounded-md h-full data-[state=active]:shadow-sm">Detailed Notes</TabsTrigger>
-                    <TabsTrigger value="revision" className="text-[12px] sm:text-[14px] font-medium rounded-md h-full data-[state=active]:shadow-sm">Quick Revision</TabsTrigger>
+                  <TabsList className="mb-6 sm:mb-8 w-full max-w-[400px] h-10 sm:h-12 p-1 bg-secondary/50 rounded-lg border border-border">
+                    <TabsTrigger value="detailed" className="text-[12px] sm:text-[14px] font-medium rounded-lg h-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground shadow-sm">Detailed Notes</TabsTrigger>
+                    <TabsTrigger value="revision" className="text-[12px] sm:text-[14px] font-medium rounded-lg h-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground shadow-sm">Quick Revision</TabsTrigger>
                   </TabsList>
-                  
+
                   <TabsContent value="detailed" className="mt-0 focus-visible:outline-none">
-                    <div className="flex flex-wrap items-center justify-between gap-3 mb-6 p-3 rounded-xl bg-primary/5 border border-primary/20">
+                    <div className="flex flex-wrap items-center justify-between gap-3 mb-6 p-3 rounded-lg bg-primary/5 border border-primary/20">
                       <div className="flex items-center gap-2 text-xs font-medium text-foreground">
-                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span className="w-2 h-2 rounded-full bg-success-foreground animate-pulse"></span>
                         <span>Estimated Study Time: ~15 mins</span>
                       </div>
                       {!isPomodoroRunning ? (
                         <button
                           onClick={startPomodoro}
-                          className="px-3 py-1.5 rounded-lg bg-primary text-primary-foreground font-bold text-xs inline-flex items-center gap-1.5 hover:opacity-90 apple-press shadow-sm"
+                          className="px-3 py-1.5 rounded-lg bg-primary text-primary-foreground font-bold text-xs inline-flex items-center gap-1.5 hover:bg-primary/90 press shadow-sm"
                         >
                           <Clock className="h-3.5 w-3.5" /> Start 25m Focus Sprint (+50 XP)
                         </button>
                       ) : (
                         <button
                           onClick={() => setIsPomodoroModalOpen(true)}
-                          className="px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 font-bold text-xs inline-flex items-center gap-1.5"
+                          className="px-3 py-1.5 rounded-lg bg-success/20 text-success-foreground border border-success/30 font-bold text-xs inline-flex items-center gap-1.5"
                         >
-                          <Clock className="h-3.5 w-3.5 text-emerald-500" /> Focus Active: {Math.floor(pomodoroTimeLeft / 60)}m left
+                          <Clock className="h-3.5 w-3.5 text-success-foreground" /> Focus Active: {Math.floor(pomodoroTimeLeft / 60)}m left
                         </button>
                       )}
                     </div>
-                    <div className="mb-6 sm:mb-10 bg-secondary/30 rounded-xl p-4 sm:p-6 border border-border/50">
+                    <div className="mb-6 sm:mb-10 bg-secondary/30 rounded-lg p-4 sm:p-6 border border-border/50">
                       <p className="text-[11px] sm:text-[12px] font-bold text-primary uppercase tracking-widest mb-2 sm:mb-3 flex items-center gap-2">
                         <BookOpen className="h-4 w-4" /> Quick Summary
                       </p>
@@ -689,22 +698,22 @@ export default function TopicPage() {
                   </TabsContent>
 
                   <TabsContent value="revision" className="mt-0 focus-visible:outline-none">
-                    <div className="bg-amber-500/10 rounded-2xl p-8 border border-amber-500/20">
-                      <h2 className="text-2xl font-bold mb-6 text-amber-600 dark:text-amber-500 flex items-center gap-3">
+                    <div className="bg-warning/10 rounded-lg p-8 border border-warning/20">
+                      <h2 className="text-2xl font-bold mb-6 text-warning-foreground dark:text-warning-foreground flex items-center gap-3">
                         <CheckCircle className="h-6 w-6" />
                         Revision Notes
                       </h2>
                       {topic.shortNotes ? (
-                        <div className="rich-content prose-lg max-w-none prose-amber">
+                        <div className="rich-content prose-lg max-w-none">
                           <MarkdownRenderer content={topic.shortNotes} />
                         </div>
                       ) : (
                         <div className="space-y-5">
-                          <p className="text-amber-700/80 dark:text-amber-400/80 font-medium">Key formulas and definitions to remember before an exam.</p>
+                          <p className="text-warning-foreground/80 dark:text-warning-foreground/80 font-medium">Key formulas and definitions to remember before an exam.</p>
                           <ul className="space-y-3">
                             {topic.keyPoints && topic.keyPoints.map((point, index) => (
                               <li key={index} className="flex items-start gap-3">
-                                <span className="h-2 w-2 rounded-full bg-amber-500 mt-2 shrink-0" />
+                                <span className="h-2 w-2 rounded-full bg-warning-foreground mt-2 shrink-0" />
                                 <span className="text-foreground/90">{point}</span>
                               </li>
                             ))}
@@ -721,8 +730,8 @@ export default function TopicPage() {
                     <h2 className="text-xl sm:text-2xl font-extrabold mb-4 sm:mb-6 pb-2 sm:pb-3 border-b border-border text-foreground">Important Exam Questions</h2>
                     <Accordion type="single" collapsible className="w-full space-y-2 sm:space-y-3">
                       {topic.theoryQuestions.map((q, idx) => (
-                        <AccordionItem key={idx} value={`item-${idx}`} className="border rounded-xl px-4 sm:px-5 bg-card/50">
-                          <AccordionTrigger className="text-left font-bold text-[13px] sm:text-[15px] hover:no-underline py-3 sm:py-4">
+                        <AccordionItem key={idx} value={`item-${idx}`} className="border border-border rounded-lg bg-card/50">
+                          <AccordionTrigger className="text-left font-bold text-[13px] sm:text-[15px] hover:no-underline py-3 sm:py-4 press">
                             <span className="flex items-center gap-2">
                               <span className="text-xs px-2 py-0.5 rounded bg-primary/10 text-primary font-mono">{q.marks}</span>
                               {q.question}
@@ -754,14 +763,14 @@ export default function TopicPage() {
               </div>
 
               {/* Prev / Next Navigation */}
-              <div className="flex items-center justify-between mt-12 pt-8 border-t border">
+              <div className="flex items-center justify-between mt-12 pt-8 border-t border-border">
                 {adjacent.prev ? (
-                  <button onClick={() => navigate(`/subject/${subjectId}/topic/${adjacent.prev!.id}`)} className="apple-press inline-flex items-center gap-1.5 text-[14px] text-muted-foreground hover:text-foreground transition-colors">
+                  <button onClick={() => navigate(`/subject/${subjectId}/topic/${adjacent.prev!.id}`)} className="press inline-flex items-center gap-1.5 text-[14px] text-muted-foreground hover:text-foreground transition-colors">
                     <ChevronLeft className="h-4 w-4" /> Previous
                   </button>
                 ) : <div />}
                 {adjacent.next ? (
-                  <button onClick={() => navigate(`/subject/${subjectId}/topic/${adjacent.next!.id}`)} className="apple-press inline-flex items-center gap-1.5 text-[14px] text-primary font-medium">
+                  <button onClick={() => navigate(`/subject/${subjectId}/topic/${adjacent.next!.id}`)} className="press inline-flex items-center gap-1.5 text-[14px] text-primary font-medium">
                     Next <ChevronRight className="h-4 w-4" />
                   </button>
                 ) : <div />}
@@ -770,7 +779,7 @@ export default function TopicPage() {
 
             {/* Right sidebar — In-page TOC */}
             {hasRichContent && !focusMode && (
-              <aside className="hidden xl:block w-52 shrink-0 sticky top-12 self-start h-[calc(100vh-3rem)] overflow-y-auto p-4 border-l border">
+              <aside className="hidden xl:block w-52 shrink-0 sticky top-12 self-start h-[calc(100vh-3rem)] overflow-y-auto p-4 border-l border-border">
                 <ContentTOC markdown={topic.richContent || topic.detailedExplanation || ""} />
               </aside>
             )}
@@ -808,10 +817,10 @@ export default function TopicPage() {
       {/* Personal Notes & Highlights Drawer */}
       {annotationsDrawerOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-end p-0 bg-black/60 backdrop-blur-sm animate-fade-in">
-          <div className="bg-card border-l border-border h-full max-w-md w-full p-6 shadow-2xl flex flex-col animate-slide-in-right">
+          <div className="bg-card border-l border-border h-full max-w-md w-full p-6 shadow-xl flex flex-col slide-in glass-strong">
             <div className="flex items-center justify-between pb-4 border-b border-border/80">
               <div className="flex items-center gap-2.5">
-                <span className="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center font-bold">
+                <span className="w-8 h-8 rounded-lg bg-warning/10 text-warning-foreground flex items-center justify-center font-bold">
                   <Highlighter className="h-4 w-4" />
                 </span>
                 <div>
@@ -822,7 +831,7 @@ export default function TopicPage() {
 
               <button
                 onClick={() => setAnnotationsDrawerOpen(false)}
-                className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground"
+                className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground press"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -838,19 +847,19 @@ export default function TopicPage() {
                 onChange={(e) => setNewStickyNote(e.target.value)}
                 placeholder="e.g. Asked in 2024 MST-2 paper! Remember time complexity is O(N log N)..."
                 rows={3}
-                className="w-full rounded-xl bg-secondary/50 border border-border p-3 text-xs text-foreground placeholder:text-muted-foreground focus:ring-1 focus:ring-primary resize-none"
+                className="w-full rounded-lg bg-secondary/50 border border-border p-3 text-xs text-foreground placeholder:text-muted-foreground focus:ring-1 focus:ring-ring resize-none"
               />
               <button
                 onClick={handleSaveNote}
                 disabled={!newStickyNote.trim()}
-                className="w-full py-2 rounded-xl bg-primary text-primary-foreground font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm hover:opacity-90 disabled:opacity-50 transition-all apple-press"
+                className="w-full py-2 rounded-lg bg-primary text-primary-foreground font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm hover:bg-primary/90 disabled:opacity-50 transition-all press"
               >
                 <Plus className="h-4 w-4" /> Save Sticky Note
               </button>
             </div>
 
             {/* List of Annotations */}
-            <div className="flex-1 overflow-y-auto py-4 space-y-3 custom-scrollbar pr-1">
+            <div className="flex-1 overflow-y-auto py-4 space-y-3 scrollbar-thin pr-1">
               {annotations.length === 0 ? (
                 <div className="py-12 text-center">
                   <MessageSquare className="h-8 w-8 text-muted-foreground/40 mx-auto mb-2" />
@@ -863,7 +872,7 @@ export default function TopicPage() {
                 annotations.map((ann) => (
                   <div
                     key={ann.id}
-                    className="p-3 rounded-2xl bg-secondary/40 border border-border/80 space-y-2 relative group"
+                    className="p-3 rounded-xl bg-secondary/40 border border-border/80 space-y-2 relative group press"
                   >
                     <div className="flex items-center justify-between text-[10px] text-muted-foreground">
                       <span className="font-mono font-bold uppercase">
@@ -871,7 +880,7 @@ export default function TopicPage() {
                       </span>
                       <button
                         onClick={() => removeAnnotation(ann.id)}
-                        className="p-1 rounded hover:bg-rose-500/10 text-muted-foreground hover:text-rose-500 transition-colors"
+                        className="p-1 rounded hover:bg-danger/10 text-muted-foreground hover:text-danger-foreground transition-colors press"
                         title="Delete Note"
                       >
                         <Trash2 className="h-3.5 w-3.5" />

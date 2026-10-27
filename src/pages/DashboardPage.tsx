@@ -5,20 +5,18 @@ import { useGamification } from "@/hooks/useGamification";
 import { useAcademic } from "@/contexts/AcademicContext";
 import { subjects, getAllTopicIds } from "@/data/subjects";
 import { useProgress } from "@/hooks/useProgress";
-import { 
-  Sparkles, 
-  BookOpen, 
-  Calendar, 
-  ArrowRight, 
-  CheckCircle, 
-  Clock, 
-  ExternalLink, 
-  FileText, 
-  Search, 
-  Plus, 
-  ChevronRight, 
-  TrendingUp, 
-  ChevronLeft,
+import {
+  BookOpen,
+  Calendar,
+  ArrowRight,
+  CheckCircle,
+  Clock,
+  ExternalLink,
+  FileText,
+  Search,
+  Plus,
+  ChevronRight,
+  TrendingUp,
   Award,
   Trophy,
   Layers,
@@ -29,19 +27,20 @@ import {
   Code2,
   Zap,
   Bookmark,
-  Bot,
   Target,
   Shield,
-  MapPin
+  MapPin,
+  Bot,
+  Sparkles,
 } from "lucide-react";
 import { AiDoubtSolverModal } from "@/components/AiDoubtSolverModal";
-import { 
-  ResponsiveContainer, 
-  AreaChart, 
-  Area, 
-  XAxis, 
-  YAxis, 
-  Tooltip 
+import {
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  Tooltip,
 } from "recharts";
 import { toast } from "sonner";
 import { openTimetable } from "@/components/GlobalTimetableModal";
@@ -52,7 +51,7 @@ import { StudentContributionModal } from "@/components/StudentContributionModal"
 const STUDY_ADVICE_TIPS = [
   {
     icon: BookOpen,
-    text: "Feed your student notes to help improve your grading for mid exams preparation.",
+    text: "Feed your student notes to help improve your grading for mid-exam preparation.",
     linkText: "Learn more >",
     linkTo: "/materials",
   },
@@ -69,14 +68,13 @@ const STUDY_ADVICE_TIPS = [
     linkTo: "/calculator",
   },
   {
-    icon: Sparkles,
-    text: "Practice 10 daily MCQs to build your streak, earn XP, and unlock student rank badges.",
+    icon: Zap,
+    text: "Practice 10 daily MCQs to build your streak, earn XP, and unlock rank badges.",
     linkText: "Start Quiz >",
     linkTo: "/quiz",
   },
 ];
 
-// Chart Activity Data matching Screenshot 1 spline curve
 const STUDY_ACTIVITY_DATA = [
   { time: "0h", hours: 12 },
   { time: "02", hours: 28 },
@@ -90,13 +88,13 @@ export default function DashboardPage() {
   const navigate = useNavigate();
   const { user, profile } = useAuth();
   const { semesterNumber } = useAcademic();
-  const { 
-    state: game, 
-    levelInfo, 
-    weeklyGoalDays, 
-    weeklyStudyDaysCount, 
-    weeklyGoalPercent, 
-    streakFreezeCount 
+  const {
+    state: game,
+    levelInfo,
+    weeklyGoalDays,
+    weeklyStudyDaysCount,
+    weeklyGoalPercent,
+    streakFreezeCount,
   } = useGamification();
   const { progress } = useProgress();
 
@@ -113,7 +111,6 @@ export default function DashboardPage() {
   const totalModulesCount = 8;
   const completedModulesCount = user ? Math.min(totalModulesCount, Math.round(completedTopicsCount / 2)) : 0;
 
-  // Filter core subjects based on selected semester and subject filter
   const displayedSubjects = useMemo(() => {
     return subjects.filter((s) => {
       if (subjectSemFilter !== "all" && s.semester !== subjectSemFilter) return false;
@@ -128,15 +125,15 @@ export default function DashboardPage() {
   }, [subjectSemFilter, selectedCourseFilter]);
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-[1600px] mx-auto space-y-6 animate-fade-in">
-      {/* ── TOP HEADER SECTION matching Screenshot 1 ── */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-border/60">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-[1600px] mx-auto space-y-6 fade-in">
+      {/* ── TOP HEADER SECTION ── */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-border/60">
         <div className="min-w-0 flex-1">
-          <h1 className="text-xl sm:text-2xl font-black tracking-tight text-foreground truncate">
+          <h1 className="text-xl sm:text-2xl font-black tracking-tight text-foreground">
             {user ? `Welcome back, ${studentDisplayName || "Student"}` : "ITM Notes Student Dashboard"}
           </h1>
           <p className="text-xs text-muted-foreground mt-0.5 font-medium truncate">
-            {user 
+            {user
               ? `Student Dashboard · Active Enrollment (Semester ${activeSemester} · ${profile?.branch ? profile.branch.split(" ")[0] : "CS"})`
               : "Open Knowledge Repository · Semester 1 to 4 Course Packs & Practicals"}
           </p>
@@ -153,14 +150,14 @@ export default function DashboardPage() {
                 window.dispatchEvent(event);
               }}
               readOnly
-              className="h-9 pl-8 pr-3 w-full sm:w-56 rounded-xl border border-input bg-card text-xs focus:outline-none cursor-pointer"
+              className="h-9 pl-8 pr-3 w-full sm:w-56 rounded-lg border border-input bg-card text-xs focus:outline-none cursor-pointer"
             />
           </div>
 
           {!user ? (
             <button
               onClick={() => navigate("/auth")}
-              className="h-9 px-4 rounded-xl bg-primary text-primary-foreground font-bold text-xs shadow-md shadow-primary/20 flex items-center gap-1.5 transition-all active:scale-95 shrink-0"
+              className="h-9 px-4 rounded-lg bg-primary text-primary-foreground font-bold text-xs shadow-sm shadow-primary/20 press"
             >
               <LogIn className="h-3.5 w-3.5" />
               <span>Sign In</span>
@@ -168,7 +165,7 @@ export default function DashboardPage() {
           ) : (
             <button
               onClick={() => setIsContributionModalOpen(true)}
-              className="h-9 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md shadow-indigo-600/20 flex items-center gap-2 transition-all active:scale-95 shrink-0 cursor-pointer"
+              className="h-9 px-4 rounded-lg bg-accent text-accent-foreground font-bold text-xs shadow-sm shadow-accent/20 press chartreuse"
               title="Contribute student note or cheat sheet (+50 XP)"
             >
               <Plus className="h-3.5 w-3.5" />
@@ -179,24 +176,24 @@ export default function DashboardPage() {
       </div>
 
       {/* ── OFFICIAL EXAM & VIVA ALERT BANNER ── */}
-      <div className="bg-gradient-to-r from-[#183F36] via-[#1F4E43] to-[#12332C] text-white p-4 sm:p-5 rounded-3xl border border-[#D6E85D]/30 shadow-lg relative overflow-hidden">
-        <div className="absolute right-0 top-0 w-80 h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#D6E85D]/15 via-transparent to-transparent pointer-events-none" />
-        
+      <div className="relative overflow-hidden rounded-xl border border-forest/30 bg-forest text-ivory p-5 sm:p-6 shadow-card">
+        <div className="absolute right-0 top-0 w-72 h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[var(--itm-chartreuse)]/20 via-transparent to-transparent pointer-events-none" />
+
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
           <div className="space-y-1.5">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#D6E85D] text-[#183F36] shadow-xs flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#183F36] animate-ping" />
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-chartreuse text-forest shadow-xs flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-forest animate-ping" />
                 Notice Live
               </span>
-              <span className="text-xs text-[#D6E85D] font-mono font-bold">
+              <span className="text-xs text-chartreuse-foreground font-mono font-bold">
                 Odd Sem 2026-2027 · Oct 26 – Nov 03
               </span>
             </div>
             <h2 className="text-base sm:text-lg font-black text-white font-display">
               B.Tech Sem 3 Submission Viva & Remedial Examinations
             </h2>
-            <p className="text-xs text-[#A2BAAF] leading-relaxed max-w-2xl">
+            <p className="text-xs text-[var(--itm-surface-green)] leading-relaxed max-w-2xl">
               Practical file submissions & viva start <strong className="text-white">10:00 AM onwards</strong>. Check your assigned location (NL-2, JAVA LAB, NL-6, EB-39, EB-25) and subject faculty.
             </p>
           </div>
@@ -204,20 +201,20 @@ export default function DashboardPage() {
           <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={() => openTimetable("viva")}
-              className="px-4 py-2.5 rounded-xl bg-[#D6E85D] hover:bg-[#c8dc4e] text-[#183F36] font-black text-xs shadow-md shadow-[#D6E85D]/20 flex items-center gap-2 transition-all active:scale-95 cursor-pointer font-display"
+              className="px-4 py-2.5 rounded-lg bg-chartreuse text-forest font-black text-xs shadow-sm shadow-accent/20 press flex items-center gap-2 cursor-pointer font-display"
             >
               <Calendar className="h-4 w-4" />
               <span>Open Timetables</span>
             </button>
             <button
               onClick={() => openTimetable("remedial")}
-              className="px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs border border-white/20 flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer"
+              className="px-3.5 py-2.5 rounded-lg bg-white/10 hover:bg-white/20 text-white font-bold text-xs border border-white/20 press flex items-center gap-1.5 cursor-pointer"
             >
               <span>Remedials</span>
             </button>
             <button
               onClick={() => navigate("/imp-questions/oopj")}
-              className="px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-[#D6E85D] hover:text-[#183F36] text-white font-bold text-xs border border-white/20 flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer font-display"
+              className="px-3.5 py-2.5 rounded-lg bg-white/10 hover:bg-chartreuse hover:text-forest text-white font-bold text-xs border border-white/20 press flex items-center gap-1.5 cursor-pointer font-display"
               title="Open OOPJ (C2311C1) Solved Master Question Bank"
             >
               <BookOpen className="h-3.5 w-3.5" />
@@ -229,7 +226,7 @@ export default function DashboardPage() {
 
         {/* Quick Cohort Class Jump Pills */}
         <div className="mt-4 pt-3 border-t border-white/15 flex items-center gap-2 overflow-x-auto no-scrollbar relative z-10">
-          <span className="text-[11px] font-bold text-[#A2BAAF] uppercase tracking-wider shrink-0">
+          <span className="text-[11px] font-bold text-[var(--itm-surface-green)] uppercase tracking-wider shrink-0">
             Quick Jump:
           </span>
           {[
@@ -242,17 +239,17 @@ export default function DashboardPage() {
             <button
               key={item.cls}
               onClick={() => openTimetable("viva", item.cls)}
-              className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-[#D6E85D] hover:text-[#183F36] text-white/90 text-xs font-semibold transition-all shrink-0 flex items-center gap-1.5 cursor-pointer border border-white/10"
+              className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-chartreuse hover:text-forest text-white/90 text-xs font-semibold transition-all shrink-0 flex items-center gap-1.5 cursor-pointer border border-white/10 press"
             >
               <span>Class {item.cls}</span>
-              <span className="text-[10px] px-1 py-0.2 rounded bg-black/30 font-mono text-[#D6E85D]">
+              <span className="text-[10px] px-1 py-0.2 rounded bg-black/30 font-mono text-chartreuse-foreground">
                 {item.room}
               </span>
             </button>
           ))}
           <button
             onClick={() => openTimetable("faculty")}
-            className="px-2.5 py-1 rounded-lg bg-[#D6E85D]/20 hover:bg-[#D6E85D] hover:text-[#183F36] text-[#D6E85D] text-xs font-bold transition-all shrink-0 flex items-center gap-1 cursor-pointer border border-[#D6E85D]/30 ml-auto"
+            className="px-2.5 py-1 rounded-lg bg-chartreuse/20 hover:bg-chartreuse hover:text-forest text-chartreuse-foreground text-xs font-bold transition-all shrink-0 flex items-center gap-1 cursor-pointer border border-chartreuse/30 ml-auto press"
           >
             <Users className="h-3 w-3" />
             <span>View Faculty Venues</span>
@@ -262,35 +259,34 @@ export default function DashboardPage() {
 
       {/* ── 2-COLUMN MAIN GRID ── */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* ── LEFT / MAIN CONTENT (~68% width -> lg:col-span-8) ── */}
+        {/* ── LEFT / MAIN CONTENT ── */}
         <div className="lg:col-span-8 space-y-6">
-          {/* 1. Hero Academic Overview Card — Forest Green & Chartreuse */}
-          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#183F36] via-[#12332C] to-[#183F36] text-[#F5F1E8] p-6 sm:p-8 shadow-xl border border-[#1D4A3F]">
-            {/* Subtle brand arch pattern accent */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-[#D6E85D]/10 rounded-full blur-3xl pointer-events-none" />
+          {/* 1. Hero Academic Overview Card */}
+          <div className="relative overflow-hidden rounded-xl border border-forest/30 bg-forest text-ivory p-6 sm:p-8 shadow-card">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--itm-chartreuse)]/10 rounded-full blur-3xl pointer-events-none" />
 
             <div className="relative z-10 max-w-xl space-y-3">
               <div className="flex items-center gap-2">
-                <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#D6E85D]/20 text-[#D6E85D] border border-[#D6E85D]/30 inline-flex items-center gap-1.5 font-display">
+                <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-chartreuse/20 text-chartreuse-foreground border border-chartreuse/30 inline-flex items-center gap-1.5 font-display">
                   <Sparkles className="h-3 w-3" />
                   {user ? `Semester ${activeSemester} Active Term` : "Guest / Explorer Mode"}
                 </span>
-                <span className="text-[10px] text-[#A2BAAF] font-medium hidden sm:inline">
+                <span className="text-[10px] text-[var(--itm-surface-green)] font-medium hidden sm:inline">
                   ITM (SLS) Baroda University Hub
                 </span>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#F5F1E8] font-display">
+              <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-ivory font-display">
                 {user ? "Academic Overview" : "Explore University Curriculum"}
               </h2>
-              <p className="text-xs sm:text-sm text-[#E8EDE4]/90 leading-relaxed font-normal">
-                {user 
-                  ? "Access verified syllabus topics, high-yield question banks, or practical codes across B.Tech CSE & BCA. Quietly confident and exam-ready."
+              <p className="text-xs sm:text-sm text-[var(--itm-surface-green)]/90 leading-relaxed font-normal">
+                {user
+                  ? "Access verified syllabus topics, high-yield question banks, and practical codes across B.Tech CSE & BCA. Quietly confident and exam-ready."
                   : "Welcome to ITM Notes! Access verified university notes, solved practical codes (DSA in C & Java), past exam questions, and study calculators across universities."}
               </p>
               <div className="pt-2 flex flex-wrap items-center gap-3">
                 <button
                   onClick={() => navigate("/materials")}
-                  className="px-5 py-2.5 rounded-xl bg-[#D6E85D] hover:bg-[#C8DC47] text-[#183F36] font-bold text-xs shadow-md shadow-[#D6E85D]/20 transition-all hover:scale-102 active:scale-98 flex items-center gap-2 cursor-pointer font-display"
+                  className="px-5 py-2.5 rounded-lg bg-chartreuse text-forest font-bold text-xs shadow-sm shadow-accent/20 transition-all hover:bg-[var(--itm-chartreuse-hover)] press flex items-center gap-2 cursor-pointer font-display"
                 >
                   <span>{user ? "Explore Course Materials" : "Browse Syllabus Notes"}</span>
                   <ArrowRight className="h-3.5 w-3.5" />
@@ -298,133 +294,114 @@ export default function DashboardPage() {
                 {!user && (
                   <button
                     onClick={() => navigate("/auth")}
-                    className="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs border border-white/20 transition-all flex items-center gap-2 cursor-pointer font-display"
+                    className="px-5 py-2.5 rounded-lg bg-white/10 hover:bg-white/20 text-white font-bold text-xs border border-white/20 press flex items-center gap-2 cursor-pointer font-display"
                   >
-                    <LogIn className="h-3.5 w-3.5 text-[#D6E85D]" />
+                    <LogIn className="h-3.5 w-3.5 text-chartreuse-foreground" />
                     <span>Sign In / Create Account</span>
                   </button>
                 )}
               </div>
             </div>
 
-            {/* Subtle Abstract Arch Graphic */}
             <div className="absolute right-4 -bottom-6 sm:bottom-0 opacity-40 pointer-events-none hidden sm:block">
               <svg width="200" height="160" viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M40 160V80C40 45 70 20 100 20C130 20 160 45 160 80V160" stroke="#D6E85D" strokeWidth="4" strokeLinecap="round" strokeDasharray="8 8" opacity="0.6" />
+                <path d="M40 160V80C40 45 70 20 100 20C130 20 160 45 160 80V160" stroke="var(--itm-chartreuse)" strokeWidth="4" strokeLinecap="round" strokeDasharray="8 8" opacity="0.6" />
                 <path d="M65 160V90C65 65 80 50 100 50C120 50 135 65 135 90V160" stroke="#FFFFFF" strokeWidth="3" opacity="0.4" />
-                <circle cx="100" cy="90" r="12" fill="#D6E85D" opacity="0.8" />
+                <circle cx="100" cy="90" r="12" fill="var(--itm-chartreuse)" opacity="0.8" />
               </svg>
             </div>
           </div>
 
           {/* Quick Academic Power Tools Row */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
-            <button
-              onClick={() => setAiDoubtOpen(true)}
-              className="p-3 rounded-2xl bg-card border border-border/80 hover:border-primary/50 text-left transition-all flex flex-col justify-between apple-press group"
-            >
-              <div className="flex items-center justify-between mb-2">
-                <span className="w-7 h-7 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold">
-                  <Bot className="h-4 w-4" />
-                </span>
-                <span className="text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/15 text-emerald-600 font-bold">24/7</span>
-              </div>
-              <div>
-                <h4 className="text-xs font-bold text-foreground group-hover:text-primary transition-colors">AI Doubt Solver</h4>
-                <p className="text-[10px] text-muted-foreground">Ask 2 AM exam queries</p>
-              </div>
-            </button>
-
-            <button
-              onClick={() => navigate("/pyq-papers")}
-              className="p-3 rounded-2xl bg-card border border-border/80 hover:border-primary/50 text-left transition-all flex flex-col justify-between apple-press group"
-            >
-              <div className="flex items-center justify-between mb-2">
-                <span className="w-7 h-7 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center font-bold">
-                  <FileText className="h-4 w-4" />
-                </span>
-                <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-500/15 text-amber-600 font-bold">SOLVED</span>
-              </div>
-              <div>
-                <h4 className="text-xs font-bold text-foreground group-hover:text-primary transition-colors">PYQ Papers</h4>
-                <p className="text-[10px] text-muted-foreground">Real GTU/ITM papers</p>
-              </div>
-            </button>
-
-            <button
-              onClick={() => navigate("/mock-exam")}
-              className="p-3 rounded-2xl bg-card border border-border/80 hover:border-primary/50 text-left transition-all flex flex-col justify-between apple-press group"
-            >
-              <div className="flex items-center justify-between mb-2">
-                <span className="w-7 h-7 rounded-lg bg-purple-500/10 text-purple-500 flex items-center justify-center font-bold">
-                  <Trophy className="h-4 w-4" />
-                </span>
-                <span className="text-[9px] px-1.5 py-0.2 rounded bg-purple-500/15 text-purple-600 font-bold">TIMED</span>
-              </div>
-              <div>
-                <h4 className="text-xs font-bold text-foreground group-hover:text-primary transition-colors">Mock Exams</h4>
-                <p className="text-[10px] text-muted-foreground">90-min test simulator</p>
-              </div>
-            </button>
-
-            <button
-              onClick={() => navigate("/study-planner")}
-              className="p-3 rounded-2xl bg-card border border-border/80 hover:border-primary/50 text-left transition-all flex flex-col justify-between apple-press group"
-            >
-              <div className="flex items-center justify-between mb-2">
-                <span className="w-7 h-7 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center font-bold">
-                  <Calendar className="h-4 w-4" />
-                </span>
-                <span className="text-[9px] px-1.5 py-0.2 rounded bg-blue-500/15 text-blue-600 font-bold">AUTO</span>
-              </div>
-              <div>
-                <h4 className="text-xs font-bold text-foreground group-hover:text-primary transition-colors">Study Planner</h4>
-                <p className="text-[10px] text-muted-foreground">Exam target roadmap</p>
-              </div>
-            </button>
-
-            <button
-              onClick={() => navigate("/rapid-revision")}
-              className="p-3 rounded-2xl bg-card border border-border/80 hover:border-primary/50 text-left transition-all flex flex-col justify-between apple-press group"
-            >
-              <div className="flex items-center justify-between mb-2">
-                <span className="w-7 h-7 rounded-lg bg-pink-500/10 text-pink-500 flex items-center justify-center font-bold">
-                  <Zap className="h-4 w-4" />
-                </span>
-                <span className="text-[9px] px-1.5 py-0.2 rounded bg-pink-500/15 text-pink-600 font-bold">30 MIN</span>
-              </div>
-              <div>
-                <h4 className="text-xs font-bold text-foreground group-hover:text-primary transition-colors">Rapid Revision</h4>
-                <p className="text-[10px] text-muted-foreground">High-yield cram cards</p>
-              </div>
-            </button>
-
-            <button
-              onClick={() => navigate("/formulas")}
-              className="p-3 rounded-2xl bg-card border border-border/80 hover:border-primary/50 text-left transition-all flex flex-col justify-between apple-press group"
-            >
-              <div className="flex items-center justify-between mb-2">
-                <span className="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center font-bold">
-                  <BookOpen className="h-4 w-4" />
-                </span>
-                <span className="text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/15 text-emerald-600 font-bold">KaTeX</span>
-              </div>
-              <div>
-                <h4 className="text-xs font-bold text-foreground group-hover:text-primary transition-colors">Formula Bank</h4>
-                <p className="text-[10px] text-muted-foreground">Searchable definitions</p>
-              </div>
-            </button>
+            {[
+              {
+                label: "AI Doubt Solver",
+                desc: "Ask 2 AM exam queries",
+                icon: Bot,
+                badge: "24/7",
+                badgeColor: "bg-success/15 text-success-foreground",
+                iconBg: "bg-primary/10 text-primary",
+                onClick: () => setAiDoubtOpen(true),
+              },
+              {
+                label: "PYQ Papers",
+                desc: "Real GTU/ITM papers",
+                icon: FileText,
+                badge: "SOLVED",
+                badgeColor: "bg-warning/15 text-warning-foreground",
+                iconBg: "bg-warning/10 text-warning-foreground",
+                onClick: () => navigate("/pyq-papers"),
+              },
+              {
+                label: "Mock Exams",
+                desc: "90-min test simulator",
+                icon: Trophy,
+                badge: "TIMED",
+                badgeColor: "bg-primary/15 text-primary-foreground",
+                iconBg: "bg-primary/10 text-primary",
+                onClick: () => navigate("/mock-exam"),
+              },
+              {
+                label: "Study Planner",
+                desc: "Exam target roadmap",
+                icon: Calendar,
+                badge: "AUTO",
+                badgeColor: "bg-primary/15 text-primary-foreground",
+                iconBg: "bg-primary/10 text-primary",
+                onClick: () => navigate("/study-planner"),
+              },
+              {
+                label: "Rapid Revision",
+                desc: "High-yield cram cards",
+                icon: Zap,
+                badge: "30 MIN",
+                badgeColor: "bg-primary/15 text-primary-foreground",
+                iconBg: "bg-primary/10 text-primary",
+                onClick: () => navigate("/rapid-revision"),
+              },
+              {
+                label: "Formula Bank",
+                desc: "Searchable definitions",
+                icon: BookOpen,
+                badge: "KaTeX",
+                badgeColor: "bg-success/15 text-success-foreground",
+                iconBg: "bg-success/10 text-success-foreground",
+                onClick: () => navigate("/formulas"),
+              },
+            ].map((tool, idx) => (
+              <button
+                key={tool.label}
+                onClick={tool.onClick}
+                className="p-3 rounded-xl paper-hover flex flex-col justify-between card-lift group"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span className={`w-7 h-7 rounded-lg flex items-center justify-center font-bold ${tool.iconBg}`}>
+                    <tool.icon className="h-4 w-4" />
+                  </span>
+                  <span className={`text-[9px] px-1.5 py-0.2 rounded font-bold ${tool.badgeColor}`}>
+                    {tool.badge}
+                  </span>
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold text-foreground group-hover:text-primary transition-colors">
+                    {tool.label}
+                  </h4>
+                  <p className="text-[10px] text-muted-foreground">{tool.desc}</p>
+                </div>
+              </button>
+            ))}
           </div>
 
           {/* 2. Core Academic Subjects & Interactive Notes Grid */}
-          <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-5">
+          <div className="paper rounded-xl p-5 space-y-5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <div className="flex items-center gap-2">
                   <h3 className="font-bold text-base text-foreground font-display">
                     Core Academic Subjects & Detailed Notes
                   </h3>
-                  <span className="px-2 py-0.5 rounded-full bg-[#D6E85D]/20 text-[#183F36] dark:text-[#D6E85D] text-[10px] font-bold border border-[#D6E85D]/30">
+                  <span className="px-2 py-0.5 rounded-full bg-chartreuse/20 text-forest text-[10px] font-bold border border-chartreuse/30">
                     Syllabus 2026
                   </span>
                 </div>
@@ -433,9 +410,8 @@ export default function DashboardPage() {
                 </p>
               </div>
 
-              {/* Semester Filter Tabs & Course Dropdown */}
               <div className="flex flex-wrap items-center gap-2">
-                <div className="flex items-center gap-1 bg-secondary/60 p-1 rounded-xl border border-border/60">
+                <div className="flex items-center gap-1 bg-secondary/60 p-1 rounded-lg border border-border/60">
                   {[
                     { label: "Sem 3 (Core)", val: 3 },
                     { label: "Sem 1", val: 1 },
@@ -450,7 +426,7 @@ export default function DashboardPage() {
                         onClick={() => setSubjectSemFilter(item.val as any)}
                         className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all shrink-0 cursor-pointer ${
                           isActive
-                            ? "bg-[#183F36] text-[#D6E85D] font-bold shadow-xs"
+                            ? "bg-forest text-chartreuse-foreground font-bold shadow-xs"
                             : "text-muted-foreground hover:text-foreground"
                         }`}
                       >
@@ -460,7 +436,7 @@ export default function DashboardPage() {
                   })}
                 </div>
 
-                <select 
+                <select
                   value={selectedCourseFilter}
                   onChange={(e) => setSelectedCourseFilter(e.target.value)}
                   className="h-8 px-2.5 rounded-lg border border-input bg-background text-xs font-semibold text-foreground outline-none cursor-pointer"
@@ -472,16 +448,16 @@ export default function DashboardPage() {
                   <option value="java">Java</option>
                 </select>
 
-                <button 
+                <button
                   onClick={() => navigate("/subjects")}
-                  className="px-2.5 py-1 rounded-lg bg-primary/10 hover:bg-primary/20 text-xs text-primary font-semibold flex items-center gap-1 transition-colors cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg bg-primary/10 hover:bg-primary/20 text-xs text-primary font-semibold flex items-center gap-1 transition-colors press"
                 >
                   <BookOpen className="h-3 w-3" />
                   <span>All Subjects</span>
                   <ArrowRight className="h-3 w-3" />
                 </button>
 
-                <button 
+                <button
                   onClick={() => navigate("/materials")}
                   className="text-xs text-primary hover:underline font-semibold flex items-center gap-1"
                 >
@@ -504,7 +480,7 @@ export default function DashboardPage() {
                 return (
                   <div
                     key={sub.id}
-                    className="group relative rounded-xl border border-border/80 bg-card hover:bg-secondary/20 hover:border-primary/40 transition-all p-4.5 flex flex-col justify-between gap-3.5 shadow-xs"
+                    className="group relative rounded-lg border border-border bg-card hover:bg-secondary/20 hover:border-primary/30 transition-all p-4.5 flex flex-col justify-between gap-3.5 shadow-sm card-lift press"
                   >
                     <div>
                       {/* Top Header Row */}
@@ -518,7 +494,7 @@ export default function DashboardPage() {
                           </span>
                         </div>
                         <span className="text-[10px] font-bold text-muted-foreground flex items-center gap-1">
-                          <BookOpen className="h-3 w-3 text-[#D6E85D]" />
+                          <BookOpen className="h-3 w-3 text-chartreuse-foreground" />
                           {totalUnits} Units · {totalTopics} Topics
                         </span>
                       </div>
@@ -556,16 +532,16 @@ export default function DashboardPage() {
                         <button
                           type="button"
                           onClick={() => navigate(`/subject/${sub.id}`)}
-                          className="px-3 py-1.5 rounded-lg bg-[#183F36] hover:bg-[#12332C] text-[#F5F1E8] font-bold text-xs shadow-xs transition-all flex items-center gap-1.5 cursor-pointer font-display"
+                          className="px-3 py-1.5 rounded-lg bg-forest hover:bg-forest-deep text-ivory font-bold text-xs shadow-xs press flex items-center gap-1.5 cursor-pointer font-display"
                         >
-                          <BookOpen className="h-3.5 w-3.5 text-[#D6E85D]" />
+                          <BookOpen className="h-3.5 w-3.5 text-chartreuse-foreground" />
                           <span>View Detailed Notes</span>
                         </button>
 
                         <button
                           type="button"
                           onClick={() => navigate(`/subject/${sub.id}/cheat-sheet`)}
-                          className="px-2.5 py-1.5 rounded-lg border border-border text-foreground hover:bg-secondary text-xs font-semibold transition-colors cursor-pointer"
+                          className="px-2.5 py-1.5 rounded-lg border border-border text-foreground hover:bg-secondary text-xs font-semibold transition-colors cursor-pointer press"
                           title="Quick Formulas & Cheat Sheet"
                         >
                           <span>Cheat Sheet</span>
@@ -576,7 +552,7 @@ export default function DashboardPage() {
                         <button
                           type="button"
                           onClick={() => navigate(`/subject/${sub.id}/topic/${firstTopicId}`)}
-                          className="text-primary hover:underline font-semibold text-[11px] flex items-center gap-0.5 cursor-pointer"
+                          className="text-primary hover:underline font-semibold text-[11px] flex items-center gap-0.5 cursor-pointer press"
                           title="Start Topic 1"
                         >
                           <span>Start Unit 1</span>
@@ -592,8 +568,8 @@ export default function DashboardPage() {
 
           {/* 3. Dual Split Row: Shortcuts & Study Progress Activity Curve */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Left Card: Shortcuts matching Screenshot 1 */}
-            <div className="bg-card border border-border rounded-2xl p-5 shadow-sm flex flex-col justify-between">
+            {/* Left Card: Shortcuts */}
+            <div className="paper rounded-xl p-5 flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="font-bold text-sm text-foreground">Shortcuts</h3>
@@ -618,77 +594,65 @@ export default function DashboardPage() {
                 </div>
 
                 <div className="space-y-3">
-                  {/* Shortcut 1 */}
-                  <div 
-                    onClick={() => navigate("/imp-questions")}
-                    className="p-3 rounded-xl border border-border/80 bg-secondary/20 hover:bg-secondary/50 cursor-pointer transition-all flex items-start gap-3"
-                  >
-                    <div className="p-2 rounded-lg bg-orange-500/10 text-orange-500 shrink-0 mt-0.5">
-                      <FileText className="h-4 w-4" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <h4 className="font-bold text-xs text-foreground truncate">
-                        Alternative Tree Tracker Maps Notes...
-                      </h4>
-                      <p className="text-[11px] text-muted-foreground truncate">
-                        Current ITM 2026 - 4 submissions · 18 files updated
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Shortcut 2 */}
-                  <div 
-                    onClick={() => openTimetable("viva")}
-                    className="p-3 rounded-xl border border-border/80 bg-secondary/20 hover:bg-secondary/50 cursor-pointer transition-all flex items-start gap-3"
-                  >
-                    <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-500 shrink-0 mt-0.5">
-                      <Calendar className="h-4 w-4" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center justify-between">
-                        <h4 className="font-bold text-xs text-foreground truncate">
-                          Submission Viva & Remedial Timetable
-                        </h4>
-                        <span className="text-[10px] px-1.5 py-0.2 rounded bg-emerald-500/10 text-emerald-600 font-bold border border-emerald-500/20">
-                          ✓ Live Now
-                        </span>
+                  {[
+                    {
+                      title: "Alternative Tree Tracker Maps Notes",
+                      desc: "Current ITM 2026 - 4 submissions · 18 files updated",
+                      icon: FileText,
+                      color: "bg-warning/10 text-warning-foreground",
+                      onClick: () => navigate("/imp-questions"),
+                    },
+                    {
+                      title: "Submission Viva & Remedial Timetable",
+                      desc: "Oct 26 – Nov 03, 2026 · Classes 1–5 & Remedials",
+                      icon: Calendar,
+                      color: "bg-success/10 text-success-foreground",
+                      badge: "Live Now",
+                      badgeColor: "bg-success/20 text-success-foreground border border-success/30",
+                      onClick: () => openTimetable("viva"),
+                    },
+                    {
+                      title: "Curriculum Tree Regulations & Attendance",
+                      desc: "SLS Baroda University 75% Criteria Calculator",
+                      icon: CheckCircle2,
+                      color: "bg-success/10 text-success-foreground",
+                      onClick: () => navigate("/calculator"),
+                    },
+                  ].map((item, idx) => (
+                    <div
+                      key={idx}
+                      onClick={item.onClick}
+                      className="p-3 rounded-lg border border-border/80 bg-secondary/20 hover:bg-secondary/50 cursor-pointer transition-all flex items-start gap-3 press"
+                    >
+                      <div className={`p-2 rounded-lg ${item.color} shrink-0 mt-0.5`}>
+                        <item.icon className="h-4 w-4" />
                       </div>
-                      <p className="text-[11px] text-muted-foreground truncate">
-                        Oct 26 – Nov 03, 2026 · Classes 1–5 & Remedials
-                      </p>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center justify-between">
+                          <h4 className="font-bold text-xs text-foreground truncate">{item.title}</h4>
+                          {item.badge && (
+                            <span className={`text-[10px] px-1.5 py-0.2 rounded font-bold ${item.badgeColor}`}>
+                              ✓ {item.badge}
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-[11px] text-muted-foreground truncate">{item.desc}</p>
+                      </div>
                     </div>
-                  </div>
-
-                  {/* Shortcut 3 */}
-                  <div 
-                    onClick={() => navigate("/calculator")}
-                    className="p-3 rounded-xl border border-border/80 bg-secondary/20 hover:bg-secondary/50 cursor-pointer transition-all flex items-start gap-3"
-                  >
-                    <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-500 shrink-0 mt-0.5">
-                      <CheckCircle2 className="h-4 w-4" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <h4 className="font-bold text-xs text-foreground truncate">
-                        Curriculum Tree Regulations & Attendance
-                      </h4>
-                      <p className="text-[11px] text-muted-foreground truncate">
-                        SLS Baroda University 75% Criteria Calculator
-                      </p>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
 
               <div className="pt-3 border-t border-border/60 mt-3 flex items-center justify-between text-xs text-muted-foreground">
                 <span>3 Shortcuts configured</span>
-                <button onClick={() => navigate("/materials")} className="text-primary hover:underline font-semibold text-[11px]">
+                <button onClick={() => navigate("/materials")} className="text-primary hover:underline font-semibold text-[11px] press">
                   Manage shortcuts
                 </button>
               </div>
             </div>
 
-            {/* Right Card: Study Progress with Spline Area Chart matching Screenshot 1 */}
-            <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-4">
+            {/* Right Card: Study Progress with Area Chart */}
+            <div className="paper rounded-xl p-5 space-y-4">
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="font-bold text-sm text-foreground">Study Progress</h3>
@@ -716,10 +680,9 @@ export default function DashboardPage() {
                     </span>
                   </div>
                   <div className="h-1.5 rounded-full bg-secondary overflow-hidden">
-                    <div 
-                      className="h-full bg-[#D6E85D] rounded-full transition-all duration-500" 
-                      style={{ width: user ? `${Math.min(100, Math.max(12, completedTopicsCount * 8))}%` : "15%" }} 
-                    />
+                    <div
+                      className="h-full bg-chartreuse rounded-full transition-all duration-500"
+                      style={{ width: user ? `${Math.min(100, Math.max(12, completedTopicsCount * 8))}%` : "15%" }} />
                   </div>
                 </div>
 
@@ -731,7 +694,7 @@ export default function DashboardPage() {
                     </span>
                   </div>
                   <div className="h-1.5 rounded-full bg-secondary overflow-hidden">
-                    <div className="h-full bg-[#183F36] dark:bg-[#D6E85D] rounded-full" style={{ width: "85%" }} />
+                    <div className="h-full bg-forest dark:bg-chartreuse rounded-full" style={{ width: "85%" }} />
                   </div>
                 </div>
 
@@ -741,38 +704,38 @@ export default function DashboardPage() {
                     <span className="text-foreground font-mono">75% Mandatory</span>
                   </div>
                   <div className="h-1.5 rounded-full bg-secondary overflow-hidden">
-                    <div className="h-full bg-[#267653] dark:bg-[#D6E85D] rounded-full" style={{ width: "88%" }} />
+                    <div className="h-full bg-success dark:bg-chartreuse rounded-full" style={{ width: "88%" }} />
                   </div>
                 </div>
               </div>
 
-              {/* Spline Area Chart with Forest Green & Chartreuse */}
+              {/* Area Chart */}
               <div className="h-28 w-full pt-2">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={STUDY_ACTIVITY_DATA}>
                     <defs>
                       <linearGradient id="forestGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#183F36" stopOpacity={0.35} />
-                        <stop offset="95%" stopColor="#D6E85D" stopOpacity={0.0} />
+                        <stop offset="5%" stopColor="var(--itm-forest)" stopOpacity={0.35} />
+                        <stop offset="95%" stopColor="var(--itm-chartreuse)" stopOpacity={0.0} />
                       </linearGradient>
                     </defs>
-                    <XAxis dataKey="time" stroke="#68716B" fontSize={9} tickLine={false} axisLine={false} />
+                    <XAxis dataKey="time" stroke="var(--itm-muted)" fontSize={9} tickLine={false} axisLine={false} />
                     <YAxis hide domain={[0, 100]} />
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: "hsl(var(--card))", 
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "hsl(var(--card))",
                         borderColor: "hsl(var(--border))",
                         borderRadius: "0.75rem",
                         fontSize: "11px",
-                      }} 
+                      }}
                     />
-                    <Area 
-                      type="monotone" 
-                      dataKey="hours" 
-                      stroke="#183F36" 
+                    <Area
+                      type="monotone"
+                      dataKey="hours"
+                      stroke="var(--itm-forest)"
                       strokeWidth={2.5}
-                      fillOpacity={1} 
-                      fill="url(#forestGradient)" 
+                      fillOpacity={1}
+                      fill="url(#forestGradient)"
                     />
                   </AreaChart>
                 </ResponsiveContainer>
@@ -781,10 +744,10 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* ── RIGHT COLUMN (~32% width -> lg:col-span-4) ── */}
+        {/* ── RIGHT COLUMN ── */}
         <div className="lg:col-span-4 space-y-6">
-          {/* Today's Schedule & Next Class Card (A5 & A6) */}
-          <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-3.5">
+          {/* Today's Schedule & Next Class Card */}
+          <div className="paper rounded-xl p-5 space-y-3.5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-primary" />
@@ -795,8 +758,8 @@ export default function DashboardPage() {
               </span>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-secondary/40 border border-border/80 flex items-start gap-3">
-              <div className="p-2.5 rounded-xl bg-primary/15 text-primary shrink-0 mt-0.5">
+            <div className="p-3.5 rounded-lg bg-secondary/40 border border-border/80 flex items-start gap-3">
+              <div className="p-2.5 rounded-lg bg-primary/15 text-primary shrink-0 mt-0.5">
                 <Clock className="h-4 w-4" />
               </div>
               <div className="min-w-0 flex-1">
@@ -817,9 +780,9 @@ export default function DashboardPage() {
             </div>
 
             <div className="flex items-center justify-between pt-1">
-              <Link 
-                to="/today" 
-                className="text-xs text-primary font-bold hover:underline flex items-center gap-1"
+              <Link
+                to="/today"
+                className="text-xs text-primary font-bold hover:underline flex items-center gap-1 press"
               >
                 <span>Open Today's Mission & Schedule</span>
                 <ArrowRight className="h-3 w-3" />
@@ -827,15 +790,15 @@ export default function DashboardPage() {
               <button
                 type="button"
                 onClick={() => openTimetable("viva")}
-                className="text-[11px] text-muted-foreground hover:text-foreground"
+                className="text-[11px] text-muted-foreground hover:text-foreground press"
               >
                 All Timetables
               </button>
             </div>
           </div>
 
-          {/* Weekly Study Goal & Streak Freeze Card (A4) */}
-          <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-3.5">
+          {/* Weekly Study Goal & Streak Freeze Card */}
+          <div className="paper rounded-xl p-5 space-y-3.5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Target className="h-4 w-4 text-primary" />
@@ -852,30 +815,27 @@ export default function DashboardPage() {
                 <span>{weeklyStudyDaysCount >= weeklyGoalDays ? "Goal Met! 🎯" : `${weeklyGoalDays - weeklyStudyDaysCount} days left`}</span>
               </div>
               <div className="h-2 rounded-full bg-secondary overflow-hidden">
-                <div 
-                  className="h-full bg-primary rounded-full transition-all duration-500" 
-                  style={{ width: `${weeklyGoalPercent}%` }}
-                />
+                <div className="h-full bg-primary rounded-full transition-all duration-500" style={{ width: `${weeklyGoalPercent}%` }} />
               </div>
             </div>
 
-            <div className="p-2.5 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-between text-xs">
+            <div className="p-2.5 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-between text-xs">
               <div className="flex items-center gap-2">
-                <Shield className="h-3.5 w-3.5 text-blue-500" />
+                <Shield className="h-3.5 w-3.5 text-primary" />
                 <span className="font-semibold text-foreground">Streak Freezes</span>
               </div>
-              <span className="font-mono font-bold text-blue-600 dark:text-blue-400">
+              <span className="font-mono font-bold text-primary">
                 {streakFreezeCount} Available
               </span>
             </div>
           </div>
 
-          {/* 1. Study Progress Advice Carousel Widget */}
+          {/* Study Progress Advice Carousel Widget */}
           {(() => {
             const currentTip = STUDY_ADVICE_TIPS[adviceIndex % STUDY_ADVICE_TIPS.length];
             const TipIcon = currentTip.icon;
             return (
-              <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-3">
+              <div className="paper rounded-xl p-5 space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <h3 className="font-bold text-sm text-foreground">Study Progress</h3>
@@ -897,7 +857,7 @@ export default function DashboardPage() {
                     <button
                       type="button"
                       onClick={() => setAdviceIndex((prev) => (prev > 0 ? prev - 1 : STUDY_ADVICE_TIPS.length - 1))}
-                      className="p-1 rounded hover:bg-secondary cursor-pointer transition-colors"
+                      className="p-1 rounded hover:bg-secondary cursor-pointer transition-colors press"
                       title="Previous Study Tip"
                     >
                       <ChevronLeft className="h-4 w-4" />
@@ -905,7 +865,7 @@ export default function DashboardPage() {
                     <button
                       type="button"
                       onClick={() => setAdviceIndex((prev) => (prev + 1) % STUDY_ADVICE_TIPS.length)}
-                      className="p-1 rounded hover:bg-secondary cursor-pointer transition-colors"
+                      className="p-1 rounded hover:bg-secondary cursor-pointer transition-colors press"
                       title="Next Study Tip"
                     >
                       <ChevronRight className="h-4 w-4" />
@@ -913,15 +873,15 @@ export default function DashboardPage() {
                   </div>
                 </div>
 
-                <div className="p-4 rounded-xl bg-[#E8EDE4] dark:bg-[#183F36]/30 border border-[#E0E2D9] dark:border-[#1D4A3F] flex items-start gap-3 transition-all">
-                  <div className="p-2.5 rounded-xl bg-[#183F36] text-[#D6E85D] shrink-0">
+                <div className="p-4 rounded-lg bg-[var(--itm-surface-green)] dark:bg-forest/30 border border-[var(--itm-border)] dark:border-[var(--itm-surface-green)]/30 flex items-start gap-3 transition-all">
+                  <div className={`p-2.5 rounded-lg bg-forest text-chartreuse-foreground shrink-0`}>
                     <TipIcon className="h-5 w-5" />
                   </div>
                   <div className="space-y-1">
                     <p className="text-xs font-medium text-foreground leading-relaxed">
                       {currentTip.text}
                     </p>
-                    <Link to={currentTip.linkTo} className="text-xs text-[#183F36] dark:text-[#D6E85D] font-bold hover:underline inline-block pt-1">
+                    <Link to={currentTip.linkTo} className="text-xs text-forest dark:text-sidebar-primary font-bold hover:underline inline-block pt-1 press">
                       {currentTip.linkText}
                     </Link>
                   </div>
@@ -930,17 +890,17 @@ export default function DashboardPage() {
             );
           })()}
 
-          {/* 2. Radial Donut Dual Gauges with Forest Green & Chartreuse */}
-          <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-4">
+          {/* Radial Donut Dual Gauges */}
+          <div className="paper rounded-xl p-5 space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="font-bold text-sm text-foreground">Study Progress</h3>
-              <Link to="/calculator" className="text-xs text-primary font-semibold hover:underline">
+              <Link to="/calculator" className="text-xs text-primary font-semibold hover:underline press">
                 View All &gt;
               </Link>
             </div>
 
             <div className="grid grid-cols-2 gap-4 text-center py-2">
-              {/* Gauge 1: 30% Syllabus */}
+              {/* Gauge 1: Syllabus */}
               <div className="flex flex-col items-center">
                 <div className="relative w-24 h-24 flex items-center justify-center">
                   <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
@@ -951,7 +911,7 @@ export default function DashboardPage() {
                       d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                     />
                     <path
-                      className="text-[#183F36] dark:text-[#D6E85D] stroke-current transition-all duration-1000"
+                      className="text-forest dark:text-chartreuse stroke-current transition-all duration-1000"
                       strokeDasharray="30, 100"
                       strokeWidth="3.5"
                       strokeLinecap="round"
@@ -967,7 +927,7 @@ export default function DashboardPage() {
                 <span className="text-[10px] text-muted-foreground">Units 1–2 done</span>
               </div>
 
-              {/* Gauge 2: 91% Attendance */}
+              {/* Gauge 2: Attendance */}
               <div className="flex flex-col items-center">
                 <div className="relative w-24 h-24 flex items-center justify-center">
                   <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
@@ -978,7 +938,7 @@ export default function DashboardPage() {
                       d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                     />
                     <path
-                      className="text-[#267653] dark:text-[#D6E85D] stroke-current transition-all duration-1000"
+                      className="text-success dark:text-chartreuse stroke-current transition-all duration-1000"
                       strokeDasharray="91, 100"
                       strokeWidth="3.5"
                       strokeLinecap="round"
@@ -991,19 +951,19 @@ export default function DashboardPage() {
                   </div>
                 </div>
                 <span className="text-xs font-bold text-foreground mt-2">Attendance</span>
-                <span className="text-[10px] text-emerald-600 font-semibold">Above 75% cutoff</span>
+                <span className="text-[10px] text-success-foreground font-semibold">Above 75% cutoff</span>
               </div>
             </div>
           </div>
 
-          {/* 3. Faculty / Subject Mentors Card — LIVE Verified Mentors */}
-          <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-4">
+          {/* Faculty & Subject Mentors Card */}
+          <div className="paper rounded-xl p-5 space-y-4">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="font-bold text-sm text-foreground">Faculty & Subject Mentors</h3>
                 <span className="text-[11px] text-muted-foreground">School of CSET · Active Viva Panel</span>
               </div>
-              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-success/10 text-success-foreground border border-success/20">
                 12 Faculty Mentors
               </span>
             </div>
@@ -1013,10 +973,10 @@ export default function DashboardPage() {
                 <div
                   key={f.id}
                   onClick={() => openTimetable("faculty")}
-                  className="p-3 rounded-xl border border-border/80 bg-secondary/30 hover:bg-secondary/70 transition-all cursor-pointer flex items-center justify-between gap-3 group"
+                  className="p-3 rounded-lg border border-border/80 bg-secondary/30 hover:bg-secondary/70 transition-all cursor-pointer flex items-center justify-between gap-3 group press"
                 >
                   <div className="flex items-center gap-2.5 min-w-0">
-                    <div className="w-8 h-8 rounded-xl bg-[#183F36] text-[#D6E85D] flex items-center justify-center font-bold text-[11px] shrink-0">
+                    <div className="w-8 h-8 rounded-lg bg-forest text-chartreuse-foreground flex items-center justify-center font-bold text-[11px] shrink-0">
                       {f.name.split(" ").slice(1).map((n) => n[0]).join("")}
                     </div>
                     <div className="min-w-0">
@@ -1043,7 +1003,7 @@ export default function DashboardPage() {
               <button
                 type="button"
                 onClick={() => openTimetable("faculty")}
-                className="px-3 py-1.5 rounded-lg bg-[#183F36] hover:bg-[#12332C] text-white font-bold text-[10px] shadow-sm shadow-[#183F36]/20 transition-all active:scale-95 cursor-pointer font-display flex items-center gap-1"
+                className="px-3 py-1.5 rounded-lg bg-forest hover:bg-forest-deep text-white font-bold text-[10px] shadow-sm shadow-forest/20 press flex items-center gap-1 cursor-pointer font-display"
               >
                 <span>All Mentors</span>
                 <ChevronRight className="h-3 w-3" />

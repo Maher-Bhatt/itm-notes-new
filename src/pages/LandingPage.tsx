@@ -36,7 +36,6 @@ import {
 } from "lucide-react";
 import { ItmMoocsLogo } from "@/components/brand/ItmMoocsLogo";
 
-// ── Types ──────────────────────────────────────────────────────────────────────
 interface Particle {
   id: number;
   left: string;
@@ -46,7 +45,6 @@ interface Particle {
   opacity: number;
 }
 
-// ── Helper ─────────────────────────────────────────────────────────────────────
 function getFeatureName(path?: string) {
   if (!path) return "the Academic Hub";
   if (path.includes("material")) return "the Academic Materials Library";
@@ -59,40 +57,8 @@ function getFeatureName(path?: string) {
   return "the Academic Hub";
 }
 
-// ── Inline global keyframe styles ─────────────────────────────────────────────
-const globalStyles = `
-@keyframes float-up {
-  0%   { opacity: 0; transform: translateY(100vh) scale(0.5); }
-  10%  { opacity: 0.7; }
-  90%  { opacity: 0.5; }
-  100% { opacity: 0; transform: translateY(-10vh) scale(1); }
-}
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0; }
-}
-@keyframes gentle-float {
-  0%, 100% { transform: translateY(0px); }
-  50%       { transform: translateY(-8px); }
-}
-@keyframes fade-in-up {
-  from { opacity: 0; transform: translateY(30px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-@keyframes scale-in {
-  from { opacity: 0; transform: scale(0.92); }
-  to   { opacity: 1; transform: scale(1); }
-}
-`;
-
-// ── Typewriter words ───────────────────────────────────────────────────────────
 const TYPEWRITER_WORDS = ["DSA Notes", "DBMS SQL", "Java OOP", "COA Pipelines", "MCQ Practice"];
 
-// ── Component ──────────────────────────────────────────────────────────────────
 export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean }) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -117,9 +83,6 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
   const [twWordIndex, setTwWordIndex] = useState(0);
   const [twDisplayed, setTwDisplayed] = useState("");
   const [twDeleting, setTwDeleting] = useState(false);
-
-  // ── Particles ────────────────────────────────────────────────────────────────
-  const [particles, setParticles] = useState<Particle[]>([]);
 
   // ── Counter Animation ────────────────────────────────────────────────────────
   const statsRef = useRef<HTMLDivElement>(null);
@@ -162,19 +125,6 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
       if (el) el.scrollIntoView({ behavior: "smooth" });
     }
   }, [focusAuth]);
-
-  // ── Generate particles on mount ──────────────────────────────────────────────
-  useEffect(() => {
-    const generated: Particle[] = Array.from({ length: 20 }, (_, i) => ({
-      id: i,
-      left: `${Math.random() * 100}%`,
-      animationDuration: `${8 + Math.random() * 12}s`,
-      animationDelay: `${Math.random() * 10}s`,
-      size: `${3 + Math.random() * 5}px`,
-      opacity: 0.3 + Math.random() * 0.5,
-    }));
-    setParticles(generated);
-  }, []);
 
   // ── Typewriter effect ────────────────────────────────────────────────────────
   useEffect(() => {
@@ -317,7 +267,6 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
     }
   };
 
-
   // ── 75% Attendance calculation ───────────────────────────────────────────────
   const demoPercentage = demoTotalClasses > 0 ? (demoAttendedClasses / demoTotalClasses) * 100 : 0;
   const isDemoSafe = demoPercentage >= 75;
@@ -328,45 +277,33 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
   const features = [
     {
       icon: <BookOpen className="h-6 w-6" />,
-      emoji: "📚",
       title: "Study Materials",
       desc: "Verified notes, PDFs, and formula sheets for every topic — mapped 100% to your university syllabus.",
-      color: "text-[#183F36] dark:text-[#D6E85D]",
     },
     {
       icon: <HelpCircle className="h-6 w-6" />,
-      emoji: "🧠",
       title: "Practice Quizzes",
       desc: "500+ MCQs with step-by-step explanations, topic accuracy gauges, and XP rewards for every correct answer.",
-      color: "text-[#267653] dark:text-[#D6E85D]",
     },
     {
       icon: <Code2 className="h-6 w-6" />,
-      emoji: "💻",
       title: "Coding Lab",
       desc: "Hands-on practicals in C, Java, and Python with simulated terminal output and dual-language toggle.",
-      color: "text-[#315B4F] dark:text-[#D6E85D]",
     },
     {
       icon: <Calculator className="h-6 w-6" />,
-      emoji: "📊",
       title: "SGPA Calculator",
       desc: "GPA tracker with real-time 75% attendance protection — know exactly how many classes you can safely skip.",
-      color: "text-[#A66A1D] dark:text-[#D6E85D]",
     },
     {
       icon: <Trophy className="h-6 w-6" />,
-      emoji: "🏆",
       title: "Gamification",
       desc: "Earn XP, level up your student rank, maintain daily study streaks, and compete on the leaderboard.",
-      color: "text-[#267653] dark:text-[#D6E85D]",
     },
     {
       icon: <Users className="h-6 w-6" />,
-      emoji: "👥",
       title: "Community",
       desc: "Campus Pulse real-time discussions, anonymous confessions wall, and study group formation — all in one place.",
-      color: "text-[#183F36] dark:text-[#D6E85D]",
     },
   ];
 
@@ -377,33 +314,29 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
     { step: "03", title: "Study, practice & track", desc: "Read notes, attempt MCQs, run practicals, and watch your progress grow." },
   ];
 
-  // ══════════════════════════════════════════════════════════════════════════════
   return (
     <>
-      {/* Inject global CSS keyframes */}
-      <style>{globalStyles}</style>
-
-      <div className="min-h-screen bg-[#F5F1E8] dark:bg-[#12221E] text-[#202522] dark:text-[#F5F1E8] selection:bg-[#D6E85D] selection:text-[#183F36] font-sans antialiased">
+      <div className="min-h-screen bg-background text-foreground font-sans antialiased selection:bg-accent/30 selection:text-accent-foreground">
 
         {/* ── TOP NAVBAR ─────────────────────────────────────────────────────── */}
-        <header className="sticky top-0 z-50 bg-[#183F36]/95 backdrop-blur-md border-b border-[#1D4A3F] px-4 sm:px-8 transition-colors pt-[calc(env(safe-area-inset-top,0px)+0.75rem)] pb-3">
-          <div className="max-w-7xl mx-auto flex items-center justify-between">
+        <header className="sticky top-0 z-50 bg-card/90 backdrop-blur-xl border-b border-border px-4 sm:px-8 glass-strong">
+          <div className="max-w-7xl mx-auto flex items-center justify-between h-16">
             <Link to="/" className="flex items-center gap-2 group">
-              <ItmMoocsLogo variant="live" size="md" showTagline={false} inverted={true} />
+              <ItmMoocsLogo variant="live" size="md" showTagline={false} />
             </Link>
 
-            <nav className="hidden md:flex items-center gap-6 text-xs font-semibold text-[#A2BAAF]">
-              <a href="#features" className="hover:text-[#D6E85D] transition-colors">Features</a>
-              <a href="#how-it-works" className="hover:text-[#D6E85D] transition-colors">How It Works</a>
-              <a href="#stats" className="hover:text-[#D6E85D] transition-colors">Stats</a>
-              <a href="#auth-portal-card" className="hover:text-[#D6E85D] transition-colors">Sign In</a>
+            <nav className="hidden md:flex items-center gap-6 text-xs font-semibold text-muted-foreground">
+              <a href="#features" className="hover:text-primary transition-colors press">Features</a>
+              <a href="#how-it-works" className="hover:text-primary transition-colors press">How It Works</a>
+              <a href="#stats" className="hover:text-primary transition-colors press">Stats</a>
+              <a href="#auth-portal-card" className="hover:text-primary transition-colors press">Sign In</a>
             </nav>
 
             <div className="flex items-center gap-3">
               {user ? (
                 <button
                   onClick={() => navigate("/dashboard")}
-                  className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-[#D6E85D] hover:bg-[#c8da4e] text-[#183F36] text-xs font-bold shadow-md transition-all hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-2"
+                  className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-lg bg-accent text-accent-foreground text-xs font-bold shadow-sm shadow-accent/20 press flex items-center gap-2"
                 >
                   <span>Go to Dashboard</span>
                   <ArrowRight className="h-3.5 w-3.5" />
@@ -415,7 +348,7 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
                       setIsLogin(true);
                       document.getElementById("auth-portal-card")?.scrollIntoView({ behavior: "smooth" });
                     }}
-                    className="px-4 py-2 rounded-xl border border-[#D6E85D]/40 text-[#D6E85D] text-xs font-bold hover:bg-[#D6E85D]/10 transition-all cursor-pointer hidden sm:block"
+                    className="px-4 py-2 rounded-lg border border-border text-muted-foreground hover:text-foreground hover:bg-secondary transition-all cursor-pointer press hidden sm:block"
                   >
                     Sign In
                   </button>
@@ -424,7 +357,7 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
                       setIsLogin(false);
                       document.getElementById("auth-portal-card")?.scrollIntoView({ behavior: "smooth" });
                     }}
-                    className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-[#D6E85D] hover:bg-[#c8da4e] text-[#183F36] text-xs font-bold shadow-md transition-all hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-2"
+                    className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-lg bg-accent text-accent-foreground text-xs font-bold shadow-sm shadow-accent/20 press flex items-center gap-2"
                   >
                     <span>Register Free</span>
                     <ArrowRight className="h-3.5 w-3.5" />
@@ -436,45 +369,24 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
         </header>
 
         {/* ── SECTION 1: HERO ─────────────────────────────────────────────────── */}
-        <section className="relative min-h-screen flex items-center overflow-hidden" style={{ background: "linear-gradient(160deg, #183F36 0%, #0D2B23 60%, #091A15 100%)" }}>
-          {/* Floating particles */}
-          {particles.map((p) => (
-            <div
-              key={p.id}
-              className="absolute rounded-full pointer-events-none"
-              style={{
-                left: p.left,
-                bottom: "-10px",
-                width: p.size,
-                height: p.size,
-                background: "#D6E85D",
-                boxShadow: `0 0 6px 2px rgba(214,232,93,0.4)`,
-                animation: `float-up ${p.animationDuration} ${p.animationDelay} infinite linear`,
-                opacity: p.opacity,
-              }}
-            />
-          ))}
-
-          {/* Glow blobs */}
-          <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-[#D6E85D]/5 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-[#183F36]/30 rounded-full blur-3xl pointer-events-none" />
+        <section className="relative min-h-screen flex items-center overflow-hidden">
+          {/* Subtle glow blobs - no rainbow, only brand colors */}
+          <div className="absolute top-0 left-0 w-96 h-96 bg-primary/5 rounded-full blur-4xl pointer-events-none" />
+          <div className="absolute bottom-0 right-0 w-80 h-80 bg-accent/10 rounded-full blur-4xl pointer-events-none" />
 
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-20 w-full">
             {/* Logged-in welcome banner */}
             {!isLoading && user && (
-              <div
-                className="mb-8 mx-auto max-w-xl p-4 rounded-2xl text-center border border-[#D6E85D]/30 bg-[#D6E85D]/10"
-                style={{ animation: "scale-in 0.4s ease both" }}
-              >
-                <p className="text-[#D6E85D] font-bold text-sm">
-                  Welcome back, {profile?.display_name || user.email?.split("@")[0]}! 👋
+              <div className="mb-8 mx-auto max-w-xl p-4 rounded-lg text-center border border-accent/30 bg-accent/10 fade-in">
+                <p className="text-accent-foreground font-bold text-sm">
+                  Welcome back, {profile?.display_name || user.email?.split("@")[0]}!
                 </p>
-                <p className="text-[#A2BAAF] text-xs mt-1">
+                <p className="text-muted-foreground text-xs mt-1">
                   Redirecting to your dashboard in {redirectCountdown}s…
                 </p>
                 <button
                   onClick={() => navigate("/dashboard")}
-                  className="mt-3 px-5 py-2 rounded-xl bg-[#D6E85D] text-[#183F36] text-xs font-bold hover:bg-[#c8da4e] transition-all"
+                  className="mt-3 px-5 py-2 rounded-lg bg-accent text-accent-foreground text-xs font-bold hover:bg-accent/90 press transition-all"
                 >
                   Continue studying →
                 </button>
@@ -483,31 +395,31 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
               {/* Left hero content */}
-              <div className="lg:col-span-7 space-y-7 text-center lg:text-left" style={{ animation: "fade-in-up 0.7s ease both" }}>
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#D6E85D]/10 border border-[#D6E85D]/30 text-[#D6E85D] text-xs font-bold">
+              <div className="lg:col-span-7 space-y-7 text-center lg:text-left fade-in">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-accent/10 border border-accent/30 text-accent-foreground text-xs font-bold">
                   <Sparkles className="h-3.5 w-3.5" />
                   <span>ITM Notes · Free for all ITM SLS Baroda University Students</span>
                 </div>
 
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.1]">
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-foreground leading-[1.1]">
                   Study Smarter.<br />
-                  <span className="text-[#D6E85D]">Score Higher.</span>
+                  <span className="text-accent-foreground">Score Higher.</span>
                 </h1>
 
                 {/* Typewriter */}
-                <div className="text-xl sm:text-2xl font-bold text-[#A2BAAF] flex items-center gap-2 justify-center lg:justify-start min-h-[2rem]">
+                <div className="text-xl sm:text-2xl font-bold text-muted-foreground flex items-center gap-2 justify-center lg:justify-start min-h-[2rem]">
                   <span>Master</span>
-                  <span className="text-[#D6E85D] font-black min-w-[180px] text-left">
+                  <span className="text-primary font-black min-w-[180px] text-left">
                     {twDisplayed}
                     <span
-                      className="ml-0.5 inline-block w-0.5 h-6 bg-[#D6E85D] align-middle"
+                      className="ml-0.5 inline-block w-0.5 h-6 bg-primary align-middle"
                       style={{ animation: "blink 1s step-end infinite" }}
                     />
                   </span>
                 </div>
 
-                <p className="text-sm sm:text-base text-[#A2BAAF] max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-                  ITM Notes gives you everything you need to ace Semester exams — verified notes, MCQ practice, coding labs, SGPA calculator, and more. All in one place. All free.
+                <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                  ITM Notes gives you everything you need to ace Semester exams — verified notes, MCQ practice, coding labs, SGPA calculator, and more. All in one place.
                 </p>
 
                 {/* CTA buttons */}
@@ -517,13 +429,13 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
                       setIsLogin(false);
                       document.getElementById("auth-portal-card")?.scrollIntoView({ behavior: "smooth" });
                     }}
-                    className="px-7 py-3.5 rounded-xl bg-[#D6E85D] hover:bg-[#c8da4e] text-[#183F36] font-bold text-sm shadow-lg shadow-[#D6E85D]/20 transition-all hover:scale-105 active:scale-95 flex items-center gap-2 justify-center cursor-pointer"
+                    className="px-7 py-3.5 rounded-lg bg-accent text-accent-foreground font-bold text-sm shadow-sm shadow-accent/20 press flex items-center gap-2 justify-center cursor-pointer"
                   >
                     Get Started Free →
                   </button>
                   <a
                     href="#features"
-                    className="px-7 py-3.5 rounded-xl border-2 border-[#D6E85D]/40 text-[#D6E85D] font-bold text-sm hover:bg-[#D6E85D]/10 transition-all flex items-center gap-2 justify-center"
+                    className="px-7 py-3.5 rounded-lg border-2 border-border text-muted-foreground font-bold text-sm hover:bg-secondary hover:text-foreground transition-all flex items-center gap-2 justify-center press"
                   >
                     Explore Materials
                   </a>
@@ -539,102 +451,98 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
                   ].map((stat, i) => (
                     <div
                       key={stat.label}
-                      className="p-4 rounded-2xl bg-white/5 border border-white/10 text-center backdrop-blur-sm"
-                      style={{
-                        animation: `fade-in-up 0.6s ease ${0.2 + i * 0.1}s both`,
-                        animationName: "gentle-float",
-                        animationDuration: `${3 + i * 0.5}s`,
-                        animationTimingFunction: "ease-in-out",
-                        animationIterationCount: "infinite",
-                        animationDelay: `${i * 0.3}s`,
-                      }}
+                      className="p-4 rounded-lg bg-card border border-border text-center shadow-sm press"
                     >
-                      <div className="text-2xl font-black font-mono text-[#D6E85D]">{stat.value}</div>
-                      <div className="text-[10px] text-[#A2BAAF] font-bold uppercase tracking-wider mt-0.5">{stat.label}</div>
+                      <div className="text-2xl font-black font-mono text-primary">{stat.value}</div>
+                      <div className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider mt-0.5">{stat.label}</div>
                     </div>
                   ))}
                 </div>
               </div>
 
               {/* Right: Auth card */}
-              <div id="auth-portal-card" className="lg:col-span-5" style={{ animation: "fade-in-up 0.7s ease 0.15s both" }}>
-                <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-[#D6E85D]/10 rounded-full blur-2xl pointer-events-none" />
+              <div id="auth-portal-card" className="lg:col-span-5 fade-in" style={{ animationDelay: "0.15s" }}>
+                <div className="bg-card border border-border rounded-xl p-6 sm:p-8 shadow-card relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-accent/10 rounded-full blur-3xl pointer-events-none" />
 
                   {fromState && (
-                    <div className="mb-5 p-3 rounded-xl bg-[#D6E85D]/10 border border-[#D6E85D]/30 text-xs text-[#D6E85D] font-medium flex items-center gap-2">
+                    <div className="mb-5 p-3 rounded-lg bg-accent/10 border border-accent/20 text-xs text-accent-foreground font-medium flex items-center gap-2">
                       <Lock className="h-4 w-4 shrink-0" />
                       <span>
-                        <strong className="text-white">Login Required:</strong> Sign in to access{" "}
+                        <strong className="text-primary">Login Required:</strong> Sign in to access{" "}
                         {getFeatureName((fromState as { pathname?: string })?.pathname)}.
                       </span>
                     </div>
                   )}
 
                   {/* Tab toggle */}
-                  <div className="flex p-1 rounded-2xl bg-black/20 border border-white/10 mb-6">
+                  <div className="flex p-1 rounded-xl bg-secondary/40 border border-border mb-6">
                     <button
                       type="button"
                       onClick={() => setIsLogin(true)}
-                      className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all ${isLogin ? "bg-[#D6E85D] text-[#183F36]" : "text-[#A2BAAF] hover:text-white"}`}
+                      className={`flex-1 py-2.5 rounded-lg text-xs font-bold transition-all press ${
+                        isLogin ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+                      }`}
                     >
                       Sign In
                     </button>
                     <button
                       type="button"
                       onClick={() => setIsLogin(false)}
-                      className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all ${!isLogin ? "bg-[#D6E85D] text-[#183F36]" : "text-[#A2BAAF] hover:text-white"}`}
+                      className={`flex-1 py-2.5 rounded-lg text-xs font-bold transition-all press ${
+                        !isLogin ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+                      }`}
                     >
                       Create Account
                     </button>
                   </div>
 
                   <div className="mb-5 text-center sm:text-left">
-                    <h3 className="text-lg sm:text-xl font-extrabold text-white tracking-tight">
+                    <h3 className="text-lg sm:text-xl font-extrabold text-foreground tracking-tight">
                       {isLogin ? "Welcome to ITM Notes" : "Join ITM Notes"}
                     </h3>
-                    <p className="text-xs text-[#A2BAAF] mt-1">
+                    <p className="text-xs text-muted-foreground mt-1">
                       {isLogin
                         ? "Access your notes, practicals, quizzes and more."
-                        : "Create your student account. 100% free, forever."}
+                        : "Create your student account. Free forever."}
                     </p>
                   </div>
 
                   <form onSubmit={handleAuth} className="space-y-4">
                     {!isLogin && (
                       <div>
-                        <label className="block text-xs font-semibold text-white mb-1.5">Full Name</label>
+                        <label className="block text-xs font-semibold text-foreground mb-1.5">Full Name</label>
                         <input
                           type="text"
                           required
                           value={displayName}
                           onChange={(e) => setDisplayName(e.target.value)}
                           placeholder="e.g. Maher Bhatt"
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white text-xs placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#D6E85D]"
+                          className="w-full px-3.5 py-2.5 rounded-lg border border-input bg-background text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
                         />
                       </div>
                     )}
 
                     <div>
-                      <label className="block text-xs font-semibold text-white mb-1.5">Email Address</label>
+                      <label className="block text-xs font-semibold text-foreground mb-1.5">Email Address</label>
                       <input
                         type="email"
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="student@itmbu.ac.in"
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white text-xs placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#D6E85D]"
+                        className="w-full px-3.5 py-2.5 rounded-lg border border-input bg-background text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
                       />
                     </div>
 
                     <div>
                       <div className="flex items-center justify-between mb-1.5">
-                        <label className="text-xs font-semibold text-white">Password</label>
+                        <label className="text-xs font-semibold text-foreground">Password</label>
                         {isLogin && (
                           <button
                             type="button"
                             onClick={handleForgotPassword}
-                            className="text-[11px] text-[#A2BAAF] hover:text-[#D6E85D]"
+                            className="text-[11px] text-muted-foreground hover:text-primary"
                           >
                             Forgot?
                           </button>
@@ -647,12 +555,12 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
                           placeholder="••••••••"
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white text-xs placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#D6E85D] pr-10"
+                          className="w-full px-3.5 py-2.5 rounded-lg border border-input bg-background text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring pr-10"
                         />
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white p-1"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-1"
                         >
                           {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                         </button>
@@ -662,7 +570,7 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
                     <button
                       type="submit"
                       disabled={loading}
-                      className="w-full py-3 rounded-xl bg-[#D6E85D] hover:bg-[#c8da4e] text-[#183F36] text-xs font-bold shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 mt-2"
+                      className="w-full py-3 rounded-lg bg-primary text-primary-foreground text-xs font-bold shadow-sm press transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 mt-2"
                     >
                       {loading ? (
                         <>
@@ -678,10 +586,10 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
                     </button>
                   </form>
 
-                  <div className="mt-5 pt-4 border-t border-white/10 flex items-center justify-between text-[11px] text-[#A2BAAF]">
+                  <div className="mt-5 pt-4 border-t border-border/60 flex items-center justify-between text-[11px] text-muted-foreground">
                     <span className="flex items-center gap-1.5">
-                      <Shield className="h-3.5 w-3.5 text-[#D6E85D]" />
-                      256-bit Encrypted
+                      <Shield className="h-3.5 w-3.5 text-primary" />
+                      Secure & Private
                     </span>
                     <span>Free & Open Source</span>
                   </div>
@@ -692,16 +600,16 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
         </section>
 
         {/* ── SECTION 2: FEATURE HIGHLIGHTS ──────────────────────────────────── */}
-        <section id="features" className="py-20 bg-[#F5F1E8] dark:bg-[#12221E]">
+        <section id="features" className="py-20 bg-background">
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
-            <div className="text-center max-w-2xl mx-auto mb-14">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#267653] dark:text-[#D6E85D] block mb-2">
+            <div className="text-center max-w-2xl mx-auto mb-14 fade-in">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-primary block mb-2">
                 Everything You Need
               </span>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#183F36] dark:text-[#F5F1E8] tracking-tight">
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight">
                 Engineered for High-Performance Study
               </h2>
-              <p className="text-sm text-[#68716B] dark:text-[#A2BAAF] mt-3">
+              <p className="text-sm text-muted-foreground mt-3">
                 Every feature is built around what ITM SLS Baroda University students actually need.
               </p>
             </div>
@@ -710,14 +618,14 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
               {features.map((feat, i) => (
                 <div
                   key={feat.title}
-                  className="group p-6 rounded-2xl bg-white dark:bg-[#182E29] border border-[#E0E2D9] dark:border-[#264941] space-y-4 hover:border-[#183F36] dark:hover:border-[#D6E85D] hover:scale-[1.03] hover:shadow-lg transition-all duration-200 cursor-default shadow-xs"
-                  style={{ animation: `fade-in-up 0.5s ease ${0.1 * i}s both` }}
+                  className="p-6 rounded-lg bg-card border border-border shadow-sm press card-lift fade-in"
+                  style={{ animationDelay: `${0.1 * i}s` }}
                 >
-                  <div className="w-12 h-12 rounded-2xl bg-[#D6E85D] flex items-center justify-center text-2xl shadow-sm">
-                    {feat.emoji}
+                  <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center shadow-sm">
+                    {feat.icon}
                   </div>
-                  <h3 className="font-bold text-base text-[#183F36] dark:text-[#F5F1E8]">{feat.title}</h3>
-                  <p className="text-xs text-[#68716B] dark:text-[#A2BAAF] leading-relaxed">{feat.desc}</p>
+                  <h3 className="font-bold text-base text-foreground">{feat.title}</h3>
+                  <p className="text-xs text-muted-foreground leading-relaxed">{feat.desc}</p>
                 </div>
               ))}
             </div>
@@ -725,27 +633,29 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
         </section>
 
         {/* ── SECTION 3: HOW IT WORKS ─────────────────────────────────────────── */}
-        <section id="how-it-works" className="py-20 bg-white dark:bg-[#182E29] border-y border-[#E0E2D9] dark:border-[#264941]">
+        <section id="how-it-works" className="py-20 bg-card/50 border-y border-border">
           <div className="max-w-5xl mx-auto px-4 sm:px-6">
-            <div className="text-center max-w-xl mx-auto mb-14">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#267653] dark:text-[#D6E85D] block mb-2">Simple Onboarding</span>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#183F36] dark:text-[#F5F1E8] tracking-tight">
+            <div className="text-center max-w-xl mx-auto mb-14 fade-in">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-primary block mb-2">
+                Simple Onboarding
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight">
                 Up and studying in 60 seconds
               </h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {steps.map((s, i) => (
-                <div key={s.step} className="relative flex flex-col items-center text-center gap-4" style={{ animation: `fade-in-up 0.5s ease ${0.15 * i}s both` }}>
+                <div key={s.step} className="relative flex flex-col items-center text-center gap-4 fade-in" style={{ animationDelay: `${0.15 * i}s` }}>
                   {/* Connector line */}
                   {i < steps.length - 1 && (
-                    <div className="hidden md:block absolute top-8 left-[calc(50%+2.5rem)] right-[calc(-50%+2.5rem)] h-0.5 bg-gradient-to-r from-[#183F36] to-[#D6E85D] opacity-30" />
+                    <div className="hidden md:block absolute top-8 left-[calc(50%+2.5rem)] right-[calc(-50%+2.5rem)] h-0.5 bg-gradient-to-r from-primary to-accent opacity-30" />
                   )}
-                  <div className="w-16 h-16 rounded-2xl bg-[#183F36] text-[#D6E85D] flex items-center justify-center text-xl font-black shadow-lg">
+                  <div className="w-16 h-16 rounded-lg bg-primary text-accent-foreground flex items-center justify-center text-xl font-black shadow-sm">
                     {s.step}
                   </div>
-                  <h3 className="font-bold text-[#183F36] dark:text-[#F5F1E8]">{s.title}</h3>
-                  <p className="text-xs text-[#68716B] dark:text-[#A2BAAF] leading-relaxed">{s.desc}</p>
+                  <h3 className="font-bold text-foreground">{s.title}</h3>
+                  <p className="text-xs text-muted-foreground leading-relaxed">{s.desc}</p>
                 </div>
               ))}
             </div>
@@ -753,10 +663,12 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
         </section>
 
         {/* ── SECTION 4: ANIMATED STATS ──────────────────────────────────────── */}
-        <section id="stats" ref={statsRef} className="py-20" style={{ background: "linear-gradient(135deg, #183F36 0%, #0D2B23 100%)" }}>
+        <section id="stats" ref={statsRef} className="py-20 bg-primary">
           <div className="max-w-5xl mx-auto px-4 sm:px-6">
-            <div className="text-center mb-12">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#D6E85D] block mb-2">By the Numbers</span>
+            <div className="text-center mb-12 fade-in">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-accent-foreground block mb-2">
+                By the Numbers
+              </span>
               <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
                 A growing library of resources
               </h2>
@@ -769,12 +681,12 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
                 { value: labCount, suffix: "+", label: "Lab Practicals", icon: "💻" },
                 { value: studentCount, suffix: "+", label: "Students Studying", icon: "🎓" },
               ].map((stat) => (
-                <div key={stat.label} className="text-center p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm" style={{ animation: "gentle-float 4s ease-in-out infinite" }}>
+                <div key={stat.label} className="text-center p-6 rounded-lg bg-white/5 border border-white/10 backdrop-blur-xs scale-in">
                   <div className="text-3xl mb-2">{stat.icon}</div>
-                  <div className="text-4xl font-black font-mono text-[#D6E85D]">
+                  <div className="text-4xl font-black font-mono text-accent-foreground">
                     {stat.value}{stat.suffix}
                   </div>
-                  <div className="text-xs text-[#A2BAAF] font-semibold uppercase tracking-wider mt-2">{stat.label}</div>
+                  <div className="text-xs text-white/70 font-semibold uppercase tracking-wider mt-2">{stat.label}</div>
                 </div>
               ))}
             </div>
@@ -782,44 +694,50 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
         </section>
 
         {/* ── SECTION 5: SIGN IN / SIGN UP CARD (standalone) ─────────────────── */}
-        <section className="py-20 bg-[#F5F1E8] dark:bg-[#12221E]">
+        <section className="py-20 bg-background">
           <div className="max-w-2xl mx-auto px-4 sm:px-6">
-            <div className="text-center mb-10">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#267653] dark:text-[#D6E85D] block mb-2">Start Now</span>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#183F36] dark:text-[#F5F1E8] tracking-tight">
+            <div className="text-center mb-10 fade-in">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-primary block mb-2">
+                Start Now
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight">
                 Ready to ace your semester?
               </h2>
-              <p className="text-sm text-[#68716B] dark:text-[#A2BAAF] mt-3">
+              <p className="text-sm text-muted-foreground mt-3">
                 Join ITM Notes and get instant access to verified notes, MCQs, and coding practicals.
               </p>
             </div>
 
-            <div className="bg-white dark:bg-[#182E29] rounded-3xl shadow-2xl border border-[#E0E2D9] dark:border-[#264941] p-8 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-40 h-40 bg-[#D6E85D]/5 rounded-full blur-3xl pointer-events-none" />
+            <div className="bg-card rounded-xl shadow-sm border border-border p-8 relative overflow-hidden fade-in" style={{ animationDelay: "0.1s" }}>
+              <div className="absolute top-0 right-0 w-40 h-40 bg-accent/10 rounded-full blur-3xl pointer-events-none" />
 
               {/* Tab toggle */}
-              <div className="flex p-1 rounded-2xl bg-[#F5F1E8] dark:bg-[#12221E] border border-[#E0E2D9] dark:border-[#264941] mb-6">
+              <div className="flex p-1 rounded-lg bg-secondary/40 border border-border mb-6">
                 <button
                   type="button"
                   onClick={() => setIsLogin(true)}
-                  className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all ${isLogin ? "bg-[#183F36] text-white shadow-sm" : "text-[#68716B] dark:text-[#A2BAAF] hover:text-[#183F36] dark:hover:text-white"}`}
+                  className={`flex-1 py-2.5 rounded-lg text-xs font-bold transition-all press ${
+                    isLogin ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+                  }`}
                 >
                   Sign In
                 </button>
                 <button
                   type="button"
                   onClick={() => setIsLogin(false)}
-                  className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all ${!isLogin ? "bg-[#183F36] text-white shadow-sm" : "text-[#68716B] dark:text-[#A2BAAF] hover:text-[#183F36] dark:hover:text-white"}`}
+                  className={`flex-1 py-2.5 rounded-lg text-xs font-bold transition-all press ${
+                    !isLogin ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+                  }`}
                 >
                   Create Account
                 </button>
               </div>
 
               <div className="mb-5">
-                <h3 className="text-lg font-extrabold text-[#183F36] dark:text-[#F5F1E8]">
+                <h3 className="text-lg font-extrabold text-foreground">
                   {isLogin ? "Welcome back to ITM Notes" : "Create your free account"}
                 </h3>
-                <p className="text-xs text-[#68716B] dark:text-[#A2BAAF] mt-1">
+                <p className="text-xs text-muted-foreground mt-1">
                   {isLogin ? "Sign in to continue your study session." : "Free forever. No credit card needed."}
                 </p>
               </div>
@@ -827,33 +745,33 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
               <form onSubmit={handleAuth} className="space-y-4">
                 {!isLogin && (
                   <div>
-                    <label className="block text-xs font-semibold text-[#202522] dark:text-[#E8EDE4] mb-1.5">Full Name</label>
+                    <label className="block text-xs font-semibold text-foreground mb-1.5">Full Name</label>
                     <input
                       type="text"
                       required
                       value={displayName}
                       onChange={(e) => setDisplayName(e.target.value)}
                       placeholder="e.g. Maher Bhatt"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#F5F1E8] dark:bg-[#12221E] border border-[#E0E2D9] dark:border-[#264941] text-[#202522] dark:text-[#F5F1E8] text-xs placeholder:text-[#68716B]/60 focus:outline-none focus:ring-2 focus:ring-[#D6E85D]"
+                      className="w-full px-3.5 py-2.5 rounded-lg border border-input bg-background text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
                     />
                   </div>
                 )}
                 <div>
-                  <label className="block text-xs font-semibold text-[#202522] dark:text-[#E8EDE4] mb-1.5">Email Address</label>
+                  <label className="block text-xs font-semibold text-foreground mb-1.5">Email Address</label>
                   <input
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="student@itmbu.ac.in"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#F5F1E8] dark:bg-[#12221E] border border-[#E0E2D9] dark:border-[#264941] text-[#202522] dark:text-[#F5F1E8] text-xs placeholder:text-[#68716B]/60 focus:outline-none focus:ring-2 focus:ring-[#D6E85D]"
+                    className="w-full px-3.5 py-2.5 rounded-lg border border-input bg-background text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
                   />
                 </div>
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
-                    <label className="text-xs font-semibold text-[#202522] dark:text-[#E8EDE4]">Password</label>
+                    <label className="text-xs font-semibold text-foreground">Password</label>
                     {isLogin && (
-                      <button type="button" onClick={handleForgotPassword} className="text-[11px] text-[#68716B] hover:text-[#183F36] dark:hover:text-[#D6E85D]">
+                      <button type="button" onClick={handleForgotPassword} className="text-[11px] text-muted-foreground hover:text-primary">
                         Forgot?
                       </button>
                     )}
@@ -865,9 +783,9 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#F5F1E8] dark:bg-[#12221E] border border-[#E0E2D9] dark:border-[#264941] text-[#202522] dark:text-[#F5F1E8] text-xs placeholder:text-[#68716B]/60 focus:outline-none focus:ring-2 focus:ring-[#D6E85D] pr-10"
+                      className="w-full px-3.5 py-2.5 rounded-lg border border-input bg-background text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring pr-10"
                     />
-                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#68716B] hover:text-[#202522] p-1">
+                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-1">
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
                   </div>
@@ -875,20 +793,26 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3 rounded-xl bg-[#183F36] hover:bg-[#12332C] text-white text-xs font-bold shadow-md shadow-[#183F36]/25 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 mt-2"
+                  className="w-full py-3 rounded-lg bg-primary text-primary-foreground text-xs font-bold shadow-sm press transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 mt-2"
                 >
                   {loading ? (
-                    <><Loader2 className="h-4 w-4 animate-spin text-[#D6E85D]" /><span>Verifying…</span></>
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin text-accent-foreground" />
+                      <span>Verifying…</span>
+                    </>
                   ) : (
-                    <><span>{isLogin ? "Sign In to ITM Notes" : "Create My Free Account"}</span><ArrowRight className="h-4 w-4 text-[#D6E85D]" /></>
+                    <>
+                      <span>{isLogin ? "Sign In to ITM Notes" : "Create My Free Account"}</span>
+                      <ArrowRight className="h-4 w-4 text-accent-foreground" />
+                    </>
                   )}
                 </button>
               </form>
 
-              <div className="mt-5 pt-4 border-t border-[#E0E2D9] dark:border-[#264941] flex items-center justify-between text-[11px] text-[#68716B] dark:text-[#A2BAAF]">
+              <div className="mt-5 pt-4 border-t border-border/60 flex items-center justify-between text-[11px] text-muted-foreground">
                 <span className="flex items-center gap-1.5">
-                  <Shield className="h-3.5 w-3.5 text-[#267653] dark:text-[#D6E85D]" />
-                  256-bit Encrypted
+                  <Shield className="h-3.5 w-3.5 text-primary" />
+                  Secure & Private
                 </span>
                 <span>Free & Open Source</span>
               </div>
@@ -897,13 +821,13 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
         </section>
 
         {/* ── SECTION 6: FOOTER ──────────────────────────────────────────────── */}
-        <footer className="bg-[#12332C] text-[#E8EDE4] py-10 border-t border-[#1D4A3F]">
+        <footer className="bg-forest text-[var(--itm-surface-green)] py-10 border-t border-forest/40">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <ItmMoocsLogo variant="live" size="sm" inverted={true} showTagline={false} />
             </div>
-            <p className="text-xs text-[#A2BAAF] text-center sm:text-right">
-              ITM Notes © 2025 · Made with ❤️ for ITM SLS Baroda University students
+            <p className="text-xs text-[var(--itm-surface-green)] text-center sm:text-right">
+              ITM Notes © {new Date().getFullYear()} · Made for ITM SLS Baroda University students
             </p>
           </div>
         </footer>

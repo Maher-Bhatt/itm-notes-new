@@ -9,9 +9,7 @@ export function MobileBottomNav() {
   const { user } = useAuth();
   const { state: game } = useGamification();
 
-  // Trigger gentle native haptic feedback on mobile tap
   const handleNavClick = async () => {
-    // We do NOT use Capacitor core plugins here because it causes Rollup build issues on Vercel.
     try {
       await Haptics.impact({ style: ImpactStyle.Light });
     } catch (e) {
@@ -19,12 +17,11 @@ export function MobileBottomNav() {
     }
   };
 
-  // Hide on topic reading page to keep screen real estate 100% focused on reading
+  // Hide on topic reading page
   if (location.pathname.includes('/topic/')) {
     return null;
   }
 
-  // Hide during maintenance mode for non-admins so outer users only see the banner
   const isMaintenanceActive = (() => {
     try {
       const stored = localStorage.getItem('itm_maintenance_mode');
@@ -51,17 +48,17 @@ export function MobileBottomNav() {
       label: 'Dashboard',
       icon: LayoutDashboard,
       isActive: location.pathname === '/dashboard',
-      badge: game.streakDays > 0 ? `${game.streakDays}🔥` : undefined,
+      badge: game.streakDays > 0 ? `${game.streakDays}d` : undefined,
     },
     {
       to: '/coding-lab',
-      label: 'Coding Lab',
+      label: 'Lab',
       icon: Code2,
       isActive: location.pathname.startsWith('/coding-lab'),
     },
     {
       to: '/community',
-      label: 'Community',
+      label: 'Social',
       icon: MessageSquare,
       isActive: location.pathname.startsWith('/community') || location.pathname.startsWith('/social'),
     },
@@ -74,9 +71,9 @@ export function MobileBottomNav() {
   ];
 
   return (
-    <nav 
+    <nav
       aria-label="Mobile Navigation"
-      className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-2xl border-t border-border/80 shadow-2xl transition-all"
+      className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-background/90 backdrop-blur-2xl border-t border-border/80 shadow-xl transition-all"
       style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 8px) + 2px)' }}
     >
       <div className="flex items-center justify-around h-14 max-w-lg mx-auto px-3">
@@ -88,21 +85,20 @@ export function MobileBottomNav() {
               key={item.to}
               to={item.to}
               onClick={handleNavClick}
-              className={`flex flex-col items-center justify-center flex-1 py-1 px-1 transition-all rounded-2xl select-none apple-press min-h-[44px] relative ${
-                active 
+              className={`flex flex-col items-center justify-center flex-1 py-1 px-1 transition-all rounded-xl select-none press min-h-[44px] relative ${
+                active
                   ? 'text-primary font-extrabold'
                   : 'text-muted-foreground hover:text-foreground font-medium'
               }`}
             >
-              {/* Active Pill Background Indicator */}
               {active && (
-                <span className="absolute inset-y-1 inset-x-2 bg-primary/10 dark:bg-primary/20 rounded-xl -z-10 animate-scale-in" />
+                <span className="absolute inset-y-1 inset-x-2 bg-primary/10 dark:bg-primary/20 rounded-xl -z-10 scale-in" />
               )}
 
               <div className="relative flex items-center justify-center">
-                <Icon className={`h-5 w-5 transition-transform duration-200 ${active ? 'scale-110 text-primary stroke-[2.5]' : 'stroke-[1.8]'}`} />
+                <Icon className={`h-5 w-5 transition-transform duration-200 ${active ? 'scale-110 text-primary' : 'text-muted-foreground hover:text-foreground'}`} />
                 {item.badge && (
-                  <span className="absolute -top-1.5 -right-3 text-[9px] font-black px-1.5 py-0.2 rounded-full bg-amber-500 text-white shadow-xs">
+                  <span className="absolute -top-1 -right-2 text-[9px] font-black px-1.5 py-0.2 rounded-full bg-accent text-accent-foreground shadow-sm">
                     {item.badge}
                   </span>
                 )}

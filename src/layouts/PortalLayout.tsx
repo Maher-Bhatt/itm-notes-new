@@ -37,7 +37,7 @@ export function PortalLayout() {
       } else if ((e.key === "f" || e.key === "F") && !e.ctrlKey && !e.metaKey && !isInput) {
         e.preventDefault();
         toggleFocusMode();
-        toast.info(!focusMode ? "🎯 Focus Mode Enabled (Sidebar Hidden)" : "Focus Mode Disabled");
+        toast.info(!focusMode ? "🎯 Focus Mode Enabled" : "Focus Mode Disabled");
       } else if (e.key === "Escape" && focusMode) {
         setFocusMode(false);
       }
@@ -48,7 +48,7 @@ export function PortalLayout() {
 
   const handleToggleFocusMode = () => {
     toggleFocusMode();
-    toast.info(!focusMode ? "🎯 Focus Mode Enabled (Sidebar Hidden)" : "Focus Mode Disabled");
+    toast.info(!focusMode ? "🎯 Focus Mode Enabled" : "Focus Mode Disabled");
   };
 
   const handleSendQuickSupport = async (e: React.FormEvent) => {
@@ -57,7 +57,7 @@ export function PortalLayout() {
     const msg = chatMessage.trim();
     setChatMessage("");
     setIsChatOpen(false);
-    toast.success("Message dispatched to ITM Notes Campus Support!");
+    toast.success("Message dispatched to Campus Support!");
     try {
       await createSupportTicket(
         msg,
@@ -74,42 +74,39 @@ export function PortalLayout() {
   const isCodingLab = location.pathname.startsWith("/coding-lab");
 
   return (
-    <div className="h-screen w-full overflow-hidden bg-slate-50 dark:bg-background text-foreground flex antialiased">
-      {/* 1. Persistent Left Dark-Navy Sidebar (Collapsible in Focus Mode) */}
-      <PortalSidebar 
-        isOpen={sidebarOpen} 
-        onClose={() => setSidebarOpen(false)} 
+    <div className="h-screen w-full overflow-hidden bg-background text-foreground flex antialiased">
+      {/* 1. Persistent Left Forest Sidebar */}
+      <PortalSidebar
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
         isCollapsed={focusMode}
       />
 
       {/* 2. Main Content Viewport */}
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
-        {/* Sticky Fixed Top Navbar - NEVER SCROLLS AWAY */}
-        <PortalTopNav 
+        {/* Sticky Fixed Top Navbar */}
+        <PortalTopNav
           onToggleSidebar={() => setSidebarOpen((prev) => !prev)}
           onOpenSearch={() => setSearchOpen(true)}
           isFocusMode={focusMode}
           onToggleFocusMode={handleToggleFocusMode}
         />
 
-        {/* Dynamic Page Content - Dedicated smooth scroll container with safe bottom padding for MobileBottomNav */}
-        <main className="flex-1 overflow-y-auto overflow-x-hidden pb-20 md:pb-6">
+        {/* Dynamic Page Content */}
+        <main className="flex-1 overflow-y-auto overflow-x-hidden pb-16 md:pb-6">
           <Outlet />
         </main>
       </div>
 
       {/* 3. Universal Search Dialog */}
-      <SearchDialog 
-        open={searchOpen} 
-        onOpenChange={setSearchOpen} 
-      />
+      <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
 
-      {/* 4. Global Floating Action Button (FAB) - Hidden on Coding Lab to keep interactive sandbox clear */}
+      {/* 4. Global Floating Action Button (Campus Assistant) */}
       {!isCodingLab && (
-        <div className="fixed bottom-[75px] md:bottom-6 right-4 sm:right-6 z-40">
+        <div className="fixed bottom-[80px] md:bottom-6 right-4 sm:right-6 z-40">
           <button
             onClick={() => setIsChatOpen(!isChatOpen)}
-            className="w-12 h-12 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white shadow-xl shadow-indigo-600/30 flex items-center justify-center transition-transform hover:scale-105 active:scale-95 relative cursor-pointer"
+            className="w-12 h-12 rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/25 flex items-center justify-center transition-all hover:scale-105 active:scale-95 press cursor-pointer border border-primary/20"
             title="Campus Assistant & Study Help"
           >
             {isChatOpen ? (
@@ -117,7 +114,7 @@ export function PortalLayout() {
             ) : (
               <>
                 <MessageSquare className="h-5 w-5" />
-                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-500 text-[10px] font-black text-white flex items-center justify-center border-2 border-background">
+                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-accent text-primary-foreground text-[10px] font-black flex items-center justify-center border border-card">
                   1
                 </span>
               </>
@@ -126,27 +123,27 @@ export function PortalLayout() {
 
           {/* Quick Assistant Popup */}
           {isChatOpen && (
-            <div className="absolute bottom-16 right-0 w-80 sm:w-96 bg-card border border-border rounded-2xl shadow-2xl p-4 animate-scale-in">
+            <div className="absolute bottom-16 right-0 w-80 sm:w-96 bg-card border border-border rounded-2xl shadow-xl p-4 scale-in glass-strong">
               <div className="flex items-center justify-between pb-3 border-b border-border mb-3">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
                     <Sparkles className="h-4 w-4" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-xs text-foreground font-display">ITM Notes Campus Desk</h4>
+                    <h4 className="font-bold text-xs text-foreground font-display">Campus Assistant</h4>
                     <p className="text-[10px] text-muted-foreground">Ask doubts, find question banks, or get exam tips</p>
                   </div>
                 </div>
-                <button 
+                <button
                   onClick={() => setIsChatOpen(false)}
-                  className="text-muted-foreground hover:text-foreground p-1 cursor-pointer"
+                  className="text-muted-foreground hover:text-foreground p-1 cursor-pointer press"
                 >
                   <X className="h-4 w-4" />
                 </button>
               </div>
 
               <div className="space-y-2 mb-3 max-h-48 overflow-y-auto text-xs">
-                <div className="p-2.5 rounded-xl bg-secondary/60 text-foreground">
+                <div className="p-2.5 rounded-lg bg-secondary/60 text-foreground">
                   👋 Hello! Need help finding syllabus notes, timetables, or previous year questions?
                 </div>
                 <div className="flex flex-wrap gap-1.5 pt-1">
@@ -155,7 +152,7 @@ export function PortalLayout() {
                       setIsChatOpen(false);
                       navigate("/materials");
                     }}
-                    className="px-2.5 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 font-semibold text-[11px] border border-indigo-200/40 cursor-pointer"
+                    className="px-2.5 py-1 rounded-lg text-[11px] font-semibold border border-border bg-background text-foreground hover:bg-secondary hover:text-primary transition-colors cursor-pointer"
                   >
                     📚 View Study Materials
                   </button>
@@ -164,7 +161,7 @@ export function PortalLayout() {
                       setIsChatOpen(false);
                       navigate("/imp-questions");
                     }}
-                    className="px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 font-semibold text-[11px] border border-emerald-200/40 cursor-pointer"
+                    className="px-2.5 py-1 rounded-lg text-[11px] font-semibold border border-border bg-background text-foreground hover:bg-secondary hover:text-primary transition-colors cursor-pointer"
                   >
                     ⚡ Question Banks
                   </button>
@@ -173,7 +170,7 @@ export function PortalLayout() {
                       setIsChatOpen(false);
                       navigate("/community");
                     }}
-                    className="px-2.5 py-1 rounded-lg bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 font-semibold text-[11px] border border-purple-200/40 cursor-pointer"
+                    className="px-2.5 py-1 rounded-lg text-[11px] font-semibold border border-border bg-background text-foreground hover:bg-secondary hover:text-primary transition-colors cursor-pointer"
                   >
                     💬 Campus Pulse Feed
                   </button>
@@ -186,11 +183,11 @@ export function PortalLayout() {
                   placeholder="Ask anything or request a note..."
                   value={chatMessage}
                   onChange={(e) => setChatMessage(e.target.value)}
-                  className="w-full h-10 pl-3 pr-10 rounded-xl border border-input bg-background text-xs focus:ring-1 focus:ring-primary outline-none"
+                  className="w-full h-10 pl-3 pr-10 rounded-lg border border-input bg-background text-xs focus:ring-1 focus:ring-ring outline-none"
                 />
                 <button
                   type="submit"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition-opacity cursor-pointer"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-opacity cursor-pointer press"
                 >
                   <Send className="h-3.5 w-3.5" />
                 </button>

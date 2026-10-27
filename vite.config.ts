@@ -16,45 +16,13 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     react(), 
     mode === "development" && componentTagger(),
-    VitePWA({
-      registerType: "autoUpdate",
-      includeAssets: ["favicon.ico", "favicon.png", "logo.png", "robots.txt"],
-      manifest: {
-        name: "ITM Notes — Official Study Portal",
-        short_name: "ITM Notes",
-        description: "Official B.Tech CSE Study Portal for ITM SLS Baroda University students",
-        theme_color: "#2563EB",
-        background_color: "#09090b",
-        display: "standalone",
-        orientation: "portrait",
-        start_url: "/",
-        scope: "/",
-        icons: [
-          {
-            src: "/favicon.png",
-            sizes: "192x192",
-            type: "image/png",
-            purpose: "any maskable"
-          },
-          {
-            src: "/logo.png",
-            sizes: "512x512",
-            type: "image/png",
-            purpose: "any maskable"
-          }
-        ]
-      },
-      workbox: {
-        skipWaiting: true,
-        clientsClaim: true,
-        globPatterns: ["**/*.{js,css,html,ico,png,svg,json,woff,woff2}"],
-        maximumFileSizeToCacheInBytes: 15 * 1024 * 1024,
-        navigateFallbackDenylist: [/^\/materials/],
-      }
-    })
   ].filter(Boolean),
   build: {
     chunkSizeWarningLimit: 15000,
+  },
+  esbuild: {
+    jsx: 'automatic',
+    jsxImportSource: 'react',
   },
   resolve: {
     alias: {
