@@ -78,12 +78,12 @@ function SubjectCard({ sub, progressPct, hasImpQuestions, navigateRef }: { sub: 
                 className="text-[10px] px-2 py-1 rounded-md bg-secondary/80 text-foreground/90 font-medium truncate max-w-[200px]"
                 title={unit.title}
               >
-                U{idx + 1}: {unit.title.replace(/^Unit \d+:\s*/i, "")}
+                {U}{idx + 1}: {unit.title.replace(/^Unit \d+:\s*/i, "")}
               </span>
             ))}
             {totalUnits > 3 && (
               <span className="text-[10px] px-2 py-1 rounded-md bg-muted text-muted-foreground font-semibold">
-                +{totalSubUnits - 3} more
+                +{sub.units?.length - 3} more
               </span>
             )}
           </div>
