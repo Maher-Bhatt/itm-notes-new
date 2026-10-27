@@ -56,7 +56,7 @@ export function KeyboardShortcutsModal({
       keys: ['F'],
       label: 'Toggle Focus Mode',
       description: 'Hide sidebars and distraction elements on TopicPage for deep study.',
-      icon: <Eye className="h-4 w-4 text-emerald-500" />,
+      icon: <Eye className="h-4 w-4 text-indigo-400" />,
     },
     {
       keys: ['?'],

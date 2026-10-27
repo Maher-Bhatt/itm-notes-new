@@ -43,7 +43,7 @@ export const sem3DetailedSubjects: Subject[] = [
     id: "sub-dsa",
     name: "Data Structures and Algorithms (DSA)",
     code: "DSA301",
-    color: "bg-green-600",
+    color: "bg-indigo-500",
     icon: "database",
     description: "Deep dive into Arrays, Linked Lists, Trees, Graphs, and Dynamic Programming.",
     semester: 3,

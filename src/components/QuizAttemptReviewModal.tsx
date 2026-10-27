@@ -99,7 +99,7 @@ export function QuizAttemptReviewModal({
             <button
               onClick={() => setFilterMode("correct")}
               className={`px-2.5 py-1 rounded-md transition-all flex items-center gap-1 ${
-                filterMode === "correct" ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-bold shadow-2xs" : "text-muted-foreground"
+                filterMode === "correct" ? "bg-indigo-400/15 text-indigo-500 dark:text-indigo-300 font-bold shadow-2xs" : "text-muted-foreground"
               }`}
             >
               Correct ({data.score})
@@ -129,14 +129,14 @@ export function QuizAttemptReviewModal({
                 key={idx}
                 className={`p-4 rounded-2xl border space-y-3 ${
                   isCorrect
-                    ? "border-emerald-500/30 bg-emerald-500/5"
+                    ? "border-indigo-400/30 bg-indigo-400/5"
                     : "border-rose-500/30 bg-rose-500/5"
                 }`}
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-center gap-2">
                     {isCorrect ? (
-                      <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                      <CheckCircle2 className="h-4 w-4 text-indigo-400 shrink-0 mt-0.5" />
                     ) : (
                       <XCircle className="h-4 w-4 text-rose-500 shrink-0 mt-0.5" />
                     )}
@@ -147,7 +147,7 @@ export function QuizAttemptReviewModal({
                   <span
                     className={`px-2 py-0.5 rounded-md text-[10px] font-mono font-bold shrink-0 ${
                       isCorrect
-                        ? "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400"
+                        ? "bg-indigo-400/20 text-indigo-500 dark:text-indigo-300"
                         : "bg-rose-500/20 text-rose-600 dark:text-rose-400"
                     }`}
                   >
@@ -163,7 +163,7 @@ export function QuizAttemptReviewModal({
 
                     let optClass = "border-border/60 bg-secondary/30 text-muted-foreground";
                     if (isAnswer) {
-                      optClass = "border-emerald-500/60 bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 font-bold";
+                      optClass = "border-indigo-400/60 bg-indigo-400/15 text-indigo-400 dark:text-indigo-400 font-bold";
                     } else if (isUserPick && !isCorrect) {
                       optClass = "border-rose-500/60 bg-rose-500/15 text-rose-700 dark:text-rose-300 line-through font-medium";
                     }
@@ -171,7 +171,7 @@ export function QuizAttemptReviewModal({
                     return (
                       <div key={optIdx} className={`p-2 rounded-xl border flex items-center justify-between text-[11px] ${optClass}`}>
                         <span>{opt}</span>
-                        {isAnswer && <span className="text-[9px] font-mono uppercase bg-emerald-500 text-white px-1.5 py-0.2 rounded font-black">Correct</span>}
+                        {isAnswer && <span className="text-[9px] font-mono uppercase bg-indigo-400 text-white px-1.5 py-0.2 rounded font-black">Correct</span>}
                         {isUserPick && !isCorrect && <span className="text-[9px] font-mono uppercase bg-rose-500 text-white px-1.5 py-0.2 rounded font-black">Your Choice</span>}
                       </div>
                     );

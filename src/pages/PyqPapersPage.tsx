@@ -101,7 +101,7 @@ export default function PyqPapersPage() {
             <span className="px-2.5 py-0.5 rounded-full bg-primary/10 text-primary font-bold text-xs uppercase tracking-wide">
               Official University PYQ Bank
             </span>
-            <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold text-xs">
+            <span className="px-2.5 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 dark:text-indigo-400 font-semibold text-xs">
               100% Solved
             </span>
           </div>
@@ -404,14 +404,14 @@ export default function PyqPapersPage() {
 
                                 {isSubOpen && (
                                   <div className="bg-secondary/30 rounded-xl p-3.5 border border-border/70 space-y-2 text-xs animate-scale-in">
-                                    <div className="font-mono text-[10px] text-emerald-600 dark:text-emerald-400 font-bold uppercase">
+                                    <div className="font-mono text-[10px] text-indigo-400 dark:text-indigo-400 font-bold uppercase">
                                       Marking Scheme: {sub.markingScheme}
                                     </div>
                                     <div className="text-foreground/90 whitespace-pre-line leading-relaxed">
                                       {sub.modelSolution}
                                     </div>
                                     {sub.codeSnippet && (
-                                      <pre className="p-2.5 rounded-lg bg-black/80 text-emerald-400 font-mono text-[11px] overflow-x-auto">
+                                      <pre className="p-2.5 rounded-lg bg-black/80 text-indigo-400 font-mono text-[11px] overflow-x-auto">
                                         <code>{sub.codeSnippet}</code>
                                       </pre>
                                     )}
@@ -455,7 +455,7 @@ export default function PyqPapersPage() {
                           {isSolutionOpen && (
                             <div className="mt-3 bg-secondary/40 rounded-2xl p-4 border border-border/80 space-y-3 text-xs animate-scale-in">
                               <div className="flex items-center justify-between text-[11px] font-bold">
-                                <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                                <span className="text-indigo-400 dark:text-indigo-400 flex items-center gap-1">
                                   <CheckCircle2 className="h-3.5 w-3.5" /> ITM Examiner Marking Criteria:
                                 </span>
                                 <span className="text-muted-foreground font-mono">
@@ -472,7 +472,7 @@ export default function PyqPapersPage() {
                                   <span className="text-[10px] font-bold text-muted-foreground uppercase block mb-1">
                                     Executable Code / Syntax:
                                   </span>
-                                  <pre className="p-3 rounded-xl bg-black/90 text-emerald-400 font-mono text-xs overflow-x-auto">
+                                  <pre className="p-3 rounded-xl bg-black/90 text-indigo-400 font-mono text-xs overflow-x-auto">
                                     <code>{q.codeSnippet}</code>
                                   </pre>
                                 </div>

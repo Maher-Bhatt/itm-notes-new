@@ -163,7 +163,7 @@ export function FlashcardsModal({
         {/* Header Controls */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <span className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-xs">
+            <span className="w-8 h-8 rounded-lg bg-indigo-400/10 text-indigo-500 dark:text-indigo-300 flex items-center justify-center font-bold text-xs">
               <Brain className="h-4 w-4" />
             </span>
             <div>
@@ -173,7 +173,7 @@ export function FlashcardsModal({
               <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
                 <span>SM-2 Spaced Repetition</span>
                 <span>•</span>
-                <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
+                <span className="text-indigo-500 dark:text-indigo-300 font-semibold">
                   {deckStats.dueCount} due today
                 </span>
               </div>
@@ -189,7 +189,7 @@ export function FlashcardsModal({
               }}
               className={`px-2.5 py-1 rounded-lg text-xs font-semibold border transition-all ${
                 showDueOnly 
-                  ? 'bg-emerald-500/15 border-emerald-500 text-emerald-600 dark:text-emerald-400' 
+                  ? 'bg-indigo-400/15 border-indigo-400 text-indigo-500 dark:text-indigo-300' 
                   : 'bg-secondary border-border text-muted-foreground hover:text-foreground'
               }`}
               title="Toggle Due Only Filter"
@@ -217,7 +217,7 @@ export function FlashcardsModal({
           <span>Card {currentIndex + 1} of {activeDeck.length}</span>
           <div className="flex items-center gap-2 text-[11px]">
             {currentProgress && currentProgress.repetitions > 0 ? (
-              <span className="text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
+              <span className="text-indigo-500 dark:text-indigo-300 font-medium flex items-center gap-1">
                 <Flame className="h-3 w-3" /> Streak {currentProgress.repetitions} (Interval: {currentProgress.interval}d)
               </span>
             ) : (
@@ -315,7 +315,7 @@ export function FlashcardsModal({
                   </button>
                   <button
                     onClick={() => handleSrsRating(5, 'Easy')}
-                    className="flex flex-col items-center py-2 px-1 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-xs font-bold transition-all apple-press"
+                    className="flex flex-col items-center py-2 px-1 rounded-xl bg-indigo-400/10 hover:bg-indigo-400/20 text-indigo-500 dark:text-indigo-300 border border-indigo-400/20 text-xs font-bold transition-all apple-press"
                   >
                     <span>Easy</span>
                     <span className="text-[10px] opacity-75 font-normal">6d</span>

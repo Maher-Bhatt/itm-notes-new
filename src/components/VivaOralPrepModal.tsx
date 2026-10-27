@@ -188,7 +188,7 @@ export function VivaOralPrepModal({ isOpen, onClose }: VivaOralPrepModalProps) {
                   <span className="text-[11px] font-bold text-muted-foreground uppercase">Key Keywords to Say Aloud:</span>
                   <div className="flex flex-wrap gap-1.5">
                     {current.keyPoints.map((pt, i) => (
-                      <span key={i} className="px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-bold font-mono text-[10px]">
+                      <span key={i} className="px-2 py-0.5 rounded-md bg-indigo-500/15 text-indigo-400 dark:text-indigo-400 font-bold font-mono text-[10px]">
                         ✓ {pt}
                       </span>
                     ))}

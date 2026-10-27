@@ -360,7 +360,7 @@ export function TimetableModal({
                   <h3 className="font-bold text-xs sm:text-sm text-foreground flex items-center gap-1.5 font-display">
                     <span>Class {selectedClass} Practical Viva & Submission Schedule</span>
                   </h3>
-                  <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold border border-emerald-500/20 font-mono">
+                  <span className="px-2 py-0.5 rounded bg-indigo-400/10 text-indigo-500 dark:text-indigo-300 text-[10px] font-bold border border-indigo-400/20 font-mono">
                     {filteredViva.length} Subjects
                   </span>
                 </div>
@@ -409,8 +409,8 @@ export function TimetableModal({
                                 {viva.subjectName}
                               </h4>
                               {isDay1 && (
-                                <span className="px-2 py-0.5 rounded-full text-[9px] font-black bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 flex items-center gap-1 font-mono">
-                                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                <span className="px-2 py-0.5 rounded-full text-[9px] font-black bg-indigo-400/15 text-indigo-500 dark:text-indigo-300 border border-indigo-400/30 flex items-center gap-1 font-mono">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
                                   Starts Tomorrow
                                 </span>
                               )}

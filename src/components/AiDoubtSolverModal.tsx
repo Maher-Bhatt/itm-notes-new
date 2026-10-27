@@ -133,7 +133,7 @@ export const AiDoubtSolverModal: React.FC<AiDoubtSolverModalProps> = ({
                 <h3 className="font-bold text-base text-foreground">
                   AI Syllabus Doubt Solver
                 </h3>
-                <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold">
+                <span className="px-2 py-0.5 rounded-full bg-indigo-500/15 text-indigo-400 dark:text-indigo-400 text-[10px] font-bold">
                   Grounded in ITM Notes
                 </span>
               </div>
@@ -218,7 +218,7 @@ export const AiDoubtSolverModal: React.FC<AiDoubtSolverModalProps> = ({
             <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4 sm:p-5 space-y-4 animate-scale-in">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="w-6 h-6 rounded-lg bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                  <span className="w-6 h-6 rounded-lg bg-indigo-500/20 text-indigo-400 dark:text-indigo-400 flex items-center justify-center">
                     <CheckCircle2 className="h-3.5 w-3.5" />
                   </span>
                   <span className="text-xs font-bold text-foreground">

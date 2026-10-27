@@ -821,12 +821,12 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
         </section>
 
         {/* ── SECTION 6: FOOTER ──────────────────────────────────────────────── */}
-        <footer className="bg-forest text-[var(--itm-surface-green)] py-10 border-t border-forest/40">
+        <footer className="bg-background text-white/50 py-10 border-t border-white/[0.08]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <ItmMoocsLogo variant="live" size="sm" inverted={true} showTagline={false} />
             </div>
-            <p className="text-xs text-[var(--itm-surface-green)] text-center sm:text-right">
+            <p className="text-xs text-white/40 text-center sm:text-right">
               ITM Notes © {new Date().getFullYear()} · Made for ITM SLS Baroda University students
             </p>
           </div>

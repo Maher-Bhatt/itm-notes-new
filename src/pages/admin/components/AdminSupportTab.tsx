@@ -174,7 +174,7 @@ export function AdminSupportTab() {
                             ? "bg-amber-500/15 text-amber-400 border border-amber-500/30"
                             : isInProgress
                             ? "bg-sky-500/15 text-sky-400 border border-sky-500/30"
-                            : "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
+                            : "bg-indigo-400/15 text-indigo-300 border border-indigo-400/30"
                         }`}
                       >
                         {t.status.replace("_", " ")}

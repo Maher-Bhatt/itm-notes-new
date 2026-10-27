@@ -87,7 +87,7 @@ export function UserAvatar({
   if (rawUrl && rawUrl.startsWith("grad-")) {
     const gradients = [
       "from-indigo-600 via-purple-600 to-pink-500",
-      "from-blue-600 via-teal-500 to-emerald-500",
+      "from-blue-600 via-teal-500 to-indigo-950",
       "from-amber-500 via-orange-600 to-red-600",
       "from-fuchsia-600 to-cyan-500",
     ];

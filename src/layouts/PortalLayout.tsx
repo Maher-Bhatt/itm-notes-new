@@ -75,12 +75,9 @@ export function PortalLayout() {
 
   return (
     <div className="h-screen w-full overflow-hidden bg-background text-foreground flex antialiased">
-      {/* Mesh Gradient Background */}
-      <div className="fixed inset-0 z-[-10] overflow-hidden">
-        <div className="aurora-blob aurora-blob-1" />
-        <div className="aurora-blob aurora-blob-2" />
-        <div className="aurora-blob aurora-blob-3" />
-      </div>
+      {/* Ambient Spotlight & Dot Pattern */}
+      <div className="ambient-spotlight" />
+      <div className="fixed inset-0 z-0 pointer-events-none pattern-dots opacity-35" />
 
       {/* 1. Persistent Left Dark Sidebar */}
       <PortalSidebar
@@ -100,7 +97,7 @@ export function PortalLayout() {
         />
 
         {/* Dynamic Page Content */}
-        <main className="flex-1 overflow-y-auto overflow-x-hidden pb-16 md:pb-6 bg-background">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden pb-16 md:pb-6 bg-transparent relative z-10">
           <Outlet />
         </main>
       </div>

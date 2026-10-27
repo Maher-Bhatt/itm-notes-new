@@ -596,7 +596,7 @@ export default function GpaCalculatorPage() {
           <span className="text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20">
             ITM Notes · SLS Baroda University
           </span>
-          <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+          <span className="text-xs font-semibold px-3 py-1 rounded-full bg-indigo-400/10 text-indigo-400 dark:text-indigo-300 border border-indigo-400/20">
             10-Point Relative Grading System
           </span>
         </div>
@@ -658,14 +658,14 @@ export default function GpaCalculatorPage() {
         {activeTab === 'attendance' ? (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5 mb-8">
             <div className={`bg-card border rounded-2xl p-5 sm:p-6 shadow-sm flex items-center justify-between ${
-              attendanceStats.isSafe ? 'border-emerald-500/40' : 'border-rose-500/40'
+              attendanceStats.isSafe ? 'border-indigo-400/40' : 'border-rose-500/40'
             }`}>
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1">
                   Overall Attendance
                 </p>
                 <div className={`text-3xl sm:text-5xl font-black font-mono ${
-                  attendanceStats.isSafe ? 'text-emerald-500' : 'text-rose-500'
+                  attendanceStats.isSafe ? 'text-indigo-400' : 'text-rose-500'
                 }`}>
                   {attendanceStats.currentPercent}%
                 </div>
@@ -674,7 +674,7 @@ export default function GpaCalculatorPage() {
                 </p>
               </div>
               <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center ${
-                attendanceStats.isSafe ? 'bg-emerald-500/10 text-emerald-500' : 'bg-rose-500/10 text-rose-500'
+                attendanceStats.isSafe ? 'bg-indigo-400/10 text-indigo-400' : 'bg-rose-500/10 text-rose-500'
               }`}>
                 {attendanceStats.isSafe ? <ShieldCheck className="h-6 w-6 sm:h-7 sm:w-7" /> : <ShieldAlert className="h-6 w-6 sm:h-7 sm:w-7" />}
               </div>
@@ -700,14 +700,14 @@ export default function GpaCalculatorPage() {
             </div>
 
             <div className={`bg-card border rounded-2xl p-5 sm:p-6 shadow-sm flex items-center justify-between ${
-              attendanceStats.isSafe ? 'border-emerald-500/30' : 'border-rose-500/30'
+              attendanceStats.isSafe ? 'border-indigo-400/30' : 'border-rose-500/30'
             }`}>
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1">
                   Hall Ticket Eligibility
                 </p>
                 <div className={`text-xl sm:text-2xl font-black tracking-tight ${
-                  attendanceStats.isSafe ? 'text-emerald-500' : 'text-rose-500'
+                  attendanceStats.isSafe ? 'text-indigo-400' : 'text-rose-500'
                 }`}>
                   {attendanceStats.isSafe ? 'EXAM ELIGIBLE' : 'DEBARRED RISK'}
                 </div>
@@ -716,7 +716,7 @@ export default function GpaCalculatorPage() {
                 </p>
               </div>
               <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center ${
-                attendanceStats.isSafe ? 'bg-emerald-500/10 text-emerald-500' : 'bg-rose-500/10 text-rose-500'
+                attendanceStats.isSafe ? 'bg-indigo-400/10 text-indigo-400' : 'bg-rose-500/10 text-rose-500'
               }`}>
                 {attendanceStats.isSafe ? <CheckCircle2 className="h-6 w-6 sm:h-7 sm:w-7" /> : <AlertTriangle className="h-6 w-6 sm:h-7 sm:w-7" />}
               </div>
@@ -753,7 +753,7 @@ export default function GpaCalculatorPage() {
                   Formula: (SGPA - 0.75) × 10
                 </p>
               </div>
-              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-indigo-400/10 text-indigo-400 dark:text-indigo-300 flex items-center justify-center">
                 <TrendingUp className="h-6 w-6 sm:h-7 sm:w-7" />
               </div>
             </div>
@@ -815,7 +815,7 @@ export default function GpaCalculatorPage() {
                 <button
                   type="button"
                   onClick={handleSaveSemesterResult}
-                  className="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-colors flex items-center gap-1.5 shadow-sm"
+                  className="px-3.5 py-1.5 rounded-xl bg-indigo-400 hover:bg-indigo-400 text-white font-bold text-xs transition-colors flex items-center gap-1.5 shadow-sm"
                   title="Save current calculated SGPA to your cumulative CGPA history"
                 >
                   <Save className="h-3.5 w-3.5" />
@@ -1068,7 +1068,7 @@ export default function GpaCalculatorPage() {
                             <td className="py-3.5 px-3">
                               <span className={`inline-block px-2.5 py-0.5 rounded-full font-bold text-xs ${
                                 sub.grade === 'AA'
-                                  ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                                  ? 'bg-indigo-400/10 text-indigo-400 dark:text-indigo-300 border border-indigo-400/20'
                                   : sub.grade === 'AB' || sub.grade === 'BB'
                                   ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20'
                                   : sub.grade === 'BC' || sub.grade === 'CC'
@@ -1156,7 +1156,7 @@ export default function GpaCalculatorPage() {
                         </div>
                         <span className={`px-2.5 py-0.5 rounded-full font-bold text-xs ${
                           sub.grade === 'AA'
-                            ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                            ? 'bg-indigo-400/10 text-indigo-400 dark:text-indigo-300 border border-indigo-400/20'
                             : sub.grade === 'AB' || sub.grade === 'BB'
                             ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20'
                             : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'
@@ -1186,10 +1186,10 @@ export default function GpaCalculatorPage() {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-xs">
-                <div className="p-3.5 rounded-xl border border-emerald-500/30 bg-emerald-500/5 space-y-1">
+                <div className="p-3.5 rounded-xl border border-indigo-400/30 bg-indigo-400/5 space-y-1">
                   <div className="flex items-center justify-between">
                     <span className="font-bold text-foreground">Distinction</span>
-                    <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">CGPA ≥ 8.50</span>
+                    <span className="font-mono font-bold text-indigo-400 dark:text-indigo-300">CGPA ≥ 8.50</span>
                   </div>
                   <p className="text-[11px] text-muted-foreground">First Class with Distinction (Honours Equivalent ≥ 77.5%)</p>
                 </div>
@@ -1305,7 +1305,7 @@ export default function GpaCalculatorPage() {
                 <div className="relative w-full h-4 rounded-full bg-secondary overflow-hidden">
                   <div
                     className={`h-full transition-all duration-500 rounded-full ${
-                      attendanceStats.isSafe ? 'bg-emerald-500' : 'bg-rose-500'
+                      attendanceStats.isSafe ? 'bg-indigo-400' : 'bg-rose-500'
                     }`}
                     style={{ width: `${Math.min(100, attendanceStats.currentPercent)}%` }}
                   />
@@ -1321,18 +1321,18 @@ export default function GpaCalculatorPage() {
               {/* Actionable Advice Box */}
               <div className={`p-4 rounded-xl border flex items-start gap-3.5 ${
                 attendanceStats.isSafe
-                  ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-950 dark:text-emerald-200'
+                  ? 'bg-indigo-400/10 border-indigo-400/30 text-indigo-400 dark:text-indigo-400'
                   : 'bg-rose-500/10 border-rose-500/30 text-rose-950 dark:text-rose-200'
               }`}>
                 {attendanceStats.isSafe ? (
-                  <CheckCircle2 className="h-5 w-5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                  <CheckCircle2 className="h-5 w-5 text-indigo-400 dark:text-indigo-300 shrink-0 mt-0.5" />
                 ) : (
                   <AlertTriangle className="h-5 w-5 text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" />
                 )}
                 <div className="text-xs sm:text-sm leading-relaxed">
                   {attendanceStats.isSafe ? (
                     <div>
-                      <strong className="font-bold text-emerald-600 dark:text-emerald-400 block mb-0.5">
+                      <strong className="font-bold text-indigo-400 dark:text-indigo-300 block mb-0.5">
                         🎉 Safe Zone: You have a healthy attendance buffer!
                       </strong>
                       You can safely bunk / skip up to <strong>{attendanceStats.safeBunks} more classes</strong> without dropping below the mandatory {targetAttendancePercent}% exam threshold.
@@ -1386,7 +1386,7 @@ export default function GpaCalculatorPage() {
                   <thead className="bg-secondary/50 text-muted-foreground uppercase text-[11px] font-bold border-b border-border">
                     <tr>
                       <th className="py-3 px-4">Subject</th>
-                      <th className="py-3 px-2 text-center text-emerald-600 dark:text-emerald-400">Present (P)</th>
+                      <th className="py-3 px-2 text-center text-indigo-400 dark:text-indigo-300">Present (P)</th>
                       <th className="py-3 px-2 text-center text-rose-600 dark:text-rose-400">Absent (A)</th>
                       <th className="py-3 px-2 text-center text-amber-600 dark:text-amber-400" title="Lectures cancelled or no attendance marked (not counted in 75%)">
                         No Att. (NA)
@@ -1425,7 +1425,7 @@ export default function GpaCalculatorPage() {
                               min="0"
                               value={present}
                               onChange={(e) => updateSubjectAttendance(sub.id, 'present', Number(e.target.value))}
-                              className="w-14 h-8 px-1 rounded-lg border border-emerald-500/30 bg-emerald-500/5 font-mono text-xs font-bold text-emerald-600 dark:text-emerald-400 text-center focus:ring-1 focus:ring-emerald-500"
+                              className="w-14 h-8 px-1 rounded-lg border border-indigo-400/30 bg-indigo-400/5 font-mono text-xs font-bold text-indigo-400 dark:text-indigo-300 text-center focus:ring-1 focus:ring-indigo-400"
                               title="Lectures attended"
                             />
                           </td>
@@ -1461,7 +1461,7 @@ export default function GpaCalculatorPage() {
 
                           {/* Percentage */}
                           <td className="py-3.5 px-3 text-center font-mono font-bold text-sm">
-                            <span className={isSafe ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}>
+                            <span className={isSafe ? 'text-indigo-400 dark:text-indigo-300' : 'text-rose-600 dark:text-rose-400'}>
                               {pct}%
                             </span>
                           </td>
@@ -1471,7 +1471,7 @@ export default function GpaCalculatorPage() {
                             <div className="flex items-center gap-1">
                               <button
                                 onClick={() => quickAttendanceStep(sub.id, 'present')}
-                                className="px-2 py-1 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20 text-[10px] font-bold transition-colors"
+                                className="px-2 py-1 rounded bg-indigo-400/10 text-indigo-400 dark:text-indigo-300 hover:bg-indigo-400/20 text-[10px] font-bold transition-colors"
                                 title="Attended lecture (+1 Present)"
                               >
                                 +1 P
@@ -1498,7 +1498,7 @@ export default function GpaCalculatorPage() {
                             {conducted === 0 ? (
                               <span className="text-muted-foreground">No classes yet</span>
                             ) : isSafe ? (
-                              <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
+                              <span className="text-indigo-400 dark:text-indigo-300 font-semibold">
                                 Can bunk {bunks} class{bunks === 1 ? '' : 'es'}
                               </span>
                             ) : (
@@ -1514,7 +1514,7 @@ export default function GpaCalculatorPage() {
                               conducted === 0
                                 ? 'bg-secondary text-muted-foreground border border-border'
                                 : isSafe
-                                ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                                ? 'bg-indigo-400/10 text-indigo-400 dark:text-indigo-300 border border-indigo-400/20'
                                 : 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20'
                             }`}>
                               {conducted === 0 ? 'Pending' : isSafe ? 'Eligible' : 'Debarred Risk'}
@@ -1561,7 +1561,7 @@ export default function GpaCalculatorPage() {
                           conducted === 0
                             ? 'bg-secondary text-muted-foreground'
                             : isSafe
-                            ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                            ? 'bg-indigo-400/10 text-indigo-400 dark:text-indigo-300'
                             : 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
                         }`}>
                           {pct}%
@@ -1570,9 +1570,9 @@ export default function GpaCalculatorPage() {
 
                       {/* Present / Absent / No Attendance counts */}
                       <div className="grid grid-cols-3 gap-2 text-center text-xs">
-                        <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                        <div className="p-2 rounded-lg bg-indigo-400/10 border border-indigo-400/20">
                           <p className="text-[10px] text-muted-foreground uppercase font-bold">Present</p>
-                          <p className="text-base font-mono font-bold text-emerald-600 dark:text-emerald-400">{present}</p>
+                          <p className="text-base font-mono font-bold text-indigo-400 dark:text-indigo-300">{present}</p>
                         </div>
                         <div className="p-2 rounded-lg bg-rose-500/10 border border-rose-500/20">
                           <p className="text-[10px] text-muted-foreground uppercase font-bold">Absent</p>
@@ -1592,7 +1592,7 @@ export default function GpaCalculatorPage() {
                         <div className="flex items-center gap-1.5">
                           <button
                             onClick={() => quickAttendanceStep(sub.id, 'present')}
-                            className="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-600 font-bold text-xs"
+                            className="px-2.5 py-1 rounded-lg bg-indigo-400/10 text-indigo-400 font-bold text-xs"
                           >
                             +1 Present
                           </button>
@@ -1616,7 +1616,7 @@ export default function GpaCalculatorPage() {
                         {conducted === 0 ? (
                           <span className="text-muted-foreground">Pending attendance records.</span>
                         ) : isSafe ? (
-                          <span className="text-emerald-600 dark:text-emerald-400 font-medium">
+                          <span className="text-indigo-400 dark:text-indigo-300 font-medium">
                             ✓ Safe margin: Can miss {bunks} more class{bunks === 1 ? '' : 'es'}.
                           </span>
                         ) : (
@@ -1648,8 +1648,8 @@ export default function GpaCalculatorPage() {
                     <span className="flex items-center gap-1.5 text-indigo-500">
                       <span className="w-2.5 h-2.5 rounded-full bg-indigo-500 inline-block" /> SGPA
                     </span>
-                    <span className="flex items-center gap-1.5 text-emerald-500">
-                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block" /> Cumulative CGPA
+                    <span className="flex items-center gap-1.5 text-indigo-400">
+                      <span className="w-2.5 h-2.5 rounded-full bg-indigo-400 inline-block" /> Cumulative CGPA
                     </span>
                   </div>
                 </div>
@@ -1787,7 +1787,7 @@ export default function GpaCalculatorPage() {
 
               <div className="flex items-center gap-3">
                 <div className={`p-4 rounded-xl border text-center ${
-                  attendanceStats.isSafe ? 'bg-emerald-950/60 border-emerald-500/40 text-emerald-400' : 'bg-rose-950/60 border-rose-500/40 text-rose-400'
+                  attendanceStats.isSafe ? 'bg-indigo-500/60 border-indigo-400/40 text-indigo-300' : 'bg-rose-950/60 border-rose-500/40 text-rose-400'
                 }`}>
                   <span className="text-[10px] font-bold uppercase tracking-wider block">Hall Ticket Status</span>
                   <span className="text-base font-black font-mono">
@@ -1830,7 +1830,7 @@ export default function GpaCalculatorPage() {
                         <td className="py-3 text-muted-foreground font-mono">{exam.time}</td>
                         <td className="py-3 text-right">
                           <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                            attendanceStats.isSafe ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-500 border border-rose-500/20'
+                            attendanceStats.isSafe ? 'bg-indigo-400/10 text-indigo-400 border border-indigo-400/20' : 'bg-rose-500/10 text-rose-500 border border-rose-500/20'
                           }`}>
                             {attendanceStats.isSafe ? 'Eligible' : 'At Risk'}
                           </span>

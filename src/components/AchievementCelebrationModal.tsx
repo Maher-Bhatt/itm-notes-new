@@ -282,13 +282,13 @@ export function AchievementCelebrationModal() {
     mythic: {
       border: 'border-[#D6E85D]',
       glow: 'shadow-[0_0_80px_rgba(214,232,93,0.65)]',
-      pill: 'bg-gradient-to-r from-[#D6E85D] via-emerald-400 to-[#183F36] text-[#183F36]',
+      pill: 'bg-gradient-to-r from-[#D6E85D] via-indigo-300 to-[#183F36] text-[#183F36]',
       badge: '★ MYTHIC ARCHITECT · APEX TIER ★',
       rarity: 'FOUNDER & ARCHITECT MASTER',
       percentile: 'UNIQUE VALEDICTORIAN',
       ringColor: '#D6E85D',
       accentText: 'text-[#D6E85D]',
-      metalBg: 'from-[#D6E85D]/30 via-emerald-400/20 to-[#183F36]/50',
+      metalBg: 'from-[#D6E85D]/30 via-indigo-300/20 to-[#183F36]/50',
       foilGlare: 'rgba(214, 232, 93, 0.75)',
     },
   }[activeAchievement.tier] || {
@@ -534,7 +534,7 @@ export function AchievementCelebrationModal() {
 
                 {/* Ambient Corner Flare Orbs */}
                 <div className="absolute -top-16 -left-16 w-48 h-48 bg-[#D6E85D]/15 rounded-full blur-3xl pointer-events-none" />
-                <div className="absolute -bottom-16 -right-16 w-48 h-48 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute -bottom-16 -right-16 w-48 h-48 bg-indigo-400/20 rounded-full blur-3xl pointer-events-none" />
 
                 {/* Card Top: Student & University Engineering Passport */}
                 <div className="w-full flex items-center justify-between border-b border-white/10 pb-3 z-10">
@@ -693,7 +693,7 @@ export function AchievementCelebrationModal() {
                     </span>
                   </div>
 
-                  <div className="inline-flex items-center gap-2 text-[10px] text-emerald-400 font-mono font-bold">
+                  <div className="inline-flex items-center gap-2 text-[10px] text-indigo-300 font-mono font-bold">
                     <CheckCircle2 className="h-3.5 w-3.5" />
                     <span>+{activeAchievement.xpReward} XP Formally Endorsed</span>
                   </div>
@@ -813,8 +813,8 @@ export function AchievementCelebrationModal() {
             >
               {copied ? (
                 <>
-                  <Check className="h-3.5 w-3.5 text-emerald-400" />
-                  <span className="text-emerald-400 font-bold">Copied!</span>
+                  <Check className="h-3.5 w-3.5 text-indigo-300" />
+                  <span className="text-indigo-300 font-bold">Copied!</span>
                 </>
               ) : (
                 <>

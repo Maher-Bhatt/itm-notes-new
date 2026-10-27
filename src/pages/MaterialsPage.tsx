@@ -70,7 +70,7 @@ const SUBJECT_OVERVIEW_CARDS: SubjectOverviewCard[] = [
     id: "mat-remedial-oopj",
     code: "C2311C1 · JAVA",
     tag: "Remedial Special",
-    tagColor: "bg-amber-500 text-[#183F36] font-bold shadow-xs",
+    tagColor: "bg-amber-500 text-[#6366f1] font-bold shadow-xs",
     title: "OOPJ Units 2 & 3 Remedial Special & Solved Question Bank",
     subtitle:
       "Complete Zero-to-Hero theory notes + all 38 solved questions (5 Output traces, 15 5-mark programs, 18 theory questions, & MCQs).",
@@ -114,7 +114,7 @@ const SUBJECT_OVERVIEW_CARDS: SubjectOverviewCard[] = [
     id: "mat-1",
     code: "C2310C5 · DSA",
     tag: "Core Notes",
-    tagColor: "bg-emerald-500 text-white shadow-xs",
+    tagColor: "bg-primary text-white shadow-xs",
     title: "Data Structures: Queue & Stack Master Notes",
     subtitle:
       "Linear & Circular Queue implementations, dry runs, algorithms, and Railway Reservation practicals.",
@@ -264,7 +264,7 @@ const SUBJECT_OVERVIEW_CARDS: SubjectOverviewCard[] = [
     id: "mat-5",
     code: "S2320C1 · CONMP",
     tag: "Formula Sheet",
-    tagColor: "bg-teal-600 text-white shadow-xs",
+    tagColor: "bg-primary text-white shadow-xs",
     title: "Numerical Methods Formula & Cheatsheet (Python)",
     subtitle:
       "Newton-Raphson, Bisection, Gauss-Elimination, Runge-Kutta, and error bounds formulas.",
@@ -381,8 +381,8 @@ function fileTypeClass(fileType: string): string {
     PDF: "bg-red-500/10 text-red-500",
     PPTX: "bg-orange-500/10 text-orange-500",
     DOCX: "bg-blue-500/10 text-blue-500",
-    JPEG: "bg-green-500/10 text-green-500",
-    PNG: "bg-green-500/10 text-green-500",
+    JPEG: "bg-primary/10 text-primary",
+    PNG: "bg-primary/10 text-primary",
   };
   return map[fileType] ?? "bg-slate-500/10 text-slate-500";
 }
@@ -487,7 +487,7 @@ function PlainMaterialCard({ mat }: { mat: StudyMaterial }) {
         </button>
         <button
           onClick={handleDownload}
-          className="flex-1 h-7 rounded-lg bg-[#183F36] hover:bg-[#122d26] text-white font-semibold text-[11px] flex items-center justify-center gap-1 transition-all active:scale-95"
+          className="flex-1 h-7 rounded-lg bg-[#6366f1] hover:bg-[#122d26] text-white font-semibold text-[11px] flex items-center justify-center gap-1 transition-all active:scale-95"
         >
           <Download className="h-3 w-3 text-[#D6E85D]" />
           <span>Save</span>
@@ -537,7 +537,7 @@ function RichOverviewCard({
         <span>·</span>
         <span className="font-mono font-semibold">{item.fileSize}</span>
         <span>·</span>
-        <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-600 font-semibold">
+        <span className="text-[10px] px-1.5 py-0.5 rounded bg-primary/10 text-indigo-400 font-semibold">
           Rich View
         </span>
       </div>
@@ -563,7 +563,7 @@ function RichOverviewCard({
         </button>
         <button
           onClick={() => onDownload(item)}
-          className="flex-1 h-7 rounded-lg bg-[#183F36] hover:bg-[#122d26] text-white font-semibold text-[11px] flex items-center justify-center gap-1 transition-all active:scale-95 cursor-pointer"
+          className="flex-1 h-7 rounded-lg bg-[#6366f1] hover:bg-[#122d26] text-white font-semibold text-[11px] flex items-center justify-center gap-1 transition-all active:scale-95 cursor-pointer"
         >
           <Download className="h-3 w-3 text-[#D6E85D]" />
           <span>PDF</span>
@@ -599,7 +599,7 @@ function SemesterSection({
             <ChevronRight className="h-4 w-4 text-muted-foreground" />
           )}
           <span className="font-bold text-sm text-foreground">{title}</span>
-          <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-[#183F36]/10 text-[#183F36] dark:text-emerald-400 border border-[#183F36]/20">
+          <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-[#6366f1]/10 text-[#6366f1] dark:text-indigo-400 border border-[#6366f1]/20">
             {count} files
           </span>
         </div>
@@ -745,7 +745,7 @@ export default function MaterialsPage() {
         <div>
           <h1 className="text-2xl font-black tracking-tight text-foreground flex items-center gap-2 flex-wrap">
             <span>ITM Notes · Study Materials</span>
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-bold">
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-primary/10 text-indigo-400 dark:text-indigo-400 border border-primary/20 font-bold">
               {stats.total} Files
             </span>
           </h1>
@@ -782,10 +782,10 @@ export default function MaterialsPage() {
       </div>
 
       {/* ── REMEDIAL SPECIAL HERO BANNER ── */}
-      <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#183F36] via-[#1D4A3F] to-[#12332C] text-white border border-[#D6E85D]/40 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#6366f1] via-[#1D4A3F] to-[#12332C] text-white border border-[#D6E85D]/40 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#D6E85D] text-[#183F36]">
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#D6E85D] text-[#6366f1]">
               🔥 Remedial Special 2026
             </span>
             <span className="text-xs font-mono text-[#D6E85D] font-bold">
@@ -802,7 +802,7 @@ export default function MaterialsPage() {
 
         <Link
           to="/imp-questions/oopj"
-          className="px-4 py-2.5 rounded-xl bg-[#D6E85D] hover:bg-[#c4d64d] text-[#183F36] font-bold text-xs shrink-0 flex items-center justify-center gap-2 shadow-md transition-all active:scale-95 cursor-pointer font-display"
+          className="px-4 py-2.5 rounded-xl bg-[#D6E85D] hover:bg-[#c4d64d] text-[#6366f1] font-bold text-xs shrink-0 flex items-center justify-center gap-2 shadow-md transition-all active:scale-95 cursor-pointer font-display"
         >
           <span>Open Remedial Master Guide →</span>
         </Link>
@@ -814,7 +814,7 @@ export default function MaterialsPage() {
           { label: "Notes & Slides", value: stats.notes, color: "text-blue-600" },
           { label: "Lab Manuals", value: stats.labs, color: "text-orange-500" },
           { label: "Question Papers", value: stats.qps, color: "text-amber-500" },
-          { label: "Total Files", value: stats.total, color: "text-[#183F36] dark:text-emerald-400" },
+          { label: "Total Files", value: stats.total, color: "text-[#6366f1] dark:text-indigo-400" },
         ].map((s) => (
           <div
             key={s.label}
@@ -843,7 +843,7 @@ export default function MaterialsPage() {
               onClick={() => setSemesterFilter(s)}
               className={`px-3 py-1 rounded-lg transition-all whitespace-nowrap ${
                 semesterFilter === s
-                  ? "bg-[#183F36] text-[#D6E85D] font-bold"
+                  ? "bg-[#6366f1] text-[#D6E85D] font-bold"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -860,7 +860,7 @@ export default function MaterialsPage() {
               onClick={() => setTypeFilter(cat)}
               className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all border whitespace-nowrap ${
                 typeFilter === cat
-                  ? "bg-[#183F36] text-[#D6E85D] border-[#183F36]"
+                  ? "bg-[#6366f1] text-[#D6E85D] border-[#6366f1]"
                   : "bg-secondary text-muted-foreground border-border hover:text-foreground"
               }`}
             >
@@ -966,7 +966,7 @@ export default function MaterialsPage() {
                 Distribution of solved exam questions across Semester 3 units
               </p>
             </div>
-            <span className="text-xs font-bold text-emerald-500 font-mono">+42% this week</span>
+            <span className="text-xs font-bold text-primary font-mono">+42% this week</span>
           </div>
           <div className="h-44 w-full pt-2">
             <ResponsiveContainer width="100%" height="100%">
@@ -979,7 +979,7 @@ export default function MaterialsPage() {
                       return (
                         <div className="rounded-lg bg-slate-900 text-white p-2 text-xs shadow-lg border border-slate-800">
                           <p className="font-bold">{payload[0].payload.date}</p>
-                          <p className="text-emerald-400">{payload[0].value} Solved Questions</p>
+                          <p className="text-indigo-400">{payload[0].value} Solved Questions</p>
                         </div>
                       );
                     }
@@ -989,9 +989,9 @@ export default function MaterialsPage() {
                 <Line
                   type="monotone"
                   dataKey="count"
-                  stroke="#183F36"
+                  stroke="#6366f1"
                   strokeWidth={2.5}
-                  dot={{ r: 3, fill: "#183F36" }}
+                  dot={{ r: 3, fill: "#6366f1" }}
                   activeDot={{ r: 5, fill: "#D6E85D" }}
                 />
               </LineChart>
@@ -1014,7 +1014,7 @@ export default function MaterialsPage() {
             </p>
             <div className="p-3 rounded-xl bg-white/5 border border-white/10 space-y-1.5 text-xs">
               {[
-                { color: "text-emerald-400", text: "Railway Reservation Queue (C & Java)" },
+                { color: "text-indigo-400", text: "Railway Reservation Queue (C & Java)" },
                 { color: "text-indigo-300", text: "DBMS 3NF & BCNF Normalization Proofs" },
                 { color: "text-cyan-300", text: "Newton-Raphson & Runge-Kutta 4" },
               ].map((item) => (
@@ -1028,7 +1028,7 @@ export default function MaterialsPage() {
           <div className="pt-4 flex items-center justify-between">
             <button
               onClick={() => navigate("/imp-questions")}
-              className="px-4 py-2 rounded-xl bg-[#183F36] hover:bg-[#122d26] text-white font-bold text-xs shadow-md transition-all active:scale-95"
+              className="px-4 py-2 rounded-xl bg-[#6366f1] hover:bg-[#122d26] text-white font-bold text-xs shadow-md transition-all active:scale-95"
             >
               Open Solved Bank &gt;
             </button>
@@ -1045,7 +1045,7 @@ export default function MaterialsPage() {
               <h3 className="font-bold text-sm sm:text-base text-foreground font-display">
                 Official Examination & Viva Schedules
               </h3>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 font-bold">
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 font-bold">
                 Odd Sem 2026-27
               </span>
             </div>
@@ -1057,7 +1057,7 @@ export default function MaterialsPage() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => openTimetable(timetableTab, vivaClassFilter)}
-              className="h-8 px-3 rounded-xl bg-[#183F36] text-[#D6E85D] hover:bg-[#12332C] font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer shadow-xs font-display"
+              className="h-8 px-3 rounded-xl bg-[#6366f1] text-[#D6E85D] hover:bg-[#12332C] font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer shadow-xs font-display"
             >
               <Calendar className="h-3.5 w-3.5" />
               <span>Open Timetable Hub</span>
@@ -1071,7 +1071,7 @@ export default function MaterialsPage() {
             onClick={() => setTimetableTab("viva")}
             className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 flex items-center gap-1.5 cursor-pointer ${
               timetableTab === "viva"
-                ? "bg-[#183F36] text-[#D6E85D] font-black shadow-xs"
+                ? "bg-[#6366f1] text-[#D6E85D] font-black shadow-xs"
                 : "bg-secondary text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -1084,7 +1084,7 @@ export default function MaterialsPage() {
             onClick={() => setTimetableTab("remedial")}
             className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 flex items-center gap-1.5 cursor-pointer ${
               timetableTab === "remedial"
-                ? "bg-[#183F36] text-[#D6E85D] font-black shadow-xs"
+                ? "bg-[#6366f1] text-[#D6E85D] font-black shadow-xs"
                 : "bg-secondary text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -1096,7 +1096,7 @@ export default function MaterialsPage() {
             onClick={() => setTimetableTab("mst")}
             className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 flex items-center gap-1.5 cursor-pointer ${
               timetableTab === "mst"
-                ? "bg-[#183F36] text-[#D6E85D] font-black shadow-xs"
+                ? "bg-[#6366f1] text-[#D6E85D] font-black shadow-xs"
                 : "bg-secondary text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -1120,7 +1120,7 @@ export default function MaterialsPage() {
                       onClick={() => setVivaClassFilter(cls)}
                       className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
                         isSel
-                          ? "bg-[#183F36] text-[#D6E85D] font-bold shadow-xs"
+                          ? "bg-[#6366f1] text-[#D6E85D] font-bold shadow-xs"
                           : "bg-background border border-border text-muted-foreground hover:text-foreground"
                       }`}
                     >
@@ -1197,7 +1197,7 @@ export default function MaterialsPage() {
                   onClick={() => setRemedialBranchFilter(b.id)}
                   className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                     remedialBranchFilter === b.id
-                      ? "bg-[#183F36] text-[#D6E85D] font-bold"
+                      ? "bg-[#6366f1] text-[#D6E85D] font-bold"
                       : "bg-background border border-border text-muted-foreground hover:text-foreground"
                   }`}
                 >
@@ -1210,9 +1210,9 @@ export default function MaterialsPage() {
             </div>
 
             {/* High-Yield OOPJ Remedial Question Bank Callout */}
-            <div className="p-3.5 rounded-2xl bg-[#183F36] text-[#E8EDE4] flex flex-col sm:flex-row sm:items-center justify-between gap-3 border border-[#D6E85D]/30 shadow-xs">
+            <div className="p-3.5 rounded-2xl bg-[#6366f1] text-[#E8EDE4] flex flex-col sm:flex-row sm:items-center justify-between gap-3 border border-[#D6E85D]/30 shadow-xs">
               <div>
-                <span className="text-[10px] font-bold font-mono px-2 py-0.5 rounded bg-[#D6E85D] text-[#183F36] uppercase">
+                <span className="text-[10px] font-bold font-mono px-2 py-0.5 rounded bg-[#D6E85D] text-[#6366f1] uppercase">
                   Remedial Paper 1 · Oct 26
                 </span>
                 <h4 className="font-bold text-xs sm:text-sm text-white font-display mt-1">
@@ -1224,7 +1224,7 @@ export default function MaterialsPage() {
               </div>
               <button
                 onClick={() => navigate("/imp-questions/oopj")}
-                className="h-8 px-3.5 rounded-xl bg-[#D6E85D] text-[#183F36] hover:bg-[#c8dc4e] font-black text-xs flex items-center gap-1.5 transition-all cursor-pointer shrink-0 font-display shadow-xs self-start sm:self-auto"
+                className="h-8 px-3.5 rounded-xl bg-[#D6E85D] text-[#6366f1] hover:bg-[#c8dc4e] font-black text-xs flex items-center gap-1.5 transition-all cursor-pointer shrink-0 font-display shadow-xs self-start sm:self-auto"
               >
                 <BookOpen className="h-3.5 w-3.5" />
                 <span>Open Solved Bank</span>
@@ -1284,7 +1284,7 @@ export default function MaterialsPage() {
                   onClick={() => setSelectedBatchId(batch.id)}
                   className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all ${
                     selectedBatchId === batch.id
-                      ? "bg-[#183F36] text-[#D6E85D] font-bold"
+                      ? "bg-[#6366f1] text-[#D6E85D] font-bold"
                       : "bg-secondary text-muted-foreground hover:text-foreground"
                   }`}
                 >
@@ -1315,7 +1315,7 @@ export default function MaterialsPage() {
                   {activeBatch.exams.map((exam, idx) => (
                     <tr key={idx} className="hover:bg-secondary/20 transition-colors">
                       <td className="py-3 font-semibold text-foreground flex items-center gap-2">
-                        <FileCheck className="h-4 w-4 text-emerald-500 shrink-0" />
+                        <FileCheck className="h-4 w-4 text-primary shrink-0" />
                         <span className="font-mono">{exam.date}</span>
                       </td>
                       <td className="py-3 font-mono text-[11px] font-bold text-indigo-500 dark:text-indigo-400">
@@ -1416,7 +1416,7 @@ export default function MaterialsPage() {
                 <div className="space-y-3">
                   <div className="flex items-center justify-between text-xs text-muted-foreground bg-secondary/40 p-2.5 rounded-xl border border-border">
                     <span className="flex items-center gap-1.5">
-                      <FileCheck className="h-4 w-4 text-emerald-500" />
+                      <FileCheck className="h-4 w-4 text-primary" />
                       <span>Verified official document — SLS Baroda University repository.</span>
                     </span>
                     <a
@@ -1450,7 +1450,7 @@ export default function MaterialsPage() {
                   </div>
                   <div className="space-y-3">
                     <h4 className="font-bold text-xs uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                      <Code2 className="h-4 w-4 text-emerald-500" />
+                      <Code2 className="h-4 w-4 text-primary" />
                       <span>Key Formulas & Algorithmic Complexities</span>
                     </h4>
                     <div className="grid grid-cols-1 gap-3">
@@ -1460,7 +1460,7 @@ export default function MaterialsPage() {
                             <span className="text-[11px] font-bold text-primary font-sans">{f.title}</span>
                             <span className="text-[10px] text-slate-400 font-sans">{f.note}</span>
                           </div>
-                          <p className="p-2 rounded bg-slate-900 border border-slate-800 text-emerald-400 select-all overflow-x-auto">
+                          <p className="p-2 rounded bg-slate-900 border border-slate-800 text-indigo-400 select-all overflow-x-auto">
                             {f.formula}
                           </p>
                         </div>
@@ -1518,13 +1518,13 @@ export default function MaterialsPage() {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Verification:</span>
-                      <span className="font-bold text-emerald-500">✓ Digital Signature Valid</span>
+                      <span className="font-bold text-primary">✓ Digital Signature Valid</span>
                     </div>
                   </div>
                   <div className="flex items-center justify-center gap-3 pt-2">
                     <button
                       onClick={() => handleDownloadRich(activePreview)}
-                      className="px-6 py-2.5 rounded-xl bg-[#183F36] text-white font-bold text-xs shadow-md hover:opacity-90 flex items-center gap-2 active:scale-95 transition-all"
+                      className="px-6 py-2.5 rounded-xl bg-[#6366f1] text-white font-bold text-xs shadow-md hover:opacity-90 flex items-center gap-2 active:scale-95 transition-all"
                     >
                       <Download className="h-4 w-4 text-[#D6E85D]" />
                       <span>Download PDF Now</span>
@@ -1555,7 +1555,7 @@ export default function MaterialsPage() {
                 </button>
                 <button
                   onClick={() => handleDownloadRich(activePreview)}
-                  className="px-4 py-1.5 rounded-xl bg-[#183F36] text-white font-bold text-xs flex items-center gap-1.5 shadow-xs"
+                  className="px-4 py-1.5 rounded-xl bg-[#6366f1] text-white font-bold text-xs flex items-center gap-1.5 shadow-xs"
                 >
                   <Download className="h-3.5 w-3.5 text-[#D6E85D]" />
                   <span>Download</span>

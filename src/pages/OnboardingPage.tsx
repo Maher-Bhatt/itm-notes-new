@@ -188,7 +188,7 @@ export default function OnboardingPage() {
 
             <div className="space-y-3 pt-2">
               <div className="flex items-start gap-3 p-3 rounded-xl bg-secondary/30 border border-border/60">
-                <CheckCircle2 className="h-5 w-5 text-emerald-500 shrink-0 mt-0.5" />
+                <CheckCircle2 className="h-5 w-5 text-indigo-400 shrink-0 mt-0.5" />
                 <div className="text-xs">
                   <span className="font-bold text-foreground">Verified University Notes & Syllabi</span>
                   <p className="text-muted-foreground mt-0.5">Aligned with your exact branch & semester syllabus.</p>
@@ -196,7 +196,7 @@ export default function OnboardingPage() {
               </div>
 
               <div className="flex items-start gap-3 p-3 rounded-xl bg-secondary/30 border border-border/60">
-                <CheckCircle2 className="h-5 w-5 text-emerald-500 shrink-0 mt-0.5" />
+                <CheckCircle2 className="h-5 w-5 text-indigo-400 shrink-0 mt-0.5" />
                 <div className="text-xs">
                   <span className="font-bold text-foreground">MST & CET-2 Question Banks</span>
                   <p className="text-muted-foreground mt-0.5">High-yield question banks, paper patterns, and timetables.</p>
@@ -204,7 +204,7 @@ export default function OnboardingPage() {
               </div>
 
               <div className="flex items-start gap-3 p-3 rounded-xl bg-secondary/30 border border-border/60">
-                <CheckCircle2 className="h-5 w-5 text-emerald-500 shrink-0 mt-0.5" />
+                <CheckCircle2 className="h-5 w-5 text-indigo-400 shrink-0 mt-0.5" />
                 <div className="text-xs">
                   <span className="font-bold text-foreground">Academic Tools & 75% Attendance Buffer</span>
                   <p className="text-muted-foreground mt-0.5">Calculate your safe attendance margin and predict your SGPA.</p>
@@ -408,7 +408,7 @@ export default function OnboardingPage() {
         {step === 4 && (
           <div className="bg-card border border-border/80 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6 animate-fade-in">
             <div>
-              <div className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-500 uppercase tracking-wider mb-1">
+              <div className="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-400 uppercase tracking-wider mb-1">
                 <User className="h-4 w-4" /> Profile & Passport
               </div>
               <h2 className="text-xl sm:text-2xl font-extrabold text-foreground">

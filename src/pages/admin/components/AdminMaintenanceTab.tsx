@@ -152,7 +152,7 @@ export function AdminMaintenanceTab({
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-700">
           <div>
             <h2 className="text-base font-bold text-white flex items-center gap-2">
-              <Power className={`h-5 w-5 ${maintenanceOn ? "text-amber-400" : "text-emerald-400"}`} />
+              <Power className={`h-5 w-5 ${maintenanceOn ? "text-amber-400" : "text-indigo-300"}`} />
               Emergency Site Maintenance Killswitch
             </h2>
             <p className="text-xs text-slate-400 mt-0.5">
@@ -164,7 +164,7 @@ export function AdminMaintenanceTab({
             onClick={handleManualToggle}
             className={`px-5 py-2.5 rounded-xl text-xs font-black transition-all shadow-md active:scale-95 ${
               maintenanceOn
-                ? "bg-emerald-500 hover:bg-emerald-400 text-slate-950"
+                ? "bg-indigo-400 hover:bg-indigo-300 text-slate-950"
                 : "bg-amber-500 hover:bg-amber-400 text-slate-950"
             }`}
           >
@@ -196,7 +196,7 @@ export function AdminMaintenanceTab({
               onClick={copyKey}
               className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs flex items-center gap-1.5 self-start sm:self-auto"
             >
-              {copiedKey ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
+              {copiedKey ? <Check className="h-3.5 w-3.5 text-indigo-300" /> : <Copy className="h-3.5 w-3.5" />}
               <span>{copiedKey ? "Copied" : "Copy Bypass Key"}</span>
             </button>
           </div>

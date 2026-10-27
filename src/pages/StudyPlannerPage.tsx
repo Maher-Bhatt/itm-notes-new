@@ -266,7 +266,7 @@ export default function StudyPlannerPage() {
                       isToday
                         ? 'bg-primary/5 border-primary shadow-md ring-1 ring-primary/40'
                         : dayDone
-                        ? 'bg-emerald-500/5 border-emerald-500/30'
+                        ? 'bg-indigo-500/5 border-indigo-500/30'
                         : 'bg-card border-border/80'
                     }`}
                   >
@@ -284,7 +284,7 @@ export default function StudyPlannerPage() {
                           {new Date(day.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
                         </span>
                         {isToday && (
-                          <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold text-[10px] animate-pulse">
+                          <span className="px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400 dark:text-indigo-400 font-bold text-[10px] animate-pulse">
                             TODAY'S TARGET
                           </span>
                         )}
@@ -303,7 +303,7 @@ export default function StudyPlannerPage() {
                           key={task.id}
                           className={`p-3 rounded-2xl border transition-all flex items-center justify-between gap-3 ${
                             task.completed
-                              ? 'bg-emerald-500/10 border-emerald-500/30 line-through opacity-75'
+                              ? 'bg-indigo-500/10 border-indigo-500/30 line-through opacity-75'
                               : 'bg-secondary/30 border-border/70 hover:bg-secondary/60'
                           }`}
                         >

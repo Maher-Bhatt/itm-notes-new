@@ -378,8 +378,8 @@ export default function RapidRevisionPage() {
                   <span className="shrink-0 text-rose-500">❌ Trap:</span>
                   <span>{trap.trap}</span>
                 </div>
-                <div className="text-xs font-medium text-emerald-700 dark:text-emerald-400 flex items-start gap-1.5 pt-1 border-t border-rose-500/10">
-                  <span className="shrink-0 text-emerald-500">✓ Truth:</span>
+                <div className="text-xs font-medium text-indigo-400 dark:text-indigo-400 flex items-start gap-1.5 pt-1 border-t border-rose-500/10">
+                  <span className="shrink-0 text-indigo-400">✓ Truth:</span>
                   <span>{trap.truth}</span>
                 </div>
               </div>
@@ -420,7 +420,7 @@ export default function RapidRevisionPage() {
               {activePack.keyFormulasOrSyntax.map((item, idx) => (
                 <div key={idx} className="space-y-1.5">
                   <span className="text-xs font-bold text-foreground">{item.label}</span>
-                  <pre className="p-3.5 rounded-2xl bg-black/90 text-emerald-400 font-mono text-xs overflow-x-auto">
+                  <pre className="p-3.5 rounded-2xl bg-black/90 text-indigo-400 font-mono text-xs overflow-x-auto">
                     <code>{item.code}</code>
                   </pre>
                 </div>

@@ -119,7 +119,7 @@ export default function LearningAnalyticsPage() {
             <span className="px-2.5 py-0.5 rounded-full bg-primary/10 text-primary font-bold text-xs uppercase tracking-wide">
               Personal Performance Intelligence
             </span>
-            <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold text-xs">
+            <span className="px-2.5 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 dark:text-indigo-400 font-semibold text-xs">
               Live Real-Time
             </span>
           </div>
@@ -150,7 +150,7 @@ export default function LearningAnalyticsPage() {
           <div className="text-2xl sm:text-3xl font-black text-foreground">
             {streak} <span className="text-xs text-muted-foreground font-normal">Days</span>
           </div>
-          <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold block">
+          <span className="text-[11px] text-indigo-400 dark:text-indigo-400 font-semibold block">
             Consistent Study Habit
           </span>
         </div>
@@ -187,9 +187,9 @@ export default function LearningAnalyticsPage() {
         <div className="bg-card border border-border/80 rounded-3xl p-5 shadow-sm space-y-2">
           <div className="flex items-center justify-between text-muted-foreground">
             <span className="text-xs font-bold uppercase tracking-wider">SRS Retention</span>
-            <Brain className="h-4 w-4 text-emerald-500" />
+            <Brain className="h-4 w-4 text-indigo-400" />
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-emerald-600 dark:text-emerald-400">
+          <div className="text-2xl sm:text-3xl font-black text-indigo-400 dark:text-indigo-400">
             {srsStats.retentionRate}%
           </div>
           <span className="text-[11px] text-muted-foreground font-medium block">
@@ -236,7 +236,7 @@ export default function LearningAnalyticsPage() {
         <div className="lg:col-span-5 bg-card border border-border/80 rounded-3xl p-6 shadow-sm space-y-4">
           <div>
             <h3 className="font-extrabold text-sm sm:text-base text-foreground flex items-center gap-2">
-              <TrendingUp className="h-4 w-4 text-emerald-500" /> Weekly Focus Study Minutes
+              <TrendingUp className="h-4 w-4 text-indigo-400" /> Weekly Focus Study Minutes
             </h3>
             <p className="text-xs text-muted-foreground mt-0.5">
               Daily Pomodoro session distribution
@@ -322,7 +322,7 @@ export default function LearningAnalyticsPage() {
           </div>
 
           <div className="p-4 rounded-2xl bg-secondary/40 border border-border/80 space-y-2">
-            <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-wider block">
+            <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-wider block">
               Exam Drill Ready
             </span>
             <h4 className="font-bold text-xs text-foreground">

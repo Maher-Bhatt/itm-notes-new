@@ -58,7 +58,7 @@ export interface GradientAvatar {
 
 export const GRADIENT_AVATARS: GradientAvatar[] = [
   { id: 'grad-indigo', label: 'Cosmic Indigo', bgClass: 'from-indigo-600 via-purple-600 to-pink-500' },
-  { id: 'grad-emerald', label: 'Matrix Emerald', bgClass: 'from-emerald-500 via-teal-600 to-cyan-700' },
+  { id: 'grad-emerald', label: 'Matrix Emerald', bgClass: 'from-indigo-400 via-teal-600 to-cyan-700' },
   { id: 'grad-solar', label: 'Solar Flare', bgClass: 'from-amber-500 via-orange-600 to-rose-600' },
   { id: 'grad-cyber', label: 'Cyber Violet', bgClass: 'from-fuchsia-600 via-purple-700 to-indigo-900' },
   { id: 'grad-ocean', label: 'Deep Ocean', bgClass: 'from-blue-600 via-cyan-600 to-teal-500' },
@@ -463,7 +463,7 @@ export default function ProfilePage() {
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-border/80 hover:bg-secondary/80 text-muted-foreground hover:text-foreground font-semibold text-xs transition-colors apple-press"
                 title="Export or delete your personal study data"
               >
-                <ShieldCheck className="h-4 w-4 text-emerald-500" /> Data & Privacy
+                <ShieldCheck className="h-4 w-4 text-indigo-400" /> Data & Privacy
               </button>
             </div>
           </div>
@@ -518,7 +518,7 @@ export default function ProfilePage() {
           </div>
 
           <div className="bg-card border border-border/80 rounded-2xl p-4 shadow-xs">
-            <div className="flex items-center gap-2 text-emerald-500 mb-1">
+            <div className="flex items-center gap-2 text-indigo-400 mb-1">
               <Clock className="h-4 w-4" />
               <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Focus</span>
             </div>
@@ -559,7 +559,7 @@ export default function ProfilePage() {
                   </span>
                 )}
                 {tab.badge && (
-                  <span className="text-[9px] px-1.5 py-0.2 rounded-md bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-mono font-bold">
+                  <span className="text-[9px] px-1.5 py-0.2 rounded-md bg-indigo-400/20 text-indigo-400 dark:text-indigo-300 font-mono font-bold">
                     {tab.badge}
                   </span>
                 )}
@@ -574,7 +574,7 @@ export default function ProfilePage() {
             {/* ⚡ Active Knowledge Booster Hero Card */}
             <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#183F36] via-[#12332C] to-[#0A1A16] border border-[#D6E85D]/50 p-5 sm:p-7 text-[#F5F1E8] shadow-2xl">
               <div className="absolute top-0 right-0 w-80 h-80 bg-[#D6E85D]/15 rounded-full blur-3xl pointer-events-none" />
-              <div className="absolute bottom-0 left-1/3 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+              <div className="absolute bottom-0 left-1/3 w-64 h-64 bg-indigo-400/10 rounded-full blur-3xl pointer-events-none" />
 
               <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
                 <div className="flex items-start gap-4">
@@ -583,7 +583,7 @@ export default function ProfilePage() {
                       <Rocket className="h-7 w-7 animate-pulse" />
                     </div>
                     {isBoostActive && (
-                      <span className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-400 rounded-full border-2 border-[#183F36] animate-ping" />
+                      <span className="absolute -top-1 -right-1 w-4 h-4 bg-indigo-300 rounded-full border-2 border-[#183F36] animate-ping" />
                     )}
                   </div>
 
@@ -652,7 +652,7 @@ export default function ProfilePage() {
                   <span className="text-xs font-bold px-3 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 font-mono">
                     {unlockedCount} / {game.achievements.length} Unlocked
                   </span>
-                  <span className="text-xs font-bold px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-mono">
+                  <span className="text-xs font-bold px-3 py-1 rounded-full bg-indigo-400/10 text-indigo-400 dark:text-indigo-300 border border-indigo-400/20 font-mono">
                     {game.achievements.filter(a => a.unlockedAt).reduce((acc, a) => acc + a.xpReward, 0)} XP Earned
                   </span>
                 </div>
@@ -819,16 +819,16 @@ export default function ProfilePage() {
               <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <ShieldCheck className="h-5 w-5 text-emerald-500" />
+                    <ShieldCheck className="h-5 w-5 text-indigo-400" />
                     <h3 className="font-bold text-sm text-foreground font-display">75% Attendance Safeguard</h3>
                   </div>
-                  <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold border border-emerald-500/20 font-mono">
+                  <span className="px-2 py-0.5 rounded-full bg-indigo-400/10 text-indigo-400 dark:text-indigo-300 text-[10px] font-bold border border-indigo-400/20 font-mono">
                     Criteria Met
                   </span>
                 </div>
 
-                <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-4">
-                  <div className="text-3xl font-black text-emerald-600 dark:text-emerald-400 font-mono">
+                <div className="p-4 rounded-xl bg-indigo-400/10 border border-indigo-400/20 flex items-center gap-4">
+                  <div className="text-3xl font-black text-indigo-400 dark:text-indigo-300 font-mono">
                     91%
                   </div>
                   <div className="space-y-0.5 min-w-0 flex-1">
@@ -1009,13 +1009,13 @@ export default function ProfilePage() {
                         <div className="w-24 sm:w-32 h-2 rounded-full bg-secondary overflow-hidden">
                           <div
                             className={`h-full rounded-full ${
-                              q.percentage >= 80 ? 'bg-emerald-500' : q.percentage >= 60 ? 'bg-amber-500' : 'bg-rose-500'
+                              q.percentage >= 80 ? 'bg-indigo-400' : q.percentage >= 60 ? 'bg-amber-500' : 'bg-rose-500'
                             }`}
                             style={{ width: `${q.percentage}%` }}
                           />
                         </div>
                         <span className={`text-xs font-mono font-bold ${
-                          q.percentage >= 80 ? 'text-emerald-500' : q.percentage >= 60 ? 'text-amber-500' : 'text-rose-500'
+                          q.percentage >= 80 ? 'text-indigo-400' : q.percentage >= 60 ? 'text-amber-500' : 'text-rose-500'
                         }`}>
                           {q.percentage}%
                         </span>
@@ -1241,7 +1241,7 @@ export default function ProfilePage() {
               <div className="bg-card border border-border/80 rounded-3xl p-6 shadow-sm space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-2xl bg-indigo-400/10 text-indigo-400 flex items-center justify-center">
                       <Bell className="h-5 w-5" />
                     </div>
                     <div>
@@ -1272,7 +1272,7 @@ export default function ProfilePage() {
 
                 <div className="pt-2 border-t border-border/60 flex items-center justify-between">
                   <span className="text-[11px] text-muted-foreground font-mono">
-                    Status: <strong className={pushEnabled ? "text-emerald-600" : "text-muted-foreground"}>
+                    Status: <strong className={pushEnabled ? "text-indigo-400" : "text-muted-foreground"}>
                       {pushEnabled ? "Subscribed to Backend" : "Disabled"}
                     </strong>
                   </span>

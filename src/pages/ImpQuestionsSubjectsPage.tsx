@@ -104,13 +104,13 @@ const MASTER_SUBJECTS: SubjectCardConfig[] = [
     name: "Data Structures and Algorithms",
     shortName: "Data Structures (DSA)",
     badge: "Core CS · 38 Solved Qs",
-    badgeColor: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30",
+    badgeColor: "bg-indigo-500/15 text-indigo-400 dark:text-indigo-300 border-indigo-500/30",
     path: "/imp-questions/dsa",
     icon: Database,
     colorScheme: {
-      iconBg: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
-      iconColor: "text-emerald-500",
-      borderHover: "hover:border-emerald-500/60",
+      iconBg: "bg-indigo-500/10 text-indigo-400 dark:text-indigo-300",
+      iconColor: "text-indigo-500",
+      borderHover: "hover:border-indigo-500/60",
     },
     description: "Circular Queue modulo arithmetic, BST recursion traces, AVL LL/RR/LR/RL rotations, Dijkstra, Prim & Kruskal DSU.",
     parts: {
@@ -229,7 +229,7 @@ export default function ImpQuestionsSubjectsPage() {
             <span>·</span>
             <span className="text-foreground font-semibold">Semester 3 (B.Tech CSE)</span>
             <span>·</span>
-            <span className="text-emerald-600 dark:text-emerald-400 font-bold">190 Master Solved Qs</span>
+            <span className="text-indigo-400 dark:text-indigo-300 font-bold">190 Master Solved Qs</span>
           </div>
         </div>
 
@@ -424,7 +424,7 @@ export default function ImpQuestionsSubjectsPage() {
                     className="p-2 rounded-xl border border-border/70 bg-secondary/20 hover:bg-secondary/60 flex items-center justify-between transition-colors cursor-pointer"
                   >
                     <span className="font-medium text-foreground text-[11px]">{sub.parts.partA}</span>
-                    <span className="text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold font-mono">
+                    <span className="text-[9px] px-1.5 py-0.2 rounded bg-indigo-500/20 text-indigo-400 dark:text-indigo-300 font-bold font-mono">
                       Traces
                     </span>
                   </Link>
@@ -504,7 +504,7 @@ export default function ImpQuestionsSubjectsPage() {
               className="w-full p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary/60 flex items-center justify-between text-left transition-colors cursor-pointer"
             >
               <span className="flex items-center gap-2">
-                <FileCheck className="h-4 w-4 text-emerald-500" />
+                <FileCheck className="h-4 w-4 text-indigo-500" />
                 <span>Practical Viva Timetable</span>
               </span>
               <ChevronRight className="h-3.5 w-3.5 opacity-50" />
@@ -593,7 +593,7 @@ export default function ImpQuestionsSubjectsPage() {
           <div>
             <div className="flex items-center justify-between mb-1">
               <h3 className="font-bold text-sm text-foreground">University Solved Pack</h3>
-              <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold text-[10px] font-mono">
+              <span className="px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 dark:text-indigo-300 font-bold text-[10px] font-mono">
                 Sem 3 Verified
               </span>
             </div>
@@ -620,7 +620,7 @@ export default function ImpQuestionsSubjectsPage() {
                 <span className="text-[10px] text-muted-foreground uppercase font-semibold">Theory</span>
               </div>
               <div>
-                <span className="text-base font-black font-mono text-emerald-600 dark:text-emerald-400 block">100%</span>
+                <span className="text-base font-black font-mono text-indigo-400 dark:text-indigo-300 block">100%</span>
                 <span className="text-[10px] text-muted-foreground uppercase font-semibold">Solved</span>
               </div>
 

@@ -162,7 +162,7 @@ export default function Index() {
                     onClick={() => navigate('/coding-lab')}
                     className="p-2.5 rounded-xl bg-secondary/50 hover:bg-secondary text-center text-xs font-bold text-foreground transition-colors apple-press"
                   >
-                    <Code className="h-4 w-4 mx-auto mb-1 text-emerald-500" />
+                    <Code className="h-4 w-4 mx-auto mb-1 text-primary" />
                     Coding Lab
                   </button>
                   <button
@@ -247,7 +247,7 @@ export default function Index() {
                 </div>
 
                 <div className="p-4 rounded-2xl bg-card border border-border/80 shadow-xs">
-                  <div className="p-2 w-fit rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 mb-3">
+                  <div className="p-2 w-fit rounded-lg bg-primary/10 text-primary mb-3">
                     <Code className="h-4 w-4" />
                   </div>
                   <h3 className="font-bold text-sm text-foreground">Practical Coding Lab</h3>
@@ -377,10 +377,10 @@ export default function Index() {
             </div>
 
             <div className="p-6 rounded-3xl border border-border/80 bg-card shadow-xs relative">
-              <span className="text-3xl font-black text-emerald-500/20 absolute top-6 right-6 font-mono">
+              <span className="text-3xl font-black text-primary/20 absolute top-6 right-6 font-mono">
                 02
               </span>
-              <div className="h-10 w-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold mb-4">
+              <div className="h-10 w-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold mb-4">
                 <BookOpen className="h-5 w-5" />
               </div>
               <h3 className="font-bold text-base text-foreground mb-1.5">Study & Test Knowledge</h3>

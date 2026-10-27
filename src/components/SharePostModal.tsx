@@ -132,7 +132,7 @@ export function SharePostModal({ isOpen, onClose, post }: SharePostModalProps) {
             <div className="grid grid-cols-2 gap-2">
               <button
                 onClick={handleWhatsAppShare}
-                className="p-2.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-bold text-xs flex items-center justify-center gap-2 transition-colors apple-press"
+                className="p-2.5 rounded-xl bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 dark:text-indigo-400 border border-indigo-500/20 font-bold text-xs flex items-center justify-center gap-2 transition-colors apple-press"
               >
                 <span>💬 WhatsApp</span>
               </button>

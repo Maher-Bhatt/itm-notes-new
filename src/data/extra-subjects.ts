@@ -22,7 +22,7 @@ export const extraSubjects: Subject[] = [
     id: "sem2-dsa",
     name: "Data Structures and Algorithms",
     code: "DSA202",
-    color: "bg-green-500",
+    color: "bg-indigo-500",
     icon: "database",
     description: "Trees, Graphs, Sorting, Searching, and Recursion.",
     semester: 2,

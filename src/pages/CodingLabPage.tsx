@@ -36,10 +36,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     code: 'DSA301',
     semester: 3,
     icon: '🌲',
-    badgeClass: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
-    borderClass: 'border-emerald-500/40',
-    textClass: 'text-emerald-400',
-    bgClass: 'bg-emerald-500/10',
+    badgeClass: 'bg-indigo-500/15 text-indigo-400 border-indigo-500/30',
+    borderClass: 'border-indigo-500/40',
+    textClass: 'text-indigo-400',
+    bgClass: 'bg-indigo-500/10',
     description: 'Queues, Stacks, Linked Lists, Trees, Graphs & Dynamic Programming in C/Java',
   },
   {
@@ -84,10 +84,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     code: 'PY101',
     semester: 1,
     icon: '💻',
-    badgeClass: 'bg-teal-500/15 text-teal-400 border-teal-500/30',
-    borderClass: 'border-teal-500/40',
-    textClass: 'text-teal-400',
-    bgClass: 'bg-teal-500/10',
+    badgeClass: 'bg-violet-500/15 text-violet-400 border-violet-500/30',
+    borderClass: 'border-violet-500/40',
+    textClass: 'text-violet-400',
+    bgClass: 'bg-violet-500/10',
     description: 'Syntax, Control Flow, Lists, Tuples, Dictionaries & Functions in Python',
   },
   {
@@ -793,7 +793,7 @@ export default function CodingLabPage() {
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-base sm:text-lg font-bold tracking-tight">ITM Notes Practical & Coding Lab</h1>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-semibold">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 font-semibold">
                   154 Practicals Live
                 </span>
               </div>
@@ -927,11 +927,11 @@ export default function CodingLabPage() {
               const p3 = CODING_PROBLEMS.find(p => p.id === 'dsa-38-railway-reservation-queue-c' || p.id.includes('railway'));
               if (p3) handleSelectProblem(p3);
             }}
-            className="px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 transition-all border flex items-center gap-1.5 bg-emerald-500/10 border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/20 shadow-xs"
+            className="px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 transition-all border flex items-center gap-1.5 bg-indigo-500/10 border-indigo-500/40 text-indigo-400 hover:bg-indigo-500/20 shadow-xs"
           >
             <span>🚂</span>
             <span>Practical 3: Railway Queue (C / Java)</span>
-            <span className="text-[10px] px-1.5 py-0.2 rounded-full font-mono bg-emerald-500/20 text-emerald-300 font-bold">
+            <span className="text-[10px] px-1.5 py-0.2 rounded-full font-mono bg-indigo-500/20 text-indigo-400 font-bold">
               HOT
             </span>
           </button>
@@ -959,7 +959,7 @@ export default function CodingLabPage() {
                   {stats.total}
                 </span>
                 {stats.solved > 0 && (
-                  <span className="text-[10px] text-emerald-400 flex items-center font-bold font-mono">
+                  <span className="text-[10px] text-indigo-400 flex items-center font-bold font-mono">
                     ✔ {stats.solved}
                   </span>
                 )}
@@ -1112,7 +1112,7 @@ export default function CodingLabPage() {
                 <BookOpen className="h-3.5 w-3.5 text-primary" /> Practicals ({filteredProblems.length})
               </span>
               <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
-                <span className="font-semibold text-emerald-400">
+                <span className="font-semibold text-indigo-400">
                   {filteredProblems.filter(p => solvedProblems.includes(p.id)).length}
                 </span>
                 <span>/</span>
@@ -1219,13 +1219,13 @@ export default function CodingLabPage() {
                           prob.language === 'c' ? 'bg-blue-500/15 text-blue-400 border border-blue-500/30' :
                           prob.language === 'java' ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30' :
                           prob.language === 'sql' ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30' :
-                          'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                          'bg-indigo-500/15 text-indigo-400 border border-indigo-500/30'
                         }`}>
                           {prob.language}
                         </span>
                       </div>
                       {isSolved && (
-                        <span className="flex items-center gap-1 text-[10px] text-emerald-400 font-bold bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/30">
+                        <span className="flex items-center gap-1 text-[10px] text-indigo-400 font-bold bg-indigo-500/10 px-1.5 py-0.5 rounded border border-indigo-500/30">
                           <CheckCircle2 className="h-3 w-3" /> Solved
                         </span>
                       )}
@@ -1239,7 +1239,7 @@ export default function CodingLabPage() {
 
                     <div className="flex items-center justify-between mt-2 pt-1 border-t border-border/40 text-[10px]">
                       <span className={`font-semibold ${
-                        prob.difficulty === 'Easy' ? 'text-emerald-500' :
+                        prob.difficulty === 'Easy' ? 'text-indigo-500' :
                         prob.difficulty === 'Medium' ? 'text-amber-500' : 'text-rose-500 font-bold'
                       }`}>
                         {prob.difficulty}
@@ -1326,7 +1326,7 @@ export default function CodingLabPage() {
                           : 'border-transparent text-muted-foreground hover:text-foreground hover:bg-secondary/50'
                       }`}
                     >
-                      <tab.icon className={`h-3.5 w-3.5 ${tab.id === 'agent' ? 'text-emerald-400' : ''}`} /> 
+                      <tab.icon className={`h-3.5 w-3.5 ${tab.id === 'agent' ? 'text-indigo-400' : ''}`} /> 
                       {tab.label}
                     </button>
                   ))}
@@ -1341,7 +1341,7 @@ export default function CodingLabPage() {
                       <div>
                         <div className="flex items-center gap-2 mb-1.5 flex-wrap">
                           <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                            currentProblem.difficulty === 'Easy' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' :
+                            currentProblem.difficulty === 'Easy' ? 'bg-indigo-500/10 text-indigo-400 dark:text-indigo-400' :
                             currentProblem.difficulty === 'Medium' ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400' : 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
                           }`}>
                             {currentProblem.difficulty}
@@ -1413,10 +1413,10 @@ export default function CodingLabPage() {
                   {leftTab === 'agent' && (
                     <div className="space-y-4 animate-fade-in">
                       {/* Faculty AI Hero Banner */}
-                      <div className="p-4 rounded-xl bg-gradient-to-r from-emerald-950/40 via-zinc-900 to-zinc-900 border border-emerald-800/40 shadow-sm">
+                      <div className="p-4 rounded-xl bg-gradient-to-r from-indigo-950/40 via-zinc-900 to-zinc-900 border border-emerald-800/40 shadow-sm">
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center gap-2">
-                            <div className="p-1.5 bg-emerald-500/20 rounded-lg text-emerald-400">
+                            <div className="p-1.5 bg-indigo-500/20 rounded-lg text-indigo-400">
                               <Bot className="h-4 w-4" />
                             </div>
                             <div>
@@ -1428,7 +1428,7 @@ export default function CodingLabPage() {
                             size="sm"
                             onClick={handleRunAiAudit}
                             disabled={aiAuditRunning}
-                            className="h-7 text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-semibold gap-1.5"
+                            className="h-7 text-xs bg-indigo-500 hover:bg-indigo-500 text-white font-semibold gap-1.5"
                           >
                             {aiAuditRunning ? (
                               <span className="animate-spin">⏳</span>
@@ -1445,7 +1445,7 @@ export default function CodingLabPage() {
                             <div className="flex items-center justify-between text-xs">
                               <span className="font-bold text-zinc-300">Semantic Audit Score</span>
                               <span className={`font-mono font-bold px-2 py-0.5 rounded text-[11px] ${
-                                aiAuditReport.passed ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-amber-950 text-amber-400 border border-amber-800'
+                                aiAuditReport.passed ? 'bg-indigo-500 text-indigo-400 border border-emerald-800' : 'bg-amber-950 text-amber-400 border border-amber-800'
                               }`}>
                                 {aiAuditReport.score} / 100
                               </span>
@@ -1457,7 +1457,7 @@ export default function CodingLabPage() {
                                 </li>
                               ))}
                             </ul>
-                            <div className="pt-2 border-t border-zinc-800 text-[11px] text-emerald-400 font-medium">
+                            <div className="pt-2 border-t border-zinc-800 text-[11px] text-indigo-400 font-medium">
                               💡 {aiAuditReport.recommendations[0]}
                             </div>
                           </div>
@@ -1517,12 +1517,12 @@ export default function CodingLabPage() {
                       ) : (
                         submissionHistory.filter(s => s.problemId === currentProblem.id).map((sub, idx) => (
                           <div key={idx} className={`p-3.5 rounded-xl border flex items-center justify-between shadow-xs ${
-                            sub.passed ? 'bg-emerald-500/5 border-emerald-500/20' : 'bg-rose-500/5 border-rose-500/20'
+                            sub.passed ? 'bg-indigo-500/5 border-indigo-500/20' : 'bg-rose-500/5 border-rose-500/20'
                           }`}>
                             <div className="flex items-center gap-3">
-                              {sub.passed ? <CheckCircle2 className="h-4 w-4 text-emerald-500" /> : <XCircle className="h-4 w-4 text-rose-500" />}
+                              {sub.passed ? <CheckCircle2 className="h-4 w-4 text-indigo-500" /> : <XCircle className="h-4 w-4 text-rose-500" />}
                               <div>
-                                <p className={`text-xs font-bold ${sub.passed ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'}`}>
+                                <p className={`text-xs font-bold ${sub.passed ? 'text-indigo-400 dark:text-indigo-400' : 'text-rose-700 dark:text-rose-400'}`}>
                                   {sub.passed ? 'Accepted (100% Passed)' : 'Execution / Validation Failed'}
                                 </p>
                                 <p className="text-[10px] text-muted-foreground font-mono">{new Date(sub.timestamp).toLocaleString()}</p>
@@ -1556,7 +1556,7 @@ export default function CodingLabPage() {
                               <Copy className="h-3 w-3 mr-1" /> Copy Code
                             </Button>
                           </div>
-                          <pre className="p-3.5 rounded-xl bg-zinc-950 text-emerald-400 font-mono text-xs overflow-x-auto border border-zinc-800 shadow-inner leading-relaxed">
+                          <pre className="p-3.5 rounded-xl bg-zinc-950 text-indigo-400 font-mono text-xs overflow-x-auto border border-zinc-800 shadow-inner leading-relaxed">
                             <code>{currentProblem.modelSolution}</code>
                           </pre>
                         </div>
@@ -1578,7 +1578,7 @@ export default function CodingLabPage() {
                     <div className="flex gap-1.5">
                       <div className="h-2.5 w-2.5 rounded-full bg-rose-500/80"></div>
                       <div className="h-2.5 w-2.5 rounded-full bg-amber-500/80"></div>
-                      <div className="h-2.5 w-2.5 rounded-full bg-emerald-500/80"></div>
+                      <div className="h-2.5 w-2.5 rounded-full bg-indigo-500/80"></div>
                     </div>
                     <span className="font-mono text-xs font-semibold text-zinc-300 ml-1.5 bg-zinc-800 px-2 py-0.5 rounded border border-zinc-700/60">
                       {currentProblem.fileName}
@@ -1625,7 +1625,7 @@ export default function CodingLabPage() {
                       variant="ghost" 
                       size="sm"
                       onClick={() => setIsLabManualOpen(true)}
-                      className="h-7 text-xs text-emerald-400 hover:text-emerald-300 hover:bg-emerald-950/40 hidden md:flex border border-emerald-500/20"
+                      className="h-7 text-xs text-indigo-400 hover:text-indigo-400 hover:bg-indigo-500/40 hidden md:flex border border-indigo-500/20"
                     >
                       <Printer className="h-3.5 w-3.5 mr-1" /> Print Manual
                     </Button>
@@ -1636,7 +1636,7 @@ export default function CodingLabPage() {
                       size="sm"
                       onClick={handleRun}
                       disabled={status === 'compiling' || status === 'running'}
-                      className="h-7 text-xs bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs transition-all font-semibold"
+                      className="h-7 text-xs bg-indigo-500 hover:bg-indigo-500 text-white shadow-xs transition-all font-semibold"
                     >
                       {status === 'compiling' || status === 'running' ? (
                         <span className="flex items-center gap-1.5 animate-pulse"><Terminal className="h-3 w-3" /> Executing...</span>
@@ -1659,7 +1659,7 @@ export default function CodingLabPage() {
                     onChange={(e) => setCode(e.target.value)}
                     onKeyDown={handleKeyDown}
                     spellCheck={false}
-                    className="flex-1 w-full h-full p-4 font-mono text-sm bg-transparent border-0 text-zinc-100 resize-none focus-visible:ring-0 leading-relaxed selection:bg-emerald-500/30 rounded-none shadow-none"
+                    className="flex-1 w-full h-full p-4 font-mono text-sm bg-transparent border-0 text-zinc-100 resize-none focus-visible:ring-0 leading-relaxed selection:bg-indigo-500/30 rounded-none shadow-none"
                   />
                 </div>
 
@@ -1674,7 +1674,7 @@ export default function CodingLabPage() {
                       <div className="flex gap-1.5 mr-2">
                         <div className="h-2.5 w-2.5 rounded-full bg-rose-500/80"></div>
                         <div className="h-2.5 w-2.5 rounded-full bg-amber-500/80"></div>
-                        <div className="h-2.5 w-2.5 rounded-full bg-emerald-500/80"></div>
+                        <div className="h-2.5 w-2.5 rounded-full bg-indigo-500/80"></div>
                       </div>
                       
                       {/* Tabs */}
@@ -1682,7 +1682,7 @@ export default function CodingLabPage() {
                         onClick={() => setActiveConsoleTab('terminal')}
                         className={`text-[11px] font-mono px-2.5 py-1 rounded transition-colors flex items-center gap-1.5 ${
                           activeConsoleTab === 'terminal'
-                            ? 'bg-zinc-800 text-emerald-400 font-bold shadow-xs'
+                            ? 'bg-zinc-800 text-indigo-400 font-bold shadow-xs'
                             : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
                         }`}
                       >
@@ -1693,7 +1693,7 @@ export default function CodingLabPage() {
                         onClick={() => setActiveConsoleTab('harness')}
                         className={`text-[11px] font-mono px-2.5 py-1 rounded transition-colors flex items-center gap-1.5 ${
                           activeConsoleTab === 'harness'
-                            ? 'bg-zinc-800 text-emerald-400 font-bold shadow-xs'
+                            ? 'bg-zinc-800 text-indigo-400 font-bold shadow-xs'
                             : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
                         }`}
                       >
@@ -1713,7 +1713,7 @@ export default function CodingLabPage() {
                         </span>
                       )}
                       {status === 'success' && (
-                        <span className="text-[11px] font-mono text-emerald-400 font-bold flex items-center gap-1 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800/50">
+                        <span className="text-[11px] font-mono text-indigo-400 font-bold flex items-center gap-1 bg-indigo-500/60 px-2 py-0.5 rounded border border-emerald-800/50">
                           <CheckCircle2 className="h-3 w-3" /> Passed
                         </span>
                       )}
@@ -1756,13 +1756,13 @@ export default function CodingLabPage() {
                         <span className="text-zinc-500 font-bold uppercase tracking-wider text-[10px] mr-1">Quick:</span>
                         <button
                           onClick={() => handleTerminalSubmit(undefined, '1 101')}
-                          className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-emerald-400 transition-colors shrink-0"
+                          className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-indigo-400 transition-colors shrink-0"
                         >
                           1: Add #101
                         </button>
                         <button
                           onClick={() => handleTerminalSubmit(undefined, '1 102')}
-                          className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-emerald-400 transition-colors shrink-0"
+                          className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-indigo-400 transition-colors shrink-0"
                         >
                           1: Add #102
                         </button>
@@ -1798,7 +1798,7 @@ export default function CodingLabPage() {
                         </button>
                         <button
                           onClick={() => handleTerminalSubmit(undefined, 'run')}
-                          className="px-2 py-0.5 rounded bg-emerald-950/80 border border-emerald-700/60 text-emerald-300 hover:bg-emerald-900 transition-colors shrink-0"
+                          className="px-2 py-0.5 rounded bg-indigo-500/80 border border-indigo-500/60 text-indigo-400 hover:bg-indigo-500 transition-colors shrink-0"
                         >
                           ▶ Test Suite
                         </button>
@@ -1815,8 +1815,8 @@ export default function CodingLabPage() {
                             <div 
                               key={idx} 
                               className={`${
-                                isPrompt ? 'text-emerald-400 font-semibold' :
-                                isPass ? 'text-emerald-300' :
+                                isPrompt ? 'text-indigo-400 font-semibold' :
+                                isPass ? 'text-indigo-400' :
                                 isFail ? 'text-rose-400' :
                                 isHighlight ? 'text-zinc-500' : 'text-zinc-300'
                               }`}
@@ -1833,7 +1833,7 @@ export default function CodingLabPage() {
                         onSubmit={handleTerminalSubmit}
                         className="h-10 px-3 bg-zinc-900 border-t border-zinc-800 flex items-center gap-2 shrink-0"
                       >
-                        <span className="font-mono text-xs text-emerald-400 font-bold select-none shrink-0 flex items-center gap-1">
+                        <span className="font-mono text-xs text-indigo-400 font-bold select-none shrink-0 flex items-center gap-1">
                           <Terminal className="h-3 w-3" /> itm@sandbox:~$
                         </span>
                         <input
@@ -1847,7 +1847,7 @@ export default function CodingLabPage() {
                           type="submit" 
                           size="sm" 
                           variant="ghost" 
-                          className="h-7 px-2 text-zinc-400 hover:text-emerald-400 hover:bg-zinc-800"
+                          className="h-7 px-2 text-zinc-400 hover:text-indigo-400 hover:bg-zinc-800"
                         >
                           <Send className="h-3.5 w-3.5" />
                         </Button>

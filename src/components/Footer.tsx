@@ -57,7 +57,7 @@ export function Footer() {
               </li>
               <li>
                 <Link to="/coding-lab" className="hover:text-primary transition-colors flex items-center gap-1.5">
-                  <Code className="h-3.5 w-3.5 text-emerald-500" />
+                  <Code className="h-3.5 w-3.5 text-primary" />
                   <span>Practical Coding Lab</span>
                 </Link>
               </li>

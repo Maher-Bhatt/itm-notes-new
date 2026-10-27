@@ -447,7 +447,7 @@ export default function QuizPage() {
             <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white flex items-center gap-2.5">
               <span>Subject Quiz</span>
             </h1>
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 shadow-xs">
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-indigo-400/10 text-indigo-300 border border-indigo-400/30 shadow-xs">
               Active
             </span>
             {quizStarted && !quizFinished && (
@@ -552,7 +552,7 @@ export default function QuizPage() {
                         <div className={`text-[11px] mt-1 font-mono flex items-center gap-1.5 ${
                           isSelected ? "text-[#D6E85D] font-bold" : "text-slate-300"
                         }`}>
-                          <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
+                          <span className="w-2 h-2 rounded-full bg-indigo-300 shrink-0" />
                           <span>{s.totalMcqs} Practice MCQs</span>
                         </div>
                       </button>
@@ -623,7 +623,7 @@ export default function QuizPage() {
                     </div>
                     <div className="text-right">
                       <span className={`font-mono font-black text-sm ${
-                        attempt.percentage >= 80 ? "text-emerald-400" : attempt.percentage >= 50 ? "text-blue-400" : "text-rose-400"
+                        attempt.percentage >= 80 ? "text-indigo-300" : attempt.percentage >= 50 ? "text-blue-400" : "text-rose-400"
                       }`}>
                         {attempt.score}/{attempt.total} ({attempt.percentage}%)
                       </span>
@@ -663,7 +663,7 @@ export default function QuizPage() {
                     btnCls += "ring-2 ring-blue-500 bg-blue-500/20 text-white font-black ";
                   } else if (isAnswered) {
                     btnCls += isCorrect
-                      ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 "
+                      ? "bg-indigo-400/20 text-indigo-300 border border-indigo-400/30 "
                       : "bg-rose-500/20 text-rose-400 border border-rose-500/30 ";
                   } else {
                     btnCls += "bg-slate-800/60 text-slate-400 hover:bg-slate-800 hover:text-slate-200 border border-slate-700/50 ";
@@ -687,7 +687,7 @@ export default function QuizPage() {
 
               <div className="pt-2 border-t border-slate-800 text-[10px] space-y-1 text-slate-400">
                 <div className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                  <span className="w-2 h-2 rounded-full bg-indigo-300" />
                   <span>Answered</span>
                 </div>
                 <div className="flex items-center gap-1.5">
@@ -734,7 +734,7 @@ export default function QuizPage() {
                           d="M4 18 a 14 14 0 0 1 28 0"
                         />
                         <path
-                          className="text-emerald-500 stroke-current transition-all duration-500"
+                          className="text-indigo-400 stroke-current transition-all duration-500"
                           strokeDasharray={`${(currentAccuracyPercent / 100) * 44}, 100`}
                           strokeWidth="3.5"
                           strokeLinecap="round"
@@ -799,8 +799,8 @@ export default function QuizPage() {
                     circleStyle = "bg-[#183F36] text-[#D6E85D] border-[#183F36] font-bold";
                   } else if (isAnswerSubmitted) {
                     if (isCorrectChoice) {
-                      cardStyle = "border-emerald-500 bg-emerald-500/15 text-emerald-200 ring-1 ring-emerald-500";
-                      circleStyle = "bg-emerald-500 text-white border-emerald-500 font-bold";
+                      cardStyle = "border-indigo-400 bg-indigo-400/15 text-indigo-400 ring-1 ring-indigo-400";
+                      circleStyle = "bg-indigo-400 text-white border-indigo-400 font-bold";
                     } else if (isSelected && !isCorrectChoice) {
                       cardStyle = "border-rose-500 bg-rose-500/15 text-rose-200 ring-1 ring-rose-500";
                       circleStyle = "bg-rose-500 text-white border-rose-500 font-bold";
@@ -941,7 +941,7 @@ export default function QuizPage() {
                     50% Solved
                   </span>
                   <span className="flex items-center gap-1">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                    <span className="w-2 h-2 rounded-full bg-indigo-300" />
                     66% Departs
                   </span>
                   <span className="flex items-center gap-1">
@@ -965,13 +965,13 @@ export default function QuizPage() {
                 <div>
                   <div className="flex justify-between text-[11px] font-semibold mb-1">
                     <span className="text-slate-400">Accuracy</span>
-                    <span className="font-mono text-emerald-400 font-bold">
+                    <span className="font-mono text-indigo-300 font-bold">
                       {currentAccuracyPercent}%
                     </span>
                   </div>
                   <div className="h-1.5 rounded-full bg-slate-800 overflow-hidden">
                     <div
-                      className="h-full bg-emerald-500 rounded-full transition-all duration-500"
+                      className="h-full bg-indigo-400 rounded-full transition-all duration-500"
                       style={{ width: `${currentAccuracyPercent}%` }}
                     />
                   </div>
@@ -1018,7 +1018,7 @@ export default function QuizPage() {
                   className="p-2.5 rounded-xl bg-slate-800/60 border border-slate-700 hover:bg-slate-800 transition-colors cursor-pointer flex items-center justify-between"
                 >
                   <div className="flex items-center gap-2">
-                    <FileText className="h-4 w-4 text-emerald-400" />
+                    <FileText className="h-4 w-4 text-indigo-300" />
                     <span className="text-slate-200 font-medium">DBMS SQL & Normalization Pack</span>
                   </div>
                   <Download className="h-3.5 w-3.5 text-slate-400" />
@@ -1033,7 +1033,7 @@ export default function QuizPage() {
       {quizFinished && (
         <div className="max-w-3xl mx-auto space-y-6 pt-4 animate-fade-in">
           <div className="bg-slate-900/80 border border-slate-800 rounded-3xl p-8 shadow-2xl text-center space-y-5">
-            <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 mx-auto flex items-center justify-center">
+            <div className="w-16 h-16 rounded-2xl bg-indigo-400/10 border border-indigo-400/20 text-indigo-300 mx-auto flex items-center justify-center">
               <Trophy className="h-8 w-8" />
             </div>
 
@@ -1050,7 +1050,7 @@ export default function QuizPage() {
                 <span className="text-[10px] text-slate-400 block uppercase font-bold mt-0.5">Score</span>
               </div>
               <div className="p-3.5 rounded-2xl bg-slate-800/60 border border-slate-700/80">
-                <span className="text-2xl font-black font-mono text-emerald-400">
+                <span className="text-2xl font-black font-mono text-indigo-300">
                   {Math.round((score / Math.max(1, activeQuizPool.length)) * 100)}%
                 </span>
                 <span className="text-[10px] text-slate-400 block uppercase font-bold mt-0.5">Accuracy</span>
@@ -1106,7 +1106,7 @@ export default function QuizPage() {
                     key={idx}
                     className={`p-5 rounded-2xl border text-xs space-y-3 ${
                       rec.isCorrect
-                        ? "bg-slate-900/60 border-emerald-500/30"
+                        ? "bg-slate-900/60 border-indigo-400/30"
                         : "bg-slate-900/60 border-rose-500/30"
                     }`}
                   >
@@ -1118,14 +1118,14 @@ export default function QuizPage() {
                         <p className="text-sm font-bold text-white">{rec.question.question}</p>
                       </div>
                       <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold ${
-                        rec.isCorrect ? "bg-emerald-500/10 text-emerald-400" : "bg-rose-500/10 text-rose-400"
+                        rec.isCorrect ? "bg-indigo-400/10 text-indigo-300" : "bg-rose-500/10 text-rose-400"
                       }`}>
                         {rec.isCorrect ? "Correct ✓" : "Missed ✗"}
                       </span>
                     </div>
 
                     <div className="p-3 rounded-xl bg-slate-950/50 border border-slate-800 text-slate-300 space-y-1">
-                      <p className="text-[11px] text-emerald-400 font-bold">
+                      <p className="text-[11px] text-indigo-300 font-bold">
                         Correct Answer: {rec.question.options[rec.question.correctIndex]}
                       </p>
                       {!rec.isCorrect && (
@@ -1169,7 +1169,7 @@ export default function QuizPage() {
               </div>
               <div className="flex justify-between p-3 rounded-xl bg-slate-800/50 border border-slate-700">
                 <span className="text-slate-400">Correctly Solved:</span>
-                <span className="font-bold text-emerald-400 font-mono">{score}</span>
+                <span className="font-bold text-indigo-300 font-mono">{score}</span>
               </div>
               <div className="flex justify-between p-3 rounded-xl bg-slate-800/50 border border-slate-700">
                 <span className="text-slate-400">Live Accuracy Rate:</span>

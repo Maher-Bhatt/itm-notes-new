@@ -7,79 +7,71 @@ import { SUBJECT_IMP_DATA } from "@/data/impQuestionsData";
 import {
   BookOpen,
   Search,
-  Layers,
-  ChevronRight,
   ArrowRight,
-  CheckCircle2,
-  FolderDown,
-  HelpCircle,
-  Zap,
-  GraduationCap,
   Flame,
+  Zap,
+  HelpCircle,
+  FolderDown,
 } from "lucide-react";
 import { BackToTop } from "@/components/BackToTop";
 
-function SubjectCard({ sub, progressPct, hasImpQuestions, navigateRef }: { sub: any; progressPct: number; hasImpQuestions: boolean; navigateRef: any }) {
+function SubjectCard({
+  sub,
+  progressPct,
+  hasImpQuestions,
+  navigateRef,
+}: {
+  sub: any;
+  progressPct: number;
+  hasImpQuestions: boolean;
+  navigateRef: any;
+}) {
   const totalUnits = sub.units?.length || 0;
-  const totalTopics = sub.units?.reduce((acc, u) => acc + (u.topics?.length || 0), 0) || 0;
-  const allTopicIds = getAllTopicIds(sub.id);
-  const userCompletedInSub = progressPct > 0 ? Math.round((progressPct / 100) * totalTopics) : 0;
-  const firstTopicId = sub.units?.[0]?.topics?.[0]?.id;
+  const totalTopics = sub.units?.reduce((acc: number, u: any) => acc + (u.topics?.length || 0), 0) || 0;
 
   return (
-    <div key={sub.id} className="group relative rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 hover:border-primary/30 transition-all p-5 flex flex-col justify-between gap-4 card-lift press">
+    <div
+      onClick={() => navigateRef(`/subject/${sub.id}`)}
+      className="group relative rounded-2xl border border-white/[0.08] bg-white/[0.02] hover:bg-white/[0.05] hover:border-primary/40 transition-all p-5 flex flex-col justify-between gap-4 card-lift press cursor-pointer select-none"
+    >
       <div className="space-y-3">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-1.5">
             <span className="px-2.5 py-0.5 rounded-md font-mono text-[10px] font-bold bg-primary/10 text-primary border border-primary/20">
               {sub.code || "SUB"}
             </span>
-            <span className="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-white/10 text-white/60">
+            <span className="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-white/[0.06] text-white/60">
               Semester {sub.semester}
             </span>
           </div>
-          <span className="text-[11px] font-semibold text-white/60 flex items-center gap-1">
-            <BookOpen className="h-3 w-3 text-accent-foreground" />
+          <span className="text-[11px] font-medium text-white/50 flex items-center gap-1">
+            <BookOpen className="h-3 w-3 text-white/40" />
             {totalUnits} Units · {totalTopics} Topics
           </span>
         </div>
 
         <h3 className="font-bold text-base text-white group-hover:text-primary transition-colors leading-snug">
-          <Link to={`/subject/${sub.id}`} className="hover:underline press">
-            {sub.name}
-          </Link>
+          {sub.name}
         </h3>
 
         <p className="text-[11px] text-white/60 line-clamp-2 leading-relaxed">
           {sub.description || "Detailed syllabus notes, algorithmic proofs, diagrams, and exam review questions."}
         </p>
 
-        <div className="space-y-1.5 pt-1">
-          <div className="flex items-center justify-between text-[11px] text-white/60">
-            <span className="font-medium">Curriculum Progress</span>
-            <span className="font-bold text-primary tabular-nums">{progressPct}%</span>
-          </div>
-          <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
-            <div className="h-full bg-gradient-electric transition-all duration-500 rounded-full" style={{ width: `${progressPct}%` }} />
-          </div>
-        </div>
-
-        <div className="pt-2">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-white/50 block mb-1.5">
-            Syllabus Units:
-          </span>
+        {/* Units Chips */}
+        <div className="pt-1">
           <div className="flex flex-wrap gap-1.5">
-            {sub.units?.slice(0, 3).map((unit, idx) => (
+            {sub.units?.slice(0, 3).map((unit: any, idx: number) => (
               <span
                 key={unit.id}
-                className="text-[10px] px-2 py-1 rounded-md bg-white/10 text-white/80 font-medium truncate max-w-[200px]"
+                className="text-[10px] px-2 py-0.5 rounded-md bg-white/[0.04] text-white/70 font-medium truncate max-w-[190px]"
                 title={unit.title}
               >
                 U{idx + 1}: {unit.title.replace(/^Unit \d+:\s*/i, "")}
               </span>
             ))}
             {totalUnits > 3 && (
-              <span className="text-[10px] px-2 py-1 rounded-md bg-white/10 text-white/60 font-semibold">
+              <span className="text-[10px] px-1.5 py-0.5 rounded text-white/40 font-semibold">
                 +{sub.units?.length - 3} more
               </span>
             )}
@@ -87,44 +79,38 @@ function SubjectCard({ sub, progressPct, hasImpQuestions, navigateRef }: { sub: 
         </div>
       </div>
 
-      <div className="pt-3 border-t border-white/10 flex flex-col gap-2">
-        <button
-          onClick={() => navigateRef(`/subject/${sub.id}`)}
-          className="w-full py-2.5 px-3 rounded-xl bg-gradient-electric text-white font-bold text-xs shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-1.5 cursor-pointer press font-display"
-        >
-          <span>Explore Units & Notes</span>
-          <ArrowRight className="h-3.5 w-3.5" />
-        </button>
+      {/* Footer: Progress & 1 Clean Action */}
+      <div className="pt-3 border-t border-white/[0.08] flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2 flex-1 max-w-[140px]">
+          <div className="h-1.5 flex-1 rounded-full bg-white/[0.08] overflow-hidden">
+            <div
+              className="h-full bg-gradient-electric rounded-full transition-all duration-500"
+              style={{ width: `${progressPct}%` }}
+            />
+          </div>
+          <span className="text-[10px] font-mono text-white/50">{progressPct}%</span>
+        </div>
 
-        <div className="grid grid-cols-2 gap-2 text-[11px]">
-          <button
-            onClick={() => navigateRef(`/subject/${sub.id}/cheat-sheet`)}
-            className="py-1.5 px-2 rounded-xl border border-accent/30 bg-accent/10 hover:bg-accent/20 text-accent-foreground font-semibold transition-colors flex items-center justify-center gap-1 cursor-pointer press"
-            title="Formulas, proofs & rapid revision"
-          >
-            <Zap className="h-3 w-3" />
-            <span>Cheat Sheet</span>
-          </button>
-
-          {hasImpQuestions ? (
+        <div className="flex items-center gap-2">
+          {hasImpQuestions && (
             <button
-              onClick={() => navigateRef(`/imp-questions/${sub.id}`)}
-              className="py-1.5 px-2 rounded-xl border border-primary/20 bg-primary/10 hover:bg-primary/20 text-primary font-semibold transition-colors flex items-center justify-center gap-1 cursor-pointer press"
-              title="Solved 3, 5, 7 marks university questions"
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigateRef(`/imp-questions/${sub.id}`);
+              }}
+              className="px-2 py-1 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-accent font-bold text-[10px] border border-amber-500/20 press flex items-center gap-1"
+              title="Solved Exam Questions"
             >
-              <HelpCircle className="h-3 w-3" />
-              <span>IMP Questions</span>
-            </button>
-          ) : (
-            <button
-              onClick={() => navigateRef(`/materials?subject=${sub.id}`)}
-              className="py-1.5 px-2 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-white font-semibold transition-colors flex items-center justify-center gap-1 cursor-pointer press"
-              title="Download PDFs and lab manuals"
-            >
-              <FolderDown className="h-3 w-3" />
-              <span>PDF Materials</span>
+              <Zap className="h-3 w-3" />
+              <span>IMP</span>
             </button>
           )}
+
+          <span className="text-xs font-bold text-primary group-hover:translate-x-1 transition-transform flex items-center gap-1 font-display">
+            <span>Explore</span>
+            <ArrowRight className="h-3.5 w-3.5" />
+          </span>
         </div>
       </div>
     </div>
@@ -133,7 +119,6 @@ function SubjectCard({ sub, progressPct, hasImpQuestions, navigateRef }: { sub: 
 
 export default function SubjectsPage() {
   const navigate = useNavigate();
-  const { semesterNumber } = useAcademic();
   const { getSubjectProgress } = useProgress();
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -182,7 +167,7 @@ export default function SubjectsPage() {
   );
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full text-white fade-in space-y-8">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full text-white fade-in space-y-8 select-none">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-xs text-white/50">
         <Link to="/dashboard" className="hover:text-white transition-colors press">
@@ -193,58 +178,55 @@ export default function SubjectsPage() {
       </div>
 
       {/* Hero Header Banner */}
-      <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-6 sm:p-8 lg:p-10 shadow-lg shadow-black/30">
-        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-80 h-80 bg-primary/10 rounded-full blur-[100px] pointer-events-none" />
-        <div className="absolute bottom-0 right-1/4 -mb-20 w-64 h-64 bg-primary/20 rounded-full blur-[80px] pointer-events-none" />
-
+      <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] glass-card p-6 sm:p-8 lg:p-10 shadow-xl shadow-black/40">
         <div className="relative z-10 max-w-3xl space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/20 text-accent-foreground text-xs font-bold border border-accent/30 backdrop-blur-xs">
-            <Flame className="h-3.5 w-3.5 text-accent-foreground" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold border border-primary/20">
+            <Flame className="h-3.5 w-3.5 text-accent" />
             <span>Curriculum & Notes Hub</span>
             <span className="text-white/40">·</span>
-            <span>B.Tech CSE & IT</span>
+            <span className="text-white/70">B.Tech CSE & IT</span>
           </div>
 
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight font-display text-white">
             Choose Your Course & Study Syllabus
           </h1>
 
-          <p className="text-sm sm:text-base text-white/80 leading-relaxed">
-            Select any course below to explore unit-by-unit lecture notes, code implementations,
-            algorithmic proofs, solved university exam questions, and last-night cheat sheets.
+          <p className="text-sm sm:text-base text-white/70 leading-relaxed">
+            Select any course below to explore unit lecture notes, runnable code implementations,
+            algorithmic proofs, solved university exam questions, and rapid revision sheets.
           </p>
 
           {/* Quick Metrics Bar */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3">
-            <div className="bg-white/5 border border-white/10 rounded-xl p-3 backdrop-blur-xs">
+            <div className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-3">
               <span className="text-[11px] font-semibold text-white/40 block">Total Courses</span>
               <span className="text-xl font-extrabold text-white font-display">{totalSubjects}+ Subjects</span>
             </div>
-            <div className="bg-white/5 border border-white/10 rounded-xl p-3 backdrop-blur-xs">
+            <div className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-3">
               <span className="text-[11px] font-semibold text-white/40 block">Syllabus Units</span>
-              <span className="text-xl font-extrabold text-accent-foreground font-display">{totalUnits}+ Units</span>
+              <span className="text-xl font-extrabold text-indigo-400 font-display">{totalUnits}+ Units</span>
             </div>
-            <div className="bg-white/5 border border-white/10 rounded-xl p-3 backdrop-blur-xs">
+            <div className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-3">
               <span className="text-[11px] font-semibold text-white/40 block">Detailed Topics</span>
               <span className="text-xl font-extrabold text-white font-display">{totalTopics}+ Topics</span>
             </div>
-            <div className="bg-white/5 border border-white/10 rounded-xl p-3 backdrop-blur-xs">
+            <div className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-3">
               <span className="text-[11px] font-semibold text-white/40 block">Exam Solved</span>
-              <span className="text-xl font-extrabold text-accent-foreground font-display">100% Verified</span>
+              <span className="text-xl font-extrabold text-amber-400 font-display">100% Solved</span>
             </div>
           </div>
 
           {/* Quick Jump Bar */}
-          <div className="relative z-10 mt-6 pt-5 border-t border-white/10 flex items-center gap-2 overflow-x-auto no-scrollbar max-w-full pb-1">
-            <span className="text-xs font-bold text-accent-foreground flex items-center gap-1.5 shrink-0">
+          <div className="relative z-10 mt-6 pt-5 border-t border-white/[0.08] flex items-center gap-2 overflow-x-auto no-scrollbar max-w-full pb-1">
+            <span className="text-xs font-bold text-accent flex items-center gap-1.5 shrink-0">
               <Flame className="h-3.5 w-3.5" />
-              Quick Access Sem 3:
+              Quick Jump Sem 3:
             </span>
             {coreSem3Subjects.map((sub) => (
               <Link
                 key={sub.id}
                 to={`/subject/${sub.id}`}
-                className="px-2.5 py-1 rounded-xl text-xs font-semibold bg-white/10 hover:bg-accent hover:text-white text-white border border-white/15 transition-all shrink-0 whitespace-nowrap press"
+                className="px-2.5 py-1 rounded-xl text-xs font-semibold bg-white/[0.04] hover:bg-white/[0.1] text-white border border-white/[0.08] transition-all shrink-0 whitespace-nowrap press"
               >
                 {sub.name.replace("Comprehensive University Syllabus for ", "").split("—")[0].trim()}
               </Link>
@@ -254,10 +236,10 @@ export default function SubjectsPage() {
       </div>
 
       {/* Search and Filters Section */}
-      <div className="glass-card border border-white/10 rounded-2xl p-4 shadow-lg shadow-black/20 space-y-4">
+      <div className="glass-card border border-white/[0.08] rounded-2xl p-4 shadow-lg shadow-black/20 space-y-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           {/* Semester Filter Tabs */}
-          <div className="flex items-center gap-1 bg-white/10 p-1 rounded-xl border border-white/10 overflow-x-auto scrollbar-none max-w-full">
+          <div className="flex items-center gap-1 bg-white/[0.04] p-1 rounded-xl border border-white/[0.08] overflow-x-auto scrollbar-none max-w-full">
             {[
               { label: "Semester 3 (Core)", val: 3 },
               { label: "Semester 2", val: 2 },
@@ -272,8 +254,8 @@ export default function SubjectsPage() {
                   onClick={() => setSelectedSemester(sem.val as any)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                     isActive
-                      ? "bg-gradient-electric text-white font-bold shadow-lg shadow-primary/30"
-                      : "text-white/60 hover:text-white hover:bg-white/5"
+                      ? "bg-gradient-electric text-white font-bold shadow-md shadow-indigo-500/20"
+                      : "text-white/50 hover:text-white hover:bg-white/[0.04]"
                   }`}
                 >
                   {sem.label}
@@ -284,18 +266,18 @@ export default function SubjectsPage() {
 
           {/* Search Box */}
           <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-white/60" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-white/50" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by subject, course code (CS301, CS401), or topic..."
-              className="w-full h-10 pl-10 pr-4 rounded-xl border border-white/10 bg-background text-xs sm:text-sm font-medium text-white placeholder-white/40 focus:outline-none focus:ring-1 focus:ring-ring transition-all"
+              placeholder="Search by subject, code (CS301), or topic..."
+              className="w-full h-10 pl-10 pr-4 rounded-xl border border-white/[0.08] bg-background text-xs sm:text-sm font-medium text-white placeholder-white/40 focus:outline-none focus:ring-1 focus:ring-ring transition-all"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-white/60 hover:text-white font-semibold press"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-white/50 hover:text-white font-semibold press"
               >
                 Clear
               </button>
@@ -303,7 +285,7 @@ export default function SubjectsPage() {
           </div>
         </div>
 
-        <div className="flex items-center justify-between text-xs text-white/60 px-1">
+        <div className="flex items-center justify-between text-xs text-white/50 px-1">
           <span>
             Showing <strong className="text-white">{filteredSubjects.length}</strong> {filteredSubjects.length === 1 ? "course" : "courses"}
             {selectedSemester !== "all" && ` in Semester ${selectedSemester}`}
@@ -318,8 +300,6 @@ export default function SubjectsPage() {
         {filteredSubjects.map((sub) => {
           const topicIds = getAllTopicIds(sub.id);
           const progressPct = getSubjectProgress(topicIds);
-          const totalSubUnits = sub.units?.length || 0;
-          const totalSubTopics = topicIds.length;
           const hasImpQuestions = Boolean(SUBJECT_IMP_DATA[sub.id]);
 
           return (

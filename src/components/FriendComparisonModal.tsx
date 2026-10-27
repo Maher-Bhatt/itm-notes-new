@@ -197,17 +197,17 @@ export function FriendComparisonModal({
             {/* Metric 2: Attendance % (Crucial 75% rule!) */}
             <div className="p-3.5 rounded-xl bg-secondary/20 border border-border/70 space-y-2">
               <div className="flex items-center justify-between text-xs font-bold text-foreground">
-                <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
+                <span className="flex items-center gap-1.5 text-indigo-500 dark:text-indigo-300">
                   <Shield className="h-4 w-4" /> 75% Attendance Requirement Buffer
                 </span>
                 <span className="font-mono">{userStats.attendancePercent}% vs {friend.attendancePercent}%</span>
               </div>
               <div className="grid grid-cols-2 gap-3 text-xs">
-                <div className={`p-2.5 rounded-lg border text-center ${userStats.attendancePercent >= 75 ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300' : 'bg-red-500/10 border-red-500/30 text-red-600'}`}>
+                <div className={`p-2.5 rounded-lg border text-center ${userStats.attendancePercent >= 75 ? 'bg-indigo-400/10 border-indigo-400/30 text-indigo-400 dark:text-indigo-400' : 'bg-red-500/10 border-red-500/30 text-red-600'}`}>
                   <p className="text-base sm:text-lg font-black">{userStats.attendancePercent}%</p>
                   <p className="text-[10px] font-medium">{userStats.attendancePercent >= 75 ? '✅ Safe from Detain' : '⚠️ Below 75% Threshold'}</p>
                 </div>
-                <div className={`p-2.5 rounded-lg border text-center ${friend.attendancePercent >= 75 ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300' : 'bg-red-500/10 border-red-500/30 text-red-600'}`}>
+                <div className={`p-2.5 rounded-lg border text-center ${friend.attendancePercent >= 75 ? 'bg-indigo-400/10 border-indigo-400/30 text-indigo-400 dark:text-indigo-400' : 'bg-red-500/10 border-red-500/30 text-red-600'}`}>
                   <p className="text-base sm:text-lg font-black">{friend.attendancePercent}%</p>
                   <p className="text-[10px] font-medium">{friend.attendancePercent >= 75 ? '✅ Safe from Detain' : '⚠️ Below 75% Threshold'}</p>
                 </div>
@@ -240,7 +240,7 @@ export function FriendComparisonModal({
                 <p className="text-base font-bold text-foreground mt-0.5">{userStats.badgesCount} vs {friend.badgesCount}</p>
               </div>
               <div className="p-3 rounded-xl bg-secondary/30 border border-border/70 text-center">
-                <CheckCircle2 className="h-4 w-4 text-emerald-500 mx-auto mb-1" />
+                <CheckCircle2 className="h-4 w-4 text-indigo-400 mx-auto mb-1" />
                 <p className="text-[10px] text-muted-foreground uppercase font-bold">Topics Finished</p>
                 <p className="text-base font-bold text-foreground mt-0.5">{userStats.topicsCompleted} vs {friend.topicsCompleted}</p>
               </div>

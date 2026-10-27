@@ -296,7 +296,7 @@ export function AdminBulkToolsTab() {
           <div className="space-y-3 pt-2">
             <div className="flex items-center gap-4 text-xs">
               <span className="text-slate-400">Total Rows: {parsedData.totalRows}</span>
-              <span className="text-emerald-400 font-bold flex items-center gap-1">
+              <span className="text-indigo-300 font-bold flex items-center gap-1">
                 <CheckCircle className="h-3.5 w-3.5" />
                 {parsedData.validRows.length} Valid
               </span>
@@ -323,7 +323,7 @@ export function AdminBulkToolsTab() {
                 <div key={r.rowNumber} className="bg-slate-900/60 border border-slate-700/60 rounded-xl p-3 text-xs space-y-1">
                   <div className="flex items-center justify-between">
                     <span className="text-white font-medium truncate max-w-md">{r.question}</span>
-                    <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-mono font-bold text-[10px]">
+                    <span className="px-2 py-0.5 rounded bg-indigo-400/10 text-indigo-300 font-mono font-bold text-[10px]">
                       Correct: {r.correctAnswer}
                     </span>
                   </div>

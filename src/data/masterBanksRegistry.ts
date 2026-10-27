@@ -142,8 +142,8 @@ export const MASTER_BANKS: Record<string, MasterSubjectBank> = {
     theme: {
       primaryBg: 'from-[#063323] via-[#0E4733] to-[#042419]',
       accentColor: '#4ADE80',
-      borderGlow: 'border-emerald-500/40',
-      iconColor: 'text-emerald-400',
+      borderGlow: 'border-indigo-500/40',
+      iconColor: 'text-indigo-400',
     },
     predictOutput: DSA_PREDICT_OUTPUT,
     longAnswers: DSA_LONG_QUESTIONS,

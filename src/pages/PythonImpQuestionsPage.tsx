@@ -506,7 +506,7 @@ function QCard({ q, idx, showPattern }: { q: any; idx: number; showPattern?: boo
           {q.output && (
             <div>
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Output</p>
-              <pre className="bg-green-500/5 border border-green-500/20 rounded p-3 text-xs overflow-x-auto text-green-700 dark:text-green-400 font-mono leading-relaxed">
+              <pre className="bg-indigo-500/5 border border-indigo-500/20 rounded p-3 text-xs overflow-x-auto text-indigo-400 dark:text-indigo-400 font-mono leading-relaxed">
                 {q.output}
               </pre>
             </div>

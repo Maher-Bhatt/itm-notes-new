@@ -242,7 +242,7 @@ export default function OopjImpQuestionsPage() {
 
           <button
             onClick={() => setIsShareModalOpen(true)}
-            className="h-9 px-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer shadow-md shadow-emerald-600/20 font-display"
+            className="h-9 px-3.5 rounded-xl bg-gradient-electric hover:opacity-90 text-white font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer shadow-md shadow-indigo-400/20 font-display"
             title="Share Remedial Guide with Classmates"
           >
             <Share2 className="h-3.5 w-3.5" />
@@ -442,7 +442,7 @@ export default function OopjImpQuestionsPage() {
           {/* Module 0: Beginner Zero-to-Hero Foundation Card */}
           <div className="p-5 sm:p-6 rounded-3xl bg-card border border-primary/40 shadow-md space-y-4">
             <div className="flex items-center justify-between flex-wrap gap-2">
-              <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-bold text-xs">
+              <span className="px-2.5 py-0.5 rounded-full bg-indigo-500/15 text-indigo-400 dark:text-indigo-300 font-bold text-xs">
                 MODULE 0 · FOUNDATION
               </span>
               <span className="text-[11px] font-mono text-muted-foreground">
@@ -584,12 +584,12 @@ export default function OopjImpQuestionsPage() {
                           </ul>
                         </div>
 
-                        <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-xs space-y-2">
-                          <p className="font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                        <div className="p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-xs space-y-2">
+                          <p className="font-bold text-indigo-400 dark:text-indigo-300 flex items-center gap-1.5">
                             <CheckCircle2 className="h-3.5 w-3.5" />
                             <span>Key Exam Takeaways:</span>
                           </p>
-                          <ul className="space-y-1 list-disc list-inside text-emerald-900/90 dark:text-emerald-200/90 leading-relaxed">
+                          <ul className="space-y-1 list-disc list-inside text-indigo-200 dark:text-indigo-400/90 leading-relaxed">
                             {topic.keyTakeaways.map((k, ki) => (
                               <li key={ki}>{k}</li>
                             ))}
@@ -614,7 +614,7 @@ export default function OopjImpQuestionsPage() {
             <div className="flex items-center gap-2">
               <h2 className="text-lg font-black text-foreground font-display flex items-center gap-2">
                 <span>Part A: Predict the Output</span>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-mono font-bold">
+                <span className="text-xs px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 dark:text-indigo-300 font-mono font-bold">
                   {filteredPartA.length} Programs
                 </span>
               </h2>
@@ -630,7 +630,7 @@ export default function OopjImpQuestionsPage() {
                 <div
                   key={prog.id}
                   className={`bg-card border rounded-3xl p-5 sm:p-6 shadow-sm transition-all space-y-4 ${
-                    isMastered ? "border-emerald-500/40 bg-emerald-500/[0.02]" : "border-border"
+                    isMastered ? "border-indigo-500/40 bg-indigo-500/[0.02]" : "border-border"
                   }`}
                 >
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -639,7 +639,7 @@ export default function OopjImpQuestionsPage() {
                         onClick={() => toggleMastered(prog.id)}
                         className={`w-7 h-7 rounded-xl border flex items-center justify-center transition-all cursor-pointer mt-0.5 shrink-0 ${
                           isMastered
-                            ? "bg-emerald-500 border-emerald-500 text-white"
+                            ? "bg-indigo-500 border-indigo-500 text-white"
                             : "border-border text-transparent hover:border-primary/60"
                         }`}
                         title="Mark as Mastered"
@@ -706,7 +706,7 @@ export default function OopjImpQuestionsPage() {
                           Execution Output
                         </span>
                         {isRevealed ? (
-                          <div className="p-3 rounded-xl bg-slate-900 text-emerald-400 font-mono text-xs border border-emerald-500/30 whitespace-pre">
+                          <div className="p-3 rounded-xl bg-slate-900 text-indigo-300 font-mono text-xs border border-indigo-500/30 whitespace-pre">
                             {prog.output}
                           </div>
                         ) : (
@@ -779,7 +779,7 @@ export default function OopjImpQuestionsPage() {
                 <div
                   key={q.id}
                   className={`bg-card border rounded-3xl p-5 sm:p-6 shadow-sm transition-all space-y-4 ${
-                    isMastered ? "border-emerald-500/40 bg-emerald-500/[0.02]" : "border-border"
+                    isMastered ? "border-indigo-500/40 bg-indigo-500/[0.02]" : "border-border"
                   }`}
                 >
                   {/* Top Bar */}
@@ -789,7 +789,7 @@ export default function OopjImpQuestionsPage() {
                         onClick={() => toggleMastered(q.id)}
                         className={`w-7 h-7 rounded-xl border flex items-center justify-center transition-all cursor-pointer mt-0.5 shrink-0 ${
                           isMastered
-                            ? "bg-emerald-500 border-emerald-500 text-white"
+                            ? "bg-indigo-500 border-indigo-500 text-white"
                             : "border-border text-transparent hover:border-primary/60"
                         }`}
                         title="Mark as Mastered"
@@ -859,7 +859,7 @@ export default function OopjImpQuestionsPage() {
                       <span className="font-bold text-muted-foreground uppercase tracking-wider font-display text-[10px]">
                         2. Verified Program Implementation (2.5 Marks)
                       </span>
-                      <span className="text-[10px] text-emerald-600 font-mono font-bold">
+                      <span className="text-[10px] text-indigo-400 font-mono font-bold">
                         ✓ Compiles & Executes Cleanly
                       </span>
                     </div>
@@ -877,7 +877,7 @@ export default function OopjImpQuestionsPage() {
                       <span className="font-bold text-[10px] text-muted-foreground uppercase tracking-wider block font-display">
                         3. Exact Console Output (1 Mark)
                       </span>
-                      <div className="p-3 rounded-xl bg-slate-900 text-emerald-400 font-mono text-xs border border-emerald-500/30 whitespace-pre">
+                      <div className="p-3 rounded-xl bg-slate-900 text-indigo-300 font-mono text-xs border border-indigo-500/30 whitespace-pre">
                         {q.output}
                       </div>
                     </div>
@@ -973,7 +973,7 @@ export default function OopjImpQuestionsPage() {
             <div className="flex items-center gap-2">
               <h2 className="text-lg font-black text-foreground font-display flex items-center gap-2">
                 <span>Part C: Theory Questions (3 Marks Each)</span>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-mono font-bold">
+                <span className="text-xs px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 dark:text-indigo-300 font-mono font-bold">
                   {filteredPartC.length} Questions
                 </span>
               </h2>
@@ -988,7 +988,7 @@ export default function OopjImpQuestionsPage() {
                 <div
                   key={th.id}
                   className={`bg-card border rounded-3xl p-5 shadow-sm transition-all space-y-3.5 flex flex-col justify-between ${
-                    isMastered ? "border-emerald-500/40 bg-emerald-500/[0.02]" : "border-border"
+                    isMastered ? "border-indigo-500/40 bg-indigo-500/[0.02]" : "border-border"
                   }`}
                 >
                   <div className="space-y-3">
@@ -998,7 +998,7 @@ export default function OopjImpQuestionsPage() {
                           onClick={() => toggleMastered(th.id)}
                           className={`w-6 h-6 rounded-lg border flex items-center justify-center transition-all cursor-pointer mt-0.5 shrink-0 ${
                             isMastered
-                              ? "bg-emerald-500 border-emerald-500 text-white"
+                              ? "bg-indigo-500 border-indigo-500 text-white"
                               : "border-border text-transparent hover:border-primary/60"
                           }`}
                           title="Mark as Mastered"
@@ -1080,7 +1080,7 @@ export default function OopjImpQuestionsPage() {
 
                     {/* Diagram if present */}
                     {th.diagram && (
-                      <pre className="p-3 rounded-xl bg-slate-950 text-emerald-400 font-mono text-xs overflow-x-auto border border-slate-800">
+                      <pre className="p-3 rounded-xl bg-slate-950 text-indigo-300 font-mono text-xs overflow-x-auto border border-slate-800">
                         {th.diagram}
                       </pre>
                     )}

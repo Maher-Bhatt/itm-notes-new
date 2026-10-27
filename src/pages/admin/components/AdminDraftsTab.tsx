@@ -273,7 +273,7 @@ export function AdminDraftsTab() {
                         v{ver.version_number}
                       </span>
                       {idx === 0 && (
-                        <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 uppercase">
+                        <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-indigo-400/10 text-indigo-300 border border-indigo-400/30 uppercase">
                           Latest
                         </span>
                       )}
@@ -281,7 +281,7 @@ export function AdminDraftsTab() {
 
                     <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
                       ver.status === "published"
-                        ? "bg-emerald-500/10 text-emerald-400"
+                        ? "bg-indigo-400/10 text-indigo-300"
                         : ver.status === "scheduled"
                         ? "bg-sky-500/10 text-sky-400"
                         : "bg-slate-700 text-slate-300"

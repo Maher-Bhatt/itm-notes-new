@@ -108,7 +108,7 @@ export function MCQQuiz({ mcqs, topicId, onComplete }: MCQQuizProps) {
         <div className="text-center max-w-md mx-auto mb-6">
           <div
             className={`text-5xl sm:text-6xl font-black mb-2 font-mono ${
-              pct >= 80 ? "text-emerald-500" : pct >= 60 ? "text-amber-500" : "text-rose-500"
+              pct >= 80 ? "text-indigo-400" : pct >= 60 ? "text-amber-500" : "text-rose-500"
             }`}
           >
             {pct}%
@@ -168,7 +168,7 @@ export function MCQQuiz({ mcqs, topicId, onComplete }: MCQQuizProps) {
                   key={idx}
                   className={`p-4 rounded-xl border text-xs space-y-2.5 ${
                     ans.isCorrect
-                      ? "bg-emerald-500/5 border-emerald-500/30"
+                      ? "bg-indigo-400/5 border-indigo-400/30"
                       : "bg-rose-500/5 border-rose-500/30"
                   }`}
                 >
@@ -179,7 +179,7 @@ export function MCQQuiz({ mcqs, topicId, onComplete }: MCQQuizProps) {
                     <span
                       className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase shrink-0 ${
                         ans.isCorrect
-                          ? "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400"
+                          ? "bg-indigo-400/20 text-indigo-500 dark:text-indigo-300"
                           : "bg-rose-500/20 text-rose-600 dark:text-rose-400"
                       }`}
                     >
@@ -195,7 +195,7 @@ export function MCQQuiz({ mcqs, topicId, onComplete }: MCQQuizProps) {
                       let badgeCls = "p-2 rounded-lg flex items-center justify-between text-xs ";
 
                       if (isCorrect) {
-                        badgeCls += "bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 font-bold border border-emerald-500/40";
+                        badgeCls += "bg-indigo-400/20 text-indigo-400 dark:text-indigo-400 font-bold border border-indigo-400/40";
                       } else if (isUserPick && !ans.isCorrect) {
                         badgeCls += "bg-rose-500/20 text-rose-700 dark:text-rose-300 font-bold border border-rose-500/40";
                       } else {
@@ -210,7 +210,7 @@ export function MCQQuiz({ mcqs, topicId, onComplete }: MCQQuizProps) {
                             </span>
                             <span>{opt}</span>
                           </span>
-                          {isCorrect && <CheckCircle className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />}
+                          {isCorrect && <CheckCircle className="h-4 w-4 text-indigo-500 dark:text-indigo-300 shrink-0" />}
                           {isUserPick && !ans.isCorrect && <XCircle className="h-4 w-4 text-rose-600 dark:text-rose-400 shrink-0" />}
                         </div>
                       );
@@ -259,7 +259,7 @@ export function MCQQuiz({ mcqs, topicId, onComplete }: MCQQuizProps) {
         {(mcq?.options || []).map((opt, i) => {
           let cls = "apple-press w-full text-left py-3 px-4 rounded-xl border transition-all text-xs sm:text-sm font-medium ";
           if (showResult) {
-            if (i === mcq.correctIndex) cls += "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-bold ";
+            if (i === mcq.correctIndex) cls += "border-indigo-400/40 bg-indigo-400/10 text-indigo-400 dark:text-indigo-400 font-bold ";
             else if (i === selected) cls += "border-rose-500/40 bg-rose-500/10 text-rose-700 dark:text-rose-300 font-bold ";
             else cls += "border-border opacity-40 ";
           } else {
@@ -273,7 +273,7 @@ export function MCQQuiz({ mcqs, topicId, onComplete }: MCQQuizProps) {
                   {String.fromCharCode(65 + i)}
                 </span>
                 <span className="flex-1">{opt}</span>
-                {showResult && i === mcq.correctIndex && <CheckCircle className="ml-auto h-4 w-4 text-emerald-500 shrink-0" />}
+                {showResult && i === mcq.correctIndex && <CheckCircle className="ml-auto h-4 w-4 text-indigo-400 shrink-0" />}
                 {showResult && i === selected && i !== mcq.correctIndex && <XCircle className="ml-auto h-4 w-4 text-rose-500 shrink-0" />}
               </div>
             </button>

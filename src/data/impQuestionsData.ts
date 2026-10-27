@@ -806,7 +806,7 @@ POP  X              ; M[X] <- TOS
     code: 'DSA301',
     semester: 3,
     badge: 'Exam Bank · All 6 Units',
-    badgeColor: 'bg-green-500/10 text-green-600 dark:text-green-400',
+    badgeColor: 'bg-indigo-500/10 text-indigo-400 dark:text-indigo-400',
     summary: 'Comprehensive exam question bank covering Complexity Analysis, Linked Lists, Stacks, Queues, Binary Search Trees, AVL rotations, Graphs (Dijkstra, Kruskal, Prim), and Hashing with complete C implementations.',
     cheatSheet: [
       {

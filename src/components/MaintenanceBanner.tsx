@@ -536,7 +536,7 @@ export function MaintenanceBanner() {
               />
               {/* Outer Orbit Ring 2 (Pitch Axis) */}
               <div 
-                className="absolute inset-4 rounded-full border-2 border-dotted border-emerald-400/50 animate-spin [animation-duration:16s] [animation-direction:reverse]" 
+                className="absolute inset-4 rounded-full border-2 border-dotted border-indigo-300/50 animate-spin [animation-duration:16s] [animation-direction:reverse]" 
                 style={{ transform: 'rotateX(-60deg) rotateY(40deg)' }}
               />
               {/* Middle Glowing Neon Ring 3 */}
@@ -555,7 +555,7 @@ export function MaintenanceBanner() {
 
               {/* Floating Satellite Glowing Particles */}
               <div className="absolute top-2 left-6 w-3 h-3 rounded-full bg-[#D6E85D] shadow-[0_0_14px_#D6E85D] animate-ping [animation-duration:2.5s]" />
-              <div className="absolute bottom-4 right-8 w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_12px_#34d399] animate-pulse" />
+              <div className="absolute bottom-4 right-8 w-2.5 h-2.5 rounded-full bg-indigo-300 shadow-[0_0_12px_#34d399] animate-pulse" />
             </div>
 
             {/* Live Infrastructure Telemetry Cards */}
@@ -569,12 +569,12 @@ export function MaintenanceBanner() {
                   <Cpu className="h-4 w-4 text-[#D6E85D] shrink-0" />
                   <div className="min-w-0">
                     <p className="font-bold text-white text-[11px] truncate">Edge CDN Hydration</p>
-                    <span className="text-[10px] text-emerald-400 font-mono">99.8% Cached</span>
+                    <span className="text-[10px] text-indigo-300 font-mono">99.8% Cached</span>
                   </div>
                 </div>
 
                 <div className="p-2.5 rounded-xl bg-white/5 border border-white/5 flex items-center gap-2.5">
-                  <Database className="h-4 w-4 text-emerald-400 shrink-0" />
+                  <Database className="h-4 w-4 text-indigo-300 shrink-0" />
                   <div className="min-w-0">
                     <p className="font-bold text-white text-[11px] truncate">Database Indexing</p>
                     <span className="text-[10px] text-[#D6E85D] font-mono">60+ Courses Synced</span>
@@ -585,12 +585,12 @@ export function MaintenanceBanner() {
                   <ShieldCheck className="h-4 w-4 text-[#D6E85D] shrink-0" />
                   <div className="min-w-0">
                     <p className="font-bold text-white text-[11px] truncate">RLS & Zero-Trust</p>
-                    <span className="text-[10px] text-emerald-400 font-mono">Encrypted Active</span>
+                    <span className="text-[10px] text-indigo-300 font-mono">Encrypted Active</span>
                   </div>
                 </div>
 
                 <div className="p-2.5 rounded-xl bg-white/5 border border-white/5 flex items-center gap-2.5">
-                  <Rocket className="h-4 w-4 text-emerald-400 shrink-0" />
+                  <Rocket className="h-4 w-4 text-indigo-300 shrink-0" />
                   <div className="min-w-0">
                     <p className="font-bold text-white text-[11px] truncate">Coding Lab Runtime</p>
                     <span className="text-[10px] text-[#D6E85D] font-mono">Calibrated v2.4</span>
