@@ -65,7 +65,7 @@ type TabId =
   | "flags"
   | "platform";
 
-// ─── Tabs Configuration ────────────────────────────────────────────────────────
+// ─── Tabs Configuration ──────────────────────────────────────────────────────
 
 const TABS: { id: TabId; label: string; icon: React.FC<{ className?: string }> }[] = [
   { id: "overview", label: "Overview", icon: LayoutDashboard },
@@ -83,7 +83,7 @@ const TABS: { id: TabId; label: string; icon: React.FC<{ className?: string }> }
   { id: "platform", label: "Platform Data", icon: BarChart3 },
 ];
 
-// ─── Stat Card Component ───────────────────────────────────────────────────────
+// ─── Stat Card Component ──────────────────────────────────────────────────────
 
 function StatCard({
   icon: Icon,
@@ -97,25 +97,25 @@ function StatCard({
   accent?: string;
 }) {
   return (
-    <div className="bg-slate-800 border border-slate-700 rounded-2xl p-4 sm:p-5 flex items-center gap-4 shadow-sm">
+    <div className="paper rounded-lg border border-border p-4 sm:p-5 shadow-sm">
       <div
-        className="h-11 w-11 rounded-xl flex items-center justify-center shrink-0"
-        style={{ background: accent ? `${accent}22` : "#D6E85D22" }}
+        className="h-11 w-11 rounded-lg flex items-center justify-center shrink-0"
+        style={{ background: acent ? `hsl(var(${acent}))/20` : "hsl(var(--itm-chartreuse))/20" }}
       >
-        <Icon className="h-5 w-5" style={{ color: accent ?? "#D6E85D" }} />
+        <Icon className="h-5 w-5" style={{ color: acent ?? "hsl(var(--itm-chartreuse))" }} />
       </div>
       <div>
-        <p className="text-xs text-slate-400 font-medium uppercase tracking-wide">{label}</p>
-        <p className="text-xl sm:text-2xl font-extrabold text-white leading-tight">{value}</p>
+        <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">{label}</p>
+        <p className="text-xl sm:text-2xl font-extrabold text-foreground leading-tight">{value}</p>
       </div>
     </div>
   );
 }
 
-// ─── Main Admin Dashboard Component ───────────────────────────────────────────
+// ─── Main Admin Dashboard Component ──────────────────────────────────────────
 
 export default function AdminDashboard() {
-  const { role, user } = useAuth();
+  const { role, user, profile } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<TabId>("overview");
 
@@ -126,7 +126,7 @@ export default function AdminDashboard() {
     }
   }, [role, navigate]);
 
-  // ── Overview telemetry ──────────────────────────────────────────────────────
+  // ── Overview telemetry ─────────────────────────────────────────────────────
   const [totalUsers, setTotalUsers] = useState<number | null>(null);
   const [totalPosts, setTotalPosts] = useState<number | null>(null);
   const [supabaseOk, setSupabaseOk] = useState<boolean | null>(null);
@@ -221,7 +221,6 @@ export default function AdminDashboard() {
   const loadUsers = async () => {
     setUsersLoading(true);
     try {
-      // Use select("*") to avoid failing if newly added columns aren't in remote schema yet
       const { data, error } = await supabase
         .from("profiles")
         .select("*")
@@ -464,19 +463,19 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white flex flex-col">
+    <div className="min-h-screen bg-background text-foreground flex flex-col">
       {/* 1. Header (Responsive with no text clipping at 360px & 768px) */}
-      <div className="border-b border-slate-700 bg-slate-900/90 sticky top-0 z-30 backdrop-blur">
+      <header className="border-b border-border bg-card/90 sticky top-0 z-30 backdrop-blur">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="h-9 w-9 rounded-xl bg-[#D6E85D]/20 flex items-center justify-center shrink-0">
-              <Shield className="h-5 w-5 text-[#D6E85D]" />
+            <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+              <Shield className="h-5 w-5 text-primary" />
             </div>
             <div className="min-w-0">
-              <h1 className="text-base sm:text-lg font-extrabold text-white leading-none truncate">
+              <h1 className="text-base sm:text-lg font-extrabold text-foreground leading-none truncate">
                 ITM Notes Admin
               </h1>
-              <p className="text-[11px] text-slate-400 font-medium mt-0.5 truncate max-w-[200px] sm:max-w-none">
+              <p className="text-[11px] text-muted-foreground font-medium mt-0.5 truncate max-w-[200px] sm:max-w-none">
                 🛡️ Platform Admin &middot; {user?.email}
               </p>
             </div>
@@ -486,13 +485,13 @@ export default function AdminDashboard() {
             <span
               className={`hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold border ${
                 maintenanceOn
-                  ? "bg-amber-500/10 text-amber-400 border-amber-500/30"
-                  : "bg-emerald-500/10 text-emerald-400 border-emerald-500/30"
+                  ? "bg-accent/20 text-accent-foreground border-accent/30"
+                  : "bg-secondary/10 text-muted-foreground border-border/80"
               }`}
             >
               <span
                 className={`w-1.5 h-1.5 rounded-full ${
-                  maintenanceOn ? "bg-amber-400 animate-pulse" : "bg-emerald-400"
+                  maintenanceOn ? "bg-accent animate-pulse" : "bg-muted-foreground/30"
                 }`}
               />
               {maintenanceOn ? "Maintenance ON" : "Site Live"}
@@ -500,39 +499,39 @@ export default function AdminDashboard() {
 
             <button
               onClick={() => navigate("/admin/seed")}
-              className="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 border border-slate-600 rounded-xl text-xs font-semibold text-slate-200 flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="px-3 py-1.5 rounded-lg border border-border hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
             >
               <Database className="h-3.5 w-3.5" />
               <span>Seed DB</span>
             </button>
           </div>
         </div>
+      </header>
 
-        {/* 2. Horizontal Scroll Tabs Navigation */}
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 flex gap-1 overflow-x-auto pb-1 scrollbar-none no-scrollbar">
-          {TABS.map((tab) => {
-            const Icon = tab.icon;
-            const active = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-t-lg border-b-2 transition-all whitespace-nowrap cursor-pointer ${
-                  active
-                    ? "border-[#D6E85D] text-[#D6E85D] bg-slate-800/80"
-                    : "border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
-                }`}
-              >
-                <Icon className="h-3.5 w-3.5" />
-                <span>{tab.label}</span>
-              </button>
-            );
-          })}
-        </div>
+      {/* 2. Horizontal Scroll Tabs Navigation */}
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 flex gap-1 overflow-x-auto pb-1 scrollbar-none no-scrollbar">
+        {TABS.map((tab) => {
+          const Icon = tab.icon;
+          const active = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-t-lg border-b-2 transition-all whitespace-nowrap cursor-pointer ${
+                active
+                  ? "border-primary text-primary bg-card/80"
+                  : "border-transparent text-muted-foreground hover:text-foreground hover:bg-secondary/40"
+              }`}
+            >
+              <Icon className="h-3.5 w-3.5" />
+              <span>{tab.label}</span>
+            </button>
+          );
+        })}
       </div>
 
       {/* 3. Main Body Viewport */}
-      <div className="flex-1 max-w-[1400px] w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
+      <main className="flex-1 max-w-[1400px] w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
         {/* ── TAB: OVERVIEW ── */}
         {activeTab === "overview" && (
           <div className="space-y-6 animate-fade-in">
@@ -566,83 +565,83 @@ export default function AdminDashboard() {
 
             {/* System health & Recent Activity */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <div className="bg-slate-800 border border-slate-700 rounded-3xl p-5 space-y-4 shadow-sm">
+              <div className="paper rounded-xl border border-border p-5 space-y-4 shadow-sm">
                 <div className="flex items-center justify-between">
-                  <h2 className="font-bold text-sm text-white flex items-center gap-2">
-                    <Activity className="h-4 w-4 text-[#D6E85D]" />
+                  <h2 className="font-bold text-sm text-foreground flex items-center gap-2">
+                    <Activity className="h-4 w-4 text-primary" />
                     Live System Health
                   </h2>
                   <button
                     onClick={loadOverviewStats}
                     disabled={statsLoading}
-                    className="p-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 transition-colors disabled:opacity-50"
+                    className="p-1.5 rounded-lg border border-border hover:bg-secondary transition-colors disabled:opacity-50"
                   >
-                    <RefreshCw className={`h-3.5 w-3.5 text-slate-300 ${statsLoading ? "animate-spin" : ""}`} />
+                    <RefreshCw className={`h-3.5 w-3.5 text-muted-foreground ${statsLoading ? "animate-spin" : ""}`} />
                   </button>
                 </div>
 
                 <div className="space-y-2 text-xs">
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-slate-700/50 border border-slate-600">
-                    <span className="text-slate-300 font-medium">Supabase Cloud Connection</span>
+                  <div className="flex items-center justify-between p-3 rounded-lg border border-border/60">
+                    <span className="text-muted-foreground font-medium">Supabase Cloud Connection</span>
                     <span className="flex items-center gap-1.5 font-bold">
                       {supabaseOk === null ? (
-                        <span className="text-slate-500">Checking…</span>
+                        <span className="text-muted-foreground/60">Checking…</span>
                       ) : supabaseOk ? (
                         <>
-                          <span className="w-2 h-2 rounded-full bg-emerald-400" />
-                          <span className="text-emerald-400">Connected</span>
+                          <span className="w-2 h-2 rounded-full text-primary" />
+                          <span className="text-primary">Connected</span>
                         </>
                       ) : (
                         <>
-                          <span className="w-2 h-2 rounded-full bg-red-400 animate-pulse" />
-                          <span className="text-red-400">Offline</span>
+                          <span className="w-2 h-2 rounded-full text-destructive animate-pulse" />
+                          <span className="text-destructive">Offline</span>
                         </>
                       )}
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-slate-700/50 border border-slate-600">
-                    <span className="text-slate-300 font-medium">Site Maintenance Status</span>
+                  <div className="flex items-center justify-between p-3 rounded-lg border border-border/60">
+                    <span className="text-muted-foreground font-medium">Site Maintenance Status</span>
                     <span
                       className={`flex items-center gap-1.5 font-bold ${
-                        maintenanceOn ? "text-amber-400" : "text-emerald-400"
+                        maintenanceOn ? "text-accent" : "text-primary"
                       }`}
                     >
                       <span
                         className={`w-2 h-2 rounded-full ${
-                          maintenanceOn ? "bg-amber-400 animate-pulse" : "bg-emerald-400"
+                          maintenanceOn ? "text-accent animate-pulse" : "text-primary"
                         }`}
                       />
                       {maintenanceOn ? "Active Lock" : "Site Live"}
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-slate-700/50 border border-slate-600">
-                    <span className="text-slate-300 font-medium">Active Announcements</span>
-                    <span className="font-bold text-[#D6E85D]">
+                  <div className="flex items-center justify-between p-3 rounded-lg border border-border/60">
+                    <span className="text-muted-foreground font-medium">Active Announcements</span>
+                    <span className="font-bold text-primary">
                       {announcements.filter((a) => a.active).length} broadcasting
                     </span>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-slate-800 border border-slate-700 rounded-3xl p-5 space-y-4 shadow-sm">
-                <h2 className="font-bold text-sm text-white flex items-center gap-2">
-                  <MessageSquare className="h-4 w-4 text-[#D6E85D]" />
+              <div className="paper rounded-xl border border-border p-5 space-y-4 shadow-sm">
+                <h2 className="font-bold text-sm text-foreground flex items-center gap-2">
+                  <MessageSquare className="h-4 w-4 text-primary" />
                   Recent Community Posts
                 </h2>
 
                 <div className="space-y-2">
                   {recentActivity.length === 0 ? (
-                    <div className="text-center py-6 text-slate-500 text-xs">No recent posts.</div>
+                    <div className="text-center py-6 text-muted-foreground text-xs">No recent posts.</div>
                   ) : (
                     recentActivity.map((post) => (
                       <div
                         key={post.id}
-                        className="bg-slate-900/60 p-3 rounded-xl border border-slate-700/60 text-xs flex items-center justify-between gap-3"
+                        className="paper/60 rounded-xl p-3 border border-border/60 text-xs flex items-center justify-between gap-3"
                       >
-                        <p className="text-slate-200 truncate flex-1">{post.content}</p>
-                        <span className="text-[11px] text-slate-500 shrink-0 font-mono">
+                        <p className="text-foreground truncate flex-1">{post.content}</p>
+                        <span className="text-[11px] text-muted-foreground/60 shrink-0 font-mono">
                           {new Date(post.createdAt).toLocaleDateString()}
                         </span>
                       </div>
@@ -716,7 +715,7 @@ export default function AdminDashboard() {
 
         {/* ── TAB: PLATFORM DATA (Feature 10) ── */}
         {activeTab === "platform" && <AdminPlatformTab />}
-      </div>
+      </main>
     </div>
   );
 }
