@@ -18,7 +18,7 @@ export function useCapacitorNative() {
         await StatusBar.setStyle({ style: Style.Dark });
         // Prevent WebView from overlaying under the status bar / camera cutout
         await StatusBar.setOverlaysWebView({ overlay: false });
-        await StatusBar.setBackgroundColor({ color: '#183F36' });
+        await StatusBar.setBackgroundColor({ color: '#18181B' });
       } catch (e) {
         console.warn('StatusBar error:', e);
       }

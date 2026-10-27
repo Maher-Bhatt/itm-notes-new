@@ -117,7 +117,7 @@ ${targetUrl}`;
 
         {/* Modal Header */}
         <div className="flex items-center gap-3 mb-5">
-          <div className="w-11 h-11 rounded-2xl bg-[#183F36] text-[#D6E85D] flex items-center justify-center shadow-md shadow-[#183F36]/20">
+          <div className="w-11 h-11 rounded-2xl bg-[#18181B] text-[#FAFAFA] flex items-center justify-center shadow-md shadow-[#18181B]/20">
             <Share2 className="h-5 w-5" />
           </div>
           <div>
@@ -197,7 +197,7 @@ ${targetUrl}`;
             {typeof navigator !== "undefined" && "share" in navigator && (
               <button
                 onClick={handleNativeShare}
-                className="px-2.5 py-1.5 rounded-xl bg-[#183F36] text-[#D6E85D] text-xs font-bold flex items-center gap-1 cursor-pointer hover:bg-[#12332C]"
+                className="px-2.5 py-1.5 rounded-xl bg-[#18181B] text-[#FAFAFA] text-xs font-bold flex items-center gap-1 cursor-pointer hover:bg-[#27272A]"
                 title="System Share Menu"
               >
                 <Share2 className="h-3.5 w-3.5" />
@@ -209,8 +209,8 @@ ${targetUrl}`;
 
         {/* QR Code Reveal Panel */}
         {showQr && (
-          <div className="mt-5 p-4 rounded-2xl bg-[#183F36] text-center space-y-2 animate-fade-in border border-[#D6E85D]/30">
-            <p className="text-[11px] font-bold text-[#D6E85D] uppercase tracking-wider">
+          <div className="mt-5 p-4 rounded-2xl bg-[#18181B] text-center space-y-2 animate-fade-in border border-[#FAFAFA]/30">
+            <p className="text-[11px] font-bold text-[#FAFAFA] uppercase tracking-wider">
               Scan with phone to open instantly
             </p>
             <div className="inline-block p-2 rounded-xl bg-white shadow-lg">
@@ -221,7 +221,7 @@ ${targetUrl}`;
                 loading="lazy"
               />
             </div>
-            <p className="text-[10px] text-[#A2BAAF]">
+            <p className="text-[10px] text-[#A1A1AA]">
               Perfect for sharing in the classroom, lab, or exam hall!
             </p>
           </div>

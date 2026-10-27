@@ -50,17 +50,17 @@ export function QuizAttemptReviewModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in">
       <div className="w-full max-w-2xl bg-card border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="p-4 sm:p-5 bg-gradient-to-r from-[#183F36] via-[#1D4A3F] to-[#12332C] text-white flex items-center justify-between border-b border-[#D6E85D]/30 shrink-0">
+        <div className="p-4 sm:p-5 bg-gradient-to-r from-[#18181B] via-[#1D4A3F] to-[#27272A] text-white flex items-center justify-between border-b border-[#FAFAFA]/30 shrink-0">
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-xl bg-[#D6E85D] text-[#183F36]">
+            <div className="p-2 rounded-xl bg-[#FAFAFA] text-[#18181B]">
               <Award className="h-5 w-5" />
             </div>
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="text-[10px] font-mono font-black uppercase px-2 py-0.2 rounded bg-[#D6E85D] text-[#183F36]">
+                <span className="text-[10px] font-mono font-black uppercase px-2 py-0.2 rounded bg-[#FAFAFA] text-[#18181B]">
                   Quiz Review
                 </span>
-                <span className="text-xs text-[#D6E85D] font-bold font-mono">
+                <span className="text-xs text-[#FAFAFA] font-bold font-mono">
                   Score: {data.score}/{data.totalQuestions} ({percent}%)
                 </span>
               </div>

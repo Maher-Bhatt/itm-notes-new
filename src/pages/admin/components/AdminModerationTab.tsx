@@ -164,7 +164,7 @@ export function AdminModerationTab() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search reports by content, author, or subject…"
-            className="w-full pl-9 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#D6E85D]/60"
+            className="w-full pl-9 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#FAFAFA]/60"
           />
         </div>
 
@@ -212,7 +212,7 @@ export function AdminModerationTab() {
           <div className="py-12 text-center text-slate-500 text-sm">Loading queue items…</div>
         ) : filteredItems.length === 0 ? (
           <div className="py-12 text-center text-slate-400 text-sm bg-slate-800 border border-slate-700 rounded-2xl">
-            <CheckCircle className="h-8 w-8 text-[#D6E85D] mx-auto mb-2 opacity-80" />
+            <CheckCircle className="h-8 w-8 text-[#FAFAFA] mx-auto mb-2 opacity-80" />
             <p className="font-bold text-white">Queue Empty</p>
             <p className="text-xs text-slate-400 mt-1">No moderation reports match this filter.</p>
           </div>
@@ -328,7 +328,7 @@ export function AdminModerationTab() {
 
                       <button
                         onClick={() => handleApprove(item)}
-                        className="px-3.5 py-1.5 rounded-xl bg-[#D6E85D] hover:bg-[#c8dc4e] text-[#183F36] text-xs font-black flex items-center gap-1.5 transition-colors"
+                        className="px-3.5 py-1.5 rounded-xl bg-[#FAFAFA] hover:bg-[#E4E4E7] text-[#18181B] text-xs font-black flex items-center gap-1.5 transition-colors"
                       >
                         <CheckCircle className="h-3.5 w-3.5" />
                         <span>Approve (+XP)</span>
@@ -402,7 +402,7 @@ export function AdminModerationTab() {
 
             <div>
               <h3 className="text-base font-bold text-white flex items-center gap-2">
-                <Edit3 className="h-4 w-4 text-[#D6E85D]" />
+                <Edit3 className="h-4 w-4 text-[#FAFAFA]" />
                 Edit then Approve
               </h3>
               <p className="text-xs text-slate-400 mt-0.5">
@@ -414,7 +414,7 @@ export function AdminModerationTab() {
               value={editedContent}
               onChange={(e) => setEditedContent(e.target.value)}
               rows={6}
-              className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white font-mono placeholder-slate-500 focus:outline-none focus:border-[#D6E85D]"
+              className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white font-mono placeholder-slate-500 focus:outline-none focus:border-[#FAFAFA]"
             />
 
             <div className="flex justify-end gap-2 pt-2">
@@ -426,7 +426,7 @@ export function AdminModerationTab() {
               </button>
               <button
                 onClick={handleConfirmEditAndApprove}
-                className="px-4 py-1.5 rounded-xl bg-[#D6E85D] text-[#183F36] font-black text-xs hover:bg-[#c8dc4e] transition-colors"
+                className="px-4 py-1.5 rounded-xl bg-[#FAFAFA] text-[#18181B] font-black text-xs hover:bg-[#E4E4E7] transition-colors"
               >
                 Save & Approve (+XP)
               </button>

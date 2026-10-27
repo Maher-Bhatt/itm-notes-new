@@ -15,7 +15,9 @@ import {
   Terminal,
   KeyRound,
   CheckCircle2,
-  X
+  X,
+  RefreshCw,
+  Activity
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -39,8 +41,8 @@ export function generateUniqueMaintenanceKey(): string {
 
 const DEFAULT_CONFIG: MaintenanceConfig = {
   active: false,
-  title: "We are building something incredible.",
-  message: "ITM Notes is currently undergoing a scheduled infrastructure upgrade to bring you a faster, more intelligent learning experience. We will be back online shortly.",
+  title: "Scheduled Infrastructure Maintenance",
+  message: "ITM Notes is currently deploying an upgraded multi-university syllabus engine and sandboxed LeetCode-grade coding lab. All user study logs and notes remain 100% safe. We will be back online momentarily.",
   endTime: null,
   passkey: "",
 };
@@ -94,7 +96,6 @@ export function MaintenanceBanner() {
   useEffect(() => {
     const fetchCloudSettings = async () => {
       try {
-        // Query the owner admin profile status for global persistence
         const { data } = await supabase
           .from('profiles')
           .select('status')
@@ -120,9 +121,7 @@ export function MaintenanceBanner() {
             return;
           }
         }
-      } catch {
-        // Fallback to local storage if network fails
-      }
+      } catch {}
     };
 
     fetchCloudSettings();
@@ -148,7 +147,6 @@ export function MaintenanceBanner() {
     window.addEventListener('itm_maintenance_updated', handleLocalSync);
     window.addEventListener('itm_preview_maintenance', handlePreviewTrigger);
 
-    // BroadcastChannel across tabs
     let bc: BroadcastChannel | null = null;
     try {
       bc = new BroadcastChannel('itm_maintenance_channel');
@@ -161,9 +159,8 @@ export function MaintenanceBanner() {
       };
     } catch {}
 
-    // Realtime Supabase Channel on profiles table
     const channel = supabase
-      .channel('platform_maintenance_profiles_v3')
+      .channel('platform_maintenance_profiles_v4')
       .on(
         'postgres_changes',
         {
@@ -294,13 +291,16 @@ export function MaintenanceBanner() {
   // Admin Floating Ribbon (When Maintenance is ON and Founder/Admin is reviewing the portal)
   if (config.active && isAdmin && !isPreviewingAsStudent) {
     return (
-      <aside aria-label="System Maintenance Notification" className="fixed top-0 left-0 right-0 z-[100] bg-amber-500 text-amber-950 px-4 py-2 shadow-lg flex flex-wrap items-center justify-between gap-2 text-xs font-bold border-b border-amber-600/40">
-        <div className="flex items-center gap-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-red-600 animate-ping inline-block" />
-          <span>🔴 System Locked for Students (Admin Mode Active)</span>
+      <aside aria-label="System Maintenance Notification" className="fixed top-0 left-0 right-0 z-[100] bg-zinc-900 text-zinc-100 px-4 py-2.5 shadow-xl flex flex-wrap items-center justify-between gap-3 text-xs font-mono border-b border-zinc-800">
+        <div className="flex items-center gap-2.5">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
+          </span>
+          <span className="font-semibold text-zinc-200">MAINTENANCE_LOCK: Active for Students</span>
           {timeLeft && (
-            <span className="bg-amber-600/30 px-2.5 py-0.5 rounded font-mono text-amber-950">
-              Ends in: {String(timeLeft.hours).padStart(2, '0')}:{String(timeLeft.minutes).padStart(2, '0')}:{String(timeLeft.seconds).padStart(2, '0')}
+            <span className="bg-zinc-800 border border-zinc-700/80 px-2 py-0.5 rounded text-[11px] text-zinc-300">
+              ETA: {String(timeLeft.hours).padStart(2, '0')}:{String(timeLeft.minutes).padStart(2, '0')}:{String(timeLeft.seconds).padStart(2, '0')}
             </span>
           )}
         </div>
@@ -311,15 +311,15 @@ export function MaintenanceBanner() {
               setIsPreviewingAsStudent(true);
               sessionStorage.setItem('itm_preview_maintenance', 'true');
             }}
-            className="px-3 py-1 bg-amber-600/30 hover:bg-amber-600/50 text-amber-950 rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs font-bold"
+            className="px-3 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer border border-zinc-700 text-xs font-sans font-medium"
           >
-            <Eye className="h-3.5 w-3.5" /> Preview Student Lockout
+            <Eye className="h-3.5 w-3.5" /> Preview Lockout Screen
           </button>
           <button
             onClick={handleDeactivate}
-            className="px-3 py-1 bg-amber-950 text-amber-100 hover:bg-black rounded-lg transition-colors cursor-pointer font-bold"
+            className="px-3 py-1 bg-white text-zinc-950 hover:bg-zinc-200 rounded-lg transition-colors cursor-pointer text-xs font-sans font-bold"
           >
-            Turn OFF
+            Turn OFF Globally
           </button>
         </div>
       </aside>
@@ -329,8 +329,8 @@ export function MaintenanceBanner() {
   // Visitor Preview Active Ribbon (When visitor entered a valid dynamic key)
   if (config.active && !isAdmin && isKeyValid) {
     return (
-      <div className="fixed bottom-4 right-4 z-[9999] bg-[#183F36]/90 border border-[#D6E85D]/60 text-[#F5F1E8] px-3.5 py-2 rounded-2xl shadow-2xl flex items-center gap-2.5 text-xs font-semibold backdrop-blur-md animate-fade-in">
-        <KeyRound className="h-4 w-4 text-[#D6E85D]" />
+      <div className="fixed bottom-4 right-4 z-[9999] bg-zinc-900/95 border border-zinc-700 text-zinc-100 px-4 py-2.5 rounded-2xl shadow-2xl flex items-center gap-3 text-xs font-medium backdrop-blur-md animate-fade-in font-sans">
+        <KeyRound className="h-4 w-4 text-amber-400" />
         <span>Tester Preview Session Active</span>
         <button
           onClick={() => {
@@ -338,7 +338,7 @@ export function MaintenanceBanner() {
             setVisitorAccessKey('');
             toast.info('Session ended. Locked back to maintenance screen.');
           }}
-          className="ml-2 text-[10px] font-bold px-2 py-0.5 rounded-lg bg-[#D6E85D] text-[#183F36] hover:bg-[#c2d54e] transition-colors cursor-pointer"
+          className="ml-2 text-[10px] font-bold px-2.5 py-1 rounded-lg bg-zinc-100 text-zinc-900 hover:bg-white transition-colors cursor-pointer"
         >
           Relock Screen
         </button>
@@ -346,146 +346,138 @@ export function MaintenanceBanner() {
     );
   }
 
-  // If not blocking, do not render full takeover
   if (!isBlocking) return null;
 
-  // ── 3D MAXIMUM ANIMATION FULLSCREEN TAKEOVER ──
+  // ── ARCHITECTURAL HIGH-TECH STATUS LOCKOUT SCREEN ──
   return (
-    <div className="fixed inset-0 z-[99999] bg-[#0A1A16] text-[#F5F1E8] flex flex-col overflow-hidden font-sans select-none">
-      {/* Background Animated Cyber Mesh & Glow Orbs */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {/* Glowing Chartreuse Ambient Orb */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#D6E85D]/15 rounded-full blur-[120px] animate-pulse [animation-duration:6s]" />
-        {/* Emerald Deep Glow Orb */}
-        <div className="absolute bottom-1/4 right-1/4 w-[30rem] h-[30rem] bg-[#183F36]/60 rounded-full blur-[140px] animate-pulse [animation-duration:8s]" />
-        {/* Cyberpunk Grid Overlay */}
-        <div 
-          className="absolute inset-0 opacity-15"
-          style={{
-            backgroundImage: `radial-gradient(rgba(214, 232, 93, 0.25) 1px, transparent 1px), radial-gradient(rgba(24, 63, 54, 0.4) 1px, transparent 1px)`,
-            backgroundSize: '36px 36px',
-            backgroundPosition: '0 0, 18px 18px',
-          }}
-        />
-      </div>
+    <div className="fixed inset-0 z-[99999] bg-zinc-950 text-zinc-100 flex flex-col overflow-hidden font-sans select-none antialiased">
+      {/* Background Subtle Architectural Grid */}
+      <div 
+        className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        style={{
+          backgroundImage: `linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)`,
+          backgroundSize: '40px 40px',
+        }}
+      />
 
-      {/* Top Header Bar */}
-      <nav className="relative z-20 h-16 sm:h-20 border-b border-[#23584C]/60 flex items-center justify-between px-6 sm:px-10 shrink-0 bg-[#0A1A16]/80 backdrop-blur-md">
+      {/* Top Status Navigation */}
+      <nav className="relative z-20 h-16 border-b border-zinc-800/80 flex items-center justify-between px-6 sm:px-10 shrink-0 bg-zinc-950/90 backdrop-blur-md">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-2xl bg-[#D6E85D]/10 flex items-center justify-center border border-[#D6E85D]/30 shadow-[0_0_15px_rgba(214,232,93,0.2)]">
-            <Lock className="h-5 w-5 text-[#D6E85D] animate-pulse" />
+          <div className="h-8 w-8 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-300">
+            <Lock className="h-4 w-4" />
           </div>
           <div>
-            <h1 className="text-base sm:text-lg font-black tracking-tight text-white font-display">
-              ITM Notes <span className="text-[#D6E85D]">· Infrastructure Upgrade</span>
-            </h1>
-            <p className="text-[11px] text-[#A6C4BC] flex items-center gap-1.5">
-              <Clock className="h-3 w-3 text-[#D6E85D]" /> Scheduled Maintenance Protocol
-            </p>
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-bold tracking-tight text-zinc-100">ITM Notes Infrastructure</span>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-zinc-900 text-zinc-400 border border-zinc-800">
+                STATUS: UPGRADE_ACTIVE
+              </span>
+            </div>
           </div>
         </div>
 
-        {/* Right Nav Action */}
         <div className="flex items-center gap-2">
           {isPreviewingAsStudent ? (
             <button
               onClick={exitPreview}
-              className="px-4 py-2 bg-[#D6E85D] text-[#183F36] hover:bg-[#c2d54e] rounded-xl text-xs font-extrabold flex items-center gap-1.5 shadow-lg transition-transform hover:scale-105 cursor-pointer"
+              className="px-3 py-1.5 bg-white text-zinc-950 hover:bg-zinc-200 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
             >
-              <EyeOff className="h-4 w-4" />
+              <EyeOff className="h-3.5 w-3.5" />
               <span>Exit Live Preview</span>
             </button>
           ) : (
-            <div className="px-3 py-1.5 rounded-xl border border-[#D6E85D]/30 bg-[#12332C]/80 text-xs font-semibold text-[#D6E85D] flex items-center gap-1.5">
-              <ShieldCheck className="h-3.5 w-3.5" />
-              <span>Lockdown Active</span>
+            <div className="flex items-center gap-2 text-xs font-mono text-zinc-400">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
+              </span>
+              <span>All Data Protected</span>
             </div>
           )}
         </div>
       </nav>
 
-      {/* Main Hero & 3D Showcase */}
+      {/* Main Content Area */}
       <main className="relative z-10 flex-1 overflow-y-auto custom-scrollbar flex items-center py-8">
-        <div className="max-w-7xl mx-auto px-6 sm:px-10 flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16 w-full">
+        <div className="max-w-6xl mx-auto px-6 sm:px-10 w-full grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
           
-          {/* Left Column: Mission Status & Countdown */}
-          <div className="flex-1 space-y-6 text-center lg:text-left max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#D6E85D]/15 text-[#D6E85D] text-xs font-bold border border-[#D6E85D]/30 backdrop-blur-md shadow-xs">
-              <Sparkles className="h-3.5 w-3.5 text-[#D6E85D] animate-spin [animation-duration:8s]" />
-              <span>System Modernization In Progress</span>
-              <span className="text-white/30">·</span>
-              <span>B.Tech CSE & IT Hub</span>
+          {/* Left Column: Mission Description & Countdown */}
+          <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-300 text-xs font-mono">
+              <Activity className="h-3.5 w-3.5 text-zinc-400 animate-pulse" />
+              <span>Release Deployment v2.4 • Multi-University Engine</span>
             </div>
-            
-            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white font-display leading-[1.1]">
-              We are building <br className="hidden sm:block"/>
-              something <span className="text-[#D6E85D] drop-shadow-[0_0_20px_rgba(214,232,93,0.4)]">incredible.</span>
-            </h2>
-            
-            <p className="text-sm sm:text-base text-[#C2D6CF] leading-relaxed">
+
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-zinc-100 leading-[1.15]">
+              System Upgrade In Progress.
+            </h1>
+
+            <p className="text-sm sm:text-base text-zinc-400 leading-relaxed max-w-xl">
               {config.message || DEFAULT_CONFIG.message}
             </p>
 
-            {/* High-Tech Countdown Timer */}
+            {/* Countdown / Status Box */}
             {timeLeft ? (
-              <div className="p-5 rounded-3xl bg-gradient-to-br from-[#12332C]/90 to-[#0A1A16]/90 border border-[#23584C] shadow-2xl max-w-md mx-auto lg:mx-0 backdrop-blur-md">
-                <span className="text-[11px] font-bold text-[#D6E85D] uppercase tracking-wider block mb-3 flex items-center gap-1.5">
-                  <Clock className="h-3.5 w-3.5" />
-                  Estimated Service Restoration In
-                </span>
+              <div className="p-5 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 max-w-md mx-auto lg:mx-0 backdrop-blur-md">
+                <div className="flex items-center justify-between text-xs text-zinc-400 font-mono mb-3">
+                  <span className="flex items-center gap-1.5">
+                    <Clock className="h-3.5 w-3.5 text-zinc-400" /> Estimated Resumption
+                  </span>
+                  <span className="text-[11px] text-zinc-500">Auto-refreshing</span>
+                </div>
                 <div className="grid grid-cols-3 gap-3 text-center">
-                  <div className="p-3 rounded-2xl bg-[#183F36]/60 border border-white/10 shadow-inner">
-                    <span className="font-mono text-3xl font-black text-white font-display">
+                  <div className="p-3 rounded-xl bg-zinc-950 border border-zinc-800">
+                    <span className="font-mono text-2xl font-black text-zinc-100">
                       {String(timeLeft.hours).padStart(2, '0')}
                     </span>
-                    <span className="text-[10px] text-[#A6C4BC] block uppercase font-bold mt-0.5">Hours</span>
+                    <span className="text-[10px] text-zinc-500 block uppercase font-bold mt-0.5">Hours</span>
                   </div>
-                  <div className="p-3 rounded-2xl bg-[#183F36]/60 border border-white/10 shadow-inner">
-                    <span className="font-mono text-3xl font-black text-[#D6E85D] font-display">
+                  <div className="p-3 rounded-xl bg-zinc-950 border border-zinc-800">
+                    <span className="font-mono text-2xl font-black text-zinc-100">
                       {String(timeLeft.minutes).padStart(2, '0')}
                     </span>
-                    <span className="text-[10px] text-[#A6C4BC] block uppercase font-bold mt-0.5">Minutes</span>
+                    <span className="text-[10px] text-zinc-500 block uppercase font-bold mt-0.5">Minutes</span>
                   </div>
-                  <div className="p-3 rounded-2xl bg-[#183F36]/60 border border-white/10 shadow-inner">
-                    <span className="font-mono text-3xl font-black text-white font-display">
+                  <div className="p-3 rounded-xl bg-zinc-950 border border-zinc-800">
+                    <span className="font-mono text-2xl font-black text-amber-400">
                       {String(timeLeft.seconds).padStart(2, '0')}
                     </span>
-                    <span className="text-[10px] text-[#A6C4BC] block uppercase font-bold mt-0.5">Seconds</span>
+                    <span className="text-[10px] text-zinc-500 block uppercase font-bold mt-0.5">Seconds</span>
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="p-4 rounded-2xl bg-[#12332C]/80 border border-[#23584C] max-w-md mx-auto lg:mx-0 text-xs text-[#A6C4BC] flex items-center gap-2">
-                <div className="w-2.5 h-2.5 rounded-full bg-[#D6E85D] animate-ping shrink-0" />
-                <span>Our engineering team is actively upgrading the server cluster. Stand by for instant restoration.</span>
+              <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 max-w-md mx-auto lg:mx-0 text-xs text-zinc-400 flex items-center gap-3">
+                <RefreshCw className="h-4 w-4 text-zinc-400 animate-spin shrink-0" />
+                <span>Engineers are finishing deployment calibrations. The portal will automatically become accessible once verification checks pass.</span>
               </div>
             )}
 
-            {/* Tester / Staff Key Access Form */}
+            {/* Access Key Prompt */}
             <div className="max-w-md mx-auto lg:mx-0 pt-2">
               {!showKeyPrompt ? (
                 <button
                   type="button"
                   onClick={() => setShowKeyPrompt(true)}
-                  className="text-xs text-[#A6C4BC] hover:text-[#D6E85D] transition-colors flex items-center gap-1.5 mx-auto lg:mx-0 font-medium cursor-pointer"
+                  className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors flex items-center gap-1.5 mx-auto lg:mx-0 font-medium cursor-pointer"
                 >
-                  <KeyRound className="h-3.5 w-3.5 text-[#D6E85D]" />
-                  <span>Have a Tester Access Key? Unlock preview</span>
+                  <KeyRound className="h-3.5 w-3.5" />
+                  <span>Faculty or Tester Access Key? Unlock preview</span>
                 </button>
               ) : (
                 <form
                   onSubmit={handleUnlockWithKey}
-                  className="p-4 rounded-2xl bg-[#12332C]/95 border border-[#23584C] backdrop-blur-md space-y-2.5 animate-fade-in text-left shadow-2xl"
+                  className="p-4 rounded-2xl bg-zinc-900 border border-zinc-800 space-y-2.5 animate-fade-in text-left shadow-2xl"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-bold text-[#D6E85D] uppercase tracking-wider flex items-center gap-1.5 font-display">
-                      <KeyRound className="h-3.5 w-3.5" />
-                      Dynamic Access Key Verification
+                    <span className="text-xs font-mono font-semibold text-zinc-300 flex items-center gap-1.5">
+                      <KeyRound className="h-3.5 w-3.5 text-zinc-400" />
+                      Enter Emergency Access Key
                     </span>
                     <button
                       type="button"
                       onClick={() => setShowKeyPrompt(false)}
-                      className="text-[#A6C4BC] hover:text-white p-0.5 cursor-pointer"
+                      className="text-zinc-500 hover:text-zinc-300 p-0.5 cursor-pointer"
                     >
                       <X className="h-4 w-4" />
                     </button>
@@ -498,25 +490,21 @@ export function MaintenanceBanner() {
                         setInputKey(e.target.value);
                         setKeyError(false);
                       }}
-                      placeholder="Enter Access Key (e.g. ITM-XXXX-123)"
-                      className={`flex-1 h-9 px-3 rounded-xl bg-[#0A1A16] border text-xs font-mono text-white placeholder:text-[#A6C4BC]/60 focus:outline-none ${
-                        keyError ? "border-rose-500 focus:border-rose-500" : "border-[#23584C] focus:border-[#D6E85D]"
+                      placeholder="e.g. ITM-XXXX-123"
+                      className={`flex-1 h-9 px-3 rounded-lg bg-zinc-950 border text-xs font-mono text-zinc-100 placeholder:text-zinc-600 focus:outline-none ${
+                        keyError ? "border-rose-500 focus:border-rose-500" : "border-zinc-700 focus:border-zinc-500"
                       }`}
                     />
                     <button
                       type="submit"
-                      className="h-9 px-4 rounded-xl bg-[#D6E85D] hover:bg-[#c2d54e] text-[#183F36] font-extrabold text-xs transition-transform active:scale-95 shadow-sm cursor-pointer"
+                      className="h-9 px-4 rounded-lg bg-white text-zinc-950 font-bold text-xs hover:bg-zinc-200 transition-colors cursor-pointer"
                     >
                       Unlock
                     </button>
                   </div>
-                  {keyError ? (
-                    <p className="text-[10px] text-rose-400 font-medium">
+                  {keyError && (
+                    <p className="text-[11px] text-rose-400 font-medium">
                       Invalid or expired access key. Check with administrator.
-                    </p>
-                  ) : (
-                    <p className="text-[10px] text-[#A6C4BC]/80">
-                      Unlocks the student portal for inspection. Administrative features remain locked.
                     </p>
                   )}
                 </form>
@@ -524,81 +512,55 @@ export function MaintenanceBanner() {
             </div>
           </div>
 
-          {/* Right Column: 3D Animated Orbital Core + Telemetry */}
-          <div className="flex-1 flex flex-col items-center gap-8 w-full max-w-lg">
-            
-            {/* 3D Animated Gyroscope Orbital Core */}
-            <div className="relative w-64 h-64 sm:w-80 sm:h-80 flex items-center justify-center [perspective:1000px]">
-              {/* Outer Orbit Ring 1 (Yaw Axis) */}
-              <div 
-                className="absolute inset-0 rounded-full border-2 border-dashed border-[#D6E85D]/40 animate-spin [animation-duration:22s]" 
-                style={{ transform: 'rotateX(65deg) rotateY(15deg)' }}
-              />
-              {/* Outer Orbit Ring 2 (Pitch Axis) */}
-              <div 
-                className="absolute inset-4 rounded-full border-2 border-dotted border-amber-500/50 animate-spin [animation-duration:16s] [animation-direction:reverse]" 
-                style={{ transform: 'rotateX(-60deg) rotateY(40deg)' }}
-              />
-              {/* Middle Glowing Neon Ring 3 */}
-              <div 
-                className="absolute inset-10 rounded-full border-2 border-[#D6E85D]/60 animate-pulse [animation-duration:3s]" 
-                style={{ transform: 'rotateX(45deg) rotateZ(30deg)', boxShadow: '0 0 35px rgba(214, 232, 93, 0.3)' }}
-              />
-              
-              {/* Central 3D Glowing Cube Core */}
-              <div className="relative z-10 w-28 h-28 sm:w-32 sm:h-32 rounded-3xl bg-gradient-to-br from-[#183F36] via-[#12332C] to-[#0D2620] border-2 border-[#D6E85D] shadow-[0_0_50px_rgba(214,232,93,0.4)] flex flex-col items-center justify-center gap-1.5 animate-bounce [animation-duration:4s]">
-                <div className="w-12 h-12 rounded-2xl bg-[#D6E85D]/20 border border-[#D6E85D]/40 flex items-center justify-center shadow-inner">
-                  <Lock className="h-6 w-6 text-[#D6E85D] animate-pulse" />
-                </div>
-                <span className="text-[10px] font-mono font-black text-[#D6E85D] tracking-widest uppercase">ITM NOTES</span>
+          {/* Right Column: Live Infrastructure Cluster Diagnostics */}
+          <div className="lg:col-span-5 space-y-4">
+            <div className="rounded-2xl bg-zinc-900/80 border border-zinc-800 p-5 space-y-4 shadow-xl">
+              <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
+                <span className="text-xs font-mono font-bold text-zinc-300 flex items-center gap-2">
+                  <Terminal className="h-4 w-4 text-zinc-400" /> Subsystem Diagnostics
+                </span>
+                <span className="text-[10px] font-mono text-zinc-400">All Nodes Secure</span>
               </div>
 
-              {/* Floating Satellite Glowing Particles */}
-              <div className="absolute top-2 left-6 w-3 h-3 rounded-full bg-[#D6E85D] shadow-[0_0_14px_#D6E85D] animate-ping [animation-duration:2.5s]" />
-              <div className="absolute bottom-4 right-8 w-2.5 h-2.5 rounded-full bg-amber-500 shadow-[0_0_12px_#34d399] animate-pulse" />
-            </div>
-
-            {/* Live Infrastructure Telemetry Cards */}
-            <div className="w-full bg-[#12332C]/70 border border-[#23584C] rounded-3xl p-5 shadow-xl backdrop-blur-md space-y-3">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#D6E85D] flex items-center gap-1.5">
-                <Terminal className="h-3.5 w-3.5" /> Live Upgrade Telemetry
-              </span>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
-                <div className="p-2.5 rounded-xl bg-white/5 border border-white/5 flex items-center gap-2.5">
-                  <Cpu className="h-4 w-4 text-[#D6E85D] shrink-0" />
-                  <div className="min-w-0">
-                    <p className="font-bold text-white text-[11px] truncate">Edge CDN Hydration</p>
-                    <span className="text-[10px] text-amber-500 font-mono">99.8% Cached</span>
+              <div className="space-y-2 text-xs">
+                <div className="p-3 rounded-xl bg-zinc-950 border border-zinc-800/60 flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <Database className="h-4 w-4 text-zinc-400" />
+                    <span className="font-medium text-zinc-200">PostgreSQL Shards</span>
                   </div>
+                  <span className="font-mono text-[10px] text-zinc-400 font-semibold">100% HEALTHY</span>
                 </div>
 
-                <div className="p-2.5 rounded-xl bg-white/5 border border-white/5 flex items-center gap-2.5">
-                  <Database className="h-4 w-4 text-amber-500 shrink-0" />
-                  <div className="min-w-0">
-                    <p className="font-bold text-white text-[11px] truncate">Database Indexing</p>
-                    <span className="text-[10px] text-[#D6E85D] font-mono">60+ Courses Synced</span>
+                <div className="p-3 rounded-xl bg-zinc-950 border border-zinc-800/60 flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <Layers className="h-4 w-4 text-zinc-400" />
+                    <span className="font-medium text-zinc-200">Multi-University Engine</span>
                   </div>
+                  <span className="font-mono text-[10px] text-amber-400 font-semibold animate-pulse">DEPLOYING v2.4</span>
                 </div>
 
-                <div className="p-2.5 rounded-xl bg-white/5 border border-white/5 flex items-center gap-2.5">
-                  <ShieldCheck className="h-4 w-4 text-[#D6E85D] shrink-0" />
-                  <div className="min-w-0">
-                    <p className="font-bold text-white text-[11px] truncate">RLS & Zero-Trust</p>
-                    <span className="text-[10px] text-amber-500 font-mono">Encrypted Active</span>
+                <div className="p-3 rounded-xl bg-zinc-950 border border-zinc-800/60 flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <Cpu className="h-4 w-4 text-zinc-400" />
+                    <span className="font-medium text-zinc-200">Coding Lab Sandboxes</span>
                   </div>
+                  <span className="font-mono text-[10px] text-zinc-400 font-semibold">CALIBRATED</span>
                 </div>
 
-                <div className="p-2.5 rounded-xl bg-white/5 border border-white/5 flex items-center gap-2.5">
-                  <Rocket className="h-4 w-4 text-amber-500 shrink-0" />
-                  <div className="min-w-0">
-                    <p className="font-bold text-white text-[11px] truncate">Coding Lab Runtime</p>
-                    <span className="text-[10px] text-[#D6E85D] font-mono">Calibrated v2.4</span>
+                <div className="p-3 rounded-xl bg-zinc-950 border border-zinc-800/60 flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <ShieldCheck className="h-4 w-4 text-zinc-400" />
+                    <span className="font-medium text-zinc-200">Row Level Security</span>
                   </div>
+                  <span className="font-mono text-[10px] text-zinc-400 font-semibold">ZERO-TRUST ACTIVE</span>
                 </div>
               </div>
-            </div>
 
+              <div className="pt-2 border-t border-zinc-800/60 text-[11px] text-zinc-500 font-mono flex items-center justify-between">
+                <span>Cluster Node: bom-blr-01</span>
+                <span>Region: Asia-South1</span>
+              </div>
+            </div>
           </div>
 
         </div>

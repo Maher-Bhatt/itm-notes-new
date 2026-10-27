@@ -251,7 +251,7 @@ export default function OopjImpQuestionsPage() {
 
           <button
             onClick={handlePrint}
-            className="h-9 px-3.5 rounded-xl bg-[#183F36] text-[#D6E85D] hover:bg-[#12332C] font-black text-xs flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer shadow-md shadow-[#183F36]/20 font-display"
+            className="h-9 px-3.5 rounded-xl bg-[#18181B] text-[#FAFAFA] hover:bg-[#27272A] font-black text-xs flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer shadow-md shadow-[#18181B]/20 font-display"
             title="Print or Save as PDF"
           >
             <Printer className="h-3.5 w-3.5" />
@@ -261,16 +261,16 @@ export default function OopjImpQuestionsPage() {
       </div>
 
       {/* ── HERO BANNER: PAPER PATTERN & PROGRESS ── */}
-      <div className="p-5 sm:p-6 rounded-3xl bg-gradient-to-r from-[#183F36] via-[#1D4A3F] to-[#12332C] text-white shadow-xl border border-[#D6E85D]/30 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#D6E85D]/15 via-transparent to-transparent pointer-events-none" />
+      <div className="p-5 sm:p-6 rounded-3xl bg-gradient-to-r from-[#18181B] via-[#1D4A3F] to-[#27272A] text-white shadow-xl border border-[#FAFAFA]/30 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#FAFAFA]/15 via-transparent to-transparent pointer-events-none" />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 relative z-10 items-center">
           <div className="lg:col-span-8 space-y-3">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#D6E85D] text-[#183F36] shadow-xs">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#FAFAFA] text-[#18181B] shadow-xs">
                 Official University Format
               </span>
-              <span className="text-xs font-mono text-[#D6E85D] font-bold">
+              <span className="text-xs font-mono text-[#FAFAFA] font-bold">
                 Paper: Q1 MCQs | Q2 3-Mark (any 3 of 5) | Q3 5-Mark (any 3 of 5)
               </span>
             </div>
@@ -278,7 +278,7 @@ export default function OopjImpQuestionsPage() {
             <h2 className="text-lg sm:text-xl font-black text-white font-display">
               Master Every Code Trace, Theory Proof & Viva Trap
             </h2>
-            <p className="text-xs text-[#A2BAAF] leading-relaxed max-w-3xl">
+            <p className="text-xs text-[#A1A1AA] leading-relaxed max-w-3xl">
               Every program has been compiled and executed. For 5-mark answers write:{" "}
               <strong className="text-white">Definition (1m)</strong> +{" "}
               <strong className="text-white">Code (2.5m)</strong> +{" "}
@@ -296,7 +296,7 @@ export default function OopjImpQuestionsPage() {
               <span className="px-2.5 py-1 rounded-xl bg-white/10 border border-white/15 text-white/90 font-mono">
                 Part C: 18 Theory
               </span>
-              <span className="px-2.5 py-1 rounded-xl bg-[#D6E85D]/20 border border-[#D6E85D]/40 text-[#D6E85D] font-mono font-bold">
+              <span className="px-2.5 py-1 rounded-xl bg-[#FAFAFA]/20 border border-[#FAFAFA]/40 text-[#FAFAFA] font-mono font-bold">
                 Part D: Strategy & 10 MCQs
               </span>
             </div>
@@ -306,17 +306,17 @@ export default function OopjImpQuestionsPage() {
           <div className="lg:col-span-4 bg-black/25 backdrop-blur-md rounded-2xl p-4 border border-white/10 space-y-3 text-center sm:text-left">
             <div className="flex items-center justify-between text-xs">
               <span className="font-bold text-white/90">Remedial Mastery Tracker</span>
-              <span className="font-mono font-bold text-[#D6E85D]">{progressPercent}% Done</span>
+              <span className="font-mono font-bold text-[#FAFAFA]">{progressPercent}% Done</span>
             </div>
 
             <div className="h-2 rounded-full bg-white/20 overflow-hidden">
               <div
-                className="h-full bg-[#D6E85D] rounded-full transition-all duration-500"
+                className="h-full bg-[#FAFAFA] rounded-full transition-all duration-500"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
 
-            <div className="flex items-center justify-between text-[11px] text-[#A2BAAF]">
+            <div className="flex items-center justify-between text-[11px] text-[#A1A1AA]">
               <span>
                 {masteredCount} of {totalQuestions} Topics Mastered
               </span>
@@ -357,7 +357,7 @@ export default function OopjImpQuestionsPage() {
               onClick={() => setActiveTab(tab.id as any)}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer ${
                 activeTab === tab.id
-                  ? "bg-[#183F36] text-[#D6E85D] shadow-sm font-black"
+                  ? "bg-[#18181B] text-[#FAFAFA] shadow-sm font-black"
                   : "bg-secondary/60 text-muted-foreground hover:text-foreground hover:bg-secondary"
               }`}
             >
@@ -410,7 +410,7 @@ export default function OopjImpQuestionsPage() {
                 onClick={() => setTheoryUnitFilter("all")}
                 className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
                   theoryUnitFilter === "all"
-                    ? "bg-[#183F36] text-[#D6E85D] shadow-xs"
+                    ? "bg-[#18181B] text-[#FAFAFA] shadow-xs"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -420,7 +420,7 @@ export default function OopjImpQuestionsPage() {
                 onClick={() => setTheoryUnitFilter(2)}
                 className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
                   theoryUnitFilter === 2
-                    ? "bg-[#183F36] text-[#D6E85D] shadow-xs"
+                    ? "bg-[#18181B] text-[#FAFAFA] shadow-xs"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -430,7 +430,7 @@ export default function OopjImpQuestionsPage() {
                 onClick={() => setTheoryUnitFilter(3)}
                 className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
                   theoryUnitFilter === 3
-                    ? "bg-[#183F36] text-[#D6E85D] shadow-xs"
+                    ? "bg-[#18181B] text-[#FAFAFA] shadow-xs"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -476,7 +476,7 @@ export default function OopjImpQuestionsPage() {
                   >
                     <div className="space-y-1.5 flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="px-2 py-0.5 rounded-md bg-[#183F36] text-[#D6E85D] font-mono font-bold text-[10px]">
+                        <span className="px-2 py-0.5 rounded-md bg-[#18181B] text-[#FAFAFA] font-mono font-bold text-[10px]">
                           Unit {topic.unit}
                         </span>
                         <span className="px-2 py-0.5 rounded-md bg-secondary text-foreground font-semibold text-[10px]">
@@ -648,7 +648,7 @@ export default function OopjImpQuestionsPage() {
                       </button>
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-black bg-[#183F36] text-[#D6E85D] dark:bg-[#D6E85D] dark:text-[#183F36]">
+                          <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-black bg-[#18181B] text-[#FAFAFA] dark:bg-[#FAFAFA] dark:text-[#18181B]">
                             Program {prog.programNumber}
                           </span>
                           <h3 className="font-bold text-sm sm:text-base text-foreground font-display">
@@ -683,7 +683,7 @@ export default function OopjImpQuestionsPage() {
                         className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                           isRevealed
                             ? "bg-secondary text-foreground"
-                            : "bg-[#183F36] text-[#D6E85D] shadow-xs"
+                            : "bg-[#18181B] text-[#FAFAFA] shadow-xs"
                         }`}
                       >
                         {isRevealed ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
@@ -1113,7 +1113,7 @@ export default function OopjImpQuestionsPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {EXAM_WRITING_FORMATS.map((fmt, idx) => (
               <div key={idx} className="p-4 rounded-2xl bg-card border border-border shadow-xs space-y-1.5">
-                <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-[#183F36] text-[#D6E85D] dark:bg-[#D6E85D] dark:text-[#183F36] uppercase">
+                <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-[#18181B] text-[#FAFAFA] dark:bg-[#FAFAFA] dark:text-[#18181B] uppercase">
                   {fmt.type}
                 </span>
                 <p className="text-xs text-foreground/90 font-medium leading-relaxed pt-1">
@@ -1181,7 +1181,7 @@ export default function OopjImpQuestionsPage() {
                     <div className="pt-2 border-t border-border/60 flex items-center justify-between text-xs">
                       {isOpen ? (
                         <div className="space-y-0.5">
-                          <span className="px-2 py-0.5 rounded-md bg-[#183F36] text-[#D6E85D] font-mono font-black text-xs inline-block">
+                          <span className="px-2 py-0.5 rounded-md bg-[#18181B] text-[#FAFAFA] font-mono font-black text-xs inline-block">
                             {mcq.answer}
                           </span>
                           {mcq.explanation && (

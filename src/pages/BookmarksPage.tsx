@@ -124,7 +124,7 @@ export default function BookmarksPage() {
           await supabase.from('bookmark_folders').insert({
             user_id: user.id,
             name,
-            color: '#183F36'
+            color: '#18181B'
           });
         }
       }
@@ -148,7 +148,7 @@ export default function BookmarksPage() {
       await supabase.from('bookmark_folders').insert({
         user_id: user.id,
         name: trimmed,
-        color: '#183F36'
+        color: '#18181B'
       });
     }
     toast.success(`Created folder: ${trimmed}`);

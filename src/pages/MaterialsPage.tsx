@@ -489,7 +489,7 @@ function PlainMaterialCard({ mat }: { mat: StudyMaterial }) {
           onClick={handleDownload}
           className="flex-1 h-7 rounded-lg bg-[#6366f1] hover:bg-[#122d26] text-white font-semibold text-[11px] flex items-center justify-center gap-1 transition-all active:scale-95"
         >
-          <Download className="h-3 w-3 text-[#D6E85D]" />
+          <Download className="h-3 w-3 text-[#FAFAFA]" />
           <span>Save</span>
         </button>
       </div>
@@ -565,7 +565,7 @@ function RichOverviewCard({
           onClick={() => onDownload(item)}
           className="flex-1 h-7 rounded-lg bg-[#6366f1] hover:bg-[#122d26] text-white font-semibold text-[11px] flex items-center justify-center gap-1 transition-all active:scale-95 cursor-pointer"
         >
-          <Download className="h-3 w-3 text-[#D6E85D]" />
+          <Download className="h-3 w-3 text-[#FAFAFA]" />
           <span>PDF</span>
         </button>
       </div>
@@ -782,27 +782,27 @@ export default function MaterialsPage() {
       </div>
 
       {/* ── REMEDIAL SPECIAL HERO BANNER ── */}
-      <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#6366f1] via-[#1D4A3F] to-[#12332C] text-white border border-[#D6E85D]/40 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#6366f1] via-[#1D4A3F] to-[#27272A] text-white border border-[#FAFAFA]/40 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#D6E85D] text-[#6366f1]">
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#FAFAFA] text-[#6366f1]">
               🔥 Remedial Special 2026
             </span>
-            <span className="text-xs font-mono text-[#D6E85D] font-bold">
+            <span className="text-xs font-mono text-[#FAFAFA] font-bold">
               OOPJ (C2311C1) Units 2 & 3
             </span>
           </div>
           <h2 className="text-base sm:text-lg font-bold text-white font-display">
             Zero-to-Hero Remedial Master Notes & 30-Page Solved Question Bank
           </h2>
-          <p className="text-xs text-[#A2BAAF] max-w-2xl leading-relaxed">
+          <p className="text-xs text-[#A1A1AA] max-w-2xl leading-relaxed">
             Designed for students who need to pass: complete syllabus theory from scratch (classes, objects, inheritance, interfaces) combined with all 5 Predict the Output traces, 15 Long Answer 5M programs, 18 Theory 3M proofs, and rapid MCQ revision.
           </p>
         </div>
 
         <Link
           to="/imp-questions/oopj"
-          className="px-4 py-2.5 rounded-xl bg-[#D6E85D] hover:bg-[#c4d64d] text-[#6366f1] font-bold text-xs shrink-0 flex items-center justify-center gap-2 shadow-md transition-all active:scale-95 cursor-pointer font-display"
+          className="px-4 py-2.5 rounded-xl bg-[#FAFAFA] hover:bg-[#c4d64d] text-[#6366f1] font-bold text-xs shrink-0 flex items-center justify-center gap-2 shadow-md transition-all active:scale-95 cursor-pointer font-display"
         >
           <span>Open Remedial Master Guide →</span>
         </Link>
@@ -843,7 +843,7 @@ export default function MaterialsPage() {
               onClick={() => setSemesterFilter(s)}
               className={`px-3 py-1 rounded-lg transition-all whitespace-nowrap ${
                 semesterFilter === s
-                  ? "bg-[#6366f1] text-[#D6E85D] font-bold"
+                  ? "bg-[#6366f1] text-[#FAFAFA] font-bold"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -860,7 +860,7 @@ export default function MaterialsPage() {
               onClick={() => setTypeFilter(cat)}
               className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all border whitespace-nowrap ${
                 typeFilter === cat
-                  ? "bg-[#6366f1] text-[#D6E85D] border-[#6366f1]"
+                  ? "bg-[#6366f1] text-[#FAFAFA] border-[#6366f1]"
                   : "bg-secondary text-muted-foreground border-border hover:text-foreground"
               }`}
             >
@@ -992,7 +992,7 @@ export default function MaterialsPage() {
                   stroke="#6366f1"
                   strokeWidth={2.5}
                   dot={{ r: 3, fill: "#6366f1" }}
-                  activeDot={{ r: 5, fill: "#D6E85D" }}
+                  activeDot={{ r: 5, fill: "#FAFAFA" }}
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -1032,7 +1032,7 @@ export default function MaterialsPage() {
             >
               Open Solved Bank &gt;
             </button>
-            <span className="text-[11px] text-[#D6E85D] font-semibold font-mono">✓ 100% Verified</span>
+            <span className="text-[11px] text-[#FAFAFA] font-semibold font-mono">✓ 100% Verified</span>
           </div>
         </div>
       </div>
@@ -1057,7 +1057,7 @@ export default function MaterialsPage() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => openTimetable(timetableTab, vivaClassFilter)}
-              className="h-8 px-3 rounded-xl bg-[#6366f1] text-[#D6E85D] hover:bg-[#12332C] font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer shadow-xs font-display"
+              className="h-8 px-3 rounded-xl bg-[#6366f1] text-[#FAFAFA] hover:bg-[#27272A] font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer shadow-xs font-display"
             >
               <Calendar className="h-3.5 w-3.5" />
               <span>Open Timetable Hub</span>
@@ -1071,7 +1071,7 @@ export default function MaterialsPage() {
             onClick={() => setTimetableTab("viva")}
             className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 flex items-center gap-1.5 cursor-pointer ${
               timetableTab === "viva"
-                ? "bg-[#6366f1] text-[#D6E85D] font-black shadow-xs"
+                ? "bg-[#6366f1] text-[#FAFAFA] font-black shadow-xs"
                 : "bg-secondary text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -1084,7 +1084,7 @@ export default function MaterialsPage() {
             onClick={() => setTimetableTab("remedial")}
             className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 flex items-center gap-1.5 cursor-pointer ${
               timetableTab === "remedial"
-                ? "bg-[#6366f1] text-[#D6E85D] font-black shadow-xs"
+                ? "bg-[#6366f1] text-[#FAFAFA] font-black shadow-xs"
                 : "bg-secondary text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -1096,7 +1096,7 @@ export default function MaterialsPage() {
             onClick={() => setTimetableTab("mst")}
             className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 flex items-center gap-1.5 cursor-pointer ${
               timetableTab === "mst"
-                ? "bg-[#6366f1] text-[#D6E85D] font-black shadow-xs"
+                ? "bg-[#6366f1] text-[#FAFAFA] font-black shadow-xs"
                 : "bg-secondary text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -1120,7 +1120,7 @@ export default function MaterialsPage() {
                       onClick={() => setVivaClassFilter(cls)}
                       className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
                         isSel
-                          ? "bg-[#6366f1] text-[#D6E85D] font-bold shadow-xs"
+                          ? "bg-[#6366f1] text-[#FAFAFA] font-bold shadow-xs"
                           : "bg-background border border-border text-muted-foreground hover:text-foreground"
                       }`}
                     >
@@ -1197,7 +1197,7 @@ export default function MaterialsPage() {
                   onClick={() => setRemedialBranchFilter(b.id)}
                   className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                     remedialBranchFilter === b.id
-                      ? "bg-[#6366f1] text-[#D6E85D] font-bold"
+                      ? "bg-[#6366f1] text-[#FAFAFA] font-bold"
                       : "bg-background border border-border text-muted-foreground hover:text-foreground"
                   }`}
                 >
@@ -1210,21 +1210,21 @@ export default function MaterialsPage() {
             </div>
 
             {/* High-Yield OOPJ Remedial Question Bank Callout */}
-            <div className="p-3.5 rounded-2xl bg-[#6366f1] text-[#E8EDE4] flex flex-col sm:flex-row sm:items-center justify-between gap-3 border border-[#D6E85D]/30 shadow-xs">
+            <div className="p-3.5 rounded-2xl bg-[#6366f1] text-[#FAFAFA] flex flex-col sm:flex-row sm:items-center justify-between gap-3 border border-[#FAFAFA]/30 shadow-xs">
               <div>
-                <span className="text-[10px] font-bold font-mono px-2 py-0.5 rounded bg-[#D6E85D] text-[#6366f1] uppercase">
+                <span className="text-[10px] font-bold font-mono px-2 py-0.5 rounded bg-[#FAFAFA] text-[#6366f1] uppercase">
                   Remedial Paper 1 · Oct 26
                 </span>
                 <h4 className="font-bold text-xs sm:text-sm text-white font-display mt-1">
                   OOPJ (C2311C1) Solved Master Question Bank
                 </h4>
-                <p className="text-[11px] text-[#A2BAAF]">
+                <p className="text-[11px] text-[#A1A1AA]">
                   Line-by-line output traces, 15 5-mark code programs, 18 3-mark theory proofs & Q1 MCQs.
                 </p>
               </div>
               <button
                 onClick={() => navigate("/imp-questions/oopj")}
-                className="h-8 px-3.5 rounded-xl bg-[#D6E85D] text-[#6366f1] hover:bg-[#c8dc4e] font-black text-xs flex items-center gap-1.5 transition-all cursor-pointer shrink-0 font-display shadow-xs self-start sm:self-auto"
+                className="h-8 px-3.5 rounded-xl bg-[#FAFAFA] text-[#6366f1] hover:bg-[#E4E4E7] font-black text-xs flex items-center gap-1.5 transition-all cursor-pointer shrink-0 font-display shadow-xs self-start sm:self-auto"
               >
                 <BookOpen className="h-3.5 w-3.5" />
                 <span>Open Solved Bank</span>
@@ -1284,7 +1284,7 @@ export default function MaterialsPage() {
                   onClick={() => setSelectedBatchId(batch.id)}
                   className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all ${
                     selectedBatchId === batch.id
-                      ? "bg-[#6366f1] text-[#D6E85D] font-bold"
+                      ? "bg-[#6366f1] text-[#FAFAFA] font-bold"
                       : "bg-secondary text-muted-foreground hover:text-foreground"
                   }`}
                 >
@@ -1526,7 +1526,7 @@ export default function MaterialsPage() {
                       onClick={() => handleDownloadRich(activePreview)}
                       className="px-6 py-2.5 rounded-xl bg-[#6366f1] text-white font-bold text-xs shadow-md hover:opacity-90 flex items-center gap-2 active:scale-95 transition-all"
                     >
-                      <Download className="h-4 w-4 text-[#D6E85D]" />
+                      <Download className="h-4 w-4 text-[#FAFAFA]" />
                       <span>Download PDF Now</span>
                     </button>
                     <a
@@ -1557,7 +1557,7 @@ export default function MaterialsPage() {
                   onClick={() => handleDownloadRich(activePreview)}
                   className="px-4 py-1.5 rounded-xl bg-[#6366f1] text-white font-bold text-xs flex items-center gap-1.5 shadow-xs"
                 >
-                  <Download className="h-3.5 w-3.5 text-[#D6E85D]" />
+                  <Download className="h-3.5 w-3.5 text-[#FAFAFA]" />
                   <span>Download</span>
                 </button>
               </div>

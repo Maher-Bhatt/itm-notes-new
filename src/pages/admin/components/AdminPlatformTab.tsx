@@ -36,9 +36,9 @@ function StatCard({ icon: Icon, label, value, accent }: StatCardProps) {
     <div className="bg-slate-800 border border-slate-700 rounded-2xl p-4 sm:p-5 flex items-center gap-4 shadow-sm">
       <div
         className="h-11 w-11 rounded-xl flex items-center justify-center shrink-0"
-        style={{ background: accent ? `${accent}22` : "#D6E85D22" }}
+        style={{ background: accent ? `${accent}22` : "#FAFAFA22" }}
       >
-        <Icon className="h-5 w-5" style={{ color: accent ?? "#D6E85D" }} />
+        <Icon className="h-5 w-5" style={{ color: accent ?? "#FAFAFA" }} />
       </div>
       <div>
         <p className="text-xs text-slate-400 font-medium uppercase tracking-wide">{label}</p>
@@ -157,7 +157,7 @@ export function AdminPlatformTab() {
       {/* 1. Academic curriculum counts */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
         {[
-          { label: "Subjects", value: totalSubjects, icon: BookOpen, accent: "#D6E85D" },
+          { label: "Subjects", value: totalSubjects, icon: BookOpen, accent: "#FAFAFA" },
           { label: "Units", value: totalUnits, icon: Layers, accent: "#60a5fa" },
           { label: "Topics", value: totalTopics, icon: FileText, accent: "#a78bfa" },
           { label: "MCQs", value: totalMcqs, icon: Hash, accent: "#f472b6" },
@@ -178,7 +178,7 @@ export function AdminPlatformTab() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-700">
           <div>
             <h3 className="font-bold text-sm text-white flex items-center gap-2">
-              <Database className="h-4 w-4 text-[#D6E85D]" />
+              <Database className="h-4 w-4 text-[#FAFAFA]" />
               Database Row Volumes & Storage Usage
             </h3>
             <p className="text-[11px] text-slate-400 mt-0.5">
@@ -188,7 +188,7 @@ export function AdminPlatformTab() {
 
           <div className="flex items-center gap-2 text-xs">
             <span className="text-slate-400">Total Storage:</span>
-            <span className="px-2.5 py-0.5 rounded-md bg-slate-900 border border-slate-700 text-[#D6E85D] font-mono font-bold">
+            <span className="px-2.5 py-0.5 rounded-md bg-slate-900 border border-slate-700 text-[#FAFAFA] font-mono font-bold">
               48.2 MB / 500 MB (9.6%)
             </span>
           </div>
@@ -250,7 +250,7 @@ export function AdminPlatformTab() {
       {/* 3. Bar chart */}
       <div className="bg-slate-800 border border-slate-700 rounded-3xl p-5 sm:p-6 space-y-4 shadow-xl">
         <h3 className="font-bold text-sm text-white flex items-center gap-2">
-          <BarChart3 className="h-4 w-4 text-[#D6E85D]" />
+          <BarChart3 className="h-4 w-4 text-[#FAFAFA]" />
           MCQ Count per Subject
         </h3>
         <ResponsiveContainer width="100%" height={260}>
@@ -270,7 +270,7 @@ export function AdminPlatformTab() {
             />
             <Bar dataKey="mcqs" radius={[6, 6, 0, 0]}>
               {mcqChartData.map((_, i) => (
-                <Cell key={i} fill={i % 2 === 0 ? "#D6E85D" : "#183F36"} />
+                <Cell key={i} fill={i % 2 === 0 ? "#FAFAFA" : "#18181B"} />
               ))}
             </Bar>
           </BarChart>
@@ -309,7 +309,7 @@ export function AdminPlatformTab() {
                     <td className="px-4 py-3 text-slate-300">{s.units?.length ?? 0}</td>
                     <td className="px-4 py-3 text-slate-300">{sTopics}</td>
                     <td className="px-4 py-3">
-                      <span className="text-[#D6E85D] font-bold">{sMcqs}</span>
+                      <span className="text-[#FAFAFA] font-bold">{sMcqs}</span>
                     </td>
                   </tr>
                 );

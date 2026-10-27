@@ -546,14 +546,14 @@ export default function ProfilePage() {
                 onClick={() => setActiveProfileTab(tab.id as any)}
                 className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 cursor-pointer ${
                   isActive
-                    ? 'bg-[#183F36] text-[#D6E85D] shadow-sm shadow-[#183F36]/30'
+                    ? 'bg-[#18181B] text-[#FAFAFA] shadow-sm shadow-[#18181B]/30'
                     : 'bg-secondary/60 text-muted-foreground hover:text-foreground hover:bg-secondary'
                 }`}
               >
                 <span>{tab.label}</span>
                 {tab.count && (
                   <span className={`text-[10px] px-1.5 py-0.2 rounded-md ${
-                    isActive ? 'bg-[#D6E85D]/20 text-[#D6E85D]' : 'bg-background/80 text-muted-foreground'
+                    isActive ? 'bg-[#FAFAFA]/20 text-[#FAFAFA]' : 'bg-background/80 text-muted-foreground'
                   }`}>
                     {tab.count}
                   </span>
@@ -572,18 +572,18 @@ export default function ProfilePage() {
         {activeProfileTab === 'achievements' && (
           <div className="space-y-6 animate-fade-in">
             {/* ⚡ Active Knowledge Booster Hero Card */}
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#183F36] via-[#12332C] to-[#0A1A16] border border-[#D6E85D]/50 p-5 sm:p-7 text-[#F5F1E8] shadow-2xl">
-              <div className="absolute top-0 right-0 w-80 h-80 bg-[#D6E85D]/15 rounded-full blur-3xl pointer-events-none" />
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#18181B] via-[#27272A] to-[#09090B] border border-[#FAFAFA]/50 p-5 sm:p-7 text-[#F5F1E8] shadow-2xl">
+              <div className="absolute top-0 right-0 w-80 h-80 bg-[#FAFAFA]/15 rounded-full blur-3xl pointer-events-none" />
               <div className="absolute bottom-0 left-1/3 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
               <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
                 <div className="flex items-start gap-4">
                   <div className="relative">
-                    <div className="w-14 h-14 rounded-2xl bg-[#D6E85D]/20 border border-[#D6E85D]/40 flex items-center justify-center text-[#D6E85D] shrink-0 shadow-inner">
+                    <div className="w-14 h-14 rounded-2xl bg-[#FAFAFA]/20 border border-[#FAFAFA]/40 flex items-center justify-center text-[#FAFAFA] shrink-0 shadow-inner">
                       <Rocket className="h-7 w-7 animate-pulse" />
                     </div>
                     {isBoostActive && (
-                      <span className="absolute -top-1 -right-1 w-4 h-4 bg-amber-500 rounded-full border-2 border-[#183F36] animate-ping" />
+                      <span className="absolute -top-1 -right-1 w-4 h-4 bg-amber-500 rounded-full border-2 border-[#18181B] animate-ping" />
                     )}
                   </div>
 
@@ -591,17 +591,17 @@ export default function ProfilePage() {
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full font-display border ${
                         isBoostActive
-                          ? 'bg-[#D6E85D] text-[#183F36] border-[#D6E85D] shadow-sm'
+                          ? 'bg-[#FAFAFA] text-[#18181B] border-[#FAFAFA] shadow-sm'
                           : 'bg-white/10 text-white border-white/20'
                       }`}>
                         {isBoostActive ? '⚡ 2.0x Boost Active' : '⚡ 2.0x Boost Ready'}
                       </span>
                       {boostTimeLeft ? (
-                        <span className="text-xs text-[#D6E85D] font-mono font-bold bg-black/40 px-2 py-0.5 rounded-md border border-[#D6E85D]/30">
+                        <span className="text-xs text-[#FAFAFA] font-mono font-bold bg-black/40 px-2 py-0.5 rounded-md border border-[#FAFAFA]/30">
                           ⏱️ {boostTimeLeft.minutes}m {String(boostTimeLeft.seconds).padStart(2, '0')}s remaining
                         </span>
                       ) : (
-                        <span className="text-xs text-[#A2BAAF] font-semibold">
+                        <span className="text-xs text-[#A1A1AA] font-semibold">
                           Mid-Sem Sprint Mode
                         </span>
                       )}
@@ -609,7 +609,7 @@ export default function ProfilePage() {
                     <h3 className="text-xl font-black text-[#F5F1E8] font-display">
                       Knowledge Booster & Academic XP Multiplier
                     </h3>
-                    <p className="text-xs text-[#E8EDE4]/80 max-w-xl leading-relaxed">
+                    <p className="text-xs text-[#FAFAFA]/80 max-w-xl leading-relaxed">
                       Double XP (+100% bonus) is awarded across all curriculum unit notes, topic practice quizzes, and verified practicals in the University Coding Lab.
                     </p>
                   </div>
@@ -619,7 +619,7 @@ export default function ProfilePage() {
                   <button
                     type="button"
                     onClick={handleActivateBoost}
-                    className="px-5 py-3 rounded-2xl bg-[#D6E85D] hover:bg-[#C8DC47] text-[#183F36] font-extrabold text-xs shadow-lg shadow-[#D6E85D]/25 transition-all hover:scale-102 active:scale-98 flex items-center gap-2 cursor-pointer font-display"
+                    className="px-5 py-3 rounded-2xl bg-[#FAFAFA] hover:bg-[#C8DC47] text-[#18181B] font-extrabold text-xs shadow-lg shadow-[#FAFAFA]/25 transition-all hover:scale-102 active:scale-98 flex items-center gap-2 cursor-pointer font-display"
                   >
                     <Zap className="h-4 w-4 fill-current" />
                     <span>{isBoostActive ? 'Extend 2x Boost (+30m)' : 'Activate 2x Boost (30m)'}</span>
@@ -673,7 +673,7 @@ export default function ProfilePage() {
                     onClick={() => setActiveCategoryFilter(tab.id as any)}
                     className={`px-3 py-1.5 rounded-xl whitespace-nowrap transition-all border cursor-pointer flex items-center gap-1.5 ${
                       activeCategoryFilter === tab.id
-                        ? 'bg-[#183F36] text-[#D6E85D] border-[#D6E85D]/50 shadow-sm font-bold'
+                        ? 'bg-[#18181B] text-[#FAFAFA] border-[#FAFAFA]/50 shadow-sm font-bold'
                         : 'bg-secondary/40 text-muted-foreground hover:text-foreground border-border/60 hover:bg-secondary'
                     }`}
                   >
@@ -713,15 +713,15 @@ export default function ProfilePage() {
                 {filteredAchievements.map((ach) => {
                   const isUnlocked = !!ach.unlockedAt;
                   const tierColors = {
-                    mythic: 'border-[#D6E85D] bg-gradient-to-br from-[#183F36]/60 via-card to-card shadow-[0_0_25px_rgba(214,232,93,0.2)] ring-1 ring-[#D6E85D]/50',
+                    mythic: 'border-[#FAFAFA] bg-gradient-to-br from-[#18181B]/60 via-card to-card shadow-[0_0_25px_rgba(214,232,93,0.2)] ring-1 ring-[#FAFAFA]/50',
                     legendary: 'border-purple-400 bg-gradient-to-br from-purple-500/20 via-card to-card shadow-[0_0_25px_rgba(168,85,247,0.2)] ring-1 ring-purple-500/40',
-                    gold: 'border-[#D6E85D]/80 bg-gradient-to-br from-amber-500/20 via-card to-card shadow-[0_0_25px_rgba(245,158,11,0.2)] ring-1 ring-amber-500/40',
+                    gold: 'border-[#FAFAFA]/80 bg-gradient-to-br from-amber-500/20 via-card to-card shadow-[0_0_25px_rgba(245,158,11,0.2)] ring-1 ring-amber-500/40',
                     silver: 'border-slate-300 bg-gradient-to-br from-slate-300/15 via-card to-card ring-1 ring-slate-300/30',
                     bronze: 'border-[#E07A5F] bg-gradient-to-br from-[#E07A5F]/15 via-card to-card ring-1 ring-[#E07A5F]/30',
                   };
 
                   const tierBadges = {
-                    mythic: 'bg-[#D6E85D]/20 text-[#D6E85D] border-[#D6E85D]/50 font-black',
+                    mythic: 'bg-[#FAFAFA]/20 text-[#FAFAFA] border-[#FAFAFA]/50 font-black',
                     legendary: 'bg-purple-600/20 text-purple-400 border-purple-500/50 font-black',
                     gold: 'bg-amber-500/20 text-amber-400 border-amber-500/50 font-black',
                     silver: 'bg-slate-400/20 text-slate-300 border-slate-400/50 font-black',
@@ -759,7 +759,7 @@ export default function ProfilePage() {
                         }`}>
                           {ach.icon}
                           {isUnlocked && (
-                            <span className="absolute -top-1 -right-1 w-3 h-3 bg-[#D6E85D] rounded-full border border-black animate-pulse" />
+                            <span className="absolute -top-1 -right-1 w-3 h-3 bg-[#FAFAFA] rounded-full border border-black animate-pulse" />
                           )}
                         </div>
 
@@ -777,12 +777,12 @@ export default function ProfilePage() {
                       </div>
 
                       <div className="flex items-center justify-between pt-3 border-t border-border/40 text-[11px]">
-                        <span className="font-black text-[#D6E85D] font-mono bg-[#183F36] px-2.5 py-1 rounded-lg border border-[#D6E85D]/30 shadow-xs">
+                        <span className="font-black text-[#FAFAFA] font-mono bg-[#18181B] px-2.5 py-1 rounded-lg border border-[#FAFAFA]/30 shadow-xs">
                           +{ach.xpReward} XP
                         </span>
 
                         {isUnlocked ? (
-                          <span className="text-[#D6E85D] font-black flex items-center gap-1 group-hover:underline font-display">
+                          <span className="text-[#FAFAFA] font-black flex items-center gap-1 group-hover:underline font-display">
                             <Sparkles className="h-3.5 w-3.5" /> View 3D Trophy ↗
                           </span>
                         ) : targetAction ? (
@@ -932,7 +932,7 @@ export default function ProfilePage() {
                       <div className="space-y-1.5 pt-1">
                         <div className="h-2 rounded-full bg-secondary overflow-hidden">
                           <div
-                            className="h-full bg-[#D6E85D] rounded-full transition-all duration-500"
+                            className="h-full bg-[#FAFAFA] rounded-full transition-all duration-500"
                             style={{ width: `${Math.max(5, pct)}%` }}
                           />
                         </div>
@@ -1123,7 +1123,7 @@ export default function ProfilePage() {
                         onClick={() => handleSetWeeklyGoalDays(days)}
                         className={`py-2 rounded-xl text-xs font-bold transition-all border cursor-pointer ${
                           weeklyGoalDays === days
-                            ? 'bg-[#183F36] text-[#D6E85D] border-[#183F36] shadow-sm'
+                            ? 'bg-[#18181B] text-[#FAFAFA] border-[#18181B] shadow-sm'
                             : 'bg-secondary/50 text-foreground border-border hover:border-primary/40'
                         }`}
                       >
@@ -1194,7 +1194,7 @@ export default function ProfilePage() {
 
                 <Link
                   to="/today"
-                  className="px-4 py-2 rounded-xl bg-[#183F36] hover:bg-[#12332C] text-[#D6E85D] text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 self-start sm:self-auto"
+                  className="px-4 py-2 rounded-xl bg-[#18181B] hover:bg-[#27272A] text-[#FAFAFA] text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 self-start sm:self-auto"
                 >
                   <span>Open Today's Hub</span>
                   <ChevronRight className="h-3.5 w-3.5" />

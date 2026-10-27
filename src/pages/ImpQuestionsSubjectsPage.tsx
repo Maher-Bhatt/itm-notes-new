@@ -85,9 +85,9 @@ const MASTER_SUBJECTS: SubjectCardConfig[] = [
     path: "/imp-questions/oopj",
     icon: Coffee,
     colorScheme: {
-      iconBg: "bg-[#183F36] text-[#D6E85D]",
-      iconColor: "text-[#D6E85D]",
-      borderHover: "hover:border-[#183F36] dark:hover:border-[#D6E85D]/60",
+      iconBg: "bg-[#18181B] text-[#FAFAFA]",
+      iconColor: "text-[#FAFAFA]",
+      borderHover: "hover:border-[#18181B] dark:hover:border-[#FAFAFA]/60",
       cardBorder: "border-primary/40",
     },
     description: "Zero-to-Hero passing guide: Complete Units 2 & 3 syllabus theory, dynamic method dispatch, constructor chaining, interfaces, 38 solved exam questions with traces & viral sharing.",
@@ -288,21 +288,21 @@ export default function ImpQuestionsSubjectsPage() {
       </div>
 
       {/* ── FEATURED HERO: 5-SUBJECT MASTER UNIVERSITY SOLVED BANKS ── */}
-      <div className="p-5 sm:p-7 rounded-3xl bg-gradient-to-r from-[#183F36] via-[#1D4A3F] to-[#12332C] text-white shadow-xl border border-[#D6E85D]/40 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#D6E85D]/20 via-transparent to-transparent pointer-events-none" />
+      <div className="p-5 sm:p-7 rounded-3xl bg-gradient-to-r from-[#18181B] via-[#1D4A3F] to-[#27272A] text-white shadow-xl border border-[#FAFAFA]/40 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#FAFAFA]/20 via-transparent to-transparent pointer-events-none" />
 
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
           <div className="space-y-3 max-w-3xl">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#D6E85D] text-[#183F36] shadow-xs flex items-center gap-1.5 font-display">
-                <Flame className="h-3 w-3 fill-[#183F36]" />
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#FAFAFA] text-[#18181B] shadow-xs flex items-center gap-1.5 font-display">
+                <Flame className="h-3 w-3 fill-[#18181B]" />
                 University Model Solved Banks
               </span>
-              <span className="text-xs font-mono font-bold text-[#D6E85D]">
+              <span className="text-xs font-mono font-bold text-[#FAFAFA]">
                 190 Master Questions · 38 Solved Per Subject
               </span>
               <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white/10 text-white border border-white/20 flex items-center gap-1">
-                <Mic className="h-3 w-3 text-[#D6E85D]" />
+                <Mic className="h-3 w-3 text-[#FAFAFA]" />
                 Single Studio AI Voice Narrator
               </span>
             </div>
@@ -310,7 +310,7 @@ export default function ImpQuestionsSubjectsPage() {
             <h2 className="text-xl sm:text-2xl font-black text-white font-display tracking-tight">
               Complete Model Solutions for All 5 Semester 3 Subjects
             </h2>
-            <p className="text-xs sm:text-sm text-[#A2BAAF] leading-relaxed">
+            <p className="text-xs sm:text-sm text-[#A1A1AA] leading-relaxed">
               Every subject includes: <strong>Part A</strong> (5 Predict Output dry runs with line-by-line trace tables), <strong>Part B</strong> (15 5-mark complete code implementations with exact execution outputs & viva traps), <strong>Part C</strong> (18 3-mark comparative theory matrices), and <strong>Part D</strong> (University exam strategy, fatal mistakes & MCQs).
             </p>
 
@@ -318,32 +318,32 @@ export default function ImpQuestionsSubjectsPage() {
             <div className="flex flex-wrap items-center gap-2 pt-1 text-xs">
               <button
                 onClick={() => navigate("/imp-questions/oopj")}
-                className="px-3 py-1 rounded-xl bg-white/15 hover:bg-[#D6E85D] hover:text-[#183F36] text-white font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+                className="px-3 py-1 rounded-xl bg-white/15 hover:bg-[#FAFAFA] hover:text-[#18181B] text-white font-bold transition-all flex items-center gap-1.5 cursor-pointer"
               >
                 <span>Java (OOPJ)</span>
                 <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-500/30 text-amber-200">Oct 26</span>
               </button>
               <button
                 onClick={() => navigate("/imp-questions/dsa")}
-                className="px-3 py-1 rounded-xl bg-white/15 hover:bg-[#D6E85D] hover:text-[#183F36] text-white font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+                className="px-3 py-1 rounded-xl bg-white/15 hover:bg-[#FAFAFA] hover:text-[#18181B] text-white font-bold transition-all flex items-center gap-1.5 cursor-pointer"
               >
                 <span>DSA (C2310C5)</span>
               </button>
               <button
                 onClick={() => navigate("/imp-questions/ca")}
-                className="px-3 py-1 rounded-xl bg-white/15 hover:bg-[#D6E85D] hover:text-[#183F36] text-white font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+                className="px-3 py-1 rounded-xl bg-white/15 hover:bg-[#FAFAFA] hover:text-[#18181B] text-white font-bold transition-all flex items-center gap-1.5 cursor-pointer"
               >
                 <span>Architecture (CA)</span>
               </button>
               <button
                 onClick={() => navigate("/imp-questions/dbms")}
-                className="px-3 py-1 rounded-xl bg-white/15 hover:bg-[#D6E85D] hover:text-[#183F36] text-white font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+                className="px-3 py-1 rounded-xl bg-white/15 hover:bg-[#FAFAFA] hover:text-[#18181B] text-white font-bold transition-all flex items-center gap-1.5 cursor-pointer"
               >
                 <span>DBMS (C2311C4)</span>
               </button>
               <button
                 onClick={() => navigate("/imp-questions/conmp")}
-                className="px-3 py-1 rounded-xl bg-white/15 hover:bg-[#D6E85D] hover:text-[#183F36] text-white font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+                className="px-3 py-1 rounded-xl bg-white/15 hover:bg-[#FAFAFA] hover:text-[#18181B] text-white font-bold transition-all flex items-center gap-1.5 cursor-pointer"
               >
                 <span>Numerical Python (CONMP)</span>
               </button>
@@ -353,12 +353,12 @@ export default function ImpQuestionsSubjectsPage() {
           <div className="flex flex-col sm:flex-row lg:flex-col items-start lg:items-end gap-3 shrink-0">
             <button
               onClick={() => navigate("/imp-questions/oopj")}
-              className="h-11 px-5 rounded-2xl bg-[#D6E85D] hover:bg-[#c8dc4e] text-[#183F36] font-black text-xs shadow-lg shadow-[#D6E85D]/20 flex items-center gap-2 transition-all active:scale-95 cursor-pointer font-display"
+              className="h-11 px-5 rounded-2xl bg-[#FAFAFA] hover:bg-[#E4E4E7] text-[#18181B] font-black text-xs shadow-lg shadow-[#FAFAFA]/20 flex items-center gap-2 transition-all active:scale-95 cursor-pointer font-display"
             >
               <BookOpen className="h-4 w-4" />
               <span>Open Remedial Bank (OOPJ)</span>
             </button>
-            <span className="text-[11px] text-[#A2BAAF] font-medium">
+            <span className="text-[11px] text-[#A1A1AA] font-medium">
               Next paper: Oct 26, 2026 · 10:10 AM
             </span>
           </div>
@@ -479,7 +479,7 @@ export default function ImpQuestionsSubjectsPage() {
           <div className="space-y-1.5 text-xs font-semibold">
             <button
               onClick={() => navigate("/materials")}
-              className="w-full p-2.5 rounded-xl bg-[#183F36] text-[#D6E85D] font-bold flex items-center justify-between text-left shadow-xs cursor-pointer hover:bg-[#12332C] transition-all"
+              className="w-full p-2.5 rounded-xl bg-[#18181B] text-[#FAFAFA] font-bold flex items-center justify-between text-left shadow-xs cursor-pointer hover:bg-[#27272A] transition-all"
             >
               <span className="flex items-center gap-2">
                 <CheckCircle className="h-4 w-4" />
@@ -566,10 +566,10 @@ export default function ImpQuestionsSubjectsPage() {
                   <Line 
                     type="monotone" 
                     dataKey="inquiries" 
-                    stroke="#183F36" 
+                    stroke="#18181B" 
                     strokeWidth={2.5} 
-                    dot={{ fill: "#183F36", r: 4 }} 
-                    activeDot={{ r: 6, fill: "#D6E85D" }} 
+                    dot={{ fill: "#18181B", r: 4 }} 
+                    activeDot={{ r: 6, fill: "#FAFAFA" }} 
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -608,7 +608,7 @@ export default function ImpQuestionsSubjectsPage() {
                 <span className="text-[10px] text-muted-foreground uppercase font-semibold">Total Qs</span>
               </div>
               <div>
-                <span className="text-base font-black font-mono text-[#183F36] dark:text-[#D6E85D] block">25</span>
+                <span className="text-base font-black font-mono text-[#18181B] dark:text-[#FAFAFA] block">25</span>
                 <span className="text-[10px] text-muted-foreground uppercase font-semibold">Traces</span>
               </div>
               <div>
@@ -616,7 +616,7 @@ export default function ImpQuestionsSubjectsPage() {
                 <span className="text-[10px] text-muted-foreground uppercase font-semibold">5-Mark</span>
               </div>
               <div>
-                <span className="text-base font-black font-mono text-[#183F36] dark:text-[#D6E85D] block">90</span>
+                <span className="text-base font-black font-mono text-[#18181B] dark:text-[#FAFAFA] block">90</span>
                 <span className="text-[10px] text-muted-foreground uppercase font-semibold">Theory</span>
               </div>
               <div>
@@ -653,10 +653,10 @@ export default function ImpQuestionsSubjectsPage() {
               navigate("/rapid-revision");
               toast.success("Opening Rapid Revision & Exam Blueprint Hub!");
             }}
-            className="w-full h-10 rounded-xl bg-[#183F36] hover:bg-[#12332C] text-white font-bold text-xs flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md shadow-[#183F36]/20 cursor-pointer font-display"
+            className="w-full h-10 rounded-xl bg-[#18181B] hover:bg-[#27272A] text-white font-bold text-xs flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md shadow-[#18181B]/20 cursor-pointer font-display"
             title="Launch High-Yield Rapid Revision with 190 Master Exam Questions"
           >
-            <FolderDown className="h-4 w-4 text-[#D6E85D]" />
+            <FolderDown className="h-4 w-4 text-[#FAFAFA]" />
             <span>Launch Rapid Revision · 190 Master Qs</span>
           </button>
         </div>

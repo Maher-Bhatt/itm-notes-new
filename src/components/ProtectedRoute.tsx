@@ -74,7 +74,7 @@ export function ProtectedRoute({
 
           <button
             onClick={() => navigate("/dashboard")}
-            className="w-full h-11 bg-[#183F36] hover:bg-[#1f5246] text-[#D6E85D] rounded-xl text-xs font-bold shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer border border-[#D6E85D]/30"
+            className="w-full h-11 bg-[#18181B] hover:bg-[#1f5246] text-[#FAFAFA] rounded-xl text-xs font-bold shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer border border-[#FAFAFA]/30"
           >
             <ArrowLeft className="h-4 w-4" /> Return to Student Dashboard
           </button>

@@ -128,7 +128,7 @@ export function AdminAnnouncementsTab({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h2 className="text-lg font-bold text-white flex items-center gap-2">
-            <Megaphone className="h-5 w-5 text-[#D6E85D]" />
+            <Megaphone className="h-5 w-5 text-[#FAFAFA]" />
             Announcement Scheduling & Targeting
           </h2>
           <p className="text-xs text-slate-400 mt-0.5">
@@ -138,7 +138,7 @@ export function AdminAnnouncementsTab({
 
         <button
           onClick={() => setShowCreate(!showCreate)}
-          className="px-4 py-2 rounded-xl bg-[#D6E85D] hover:bg-[#c8dc4e] text-[#183F36] text-xs font-black flex items-center gap-1.5 transition-all active:scale-95 self-start sm:self-auto cursor-pointer"
+          className="px-4 py-2 rounded-xl bg-[#FAFAFA] hover:bg-[#E4E4E7] text-[#18181B] text-xs font-black flex items-center gap-1.5 transition-all active:scale-95 self-start sm:self-auto cursor-pointer"
         >
           <Plus className="h-4 w-4" />
           <span>New Announcement</span>
@@ -165,7 +165,7 @@ export function AdminAnnouncementsTab({
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g. Remedial Exam Hall Tickets Released"
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#D6E85D]"
+                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#FAFAFA]"
                 required
               />
             </div>
@@ -177,7 +177,7 @@ export function AdminAnnouncementsTab({
               <select
                 value={type}
                 onChange={(e) => setType(e.target.value as any)}
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#D6E85D]"
+                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FAFAFA]"
               >
                 <option value="info">Info (Blue Notice)</option>
                 <option value="warning">Warning (Amber Urgent)</option>
@@ -196,7 +196,7 @@ export function AdminAnnouncementsTab({
               onChange={(e) => setMessage(e.target.value)}
               rows={3}
               placeholder="Full announcement text, schedule dates, or instructions for students..."
-              className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#D6E85D]"
+              className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#FAFAFA]"
               required
             />
           </div>
@@ -210,7 +210,7 @@ export function AdminAnnouncementsTab({
               <select
                 value={targetSemester}
                 onChange={(e) => setTargetSemester(e.target.value)}
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#D6E85D]"
+                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FAFAFA]"
               >
                 <option value="all">All Semesters (1 to 4)</option>
                 <option value="1">Semester 1</option>
@@ -227,7 +227,7 @@ export function AdminAnnouncementsTab({
               <select
                 value={targetBranch}
                 onChange={(e) => setTargetBranch(e.target.value)}
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#D6E85D]"
+                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FAFAFA]"
               >
                 <option value="all">All Engineering Branches</option>
                 <option value="CSE">Computer Science (CSE)</option>
@@ -244,7 +244,7 @@ export function AdminAnnouncementsTab({
               <select
                 value={audience}
                 onChange={(e) => setAudience(e.target.value as any)}
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#D6E85D]"
+                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FAFAFA]"
               >
                 <option value="all">All Users (Students + Guests)</option>
                 <option value="students">Enrolled Students Only</option>
@@ -263,7 +263,7 @@ export function AdminAnnouncementsTab({
                 type="datetime-local"
                 value={scheduledStart}
                 onChange={(e) => setScheduledStart(e.target.value)}
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#D6E85D]"
+                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FAFAFA]"
               />
             </div>
             <div>
@@ -274,7 +274,7 @@ export function AdminAnnouncementsTab({
                 type="datetime-local"
                 value={scheduledEnd}
                 onChange={(e) => setScheduledEnd(e.target.value)}
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#D6E85D]"
+                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FAFAFA]"
               />
             </div>
           </div>
@@ -285,7 +285,7 @@ export function AdminAnnouncementsTab({
                 type="checkbox"
                 checked={isDraft}
                 onChange={(e) => setIsDraft(e.target.checked)}
-                className="rounded border-slate-600 text-[#D6E85D] focus:ring-0"
+                className="rounded border-slate-600 text-[#FAFAFA] focus:ring-0"
               />
               <span>Save as Draft (Do not publish immediately)</span>
             </label>
@@ -301,7 +301,7 @@ export function AdminAnnouncementsTab({
               <button
                 type="submit"
                 disabled={submitting}
-                className="px-4 py-2 rounded-xl bg-[#D6E85D] hover:bg-[#c8dc4e] text-[#183F36] text-xs font-black shadow-md"
+                className="px-4 py-2 rounded-xl bg-[#FAFAFA] hover:bg-[#E4E4E7] text-[#18181B] text-xs font-black shadow-md"
               >
                 {isDraft ? "Save Draft" : "Publish Announcement"}
               </button>
@@ -316,7 +316,7 @@ export function AdminAnnouncementsTab({
           onClick={() => setViewFilter("active")}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
             viewFilter === "active"
-              ? "bg-[#D6E85D]/15 text-[#D6E85D] border border-[#D6E85D]/30"
+              ? "bg-[#FAFAFA]/15 text-[#FAFAFA] border border-[#FAFAFA]/30"
               : "text-slate-400 hover:text-white"
           }`}
         >
@@ -399,7 +399,7 @@ export function AdminAnnouncementsTab({
                       )}
 
                       {ann.target_semester && (
-                        <span className="px-2 py-0.5 rounded-md text-[10px] font-mono bg-slate-900 border border-slate-700 text-[#D6E85D]">
+                        <span className="px-2 py-0.5 rounded-md text-[10px] font-mono bg-slate-900 border border-slate-700 text-[#FAFAFA]">
                           Sem {ann.target_semester}
                         </span>
                       )}

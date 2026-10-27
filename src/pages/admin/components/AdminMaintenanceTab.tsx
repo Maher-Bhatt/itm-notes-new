@@ -181,7 +181,7 @@ export function AdminMaintenanceTab({
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               placeholder="e.g. System upgrading for Mid-term results release. Back online at 6 PM."
-              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#D6E85D]"
+              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FAFAFA]"
             />
           </div>
 
@@ -206,7 +206,7 @@ export function AdminMaintenanceTab({
       {/* 2. Scheduled Maintenance Windows */}
       <div className="bg-slate-800 border border-slate-700 rounded-3xl p-5 sm:p-6 space-y-5 shadow-xl">
         <div className="flex items-center gap-2 pb-2 border-b border-slate-700">
-          <Calendar className="h-5 w-5 text-[#D6E85D]" />
+          <Calendar className="h-5 w-5 text-[#FAFAFA]" />
           <div>
             <h3 className="text-sm font-bold text-white">Scheduled Maintenance Windows</h3>
             <p className="text-[11px] text-slate-400">Pre-schedule planned downtime with affected subsystem targeting</p>
@@ -223,7 +223,7 @@ export function AdminMaintenanceTab({
                 type="datetime-local"
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#D6E85D]"
+                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FAFAFA]"
                 required
               />
             </div>
@@ -236,7 +236,7 @@ export function AdminMaintenanceTab({
                 type="datetime-local"
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#D6E85D]"
+                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FAFAFA]"
                 required
               />
             </div>
@@ -251,7 +251,7 @@ export function AdminMaintenanceTab({
                 value={scheduleReason}
                 onChange={(e) => setScheduleReason(e.target.value)}
                 placeholder="e.g. Database schema migration for question bank indexing"
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#D6E85D]"
+                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#FAFAFA]"
                 required
               />
             </div>
@@ -263,7 +263,7 @@ export function AdminMaintenanceTab({
               <select
                 value={affectedArea}
                 onChange={(e) => setAffectedArea(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#D6E85D]"
+                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FAFAFA]"
               >
                 <option value="all">Entire Platform (All Pages)</option>
                 <option value="coding_lab">Coding Lab Only</option>
@@ -276,7 +276,7 @@ export function AdminMaintenanceTab({
           <div className="flex justify-end pt-2">
             <button
               type="submit"
-              className="px-4 py-2 rounded-xl bg-[#D6E85D] hover:bg-[#c8dc4e] text-[#183F36] text-xs font-black shadow-md cursor-pointer"
+              className="px-4 py-2 rounded-xl bg-[#FAFAFA] hover:bg-[#E4E4E7] text-[#18181B] text-xs font-black shadow-md cursor-pointer"
             >
               Add Scheduled Window
             </button>

@@ -541,7 +541,7 @@ export default function AdminDashboard() {
                 icon={Users2}
                 label="Total Users"
                 value={statsLoading ? "…" : (totalUsers ?? "—")}
-                accent="#D6E85D"
+                accent="#FAFAFA"
               />
               <StatCard
                 icon={MessageSquare}

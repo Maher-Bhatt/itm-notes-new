@@ -192,7 +192,7 @@ export function AdminUsersTab({
                 setPage(1);
               }}
               placeholder="Search by student name or email…"
-              className="w-full pl-9 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#D6E85D]/60"
+              className="w-full pl-9 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#FAFAFA]/60"
             />
           </div>
 
@@ -206,7 +206,7 @@ export function AdminUsersTab({
             </button>
             <button
               onClick={exportUsersCSV}
-              className="flex items-center gap-1.5 px-3 py-2 bg-[#D6E85D]/10 border border-[#D6E85D]/30 rounded-xl text-xs font-semibold text-[#D6E85D] hover:bg-[#D6E85D]/20 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-2 bg-[#FAFAFA]/10 border border-[#FAFAFA]/30 rounded-xl text-xs font-semibold text-[#FAFAFA] hover:bg-[#FAFAFA]/20 transition-colors"
             >
               <Download className="h-3.5 w-3.5" />
               <span>Export CSV</span>
@@ -267,8 +267,8 @@ export function AdminUsersTab({
 
           {/* Bulk actions bar if items are selected */}
           {selectedUserIds.size > 0 && (
-            <div className="flex items-center gap-2 ml-auto bg-[#D6E85D]/10 border border-[#D6E85D]/30 px-3 py-1 rounded-lg">
-              <span className="text-[11px] font-bold text-[#D6E85D]">
+            <div className="flex items-center gap-2 ml-auto bg-[#FAFAFA]/10 border border-[#FAFAFA]/30 px-3 py-1 rounded-lg">
+              <span className="text-[11px] font-bold text-[#FAFAFA]">
                 {selectedUserIds.size} selected
               </span>
               <select
@@ -283,7 +283,7 @@ export function AdminUsersTab({
               <button
                 onClick={handleBulkRoleApply}
                 disabled={isBulkProcessing}
-                className="px-2.5 py-0.5 bg-[#D6E85D] hover:bg-[#c8dc4e] text-[#183F36] rounded font-bold text-[11px] transition-colors"
+                className="px-2.5 py-0.5 bg-[#FAFAFA] hover:bg-[#E4E4E7] text-[#18181B] rounded font-bold text-[11px] transition-colors"
               >
                 Apply
               </button>
@@ -310,7 +310,7 @@ export function AdminUsersTab({
                   u.is_suspended
                     ? "border-red-500/40 bg-red-950/10"
                     : isSelected
-                    ? "border-[#D6E85D]/60 bg-slate-800/90"
+                    ? "border-[#FAFAFA]/60 bg-slate-800/90"
                     : "border-slate-700"
                 }`}
               >
@@ -320,7 +320,7 @@ export function AdminUsersTab({
                       type="checkbox"
                       checked={isSelected}
                       onChange={() => toggleSelectUser(u.userId)}
-                      className="rounded border-slate-600 text-[#D6E85D] focus:ring-0 shrink-0"
+                      className="rounded border-slate-600 text-[#FAFAFA] focus:ring-0 shrink-0"
                     />
                     <UserAvatar
                       avatarUrl={u.avatarUrl}
@@ -356,7 +356,7 @@ export function AdminUsersTab({
                     <select
                       value={u.role}
                       onChange={(e) => onRoleChange(u.id, u.userId, e.target.value)}
-                      className="mt-0.5 w-full bg-slate-700 border border-slate-600 rounded-lg text-xs text-slate-200 px-2 py-1 focus:outline-none focus:border-[#D6E85D]/60"
+                      className="mt-0.5 w-full bg-slate-700 border border-slate-600 rounded-lg text-xs text-slate-200 px-2 py-1 focus:outline-none focus:border-[#FAFAFA]/60"
                     >
                       <option value="student">Student</option>
                       <option value="admin">Admin</option>
@@ -405,7 +405,7 @@ export function AdminUsersTab({
                       type="checkbox"
                       checked={pagedUsers.length > 0 && selectedUserIds.size === pagedUsers.length}
                       onChange={toggleSelectAll}
-                      className="rounded border-slate-600 text-[#D6E85D] focus:ring-0"
+                      className="rounded border-slate-600 text-[#FAFAFA] focus:ring-0"
                     />
                   </th>
                   <th className="px-4 py-3">User</th>
@@ -439,7 +439,7 @@ export function AdminUsersTab({
                             type="checkbox"
                             checked={isSelected}
                             onChange={() => toggleSelectUser(u.userId)}
-                            className="rounded border-slate-600 text-[#D6E85D] focus:ring-0"
+                            className="rounded border-slate-600 text-[#FAFAFA] focus:ring-0"
                           />
                         </td>
                         <td className="px-4 py-3">
@@ -460,7 +460,7 @@ export function AdminUsersTab({
                           <select
                             value={u.role}
                             onChange={(e) => onRoleChange(u.id, u.userId, e.target.value)}
-                            className="bg-slate-700 border border-slate-600 rounded-lg text-xs text-slate-200 px-2 py-1 focus:outline-none focus:border-[#D6E85D]/60 cursor-pointer"
+                            className="bg-slate-700 border border-slate-600 rounded-lg text-xs text-slate-200 px-2 py-1 focus:outline-none focus:border-[#FAFAFA]/60 cursor-pointer"
                           >
                             <option value="student">Student</option>
                             <option value="admin">Admin</option>
@@ -565,7 +565,7 @@ export function AdminUsersTab({
                 <h3 className="text-base font-bold text-white truncate">{selectedUser.name}</h3>
                 <p className="text-xs text-slate-400 font-mono truncate">{selectedUser.email}</p>
                 <div className="flex items-center gap-2 mt-1">
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#D6E85D]/10 text-[#D6E85D] border border-[#D6E85D]/30 uppercase">
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#FAFAFA]/10 text-[#FAFAFA] border border-[#FAFAFA]/30 uppercase">
                     {selectedUser.role}
                   </span>
                   {selectedUser.is_suspended && (

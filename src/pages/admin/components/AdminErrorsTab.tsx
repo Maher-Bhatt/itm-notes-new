@@ -160,7 +160,7 @@ export function AdminErrorsTab() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search error message, stack, or path…"
-            className="w-full pl-9 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#D6E85D]/60"
+            className="w-full pl-9 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#FAFAFA]/60"
           />
         </div>
 
@@ -228,7 +228,7 @@ export function AdminErrorsTab() {
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                   <div className="space-y-1 min-w-0 flex-1">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-mono text-xs px-2 py-0.5 rounded-md bg-slate-900 border border-slate-700 text-[#D6E85D] font-bold">
+                      <span className="font-mono text-xs px-2 py-0.5 rounded-md bg-slate-900 border border-slate-700 text-[#FAFAFA] font-bold">
                         {err.route}
                       </span>
                       {isUnresolved ? (
@@ -299,7 +299,7 @@ export function AdminErrorsTab() {
 
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <span className="font-mono text-xs px-2.5 py-0.5 rounded-md bg-[#D6E85D]/10 text-[#D6E85D] font-bold border border-[#D6E85D]/30">
+                <span className="font-mono text-xs px-2.5 py-0.5 rounded-md bg-[#FAFAFA]/10 text-[#FAFAFA] font-bold border border-[#FAFAFA]/30">
                   {selectedError.route}
                 </span>
                 <span className="text-xs text-slate-400">

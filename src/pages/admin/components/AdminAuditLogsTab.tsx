@@ -71,7 +71,7 @@ export function AdminAuditLogsTab() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search audit trail by admin email or target type…"
-            className="w-full pl-9 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#D6E85D]/60"
+            className="w-full pl-9 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#FAFAFA]/60"
           />
         </div>
 
@@ -120,7 +120,7 @@ export function AdminAuditLogsTab() {
             >
               <div className="space-y-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#D6E85D]/15 text-[#D6E85D] border border-[#D6E85D]/30">
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#FAFAFA]/15 text-[#FAFAFA] border border-[#FAFAFA]/30">
                     {log.action_type}
                   </span>
                   <span className="font-mono text-slate-400 text-[11px]">
@@ -166,7 +166,7 @@ export function AdminAuditLogsTab() {
             </button>
 
             <div>
-              <span className="text-[10px] font-mono uppercase text-[#D6E85D]">
+              <span className="text-[10px] font-mono uppercase text-[#FAFAFA]">
                 {selectedLog.action_type}
               </span>
               <h3 className="text-base font-bold text-white mt-0.5">

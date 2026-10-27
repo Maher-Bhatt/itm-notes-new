@@ -451,8 +451,8 @@ export default function QuizPage() {
               Active
             </span>
             {quizStarted && !quizFinished && (
-              <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-[#183F36]/40 text-[#D6E85D] border border-[#183F36]">
-                <Clock className="w-3 h-3 animate-spin text-[#D6E85D]" />
+              <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-[#18181B]/40 text-[#FAFAFA] border border-[#18181B]">
+                <Clock className="w-3 h-3 animate-spin text-[#FAFAFA]" />
                 {formatTime(totalTimerSeconds)}
               </span>
             )}
@@ -481,9 +481,9 @@ export default function QuizPage() {
                 toast.info("Answer questions first to generate diagnostic report.");
               }
             }}
-            className="h-9 px-4 rounded-xl bg-[#183F36] hover:bg-[#12332C] text-white font-bold text-xs shadow-md shadow-[#183F36]/30 border border-[#D6E85D]/20 flex items-center gap-2 transition-all active:scale-95 shrink-0 cursor-pointer"
+            className="h-9 px-4 rounded-xl bg-[#18181B] hover:bg-[#27272A] text-white font-bold text-xs shadow-md shadow-[#18181B]/30 border border-[#FAFAFA]/20 flex items-center gap-2 transition-all active:scale-95 shrink-0 cursor-pointer"
           >
-            <BarChart3 className="h-3.5 w-3.5 text-[#D6E85D]" />
+            <BarChart3 className="h-3.5 w-3.5 text-[#FAFAFA]" />
             <span>Get Report</span>
           </button>
         </div>
@@ -520,15 +520,15 @@ export default function QuizPage() {
                   onClick={() => setSelectedSubject("all-sem3")}
                   className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer ${
                     selectedSubject === "all-sem3"
-                      ? "border-[#183F36] bg-[#183F36]/40 text-white font-bold shadow-md shadow-[#183F36]/30 ring-2 ring-[#D6E85D]"
+                      ? "border-[#18181B] bg-[#18181B]/40 text-white font-bold shadow-md shadow-[#18181B]/30 ring-2 ring-[#FAFAFA]"
                       : "border-slate-700 bg-slate-800/80 text-slate-200 hover:bg-slate-750 hover:border-slate-600"
                   }`}
                 >
                   <div className="text-sm font-bold text-white">All Semester 3 Core</div>
                   <div className={`text-[11px] mt-1 font-mono flex items-center gap-1.5 ${
-                    selectedSubject === "all-sem3" ? "text-[#D6E85D] font-bold" : "text-slate-300"
+                    selectedSubject === "all-sem3" ? "text-[#FAFAFA] font-bold" : "text-slate-300"
                   }`}>
-                    <span className="w-2 h-2 rounded-full bg-[#D6E85D] shrink-0" />
+                    <span className="w-2 h-2 rounded-full bg-[#FAFAFA] shrink-0" />
                     <span>{allSem3Mcqs.length} Total Curated MCQs</span>
                   </div>
                 </button>
@@ -544,13 +544,13 @@ export default function QuizPage() {
                         onClick={() => setSelectedSubject(s.id)}
                         className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer ${
                           isSelected
-                            ? "border-[#183F36] bg-[#183F36]/40 text-white font-bold shadow-md shadow-[#183F36]/30 ring-2 ring-[#D6E85D]"
+                            ? "border-[#18181B] bg-[#18181B]/40 text-white font-bold shadow-md shadow-[#18181B]/30 ring-2 ring-[#FAFAFA]"
                             : "border-slate-700 bg-slate-800/80 text-slate-200 hover:bg-slate-750 hover:border-slate-600"
                         }`}
                       >
                         <div className="text-sm font-bold text-white truncate">{s.name}</div>
                         <div className={`text-[11px] mt-1 font-mono flex items-center gap-1.5 ${
-                          isSelected ? "text-[#D6E85D] font-bold" : "text-slate-300"
+                          isSelected ? "text-[#FAFAFA] font-bold" : "text-slate-300"
                         }`}>
                           <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0" />
                           <span>{s.totalMcqs} Practice MCQs</span>
@@ -574,7 +574,7 @@ export default function QuizPage() {
                     onClick={() => setQuestionCount(num)}
                     className={`px-4 py-2 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
                       questionCount === num
-                        ? "bg-[#183F36] text-white border-[#183F36] font-bold shadow-sm ring-1 ring-[#D6E85D]/40"
+                        ? "bg-[#18181B] text-white border-[#18181B] font-bold shadow-sm ring-1 ring-[#FAFAFA]/40"
                         : "bg-slate-800/50 text-slate-300 border-slate-700/80 hover:bg-slate-800"
                     }`}
                   >
@@ -589,7 +589,7 @@ export default function QuizPage() {
               <button
                 type="button"
                 onClick={() => setIsCustomBuilderOpen(true)}
-                className="px-4 py-2.5 rounded-xl border border-[#D6E85D]/40 bg-[#183F36]/20 hover:bg-[#183F36]/40 text-[#D6E85D] font-bold text-xs transition-all flex items-center gap-2 cursor-pointer"
+                className="px-4 py-2.5 rounded-xl border border-[#FAFAFA]/40 bg-[#18181B]/20 hover:bg-[#18181B]/40 text-[#FAFAFA] font-bold text-xs transition-all flex items-center gap-2 cursor-pointer"
               >
                 <Sparkles className="h-4 w-4" />
                 <span>Custom Quiz Builder (Mixed Units)</span>
@@ -597,10 +597,10 @@ export default function QuizPage() {
               <button
                 type="button"
                 onClick={handleStartQuiz}
-                className="px-6 py-3 rounded-xl bg-[#183F36] hover:bg-[#12332C] text-white font-bold text-xs shadow-lg shadow-[#183F36]/30 border border-[#D6E85D]/30 transition-all flex items-center gap-2 active:scale-95 cursor-pointer"
+                className="px-6 py-3 rounded-xl bg-[#18181B] hover:bg-[#27272A] text-white font-bold text-xs shadow-lg shadow-[#18181B]/30 border border-[#FAFAFA]/30 transition-all flex items-center gap-2 active:scale-95 cursor-pointer"
               >
                 <span>Launch Quiz Session</span>
-                <ArrowRight className="h-4 w-4 text-[#D6E85D]" />
+                <ArrowRight className="h-4 w-4 text-[#FAFAFA]" />
               </button>
             </div>
           </div>
@@ -795,8 +795,8 @@ export default function QuizPage() {
                   let circleStyle = "border-slate-700 text-slate-400 bg-slate-800/80";
 
                   if (isSelected && !isAnswerSubmitted) {
-                    cardStyle = "border-[#183F36] bg-[#183F36]/25 text-white shadow-sm ring-1 ring-[#D6E85D]";
-                    circleStyle = "bg-[#183F36] text-[#D6E85D] border-[#183F36] font-bold";
+                    cardStyle = "border-[#18181B] bg-[#18181B]/25 text-white shadow-sm ring-1 ring-[#FAFAFA]";
+                    circleStyle = "bg-[#18181B] text-[#FAFAFA] border-[#18181B] font-bold";
                   } else if (isAnswerSubmitted) {
                     if (isCorrectChoice) {
                       cardStyle = "border-amber-500 bg-amber-500/15 text-amber-500 ring-1 ring-amber-500";
@@ -864,7 +864,7 @@ export default function QuizPage() {
                   <button
                     type="button"
                     onClick={handleSubmitChoice}
-                    className="px-6 py-2.5 rounded-xl bg-[#183F36] hover:bg-[#12332C] text-white font-bold text-xs shadow-md shadow-[#183F36]/30 border border-[#D6E85D]/30 transition-all flex items-center gap-2 active:scale-95 cursor-pointer"
+                    className="px-6 py-2.5 rounded-xl bg-[#18181B] hover:bg-[#27272A] text-white font-bold text-xs shadow-md shadow-[#18181B]/30 border border-[#FAFAFA]/30 transition-all flex items-center gap-2 active:scale-95 cursor-pointer"
                   >
                     <span>
                       {isAnswerSubmitted
@@ -873,7 +873,7 @@ export default function QuizPage() {
                           : "Finish Quiz"
                         : "Submit"}
                     </span>
-                    <ArrowRight className="h-3.5 w-3.5 text-[#D6E85D]" />
+                    <ArrowRight className="h-3.5 w-3.5 text-[#FAFAFA]" />
                   </button>
                 </div>
               </div>
@@ -889,7 +889,7 @@ export default function QuizPage() {
                 <div className="flex rounded-lg bg-slate-800/80 p-0.5 border border-slate-700/60 text-[10px] font-semibold">
                   <button
                     onClick={() => jumpToQuestion(currentQuestionIndex)}
-                    className="px-2 py-0.5 rounded bg-[#183F36] text-[#D6E85D] font-bold shadow-xs cursor-pointer hover:bg-[#1f4e43] transition-colors"
+                    className="px-2 py-0.5 rounded bg-[#18181B] text-[#FAFAFA] font-bold shadow-xs cursor-pointer hover:bg-[#1f4e43] transition-colors"
                     title="Return to current active question"
                   >
                     Current
@@ -917,7 +917,7 @@ export default function QuizPage() {
                       d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                     />
                     <path
-                      className="text-[#D6E85D] stroke-current transition-all duration-700"
+                      className="text-[#FAFAFA] stroke-current transition-all duration-700"
                       strokeDasharray={`${completionPercent || 66}, 100`}
                       strokeWidth="3.5"
                       strokeLinecap="round"
@@ -937,7 +937,7 @@ export default function QuizPage() {
 
                 <div className="flex items-center justify-center gap-4 text-[11px] font-semibold text-slate-400 mt-3">
                   <span className="flex items-center gap-1">
-                    <span className="w-2 h-2 rounded-full bg-[#D6E85D]" />
+                    <span className="w-2 h-2 rounded-full bg-[#FAFAFA]" />
                     50% Solved
                   </span>
                   <span className="flex items-center gap-1">
@@ -1078,7 +1078,7 @@ export default function QuizPage() {
               </button>
               <button
                 onClick={() => setIsReviewModalOpen(true)}
-                className="px-5 py-2.5 rounded-xl bg-[#183F36] hover:bg-[#12332C] text-[#D6E85D] border border-[#D6E85D]/40 font-bold text-xs shadow-md flex items-center gap-2 cursor-pointer"
+                className="px-5 py-2.5 rounded-xl bg-[#18181B] hover:bg-[#27272A] text-[#FAFAFA] border border-[#FAFAFA]/40 font-bold text-xs shadow-md flex items-center gap-2 cursor-pointer"
               >
                 <Award className="h-3.5 w-3.5" />
                 <span>Detailed Review & Retry Mistakes</span>

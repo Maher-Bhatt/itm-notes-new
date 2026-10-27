@@ -132,7 +132,7 @@ export function AnnouncementBanner() {
             <button
               type="button"
               onClick={() => openTimetable('viva')}
-              className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-[#183F36] text-[#D6E85D] hover:bg-[#12332C] font-bold text-[10px] shadow-xs cursor-pointer transition-all ml-1"
+              className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-[#18181B] text-[#FAFAFA] hover:bg-[#27272A] font-bold text-[10px] shadow-xs cursor-pointer transition-all ml-1"
             >
               <Calendar className="h-3 w-3" />
               <span>View Timetables</span>

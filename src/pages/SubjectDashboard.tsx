@@ -206,7 +206,7 @@ export default function SubjectDashboard() {
                   onClick={() => navigate(`/subject/${sib.id}`)}
                   className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all shrink-0 cursor-pointer flex items-center gap-1.5 border ${
                     isCurrent
-                      ? "bg-[#183F36] text-[#D6E85D] border-[#D6E85D]/40 font-bold shadow-xs"
+                      ? "bg-[#18181B] text-[#FAFAFA] border-[#FAFAFA]/40 font-bold shadow-xs"
                       : "bg-secondary/60 text-muted-foreground hover:text-foreground border-transparent hover:border-border"
                   }`}
                 >
@@ -214,7 +214,7 @@ export default function SubjectDashboard() {
                     <span
                       className={`text-[10px] font-mono px-1 py-0.5 rounded ${
                         isCurrent
-                          ? "bg-[#D6E85D]/20 text-[#D6E85D]"
+                          ? "bg-[#FAFAFA]/20 text-[#FAFAFA]"
                           : "bg-muted text-muted-foreground"
                       }`}
                     >

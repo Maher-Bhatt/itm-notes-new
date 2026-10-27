@@ -122,17 +122,17 @@ export function VivaOralPrepModal({ isOpen, onClose }: VivaOralPrepModalProps) {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
       <div className="w-full max-w-2xl bg-card border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="p-4 sm:p-5 bg-gradient-to-r from-[#183F36] via-[#1D4A3F] to-[#12332C] text-white flex items-center justify-between border-b border-[#D6E85D]/30 shrink-0">
+        <div className="p-4 sm:p-5 bg-gradient-to-r from-[#18181B] via-[#1D4A3F] to-[#27272A] text-white flex items-center justify-between border-b border-[#FAFAFA]/30 shrink-0">
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-xl bg-[#D6E85D] text-[#183F36]">
+            <div className="p-2 rounded-xl bg-[#FAFAFA] text-[#18181B]">
               <Mic className="h-5 w-5" />
             </div>
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="text-[10px] font-mono font-black uppercase px-2 py-0.2 rounded bg-[#D6E85D] text-[#183F36]">
+                <span className="text-[10px] font-mono font-black uppercase px-2 py-0.2 rounded bg-[#FAFAFA] text-[#18181B]">
                   University Viva Prep
                 </span>
-                <span className="text-xs text-[#A2BAAF] font-bold">
+                <span className="text-xs text-[#A1A1AA] font-bold">
                   Card {currentIndex + 1} of {VIVA_QUESTIONS.length}
                 </span>
               </div>
@@ -254,7 +254,7 @@ export function VivaOralPrepModal({ isOpen, onClose }: VivaOralPrepModalProps) {
             </button>
             <button
               onClick={handleNext}
-              className="h-9 px-4 rounded-xl bg-[#183F36] text-[#D6E85D] hover:bg-[#12332C] text-xs font-bold flex items-center gap-1 transition-all cursor-pointer shadow-xs font-display"
+              className="h-9 px-4 rounded-xl bg-[#18181B] text-[#FAFAFA] hover:bg-[#27272A] text-xs font-bold flex items-center gap-1 transition-all cursor-pointer shadow-xs font-display"
             >
               <span>Next Card</span>
               <ChevronRight className="h-4 w-4" />

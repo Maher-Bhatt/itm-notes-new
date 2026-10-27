@@ -130,7 +130,7 @@ export function AdminBulkToolsTab() {
       {/* ── SECTION 1: BATCH MATERIALS UPLOADER ── */}
       <div className="bg-slate-800 border border-slate-700 rounded-3xl p-5 sm:p-6 space-y-4 shadow-xl">
         <div className="flex items-center gap-2 pb-2 border-b border-slate-700">
-          <UploadCloud className="h-5 w-5 text-[#D6E85D]" />
+          <UploadCloud className="h-5 w-5 text-[#FAFAFA]" />
           <div>
             <h3 className="text-sm font-bold text-white">Batch Academic Materials Uploader</h3>
             <p className="text-[11px] text-slate-400">
@@ -147,7 +147,7 @@ export function AdminBulkToolsTab() {
             <select
               value={selectedSemester}
               onChange={(e) => setSelectedSemester(Number(e.target.value))}
-              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#D6E85D]"
+              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FAFAFA]"
             >
               <option value={1}>Semester 1</option>
               <option value={2}>Semester 2</option>
@@ -163,7 +163,7 @@ export function AdminBulkToolsTab() {
             <select
               value={selectedSubjectId}
               onChange={(e) => setSelectedSubjectId(e.target.value)}
-              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#D6E85D]"
+              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FAFAFA]"
             >
               {subjects.map((s) => (
                 <option key={s.id} value={s.id}>
@@ -180,7 +180,7 @@ export function AdminBulkToolsTab() {
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#D6E85D]"
+              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FAFAFA]"
             >
               <option value="Notes">Faculty Lecture Notes</option>
               <option value="PYQ">Previous Year Exam Paper</option>
@@ -190,7 +190,7 @@ export function AdminBulkToolsTab() {
           </div>
         </div>
 
-        <div className="border-2 border-dashed border-slate-700 hover:border-[#D6E85D]/60 rounded-2xl p-6 text-center space-y-2 transition-colors bg-slate-900/40">
+        <div className="border-2 border-dashed border-slate-700 hover:border-[#FAFAFA]/60 rounded-2xl p-6 text-center space-y-2 transition-colors bg-slate-900/40">
           <input
             type="file"
             multiple
@@ -200,7 +200,7 @@ export function AdminBulkToolsTab() {
             id="bulk-file-input"
           />
           <label htmlFor="bulk-file-input" className="cursor-pointer block">
-            <UploadCloud className="h-8 w-8 text-[#D6E85D] mx-auto opacity-80" />
+            <UploadCloud className="h-8 w-8 text-[#FAFAFA] mx-auto opacity-80" />
             <p className="text-sm font-bold text-white mt-2">Click to select multiple PDF/PPT files</p>
             <p className="text-xs text-slate-400">PDF, PPTX, DOCX up to 50MB per file</p>
           </label>
@@ -213,7 +213,7 @@ export function AdminBulkToolsTab() {
               <button
                 onClick={startBatchUpload}
                 disabled={isUploading}
-                className="px-4 py-1.5 rounded-xl bg-[#D6E85D] hover:bg-[#c8dc4e] text-[#183F36] text-xs font-black shadow-md"
+                className="px-4 py-1.5 rounded-xl bg-[#FAFAFA] hover:bg-[#E4E4E7] text-[#18181B] text-xs font-black shadow-md"
               >
                 {isUploading ? "Uploading..." : "Start Batch Upload"}
               </button>
@@ -228,7 +228,7 @@ export function AdminBulkToolsTab() {
                   </div>
                   <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
                     <div
-                      className="bg-[#D6E85D] h-1.5 transition-all duration-300"
+                      className="bg-[#FAFAFA] h-1.5 transition-all duration-300"
                       style={{ width: `${file.progress}%` }}
                     />
                   </div>
@@ -243,7 +243,7 @@ export function AdminBulkToolsTab() {
       <div className="bg-slate-800 border border-slate-700 rounded-3xl p-5 sm:p-6 space-y-4 shadow-xl">
         <div className="flex items-center justify-between pb-2 border-b border-slate-700">
           <div className="flex items-center gap-2">
-            <FileSpreadsheet className="h-5 w-5 text-[#D6E85D]" />
+            <FileSpreadsheet className="h-5 w-5 text-[#FAFAFA]" />
             <div>
               <h3 className="text-sm font-bold text-white">CSV Question-Bank Validator & Importer</h3>
               <p className="text-[11px] text-slate-400">
@@ -254,7 +254,7 @@ export function AdminBulkToolsTab() {
 
           <button
             onClick={() => setCsvContent(sampleCsvTemplate)}
-            className="text-[11px] text-[#D6E85D] hover:underline font-semibold"
+            className="text-[11px] text-[#FAFAFA] hover:underline font-semibold"
           >
             Load Sample CSV
           </button>
@@ -269,7 +269,7 @@ export function AdminBulkToolsTab() {
             onChange={(e) => setCsvContent(e.target.value)}
             rows={5}
             placeholder="Paste raw CSV lines here..."
-            className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white font-mono placeholder-slate-500 focus:outline-none focus:border-[#D6E85D]"
+            className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white font-mono placeholder-slate-500 focus:outline-none focus:border-[#FAFAFA]"
           />
         </div>
 
@@ -284,7 +284,7 @@ export function AdminBulkToolsTab() {
           {parsedData && parsedData.validRows.length > 0 && (
             <button
               onClick={handleImportValidQuestions}
-              className="px-4 py-2 rounded-xl bg-[#D6E85D] hover:bg-[#c8dc4e] text-[#183F36] text-xs font-black shadow-md transition-all cursor-pointer"
+              className="px-4 py-2 rounded-xl bg-[#FAFAFA] hover:bg-[#E4E4E7] text-[#18181B] text-xs font-black shadow-md transition-all cursor-pointer"
             >
               Import {parsedData.validRows.length} Valid Questions
             </button>

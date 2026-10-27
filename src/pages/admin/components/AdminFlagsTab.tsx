@@ -111,7 +111,7 @@ export function AdminFlagsTab() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-700">
           <div>
             <h2 className="text-base font-bold text-white flex items-center gap-2">
-              <Zap className="h-5 w-5 text-[#D6E85D]" />
+              <Zap className="h-5 w-5 text-[#FAFAFA]" />
               Dynamic Feature Flags & Killswitches
             </h2>
             <p className="text-xs text-slate-400 mt-0.5">
@@ -153,7 +153,7 @@ export function AdminFlagsTab() {
                     <div
                       className={`h-10 w-10 rounded-xl flex items-center justify-center shrink-0 ${
                         flag.enabled
-                          ? "bg-[#D6E85D]/15 text-[#D6E85D]"
+                          ? "bg-[#FAFAFA]/15 text-[#FAFAFA]"
                           : "bg-slate-800 text-slate-500"
                       }`}
                     >
@@ -174,15 +174,15 @@ export function AdminFlagsTab() {
                   <button
                     onClick={() => handleToggle(flag.key, flag.enabled)}
                     className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                      flag.enabled ? "bg-[#D6E85D]" : "bg-slate-700"
+                      flag.enabled ? "bg-[#FAFAFA]" : "bg-slate-700"
                     }`}
                     role="switch"
                     aria-checked={flag.enabled}
                   >
                     <span
                       aria-hidden="true"
-                      className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-[#183F36] shadow-sm ring-0 transition duration-200 ease-in-out ${
-                        flag.enabled ? "translate-x-5 bg-[#183F36]" : "translate-x-0 bg-slate-400"
+                      className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-[#18181B] shadow-sm ring-0 transition duration-200 ease-in-out ${
+                        flag.enabled ? "translate-x-5 bg-[#18181B]" : "translate-x-0 bg-slate-400"
                       }`}
                     />
                   </button>

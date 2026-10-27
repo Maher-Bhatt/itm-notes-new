@@ -114,7 +114,7 @@ export function AdminDraftsTab() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-700">
           <div>
             <h2 className="text-base font-bold text-white flex items-center gap-2">
-              <FileText className="h-5 w-5 text-[#D6E85D]" />
+              <FileText className="h-5 w-5 text-[#FAFAFA]" />
               Draft & Publish Workflow + Version History
             </h2>
             <p className="text-xs text-slate-400 mt-0.5">
@@ -134,7 +134,7 @@ export function AdminDraftsTab() {
                 setSelectedSubjectId(e.target.value);
                 setSelectedTopicId("");
               }}
-              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white font-medium focus:outline-none focus:border-[#D6E85D]"
+              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white font-medium focus:outline-none focus:border-[#FAFAFA]"
             >
               {subjects.map((s) => (
                 <option key={s.id} value={s.id}>
@@ -151,7 +151,7 @@ export function AdminDraftsTab() {
             <select
               value={selectedTopicId}
               onChange={(e) => setSelectedTopicId(e.target.value)}
-              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white font-medium focus:outline-none focus:border-[#D6E85D]"
+              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white font-medium focus:outline-none focus:border-[#FAFAFA]"
             >
               {availableTopics.map((t) => (
                 <option key={t.id} value={t.id}>
@@ -184,7 +184,7 @@ export function AdminDraftsTab() {
               value={revisionTitle}
               onChange={(e) => setRevisionTitle(e.target.value)}
               placeholder="e.g. Asymptotic Notation (Big-O, Omega, Theta) - Comprehensive 2026 Edition"
-              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#D6E85D]"
+              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FAFAFA]"
               required
             />
           </div>
@@ -198,7 +198,7 @@ export function AdminDraftsTab() {
               onChange={(e) => setRevisionContent(e.target.value)}
               rows={12}
               placeholder="Write or edit full topic markdown, mathematical equations, and diagrams..."
-              className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white font-mono leading-relaxed focus:outline-none focus:border-[#D6E85D]"
+              className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white font-mono leading-relaxed focus:outline-none focus:border-[#FAFAFA]"
               required
             />
           </div>
@@ -211,7 +211,7 @@ export function AdminDraftsTab() {
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value as any)}
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#D6E85D]"
+                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FAFAFA]"
               >
                 <option value="draft">Save as Internal Draft</option>
                 <option value="published">Publish Live Immediately</option>
@@ -228,7 +228,7 @@ export function AdminDraftsTab() {
                   type="datetime-local"
                   value={scheduledAt}
                   onChange={(e) => setScheduledAt(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#D6E85D]"
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FAFAFA]"
                   required
                 />
               </div>
@@ -238,7 +238,7 @@ export function AdminDraftsTab() {
           <div className="flex justify-end pt-2">
             <button
               type="submit"
-              className="px-5 py-2.5 rounded-xl bg-[#D6E85D] hover:bg-[#c8dc4e] text-[#183F36] text-xs font-black shadow-md cursor-pointer transition-all"
+              className="px-5 py-2.5 rounded-xl bg-[#FAFAFA] hover:bg-[#E4E4E7] text-[#18181B] text-xs font-black shadow-md cursor-pointer transition-all"
             >
               {status === "published"
                 ? "Publish Version"
@@ -252,7 +252,7 @@ export function AdminDraftsTab() {
         {/* 3. Version History & Rollback sidebar */}
         <div className="bg-slate-800 border border-slate-700 rounded-3xl p-5 sm:p-6 space-y-4 shadow-xl">
           <div className="flex items-center gap-2 pb-2 border-b border-slate-700">
-            <History className="h-4 w-4 text-[#D6E85D]" />
+            <History className="h-4 w-4 text-[#FAFAFA]" />
             <h3 className="font-bold text-white text-sm">Version History</h3>
           </div>
 
@@ -269,7 +269,7 @@ export function AdminDraftsTab() {
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1.5">
-                      <span className="font-mono font-bold text-xs text-[#D6E85D]">
+                      <span className="font-mono font-bold text-xs text-[#FAFAFA]">
                         v{ver.version_number}
                       </span>
                       {idx === 0 && (

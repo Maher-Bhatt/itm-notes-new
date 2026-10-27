@@ -918,7 +918,7 @@ export default function CommunityPage() {
                               key={c.id || i} 
                               className={`p-3 rounded-xl text-xs space-y-1.5 transition-all ${
                                 c.isVerified 
-                                  ? "bg-[#183F36]/15 border border-[#D6E85D]/60 shadow-xs" 
+                                  ? "bg-[#18181B]/15 border border-[#FAFAFA]/60 shadow-xs" 
                                   : "bg-secondary/40 border border-transparent"
                               }`}
                             >
@@ -926,7 +926,7 @@ export default function CommunityPage() {
                                 <div className="flex items-center gap-1.5 flex-wrap">
                                   <span className="font-bold text-foreground">{c.authorName}</span>
                                   {c.isVerified && (
-                                    <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#D6E85D] text-[#183F36] flex items-center gap-1 shadow-2xs">
+                                    <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#FAFAFA] text-[#18181B] flex items-center gap-1 shadow-2xs">
                                       <CheckCircle className="h-3 w-3 stroke-[2.5]" />
                                       <span>Verified Solution</span>
                                     </span>
@@ -947,7 +947,7 @@ export default function CommunityPage() {
                                       className={`text-[10px] font-bold px-1.5 py-0.5 rounded transition-all cursor-pointer ${
                                         c.isVerified 
                                           ? "text-rose-400 hover:bg-rose-500/10" 
-                                          : "text-[#D6E85D] bg-[#183F36] hover:bg-[#12332C]"
+                                          : "text-[#FAFAFA] bg-[#18181B] hover:bg-[#27272A]"
                                       }`}
                                       title="Admins and Senior Scholars can verify peer solutions"
                                     >

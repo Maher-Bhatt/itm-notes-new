@@ -108,7 +108,7 @@ export function AdminSupportTab() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search student support tickets by query, name, or email…"
-            className="w-full pl-9 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#D6E85D]/60"
+            className="w-full pl-9 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#FAFAFA]/60"
           />
         </div>
 
@@ -143,7 +143,7 @@ export function AdminSupportTab() {
           <div className="py-12 text-center text-slate-500 text-sm">Loading support tickets…</div>
         ) : filteredTickets.length === 0 ? (
           <div className="py-12 text-center text-slate-400 text-sm bg-slate-800 border border-slate-700 rounded-2xl">
-            <CheckCircle2 className="h-8 w-8 text-[#D6E85D] mx-auto mb-2 opacity-80" />
+            <CheckCircle2 className="h-8 w-8 text-[#FAFAFA] mx-auto mb-2 opacity-80" />
             <p className="font-bold text-white">No Tickets Found</p>
             <p className="text-xs text-slate-400 mt-1">
               {statusFilter === "open" ? "Inbox is completely clear! Great work." : "No support inquiries match this filter."}
@@ -205,7 +205,7 @@ export function AdminSupportTab() {
                       setReplyingTicket(t);
                       setReplyMessage(t.admin_reply || "");
                     }}
-                    className="px-3.5 py-1.5 rounded-xl bg-slate-700/80 hover:bg-[#D6E85D] hover:text-[#183F36] text-white text-xs font-bold flex items-center gap-1.5 self-start sm:self-auto shrink-0 transition-colors"
+                    className="px-3.5 py-1.5 rounded-xl bg-slate-700/80 hover:bg-[#FAFAFA] hover:text-[#18181B] text-white text-xs font-bold flex items-center gap-1.5 self-start sm:self-auto shrink-0 transition-colors"
                   >
                     <Reply className="h-3.5 w-3.5" />
                     <span>{t.admin_reply ? "Edit Reply" : "Reply & Resolve"}</span>
@@ -217,7 +217,7 @@ export function AdminSupportTab() {
 
                   {t.admin_reply && (
                     <div className="mt-2.5 pt-2 border-t border-slate-800">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#D6E85D] block mb-0.5">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#FAFAFA] block mb-0.5">
                         Admin Resolution:
                       </span>
                       <p className="text-slate-300 text-xs italic">{t.admin_reply}</p>
@@ -270,7 +270,7 @@ export function AdminSupportTab() {
                 onChange={(e) => setReplyMessage(e.target.value)}
                 rows={4}
                 placeholder="Write clear instructions, solved link, or syllabus clarification..."
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#D6E85D]"
+                className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#FAFAFA]"
                 required
               />
             </div>
@@ -299,7 +299,7 @@ export function AdminSupportTab() {
                 <button
                   type="submit"
                   disabled={sending}
-                  className="px-4 py-1.5 rounded-xl bg-[#D6E85D] hover:bg-[#c8dc4e] text-[#183F36] text-xs font-black shadow-md flex items-center gap-1.5"
+                  className="px-4 py-1.5 rounded-xl bg-[#FAFAFA] hover:bg-[#E4E4E7] text-[#18181B] text-xs font-black shadow-md flex items-center gap-1.5"
                 >
                   <Send className="h-3.5 w-3.5" />
                   <span>{sending ? "Sending..." : "Dispatch Reply"}</span>
