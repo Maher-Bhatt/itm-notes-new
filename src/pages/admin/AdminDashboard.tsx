@@ -100,9 +100,9 @@ function StatCard({
     <div className="paper rounded-lg border border-border p-4 sm:p-5 shadow-sm">
       <div
         className="h-11 w-11 rounded-lg flex items-center justify-center shrink-0"
-        style={{ background: acent ? `hsl(var(${acent}))/20` : "hsl(var(--itm-chartreuse))/20" }}
+        style={{ background: accent ? `hsl(var(${accent}))/20` : "hsl(var(--itm-chartreuse))/20" }}
       >
-        <Icon className="h-5 w-5" style={{ color: acent ?? "hsl(var(--itm-chartreuse))" }} />
+        <Icon className="h-5 w-5" style={{ color: accent ?? "hsl(var(--itm-chartreuse))" }} />
       </div>
       <div>
         <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">{label}</p>
