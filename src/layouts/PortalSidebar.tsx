@@ -22,6 +22,7 @@ import {
   PanelLeftClose,
   FileText,
   GraduationCap,
+  Zap,
 } from "lucide-react";
 import { ItmMoocsLogo } from "@/components/brand/ItmMoocsLogo";
 import { useAuth } from "@/contexts/AuthContext";
