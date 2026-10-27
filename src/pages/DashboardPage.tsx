@@ -209,16 +209,16 @@ export default function DashboardPage() {
             </button>
             <button
               onClick={() => openTimetable("remedial")}
-              className="px-3.5 py-2.5 rounded-lg bg-white/10 hover:bg-white/20 text-white font-bold text-xs border border-white/20 press flex items-center gap-1.5 cursor-pointer"
+              className="px-3.5 py-2.5 rounded-lg bg-secondary/60 hover:bg-secondary text-forest font-bold text-xs border border-border/80 press flex items-center gap-1.5 cursor-pointer font-display"
             >
               <span>Remedials</span>
             </button>
             <button
               onClick={() => navigate("/imp-questions/oopj")}
-              className="px-3.5 py-2.5 rounded-lg bg-white/10 hover:bg-chartreuse hover:text-forest text-white font-bold text-xs border border-white/20 press flex items-center gap-1.5 cursor-pointer font-display"
+              className="px-3.5 py-2.5 rounded-lg bg-chartreuse/20 hover:bg-chartreuse hover:text-forest text-forest font-bold text-xs border border-chartreuse/30 press flex items-center gap-1.5 cursor-pointer font-display"
               title="Open OOPJ (C2311C1) Solved Master Question Bank"
             >
-              <BookOpen className="h-3.5 w-3.5" />
+              <BookOpen className="h-3.5 w-3.5 text-forest" />
               <span className="hidden sm:inline">OOPJ Solved Bank</span>
               <span className="sm:hidden">OOPJ</span>
             </button>
@@ -240,19 +240,19 @@ export default function DashboardPage() {
             <button
               key={item.cls}
               onClick={() => openTimetable("viva", item.cls)}
-              className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-chartreuse hover:text-forest text-white/90 text-xs font-semibold transition-all shrink-0 flex items-center gap-1.5 cursor-pointer border border-white/10 press"
+              className="px-2.5 py-1 rounded-lg bg-secondary/60 hover:bg-secondary text-forest font-semibold border border-border/80 transition-all shrink-0 flex items-center gap-1.5 cursor-pointer press"
             >
               <span>Class {item.cls}</span>
-              <span className="text-[10px] px-1 py-0.2 rounded bg-black/30 font-mono text-chartreuse-foreground">
+              <span className="text-[10px] px-1 py-0.2 rounded bg-border font-mono text-muted-foreground/80">
                 {item.room}
               </span>
             </button>
           ))}
           <button
             onClick={() => openTimetable("faculty")}
-            className="px-2.5 py-1 rounded-lg bg-chartreuse/20 hover:bg-chartreuse hover:text-forest text-chartreuse-foreground text-xs font-bold transition-all shrink-0 flex items-center gap-1 cursor-pointer border border-chartreuse/30 ml-auto press"
+            className="px-2.5 py-1 rounded-lg bg-accent text-accent-foreground font-bold text-xs shadow-sm shadow-accent/20 press flex items-center gap-1 cursor-pointer font-display ml-auto"
           >
-            <Users className="h-3 w-3" />
+            <Users className="h-3 w-3 text-accent-foreground" />
             <span>View Faculty Venues</span>
           </button>
         </div>
