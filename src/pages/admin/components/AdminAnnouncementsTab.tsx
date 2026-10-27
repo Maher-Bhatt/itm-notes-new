@@ -377,7 +377,7 @@ export function AdminAnnouncementsTab({
                             ? "bg-red-500/20 text-red-400 border border-red-500/30"
                             : isWarn
                             ? "bg-amber-500/20 text-amber-400 border border-amber-500/30"
-                            : "bg-blue-500/20 text-blue-400 border border-blue-500/30"
+                            : "bg-amber-500/20 text-amber-500 border border-amber-500/30"
                         }`}
                       >
                         {ann.type}
@@ -388,8 +388,8 @@ export function AdminAnnouncementsTab({
                           Draft
                         </span>
                       ) : ann.active ? (
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-400/15 text-indigo-300 border border-indigo-400/30 flex items-center gap-1">
-                          <span className="h-1.5 w-1.5 rounded-full bg-indigo-300 animate-pulse" />
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-500 border border-amber-500/30 flex items-center gap-1">
+                          <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" />
                           Broadcasting
                         </span>
                       ) : (
@@ -423,7 +423,7 @@ export function AdminAnnouncementsTab({
                       className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-colors ${
                         ann.active
                           ? "bg-amber-500/10 text-amber-400 border-amber-500/30 hover:bg-amber-500/20"
-                          : "bg-indigo-400/10 text-indigo-300 border-indigo-400/30 hover:bg-indigo-400/20"
+                          : "bg-amber-500/10 text-amber-500 border-amber-500/30 hover:bg-amber-500/20"
                       }`}
                     >
                       {ann.active ? "Pause" : "Activate"}

@@ -42,7 +42,7 @@ export function PomodoroTimer() {
             onClick={() => setMode('break')}
             className={`text-[10px] font-bold px-2 py-0.5 rounded-full transition-all ${
               mode === 'break'
-                ? 'bg-indigo-500 text-white'
+                ? 'bg-amber-500 text-white'
                 : 'bg-secondary text-muted-foreground hover:text-foreground'
             }`}
           >
@@ -60,7 +60,7 @@ export function PomodoroTimer() {
         <div className="w-full h-2 rounded-full bg-secondary overflow-hidden mb-5">
           <div
             className={`h-full transition-all duration-1000 ${
-              mode === 'study' ? 'bg-primary' : 'bg-indigo-500'
+              mode === 'study' ? 'bg-primary' : 'bg-amber-500'
             }`}
             style={{ width: `${progressPercent}%` }}
           />

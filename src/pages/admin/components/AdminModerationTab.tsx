@@ -242,7 +242,7 @@ export function AdminModerationTab() {
                       </span>
                     )}
                     {item.type === "community_post" && (
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-500/15 text-blue-400 border border-blue-500/30 flex items-center gap-1">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-500/15 text-amber-500 border border-amber-500/30 flex items-center gap-1">
                         <MessageSquare className="h-3 w-3" />
                         Post Report
                       </span>
@@ -271,10 +271,10 @@ export function AdminModerationTab() {
 
                   {item.suggested_fix && (
                     <div className="pt-2 border-t border-slate-800">
-                      <span className="text-[10px] uppercase font-bold text-indigo-300 block mb-0.5">
+                      <span className="text-[10px] uppercase font-bold text-amber-500 block mb-0.5">
                         Suggested Correction:
                       </span>
-                      <p className="text-indigo-400/90 font-mono text-[11px]">
+                      <p className="text-amber-500/90 font-mono text-[11px]">
                         {item.suggested_fix}
                       </p>
                     </div>
@@ -294,7 +294,7 @@ export function AdminModerationTab() {
                 <div className="flex items-center justify-between pt-1">
                   <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                     item.status === "approved"
-                      ? "bg-indigo-400/10 text-indigo-300 border border-indigo-400/30"
+                      ? "bg-amber-500/10 text-amber-500 border border-amber-500/30"
                       : item.status === "rejected"
                       ? "bg-red-500/10 text-red-400 border border-red-500/30"
                       : "bg-amber-500/10 text-amber-400 border border-amber-500/30"

@@ -86,10 +86,10 @@ export function UserAvatar({
   // 2. Preset Gradient
   if (rawUrl && rawUrl.startsWith("grad-")) {
     const gradients = [
-      "from-indigo-600 via-purple-600 to-pink-500",
-      "from-blue-600 via-teal-500 to-indigo-950",
+      "from-amber-600 via-purple-600 to-pink-500",
+      "from-amber-600 to-amber-400",
       "from-amber-500 via-orange-600 to-red-600",
-      "from-fuchsia-600 to-cyan-500",
+      "from-zinc-700 to-zinc-900",
     ];
     const idx = Math.abs((resolvedName.charCodeAt(0) || 0) % gradients.length);
     const grad = gradients[idx];
@@ -108,7 +108,7 @@ export function UserAvatar({
 
   return (
     <div
-      className={`${className} rounded-full bg-gradient-to-tr from-indigo-600 via-blue-600 to-teal-500 text-white font-bold flex items-center justify-center shrink-0 border border-slate-700/60 shadow-xs`}
+      className={`${className} rounded-full bg-gradient-to-tr from-amber-600 to-amber-400 text-white font-bold flex items-center justify-center shrink-0 border border-slate-700/60 shadow-xs`}
     >
       {initial}
     </div>

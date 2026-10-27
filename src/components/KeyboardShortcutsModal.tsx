@@ -56,13 +56,13 @@ export function KeyboardShortcutsModal({
       keys: ['F'],
       label: 'Toggle Focus Mode',
       description: 'Hide sidebars and distraction elements on TopicPage for deep study.',
-      icon: <Eye className="h-4 w-4 text-indigo-400" />,
+      icon: <Eye className="h-4 w-4 text-amber-500" />,
     },
     {
       keys: ['?'],
       label: 'Keyboard Shortcuts',
       description: 'Open this cheat sheet modal anywhere on ITM Notes.',
-      icon: <HelpCircle className="h-4 w-4 text-indigo-500" />,
+      icon: <HelpCircle className="h-4 w-4 text-amber-500" />,
     },
     {
       keys: ['Esc'],

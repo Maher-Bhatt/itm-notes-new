@@ -4,7 +4,7 @@ export const computerArchitecture: Subject = {
   "id": "ca-101",
   "name": "Computer Architecture",
   "code": "CS401",
-  "color": "bg-blue-500",
+  "color": "bg-amber-500",
   "icon": "cpu",
   "description": "Comprehensive University Syllabus for Computer Architecture — Register Transfer Language, Basic Computer Design, Instruction Cycle, Microprogrammed Control, Central Processing Unit (ALU & Addressing Modes), Computer Arithmetic (Booth Algorithm), Memory Hierarchy & I/O Organization",
   "semester": 3,

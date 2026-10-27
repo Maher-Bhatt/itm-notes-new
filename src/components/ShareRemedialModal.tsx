@@ -142,7 +142,7 @@ ${targetUrl}`;
         <div className="grid grid-cols-2 gap-3 mb-5">
           <button
             onClick={handleWhatsAppShare}
-            className="w-full py-3 px-4 rounded-2xl bg-indigo-500 hover:bg-indigo-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer"
+            className="w-full py-3 px-4 rounded-2xl bg-amber-500 hover:bg-amber-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer"
           >
             <MessageCircle className="h-4 w-4" />
             <span>Share on WhatsApp</span>
@@ -166,7 +166,7 @@ ${targetUrl}`;
             onClick={handleCopyLink}
             className={`px-3.5 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
               copied
-                ? "bg-indigo-400 text-white"
+                ? "bg-amber-500 text-white"
                 : "bg-primary text-primary-foreground hover:opacity-90"
             }`}
           >

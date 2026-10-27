@@ -36,9 +36,9 @@ const TIER_COLORS = {
     medalGrad: ['#94A3B8', '#F1F5F9', '#64748B']
   },
   gold: { 
-    primary: '#D6E85D', 
+    primary: '#F59E0B', 
     secondary: '#F59E0B', 
-    glow: 'rgba(214, 232, 93, 0.55)', 
+    glow: 'rgba(245, 158, 11, 0.55)', 
     label: '★ 24K GOLD MASTER ★', 
     ring: '#EAB308',
     medalGrad: ['#F59E0B', '#FEF08A', '#D97706']
@@ -52,12 +52,12 @@ const TIER_COLORS = {
     medalGrad: ['#7C3AED', '#E879F9', '#4C1D95']
   },
   mythic: { 
-    primary: '#D6E85D', 
-    secondary: '#10B981', 
-    glow: 'rgba(214, 232, 93, 0.75)', 
+    primary: '#F59E0B', 
+    secondary: '#F59E0B', 
+    glow: 'rgba(245, 158, 11, 0.75)', 
     label: '★ MYTHIC ARCHITECT ★', 
-    ring: '#10B981',
-    medalGrad: ['#D6E85D', '#34D399', '#052E25']
+    ring: '#F59E0B',
+    medalGrad: ['#F59E0B', '#FBBF24', '#18181B']
   },
 };
 
@@ -79,15 +79,15 @@ export async function generateAchievementStoryCard(data: AchievementCardData): P
   // 1. Deep Forest Obsidian Gradient Background
   const bgGrad = ctx.createLinearGradient(0, 0, width, height);
   if (data.tier === 'mythic') {
-    bgGrad.addColorStop(0, '#041410');
-    bgGrad.addColorStop(0.3, '#0E2721');
-    bgGrad.addColorStop(0.65, '#0B1D18');
-    bgGrad.addColorStop(1, '#040C0A');
+    bgGrad.addColorStop(0, '#09090B');
+    bgGrad.addColorStop(0.3, '#121215');
+    bgGrad.addColorStop(0.65, '#18181B');
+    bgGrad.addColorStop(1, '#09090B');
   } else {
-    bgGrad.addColorStop(0, '#061713');
-    bgGrad.addColorStop(0.35, '#12332C');
-    bgGrad.addColorStop(0.7, '#0C231D');
-    bgGrad.addColorStop(1, '#050D0B');
+    bgGrad.addColorStop(0, '#09090B');
+    bgGrad.addColorStop(0.35, '#18181B');
+    bgGrad.addColorStop(0.7, '#121215');
+    bgGrad.addColorStop(1, '#09090B');
   }
   ctx.fillStyle = bgGrad;
   ctx.fillRect(0, 0, width, height);
@@ -104,12 +104,12 @@ export async function generateAchievementStoryCard(data: AchievementCardData): P
   };
 
   drawGlow(width * 0.5, 420, 540, tierStyle.glow);
-  drawGlow(width * 0.15, 1250, 440, 'rgba(214, 232, 93, 0.15)');
-  drawGlow(width * 0.85, 1450, 440, 'rgba(52, 211, 153, 0.15)');
+  drawGlow(width * 0.15, 1250, 440, 'rgba(245, 158, 11, 0.15)');
+  drawGlow(width * 0.85, 1450, 440, 'rgba(245, 158, 11, 0.15)');
 
   // 3. Elegant Outer Border Frame & Corner Flares
   ctx.save();
-  ctx.strokeStyle = 'rgba(214, 232, 93, 0.2)';
+  ctx.strokeStyle = 'rgba(245, 158, 11, 0.2)';
   ctx.lineWidth = 2;
   ctx.strokeRect(36, 36, width - 72, height - 72);
 
@@ -137,16 +137,16 @@ export async function generateAchievementStoryCard(data: AchievementCardData): P
 
   // 4. University Header
   ctx.textAlign = 'center';
-  ctx.fillStyle = '#D6E85D';
+  ctx.fillStyle = '#F59E0B';
   ctx.font = '800 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
   ctx.fillText('ITM SLS BARODA UNIVERSITY', width / 2, 125);
 
-  ctx.fillStyle = '#A2BAAF';
+  ctx.fillStyle = '#A1A1AA';
   ctx.font = '700 16px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
   ctx.fillText('DEPARTMENT OF COMPUTER SCIENCE & ENGINEERING', width / 2, 160);
 
   // 5. Divider Line with Center Diamond
-  ctx.strokeStyle = 'rgba(214, 232, 93, 0.25)';
+  ctx.strokeStyle = 'rgba(245, 158, 11, 0.25)';
   ctx.lineWidth = 1.5;
   ctx.beginPath();
   ctx.moveTo(width / 2 - 220, 195);
@@ -193,14 +193,14 @@ export async function generateAchievementStoryCard(data: AchievementCardData): P
 
   if (!avatarLoaded) {
     const avatarGrad = ctx.createLinearGradient(width / 2 - avatarRadius, avatarY - avatarRadius, width / 2 + avatarRadius, avatarY + avatarRadius);
-    avatarGrad.addColorStop(0, '#183F36');
-    avatarGrad.addColorStop(1, '#0C241E');
+    avatarGrad.addColorStop(0, '#18181B');
+    avatarGrad.addColorStop(1, '#121215');
     ctx.fillStyle = avatarGrad;
     ctx.beginPath();
     ctx.arc(width / 2, avatarY, avatarRadius, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillStyle = '#D6E85D';
+    ctx.fillStyle = '#F59E0B';
     ctx.font = '900 68px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -229,7 +229,7 @@ export async function generateAchievementStoryCard(data: AchievementCardData): P
   ctx.font = '800 46px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
   ctx.fillText(data.studentName || 'Student Scholar', width / 2, 445);
 
-  ctx.fillStyle = '#D6E85D';
+  ctx.fillStyle = '#F59E0B';
   ctx.font = '700 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
   ctx.fillText(`Level ${data.level} · ${data.levelTitle}`, width / 2, 485);
 
@@ -247,7 +247,7 @@ export async function generateAchievementStoryCard(data: AchievementCardData): P
   roundRect(ctx, boxX, boxY, boxWidth, boxHeight, 36);
   ctx.fill();
 
-  ctx.strokeStyle = 'rgba(214, 232, 93, 0.35)';
+  ctx.strokeStyle = 'rgba(245, 158, 11, 0.35)';
   ctx.lineWidth = 2;
   roundRect(ctx, boxX, boxY, boxWidth, boxHeight, 36);
   ctx.stroke();
@@ -262,7 +262,7 @@ export async function generateAchievementStoryCard(data: AchievementCardData): P
   roundRect(ctx, pillX, pillY, pillWidth, pillHeight, 24);
   ctx.fill();
 
-  ctx.fillStyle = '#183F36';
+  ctx.fillStyle = '#18181B';
   ctx.font = '900 17px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
   ctx.fillText(tierStyle.label, width / 2, pillY + 31);
 
@@ -310,7 +310,7 @@ export async function generateAchievementStoryCard(data: AchievementCardData): P
   ctx.fillText(data.achievementTitle, width / 2, boxY + 400);
 
   // Description
-  ctx.fillStyle = '#C2D6CF';
+  ctx.fillStyle = '#E4E4E7';
   ctx.font = '500 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
   wrapText(ctx, data.achievementDescription, width / 2, boxY + 455, boxWidth - 100, 36);
 
@@ -320,16 +320,16 @@ export async function generateAchievementStoryCard(data: AchievementCardData): P
   const xpPillH = 64;
   const xpPillX = width / 2 - xpPillW / 2;
 
-  ctx.fillStyle = 'rgba(214, 232, 93, 0.18)';
+  ctx.fillStyle = 'rgba(245, 158, 11, 0.18)';
   roundRect(ctx, xpPillX, xpPillY, xpPillW, xpPillH, 32);
   ctx.fill();
 
-  ctx.strokeStyle = 'rgba(214, 232, 93, 0.6)';
+  ctx.strokeStyle = 'rgba(245, 158, 11, 0.6)';
   ctx.lineWidth = 2;
   roundRect(ctx, xpPillX, xpPillY, xpPillW, xpPillH, 32);
   ctx.stroke();
 
-  ctx.fillStyle = '#D6E85D';
+  ctx.fillStyle = '#F59E0B';
   ctx.font = '900 28px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
   ctx.fillText(`✨ +${data.xpReward} XP AWARDED`, width / 2, xpPillY + 42);
 
@@ -352,12 +352,12 @@ export async function generateAchievementStoryCard(data: AchievementCardData): P
     roundRect(ctx, x, statsY, statBoxW, statBoxH, 20);
     ctx.fill();
 
-    ctx.strokeStyle = 'rgba(214, 232, 93, 0.25)';
+    ctx.strokeStyle = 'rgba(245, 158, 11, 0.25)';
     ctx.lineWidth = 1.5;
     roundRect(ctx, x, statsY, statBoxW, statBoxH, 20);
     ctx.stroke();
 
-    ctx.fillStyle = '#A2BAAF';
+    ctx.fillStyle = '#A1A1AA';
     ctx.font = '700 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.fillText(s.label, x + statBoxW / 2, statsY + 45);
 
@@ -367,27 +367,27 @@ export async function generateAchievementStoryCard(data: AchievementCardData): P
   });
 
   // 9. Call to action & App Watermark
-  ctx.fillStyle = '#D6E85D';
+  ctx.fillStyle = '#F59E0B';
   ctx.font = '700 23px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
   ctx.fillText('🎓 ITM Notes • Your Academic Companion', width / 2, 1590);
 
-  ctx.fillStyle = '#A2BAAF';
+  ctx.fillStyle = '#A1A1AA';
   ctx.font = '500 18px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
   ctx.fillText('https://itm-notes-new.vercel.app', width / 2, 1630);
 
   // 10. Stamp of Verification
-  ctx.fillStyle = 'rgba(214, 232, 93, 0.08)';
+  ctx.fillStyle = 'rgba(245, 158, 11, 0.08)';
   ctx.beginPath();
   ctx.arc(width / 2, 1750, 56, 0, Math.PI * 2);
   ctx.fill();
 
-  ctx.strokeStyle = 'rgba(214, 232, 93, 0.45)';
+  ctx.strokeStyle = 'rgba(245, 158, 11, 0.45)';
   ctx.lineWidth = 2.5;
   ctx.beginPath();
   ctx.arc(width / 2, 1750, 56, 0, Math.PI * 2);
   ctx.stroke();
 
-  ctx.fillStyle = '#D6E85D';
+  ctx.fillStyle = '#F59E0B';
   ctx.font = '900 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
   ctx.fillText('VERIFIED', width / 2, 1745);
   ctx.fillText('HONORS', width / 2, 1763);

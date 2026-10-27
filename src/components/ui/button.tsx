@@ -17,15 +17,15 @@ const buttonVariants = cva(
         secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-sm",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        /* Gen Z Dark Variants */
+        /* Tactile Minimalist Variants (Zero Green, Zero Blue, Zero Rainbow) */
         electric:
-          "bg-gradient-electric text-primary-foreground hover:shadow-glow-primary shadow-sm shadow-primary/25 hover:scale-[1.02]",
+          "bg-amber-500 hover:bg-amber-600 text-white shadow-sm shadow-amber-500/20 hover:scale-[1.02]",
         neon:
-          "bg-gradient-pink-purple text-primary-foreground hover:shadow-glow-accent shadow-sm shadow-purple-500/30 hover:scale-[1.02]",
+          "bg-gradient-amber text-white shadow-sm hover:scale-[1.02]",
         glass:
-          "bg-card/50 text-foreground border border-border/60 backdrop-blur-md hover:bg-card/80 hover:border-primary/40 shadow-sm shadow-glass",
+          "bg-card/80 text-foreground border border-border backdrop-blur-md hover:bg-secondary shadow-xs",
         dark:
-          "bg-background text-muted-foreground hover:bg-muted hover:text-foreground border border-border hover:border-input shadow-sm",
+          "bg-secondary text-foreground hover:bg-secondary/80 border border-border shadow-xs",
       },
       size: {
         default: "h-10 px-4 py-2",

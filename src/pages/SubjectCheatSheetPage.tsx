@@ -94,7 +94,7 @@ export default function SubjectCheatSheetPage() {
               <p className="text-muted-foreground font-medium">Core Topics Covered</p>
             </div>
             <div>
-              <p className="text-2xl font-black text-indigo-400 dark:text-indigo-400">
+              <p className="text-2xl font-black text-amber-500 dark:text-amber-500">
                 {allTopics.reduce((acc, t) => acc + (t.keyPoints?.length || 0), 0)}
               </p>
               <p className="text-muted-foreground font-medium">High-Yield Key Points</p>

@@ -4,7 +4,7 @@ export const sem1PhysicsSubject: Subject = {
   id: 'sem1-physics',
   name: 'Engineering Physics',
   code: 'PHY102',
-  color: 'bg-violet-600',
+  color: 'bg-amber-500',
   icon: 'atom',
   description: 'Comprehensive University Syllabus for Engineering Physics — Wave Optics (Interference & Diffraction), Lasers & Photonics, Optical Fibers, and Quantum Mechanics',
   semester: 1,

@@ -102,7 +102,7 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ subject }) => 
               key={unit.id}
               className={`p-4 rounded-2xl border transition-all ${
                 isFinished 
-                  ? 'bg-indigo-400/5 border-indigo-400/30' 
+                  ? 'bg-amber-500/5 border-amber-500/30' 
                   : 'bg-secondary/30 border-border/70'
               }`}
             >
@@ -122,7 +122,7 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ subject }) => 
                 </div>
 
                 <div className="text-right shrink-0">
-                  <span className="text-xs font-bold text-indigo-500 dark:text-indigo-300 block">
+                  <span className="text-xs font-bold text-amber-500 dark:text-amber-500 block">
                     ~{expectedMarks} Marks
                   </span>
                   <span className="text-[10px] text-muted-foreground font-mono">
@@ -134,7 +134,7 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ subject }) => 
               {/* Progress bar per unit */}
               <div className="w-full h-1.5 rounded-full bg-secondary/80 overflow-hidden mb-3">
                 <div 
-                  className={`h-full transition-all duration-300 ${isFinished ? 'bg-indigo-400' : 'bg-primary'}`}
+                  className={`h-full transition-all duration-300 ${isFinished ? 'bg-amber-500' : 'bg-primary'}`}
                   style={{ width: `${percent}%` }}
                 />
               </div>
@@ -149,12 +149,12 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ subject }) => 
                       to={`/subject/${subject.id}/topic/${t.id}`}
                       className={`text-[11px] px-2.5 py-1 rounded-xl border transition-all flex items-center gap-1.5 apple-press ${
                         done
-                          ? 'bg-indigo-400/10 border-indigo-400/30 text-indigo-400 dark:text-indigo-400 font-semibold'
+                          ? 'bg-amber-500/10 border-amber-500/30 text-amber-500 dark:text-amber-500 font-semibold'
                           : 'bg-card border-border/80 text-muted-foreground hover:text-foreground hover:border-primary/40'
                       }`}
                     >
                       {done ? (
-                        <CheckCircle2 className="h-3 w-3 text-indigo-400 shrink-0" />
+                        <CheckCircle2 className="h-3 w-3 text-amber-500 shrink-0" />
                       ) : (
                         <Circle className="h-3 w-3 text-muted-foreground/60 shrink-0" />
                       )}

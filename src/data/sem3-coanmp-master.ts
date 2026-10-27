@@ -4,7 +4,7 @@ export const sem3CoanmpMaster: Subject = {
   id: 'sem3-coanmp',
   name: 'Computer Oriented Numerical Methods with Python (COANMP)',
   code: 'COANMP',
-  color: 'bg-blue-600',
+  color: 'bg-amber-500',
   icon: 'calculator',
   description: 'Comprehensive University Syllabus for COANMP — Number Systems & Error Analysis, Non-Linear Root Finding, Linear System Solvers, Finite Differences & Interpolation, Numerical Quadrature, and ODE Solvers with Python',
   semester: 3,

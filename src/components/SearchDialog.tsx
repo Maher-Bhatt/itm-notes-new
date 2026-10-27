@@ -217,7 +217,7 @@ export function SearchDialog({ open, onOpenChange, onOpenAiDoubt }: SearchDialog
               {/* In-Content Deep Note Search Results */}
               {searchResults.inContent.length > 0 && (
                 <div>
-                  <span className="text-[10px] font-bold text-indigo-500 dark:text-indigo-300 uppercase tracking-wider block mb-1.5 px-1 flex items-center gap-1.5">
+                  <span className="text-[10px] font-bold text-amber-500 dark:text-amber-500 uppercase tracking-wider block mb-1.5 px-1 flex items-center gap-1.5">
                     <FileCode className="h-3.5 w-3.5" /> Inside Note Body ({searchResults.inContent.length})
                   </span>
                   <div className="space-y-1.5">
@@ -225,7 +225,7 @@ export function SearchDialog({ open, onOpenChange, onOpenAiDoubt }: SearchDialog
                       <button
                         key={idx}
                         onClick={() => handleNavigate(`/subject/${item.subjectId}/topic/${item.topicId}`)}
-                        className="w-full p-2.5 rounded-xl border border-indigo-400/20 hover:border-indigo-400/50 bg-indigo-400/5 hover:bg-indigo-400/10 text-left transition-colors flex items-center justify-between group"
+                        className="w-full p-2.5 rounded-xl border border-amber-500/20 hover:border-amber-500/50 bg-amber-500/5 hover:bg-amber-500/10 text-left transition-colors flex items-center justify-between group"
                       >
                         <div className="min-w-0 pr-2">
                           <div className="flex items-center gap-2">

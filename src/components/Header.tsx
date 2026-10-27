@@ -68,19 +68,19 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-black/40 backdrop-blur-xl border-b border-white/10">
+      <header className="sticky top-0 z-50 bg-card/90 backdrop-blur-xl border-b border-border">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-12 flex items-center justify-between">
           <div className="flex items-center gap-2">
             {/* Hamburger Menu Toggle (Mobile Only) */}
             <button
               onClick={() => setIsDrawerOpen(true)}
-              className="md:hidden p-1.5 -ml-1.5 press rounded-lg text-white/70 hover:text-white hover:bg-white/10 flex items-center justify-center min-w-[44px] min-h-[44px]"
+              className="md:hidden p-1.5 -ml-1.5 press rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary flex items-center justify-center min-w-[44px] min-h-[44px]"
             >
               <Menu className="h-5 w-5" />
             </button>
 
             {showBack && (
-              <button onClick={() => navigate(backTo || "/")} className="press p-2.5 -ml-1 rounded-lg hover:bg-white/10 min-w-[44px] min-h-[44px] flex items-center justify-center">
+              <button onClick={() => navigate(backTo || "/")} className="press p-2.5 -ml-1 rounded-lg hover:bg-secondary min-w-[44px] min-h-[44px] flex items-center justify-center">
                 <ChevronLeft className="h-5 w-5" />
               </button>
             )}
@@ -88,8 +88,8 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
             <Link to="/" className="flex items-center gap-2 group mr-1">
               <img src={logo} alt="ITM Notes" className="w-7 h-7 object-contain" />
               <div className="flex flex-col">
-                <span className="font-bold text-sm leading-tight text-white">ITM Notes</span>
-                <span className="text-[9px] text-white/50 leading-none hidden sm:block">by Velocity Web</span>
+                <span className="font-bold text-sm leading-tight text-foreground">ITM Notes</span>
+                <span className="text-[9px] text-foreground/50 leading-none hidden sm:block">by Velocity Web</span>
               </div>
             </Link>
 
@@ -98,11 +98,11 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
               <button
                 onClick={() => navigate("/profile")}
                 title={`${game.streakDays} Day Study Streak! Level ${levelInfo.level} ${levelInfo.title}`}
-                className="press inline-flex items-center gap-1 px-2 py-1 md:px-2.5 rounded-full text-xs font-bold bg-white/10 text-white hover:bg-white/20 transition-all border border-white/10 mr-0.5"
+                className="press inline-flex items-center gap-1 px-2 py-1 md:px-2.5 rounded-full text-xs font-bold bg-secondary text-foreground hover:bg-white/20 transition-all border border-border mr-0.5"
               >
-                <Flame className="h-3.5 w-3.5 text-accent-foreground" />
+                <Flame className="h-3.5 w-3.5 text-amber-500" />
                 <span>{game.streakDays}</span>
-                <span className="hidden md:inline text-[10px] text-white/60 font-medium">({game.xp} XP)</span>
+                <span className="hidden md:inline text-[10px] text-foreground/60 font-medium">({game.xp} XP)</span>
               </button>
             )}
           </div>
@@ -114,11 +114,11 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
               title={isRunning ? `Focus session active: ${Math.floor(timeLeft / 60)}m left` : "Start Pomodoro Study Focus"}
               className={`press items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold transition-all border mr-1 ${
                 isRunning
-                  ? "inline-flex bg-accent/20 text-accent-foreground border-accent/30 animate-pulse"
-                  : "hidden md:inline-flex bg-white/10 text-white/60 border-white/10"
+                  ? "inline-flex bg-accent/20 text-amber-500 border-accent/30 animate-pulse"
+                  : "hidden md:inline-flex bg-secondary text-foreground/60 border-border"
               }`}
             >
-              <Clock className={`h-3.5 w-3.5 ${isRunning ? "text-accent-foreground" : "text-primary"}`} />
+              <Clock className={`h-3.5 w-3.5 ${isRunning ? "text-amber-500" : "text-primary"}`} />
               <span className="font-mono text-[11px] font-bold">
                 {isRunning
                   ? `${String(Math.floor(timeLeft / 60)).padStart(2, '0')}:${String(timeLeft % 60).padStart(2, '0')}`
@@ -130,7 +130,7 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
             <button
               onClick={() => navigate("/materials")}
               title="Academic Materials Library"
-              className="press hidden md:inline-flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-sm font-medium text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+              className="press hidden md:inline-flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-sm font-medium text-foreground/60 hover:text-foreground hover:bg-secondary transition-colors"
             >
               <BookOpen className="h-4 w-4 text-primary" />
               <span>Materials</span>
@@ -140,7 +140,7 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
             <button
               onClick={() => navigate("/quiz")}
               title="Practice Quiz"
-              className="press hidden lg:inline-flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-sm font-medium text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+              className="press hidden lg:inline-flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-sm font-medium text-foreground/60 hover:text-foreground hover:bg-secondary transition-colors"
             >
               <span>Quiz</span>
             </button>
@@ -149,7 +149,7 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
             <button
               onClick={() => navigate("/calculator")}
               title="SGPA & CGPA Grade Predictor"
-              className="press hidden lg:inline-flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-sm font-medium text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+              className="press hidden lg:inline-flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-sm font-medium text-foreground/60 hover:text-foreground hover:bg-secondary transition-colors"
             >
               <span>GPA Calc</span>
             </button>
@@ -158,7 +158,7 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
             <button
               onClick={() => navigate("/coding-lab")}
               title="Practical Coding Lab"
-              className="press hidden lg:inline-flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-sm font-medium text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+              className="press hidden lg:inline-flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-sm font-medium text-foreground/60 hover:text-foreground hover:bg-secondary transition-colors"
             >
               <Code className="h-4 w-4 text-accent" />
               <span>Coding Lab</span>
@@ -168,7 +168,7 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
             <button
               onClick={() => navigate("/community")}
               title="Campus Social Feed & Confessions"
-              className="press hidden lg:inline-flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-sm font-medium text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+              className="press hidden lg:inline-flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-sm font-medium text-foreground/60 hover:text-foreground hover:bg-secondary transition-colors"
             >
               <MessageSquare className="h-4 w-4 text-primary" />
               <span>Social</span>
@@ -178,7 +178,7 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
             <button
               onClick={() => navigate("/imp-questions")}
               title="IMP Questions"
-              className="press hidden md:inline-flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-sm text-white/60 hover:bg-white/10 transition-colors"
+              className="press hidden md:inline-flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-sm text-foreground/60 hover:bg-secondary transition-colors"
             >
               <HelpCircle className="h-4 w-4" />
               <span className="hidden lg:inline">IMP Questions</span>
@@ -186,7 +186,7 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
 
             {/* Search */}
             {onSearchOpen && (
-              <button onClick={onSearchOpen} className="press hidden md:inline-flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-sm text-white/60 hover:bg-white/10 transition-colors">
+              <button onClick={onSearchOpen} className="press hidden md:inline-flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-sm text-foreground/60 hover:bg-secondary transition-colors">
                 <Search className="h-4 w-4" />
                 <span className="hidden lg:inline">Search</span>
               </button>
@@ -200,7 +200,7 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
             {/* Keyboard Shortcuts Trigger */}
             <button
               onClick={() => setShortcutsOpen(true)}
-              className="press hidden sm:inline-flex items-center justify-center h-8 w-8 rounded-full bg-white/10 hover:bg-white/20 text-white/60 hover:text-white transition-colors border border-white/10 press"
+              className="press hidden sm:inline-flex items-center justify-center h-8 w-8 rounded-full bg-secondary hover:bg-white/20 text-foreground/60 hover:text-foreground transition-colors border border-border press"
               title="Keyboard Shortcuts (?)"
             >
               <Keyboard className="h-4 w-4" />
@@ -211,24 +211,24 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button
-                    className="relative press inline-flex items-center justify-center h-8 w-8 rounded-full bg-white/10 hover:bg-white/20 transition-colors border border-white/10 ml-1"
+                    className="relative press inline-flex items-center justify-center h-8 w-8 rounded-full bg-secondary hover:bg-white/20 transition-colors border border-border ml-1"
                     title="Campus Notifications"
                   >
-                    <Bell className="h-4 w-4 text-white" />
+                    <Bell className="h-4 w-4 text-foreground" />
                     {unreadCount > 0 && (
-                      <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-gradient-electric text-[9px] font-bold text-white ring-2 ring-background">
+                      <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-gradient-electric text-[9px] font-bold text-foreground ring-2 ring-background">
                         {unreadCount > 9 ? '9+' : unreadCount}
                       </span>
                     )}
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-72 sm:w-80 p-2 max-w-[calc(100vw-2rem)] rounded-2xl shadow-xl border border-white/10 glass-card">
+                <DropdownMenuContent align="end" className="w-72 sm:w-80 p-2 max-w-[calc(100vw-2rem)] rounded-2xl shadow-xl border border-border glass-card">
                   <div className="flex items-center justify-between pb-2 mb-2 border-b px-2">
-                    <span className="text-xs font-bold uppercase tracking-wider text-white/50">Notifications</span>
+                    <span className="text-xs font-bold uppercase tracking-wider text-foreground/50">Notifications</span>
                     {unreadCount > 0 && (
                       <button
                         onClick={markAllNotificationsRead}
-                        className="text-[11px] text-primary hover:text-white/80 font-medium"
+                        className="text-[11px] text-primary hover:text-foreground/80 font-medium"
                       >
                         Mark all as read
                       </button>
@@ -236,18 +236,18 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
                   </div>
                   <div className="space-y-1.5 max-h-64 overflow-y-auto">
                     {notifications.length === 0 ? (
-                      <div className="text-center py-6 text-xs text-white/50">
+                      <div className="text-center py-6 text-xs text-foreground/50">
                         No notifications yet.
                       </div>
                     ) : (
                       notifications.map((n) => (
                         <div
                           key={n.id}
-                          className={`p-2.5 rounded-lg text-xs transition-colors border ${n.read ? 'bg-transparent border-transparent text-white/50' : 'bg-primary/5 border-primary/20 text-white font-medium'}`}
+                          className={`p-2.5 rounded-lg text-xs transition-colors border ${n.read ? 'bg-transparent border-transparent text-foreground/50' : 'bg-primary/5 border-primary/20 text-foreground font-medium'}`}
                         >
                           <p className="font-semibold">{n.title}</p>
-                          <p className="text-[11px] text-white/60 line-clamp-2 mt-0.5">{n.message}</p>
-                          <span className="text-[9px] text-white/40 font-mono mt-1 block">
+                          <p className="text-[11px] text-foreground/60 line-clamp-2 mt-0.5">{n.message}</p>
+                          <span className="text-[9px] text-foreground/40 font-mono mt-1 block">
                             {new Date(n.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </span>
                         </div>
@@ -262,7 +262,7 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="press inline-flex items-center justify-center h-8 w-8 rounded-full bg-white/10 hover:bg-white/20 transition-colors border border-white/10 ml-2 press">
+                  <button className="press inline-flex items-center justify-center h-8 w-8 rounded-full bg-secondary hover:bg-white/20 transition-colors border border-border ml-2 press">
                     {profile?.avatar_url ? (
                       <img src={profile.avatar_url} alt="Avatar" className="h-full w-full rounded-full object-cover" />
                     ) : (
@@ -272,13 +272,13 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
                     )}
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 rounded-2xl shadow-xl border border-white/10 glass-card">
+                <DropdownMenuContent align="end" className="w-56 rounded-2xl shadow-xl border border-border glass-card">
                   <div className="flex items-center justify-start gap-2 p-2">
                     <div className="flex flex-col space-y-1 leading-none">
                       {profile?.display_name && (
-                        <p className="font-medium text-white">{profile.display_name}</p>
+                        <p className="font-medium text-foreground">{profile.display_name}</p>
                       )}
-                      <p className="w-[200px] truncate text-sm text-white/60">
+                      <p className="w-[200px] truncate text-sm text-foreground/60">
                         {user.email}
                       </p>
                     </div>
@@ -294,7 +294,7 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
                     </>
                   )}
                   <DropdownMenuItem onClick={() => navigate("/profile")} className="press hover:bg-white/5">
-                    <Trophy className="mr-2 h-4 w-4 text-accent-foreground" />
+                    <Trophy className="mr-2 h-4 w-4 text-amber-500" />
                     <span>My Profile & Rank</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate("/community")} className="press hover:bg-white/5">
@@ -302,7 +302,7 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
                     <span>Campus Social & Confessions</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate("/quiz")} className="lg:hidden press hover:bg-white/5">
-                    <HelpCircle className="mr-2 h-4 w-4 text-accent-foreground" />
+                    <HelpCircle className="mr-2 h-4 w-4 text-amber-500" />
                     <span>Practice Quiz</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate("/calculator")} className="press hover:bg-white/5">
@@ -327,7 +327,7 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
               <div className="flex items-center gap-2 ml-1">
                 <button
                   onClick={() => navigate("/auth")}
-                  className="press inline-flex items-center justify-center gap-1.5 h-8 px-3 rounded-lg text-xs bg-gradient-electric text-white hover:bg-primary/90 transition-colors font-semibold shadow-lg shadow-primary/20"
+                  className="press inline-flex items-center justify-center gap-1.5 h-8 px-3 rounded-lg text-xs bg-gradient-electric text-foreground hover:bg-primary/90 transition-colors font-semibold shadow-lg shadow-primary/20"
                 >
                   Sign In
                 </button>
@@ -342,13 +342,13 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
         <div className="fixed inset-0 bg-black/60 z-[60] md:hidden backdrop-blur-sm" onClick={() => setIsDrawerOpen(false)} />
       )}
 
-      <div className={`fixed inset-y-0 left-0 w-[280px] bg-background z-[70] transform transition-transform duration-300 md:hidden border-r border-white/10 flex flex-col shadow-2xl ${isDrawerOpen ? "translate-x-0" : "-translate-x-full"}`}>
-        <div className="flex items-center justify-between p-4 border-b border-white/10">
+      <div className={`fixed inset-y-0 left-0 w-[280px] bg-background z-[70] transform transition-transform duration-300 md:hidden border-r border-border flex flex-col shadow-2xl ${isDrawerOpen ? "translate-x-0" : "-translate-x-full"}`}>
+        <div className="flex items-center justify-between p-4 border-b border-border">
           <div className="flex items-center gap-2">
             <img src={logo} alt="ITM Notes" className="w-6 h-6 object-contain" />
-            <span className="font-bold text-base leading-tight text-white">ITM Notes</span>
+            <span className="font-bold text-base leading-tight text-foreground">ITM Notes</span>
           </div>
-          <button onClick={() => setIsDrawerOpen(false)} className="p-2.5 -mr-1.5 rounded-lg hover:bg-white/10 text-white/60 min-w-[44px] min-h-[44px] flex items-center justify-center press">
+          <button onClick={() => setIsDrawerOpen(false)} className="p-2.5 -mr-1.5 rounded-lg hover:bg-secondary text-foreground/60 min-w-[44px] min-h-[44px] flex items-center justify-center press">
             <X className="h-5 w-5" />
           </button>
         </div>
@@ -357,67 +357,67 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
           {!isRunning && (
             <button
               onClick={() => { setIsModalOpen(true); setIsDrawerOpen(false); }}
-              className="flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium hover:bg-white/10 text-left transition-colors min-h-[44px] press"
+              className="flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium hover:bg-secondary text-left transition-colors min-h-[44px] press"
             >
               <Clock className="h-5 w-5 text-primary" />
               <span>Start Pomodoro Focus</span>
             </button>
           )}
 
-          <div className="px-3 pt-2 pb-1 text-xs font-bold text-white/50 uppercase tracking-wider">
+          <div className="px-3 pt-2 pb-1 text-xs font-bold text-foreground/50 uppercase tracking-wider">
             Resources & Community
           </div>
 
-          <button onClick={() => { navigate("/community"); setIsDrawerOpen(false); }} className="flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium hover:bg-white/10 text-left transition-colors text-white min-h-[44px] press">
+          <button onClick={() => { navigate("/community"); setIsDrawerOpen(false); }} className="flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium hover:bg-secondary text-left transition-colors text-foreground min-h-[44px] press">
             <MessageSquare className="h-5 w-5 text-primary" />
             <div className="flex items-center justify-between w-full">
               <span>Campus Social & Mask</span>
-              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-primary/10 text-primary font-bold border border-white/10">Feed</span>
+              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-primary/10 text-primary font-bold border border-border">Feed</span>
             </div>
           </button>
 
-          <button onClick={() => { navigate("/materials"); setIsDrawerOpen(false); }} className="flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium hover:bg-white/10 text-left transition-colors min-h-[44px] press">
+          <button onClick={() => { navigate("/materials"); setIsDrawerOpen(false); }} className="flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium hover:bg-secondary text-left transition-colors min-h-[44px] press">
             <BookOpen className="h-5 w-5 text-primary" />
             <span>Materials</span>
           </button>
 
-          <button onClick={() => { navigate("/imp-questions"); setIsDrawerOpen(false); }} className="flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium hover:bg-white/10 text-left transition-colors min-h-[44px] press">
-            <HelpCircle className="h-5 w-5 text-accent-foreground" />
+          <button onClick={() => { navigate("/imp-questions"); setIsDrawerOpen(false); }} className="flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium hover:bg-secondary text-left transition-colors min-h-[44px] press">
+            <HelpCircle className="h-5 w-5 text-amber-500" />
             <span>IMP Questions</span>
           </button>
 
-          <div className="px-3 pt-4 pb-1 text-xs font-bold text-white/50 uppercase tracking-wider">
+          <div className="px-3 pt-4 pb-1 text-xs font-bold text-foreground/50 uppercase tracking-wider">
             Tools
           </div>
 
-          <button onClick={() => { navigate("/quiz"); setIsDrawerOpen(false); }} className="flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium hover:bg-white/10 text-left transition-colors min-h-[44px] press">
-            <HelpCircle className="h-5 w-5 text-accent-foreground" />
+          <button onClick={() => { navigate("/quiz"); setIsDrawerOpen(false); }} className="flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium hover:bg-secondary text-left transition-colors min-h-[44px] press">
+            <HelpCircle className="h-5 w-5 text-amber-500" />
             <span>Practice Quiz</span>
           </button>
 
-          <button onClick={() => { navigate("/calculator"); setIsDrawerOpen(false); }} className="flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium hover:bg-white/10 text-left transition-colors min-h-[44px] press">
+          <button onClick={() => { navigate("/calculator"); setIsDrawerOpen(false); }} className="flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium hover:bg-secondary text-left transition-colors min-h-[44px] press">
             <Calculator className="h-5 w-5 text-primary" />
             <span>GPA Predictor</span>
           </button>
 
-          <button onClick={() => { navigate("/coding-lab"); setIsDrawerOpen(false); }} className="flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium hover:bg-white/10 text-left transition-colors min-h-[44px] press">
+          <button onClick={() => { navigate("/coding-lab"); setIsDrawerOpen(false); }} className="flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium hover:bg-secondary text-left transition-colors min-h-[44px] press">
             <Code className="h-5 w-5 text-accent" />
             <span>Coding Lab</span>
           </button>
 
           {onSearchOpen && (
             <>
-              <div className="h-px bg-white/10 my-2 mx-2" />
-              <button onClick={() => { onSearchOpen(); setIsDrawerOpen(false); }} className="flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium hover:bg-white/10 text-left transition-colors min-h-[44px] press">
-                <Search className="h-5 w-5 text-white/60" />
+              <div className="h-px bg-secondary my-2 mx-2" />
+              <button onClick={() => { onSearchOpen(); setIsDrawerOpen(false); }} className="flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium hover:bg-secondary text-left transition-colors min-h-[44px] press">
+                <Search className="h-5 w-5 text-foreground/60" />
                 <span>Search</span>
               </button>
             </>
           )}
         </div>
 
-        <div className="p-4 border-t border-white/10 flex items-center justify-between bg-white/5" style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}>
-          <span className="text-sm font-medium text-white/50">Theme Settings</span>
+        <div className="p-4 border-t border-border flex items-center justify-between bg-white/5" style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}>
+          <span className="text-sm font-medium text-foreground/50">Theme Settings</span>
           <ThemeToggle />
         </div>
       </div>

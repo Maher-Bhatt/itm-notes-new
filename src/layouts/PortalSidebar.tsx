@@ -13,9 +13,6 @@ import {
   Settings,
   LogOut,
   ChevronRight,
-  Flame,
-  Award,
-  Layers,
   Calendar,
   X,
   LogIn,
@@ -58,7 +55,7 @@ export function PortalSidebar({ isOpen = false, onClose, isCollapsed = false }: 
     { name: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
     { name: "Today's Hub", path: "/today", icon: Calendar },
     { name: "Subjects & Notes", path: "/subjects", icon: BookOpen },
-    { name: "Materials", path: "/materials", icon: Layers },
+    { name: "Materials", path: "/materials", icon: FileText },
     { name: "Projects & Lab", path: "/coding-lab", icon: Code2 },
     { name: "Question Banks", path: "/imp-questions", icon: HelpCircle },
     { name: "Communities", path: "/community", icon: Users, hasSubmenu: true },
@@ -75,9 +72,7 @@ export function PortalSidebar({ isOpen = false, onClose, isCollapsed = false }: 
     { name: "Timed Mock Exams", path: "/mock-exam", icon: Trophy },
     { name: "Study Planner", path: "/study-planner", icon: Calendar },
     { name: "Rapid Revision", path: "/rapid-revision", icon: Zap },
-    { name: "Formula & Definition Bank", path: "/formulas", icon: BookOpen },
-    { name: "Learning Analytics", path: "/analytics", icon: Award },
-    { name: "Practice Quizzes", path: "/quiz", icon: Trophy },
+    { name: "Formula & Definitions", path: "/formulas", icon: BookOpen },
     { name: "Attendance & SGPA", path: "/calculator", icon: Calculator },
     { name: "Saved Bookmarks", path: "/bookmarks", icon: Bookmark },
     ...(role === "admin" ? [{ name: "Admin Portal", path: "/admin", icon: Shield }] : []),
@@ -87,7 +82,7 @@ export function PortalSidebar({ isOpen = false, onClose, isCollapsed = false }: 
   const sidebarContent = (
     <div className="flex flex-col h-full bg-sidebar text-sidebar-foreground select-none border-r border-sidebar-border">
       {/* Brand Header */}
-      <div className="p-4 border-b border-white/10 shrink-0 bg-black/40 backdrop-blur-md">
+      <div className="p-4 border-b border-sidebar-border shrink-0 bg-sidebar flex items-center justify-between">
         <Link to="/" onClick={onClose} className="flex items-center gap-2 group">
           <ItmMoocsLogo variant="live" size="md" showTagline={false} />
         </Link>
@@ -96,7 +91,7 @@ export function PortalSidebar({ isOpen = false, onClose, isCollapsed = false }: 
           <button
             type="button"
             onClick={toggleFocusMode}
-            className="hidden md:flex p-1.5 rounded-lg text-muted-foreground hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+            className="hidden md:flex p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer"
             title="Minimize Sidebar / Focus Mode (F)"
           >
             <PanelLeftClose className="h-4 w-4" />
@@ -105,7 +100,7 @@ export function PortalSidebar({ isOpen = false, onClose, isCollapsed = false }: 
           {onClose && (
             <button
               onClick={onClose}
-              className="md:hidden p-1.5 rounded-lg text-muted-foreground hover:text-white hover:bg-white/10 transition-colors"
+              className="md:hidden p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer"
               title="Close Sidebar"
             >
               <X className="h-5 w-5" />
@@ -115,22 +110,22 @@ export function PortalSidebar({ isOpen = false, onClose, isCollapsed = false }: 
       </div>
 
       {/* Institution Context Banner */}
-      <div className="px-4 py-2.5 border-b border-white/10 flex items-center justify-between bg-black/20 backdrop-blur-xs">
+      <div className="px-4 py-2.5 border-b border-sidebar-border flex items-center justify-between bg-secondary/40">
         <div className="flex items-center gap-2 min-w-0">
-          <GraduationCap className="h-3.5 w-3.5 text-primary shrink-0" />
-          <span className="text-[10px] font-bold text-white truncate tracking-tight">
+          <GraduationCap className="h-3.5 w-3.5 text-amber-500 shrink-0" />
+          <span className="text-[10px] font-bold text-foreground truncate tracking-tight">
             ITM SLS Baroda University
           </span>
         </div>
-        <span className="text-[9px] font-semibold text-primary bg-white/10 px-1.5 py-0.5 rounded border border-white/20 shrink-0">
+        <span className="text-[9px] font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20 shrink-0">
           HUB
         </span>
       </div>
 
       {/* Main Navigation Links */}
-      <div className="flex-1 overflow-y-auto px-3 py-3 space-y-2 scrollbar-thin">
+      <div className="flex-1 overflow-y-auto px-3 py-3 space-y-3 scrollbar-thin">
         <div>
-          <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/50 px-3 mb-3 font-display">
+          <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground px-3 mb-2 font-display">
             Learning Hub
           </div>
           <nav className="space-y-0.5">
@@ -142,20 +137,20 @@ export function PortalSidebar({ isOpen = false, onClose, isCollapsed = false }: 
                   key={item.name}
                   to={item.path}
                   onClick={onClose}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 relative ${
+                  className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 relative press ${
                     active
-                      ? "bg-gradient-electric text-white font-bold shadow-lg shadow-primary/40"
-                      : "text-muted-foreground hover:text-white hover:bg-white/5"
+                      ? "bg-primary text-primary-foreground font-bold shadow-sm"
+                      : "text-muted-foreground hover:text-foreground hover:bg-secondary/70"
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <Icon className={`h-4 w-4 ${active ? "text-white" : "text-muted-foreground/60"}`} />
+                    <Icon className={`h-4 w-4 ${active ? "text-primary-foreground" : "text-muted-foreground"}`} />
                     <span>{item.name}</span>
                   </div>
 
                   <div className="flex items-center gap-1.5">
                     {active && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-white shadow-sm" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shadow-sm" />
                     )}
                     {item.hasSubmenu && !active && (
                       <ChevronRight className="h-3.5 w-3.5 opacity-40" />
@@ -169,7 +164,7 @@ export function PortalSidebar({ isOpen = false, onClose, isCollapsed = false }: 
 
         {/* Resources & Preferences */}
         <div>
-          <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/50 px-3 mb-3 font-display">
+          <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground px-3 mb-2 font-display">
             Tools & Exams
           </div>
           <nav className="space-y-0.5">
@@ -187,22 +182,20 @@ export function PortalSidebar({ isOpen = false, onClose, isCollapsed = false }: 
                     }
                     onClose?.();
                   }}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 ${
+                  className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all duration-150 press ${
                     active
-                      ? "bg-gradient-electric text-white font-bold shadow-lg shadow-primary/40"
-                      : "text-muted-foreground hover:text-white hover:bg-white/5"
+                      ? "bg-primary text-primary-foreground font-bold shadow-sm"
+                      : "text-muted-foreground hover:text-foreground hover:bg-secondary/70"
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <Icon className={`h-4 w-4 ${active ? "text-white" : "text-muted-foreground/60"}`} />
+                    <Icon className={`h-3.5 w-3.5 ${active ? "text-primary-foreground" : "text-muted-foreground"}`} />
                     <span>{item.name}</span>
                   </div>
 
-                  <div className="flex items-center gap-1.5">
-                    {active && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-white shadow-sm" />
-                    )}
-                  </div>
+                  {active && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                  )}
                 </Link>
               );
             })}
@@ -211,30 +204,30 @@ export function PortalSidebar({ isOpen = false, onClose, isCollapsed = false }: 
 
         {/* Academic Status Card */}
         {!user ? (
-          <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-xs space-y-2">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-primary block font-display">
-              Multi-University Access
+          <div className="p-3.5 rounded-xl bg-secondary/50 border border-sidebar-border text-xs space-y-1.5">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-amber-500 block font-display">
+              Open Course Packs
             </span>
-            <p className="text-[11px] text-white/90 font-medium leading-relaxed">
-              Explore university syllabus notes, C & Java practicals, and question banks.
+            <p className="text-[11px] text-muted-foreground leading-relaxed">
+              Explore university syllabus notes, C & Java practicals, and solved question banks.
             </p>
           </div>
         ) : (
-          <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-xs">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-[11px] font-bold text-white flex items-center gap-1.5 font-display">
-                Academic Focus
+          <div className="p-3.5 rounded-xl bg-secondary/50 border border-sidebar-border text-xs">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[11px] font-bold text-foreground font-display">
+                Academic Streak
               </span>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/10 text-white font-bold border border-white/20">
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold border border-amber-500/20">
                 🔥 {game.streakDays}d Streak
               </span>
             </div>
-            <p className="text-[11px] text-white/80 mb-2 leading-relaxed">
+            <p className="text-[11px] text-muted-foreground mb-2">
               Level {levelInfo.level} · {levelInfo.title}
             </p>
-            <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
+            <div className="h-1.5 rounded-full bg-secondary overflow-hidden">
               <div
-                className="h-full bg-gradient-electric rounded-full transition-all duration-500"
+                className="h-full bg-amber-500 rounded-full transition-all duration-500"
                 style={{ width: `${Math.min(100, Math.round(levelInfo.progressPercent))}%` }}
               />
             </div>
@@ -243,41 +236,41 @@ export function PortalSidebar({ isOpen = false, onClose, isCollapsed = false }: 
       </div>
 
       {/* User Footer Profile Card */}
-      <div className="p-3 border-t border-white/10 shrink-0 bg-black/30 backdrop-blur-xs">
+      <div className="p-3 border-t border-sidebar-border shrink-0 bg-sidebar">
         {!user ? (
-          <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 space-y-2">
+          <div className="p-2.5 rounded-xl bg-secondary/50 border border-sidebar-border space-y-2">
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-gradient-electric text-white flex items-center justify-center font-black text-xs font-display">
-                MOOC
+              <div className="w-7 h-7 rounded-lg bg-primary text-primary-foreground flex items-center justify-center font-black text-xs font-display">
+                ITM
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-xs font-bold text-white truncate">Guest Learner</p>
-                <p className="text-[10px] text-white/70 truncate">Public Preview</p>
+                <p className="text-xs font-bold text-foreground truncate">Guest Student</p>
+                <p className="text-[10px] text-muted-foreground truncate">Public Mode</p>
               </div>
             </div>
             <Link
               to="/auth"
               onClick={onClose}
-              className="w-full h-8 flex items-center justify-center gap-1.5 rounded-lg bg-gradient-electric text-white text-xs font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20"
+              className="w-full h-8 flex items-center justify-center gap-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-bold transition-all shadow-sm press"
             >
               <LogIn className="h-3.5 w-3.5" />
               <span>Sign In / Register</span>
             </Link>
           </div>
         ) : (
-          <div className="flex items-center justify-between gap-2 p-1.5 rounded-xl hover:bg-white/10 transition-colors cursor-pointer">
+          <div className="flex items-center justify-between gap-2 p-1.5 rounded-xl hover:bg-secondary transition-colors cursor-pointer">
             <Link to="/profile" onClick={onClose} className="flex items-center gap-2.5 min-w-0 flex-1">
               <UserAvatar
                 avatarUrl={resolveAvatarUrl(profile, user)}
                 displayName={profile?.display_name}
                 email={user?.email}
-                className="w-8 h-8 text-xs ring-2 ring-primary/30"
+                className="w-8 h-8 text-xs ring-1 ring-border"
               />
               <div className="min-w-0 flex-1">
-                <p className="text-xs font-bold text-white truncate leading-tight">
+                <p className="text-xs font-bold text-foreground truncate leading-tight">
                   {profile?.display_name || user?.email?.split("@")[0] || "Student"}
                 </p>
-                <p className="text-[10px] text-white/70 truncate leading-tight">
+                <p className="text-[10px] text-muted-foreground truncate leading-tight">
                   {role === "admin" ? "Platform Admin" : `Semester ${profile?.semester || 1} · ${profile?.branch ? profile.branch.split(" ")[0] : "CSE"}`}
                 </p>
               </div>
@@ -286,7 +279,7 @@ export function PortalSidebar({ isOpen = false, onClose, isCollapsed = false }: 
             <button
               onClick={() => signOut()}
               title="Sign Out"
-              className="p-1.5 rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition-colors shrink-0 cursor-pointer press"
+              className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors shrink-0 cursor-pointer press"
             >
               <LogOut className="h-4 w-4" />
             </button>
@@ -299,9 +292,11 @@ export function PortalSidebar({ isOpen = false, onClose, isCollapsed = false }: 
   return (
     <>
       {/* Desktop Persistent Sidebar */}
-      <aside className={`hidden md:flex flex-col transition-all duration-300 ease-in-out shrink-0 h-full shadow-2xl z-20 select-none overflow-hidden ${
-        isCollapsed ? "w-0 -translate-x-full opacity-0 pointer-events-none border-r-0" : "w-72 translate-x-0 opacity-100"
-      }`}>
+      <aside
+        className={`hidden md:flex flex-col transition-all duration-300 ease-in-out shrink-0 h-full shadow-md z-20 select-none overflow-hidden ${
+          isCollapsed ? "w-0 -translate-x-full opacity-0 pointer-events-none border-r-0" : "w-72 translate-x-0 opacity-100"
+        }`}
+      >
         {sidebarContent}
       </aside>
 
@@ -309,10 +304,10 @@ export function PortalSidebar({ isOpen = false, onClose, isCollapsed = false }: 
       {isOpen && (
         <div className="md:hidden fixed inset-0 z-50 flex">
           <div
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+            className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity"
             onClick={onClose}
           />
-          <div className="relative w-72 max-w-[85vw] h-full z-10 slide-up glass-card border border-white/10">
+          <div className="relative w-72 max-w-[85vw] h-full z-10 slide-up glass-card border-r border-border">
             {sidebarContent}
           </div>
         </div>

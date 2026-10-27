@@ -63,7 +63,7 @@ export function Footer() {
               </li>
               <li>
                 <Link to="/calculator" className="hover:text-primary transition-colors flex items-center gap-1.5">
-                  <Calculator className="h-3.5 w-3.5 text-blue-500" />
+                  <Calculator className="h-3.5 w-3.5 text-amber-500" />
                   <span>75% Attendance & SGPA Calculator</span>
                 </Link>
               </li>

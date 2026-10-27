@@ -128,8 +128,8 @@ export function AdminErrorsTab() {
         </div>
 
         <div className="bg-slate-800 border border-slate-700 rounded-2xl p-4 flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-blue-500/10 flex items-center justify-center shrink-0">
-            <AlertTriangle className="h-5 w-5 text-blue-400" />
+          <div className="h-10 w-10 rounded-xl bg-amber-500/10 flex items-center justify-center shrink-0">
+            <AlertTriangle className="h-5 w-5 text-amber-500" />
           </div>
           <div>
             <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wide">
@@ -140,8 +140,8 @@ export function AdminErrorsTab() {
         </div>
 
         <div className="bg-slate-800 border border-slate-700 rounded-2xl p-4 flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-indigo-400/10 flex items-center justify-center shrink-0">
-            <CheckCircle2 className="h-5 w-5 text-indigo-300" />
+          <div className="h-10 w-10 rounded-xl bg-amber-500/10 flex items-center justify-center shrink-0">
+            <CheckCircle2 className="h-5 w-5 text-amber-500" />
           </div>
           <div>
             <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wide">
@@ -209,7 +209,7 @@ export function AdminErrorsTab() {
           <div className="py-12 text-center text-slate-500 text-sm">Loading client errors…</div>
         ) : filteredErrors.length === 0 ? (
           <div className="py-12 text-center text-slate-400 text-sm bg-slate-800 border border-slate-700 rounded-2xl">
-            <CheckCircle2 className="h-8 w-8 text-indigo-300 mx-auto mb-2 opacity-80" />
+            <CheckCircle2 className="h-8 w-8 text-amber-500 mx-auto mb-2 opacity-80" />
             <p className="font-bold text-white">Clean Error Inbox</p>
             <p className="text-xs text-slate-400 mt-1">No active frontend crashes recorded for this filter.</p>
           </div>
@@ -236,7 +236,7 @@ export function AdminErrorsTab() {
                           Unresolved
                         </span>
                       ) : (
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-400/10 text-indigo-300 border border-indigo-400/30">
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-500 border border-amber-500/30">
                           Resolved
                         </span>
                       )}
@@ -272,7 +272,7 @@ export function AdminErrorsTab() {
                     {isUnresolved && (
                       <button
                         onClick={() => handleResolve(err)}
-                        className="px-3 py-1.5 rounded-xl bg-indigo-400/15 hover:bg-indigo-400/25 border border-indigo-400/30 text-indigo-300 text-xs font-bold flex items-center gap-1.5 transition-colors"
+                        className="px-3 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-500 text-xs font-bold flex items-center gap-1.5 transition-colors"
                       >
                         <CheckCircle2 className="h-3.5 w-3.5" />
                         <span>Mark Resolved</span>
@@ -318,7 +318,7 @@ export function AdminErrorsTab() {
                   onClick={copyStackToClipboard}
                   className="flex items-center gap-1 text-[11px] text-slate-300 hover:text-white font-medium bg-slate-800 px-2 py-1 rounded-md"
                 >
-                  {copied ? <Check className="h-3 w-3 text-indigo-300" /> : <Copy className="h-3 w-3" />}
+                  {copied ? <Check className="h-3 w-3 text-amber-500" /> : <Copy className="h-3 w-3" />}
                   <span>{copied ? "Copied" : "Copy Stack"}</span>
                 </button>
               </div>
@@ -336,7 +336,7 @@ export function AdminErrorsTab() {
               {selectedError.status !== "resolved" && (
                 <button
                   onClick={() => handleResolve(selectedError)}
-                  className="px-4 py-2 rounded-xl bg-indigo-400 text-slate-950 font-bold text-xs hover:bg-indigo-300 transition-colors flex items-center gap-1.5"
+                  className="px-4 py-2 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs hover:bg-amber-500 transition-colors flex items-center gap-1.5"
                 >
                   <CheckCircle2 className="h-4 w-4" />
                   <span>Mark as Resolved</span>

@@ -4,7 +4,7 @@ export const sem1WtSubject: Subject = {
   id: "sem1-wt",
   name: "Web Technology",
   code: "WT102",
-  color: "bg-blue-600",
+  color: "bg-amber-500",
   icon: "globe",
   description: "Comprehensive University Syllabus for Web Technology — WWW & Internet Protocols, HTML5 Semantic Markup, Forms, CSS3 Box Model & Flexbox, JavaScript DOM, and Form Validation",
   semester: 1,

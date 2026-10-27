@@ -4,7 +4,7 @@ export const sem1Python1Subject: Subject = {
   id: 'sem1-python1',
   name: 'Python Programming 1',
   code: 'PY101',
-  color: 'bg-indigo-500',
+  color: 'bg-amber-500',
   icon: 'code',
   description: 'Complete University Syllabus for Python Programming 1 — Logic Building, Control Structures, Strings, Collections, Functions, Recursion, and File I/O',
   semester: 1,

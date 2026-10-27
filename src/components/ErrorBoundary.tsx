@@ -127,7 +127,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 disabled={this.state.reported || this.state.isReporting}
                 className={`pill-button apple-press h-10 px-4 text-xs font-bold inline-flex items-center border transition-all cursor-pointer ${
                   this.state.reported
-                    ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/30"
+                    ? "bg-amber-500/10 text-amber-500 border-amber-500/30"
                     : "bg-secondary text-foreground border-border hover:bg-secondary/80"
                 }`}
               >

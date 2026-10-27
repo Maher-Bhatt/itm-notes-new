@@ -413,7 +413,7 @@ export default function MockExamPage() {
                   <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-secondary text-primary">
                     {exam.subjectCode}
                   </span>
-                  <span className="text-xs font-bold text-indigo-400 dark:text-indigo-300">
+                  <span className="text-xs font-bold text-amber-500 dark:text-amber-500">
                     {exam.totalMarks} Marks
                   </span>
                 </div>
@@ -464,7 +464,7 @@ export default function MockExamPage() {
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/70 pb-6">
             <div>
-              <span className="text-xs font-bold text-indigo-400 dark:text-indigo-300 uppercase tracking-wide flex items-center gap-1.5">
+              <span className="text-xs font-bold text-amber-500 dark:text-amber-500 uppercase tracking-wide flex items-center gap-1.5">
                 <CheckCircle2 className="h-4 w-4" /> Mock Exam Complete
               </span>
               <h1 className="text-2xl font-black text-foreground mt-1">
@@ -494,9 +494,9 @@ export default function MockExamPage() {
               </span>
             </div>
 
-            <div className="p-4 rounded-2xl bg-indigo-400/10 border border-indigo-400/20 text-center">
+            <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-center">
               <span className="text-[11px] font-bold text-muted-foreground block">Accuracy</span>
-              <span className="text-2xl sm:text-3xl font-black text-indigo-400 dark:text-indigo-300">
+              <span className="text-2xl sm:text-3xl font-black text-amber-500 dark:text-amber-500">
                 {results.percentage}%
               </span>
             </div>
@@ -511,7 +511,7 @@ export default function MockExamPage() {
             <div className="p-4 rounded-2xl bg-secondary border border-border/80 text-center">
               <span className="text-[11px] font-bold text-muted-foreground block">Breakdown</span>
               <span className="text-xs font-bold text-foreground block mt-1">
-                <span className="text-indigo-400">{results.correctCount} Correct</span> •{' '}
+                <span className="text-amber-500">{results.correctCount} Correct</span> •{' '}
                 <span className="text-rose-600">{results.wrongCount} Wrong</span>
               </span>
             </div>
@@ -557,7 +557,7 @@ export default function MockExamPage() {
                     key={q.id}
                     className={`p-4 rounded-2xl border transition-all ${
                       isCorrect
-                        ? 'border-indigo-400/30 bg-indigo-400/5'
+                        ? 'border-amber-500/30 bg-amber-500/5'
                         : isSkipped
                         ? 'border-border bg-secondary/20'
                         : 'border-rose-500/30 bg-rose-500/5'
@@ -569,7 +569,7 @@ export default function MockExamPage() {
                       </span>
                       <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
                         isCorrect
-                          ? 'bg-indigo-400/20 text-indigo-400 dark:text-indigo-300'
+                          ? 'bg-amber-500/20 text-amber-500 dark:text-amber-500'
                           : isSkipped
                           ? 'bg-secondary text-muted-foreground'
                           : 'bg-rose-500/20 text-rose-600 dark:text-rose-400'
@@ -583,7 +583,7 @@ export default function MockExamPage() {
                     </p>
 
                     {q.codeSnippet && (
-                      <pre className="p-3 rounded-xl bg-black/90 text-indigo-300 font-mono text-xs overflow-x-auto mb-3">
+                      <pre className="p-3 rounded-xl bg-black/90 text-amber-500 font-mono text-xs overflow-x-auto mb-3">
                         <code>{q.codeSnippet}</code>
                       </pre>
                     )}
@@ -598,14 +598,14 @@ export default function MockExamPage() {
                             key={optIdx}
                             className={`p-2.5 rounded-xl border text-xs flex items-center justify-between ${
                               isTheCorrect
-                                ? 'bg-indigo-400/20 border-indigo-400/60 font-bold text-indigo-400 dark:text-indigo-400'
+                                ? 'bg-amber-500/20 border-amber-500/60 font-bold text-amber-500 dark:text-amber-500'
                                 : isChosen
                                 ? 'bg-rose-500/20 border-rose-500/60 text-rose-700 dark:text-rose-300 font-medium'
                                 : 'bg-card border-border/60 text-muted-foreground'
                             }`}
                           >
                             <span>{opt}</span>
-                            {isTheCorrect && <span className="text-[10px] text-indigo-400 font-bold">✓ Correct Answer</span>}
+                            {isTheCorrect && <span className="text-[10px] text-amber-500 font-bold">✓ Correct Answer</span>}
                             {isChosen && !isTheCorrect && <span className="text-[10px] text-rose-600 font-bold">✗ Your Choice</span>}
                           </div>
                         );
@@ -658,7 +658,7 @@ export default function MockExamPage() {
 
           <button
             onClick={() => setShowConfirmSubmit(true)}
-            className="px-3.5 py-1.5 rounded-xl bg-indigo-400 hover:bg-indigo-500 text-white font-bold text-xs shadow-sm transition-all apple-press"
+            className="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-500 text-white font-bold text-xs shadow-sm transition-all apple-press"
           >
             Submit Exam
           </button>
@@ -699,7 +699,7 @@ export default function MockExamPage() {
                 </p>
 
                 {currentQuestion.codeSnippet && (
-                  <pre className="p-3.5 rounded-2xl bg-black/90 text-indigo-300 font-mono text-xs overflow-x-auto">
+                  <pre className="p-3.5 rounded-2xl bg-black/90 text-amber-500 font-mono text-xs overflow-x-auto">
                     <code>{currentQuestion.codeSnippet}</code>
                   </pre>
                 )}
@@ -800,7 +800,7 @@ export default function MockExamPage() {
           {/* Legend */}
           <div className="grid grid-cols-2 gap-2 text-[10px] text-muted-foreground pb-2 border-b border-border/60">
             <span className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-full bg-indigo-400" /> Answered
+              <span className="w-3 h-3 rounded-full bg-amber-500" /> Answered
             </span>
             <span className="flex items-center gap-1.5">
               <span className="w-3 h-3 rounded-full bg-purple-500" /> Marked for Review
@@ -824,7 +824,7 @@ export default function MockExamPage() {
               if (isMarked) {
                 badgeClass = 'bg-purple-500 text-white border-purple-600 font-bold';
               } else if (isAnswered) {
-                badgeClass = 'bg-indigo-400 text-white border-indigo-400 font-bold';
+                badgeClass = 'bg-amber-500 text-white border-amber-500 font-bold';
               }
 
               return (
@@ -844,7 +844,7 @@ export default function MockExamPage() {
           <div className="pt-3 border-t border-border/60 text-center">
             <button
               onClick={() => setShowConfirmSubmit(true)}
-              className="w-full py-2.5 rounded-xl bg-indigo-400 hover:bg-indigo-500 text-white font-bold text-xs shadow-sm transition-all apple-press"
+              className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-500 text-white font-bold text-xs shadow-sm transition-all apple-press"
             >
               Submit Examination
             </button>
@@ -867,9 +867,9 @@ export default function MockExamPage() {
             </div>
 
             <div className="grid grid-cols-3 gap-2 text-center py-2">
-              <div className="p-2.5 rounded-xl bg-indigo-400/10 border border-indigo-400/20">
+              <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20">
                 <span className="text-[10px] text-muted-foreground block">Answered</span>
-                <span className="text-base font-bold text-indigo-400">
+                <span className="text-base font-bold text-amber-500">
                   {Object.keys(answers).length}
                 </span>
               </div>
@@ -896,7 +896,7 @@ export default function MockExamPage() {
               </button>
               <button
                 onClick={() => handleSubmitExam(false)}
-                className="px-4 py-2 rounded-xl bg-indigo-400 hover:bg-indigo-500 text-white text-xs font-bold shadow-md"
+                className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-500 text-white text-xs font-bold shadow-md"
               >
                 Yes, Submit Now
               </button>

@@ -305,7 +305,7 @@ export function TimetableModal({
                 Select Your B.Tech Cohort Class:
               </span>
               <span className="text-primary font-semibold flex items-center gap-1 text-[11px]">
-                <MapPin className="h-3.5 w-3.5 text-indigo-500" />
+                <MapPin className="h-3.5 w-3.5 text-amber-500" />
                 Assigned Venue: <strong className="text-foreground">{activeLocation.room}</strong> ({activeLocation.block})
               </span>
             </div>
@@ -360,7 +360,7 @@ export function TimetableModal({
                   <h3 className="font-bold text-xs sm:text-sm text-foreground flex items-center gap-1.5 font-display">
                     <span>Class {selectedClass} Practical Viva & Submission Schedule</span>
                   </h3>
-                  <span className="px-2 py-0.5 rounded bg-indigo-400/10 text-indigo-500 dark:text-indigo-300 text-[10px] font-bold border border-indigo-400/20 font-mono">
+                  <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-500 dark:text-amber-500 text-[10px] font-bold border border-amber-500/20 font-mono">
                     {filteredViva.length} Subjects
                   </span>
                 </div>
@@ -409,8 +409,8 @@ export function TimetableModal({
                                 {viva.subjectName}
                               </h4>
                               {isDay1 && (
-                                <span className="px-2 py-0.5 rounded-full text-[9px] font-black bg-indigo-400/15 text-indigo-500 dark:text-indigo-300 border border-indigo-400/30 flex items-center gap-1 font-mono">
-                                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
+                                <span className="px-2 py-0.5 rounded-full text-[9px] font-black bg-amber-500/15 text-amber-500 dark:text-amber-500 border border-amber-500/30 flex items-center gap-1 font-mono">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
                                   Starts Tomorrow
                                 </span>
                               )}
@@ -422,7 +422,7 @@ export function TimetableModal({
                                 {viva.facultyName}
                               </span>
                               <span className="flex items-center gap-1">
-                                <MapPin className="h-3.5 w-3.5 text-indigo-500 shrink-0" />
+                                <MapPin className="h-3.5 w-3.5 text-amber-500 shrink-0" />
                                 Venue: <strong className="text-foreground">{viva.location}</strong>
                               </span>
                               <span className="flex items-center gap-1">
@@ -592,7 +592,7 @@ export function TimetableModal({
                     Duration: 90 Minutes (10:10 AM to 11:40 AM) · ITM SLS Baroda University
                   </p>
                 </div>
-                <span className="px-2.5 py-1 rounded-lg bg-indigo-500/10 text-indigo-500 font-mono text-xs font-bold border border-indigo-500/20">
+                <span className="px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-500 font-mono text-xs font-bold border border-amber-500/20">
                   90 Mins
                 </span>
               </div>
@@ -622,7 +622,7 @@ export function TimetableModal({
                             Sem {exam.semester} · {exam.branch}
                           </span>
                         </td>
-                        <td className="p-3 font-mono text-[11px] font-bold text-indigo-500 dark:text-indigo-400">
+                        <td className="p-3 font-mono text-[11px] font-bold text-amber-500 dark:text-amber-500">
                           {exam.courseCode}
                         </td>
                         <td className="p-3 font-medium text-foreground">
@@ -699,7 +699,7 @@ export function TimetableModal({
                       <span>{f.subjects.join(", ")}</span>
                     </div>
                     <div className="flex items-center gap-1.5 text-muted-foreground">
-                      <MapPin className="h-3 w-3 text-indigo-500 shrink-0" />
+                      <MapPin className="h-3 w-3 text-amber-500 shrink-0" />
                       <span>Venues: {f.vivaRooms.join(", ")}</span>
                     </div>
                     {f.officeLocation && (
@@ -744,7 +744,7 @@ export function TimetableModal({
                         {batch.exams.map((ex, i) => (
                           <tr key={i} className="hover:bg-secondary/20">
                             <td className="py-2 font-mono font-medium">{ex.date}</td>
-                            <td className="py-2 font-mono font-bold text-indigo-500">{ex.courseCode}</td>
+                            <td className="py-2 font-mono font-bold text-amber-500">{ex.courseCode}</td>
                             <td className="py-2 text-foreground">
                               <div className="flex items-center justify-between gap-2">
                                 <span>{ex.courseName}</span>

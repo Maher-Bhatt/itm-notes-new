@@ -73,11 +73,11 @@ export function BilingualExplanation({
   }
 
   return (
-    <div className="rounded-2xl border border-indigo-200/60 dark:border-indigo-900/40 bg-gradient-to-r from-indigo-50/50 via-white to-purple-50/30 dark:from-indigo-950/20 dark:via-background dark:to-purple-950/10 p-3.5 my-3 shadow-2xs">
+    <div className="rounded-2xl border border-amber-500/60 dark:border-amber-500/40 bg-gradient-to-r from-amber-500/10/50 via-white to-purple-50/30 dark:from-amber-600/20 dark:via-background dark:to-purple-950/10 p-3.5 my-3 shadow-2xs">
       <div className="flex items-center justify-between gap-2">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center gap-2 text-xs font-bold text-indigo-700 dark:text-indigo-400 hover:opacity-80 transition-opacity cursor-pointer font-display"
+          className="flex items-center gap-2 text-xs font-bold text-amber-500 dark:text-amber-500 hover:opacity-80 transition-opacity cursor-pointer font-display"
         >
           <Languages className="h-4 w-4" />
           <span>Explain Simply in Gujarati / Hindi (સરળ દેશી ભાષામાં)</span>
@@ -85,12 +85,12 @@ export function BilingualExplanation({
         </button>
 
         {isOpen && (
-          <div className="flex rounded-lg bg-indigo-100/60 dark:bg-indigo-950/60 p-0.5 text-[11px] font-bold">
+          <div className="flex rounded-lg bg-secondary/60 dark:bg-amber-500/60 p-0.5 text-[11px] font-bold">
             <button
               onClick={() => setLang("gu")}
               className={`px-2 py-0.5 rounded-md transition-all ${
                 lang === "gu"
-                  ? "bg-white dark:bg-card text-indigo-600 dark:text-indigo-300 shadow-2xs"
+                  ? "bg-white dark:bg-card text-amber-500 dark:text-amber-500 shadow-2xs"
                   : "text-muted-foreground"
               }`}
             >
@@ -100,7 +100,7 @@ export function BilingualExplanation({
               onClick={() => setLang("hi")}
               className={`px-2 py-0.5 rounded-md transition-all ${
                 lang === "hi"
-                  ? "bg-white dark:bg-card text-indigo-600 dark:text-indigo-300 shadow-2xs"
+                  ? "bg-white dark:bg-card text-amber-500 dark:text-amber-500 shadow-2xs"
                   : "text-muted-foreground"
               }`}
             >
@@ -111,7 +111,7 @@ export function BilingualExplanation({
       </div>
 
       {isOpen && (
-        <div className="mt-2.5 pt-2 border-t border-indigo-100 dark:border-indigo-900/40 text-xs text-foreground/90 leading-relaxed animate-fade-in font-medium">
+        <div className="mt-2.5 pt-2 border-t border-border dark:border-amber-500/40 text-xs text-foreground/90 leading-relaxed animate-fade-in font-medium">
           <div className="flex items-start gap-2">
             <Sparkles className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
             <p className="font-sans">

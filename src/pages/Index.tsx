@@ -169,7 +169,7 @@ export default function Index() {
                     onClick={() => navigate('/calculator')}
                     className="p-2.5 rounded-xl bg-secondary/50 hover:bg-secondary text-center text-xs font-bold text-foreground transition-colors apple-press"
                   >
-                    <Calculator className="h-4 w-4 mx-auto mb-1 text-blue-500" />
+                    <Calculator className="h-4 w-4 mx-auto mb-1 text-amber-500" />
                     Attendance
                   </button>
                   <button
@@ -257,7 +257,7 @@ export default function Index() {
                 </div>
 
                 <div className="p-4 rounded-2xl bg-card border border-border/80 shadow-xs">
-                  <div className="p-2 w-fit rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 mb-3">
+                  <div className="p-2 w-fit rounded-lg bg-amber-500/10 text-amber-500 dark:text-amber-500 mb-3">
                     <Calculator className="h-4 w-4" />
                   </div>
                   <h3 className="font-bold text-sm text-foreground">75% Attendance Predictor</h3>

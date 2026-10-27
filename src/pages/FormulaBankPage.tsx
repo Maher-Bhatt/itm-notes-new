@@ -151,8 +151,8 @@ export default function FormulaBankPage() {
                 >
                   {isCopied ? (
                     <>
-                      <Check className="h-3.5 w-3.5 text-indigo-400" />
-                      <span className="text-indigo-400 dark:text-indigo-400">Copied</span>
+                      <Check className="h-3.5 w-3.5 text-amber-500" />
+                      <span className="text-amber-500 dark:text-amber-500">Copied</span>
                     </>
                   ) : (
                     <>

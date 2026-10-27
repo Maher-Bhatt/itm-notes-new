@@ -1,37 +1,33 @@
-/* ITM NOTES — Gen Z Obsidian Aesthetic Brand Tokens (2026)
-   Palette: Obsidian Void, Charcoal Slate, Electric Indigo, Solar Amber, Rose Crimson
-   Aesthetic: Ultra-modern, Linear/Raycast dark minimalism, tactile bento grids, zero-green
+/* ITM NOTES — Dual-Mode Minimalist Aesthetic Brand Tokens (2026)
+   Palette: Architectural White / Charcoal Obsidian, Solar Amber / Gold Accent
+   Aesthetic: Leica / Teenage Engineering minimalism, tactile bento grids, zero blue, zero green, zero rainbow
 */
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 :root {
-  color-scheme: dark;
+  color-scheme: light dark;
 
-  /* ── Deep Obsidian Canvas ── */
-  --itm-obsidian-void: #060709;
-  --itm-charcoal-slate: #0d0f14;
-  --itm-card: #12151e;
-  --itm-card-elevated: #171b26;
-  --itm-surface-hover: #1e2230;
+  /* ── Light Mode Canvas & Surfaces ── */
+  --itm-canvas: #ffffff;
+  --itm-canvas-subtle: #f8f9fa;
+  --itm-card: #ffffff;
+  --itm-card-elevated: #f4f4f5;
+  --itm-surface-hover: #ebebee;
+  --itm-border: rgba(0, 0, 0, 0.08);
+  --itm-border-elevated: rgba(0, 0, 0, 0.14);
 
-  /* ── Electric Brand Accents (Strictly No Green, No Generic AI Clichés) ── */
-  --itm-electric-indigo: #6366f1;
-  --itm-electric-indigo-glow: rgba(99, 102, 241, 0.25);
-  --itm-indigo-hover: #4f46e5;
-  --itm-hyper-violet: #8b5cf6;
+  /* ── Light Mode Typography ── */
+  --itm-text-primary: #09090b;
+  --itm-text-secondary: #71717a;
+  --itm-text-tertiary: #a1a1aa;
+
+  /* ── Core Brand Accent: Solar Amber / Burnished Gold (Zero Green, Zero Blue, Zero Rainbow) ── */
   --itm-solar-amber: #f59e0b;
+  --itm-solar-amber-hover: #d97706;
   --itm-solar-amber-glow: rgba(245, 158, 11, 0.25);
-  --itm-rose-crimson: #f43f5e;
-  --itm-ice-steel: #e2e8f0;
+  --itm-crimson: #ef4444;
 
-  /* ── Typography & Contrast ── */
-  --itm-text-primary: #f8fafc;
-  --itm-text-secondary: #94a3b8;
-  --itm-text-tertiary: #64748b;
-  --itm-border-hairline: rgba(255, 255, 255, 0.08);
-  --itm-border-elevated: rgba(255, 255, 255, 0.14);
-
-  /* ── Font Family ── */
+  /* ── Typography Stack ── */
   --font-display: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
@@ -44,14 +40,35 @@
   --radius-full: 9999px;
 
   /* ── Shadows & Specular Highlights ── */
+  --shadow-bento: 0 2px 10px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.03);
+  --shadow-bento-hover: 0 8px 30px rgba(0, 0, 0, 0.08);
+  --shadow-glow-amber: 0 0 24px rgba(245, 158, 11, 0.3);
+}
+
+.dark {
+  color-scheme: dark;
+
+  /* ── Dark Mode Canvas & Surfaces ── */
+  --itm-canvas: #09090b;
+  --itm-canvas-subtle: #0d0d10;
+  --itm-card: #121215;
+  --itm-card-elevated: #18181c;
+  --itm-surface-hover: #222228;
+  --itm-border: rgba(255, 255, 255, 0.08);
+  --itm-border-elevated: rgba(255, 255, 255, 0.14);
+
+  /* ── Dark Mode Typography ── */
+  --itm-text-primary: #f4f4f5;
+  --itm-text-secondary: #a1a1aa;
+  --itm-text-tertiary: #71717a;
+
+  /* ── Shadows in Dark Mode ── */
   --shadow-bento: inset 0 1px 0 0 rgba(255, 255, 255, 0.06), 0 8px 32px rgba(0, 0, 0, 0.45);
-  --shadow-bento-hover: inset 0 1px 0 0 rgba(255, 255, 255, 0.12), 0 12px 40px rgba(99, 102, 241, 0.16);
-  --shadow-glow-indigo: 0 0 32px rgba(99, 102, 241, 0.3);
-  --shadow-glow-amber: 0 0 32px rgba(245, 158, 11, 0.3);
+  --shadow-bento-hover: inset 0 1px 0 0 rgba(255, 255, 255, 0.12), 0 12px 40px rgba(0, 0, 0, 0.55);
 }
 
 html, body {
-  background: var(--itm-obsidian-void);
+  background: var(--itm-canvas);
   color: var(--itm-text-primary);
 }
 
@@ -65,6 +82,6 @@ h1, h2, h3, h4, .font-display, .font-heading {
 }
 
 :focus-visible {
-  outline: 2px solid var(--itm-electric-indigo);
+  outline: 2px solid var(--itm-solar-amber);
   outline-offset: 2px;
 }

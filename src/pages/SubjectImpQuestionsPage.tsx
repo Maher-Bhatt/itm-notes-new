@@ -221,7 +221,7 @@ export default function SubjectImpQuestionsPage() {
               <span>Semester {masterBank.semester}</span>
               <span>·</span>
               <span className="font-mono font-bold text-foreground">{masterBank.code}</span>
-              <span className="px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 dark:text-indigo-300 font-bold text-[10px] border border-indigo-500/20">
+              <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 dark:text-amber-500 font-bold text-[10px] border border-amber-500/20">
                 Master Solved Bank
               </span>
             </div>
@@ -249,7 +249,7 @@ export default function SubjectImpQuestionsPage() {
               className="h-9 px-3 rounded-xl bg-secondary hover:bg-secondary/80 text-foreground font-bold text-xs flex items-center gap-1.5 transition-all border border-border cursor-pointer shadow-xs"
               title="Print to PDF"
             >
-              <Printer className="h-3.5 w-3.5 text-blue-500" />
+              <Printer className="h-3.5 w-3.5 text-amber-500" />
               <span>Print / PDF</span>
             </button>
           </div>
@@ -280,14 +280,14 @@ export default function SubjectImpQuestionsPage() {
               <div className="pt-2 max-w-md space-y-1.5">
                 <div className="flex justify-between items-center text-xs font-mono">
                   <span className="text-white/90 flex items-center gap-1">
-                    <CheckCircle2 className="h-3.5 w-3.5 text-indigo-300" />
+                    <CheckCircle2 className="h-3.5 w-3.5 text-amber-500" />
                     Mastery: {masteredCount} of {totalQuestions} Solved
                   </span>
-                  <span className="font-bold text-indigo-300">{progressPercent}%</span>
+                  <span className="font-bold text-amber-500">{progressPercent}%</span>
                 </div>
                 <div className="w-full bg-black/40 h-2 rounded-full overflow-hidden border border-white/10">
                   <div
-                    className="bg-indigo-300 h-full transition-all duration-500 rounded-full"
+                    className="bg-amber-500 h-full transition-all duration-500 rounded-full"
                     style={{ width: `${progressPercent}%` }}
                   />
                 </div>
@@ -303,7 +303,7 @@ export default function SubjectImpQuestionsPage() {
                 <p className="text-[10px] text-white/70 uppercase font-bold tracking-wider">Predict Output</p>
               </div>
               <div className="p-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 text-center">
-                <span className="text-2xl font-black font-mono text-indigo-300">
+                <span className="text-2xl font-black font-mono text-amber-500">
                   {masterBank.longAnswers.length}
                 </span>
                 <p className="text-[10px] text-white/70 uppercase font-bold tracking-wider">5-Mark Programs</p>
@@ -385,7 +385,7 @@ export default function SubjectImpQuestionsPage() {
               <div className="flex items-center gap-2">
                 <h2 className="text-lg font-black text-foreground font-display flex items-center gap-2">
                   <span>Part A: Predict the Output & Execution Traces</span>
-                  <span className="text-xs px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 dark:text-indigo-300 font-mono font-bold">
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 dark:text-amber-500 font-mono font-bold">
                     {filteredPartA.length} Problems
                   </span>
                 </h2>
@@ -403,7 +403,7 @@ export default function SubjectImpQuestionsPage() {
                   <div
                     key={prog.id}
                     className={`p-5 sm:p-6 rounded-2xl bg-card border transition-all ${
-                      isMastered ? "border-indigo-500/50 bg-indigo-500/[0.02]" : "border-border hover:border-primary/50"
+                      isMastered ? "border-amber-500/50 bg-amber-500/[0.02]" : "border-border hover:border-primary/50"
                     }`}
                   >
                     {/* Header */}
@@ -442,7 +442,7 @@ export default function SubjectImpQuestionsPage() {
                           onClick={() => toggleMastered(prog.id)}
                           className={`px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 transition-all cursor-pointer ${
                             isMastered
-                              ? "bg-indigo-500 text-white"
+                              ? "bg-amber-500 text-white"
                               : "bg-secondary text-muted-foreground hover:text-foreground"
                           }`}
                         >
@@ -538,7 +538,7 @@ export default function SubjectImpQuestionsPage() {
               <div className="flex items-center gap-2">
                 <h2 className="text-lg font-black text-foreground font-display flex items-center gap-2">
                   <span>Part B: 5-Mark Programming Implementations</span>
-                  <span className="text-xs px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-mono font-bold">
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 dark:text-amber-500 font-mono font-bold">
                     {filteredPartB.length} Questions
                   </span>
                 </h2>
@@ -556,13 +556,13 @@ export default function SubjectImpQuestionsPage() {
                   <div
                     key={item.id}
                     className={`p-5 sm:p-6 rounded-2xl bg-card border transition-all ${
-                      isMastered ? "border-indigo-500/50 bg-indigo-500/[0.02]" : "border-border hover:border-primary/50"
+                      isMastered ? "border-amber-500/50 bg-amber-500/[0.02]" : "border-border hover:border-primary/50"
                     }`}
                   >
                     {/* Header */}
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-border/60">
                       <div className="flex items-center gap-2.5">
-                        <span className="px-2 py-1 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-mono font-bold text-xs">
+                        <span className="px-2 py-1 rounded-lg bg-amber-500/10 text-amber-500 dark:text-amber-500 font-mono font-bold text-xs">
                           {item.qNumber} · 5 Marks
                         </span>
                         <h3 className="text-sm sm:text-base font-bold text-foreground">
@@ -589,7 +589,7 @@ export default function SubjectImpQuestionsPage() {
                           onClick={() => toggleMastered(item.id)}
                           className={`px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 transition-all cursor-pointer ${
                             isMastered
-                              ? "bg-indigo-500 text-white"
+                              ? "bg-amber-500 text-white"
                               : "bg-secondary text-muted-foreground hover:text-foreground"
                           }`}
                         >
@@ -745,7 +745,7 @@ export default function SubjectImpQuestionsPage() {
                   <div
                     key={th.id}
                     className={`p-5 sm:p-6 rounded-2xl bg-card border transition-all ${
-                      isMastered ? "border-indigo-500/50 bg-indigo-500/[0.02]" : "border-border hover:border-primary/50"
+                      isMastered ? "border-amber-500/50 bg-amber-500/[0.02]" : "border-border hover:border-primary/50"
                     }`}
                   >
                     {/* Header */}
@@ -778,7 +778,7 @@ export default function SubjectImpQuestionsPage() {
                           onClick={() => toggleMastered(th.id)}
                           className={`px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 transition-all cursor-pointer ${
                             isMastered
-                              ? "bg-indigo-500 text-white"
+                              ? "bg-amber-500 text-white"
                               : "bg-secondary text-muted-foreground hover:text-foreground"
                           }`}
                         >
@@ -883,7 +883,7 @@ export default function SubjectImpQuestionsPage() {
                     <p className="text-muted-foreground pl-6.5">
                       <strong>Consequence: </strong>{mis.consequence}
                     </p>
-                    <p className="text-indigo-400 dark:text-indigo-300 pl-6.5 font-medium">
+                    <p className="text-amber-500 dark:text-amber-500 pl-6.5 font-medium">
                       <strong>Remedy: </strong>{mis.remedy}
                     </p>
                   </div>
@@ -921,7 +921,7 @@ export default function SubjectImpQuestionsPage() {
             {/* Quick MCQs */}
             <div className="space-y-3">
               <h2 className="text-lg font-black text-foreground font-display flex items-center gap-2">
-                <HelpCircle className="h-5 w-5 text-indigo-500" />
+                <HelpCircle className="h-5 w-5 text-amber-500" />
                 <span>10 Quick-Hit Exam MCQs (Question 1 Preparation)</span>
               </h2>
 
@@ -943,8 +943,8 @@ export default function SubjectImpQuestionsPage() {
                       </div>
 
                       {isRevealed && (
-                        <div className="p-2.5 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-xs animate-fade-in space-y-1">
-                          <p className="font-bold text-indigo-400 dark:text-indigo-400">
+                        <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs animate-fade-in space-y-1">
+                          <p className="font-bold text-amber-500 dark:text-amber-500">
                             Answer: {mcq.answer}
                           </p>
                           {mcq.explanation && (

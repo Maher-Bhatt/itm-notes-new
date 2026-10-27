@@ -46,27 +46,27 @@ export function PomodoroFloatingWidget() {
       {/* ── Persistent Floating Pill ── */}
       {isRunning && !isModalOpen && (
         <div className="fixed bottom-5 left-4 sm:left-auto sm:right-6 z-40 slide-up" style={{ marginBottom: 'env(safe-area-inset-bottom, 0px)' }}>
-          <div className="bg-black/40 backdrop-blur-md border border-white/10 shadow-lg rounded-full px-4 py-2 flex items-center gap-3 text-xs select-none">
+          <div className="bg-card/90 backdrop-blur-md border border-border shadow-lg text-foreground rounded-full px-4 py-2 flex items-center gap-3 text-xs select-none">
             <button
               onClick={() => setIsModalOpen(true)}
-              className="flex items-center gap-2 text-white font-bold hover:text-primary transition-colors press"
+              className="flex items-center gap-2 text-foreground font-bold hover:text-amber-500 transition-colors press"
             >
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-foreground opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-accent-foreground"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-500 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
               </span>
-              <Clock className="h-3.5 w-3.5 text-primary" />
+              <Clock className="h-3.5 w-3.5 text-amber-500" />
               <span className="font-mono text-sm tracking-tight font-extrabold">
                 {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
               </span>
-              <span className="text-[10px] text-white/60 uppercase font-semibold hidden sm:inline">
+              <span className="text-[10px] text-muted-foreground uppercase font-semibold hidden sm:inline">
                 {mode === 'study' ? 'Focus' : 'Break'}
               </span>
             </button>
 
             <button
               onClick={toggleTimer}
-              className="p-1.5 rounded-full bg-gradient-electric text-white hover:bg-primary/90 press"
+              className="p-1.5 rounded-full bg-amber-500 text-white hover:bg-primary/90 press"
               title={isRunning ? 'Pause' : 'Resume'}
             >
               {isRunning ? <Pause className="h-3 w-3" /> : <Play className="h-3 w-3" />}
@@ -74,7 +74,7 @@ export function PomodoroFloatingWidget() {
 
             <button
               onClick={() => setIsModalOpen(true)}
-              className="p-1 rounded-full hover:bg-white/10 text-white/60 hover:text-white press"
+              className="p-1 rounded-full hover:bg-secondary text-muted-foreground hover:text-white press"
               title="Expand Focus Studio"
             >
               <Maximize2 className="h-3.5 w-3.5" />
@@ -90,21 +90,21 @@ export function PomodoroFloatingWidget() {
             {/* Close Button */}
             <button
               onClick={() => setIsModalOpen(false)}
-              className="absolute right-4 top-4 p-1.5 rounded-full hover:bg-white/10 text-white/60 hover:text-white press"
+              className="absolute right-4 top-4 p-1.5 rounded-full hover:bg-secondary text-muted-foreground hover:text-white press"
             >
               <X className="h-5 w-5" />
             </button>
 
             {/* Header info */}
             <div className="text-center mb-6">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider mb-2 border border-primary/20">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-amber-500 text-xs font-bold uppercase tracking-wider mb-2 border border-primary/20">
                 <Clock className="h-3.5 w-3.5" />
                 {mode === 'study' ? 'Deep Study Session' : 'Rest & Recharge'}
               </div>
               <h3 className="text-2xl font-black text-white">
                 {mode === 'study' ? 'Pomodoro Focus Timer' : 'Short Break Time'}
               </h3>
-              <p className="text-xs text-white/60 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 {mode === 'study'
                   ? 'Eliminate distractions and master your academic topics.'
                   : 'Step away from the screen, stretch, and hydrate.'}
@@ -118,7 +118,7 @@ export function PomodoroFloatingWidget() {
                 className={`flex-1 py-1.5 text-xs font-bold rounded-md transition-all flex items-center justify-center gap-1.5 ${
                   mode === 'study'
                     ? 'bg-gradient-electric text-white shadow-lg shadow-primary/40'
-                    : 'text-white/60 hover:text-white'
+                    : 'text-muted-foreground hover:text-white'
                 }`}
               >
                 <Flame className="h-3.5 w-3.5" /> Study (25m)
@@ -127,8 +127,8 @@ export function PomodoroFloatingWidget() {
                 onClick={() => setMode('break')}
                 className={`flex-1 py-1.5 text-xs font-bold rounded-md transition-all flex items-center justify-center gap-1.5 ${
                   mode === 'break'
-                    ? 'bg-accent/20 text-accent-foreground shadow-lg shadow-accent/30'
-                    : 'text-white/60 hover:text-white'
+                    ? 'bg-accent/20 text-amber-500 shadow-lg shadow-accent/30'
+                    : 'text-muted-foreground hover:text-white'
                 }`}
               >
                 <Coffee className="h-3.5 w-3.5" /> Break (5m)
@@ -171,7 +171,7 @@ export function PomodoroFloatingWidget() {
                     setMode(preset.m);
                     setDurationMinutes(preset.mins);
                   }}
-                  className="px-3 py-1 rounded-lg text-[11px] font-semibold bg-white/10 hover:bg-white/20 text-white/60 hover:text-white border border-white/10 press"
+                  className="px-3 py-1 rounded-lg text-[11px] font-semibold bg-white/10 hover:bg-white/20 text-muted-foreground hover:text-white border border-white/10 press"
                 >
                   {preset.label}
                 </button>
@@ -182,7 +182,7 @@ export function PomodoroFloatingWidget() {
             <div className="flex items-center justify-center gap-3">
               <button
                 onClick={resetTimer}
-                className="p-3.5 rounded-lg bg-white/10 hover:bg-white/20 text-white/60 hover:text-white transition-colors border border-white/10 press"
+                className="p-3.5 rounded-lg bg-white/10 hover:bg-white/20 text-muted-foreground hover:text-white transition-colors border border-white/10 press"
                 title="Reset Session"
               >
                 <RotateCcw className="h-5 w-5" />
@@ -210,7 +210,7 @@ export function PomodoroFloatingWidget() {
 
             {/* Footer XP Details */}
             <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-xs text-white/50">
-              <span className="flex items-center gap-1.5 text-accent-foreground font-semibold">
+              <span className="flex items-center gap-1.5 text-amber-500 font-semibold">
                 <Clock className="h-4 w-4" /> +50 XP on completion
               </span>
               <span>

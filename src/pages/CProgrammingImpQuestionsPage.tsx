@@ -26,7 +26,7 @@ const MCQ_DATA = [
 const IMP_QUESTIONS = [
   {
     unit: "Unit 4 – Pointer & Array",
-    color: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
+    color: "bg-amber-500/10 text-amber-500 dark:text-amber-500",
     questions: [
       {
         title: "Meaning of 'int *ptr' | Use of & and * operators",
@@ -127,7 +127,7 @@ const IMP_QUESTIONS = [
   },
   {
     unit: "Unit 6 – Input & Output",
-    color: "bg-indigo-500/10 text-indigo-400 dark:text-indigo-400",
+    color: "bg-amber-500/10 text-amber-500 dark:text-amber-500",
     questions: [
       {
         title: "Standard I/O – Formatted vs Unformatted",
@@ -360,7 +360,7 @@ function MCQCard({ mcq, idx }: { mcq: (typeof MCQ_DATA)[0]; idx: number }) {
           const isCorrect = i === mcq.ans;
           let cls = "rounded p-2.5 text-xs text-left transition-colors border ";
           if (!showResult) cls += "border-border hover:border-primary/40 hover:bg-secondary cursor-pointer";
-          else if (isCorrect) cls += "border-indigo-500/50 bg-indigo-500/10 text-indigo-400 dark:text-indigo-400";
+          else if (isCorrect) cls += "border-amber-500/50 bg-amber-500/10 text-amber-500 dark:text-amber-500";
           else if (isSelected) cls += "border-red-500/50 bg-red-500/10 text-red-700 dark:text-red-400";
           else cls += "border-border opacity-50";
 

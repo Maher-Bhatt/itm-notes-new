@@ -4,7 +4,7 @@ export const sem3DsaMaster: Subject = {
   "id": "sem3-dsa",
   "name": "Data Structures and Algorithms (DSA)",
   "code": "DSA301",
-  "color": "bg-indigo-500",
+  "color": "bg-amber-500",
   "icon": "database",
   "description": "Comprehensive University Syllabus for Data Structures and Algorithms \u2014 Asymptotic Complexity Analysis, Linear Structures (Lists, Stacks, Queues), Non-Linear Structures (Trees, AVL, Heaps, Graphs), Shortest Paths, MST, and Sorting/Hashing",
   "semester": 3,

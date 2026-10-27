@@ -4,7 +4,7 @@ export const sem1ClaSubject: Subject = {
   id: 'sem1-cla',
   name: 'Calculus & Linear Algebra',
   code: 'MATH101',
-  color: 'bg-indigo-600',
+  color: 'bg-amber-500',
   icon: 'calculator',
   description: 'Comprehensive University Syllabus for Engineering Mathematics 1 — Successive Differentiation, Partial Derivatives, Matrix Rank, Linear Systems, Eigenvalues, and Multiple Integrals',
   semester: 1,

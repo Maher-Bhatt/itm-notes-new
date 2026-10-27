@@ -142,8 +142,8 @@ export const MASTER_BANKS: Record<string, MasterSubjectBank> = {
     theme: {
       primaryBg: 'from-[#063323] via-[#0E4733] to-[#042419]',
       accentColor: '#4ADE80',
-      borderGlow: 'border-indigo-500/40',
-      iconColor: 'text-indigo-400',
+      borderGlow: 'border-amber-500/40',
+      iconColor: 'text-amber-500',
     },
     predictOutput: DSA_PREDICT_OUTPUT,
     longAnswers: DSA_LONG_QUESTIONS,
@@ -166,8 +166,8 @@ export const MASTER_BANKS: Record<string, MasterSubjectBank> = {
     theme: {
       primaryBg: 'from-[#142347] via-[#1A2E5C] to-[#0E1933]',
       accentColor: '#60A5FA',
-      borderGlow: 'border-blue-500/40',
-      iconColor: 'text-blue-400',
+      borderGlow: 'border-amber-500/40',
+      iconColor: 'text-amber-500',
     },
     predictOutput: CA_PREDICT_OUTPUT,
     longAnswers: CA_LONG_QUESTIONS,

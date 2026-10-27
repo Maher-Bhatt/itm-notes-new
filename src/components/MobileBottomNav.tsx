@@ -73,7 +73,7 @@ export function MobileBottomNav() {
   return (
     <nav
       aria-label="Mobile Navigation"
-      className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-black/40 backdrop-blur-xl border-t border-white/10 shadow-2xl transition-all"
+      className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-card/90 backdrop-blur-xl border-t border-border shadow-md transition-all"
       style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 8px) + 2px)' }}
     >
       <div className="flex items-center justify-around h-14 max-w-lg mx-auto px-3">
@@ -88,22 +88,22 @@ export function MobileBottomNav() {
               className={`flex flex-col items-center justify-center flex-1 py-1 px-1 transition-all rounded-xl select-none press min-h-[44px] relative ${
                 active
                   ? 'text-white font-extrabold'
-                  : 'text-white/50 hover:text-white font-medium'
+                  : 'text-muted-foreground hover:text-foreground font-medium'
               }`}
             >
               {active && (
-                <span className="absolute inset-y-1 inset-x-2 bg-gradient-electric rounded-xl -z-10 scale-in" />
+                <span className="absolute inset-y-1 inset-x-2 bg-primary rounded-xl -z-10 scale-in" />
               )}
 
               <div className="relative flex items-center justify-center">
-                <Icon className={`h-5 w-5 transition-transform duration-200 ${active ? 'scale-110 text-white' : 'text-white/50 hover:text-white'}`} />
+                <Icon className={`h-5 w-5 transition-transform duration-200 ${active ? 'scale-110 text-white' : 'text-muted-foreground hover:text-foreground'}`} />
                 {item.badge && (
-                  <span className="absolute -top-1 -right-2 text-[9px] font-black px-1.5 py-0.2 rounded-full bg-gradient-electric text-white shadow-lg shadow-primary/30">
+                  <span className="absolute -top-1 -right-2 text-[9px] font-black px-1.5 py-0.2 rounded-full bg-primary text-white shadow-lg shadow-primary/30">
                     {item.badge}
                   </span>
                 )}
               </div>
-              <span className={`text-[10px] mt-0.5 tracking-tight ${active ? 'text-white font-bold' : 'text-white/50'}`}>
+              <span className={`text-[10px] mt-0.5 tracking-tight ${active ? 'text-white font-bold' : 'text-muted-foreground'}`}>
                 {item.label}
               </span>
             </Link>

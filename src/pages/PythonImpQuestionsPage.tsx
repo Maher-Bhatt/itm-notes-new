@@ -506,7 +506,7 @@ function QCard({ q, idx, showPattern }: { q: any; idx: number; showPattern?: boo
           {q.output && (
             <div>
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Output</p>
-              <pre className="bg-indigo-500/5 border border-indigo-500/20 rounded p-3 text-xs overflow-x-auto text-indigo-400 dark:text-indigo-400 font-mono leading-relaxed">
+              <pre className="bg-amber-500/5 border border-amber-500/20 rounded p-3 text-xs overflow-x-auto text-amber-500 dark:text-amber-500 font-mono leading-relaxed">
                 {q.output}
               </pre>
             </div>
@@ -605,7 +605,7 @@ export default function PythonImpQuestionsPage() {
         {activeTab === "threading" && (
           <div className="space-y-3">
             <div className="flex items-center gap-2 mb-3">
-              <span className="text-xs font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-400 px-2.5 py-1 rounded-full">
+              <span className="text-xs font-semibold bg-amber-500/10 text-amber-500 dark:text-amber-500 px-2.5 py-1 rounded-full">
                 Assignment 2 — 11 Questions
               </span>
             </div>

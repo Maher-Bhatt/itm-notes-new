@@ -57,11 +57,11 @@ export interface GradientAvatar {
 }
 
 export const GRADIENT_AVATARS: GradientAvatar[] = [
-  { id: 'grad-indigo', label: 'Cosmic Indigo', bgClass: 'from-indigo-600 via-purple-600 to-pink-500' },
-  { id: 'grad-emerald', label: 'Matrix Emerald', bgClass: 'from-indigo-400 via-teal-600 to-cyan-700' },
+  { id: 'grad-indigo', label: 'Cosmic Indigo', bgClass: 'from-amber-600 via-purple-600 to-pink-500' },
+  { id: 'grad-emerald', label: 'Solar Amber', bgClass: 'from-amber-600 via-amber-500 to-orange-600' },
   { id: 'grad-solar', label: 'Solar Flare', bgClass: 'from-amber-500 via-orange-600 to-rose-600' },
-  { id: 'grad-cyber', label: 'Cyber Violet', bgClass: 'from-fuchsia-600 via-purple-700 to-indigo-900' },
-  { id: 'grad-ocean', label: 'Deep Ocean', bgClass: 'from-blue-600 via-cyan-600 to-teal-500' },
+  { id: 'grad-cyber', label: 'Cyber Violet', bgClass: 'from-fuchsia-600 via-purple-700 to-amber-500' },
+  { id: 'grad-ocean', label: 'Titanium Slate', bgClass: 'from-zinc-700 via-zinc-800 to-zinc-950' },
   { id: 'grad-midnight', label: 'Midnight Slate', bgClass: 'from-zinc-800 via-slate-800 to-neutral-900' },
 ];
 
@@ -88,7 +88,7 @@ export const renderAvatarBox = (url: string | null | undefined, name: string, si
     );
   }
   const matched = GRADIENT_AVATARS.find(g => g.id === effectiveUrl || effectiveUrl?.includes(g.id));
-  const gradientClass = matched ? matched.bgClass : 'from-indigo-600 via-purple-600 to-pink-500';
+  const gradientClass = matched ? matched.bgClass : 'from-amber-600 via-purple-600 to-pink-500';
   const initial = name?.trim() ? name.trim().charAt(0).toUpperCase() : 'S';
 
   return (
@@ -463,7 +463,7 @@ export default function ProfilePage() {
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-border/80 hover:bg-secondary/80 text-muted-foreground hover:text-foreground font-semibold text-xs transition-colors apple-press"
                 title="Export or delete your personal study data"
               >
-                <ShieldCheck className="h-4 w-4 text-indigo-400" /> Data & Privacy
+                <ShieldCheck className="h-4 w-4 text-amber-500" /> Data & Privacy
               </button>
             </div>
           </div>
@@ -509,7 +509,7 @@ export default function ProfilePage() {
           </div>
 
           <div className="bg-card border border-border/80 rounded-2xl p-4 shadow-xs">
-            <div className="flex items-center gap-2 text-blue-500 mb-1">
+            <div className="flex items-center gap-2 text-amber-500 mb-1">
               <BookOpen className="h-4 w-4" />
               <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Mastered</span>
             </div>
@@ -518,7 +518,7 @@ export default function ProfilePage() {
           </div>
 
           <div className="bg-card border border-border/80 rounded-2xl p-4 shadow-xs">
-            <div className="flex items-center gap-2 text-indigo-400 mb-1">
+            <div className="flex items-center gap-2 text-amber-500 mb-1">
               <Clock className="h-4 w-4" />
               <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Focus</span>
             </div>
@@ -559,7 +559,7 @@ export default function ProfilePage() {
                   </span>
                 )}
                 {tab.badge && (
-                  <span className="text-[9px] px-1.5 py-0.2 rounded-md bg-indigo-400/20 text-indigo-400 dark:text-indigo-300 font-mono font-bold">
+                  <span className="text-[9px] px-1.5 py-0.2 rounded-md bg-amber-500/20 text-amber-500 dark:text-amber-500 font-mono font-bold">
                     {tab.badge}
                   </span>
                 )}
@@ -574,7 +574,7 @@ export default function ProfilePage() {
             {/* ⚡ Active Knowledge Booster Hero Card */}
             <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#183F36] via-[#12332C] to-[#0A1A16] border border-[#D6E85D]/50 p-5 sm:p-7 text-[#F5F1E8] shadow-2xl">
               <div className="absolute top-0 right-0 w-80 h-80 bg-[#D6E85D]/15 rounded-full blur-3xl pointer-events-none" />
-              <div className="absolute bottom-0 left-1/3 w-64 h-64 bg-indigo-400/10 rounded-full blur-3xl pointer-events-none" />
+              <div className="absolute bottom-0 left-1/3 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
               <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
                 <div className="flex items-start gap-4">
@@ -583,7 +583,7 @@ export default function ProfilePage() {
                       <Rocket className="h-7 w-7 animate-pulse" />
                     </div>
                     {isBoostActive && (
-                      <span className="absolute -top-1 -right-1 w-4 h-4 bg-indigo-300 rounded-full border-2 border-[#183F36] animate-ping" />
+                      <span className="absolute -top-1 -right-1 w-4 h-4 bg-amber-500 rounded-full border-2 border-[#183F36] animate-ping" />
                     )}
                   </div>
 
@@ -652,7 +652,7 @@ export default function ProfilePage() {
                   <span className="text-xs font-bold px-3 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 font-mono">
                     {unlockedCount} / {game.achievements.length} Unlocked
                   </span>
-                  <span className="text-xs font-bold px-3 py-1 rounded-full bg-indigo-400/10 text-indigo-400 dark:text-indigo-300 border border-indigo-400/20 font-mono">
+                  <span className="text-xs font-bold px-3 py-1 rounded-full bg-amber-500/10 text-amber-500 dark:text-amber-500 border border-amber-500/20 font-mono">
                     {game.achievements.filter(a => a.unlockedAt).reduce((acc, a) => acc + a.xpReward, 0)} XP Earned
                   </span>
                 </div>
@@ -819,16 +819,16 @@ export default function ProfilePage() {
               <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <ShieldCheck className="h-5 w-5 text-indigo-400" />
+                    <ShieldCheck className="h-5 w-5 text-amber-500" />
                     <h3 className="font-bold text-sm text-foreground font-display">75% Attendance Safeguard</h3>
                   </div>
-                  <span className="px-2 py-0.5 rounded-full bg-indigo-400/10 text-indigo-400 dark:text-indigo-300 text-[10px] font-bold border border-indigo-400/20 font-mono">
+                  <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 dark:text-amber-500 text-[10px] font-bold border border-amber-500/20 font-mono">
                     Criteria Met
                   </span>
                 </div>
 
-                <div className="p-4 rounded-xl bg-indigo-400/10 border border-indigo-400/20 flex items-center gap-4">
-                  <div className="text-3xl font-black text-indigo-400 dark:text-indigo-300 font-mono">
+                <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center gap-4">
+                  <div className="text-3xl font-black text-amber-500 dark:text-amber-500 font-mono">
                     91%
                   </div>
                   <div className="space-y-0.5 min-w-0 flex-1">
@@ -1009,13 +1009,13 @@ export default function ProfilePage() {
                         <div className="w-24 sm:w-32 h-2 rounded-full bg-secondary overflow-hidden">
                           <div
                             className={`h-full rounded-full ${
-                              q.percentage >= 80 ? 'bg-indigo-400' : q.percentage >= 60 ? 'bg-amber-500' : 'bg-rose-500'
+                              q.percentage >= 80 ? 'bg-amber-500' : q.percentage >= 60 ? 'bg-amber-500' : 'bg-rose-500'
                             }`}
                             style={{ width: `${q.percentage}%` }}
                           />
                         </div>
                         <span className={`text-xs font-mono font-bold ${
-                          q.percentage >= 80 ? 'text-indigo-400' : q.percentage >= 60 ? 'text-amber-500' : 'text-rose-500'
+                          q.percentage >= 80 ? 'text-amber-500' : q.percentage >= 60 ? 'text-amber-500' : 'text-rose-500'
                         }`}>
                           {q.percentage}%
                         </span>
@@ -1144,7 +1144,7 @@ export default function ProfilePage() {
                 <div>
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-10 h-10 rounded-2xl bg-blue-500/10 text-blue-500 flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center">
                         <Shield className="h-5 w-5" />
                       </div>
                       <div>
@@ -1152,7 +1152,7 @@ export default function ProfilePage() {
                         <p className="text-xs text-muted-foreground">Automated protection for study breaks</p>
                       </div>
                     </div>
-                    <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 flex items-center gap-1">
+                    <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-500 dark:text-amber-500 border border-amber-500/20 flex items-center gap-1">
                       <Shield className="h-3.5 w-3.5" />
                       <span>{streakFreezeCount} Available</span>
                     </span>
@@ -1170,7 +1170,7 @@ export default function ProfilePage() {
                   <button
                     type="button"
                     onClick={handleClaimFreeze}
-                    className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 cursor-pointer"
+                    className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-500 text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 cursor-pointer"
                   >
                     <Shield className="h-3.5 w-3.5" />
                     <span>Claim Weekly Freeze</span>
@@ -1241,7 +1241,7 @@ export default function ProfilePage() {
               <div className="bg-card border border-border/80 rounded-3xl p-6 shadow-sm space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-10 h-10 rounded-2xl bg-indigo-400/10 text-indigo-400 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center">
                       <Bell className="h-5 w-5" />
                     </div>
                     <div>
@@ -1272,7 +1272,7 @@ export default function ProfilePage() {
 
                 <div className="pt-2 border-t border-border/60 flex items-center justify-between">
                   <span className="text-[11px] text-muted-foreground font-mono">
-                    Status: <strong className={pushEnabled ? "text-indigo-400" : "text-muted-foreground"}>
+                    Status: <strong className={pushEnabled ? "text-amber-500" : "text-muted-foreground"}>
                       {pushEnabled ? "Subscribed to Backend" : "Disabled"}
                     </strong>
                   </span>

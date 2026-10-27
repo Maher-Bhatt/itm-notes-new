@@ -152,7 +152,7 @@ export function LabManualPrintModal({
             <h3 className="font-bold text-sm uppercase tracking-wide border-b border-border/80 pb-1 text-primary print:text-black">
               5. Standard Console Execution Output
             </h3>
-            <pre className="p-3.5 rounded-xl bg-zinc-900 text-indigo-400 font-mono text-[11px] leading-relaxed border border-zinc-800 print:bg-white print:text-black print:border-black">
+            <pre className="p-3.5 rounded-xl bg-zinc-900 text-amber-500 font-mono text-[11px] leading-relaxed border border-zinc-800 print:bg-white print:text-black print:border-black">
               {data.sampleOutput}
             </pre>
           </div>

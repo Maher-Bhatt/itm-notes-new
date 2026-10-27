@@ -90,7 +90,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "downloadUrl": "/materials/MST_QuestionPaper_Format.pdf",
     "pages": "2 Pages",
     "badge": "Exam Template",
-    "badgeColor": "bg-indigo-500/10 text-indigo-400 border-indigo-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-dbms-qb-2025",
@@ -137,7 +137,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "uploadedDate": "Sept 2026",
     "downloadUrl": "/materials/DBMS_Syllabus_Units_1_to_4.jpeg",
     "badge": "Course Syllabus",
-    "badgeColor": "bg-cyan-500/10 text-cyan-600 border-cyan-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-dbms-unit1-notes",
@@ -161,7 +161,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "downloadUrl": "/materials/DBMS_Unit1_Database_System_Architecture.pdf",
     "pages": "39 Pages",
     "badge": "Unit 1 Notes",
-    "badgeColor": "bg-blue-500/10 text-blue-600 border-blue-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-dbms-unit2-notes",
@@ -185,7 +185,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "downloadUrl": "/materials/DBMS_Unit2_Data_Models_and_ER_Diagrams.pdf",
     "pages": "79 Pages",
     "badge": "Unit 2 Notes",
-    "badgeColor": "bg-blue-500/10 text-blue-600 border-blue-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-dbms-unit3-notes",
@@ -209,7 +209,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "downloadUrl": "/materials/DBMS_Unit3_Relational_Query_Languages_Algebra.pdf",
     "pages": "85 Pages",
     "badge": "Unit 3 Notes",
-    "badgeColor": "bg-blue-500/10 text-blue-600 border-blue-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-dbms-unit4-notes",
@@ -235,7 +235,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "downloadUrl": "/materials/DBMS_Unit4_Relational_Database_Design_Normalization.pdf",
     "pages": "60 Pages",
     "badge": "Unit 4 Notes",
-    "badgeColor": "bg-blue-500/10 text-blue-600 border-blue-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-ca-qb-mst",
@@ -260,7 +260,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "downloadUrl": "/materials/Computer_Architecture_MST_Question_Bank.pdf",
     "pages": "3 Pages",
     "badge": "MST Question Bank",
-    "badgeColor": "bg-indigo-500/10 text-indigo-600 border-indigo-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-ca-survival-notes",
@@ -309,7 +309,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "downloadUrl": "/materials/CA_Assignment1_Timing_Control_Instruction_Cycle.pdf",
     "pages": "2 Pages",
     "badge": "Assignment 1",
-    "badgeColor": "bg-indigo-500/10 text-indigo-600 border-indigo-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-ca-hw-rtl-bus",
@@ -333,7 +333,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "downloadUrl": "/materials/CA_Handwritten_Notes_RTL_and_Bus_Architecture.pdf",
     "pages": "38 Pages",
     "badge": "Handwritten Notes",
-    "badgeColor": "bg-indigo-500/10 text-indigo-600 border-indigo-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-ca-hw-instruction-alu",
@@ -356,7 +356,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "downloadUrl": "/materials/CA_Handwritten_Notes_Instruction_Cycles_and_ALU.pdf",
     "pages": "35 Pages",
     "badge": "Handwritten Notes",
-    "badgeColor": "bg-indigo-500/10 text-indigo-600 border-indigo-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-ca-hw-control-memory",
@@ -380,7 +380,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "downloadUrl": "/materials/CA_Handwritten_Notes_Control_Memory_and_Pipelines.pdf",
     "pages": "66 Pages",
     "badge": "Handwritten Notes",
-    "badgeColor": "bg-indigo-500/10 text-indigo-600 border-indigo-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-ca-unit2-slides",
@@ -402,7 +402,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "uploadedDate": "Sept 2026",
     "downloadUrl": "/materials/CA_Unit2_Basic_Computer_Organization_and_Design.pptx",
     "badge": "Unit 2 Slides",
-    "badgeColor": "bg-indigo-500/10 text-indigo-600 border-indigo-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-ca-unit3-slides",
@@ -424,7 +424,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "uploadedDate": "Sept 2026",
     "downloadUrl": "/materials/CA_Unit3_Central_Processing_Unit_CPU.pptx",
     "badge": "Unit 3 Slides",
-    "badgeColor": "bg-indigo-500/10 text-indigo-600 border-indigo-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-ca-unit4-slides",
@@ -446,7 +446,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "uploadedDate": "Sept 2026",
     "downloadUrl": "/materials/CA_Unit4_Computer_Arithmetic_Operations.pptx",
     "badge": "Unit 4 Slides",
-    "badgeColor": "bg-indigo-500/10 text-indigo-600 border-indigo-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-ca-unit5-slides",
@@ -469,7 +469,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "uploadedDate": "Sept 2026",
     "downloadUrl": "/materials/CA_Unit5_Input_Output_Organization.pptx",
     "badge": "Unit 5 Slides",
-    "badgeColor": "bg-indigo-500/10 text-indigo-600 border-indigo-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-ca-unit6-slides",
@@ -492,7 +492,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "uploadedDate": "Sept 2026",
     "downloadUrl": "/materials/CA_Unit6_Memory_Organization_Hierarchy.pptx",
     "badge": "Unit 6 Slides",
-    "badgeColor": "bg-indigo-500/10 text-indigo-600 border-indigo-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-dsa-qb-cet2",
@@ -518,7 +518,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "downloadUrl": "/materials/DSA_CET2_Question_Bank_Queues_and_LinkedLists.pdf",
     "pages": "4 Pages",
     "badge": "CET-2 Question Bank",
-    "badgeColor": "bg-indigo-500/10 text-indigo-400 border-indigo-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-dsa-syllabus-cet2",
@@ -565,7 +565,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "downloadUrl": "/materials/Queue_Notes.pdf",
     "pages": "29 Pages",
     "badge": "Comprehensive Notes",
-    "badgeColor": "bg-blue-500/10 text-blue-600 border-blue-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-dsa-stack-tutorial",
@@ -589,7 +589,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "downloadUrl": "/materials/DSA_Stack_Data_Structure_Complete_Tutorial.pdf",
     "pages": "4 Pages",
     "badge": "Stack Tutorial",
-    "badgeColor": "bg-indigo-500/10 text-indigo-400 border-indigo-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-dsa-towers-of-hanoi",
@@ -613,7 +613,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "downloadUrl": "/materials/DSA_Towers_of_Hanoi_Complete_Recursion_Tutorial.pdf",
     "pages": "7 Pages",
     "badge": "Recursion Guide",
-    "badgeColor": "bg-violet-500/10 text-violet-600 border-violet-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-dsa-recursion-doll",
@@ -636,7 +636,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "downloadUrl": "/materials/DSA_Recursion_Principles_and_Russian_Doll_Concept.pdf",
     "pages": "119 Pages",
     "badge": "Lecture Slides",
-    "badgeColor": "bg-indigo-500/10 text-indigo-400 border-indigo-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-dsa-unit1-intro",
@@ -659,7 +659,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "downloadUrl": "/materials/DSA_Unit1_Intro_Data_Structures_and_Complexity.pdf",
     "pages": "116 Pages",
     "badge": "Unit 1 Notes",
-    "badgeColor": "bg-indigo-500/10 text-indigo-400 border-indigo-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-dsa-unit2-lists",
@@ -682,7 +682,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "downloadUrl": "/materials/DSA_Unit2_Linear_Lists_and_Arrays_Lecture.pdf",
     "pages": "25 Pages",
     "badge": "Unit 2 Notes",
-    "badgeColor": "bg-indigo-500/10 text-indigo-400 border-indigo-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-dsa-asymptotic-notations",
@@ -705,7 +705,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "downloadUrl": "/materials/DSA_Asymptotic_Notations_BigO_Omega_Theta.pdf",
     "pages": "12 Pages",
     "badge": "Complexity Guide",
-    "badgeColor": "bg-indigo-500/10 text-indigo-400 border-indigo-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-dsa-lab-docx",
@@ -726,7 +726,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "uploadedDate": "Sept 2026",
     "downloadUrl": "/materials/DSA_Lab_Practice_Problems_Assignment.docx",
     "badge": "Lab Assignment",
-    "badgeColor": "bg-indigo-500/10 text-indigo-400 border-indigo-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-conmp-syllabus-cet2",
@@ -751,7 +751,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "downloadUrl": "/materials/CONMP_CET2_Official_Syllabus_S2320C1.pdf",
     "pages": "1 Page",
     "badge": "Official Syllabus",
-    "badgeColor": "bg-violet-500/10 text-violet-400 border-violet-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-conmp-tutorial-1",
@@ -843,7 +843,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "downloadUrl": "/materials/CONMP_Reference_Exact_and_Approximate_Numbers.pdf",
     "pages": "2 Pages",
     "badge": "Reference Guide",
-    "badgeColor": "bg-violet-500/10 text-violet-400 border-violet-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-conmp-solved-problems",
@@ -866,7 +866,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "downloadUrl": "/materials/CONMP_Solved_Problems_and_Formulas_Handbook.pdf",
     "pages": "56 Pages",
     "badge": "Solved Handbook",
-    "badgeColor": "bg-violet-500/10 text-violet-400 border-violet-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-conmp-roots-interpolation",
@@ -888,7 +888,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "downloadUrl": "/materials/CONMP_Roots_and_Interpolation_Practice_Sheets.pdf",
     "pages": "5 Pages",
     "badge": "Practice Sheets",
-    "badgeColor": "bg-violet-500/10 text-violet-400 border-violet-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-conmp-formula-sheet",
@@ -910,7 +910,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "downloadUrl": "/materials/CONMP_Numerical_Methods_Formula_Sheet.pdf",
     "pages": "1 Page",
     "badge": "Formula Cheat Sheet",
-    "badgeColor": "bg-violet-500/10 text-violet-400 border-violet-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-java-lab-manual",
@@ -1031,7 +1031,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "downloadUrl": "/materials/PHY_Unit1_Wave_Optics_Interference_Comprehensive_Master_Notes_2026.pdf",
     "pages": "32 Pages",
     "badge": "Master Notes",
-    "badgeColor": "bg-violet-500/10 text-violet-600 border-violet-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-phy-wave-optics-lecture",
@@ -1054,7 +1054,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "downloadUrl": "/materials/PHY_Unit1_Wave_Optics_Interference_Lecture_Notes.pdf",
     "pages": "20 Pages",
     "badge": "Lecture Notes",
-    "badgeColor": "bg-violet-500/10 text-violet-600 border-violet-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-phy-photonics-laser",
@@ -1078,7 +1078,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "downloadUrl": "/materials/PHY_Unit1_Photonics_and_Laser_Principles.pdf",
     "pages": "12 Pages",
     "badge": "Laser Notes",
-    "badgeColor": "bg-violet-500/10 text-violet-600 border-violet-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-phy-hene-laser",
@@ -1101,7 +1101,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "downloadUrl": "/materials/PHY_Helium_Neon_He_Ne_Laser_System.pdf",
     "pages": "2 Pages",
     "badge": "Gas Laser",
-    "badgeColor": "bg-violet-500/10 text-violet-600 border-violet-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-phy-diffraction",
@@ -1124,7 +1124,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "downloadUrl": "/materials/PHY_Diffraction_Fraunhofer_and_Fresnel_Notes.pdf",
     "pages": "4 Pages",
     "badge": "Diffraction",
-    "badgeColor": "bg-violet-500/10 text-violet-600 border-violet-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-phy-numericals-interference",
@@ -1146,7 +1146,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "downloadUrl": "/materials/PHY_Interference_Solved_Numericals_Handbook.pdf",
     "pages": "6 Pages",
     "badge": "Solved Numericals",
-    "badgeColor": "bg-violet-500/10 text-violet-600 border-violet-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-wt-unit1-www",
@@ -1170,7 +1170,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "downloadUrl": "/materials/WT_Unit1_Introduction_to_World_Wide_Web_WWW.pdf",
     "pages": "56 Pages",
     "badge": "Unit 1 Notes",
-    "badgeColor": "bg-blue-500/10 text-blue-600 border-blue-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-wt-unit2-html",
@@ -1194,7 +1194,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "downloadUrl": "/materials/WT_Unit2_HTML_Fundamentals_and_Semantic_Markup.pdf",
     "pages": "158 Pages",
     "badge": "Unit 2 Notes",
-    "badgeColor": "bg-blue-500/10 text-blue-600 border-blue-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-python-unit1-slides",
@@ -1217,7 +1217,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "uploadedDate": "Sept 2026",
     "downloadUrl": "/materials/PYTHON_Unit1_Programming_Fundamentals_and_Logic.pptx",
     "badge": "Unit 1 Slides",
-    "badgeColor": "bg-indigo-500/10 text-indigo-400 border-indigo-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-python-unit2-slides",
@@ -1240,7 +1240,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "uploadedDate": "Sept 2026",
     "downloadUrl": "/materials/PYTHON_Unit2_Introduction_to_Python_Syntax.pptx",
     "badge": "Unit 2 Slides",
-    "badgeColor": "bg-indigo-500/10 text-indigo-400 border-indigo-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-python-unit3-slides",
@@ -1263,7 +1263,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "uploadedDate": "Sept 2026",
     "downloadUrl": "/materials/PYTHON_Unit3_Data_Types_and_Collections.pptx",
     "badge": "Unit 3 Slides",
-    "badgeColor": "bg-indigo-500/10 text-indigo-400 border-indigo-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   }
 ,
   {
@@ -1289,7 +1289,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "uploadedDate": "Sept 2026",
     "downloadUrl": "/materials/DBMS_Complete_Lecture_Notes.pdf",
     "badge": "Master Lecture Notes",
-    "badgeColor": "bg-blue-500/10 text-blue-600 border-blue-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-dbms-normalization-transactions",
@@ -1315,7 +1315,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "uploadedDate": "Sept 2026",
     "downloadUrl": "/materials/DBMS_Normalization_and_Transactions.pdf",
     "badge": "Core Theory Notes",
-    "badgeColor": "bg-blue-500/10 text-blue-600 border-blue-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-dbms-relational-model-sql",
@@ -1339,7 +1339,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "uploadedDate": "Sept 2026",
     "downloadUrl": "/materials/DBMS_Relational_Model_and_SQL.pdf",
     "badge": "SQL Reference Guide",
-    "badgeColor": "bg-blue-500/10 text-blue-600 border-blue-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-dsa-adt-foundations",
@@ -1363,7 +1363,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "uploadedDate": "Sept 2026",
     "downloadUrl": "/materials/DSA_Abstract_Data_Types_ADT_Foundations.pdf",
     "badge": "Foundation Notes",
-    "badgeColor": "bg-indigo-500/10 text-indigo-400 border-indigo-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-dsa-algorithm-analysis",
@@ -1386,7 +1386,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "uploadedDate": "Sept 2026",
     "downloadUrl": "/materials/DSA_Algorithm_Analysis_and_Iterative_Complexity.pdf",
     "badge": "Complexity Analysis",
-    "badgeColor": "bg-indigo-500/10 text-indigo-400 border-indigo-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-dsa-cet2-syllabus",
@@ -1433,7 +1433,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "uploadedDate": "Sept 2026",
     "downloadUrl": "/materials/DSA_Growth_of_Functions_Efficiency_Analysis.pdf",
     "badge": "Theory & Proofs",
-    "badgeColor": "bg-indigo-500/10 text-indigo-400 border-indigo-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-dsa-lab-assignment-questions",
@@ -1457,7 +1457,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "uploadedDate": "Sept 2026",
     "downloadUrl": "/materials/DSA_Lab_Assignment_Questions.docx",
     "badge": "Lab Assignment",
-    "badgeColor": "bg-indigo-500/10 text-indigo-400 border-indigo-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-dsa-sorting-searching",
@@ -1482,7 +1482,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "uploadedDate": "Sept 2026",
     "downloadUrl": "/materials/DSA_Sorting_and_Searching.pdf",
     "badge": "Algorithms Master",
-    "badgeColor": "bg-indigo-500/10 text-indigo-400 border-indigo-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-dsa-stacks-queues-notes",
@@ -1506,7 +1506,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "uploadedDate": "Sept 2026",
     "downloadUrl": "/materials/DSA_Stacks_and_Queues_Notes.pdf",
     "badge": "Stack & Queue Notes",
-    "badgeColor": "bg-indigo-500/10 text-indigo-400 border-indigo-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-dsa-towers-of-hanoi",
@@ -1529,7 +1529,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "uploadedDate": "Sept 2026",
     "downloadUrl": "/materials/DSA_Towers_of_Hanoi_Tutorial.pdf",
     "badge": "Recursion Guide",
-    "badgeColor": "bg-indigo-500/10 text-indigo-400 border-indigo-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-dsa-trees-graphs-notes",
@@ -1553,7 +1553,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "uploadedDate": "Sept 2026",
     "downloadUrl": "/materials/DSA_Trees_and_Graphs_Notes.pdf",
     "badge": "Non-Linear Structures",
-    "badgeColor": "bg-indigo-500/10 text-indigo-400 border-indigo-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-dsa-unit1-elementary-data-org",
@@ -1576,7 +1576,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "uploadedDate": "Sept 2026",
     "downloadUrl": "/materials/DSA_Unit1_Elementary_Data_Organization_Terminology.pdf",
     "badge": "Unit 1 Master Notes",
-    "badgeColor": "bg-indigo-500/10 text-indigo-400 border-indigo-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-coanmp-assignments",
@@ -1599,7 +1599,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "uploadedDate": "Sept 2026",
     "downloadUrl": "/materials/COANMP_Assignments.pdf",
     "badge": "Assignment Set",
-    "badgeColor": "bg-violet-500/10 text-violet-400 border-violet-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-coanmp-formulas-notes",
@@ -1622,7 +1622,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "uploadedDate": "Sept 2026",
     "downloadUrl": "/materials/COANMP_Formulas_and_Notes.pdf",
     "badge": "Formula Handbook",
-    "badgeColor": "bg-violet-500/10 text-violet-400 border-violet-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-coanmp-roots-interpolation",
@@ -1646,7 +1646,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "uploadedDate": "Sept 2026",
     "downloadUrl": "/materials/COANMP_Roots_and_Interpolation.pdf",
     "badge": "Complete Notes",
-    "badgeColor": "bg-violet-500/10 text-violet-400 border-violet-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-ca-assignment-questions",
@@ -1901,7 +1901,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "uploadedDate": "Sept 2026",
     "downloadUrl": "/materials/Unit_1.pptx",
     "badge": "Unit 1 Slides",
-    "badgeColor": "bg-indigo-500/10 text-indigo-400 border-indigo-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-general-unit-2-slides",
@@ -1924,7 +1924,7 @@ export const REAL_STUDY_MATERIALS: StudyMaterial[] = [
     "uploadedDate": "Sept 2026",
     "downloadUrl": "/materials/Unit_2.pptx",
     "badge": "Unit 2 Slides",
-    "badgeColor": "bg-indigo-500/10 text-indigo-400 border-indigo-500/30"
+    "badgeColor": "bg-amber-500/10 text-amber-500 border-amber-500/30"
   },
   {
     "id": "mat-faculty-circular-notice",

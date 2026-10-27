@@ -189,7 +189,7 @@ export const SubjectCommunityRatings: React.FC<SubjectCommunityRatingsProps> = (
           <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">
             Historical Pass Rate
           </span>
-          <span className="text-xl font-black text-indigo-400 dark:text-indigo-400 block">
+          <span className="text-xl font-black text-amber-500 dark:text-amber-500 block">
             {data.passRatePercentage}%
           </span>
           <span className="text-[10px] text-muted-foreground block">
@@ -243,7 +243,7 @@ export const SubjectCommunityRatings: React.FC<SubjectCommunityRatingsProps> = (
             </button>
           ))}
           {hasVoted && (
-            <span className="text-xs font-bold text-indigo-400 dark:text-indigo-400 ml-2">
+            <span className="text-xs font-bold text-amber-500 dark:text-amber-500 ml-2">
               Voted!
             </span>
           )}

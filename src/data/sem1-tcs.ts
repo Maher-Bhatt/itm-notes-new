@@ -4,7 +4,7 @@ export const sem1TcsSubject: Subject = {
   "id": "sem1-tcs",
   "name": "Technical Communication Skills",
   "code": "ENG101",
-  "color": "bg-violet-500",
+  "color": "bg-amber-500",
   "icon": "message-square",
   "description": "Comprehensive University Syllabus for Technical Communication Skills — Communication Theory, The 7 Cs, Barriers, Technical Writing, Resume/CV, and Group Discussion Skills",
   "semester": 1,

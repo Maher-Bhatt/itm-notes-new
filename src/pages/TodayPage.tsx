@@ -445,7 +445,7 @@ export default function TodayPage() {
                   onClick={() => handleToggleTask(task.id)}
                   className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${
                     completed
-                      ? "bg-primary/10 border-indigo-500/30 text-foreground"
+                      ? "bg-primary/10 border-amber-500/30 text-foreground"
                       : "bg-secondary/30 border-border hover:border-primary/40 text-foreground"
                   }`}
                 >

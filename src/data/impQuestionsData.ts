@@ -37,7 +37,7 @@ export const SUBJECT_IMP_DATA: Record<string, SubjectImpData> = {
     code: 'CS401',
     semester: 3,
     badge: 'MST Exam · 46 Qs',
-    badgeColor: 'bg-blue-500/10 text-blue-600 dark:text-blue-400',
+    badgeColor: 'bg-amber-500/10 text-amber-500 dark:text-amber-500',
     summary: 'Complete model answers for all 46 questions from the official MST question bank (218 marks total), categorized into 3-mark, 5-mark, and 7-mark sections with complete diagrams and 2-page last-night cheat sheet.',
     totalMarks: 218,
     cheatSheet: [
@@ -806,7 +806,7 @@ POP  X              ; M[X] <- TOS
     code: 'DSA301',
     semester: 3,
     badge: 'Exam Bank · All 6 Units',
-    badgeColor: 'bg-indigo-500/10 text-indigo-400 dark:text-indigo-400',
+    badgeColor: 'bg-amber-500/10 text-amber-500 dark:text-amber-500',
     summary: 'Comprehensive exam question bank covering Complexity Analysis, Linked Lists, Stacks, Queues, Binary Search Trees, AVL rotations, Graphs (Dijkstra, Kruskal, Prim), and Hashing with complete C implementations.',
     cheatSheet: [
       {
@@ -1135,7 +1135,7 @@ public class TestPolymorphism {
     code: 'COANMP',
     semester: 3,
     badge: 'Exam Bank · All 6 Units',
-    badgeColor: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400',
+    badgeColor: 'bg-amber-500/10 text-amber-500 dark:text-amber-500',
     summary: 'Comprehensive numerical exam questions covering Root Finding (Bisection, Newton-Raphson), Interpolation, Numerical Integration (Trapezoidal, Simpson 1/3 & 3/8), Linear Systems (Gauss, Seidel), and ODEs (Euler, RK4) with Python code.',
     cheatSheet: [
       {

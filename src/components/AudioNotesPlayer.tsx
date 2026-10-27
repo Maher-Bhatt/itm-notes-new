@@ -98,7 +98,7 @@ export function AudioNotesPlayer({ title, textToRead, className = '' }: AudioNot
           <div className="min-w-0">
             <div className="flex items-center gap-1.5 flex-wrap">
               <span className="text-xs sm:text-sm font-bold text-foreground">Continuous Audio Lecture</span>
-              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 dark:text-indigo-400 flex items-center gap-1 border border-indigo-500/20">
+              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 dark:text-amber-500 flex items-center gap-1 border border-amber-500/20">
                 <Mic className="h-2.5 w-2.5" /> Studio AI Narrator
               </span>
               <span className="text-[10px] font-mono text-muted-foreground hidden sm:inline">

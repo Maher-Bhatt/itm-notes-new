@@ -447,7 +447,7 @@ export default function QuizPage() {
             <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white flex items-center gap-2.5">
               <span>Subject Quiz</span>
             </h1>
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-indigo-400/10 text-indigo-300 border border-indigo-400/30 shadow-xs">
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-500/10 text-amber-500 border border-amber-500/30 shadow-xs">
               Active
             </span>
             {quizStarted && !quizFinished && (
@@ -496,7 +496,7 @@ export default function QuizPage() {
             <div className="flex items-start justify-between gap-4">
               <div>
                 <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                  <BookOpen className="h-5 w-5 text-blue-400" />
+                  <BookOpen className="h-5 w-5 text-amber-500" />
                   <span>University Subject Examination & Recall Drill</span>
                 </h2>
                 <p className="text-xs text-slate-400 mt-1">
@@ -552,7 +552,7 @@ export default function QuizPage() {
                         <div className={`text-[11px] mt-1 font-mono flex items-center gap-1.5 ${
                           isSelected ? "text-[#D6E85D] font-bold" : "text-slate-300"
                         }`}>
-                          <span className="w-2 h-2 rounded-full bg-indigo-300 shrink-0" />
+                          <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0" />
                           <span>{s.totalMcqs} Practice MCQs</span>
                         </div>
                       </button>
@@ -623,7 +623,7 @@ export default function QuizPage() {
                     </div>
                     <div className="text-right">
                       <span className={`font-mono font-black text-sm ${
-                        attempt.percentage >= 80 ? "text-indigo-300" : attempt.percentage >= 50 ? "text-blue-400" : "text-rose-400"
+                        attempt.percentage >= 80 ? "text-amber-500" : attempt.percentage >= 50 ? "text-amber-500" : "text-rose-400"
                       }`}>
                         {attempt.score}/{attempt.total} ({attempt.percentage}%)
                       </span>
@@ -660,10 +660,10 @@ export default function QuizPage() {
 
                   let btnCls = "h-8 rounded-lg text-xs font-mono font-bold transition-all relative flex items-center justify-center cursor-pointer ";
                   if (isCurrent) {
-                    btnCls += "ring-2 ring-blue-500 bg-blue-500/20 text-white font-black ";
+                    btnCls += "ring-2 ring-amber-500 bg-amber-500/20 text-white font-black ";
                   } else if (isAnswered) {
                     btnCls += isCorrect
-                      ? "bg-indigo-400/20 text-indigo-300 border border-indigo-400/30 "
+                      ? "bg-amber-500/20 text-amber-500 border border-amber-500/30 "
                       : "bg-rose-500/20 text-rose-400 border border-rose-500/30 ";
                   } else {
                     btnCls += "bg-slate-800/60 text-slate-400 hover:bg-slate-800 hover:text-slate-200 border border-slate-700/50 ";
@@ -687,7 +687,7 @@ export default function QuizPage() {
 
               <div className="pt-2 border-t border-slate-800 text-[10px] space-y-1 text-slate-400">
                 <div className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-indigo-300" />
+                  <span className="w-2 h-2 rounded-full bg-amber-500" />
                   <span>Answered</span>
                 </div>
                 <div className="flex items-center gap-1.5">
@@ -695,7 +695,7 @@ export default function QuizPage() {
                   <span>Flagged for review</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-blue-500" />
+                  <span className="w-2 h-2 rounded-full bg-amber-500" />
                   <span>Active selection</span>
                 </div>
               </div>
@@ -709,7 +709,7 @@ export default function QuizPage() {
               <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-4 border-b border-slate-800/80">
                 <div className="space-y-1 max-w-md">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-mono font-bold text-blue-400 uppercase tracking-wider">
+                    <span className="text-xs font-mono font-bold text-amber-500 uppercase tracking-wider">
                       Question ({currentIdx + 1})
                     </span>
                     <span className="text-[10px] font-semibold text-slate-400 px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700">
@@ -734,7 +734,7 @@ export default function QuizPage() {
                           d="M4 18 a 14 14 0 0 1 28 0"
                         />
                         <path
-                          className="text-indigo-400 stroke-current transition-all duration-500"
+                          className="text-amber-500 stroke-current transition-all duration-500"
                           strokeDasharray={`${(currentAccuracyPercent / 100) * 44}, 100`}
                           strokeWidth="3.5"
                           strokeLinecap="round"
@@ -799,8 +799,8 @@ export default function QuizPage() {
                     circleStyle = "bg-[#183F36] text-[#D6E85D] border-[#183F36] font-bold";
                   } else if (isAnswerSubmitted) {
                     if (isCorrectChoice) {
-                      cardStyle = "border-indigo-400 bg-indigo-400/15 text-indigo-400 ring-1 ring-indigo-400";
-                      circleStyle = "bg-indigo-400 text-white border-indigo-400 font-bold";
+                      cardStyle = "border-amber-500 bg-amber-500/15 text-amber-500 ring-1 ring-amber-500";
+                      circleStyle = "bg-amber-500 text-white border-amber-500 font-bold";
                     } else if (isSelected && !isCorrectChoice) {
                       cardStyle = "border-rose-500 bg-rose-500/15 text-rose-200 ring-1 ring-rose-500";
                       circleStyle = "bg-rose-500 text-white border-rose-500 font-bold";
@@ -941,7 +941,7 @@ export default function QuizPage() {
                     50% Solved
                   </span>
                   <span className="flex items-center gap-1">
-                    <span className="w-2 h-2 rounded-full bg-indigo-300" />
+                    <span className="w-2 h-2 rounded-full bg-amber-500" />
                     66% Departs
                   </span>
                   <span className="flex items-center gap-1">
@@ -965,13 +965,13 @@ export default function QuizPage() {
                 <div>
                   <div className="flex justify-between text-[11px] font-semibold mb-1">
                     <span className="text-slate-400">Accuracy</span>
-                    <span className="font-mono text-indigo-300 font-bold">
+                    <span className="font-mono text-amber-500 font-bold">
                       {currentAccuracyPercent}%
                     </span>
                   </div>
                   <div className="h-1.5 rounded-full bg-slate-800 overflow-hidden">
                     <div
-                      className="h-full bg-indigo-400 rounded-full transition-all duration-500"
+                      className="h-full bg-amber-500 rounded-full transition-all duration-500"
                       style={{ width: `${currentAccuracyPercent}%` }}
                     />
                   </div>
@@ -996,7 +996,7 @@ export default function QuizPage() {
             <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 shadow-sm space-y-3">
               <div className="flex items-center justify-between">
                 <h3 className="font-bold text-sm text-white">Download Resources</h3>
-                <Link to="/materials" className="text-xs text-blue-400 hover:underline">
+                <Link to="/materials" className="text-xs text-amber-500 hover:underline">
                   All Materials &gt;
                 </Link>
               </div>
@@ -1007,7 +1007,7 @@ export default function QuizPage() {
                   className="p-2.5 rounded-xl bg-slate-800/60 border border-slate-700 hover:bg-slate-800 transition-colors cursor-pointer flex items-center justify-between"
                 >
                   <div className="flex items-center gap-2">
-                    <FileText className="h-4 w-4 text-blue-400" />
+                    <FileText className="h-4 w-4 text-amber-500" />
                     <span className="text-slate-200 font-medium">DSA Unit 2 & 3 Cheat Sheet</span>
                   </div>
                   <Download className="h-3.5 w-3.5 text-slate-400" />
@@ -1018,7 +1018,7 @@ export default function QuizPage() {
                   className="p-2.5 rounded-xl bg-slate-800/60 border border-slate-700 hover:bg-slate-800 transition-colors cursor-pointer flex items-center justify-between"
                 >
                   <div className="flex items-center gap-2">
-                    <FileText className="h-4 w-4 text-indigo-300" />
+                    <FileText className="h-4 w-4 text-amber-500" />
                     <span className="text-slate-200 font-medium">DBMS SQL & Normalization Pack</span>
                   </div>
                   <Download className="h-3.5 w-3.5 text-slate-400" />
@@ -1033,7 +1033,7 @@ export default function QuizPage() {
       {quizFinished && (
         <div className="max-w-3xl mx-auto space-y-6 pt-4 animate-fade-in">
           <div className="bg-slate-900/80 border border-slate-800 rounded-3xl p-8 shadow-2xl text-center space-y-5">
-            <div className="w-16 h-16 rounded-2xl bg-indigo-400/10 border border-indigo-400/20 text-indigo-300 mx-auto flex items-center justify-center">
+            <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-500 mx-auto flex items-center justify-center">
               <Trophy className="h-8 w-8" />
             </div>
 
@@ -1050,7 +1050,7 @@ export default function QuizPage() {
                 <span className="text-[10px] text-slate-400 block uppercase font-bold mt-0.5">Score</span>
               </div>
               <div className="p-3.5 rounded-2xl bg-slate-800/60 border border-slate-700/80">
-                <span className="text-2xl font-black font-mono text-indigo-300">
+                <span className="text-2xl font-black font-mono text-amber-500">
                   {Math.round((score / Math.max(1, activeQuizPool.length)) * 100)}%
                 </span>
                 <span className="text-[10px] text-slate-400 block uppercase font-bold mt-0.5">Accuracy</span>
@@ -1064,7 +1064,7 @@ export default function QuizPage() {
             <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
               <button
                 onClick={handleStartQuiz}
-                className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-md shadow-blue-600/30 flex items-center gap-2 cursor-pointer"
+                className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-500 text-white font-bold text-xs shadow-md shadow-blue-600/30 flex items-center gap-2 cursor-pointer"
               >
                 <RotateCcw className="h-3.5 w-3.5" />
                 <span>Retry Quiz Drill</span>
@@ -1106,7 +1106,7 @@ export default function QuizPage() {
                     key={idx}
                     className={`p-5 rounded-2xl border text-xs space-y-3 ${
                       rec.isCorrect
-                        ? "bg-slate-900/60 border-indigo-400/30"
+                        ? "bg-slate-900/60 border-amber-500/30"
                         : "bg-slate-900/60 border-rose-500/30"
                     }`}
                   >
@@ -1118,14 +1118,14 @@ export default function QuizPage() {
                         <p className="text-sm font-bold text-white">{rec.question.question}</p>
                       </div>
                       <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold ${
-                        rec.isCorrect ? "bg-indigo-400/10 text-indigo-300" : "bg-rose-500/10 text-rose-400"
+                        rec.isCorrect ? "bg-amber-500/10 text-amber-500" : "bg-rose-500/10 text-rose-400"
                       }`}>
                         {rec.isCorrect ? "Correct ✓" : "Missed ✗"}
                       </span>
                     </div>
 
                     <div className="p-3 rounded-xl bg-slate-950/50 border border-slate-800 text-slate-300 space-y-1">
-                      <p className="text-[11px] text-indigo-300 font-bold">
+                      <p className="text-[11px] text-amber-500 font-bold">
                         Correct Answer: {rec.question.options[rec.question.correctIndex]}
                       </p>
                       {!rec.isCorrect && (
@@ -1151,7 +1151,7 @@ export default function QuizPage() {
           <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 max-w-lg w-full space-y-5 shadow-2xl">
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <div className="flex items-center gap-2">
-                <BarChart3 className="h-5 w-5 text-blue-400" />
+                <BarChart3 className="h-5 w-5 text-amber-500" />
                 <h3 className="font-bold text-base text-white">Diagnostic Exam Report</h3>
               </div>
               <button
@@ -1169,7 +1169,7 @@ export default function QuizPage() {
               </div>
               <div className="flex justify-between p-3 rounded-xl bg-slate-800/50 border border-slate-700">
                 <span className="text-slate-400">Correctly Solved:</span>
-                <span className="font-bold text-indigo-300 font-mono">{score}</span>
+                <span className="font-bold text-amber-500 font-mono">{score}</span>
               </div>
               <div className="flex justify-between p-3 rounded-xl bg-slate-800/50 border border-slate-700">
                 <span className="text-slate-400">Live Accuracy Rate:</span>
@@ -1185,7 +1185,7 @@ export default function QuizPage() {
 
             <button
               onClick={() => setShowReportModal(false)}
-              className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-md transition-all cursor-pointer"
+              className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-500 text-white font-bold text-xs shadow-md transition-all cursor-pointer"
             >
               Close Diagnostic Report
             </button>

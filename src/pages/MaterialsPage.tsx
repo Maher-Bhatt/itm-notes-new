@@ -159,7 +159,7 @@ const SUBJECT_OVERVIEW_CARDS: SubjectOverviewCard[] = [
     id: "mat-2",
     code: "C2311C4 · DBMS",
     tag: "Core Notes",
-    tagColor: "bg-blue-600 text-white shadow-xs",
+    tagColor: "bg-amber-500 text-white shadow-xs",
     title: "DBMS Complete Lecture Notes & SQL Guide",
     subtitle:
       "Relational Algebra, SQL triggers, ACID transaction states, and 1NF to BCNF normalization proofs.",
@@ -364,12 +364,12 @@ function CategoryIcon({ category }: { category: string }) {
 // ─── Category badge colour helper ─────────────────────────────────────────
 function categoryBadgeClass(category: string): string {
   const map: Record<string, string> = {
-    Notes: "bg-blue-500/10 text-blue-600 border-blue-500/30",
+    Notes: "bg-amber-500/10 text-amber-500 border-amber-500/30",
     "Lab Manual": "bg-orange-500/10 text-orange-600 border-orange-500/30",
     "Question Paper": "bg-amber-500/10 text-amber-600 border-amber-500/30",
-    Assignment: "bg-indigo-500/10 text-indigo-600 border-indigo-500/30",
-    Syllabus: "bg-cyan-500/10 text-cyan-600 border-cyan-500/30",
-    Presentation: "bg-violet-500/10 text-violet-600 border-violet-500/30",
+    Assignment: "bg-amber-500/10 text-amber-500 border-amber-500/30",
+    Syllabus: "bg-amber-500/10 text-amber-500 border-amber-500/30",
+    Presentation: "bg-amber-500/10 text-amber-500 border-amber-500/30",
     Timetable: "bg-rose-500/10 text-rose-600 border-rose-500/30",
   };
   return map[category] ?? "bg-slate-500/10 text-slate-600 border-slate-500/30";
@@ -380,7 +380,7 @@ function fileTypeClass(fileType: string): string {
   const map: Record<string, string> = {
     PDF: "bg-red-500/10 text-red-500",
     PPTX: "bg-orange-500/10 text-orange-500",
-    DOCX: "bg-blue-500/10 text-blue-500",
+    DOCX: "bg-amber-500/10 text-amber-500",
     JPEG: "bg-primary/10 text-primary",
     PNG: "bg-primary/10 text-primary",
   };
@@ -537,7 +537,7 @@ function RichOverviewCard({
         <span>·</span>
         <span className="font-mono font-semibold">{item.fileSize}</span>
         <span>·</span>
-        <span className="text-[10px] px-1.5 py-0.5 rounded bg-primary/10 text-indigo-400 font-semibold">
+        <span className="text-[10px] px-1.5 py-0.5 rounded bg-primary/10 text-amber-500 font-semibold">
           Rich View
         </span>
       </div>
@@ -599,7 +599,7 @@ function SemesterSection({
             <ChevronRight className="h-4 w-4 text-muted-foreground" />
           )}
           <span className="font-bold text-sm text-foreground">{title}</span>
-          <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-[#6366f1]/10 text-[#6366f1] dark:text-indigo-400 border border-[#6366f1]/20">
+          <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-[#6366f1]/10 text-[#6366f1] dark:text-amber-500 border border-[#6366f1]/20">
             {count} files
           </span>
         </div>
@@ -745,7 +745,7 @@ export default function MaterialsPage() {
         <div>
           <h1 className="text-2xl font-black tracking-tight text-foreground flex items-center gap-2 flex-wrap">
             <span>ITM Notes · Study Materials</span>
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-primary/10 text-indigo-400 dark:text-indigo-400 border border-primary/20 font-bold">
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-primary/10 text-amber-500 dark:text-amber-500 border border-primary/20 font-bold">
               {stats.total} Files
             </span>
           </h1>
@@ -811,10 +811,10 @@ export default function MaterialsPage() {
       {/* ── STATS BAR ── */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { label: "Notes & Slides", value: stats.notes, color: "text-blue-600" },
+          { label: "Notes & Slides", value: stats.notes, color: "text-amber-500" },
           { label: "Lab Manuals", value: stats.labs, color: "text-orange-500" },
           { label: "Question Papers", value: stats.qps, color: "text-amber-500" },
-          { label: "Total Files", value: stats.total, color: "text-[#6366f1] dark:text-indigo-400" },
+          { label: "Total Files", value: stats.total, color: "text-[#6366f1] dark:text-amber-500" },
         ].map((s) => (
           <div
             key={s.label}
@@ -958,7 +958,7 @@ export default function MaterialsPage() {
             <div>
               <h3 className="font-bold text-sm text-foreground flex items-center gap-2">
                 <span>Question Bank Trend</span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-blue-500/10 text-blue-500 dark:text-blue-400 font-bold">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-500 dark:text-amber-500 font-bold">
                   High Yield
                 </span>
               </h3>
@@ -979,7 +979,7 @@ export default function MaterialsPage() {
                       return (
                         <div className="rounded-lg bg-slate-900 text-white p-2 text-xs shadow-lg border border-slate-800">
                           <p className="font-bold">{payload[0].payload.date}</p>
-                          <p className="text-indigo-400">{payload[0].value} Solved Questions</p>
+                          <p className="text-amber-500">{payload[0].value} Solved Questions</p>
                         </div>
                       );
                     }
@@ -1000,10 +1000,10 @@ export default function MaterialsPage() {
         </div>
 
         {/* Solved Questions promo */}
-        <div className="lg:col-span-4 bg-gradient-to-br from-slate-900 to-indigo-950 text-white border border-slate-800 rounded-2xl p-5 shadow-lg flex flex-col justify-between">
+        <div className="lg:col-span-4 bg-gradient-to-br from-slate-900 to-amber-500 text-white border border-slate-800 rounded-2xl p-5 shadow-lg flex flex-col justify-between">
           <div className="space-y-3">
             <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-500/30 text-indigo-200 border border-indigo-400/30">
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/30 text-amber-500 border border-amber-500/30">
                 MST Exclusive
               </span>
               <span className="text-[11px] text-slate-400">Baroda University</span>
@@ -1014,9 +1014,9 @@ export default function MaterialsPage() {
             </p>
             <div className="p-3 rounded-xl bg-white/5 border border-white/10 space-y-1.5 text-xs">
               {[
-                { color: "text-indigo-400", text: "Railway Reservation Queue (C & Java)" },
-                { color: "text-indigo-300", text: "DBMS 3NF & BCNF Normalization Proofs" },
-                { color: "text-cyan-300", text: "Newton-Raphson & Runge-Kutta 4" },
+                { color: "text-amber-500", text: "Railway Reservation Queue (C & Java)" },
+                { color: "text-amber-500", text: "DBMS 3NF & BCNF Normalization Proofs" },
+                { color: "text-amber-500", text: "Newton-Raphson & Runge-Kutta 4" },
               ].map((item) => (
                 <div key={item.text} className={`flex items-center gap-2 ${item.color} font-semibold text-[11px]`}>
                   <CheckCircle2 className="h-3.5 w-3.5" />
@@ -1132,7 +1132,7 @@ export default function MaterialsPage() {
               </div>
 
               <span className="text-[11px] text-muted-foreground flex items-center gap-1">
-                <MapPin className="h-3.5 w-3.5 text-indigo-500" />
+                <MapPin className="h-3.5 w-3.5 text-amber-500" />
                 Venue: <strong className="text-foreground">{VIVA_CLASS_LOCATIONS[vivaClassFilter].room}</strong> ({VIVA_CLASS_LOCATIONS[vivaClassFilter].block})
               </span>
             </div>
@@ -1259,7 +1259,7 @@ export default function MaterialsPage() {
                           Sem {item.semester} · {item.branch}
                         </span>
                       </td>
-                      <td className="p-2.5 font-mono font-bold text-indigo-500 dark:text-indigo-400">
+                      <td className="p-2.5 font-mono font-bold text-amber-500 dark:text-amber-500">
                         {item.courseCode}
                       </td>
                       <td className="p-2.5 font-medium text-foreground">{item.courseName}</td>
@@ -1318,7 +1318,7 @@ export default function MaterialsPage() {
                         <FileCheck className="h-4 w-4 text-primary shrink-0" />
                         <span className="font-mono">{exam.date}</span>
                       </td>
-                      <td className="py-3 font-mono text-[11px] font-bold text-indigo-500 dark:text-indigo-400">
+                      <td className="py-3 font-mono text-[11px] font-bold text-amber-500 dark:text-amber-500">
                         {exam.courseCode}
                       </td>
                       <td className="py-3 font-medium text-foreground">{exam.courseName}</td>
@@ -1460,7 +1460,7 @@ export default function MaterialsPage() {
                             <span className="text-[11px] font-bold text-primary font-sans">{f.title}</span>
                             <span className="text-[10px] text-slate-400 font-sans">{f.note}</span>
                           </div>
-                          <p className="p-2 rounded bg-slate-900 border border-slate-800 text-indigo-400 select-all overflow-x-auto">
+                          <p className="p-2 rounded bg-slate-900 border border-slate-800 text-amber-500 select-all overflow-x-auto">
                             {f.formula}
                           </p>
                         </div>

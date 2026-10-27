@@ -83,7 +83,7 @@ export function AchievementCelebrationModal() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    const colors = ['#D6E85D', '#183F36', '#F59E0B', '#10B981', '#3B82F6', '#C084FC', '#FFFFFF'];
+    const colors = ['#F59E0B', '#D97706', '#FBBF24', '#EF4444', '#E4E4E7', '#FFFFFF', '#71717A'];
     const particles = Array.from({ length: 90 }).map(() => ({
       x: canvas.width / 2 + (Math.random() - 0.5) * 260,
       y: canvas.height * 0.38,
@@ -256,52 +256,52 @@ export function AchievementCelebrationModal() {
       foilGlare: 'rgba(226, 232, 240, 0.5)',
     },
     gold: {
-      border: 'border-[#D6E85D]',
-      glow: 'shadow-[0_0_70px_rgba(214,232,93,0.5)]',
-      pill: 'bg-gradient-to-r from-[#D6E85D] via-[#FEF08A] to-[#F59E0B] text-[#183F36]',
+      border: 'border-[#F59E0B]',
+      glow: 'shadow-[0_0_70px_rgba(245, 158, 11,0.5)]',
+      pill: 'bg-gradient-to-r from-[#F59E0B] via-[#FEF08A] to-[#F59E0B] text-zinc-950 font-black',
       badge: '★ 24K GOLD MASTER · TIER III ★',
       rarity: 'EPIC SCHOLASTIC MERIT',
       percentile: 'TOP 5% OF COHORT',
-      ringColor: '#D6E85D',
-      accentText: 'text-[#D6E85D]',
-      metalBg: 'from-[#F59E0B]/30 via-[#D6E85D]/20 to-[#D97706]/40',
-      foilGlare: 'rgba(214, 232, 93, 0.6)',
+      ringColor: '#F59E0B',
+      accentText: 'text-[#F59E0B]',
+      metalBg: 'from-[#F59E0B]/30 via-[#F59E0B]/20 to-[#D97706]/40',
+      foilGlare: 'rgba(245, 158, 11, 0.6)',
     },
     legendary: {
       border: 'border-purple-400',
       glow: 'shadow-[0_0_70px_rgba(168,85,247,0.5)]',
-      pill: 'bg-gradient-to-r from-purple-500 via-fuchsia-400 to-indigo-600 text-white',
+      pill: 'bg-gradient-to-r from-purple-500 via-fuchsia-400 to-amber-500 text-white',
       badge: '★ LEGENDARY HONORS · TIER IV ★',
       rarity: 'MYTHIC PEER EXCELLENCE',
       percentile: 'TOP 1% OF STUDENTS',
       ringColor: '#C084FC',
       accentText: 'text-purple-300',
-      metalBg: 'from-purple-600/30 via-fuchsia-400/20 to-indigo-900/40',
+      metalBg: 'from-purple-600/30 via-fuchsia-400/20 to-amber-500/40',
       foilGlare: 'rgba(192, 132, 252, 0.6)',
     },
     mythic: {
-      border: 'border-[#D6E85D]',
-      glow: 'shadow-[0_0_80px_rgba(214,232,93,0.65)]',
-      pill: 'bg-gradient-to-r from-[#D6E85D] via-indigo-300 to-[#183F36] text-[#183F36]',
+      border: 'border-[#F59E0B]',
+      glow: 'shadow-[0_0_80px_rgba(245, 158, 11,0.65)]',
+      pill: 'bg-gradient-to-r from-[#F59E0B] via-amber-200 to-[#18181B] text-zinc-950 font-black',
       badge: '★ MYTHIC ARCHITECT · APEX TIER ★',
       rarity: 'FOUNDER & ARCHITECT MASTER',
       percentile: 'UNIQUE VALEDICTORIAN',
-      ringColor: '#D6E85D',
-      accentText: 'text-[#D6E85D]',
-      metalBg: 'from-[#D6E85D]/30 via-indigo-300/20 to-[#183F36]/50',
-      foilGlare: 'rgba(214, 232, 93, 0.75)',
+      ringColor: '#F59E0B',
+      accentText: 'text-[#F59E0B]',
+      metalBg: 'from-[#F59E0B]/30 via-amber-200/20 to-[#18181B]/50',
+      foilGlare: 'rgba(245, 158, 11, 0.75)',
     },
   }[activeAchievement.tier] || {
-    border: 'border-[#D6E85D]/70',
-    glow: 'shadow-[0_0_60px_rgba(214,232,93,0.4)]',
-    pill: 'bg-[#D6E85D] text-[#183F36]',
+    border: 'border-[#F59E0B]/70',
+    glow: 'shadow-[0_0_60px_rgba(245, 158, 11,0.4)]',
+    pill: 'bg-[#F59E0B] text-zinc-950 font-black',
     badge: '★ ACADEMIC HONORS ★',
     rarity: 'ACADEMIC ACHIEVEMENT',
     percentile: 'VERIFIED MILESTONE',
-    ringColor: '#D6E85D',
-    accentText: 'text-[#D6E85D]',
-    metalBg: 'from-[#183F36]/40 to-black/40',
-    foilGlare: 'rgba(214, 232, 93, 0.4)',
+    ringColor: '#F59E0B',
+    accentText: 'text-[#F59E0B]',
+    metalBg: 'from-[#18181B]/40 to-black/40',
+    foilGlare: 'rgba(245, 158, 11, 0.4)',
   };
 
   // 1-Click Share to Instagram Stories
@@ -403,7 +403,7 @@ export function AchievementCelebrationModal() {
       <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-10 w-full h-full" />
 
       {/* Main Luxury Modal Container */}
-      <div className="relative z-20 w-full max-w-2xl bg-gradient-to-b from-[#12332C]/95 via-[#081814]/98 to-black border border-[#23584C] rounded-3xl p-5 sm:p-7 shadow-[0_0_90px_rgba(24,63,54,0.7)] flex flex-col gap-4 text-center my-auto backdrop-blur-3xl">
+      <div className="relative z-20 w-full max-w-2xl bg-gradient-to-b from-[#27272A]/95 via-[#081814]/98 to-black border border-[#3F3F46] rounded-3xl p-5 sm:p-7 shadow-[0_0_90px_rgba(24,63,54,0.7)] flex flex-col gap-4 text-center my-auto backdrop-blur-3xl">
         
         {/* Top Controls: Sound Fanfare & Close Button */}
         <div className="absolute right-4 top-4 flex items-center gap-2 z-30">
@@ -412,15 +412,15 @@ export function AchievementCelebrationModal() {
               setSoundEnabled(!soundEnabled);
               if (!soundEnabled) playVictoryFanfare();
             }}
-            className="p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-[#E8EDE4] transition-all cursor-pointer shadow-md"
+            className="p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-[#FAFAFA] transition-all cursor-pointer shadow-md"
             title={soundEnabled ? "Mute Fanfare Sound" : "Enable Fanfare Sound"}
           >
-            {soundEnabled ? <Volume2 className="h-4 w-4 text-[#D6E85D]" /> : <VolumeX className="h-4 w-4 text-slate-400" />}
+            {soundEnabled ? <Volume2 className="h-4 w-4 text-[#F59E0B]" /> : <VolumeX className="h-4 w-4 text-slate-400" />}
           </button>
 
           <button
             onClick={() => setActiveAchievement(null)}
-            className="p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-[#E8EDE4] transition-all cursor-pointer shadow-md"
+            className="p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-[#FAFAFA] transition-all cursor-pointer shadow-md"
             title="Close"
           >
             <X className="h-4 w-4" />
@@ -429,16 +429,16 @@ export function AchievementCelebrationModal() {
 
         {/* Modal Top Header */}
         <div className="flex flex-col items-center">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D6E85D]/15 border border-[#D6E85D]/30 text-[#D6E85D] text-[11px] font-black uppercase tracking-widest mb-1.5 font-display">
-            <Sparkles className="h-3.5 w-3.5 text-[#D6E85D] animate-spin [animation-duration:10s]" />
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F59E0B]/15 border border-[#F59E0B]/30 text-[#F59E0B] text-[11px] font-black uppercase tracking-widest mb-1.5 font-display">
+            <Sparkles className="h-3.5 w-3.5 text-[#F59E0B] animate-spin [animation-duration:10s]" />
             <span>{eventData?.isReplay ? 'OFFICIAL ACADEMIC DISTINCTION' : 'NEW MILESTONE UNLOCKED'}</span>
           </div>
 
-          <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight font-display bg-gradient-to-r from-white via-slate-100 to-[#D6E85D] bg-clip-text text-transparent">
+          <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight font-display bg-gradient-to-r from-white via-slate-100 to-[#F59E0B] bg-clip-text text-transparent">
             {eventData?.isReplay ? 'Your Academic Triumph' : 'Academic Triumph!'}
           </h2>
           <p className="text-xs text-[#A2BAAF] flex items-center gap-1.5 mt-0.5 font-medium">
-            <ShieldCheck className="h-3.5 w-3.5 text-[#D6E85D]" />
+            <ShieldCheck className="h-3.5 w-3.5 text-[#F59E0B]" />
             <span>ITM SLS Baroda University • Department of Computer Science</span>
           </p>
 
@@ -451,7 +451,7 @@ export function AchievementCelebrationModal() {
               }}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeView === 'trophy' && !isFlipped
-                  ? 'bg-[#183F36] text-[#D6E85D] shadow-md border border-[#D6E85D]/40'
+                  ? 'bg-[#18181B] text-[#F59E0B] shadow-md border border-[#F59E0B]/40'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -466,7 +466,7 @@ export function AchievementCelebrationModal() {
               }}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeView === 'certificate' || isFlipped
-                  ? 'bg-[#183F36] text-[#D6E85D] shadow-md border border-[#D6E85D]/40'
+                  ? 'bg-[#18181B] text-[#F59E0B] shadow-md border border-[#F59E0B]/40'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -481,7 +481,7 @@ export function AchievementCelebrationModal() {
               }}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeView === 'story'
-                  ? 'bg-[#183F36] text-[#D6E85D] shadow-md border border-[#D6E85D]/40'
+                  ? 'bg-[#18181B] text-[#F59E0B] shadow-md border border-[#F59E0B]/40'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -512,7 +512,7 @@ export function AchievementCelebrationModal() {
               {/* ──────────────── FRONT FACE: 3D HOLOGRAPHIC TROPHY CARD ──────────────── */}
               <div 
                 style={{ backfaceVisibility: 'hidden' }}
-                className={`absolute inset-0 rounded-3xl overflow-hidden border-2 ${tierConfig.border} ${tierConfig.glow} bg-gradient-to-br from-[#12332C]/95 via-[#0A1A16]/98 to-[#050E0C] p-5 sm:p-6 text-white flex flex-col justify-between backdrop-blur-xl`}
+                className={`absolute inset-0 rounded-3xl overflow-hidden border-2 ${tierConfig.border} ${tierConfig.glow} bg-gradient-to-br from-[#27272A]/95 via-[#0A1A16]/98 to-[#050E0C] p-5 sm:p-6 text-white flex flex-col justify-between backdrop-blur-xl`}
               >
                 {/* Dynamic Holographic Foil Glare that shimmers with mouse movement */}
                 <div 
@@ -526,15 +526,15 @@ export function AchievementCelebrationModal() {
                 <div 
                   className="absolute inset-0 pointer-events-none opacity-15 mix-blend-overlay"
                   style={{
-                    backgroundImage: 'linear-gradient(135deg, rgba(255,0,128,0.3) 0%, rgba(0,255,255,0.3) 25%, rgba(214,232,93,0.3) 50%, rgba(168,85,247,0.3) 75%, rgba(255,0,128,0.3) 100%)',
+                    backgroundImage: 'linear-gradient(135deg, rgba(255,0,128,0.3) 0%, rgba(0,255,255,0.3) 25%, rgba(245, 158, 11,0.3) 50%, rgba(168,85,247,0.3) 75%, rgba(255,0,128,0.3) 100%)',
                     backgroundSize: '200% 200%',
                     transform: `translateX(${(tilt.glareX - 50) * 0.5}%) translateY(${(tilt.glareY - 50) * 0.5}%)`,
                   }}
                 />
 
                 {/* Ambient Corner Flare Orbs */}
-                <div className="absolute -top-16 -left-16 w-48 h-48 bg-[#D6E85D]/15 rounded-full blur-3xl pointer-events-none" />
-                <div className="absolute -bottom-16 -right-16 w-48 h-48 bg-indigo-400/20 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute -top-16 -left-16 w-48 h-48 bg-[#F59E0B]/15 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute -bottom-16 -right-16 w-48 h-48 bg-amber-500/20 rounded-full blur-3xl pointer-events-none" />
 
                 {/* Card Top: Student & University Engineering Passport */}
                 <div className="w-full flex items-center justify-between border-b border-white/10 pb-3 z-10">
@@ -544,7 +544,7 @@ export function AchievementCelebrationModal() {
                         avatarUrl={effectiveAvatar}
                         displayName={studentName}
                         email={user?.email}
-                        className="w-11 h-11 text-xs ring-2 ring-[#D6E85D] shadow-md"
+                        className="w-11 h-11 text-xs ring-2 ring-[#F59E0B] shadow-md"
                       />
                       <div className="absolute -bottom-1 -right-1 bg-amber-500 text-white rounded-full p-0.5 shadow-md">
                         <Flame className="h-3 w-3" />
@@ -554,16 +554,16 @@ export function AchievementCelebrationModal() {
                     <div>
                       <div className="flex items-center gap-1.5">
                         <h4 className="font-bold text-sm text-white leading-tight font-display">{studentName}</h4>
-                        <span className="w-3.5 h-3.5 rounded-full bg-[#D6E85D] text-[#183F36] flex items-center justify-center text-[9px] font-black">✓</span>
+                        <span className="w-3.5 h-3.5 rounded-full bg-[#F59E0B] text-zinc-950 font-black flex items-center justify-center text-[9px] font-black">✓</span>
                       </div>
-                      <p className="text-[11px] text-[#D6E85D] font-semibold mt-0.5">
+                      <p className="text-[11px] text-[#F59E0B] font-semibold mt-0.5">
                         Level {eventData?.level || levelInfo.level} · {eventData?.levelTitle || levelInfo.title}
                       </p>
                     </div>
                   </div>
 
                   <div className="text-right">
-                    <span className="text-[9px] font-black text-[#D6E85D] tracking-wider block font-display">ITM SLS BARODA</span>
+                    <span className="text-[9px] font-black text-[#F59E0B] tracking-wider block font-display">ITM SLS BARODA</span>
                     <span className="text-[8px] text-[#A2BAAF] font-mono">B.TECH CSE '26</span>
                   </div>
                 </div>
@@ -591,7 +591,7 @@ export function AchievementCelebrationModal() {
 
                     {/* Middle Sculpted Metallic Dish */}
                     <div 
-                      className={`absolute inset-2 rounded-full border-2 bg-gradient-to-tr ${tierConfig.metalBg} shadow-[0_0_35px_rgba(214,232,93,0.35)] flex items-center justify-center backdrop-blur-md`}
+                      className={`absolute inset-2 rounded-full border-2 bg-gradient-to-tr ${tierConfig.metalBg} shadow-[0_0_35px_rgba(245, 158, 11,0.35)] flex items-center justify-center backdrop-blur-md`}
                       style={{ borderColor: tierConfig.ringColor }}
                     >
                       {/* Inner Polished Bevel Core */}
@@ -609,7 +609,7 @@ export function AchievementCelebrationModal() {
                     <span className="text-[9px] font-black uppercase tracking-wider text-slate-300 bg-white/10 px-2 py-0.5 rounded-md border border-white/15">
                       {tierConfig.rarity}
                     </span>
-                    <span className="text-[9px] font-bold text-[#D6E85D] bg-[#183F36]/80 px-2 py-0.5 rounded-md border border-[#D6E85D]/30 font-mono">
+                    <span className="text-[9px] font-bold text-[#F59E0B] bg-[#18181B]/80 px-2 py-0.5 rounded-md border border-[#F59E0B]/30 font-mono">
                       {tierConfig.percentile}
                     </span>
                   </div>
@@ -625,7 +625,7 @@ export function AchievementCelebrationModal() {
                   </p>
 
                   {/* XP Reward Capsule */}
-                  <div className="mt-3 inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#D6E85D]/20 border border-[#D6E85D]/60 text-[#D6E85D] font-black text-xs shadow-inner animate-pulse">
+                  <div className="mt-3 inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#F59E0B]/20 border border-[#F59E0B]/60 text-[#F59E0B] font-black text-xs shadow-inner animate-pulse">
                     <Sparkles className="h-3.5 w-3.5" />
                     <span>+{activeAchievement.xpReward} XP CREDITED</span>
                   </div>
@@ -636,7 +636,7 @@ export function AchievementCelebrationModal() {
                   <span className="flex items-center gap-1 font-bold text-white">
                     🔥 {eventData?.streakDays || game.streakDays} Day Streak
                   </span>
-                  <span className="text-[#D6E85D] font-bold flex items-center gap-1">
+                  <span className="text-[#F59E0B] font-bold flex items-center gap-1">
                     <RotateCw className="h-3 w-3" /> Flip for Certificate ↗
                   </span>
                 </div>
@@ -648,24 +648,24 @@ export function AchievementCelebrationModal() {
                   backfaceVisibility: 'hidden',
                   transform: 'rotateY(180deg)',
                 }}
-                className="absolute inset-0 rounded-3xl overflow-hidden border-2 border-[#D6E85D]/70 bg-gradient-to-b from-[#0F2D25] via-[#091C17] to-black p-5 sm:p-6 text-white flex flex-col justify-between shadow-2xl backdrop-blur-xl"
+                className="absolute inset-0 rounded-3xl overflow-hidden border-2 border-[#F59E0B]/70 bg-gradient-to-b from-[#18181B] via-[#09090B] to-black p-5 sm:p-6 text-white flex flex-col justify-between shadow-2xl backdrop-blur-xl"
               >
                 {/* Guilloche Certificate Outer Frame */}
-                <div className="absolute inset-2 border border-[#D6E85D]/30 rounded-2xl pointer-events-none" />
+                <div className="absolute inset-2 border border-[#F59E0B]/30 rounded-2xl pointer-events-none" />
                 <div className="absolute inset-3 border border-white/10 rounded-xl pointer-events-none" />
 
                 {/* Certificate Header */}
                 <div className="text-center pt-2 z-10">
-                  <div className="w-9 h-9 rounded-full bg-[#D6E85D]/20 border border-[#D6E85D]/50 flex items-center justify-center mx-auto mb-1 text-[#D6E85D]">
+                  <div className="w-9 h-9 rounded-full bg-[#F59E0B]/20 border border-[#F59E0B]/50 flex items-center justify-center mx-auto mb-1 text-[#F59E0B]">
                     <Ribbon className="h-5 w-5" />
                   </div>
-                  <h4 className="text-[10px] font-black tracking-widest text-[#D6E85D] uppercase font-display">
+                  <h4 className="text-[10px] font-black tracking-widest text-[#F59E0B] uppercase font-display">
                     ITM SLS BARODA UNIVERSITY
                   </h4>
                   <p className="text-[8px] text-[#A2BAAF] uppercase tracking-wider font-semibold">
                     Department of Computer Science & Engineering
                   </p>
-                  <div className="w-24 h-0.5 bg-gradient-to-r from-transparent via-[#D6E85D]/50 to-transparent mx-auto mt-1" />
+                  <div className="w-24 h-0.5 bg-gradient-to-r from-transparent via-[#F59E0B]/50 to-transparent mx-auto mt-1" />
                 </div>
 
                 {/* Certificate Body Text */}
@@ -676,7 +676,7 @@ export function AchievementCelebrationModal() {
                   
                   <p className="text-[11px] text-[#A2BAAF]">This is to certify that</p>
                   
-                  <h3 className="text-lg sm:text-xl font-black text-white font-display text-[#D6E85D] tracking-tight">
+                  <h3 className="text-lg sm:text-xl font-black text-white font-display text-[#F59E0B] tracking-tight">
                     {studentName}
                   </h3>
 
@@ -693,7 +693,7 @@ export function AchievementCelebrationModal() {
                     </span>
                   </div>
 
-                  <div className="inline-flex items-center gap-2 text-[10px] text-indigo-300 font-mono font-bold">
+                  <div className="inline-flex items-center gap-2 text-[10px] text-amber-500 font-mono font-bold">
                     <CheckCircle2 className="h-3.5 w-3.5" />
                     <span>+{activeAchievement.xpReward} XP Formally Endorsed</span>
                   </div>
@@ -705,7 +705,7 @@ export function AchievementCelebrationModal() {
                     <span className="text-[8px] uppercase tracking-wider text-slate-400 block font-mono">
                       Accreditation ID
                     </span>
-                    <span className="text-[9px] font-mono text-[#D6E85D] font-bold block">
+                    <span className="text-[9px] font-mono text-[#F59E0B] font-bold block">
                       {certSerial}
                     </span>
                     <span className="text-[8px] text-slate-400 font-mono">
@@ -728,10 +728,10 @@ export function AchievementCelebrationModal() {
         ) : (
           /* 3. Real High-Res 9:16 Social Story Preview */
           <div className="flex items-center justify-center my-1">
-            <div className="relative mx-auto w-full max-w-[280px] sm:max-w-[320px] rounded-3xl overflow-hidden border-2 border-[#D6E85D]/60 shadow-2xl bg-black aspect-[9/16] flex items-center justify-center">
+            <div className="relative mx-auto w-full max-w-[280px] sm:max-w-[320px] rounded-3xl overflow-hidden border-2 border-[#F59E0B]/60 shadow-2xl bg-black aspect-[9/16] flex items-center justify-center">
               {isGenerating || !storyPreviewUrl ? (
                 <div className="p-6 text-center space-y-3">
-                  <Loader2 className="h-8 w-8 animate-spin text-[#D6E85D] mx-auto" />
+                  <Loader2 className="h-8 w-8 animate-spin text-[#F59E0B] mx-auto" />
                   <p className="text-xs text-[#A2BAAF] font-medium">Rendering 1080x1920 HD Story Card...</p>
                 </div>
               ) : (
@@ -749,7 +749,7 @@ export function AchievementCelebrationModal() {
         <div className="flex flex-col gap-2.5 pt-1">
           <div className="flex items-center justify-between px-1">
             <p className="text-xs font-bold text-[#A2BAAF] uppercase tracking-wider flex items-center gap-1.5 font-display">
-              <Share2 className="h-3.5 w-3.5 text-[#D6E85D]" />
+              <Share2 className="h-3.5 w-3.5 text-[#F59E0B]" />
               <span>Share Achievement with Classmates</span>
             </p>
 
@@ -757,7 +757,7 @@ export function AchievementCelebrationModal() {
               <button
                 type="button"
                 onClick={toggleFlip}
-                className="text-xs text-[#D6E85D] hover:underline font-bold flex items-center gap-1 cursor-pointer"
+                className="text-xs text-[#F59E0B] hover:underline font-bold flex items-center gap-1 cursor-pointer"
               >
                 <RotateCw className="h-3.5 w-3.5" />
                 <span>{isFlipped ? "View 3D Trophy" : "View Certificate"}</span>
@@ -800,25 +800,25 @@ export function AchievementCelebrationModal() {
             <button
               onClick={handleDownloadStory}
               disabled={isGenerating || !storyPreviewUrl}
-              className="h-9 border border-[#23584C] bg-[#12332C]/80 hover:bg-[#183F36] text-[#E8EDE4] text-xs font-semibold flex items-center justify-center gap-1.5 rounded-xl transition-all cursor-pointer disabled:opacity-50 shadow-xs"
+              className="h-9 border border-[#3F3F46] bg-[#27272A]/80 hover:bg-[#18181B] text-[#FAFAFA] text-xs font-semibold flex items-center justify-center gap-1.5 rounded-xl transition-all cursor-pointer disabled:opacity-50 shadow-xs"
             >
-              <Download className="h-3.5 w-3.5 text-[#D6E85D]" />
+              <Download className="h-3.5 w-3.5 text-[#F59E0B]" />
               <span>Download HD Story</span>
             </button>
 
             {/* Copy Shareable Link */}
             <button
               onClick={handleCopyText}
-              className="h-9 border border-[#23584C] bg-[#12332C]/80 hover:bg-[#183F36] text-[#E8EDE4] text-xs font-semibold flex items-center justify-center gap-1.5 rounded-xl transition-all cursor-pointer shadow-xs"
+              className="h-9 border border-[#3F3F46] bg-[#27272A]/80 hover:bg-[#18181B] text-[#FAFAFA] text-xs font-semibold flex items-center justify-center gap-1.5 rounded-xl transition-all cursor-pointer shadow-xs"
             >
               {copied ? (
                 <>
-                  <Check className="h-3.5 w-3.5 text-indigo-300" />
-                  <span className="text-indigo-300 font-bold">Copied!</span>
+                  <Check className="h-3.5 w-3.5 text-amber-500" />
+                  <span className="text-amber-500 font-bold">Copied!</span>
                 </>
               ) : (
                 <>
-                  <Copy className="h-3.5 w-3.5 text-[#D6E85D]" />
+                  <Copy className="h-3.5 w-3.5 text-[#F59E0B]" />
                   <span>Copy Share Text</span>
                 </>
               )}

@@ -542,7 +542,7 @@ export default function CommunityPage() {
                   setActiveCategoryFilter("Academics");
                   toast.success("Filtered to Academic & Exam Discussions");
                 }}
-                className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-indigo-500/10 text-indigo-400 dark:text-indigo-400 border border-indigo-500/20 hover:scale-105 transition-transform cursor-pointer"
+                className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-amber-500/10 text-amber-500 dark:text-amber-500 border border-amber-500/20 hover:scale-105 transition-transform cursor-pointer"
               >
                 Academic Tests
               </button>
@@ -554,7 +554,7 @@ export default function CommunityPage() {
               </button>
               <button
                 onClick={() => setActiveCategoryFilter("Confessions")}
-                className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 hover:scale-105 transition-transform cursor-pointer"
+                className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-amber-500/10 text-amber-500 dark:text-amber-500 border border-amber-500/20 hover:scale-105 transition-transform cursor-pointer"
               >
                 Study Messages
               </button>
@@ -594,8 +594,8 @@ export default function CommunityPage() {
           <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-3">
             <div className="flex items-center justify-between">
               <h3 className="font-bold text-sm text-foreground">Study Buddies</h3>
-              <span className="text-[10px] text-indigo-400 font-bold flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
+              <span className="text-[10px] text-amber-500 font-bold flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
                 Online
               </span>
             </div>
@@ -605,7 +605,7 @@ export default function CommunityPage() {
               {/* Friend 1: Khalid Gutierrez */}
               <div className="flex items-center justify-between gap-3 text-xs">
                 <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="w-8 h-8 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center shrink-0">
+                  <div className="w-8 h-8 rounded-full bg-amber-500 text-white font-bold flex items-center justify-center shrink-0">
                     KG
                   </div>
                   <div className="min-w-0">
@@ -628,7 +628,7 @@ export default function CommunityPage() {
               {/* Friend 2: Yumatria Hallitary */}
               <div className="flex items-center justify-between gap-3 text-xs">
                 <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="w-8 h-8 rounded-full bg-indigo-500 text-white font-bold flex items-center justify-center shrink-0">
+                  <div className="w-8 h-8 rounded-full bg-amber-500 text-white font-bold flex items-center justify-center shrink-0">
                     YH
                   </div>
                   <div className="min-w-0">
@@ -861,7 +861,7 @@ export default function CommunityPage() {
                       href={post.linkUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="text-xs text-blue-600 dark:text-blue-400 font-semibold hover:underline block truncate p-2 rounded-xl bg-blue-500/10 border border-blue-500/20"
+                      className="text-xs text-amber-500 dark:text-amber-500 font-semibold hover:underline block truncate p-2 rounded-xl bg-amber-500/10 border border-amber-500/20"
                     >
                       {post.linkUrl}
                     </a>
@@ -884,7 +884,7 @@ export default function CommunityPage() {
                     <button
                       onClick={() => handleToggleLike(post.id)}
                       className={`flex items-center gap-1.5 py-1.5 px-3 rounded-lg hover:bg-secondary transition-colors cursor-pointer ${
-                        isLiked ? "text-blue-600 dark:text-blue-400 font-bold bg-blue-500/10" : ""
+                        isLiked ? "text-amber-500 dark:text-amber-500 font-bold bg-amber-500/10" : ""
                       }`}
                     >
                       <ThumbsUp className={`h-4 w-4 ${isLiked ? "fill-current" : ""}`} />
@@ -1128,7 +1128,7 @@ export default function CommunityPage() {
                     <p className="text-[10px] text-muted-foreground truncate">Over 5k views · 23 responses</p>
                   </div>
                 </div>
-                <span className="px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 dark:text-indigo-400 font-bold text-xs font-mono shrink-0">
+                <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 dark:text-amber-500 font-bold text-xs font-mono shrink-0">
                   +180%
                 </span>
               </div>
@@ -1146,7 +1146,7 @@ export default function CommunityPage() {
                     <p className="text-[10px] text-muted-foreground truncate">Question banks · 14 responses</p>
                   </div>
                 </div>
-                <span className="px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 dark:text-indigo-400 font-bold text-xs font-mono shrink-0">
+                <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 dark:text-amber-500 font-bold text-xs font-mono shrink-0">
                   +146%
                 </span>
               </div>
