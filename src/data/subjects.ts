@@ -29,6 +29,17 @@ import { sem5AimlMaster } from './sem5-aiml-master';
 import { sem5SeMaster } from './sem5-se-master';
 import { sem5TocMaster } from './sem5-toc-master';
 
+// Semester 6 Master Subjects
+import { sem6CdMaster } from './sem6-cd-master';
+import { sem6CloudMaster } from './sem6-cloud-master';
+
+// Semester 7 Master Subjects
+import { sem7CyberMaster } from './sem7-cyber-master';
+import { sem7NlpMaster } from './sem7-nlp-master';
+
+// Semester 8 Master Subjects
+import { sem8DevopsMaster } from './sem8-devops-master';
+
 // BCA Master Curriculum (30 Subjects)
 import { bcaMasterSubjects } from './bca-master-subjects';
 
@@ -49,6 +60,17 @@ const enrichedDE = injectRichContent(digitalElectronicsSubject, deRichContent);
 const enrichedPSR = injectRichContent(probabilityStatsSubject, psrRichContent);
 
 export const btechSubjects: Subject[] = [
+  // Semester 8 (Core & SRE)
+  sem8DevopsMaster,
+
+  // Semester 7 (Core & AI/Security)
+  sem7CyberMaster,
+  sem7NlpMaster,
+
+  // Semester 6 (Core & Cloud/Compilers)
+  sem6CdMaster,
+  sem6CloudMaster,
+
   // Semester 5 (Core)
   sem5AimlMaster,
   sem5SeMaster,
