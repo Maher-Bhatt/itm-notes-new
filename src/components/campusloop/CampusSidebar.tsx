@@ -26,6 +26,7 @@ import { CampusAvatar } from './CampusAvatar';
 import { CampusCountBadge } from './CampusCountBadge';
 import { useAuth } from '@/contexts/AuthContext';
 import { openCampusCreateModal } from './CampusBottomNav';
+import { UniversityDropdown } from './UniversityDropdown';
 
 export interface CampusSidebarProps {
   isOpen?: boolean;

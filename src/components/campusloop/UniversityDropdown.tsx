@@ -114,3 +114,5 @@ export const UniversityDropdown: React.FC<UniversityDropdownProps> = ({
     </DropdownMenu>
   );
 };
+
+export default UniversityDropdown;

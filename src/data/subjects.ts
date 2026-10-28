@@ -19,6 +19,16 @@ import { sem1ClaSubject } from './sem1-cla';
 import { sem1TcsSubject } from './sem1-tcs';
 import { sem1WtSubject } from './sem1-wt';
 
+// Semester 4 Master Subjects
+import { sem4OsMaster } from './sem4-os-master';
+import { sem4CnMaster } from './sem4-cn-master';
+import { sem4DaaMaster } from './sem4-daa-master';
+
+// Semester 5 Master Subjects
+import { sem5AimlMaster } from './sem5-aiml-master';
+import { sem5SeMaster } from './sem5-se-master';
+import { sem5TocMaster } from './sem5-toc-master';
+
 function injectRichContent(subject: Subject, contentMap: Record<string, string>): Subject {
   return {
     ...subject,
@@ -36,6 +46,16 @@ const enrichedDE = injectRichContent(digitalElectronicsSubject, deRichContent);
 const enrichedPSR = injectRichContent(probabilityStatsSubject, psrRichContent);
 
 export const subjects: Subject[] = [
+  // Semester 5 (Core)
+  sem5AimlMaster,
+  sem5SeMaster,
+  sem5TocMaster,
+
+  // Semester 4 (Core)
+  sem4OsMaster,
+  sem4CnMaster,
+  sem4DaaMaster,
+
   // Semester 3 (Core)
   computerArchitecture,
   sem3JavaMaster,
