@@ -6,6 +6,9 @@ import {
   getAllDepartments, 
   getDepartmentById, 
   getCurriculumStats,
+  getAllSpecializations,
+  getSpecializationById,
+  ProgramSpecialization,
   DepartmentCurriculum 
 } from "@/data/department-curriculum";
 import { useProgress } from "@/hooks/useProgress";
@@ -30,7 +33,13 @@ import {
   Building,
   CheckCircle2,
   Bookmark,
-  Award
+  Award,
+  Shield,
+  Cloud,
+  Bot,
+  Brain,
+  BarChart3,
+  ListChecks
 } from "lucide-react";
 import { BackToTop } from "@/components/BackToTop";
 
@@ -48,6 +57,15 @@ function getDeptIcon(id: string) {
     case "mca": return <Sparkles className="h-4 w-4" />;
     default: return <GraduationCap className="h-4 w-4" />;
   }
+}
+
+// Specialization icon helper
+function getSpecIcon(id: string) {
+  if (id.includes("ai") || id.includes("aiml")) return <Brain className="h-4 w-4" />;
+  if (id.includes("robotics")) return <Bot className="h-4 w-4" />;
+  if (id.includes("cyber")) return <Shield className="h-4 w-4" />;
+  if (id.includes("cloud") || id.includes("devops")) return <Cloud className="h-4 w-4" />;
+  return <Code className="h-4 w-4" />;
 }
 
 function SubjectCard({
@@ -158,13 +176,16 @@ export default function SubjectsPage() {
   const { getSubjectProgress } = useProgress();
   const { currentUniversity } = useUniversity();
 
-  // Tab View Mode: "interactive" notes vs "curriculum" directory
-  const [activeTab, setActiveTab] = useState<"interactive" | "curriculum">("interactive");
+  // Tab View Mode: "interactive" notes vs "specializations" deep research vs "curriculum" directory
+  const [activeTab, setActiveTab] = useState<"interactive" | "specializations" | "curriculum">("interactive");
 
   // Filters for Interactive Notes
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCourse, setSelectedCourse] = useState<"all" | "btech" | "bca">("all");
   const [selectedSemester, setSelectedSemester] = useState<number | "all">("all");
+
+  // Filters for Specializations (Deep Research Explorer)
+  const [selectedSpecId, setSelectedSpecId] = useState<string>("btech-ai-ds");
 
   // Filters for Curriculum Directory
   const [selectedDeptId, setSelectedDeptId] = useState<string>("cse");
@@ -172,7 +193,9 @@ export default function SubjectsPage() {
 
   const curriculumStats = useMemo(() => getCurriculumStats(), []);
   const allDepts = useMemo(() => getAllDepartments(), []);
+  const allSpecs = useMemo(() => getAllSpecializations(), []);
   const activeDept = useMemo(() => getDepartmentById(selectedDeptId) || allDepts[0], [selectedDeptId, allDepts]);
+  const activeSpec = useMemo(() => getSpecializationById(selectedSpecId) || allSpecs[0], [selectedSpecId, allSpecs]);
 
   // Filtered interactive subjects
   const filteredSubjects = useMemo(() => {
@@ -218,18 +241,18 @@ export default function SubjectsPage() {
         <div className="relative z-10 max-w-4xl space-y-4">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#E6EAFD] text-[#2B4EFF] dark:bg-blue-950/40 dark:text-blue-300 text-xs font-bold border border-[#2B4EFF]/20">
             <GraduationCap className="h-4 w-4 text-[#2B4EFF]" />
-            <span>{currentUniversity.shortName} · AICTE & UGC Accredited Curriculum Matrix</span>
+            <span>{currentUniversity.shortName} · AICTE & UGC Accredited Multi-Department Curriculum</span>
             <span className="text-muted-foreground/40">·</span>
             <span className="text-muted-foreground font-medium">{subjects.length} Interactive Subjects</span>
           </div>
 
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight font-display text-[#111111] dark:text-white">
-            Engineering, BCA & Technical Departments Directory
+            Engineering, BCA & Department Specialization Suite
           </h1>
 
           <p className="text-sm sm:text-base text-neutral-600 dark:text-neutral-400 leading-relaxed">
-            Deep-researched curricula for <strong>B.Tech (CSE, AI&DS, IT, ECE, EEE, Mechanical, Civil)</strong>, 
-            <strong> BCA (All 6 Semesters)</strong>, <strong>MCA</strong>, and <strong>Polytechnic</strong>. Access full lecture notes, runnable code implementations, algorithmic proofs, and practice MCQs.
+            Deep-researched curricula for <strong>B.Tech in Artificial Intelligence (AI & DS, AI & ML, Robotics & AI)</strong>, 
+            <strong> Cyber Security</strong>, <strong> Cloud & DevOps</strong>, <strong> BCA Specializations</strong>, and <strong> MCA</strong>. Access exact course counts, credit structures, theory lecture notes, and practice MCQs.
           </p>
 
           {/* Quick Metrics Bar */}
@@ -243,23 +266,23 @@ export default function SubjectsPage() {
               <div className="text-[10px] text-[#6B7280] dark:text-neutral-400 font-bold uppercase tracking-wider mt-0.5">Interactive Subjects</div>
             </div>
             <div className="bg-[#F6F3EC] dark:bg-neutral-800/80 border border-[#E8E4DA] dark:border-neutral-800 rounded-2xl p-3 text-center">
-              <div className="text-xl sm:text-2xl font-black font-mono text-emerald-600">10</div>
-              <div className="text-[10px] text-[#6B7280] dark:text-neutral-400 font-bold uppercase tracking-wider mt-0.5">Total Departments</div>
+              <div className="text-xl sm:text-2xl font-black font-mono text-emerald-600">{allSpecs.length} Tracks</div>
+              <div className="text-[10px] text-[#6B7280] dark:text-neutral-400 font-bold uppercase tracking-wider mt-0.5">Specialized Degrees</div>
             </div>
             <div className="bg-[#F6F3EC] dark:bg-neutral-800/80 border border-[#E8E4DA] dark:border-neutral-800 rounded-2xl p-3 text-center">
-              <div className="text-xl sm:text-2xl font-black font-mono text-[#111111] dark:text-white">Sem 1 - 8</div>
-              <div className="text-[10px] text-[#6B7280] dark:text-neutral-400 font-bold uppercase tracking-wider mt-0.5">Semester Coverage</div>
+              <div className="text-xl sm:text-2xl font-black font-mono text-[#111111] dark:text-white">160 Credits</div>
+              <div className="text-[10px] text-[#6B7280] dark:text-neutral-400 font-bold uppercase tracking-wider mt-0.5">AICTE CBCS Benchmark</div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Main View Mode Tabs */}
-      <div className="flex items-center gap-2 border-b border-[#E8E4DA] dark:border-neutral-800 pb-3">
+      {/* Main View Mode Tabs (3 Tabs) */}
+      <div className="flex items-center gap-2 border-b border-[#E8E4DA] dark:border-neutral-800 pb-3 overflow-x-auto scrollbar-none">
         <button
           type="button"
           onClick={() => setActiveTab("interactive")}
-          className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
+          className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 ${
             activeTab === "interactive"
               ? "bg-[#2B4EFF] text-white shadow-xs"
               : "bg-[#F6F3EC] dark:bg-neutral-800 text-[#6B7280] hover:text-[#111111] dark:hover:text-white"
@@ -271,8 +294,21 @@ export default function SubjectsPage() {
 
         <button
           type="button"
+          onClick={() => setActiveTab("specializations")}
+          className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 ${
+            activeTab === "specializations"
+              ? "bg-[#2B4EFF] text-white shadow-xs"
+              : "bg-[#F6F3EC] dark:bg-neutral-800 text-[#6B7280] hover:text-[#111111] dark:hover:text-white"
+          }`}
+        >
+          <Brain className="h-4 w-4" />
+          <span>Specializations & Course Counts (Deep Research)</span>
+        </button>
+
+        <button
+          type="button"
           onClick={() => setActiveTab("curriculum")}
-          className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
+          className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 ${
             activeTab === "curriculum"
               ? "bg-[#2B4EFF] text-white shadow-xs"
               : "bg-[#F6F3EC] dark:bg-neutral-800 text-[#6B7280] hover:text-[#111111] dark:hover:text-white"
@@ -402,7 +438,234 @@ export default function SubjectsPage() {
       )}
 
       {/* ========================================================================= */}
-      {/* VIEW 2: PAN-INDIA DEPARTMENT CURRICULUM CATALOG */}
+      {/* VIEW 2: DEGREE SPECIALIZATIONS & EXACT COURSE COUNTS (DEEP RESEARCH) */}
+      {/* ========================================================================= */}
+      {activeTab === "specializations" && (
+        <div className="space-y-6">
+          {/* Specialization Selection Header */}
+          <div className="rounded-[22px] bg-white dark:bg-[#1C1C1E] border border-[#E8E4DA] dark:border-neutral-800 p-4 sm:p-5 shadow-xs space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-[#6B7280] uppercase tracking-wider">
+                Select Degree Program & Specialization Track:
+              </span>
+              <span className="text-xs font-semibold text-[#2B4EFF] bg-[#E6EAFD] dark:bg-blue-950/40 px-2.5 py-0.5 rounded-full">
+                AICTE 160-Credit Verified
+              </span>
+            </div>
+
+            {/* Specialization Pills */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+              {allSpecs.map((spec) => {
+                const isSelected = selectedSpecId === spec.id;
+                return (
+                  <button
+                    key={spec.id}
+                    type="button"
+                    onClick={() => setSelectedSpecId(spec.id)}
+                    className={`px-4 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 border ${
+                      isSelected
+                        ? "bg-[#2B4EFF] text-white border-[#2B4EFF] shadow-xs"
+                        : "bg-[#F6F3EC] dark:bg-neutral-800 text-[#6B7280] dark:text-neutral-300 border-[#E8E4DA] dark:border-neutral-700 hover:text-[#111111] dark:hover:text-white"
+                    }`}
+                  >
+                    {getSpecIcon(spec.id)}
+                    <span>{spec.shortName}</span>
+                    <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${isSelected ? "bg-white/20 text-white" : "bg-neutral-200 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-300"}`}>
+                      {spec.specializationSubjectsCount} Core AI/Spec
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Active Specialization Master Metrics Card */}
+            <div className="bg-[#FAF8F5] dark:bg-neutral-800/80 rounded-2xl p-5 border border-[#E8E4DA] dark:border-neutral-700 space-y-4">
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                <div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h2 className="text-xl font-extrabold text-[#111111] dark:text-white font-display">
+                      {activeSpec.name}
+                    </h2>
+                    <span className="px-3 py-0.5 rounded-full text-[11px] font-bold bg-[#E6EAFD] text-[#2B4EFF] dark:bg-blue-950/40 dark:text-blue-300">
+                      {activeSpec.degree} · {activeSpec.durationYears} Years ({activeSpec.totalSemesters} Semesters)
+                    </span>
+                  </div>
+                  <p className="text-xs text-neutral-600 dark:text-neutral-400 mt-1 max-w-3xl leading-relaxed">
+                    Detailed curriculum analysis answering: <strong>"How many subjects and courses are in {activeSpec.shortName}?"</strong>
+                  </p>
+                </div>
+
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-xs font-bold">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                  <span>AICTE Standard Model Grounded</span>
+                </div>
+              </div>
+
+              {/* Exact Subject Counts Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 pt-2">
+                <div className="bg-white dark:bg-neutral-900 border border-[#E8E4DA] dark:border-neutral-800 rounded-xl p-3 text-center">
+                  <div className="text-2xl font-black font-mono text-[#2B4EFF]">{activeSpec.totalCredits}</div>
+                  <div className="text-[10px] text-[#6B7280] font-bold uppercase tracking-wider mt-0.5">Total Credits</div>
+                </div>
+
+                <div className="bg-white dark:bg-neutral-900 border border-[#E8E4DA] dark:border-neutral-800 rounded-xl p-3 text-center">
+                  <div className="text-2xl font-black font-mono text-[#111111] dark:text-white">{activeSpec.totalCoursesCount}</div>
+                  <div className="text-[10px] text-[#6B7280] font-bold uppercase tracking-wider mt-0.5">Total Degree Courses</div>
+                </div>
+
+                <div className="bg-white dark:bg-neutral-900 border border-[#E8E4DA] dark:border-neutral-800 rounded-xl p-3 text-center">
+                  <div className="text-2xl font-black font-mono text-purple-600">{activeSpec.theorySubjectsCount}</div>
+                  <div className="text-[10px] text-[#6B7280] font-bold uppercase tracking-wider mt-0.5">Theory Subjects</div>
+                </div>
+
+                <div className="bg-white dark:bg-neutral-900 border border-[#E8E4DA] dark:border-neutral-800 rounded-xl p-3 text-center">
+                  <div className="text-2xl font-black font-mono text-emerald-600">{activeSpec.specializationSubjectsCount}</div>
+                  <div className="text-[10px] text-[#6B7280] font-bold uppercase tracking-wider mt-0.5">Dedicated Spec Core</div>
+                </div>
+
+                <div className="bg-white dark:bg-neutral-900 border border-[#E8E4DA] dark:border-neutral-800 rounded-xl p-3 text-center">
+                  <div className="text-2xl font-black font-mono text-amber-600">{activeSpec.practicalLabsCount}</div>
+                  <div className="text-[10px] text-[#6B7280] font-bold uppercase tracking-wider mt-0.5">Practical Labs</div>
+                </div>
+
+                <div className="bg-white dark:bg-neutral-900 border border-[#E8E4DA] dark:border-neutral-800 rounded-xl p-3 text-center">
+                  <div className="text-2xl font-black font-mono text-rose-600">{activeSpec.capstoneProjectsCount}</div>
+                  <div className="text-[10px] text-[#6B7280] font-bold uppercase tracking-wider mt-0.5">Projects / Internships</div>
+                </div>
+              </div>
+
+              {/* Category Breakdown Bar */}
+              <div className="pt-2 border-t border-[#E8E4DA] dark:border-neutral-700 space-y-2">
+                <div className="text-xs font-bold text-[#6B7280] flex items-center justify-between">
+                  <span>Credit Category Distribution (AICTE Model):</span>
+                  <span>Basic Science ({activeSpec.categoryBreakdown.basicSciences} Cr) · Core Spec ({activeSpec.categoryBreakdown.specializationDomain} Cr)</span>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
+                  <div className="p-2 rounded-lg bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700">
+                    <span className="text-[#6B7280] block text-[10px]">Basic Sciences (BSC):</span>
+                    <strong className="text-neutral-800 dark:text-neutral-200">{activeSpec.categoryBreakdown.basicSciences} Credits</strong>
+                  </div>
+                  <div className="p-2 rounded-lg bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700">
+                    <span className="text-[#6B7280] block text-[10px]">Engineering Sciences (ESC):</span>
+                    <strong className="text-neutral-800 dark:text-neutral-200">{activeSpec.categoryBreakdown.engineeringSciences} Credits</strong>
+                  </div>
+                  <div className="p-2 rounded-lg bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700">
+                    <span className="text-[#6B7280] block text-[10px]">Specialization Domain (PCC):</span>
+                    <strong className="text-[#2B4EFF]">{activeSpec.categoryBreakdown.specializationDomain} Credits</strong>
+                  </div>
+                  <div className="p-2 rounded-lg bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700">
+                    <span className="text-[#6B7280] block text-[10px]">Professional Electives (PEC):</span>
+                    <strong className="text-emerald-600">{activeSpec.categoryBreakdown.electives} Credits</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Section: Exact Specialization Subjects List */}
+          <div className="rounded-[22px] bg-white dark:bg-[#1C1C1E] border border-[#E8E4DA] dark:border-neutral-800 p-5 sm:p-6 shadow-xs space-y-4">
+            <div className="flex items-center justify-between gap-3 flex-wrap">
+              <div>
+                <h3 className="font-extrabold text-base text-[#111111] dark:text-white flex items-center gap-2">
+                  <ListChecks className="h-5 w-5 text-[#2B4EFF]" />
+                  <span>The {activeSpec.specializationSubjectsCount} Dedicated Subjects in {activeSpec.shortName}</span>
+                </h3>
+                <p className="text-xs text-[#6B7280] dark:text-neutral-400 mt-0.5">
+                  Every specialized course taught across semesters with course code, credit weight, and domain area.
+                </p>
+              </div>
+
+              <span className="text-xs font-mono text-[#6B7280]">
+                {activeSpec.specializationSubjects.length} of {activeSpec.specializationSubjectsCount} listed
+              </span>
+            </div>
+
+            {/* Specialization Subjects Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
+              {activeSpec.specializationSubjects.map((sub, idx) => (
+                <div
+                  key={sub.code}
+                  className="rounded-2xl border border-[#E8E4DA] dark:border-neutral-800 bg-[#FAF8F5] dark:bg-[#151516] p-4 flex flex-col justify-between gap-2 hover:border-[#2B4EFF]/40 transition-all"
+                >
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-1.5">
+                        <span className="h-5 w-5 rounded-full bg-[#2B4EFF] text-white flex items-center justify-center font-bold text-[10px]">
+                          {idx + 1}
+                        </span>
+                        <span className="px-2 py-0.5 rounded-full font-mono text-[10px] font-bold bg-[#E6EAFD] text-[#2B4EFF] dark:bg-blue-950/40 dark:text-blue-300">
+                          {sub.code}
+                        </span>
+                      </div>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 border border-neutral-200 dark:border-neutral-700">
+                        Sem {sub.semester} · {sub.credits} Cr
+                      </span>
+                    </div>
+
+                    <h4 className="font-bold text-sm text-[#111111] dark:text-white leading-snug">
+                      {sub.name}
+                    </h4>
+
+                    <p className="text-xs text-neutral-600 dark:text-neutral-400 line-clamp-2 leading-relaxed">
+                      {sub.description}
+                    </p>
+                  </div>
+
+                  <div className="pt-2 border-t border-[#E8E4DA] dark:border-neutral-800 flex items-center justify-between">
+                    <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-[#E6EAFD] text-[#2B4EFF] dark:bg-blue-950/40 dark:text-blue-300">
+                      {sub.category}
+                    </span>
+                    <span className="text-[10px] font-mono text-[#6B7280]">
+                      Semester {sub.semester}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Section: Learning Roadmap */}
+          <div className="rounded-[22px] bg-white dark:bg-[#1C1C1E] border border-[#E8E4DA] dark:border-neutral-800 p-5 sm:p-6 shadow-xs space-y-4">
+            <h3 className="font-extrabold text-base text-[#111111] dark:text-white flex items-center gap-2">
+              <BarChart3 className="h-5 w-5 text-[#2B4EFF]" />
+              <span>{activeSpec.shortName} Curricular Progression Roadmap</span>
+            </h3>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {activeSpec.learningRoadmap.map((stage, idx) => (
+                <div key={stage.stage} className="rounded-2xl bg-[#FAF8F5] dark:bg-neutral-800/60 p-4 border border-[#E8E4DA] dark:border-neutral-700 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="h-6 w-6 rounded-full bg-[#111111] text-white dark:bg-white dark:text-[#111111] flex items-center justify-center font-bold text-xs">
+                      {idx + 1}
+                    </span>
+                    <span className="text-[11px] font-bold text-[#2B4EFF]">{stage.semesters}</span>
+                  </div>
+                  <h4 className="font-bold text-xs text-[#111111] dark:text-white">{stage.stage}</h4>
+                  <p className="text-[11px] text-neutral-600 dark:text-neutral-400 leading-relaxed">
+                    <strong>Focus:</strong> {stage.focus}
+                  </p>
+                  <div className="pt-1 text-[10px] font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30 p-2 rounded-lg">
+                    🎯 {stage.milestone}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Target Career Roles */}
+            <div className="pt-3 border-t border-[#E8E4DA] dark:border-neutral-800 flex items-center gap-2 flex-wrap text-xs">
+              <span className="font-bold text-[#6B7280]">Target Career Placements:</span>
+              {activeSpec.careerRoles.map((role) => (
+                <span key={role} className="px-2.5 py-0.5 rounded-full bg-[#F6F3EC] dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 font-semibold text-[11px] border border-neutral-300 dark:border-neutral-700">
+                  {role}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* VIEW 3: PAN-INDIA DEPARTMENT CURRICULUM CATALOG */}
       {/* ========================================================================= */}
       {activeTab === "curriculum" && (
         <div className="space-y-6">

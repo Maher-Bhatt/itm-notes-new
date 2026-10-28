@@ -1004,6 +1004,425 @@ export const DEPARTMENT_CURRICULA: DepartmentCurriculum[] = [
   },
 ];
 
+// =============================================================================
+// PROGRAM SPECIALIZATIONS & EXACT COURSE COUNT REGISTRY (DEEP RESEARCH)
+// Grounded in AICTE Model Curriculum, UGC CBCS, Anna University R2021,
+// VTU 2022 Scheme, Mumbai University Rev-2019/NEP, GTU Branch Schemes.
+// =============================================================================
+
+export interface SpecializationSubjectItem {
+  name: string;
+  code: string;
+  semester: number;
+  credits: number;
+  category: 'Core AI' | 'Specialization Core' | 'Deep Tech' | 'Applied Elective' | 'MLOps/Systems';
+  description: string;
+}
+
+export interface ProgramSpecialization {
+  id: string;
+  name: string;
+  shortName: string;
+  departmentId: string;
+  degree: 'B.Tech' | 'BCA' | 'MCA' | 'Diploma';
+  durationYears: number;
+  totalSemesters: number;
+  totalCredits: number;
+  totalCoursesCount: number; // Combined total courses (theory + labs + projects)
+  theorySubjectsCount: number;
+  practicalLabsCount: number;
+  capstoneProjectsCount: number;
+  specializationSubjectsCount: number;
+  specializationSubjects: SpecializationSubjectItem[];
+  categoryBreakdown: {
+    basicSciences: number;
+    engineeringSciences: number;
+    humanitiesAndMgmt: number;
+    coreComputing: number;
+    specializationDomain: number;
+    electives: number;
+    practicalLabs: number;
+    projectsAndInternships: number;
+  };
+  learningRoadmap: Array<{
+    stage: string;
+    semesters: string;
+    focus: string;
+    milestone: string;
+  }>;
+  careerRoles: string[];
+}
+
+export const PROGRAM_SPECIALIZATIONS_REGISTRY: ProgramSpecialization[] = [
+  // ───────────────────────────────────────────────────────────────────────────
+  // 1. B.TECH ARTIFICIAL INTELLIGENCE & DATA SCIENCE (AI & DS)
+  // ───────────────────────────────────────────────────────────────────────────
+  {
+    id: 'btech-ai-ds',
+    name: 'B.Tech in Artificial Intelligence & Data Science',
+    shortName: 'B.Tech AI & DS',
+    departmentId: 'aids',
+    degree: 'B.Tech',
+    durationYears: 4,
+    totalSemesters: 8,
+    totalCredits: 160,
+    totalCoursesCount: 58,
+    theorySubjectsCount: 38,
+    practicalLabsCount: 16,
+    capstoneProjectsCount: 4,
+    specializationSubjectsCount: 16,
+    specializationSubjects: [
+      { name: 'Python for Data Science & Computing', code: 'AD102', semester: 1, credits: 3, category: 'Specialization Core', description: 'Vectorized arrays, pandas manipulation, data wrangling pipelines and visualization.' },
+      { name: 'Probability, Statistics and Foundations of Data Science', code: 'AD201', semester: 2, credits: 4, category: 'Core AI', description: 'Random variables, Bayesian inference, hypothesis testing, exploratory data analysis.' },
+      { name: 'Foundations of Artificial Intelligence', code: 'AD301', semester: 3, credits: 3, category: 'Core AI', description: 'State-space search, A* heuristic, Minimax alpha-beta pruning, knowledge representation.' },
+      { name: 'Exploratory Data Analysis & Visualization', code: 'AD302', semester: 3, credits: 3, category: 'Specialization Core', description: 'Dimensionality reduction, PCA, t-SNE, interactive dashboards, feature correlation.' },
+      { name: 'Supervised & Unsupervised Machine Learning', code: 'AD401', semester: 4, credits: 3, category: 'Core AI', description: 'Linear models, decision trees, random forests, XGBoost, K-means, DBSCAN clustering.' },
+      { name: 'Data Warehousing & Data Mining', code: 'AD402', semester: 4, credits: 3, category: 'Specialization Core', description: 'Star/Snowflake schemas, OLAP cubes, Apriori rule mining, FP-growth algorithms.' },
+      { name: 'Deep Learning & Neural Architectures', code: 'AD501', semester: 5, credits: 3, category: 'Deep Tech', description: 'Backpropagation, CNNs (ResNet), RNNs, LSTMs, attention mechanisms, loss functions.' },
+      { name: 'Big Data Analytics with Spark & Delta Lake', code: 'AD502', semester: 5, credits: 3, category: 'Specialization Core', description: 'HDFS, Apache Spark RDDs, DataFrames, Spark Streaming, Delta Lake ACID lakehouses.' },
+      { name: 'Natural Language Processing (NLP)', code: 'AD503', semester: 5, credits: 3, category: 'Deep Tech', description: 'Tokenization, Word2Vec, Seq2Seq, Transformers, BERT, POS tagging, and NER.' },
+      { name: 'Computer Vision & Image Processing', code: 'AD601', semester: 6, credits: 3, category: 'Deep Tech', description: 'Spatial filtering, YOLO object detection, semantic segmentation (U-Net), vision transformers.' },
+      { name: 'Generative AI & Large Language Models (LLMs)', code: 'AD602', semester: 6, credits: 3, category: 'Deep Tech', description: 'Self-attention math, RoPE, prompt engineering, LoRA/QLoRA fine-tuning, RAG pipelines.' },
+      { name: 'Reinforcement Learning & Decision Making', code: 'AD603', semester: 6, credits: 3, category: 'Core AI', description: 'Bellman optimality, Q-learning, Deep Q-Networks (DQN), Policy Gradients, PPO.' },
+      { name: 'Time Series Analysis & Forecasting', code: 'AD604', semester: 6, credits: 3, category: 'Applied Elective', description: 'Stationarity, ARIMA/SARIMA, Facebook Prophet, Temporal Fusion Transformers.' },
+      { name: 'Cloud AI & MLOps Pipeline Engineering', code: 'AD701', semester: 7, credits: 3, category: 'MLOps/Systems', description: 'Model registries (MLflow), feature stores (Feast), automated retraining CI/CD, drift monitoring.' },
+      { name: 'AI Ethics, Bias, Data Privacy & Governance', code: 'AD702', semester: 7, credits: 3, category: 'Applied Elective', description: 'Algorithmic fairness, differential privacy, Federated Learning, GDPR/DPDP compliance.' },
+      { name: 'Autonomous Systems & Graph Neural Networks (GNN)', code: 'AD703', semester: 7, credits: 3, category: 'Deep Tech', description: 'Message passing neural networks, GCN, GAT, SLAM for robotics, and Explainable AI (SHAP).' },
+    ],
+    categoryBreakdown: {
+      basicSciences: 18,
+      engineeringSciences: 12,
+      humanitiesAndMgmt: 9,
+      coreComputing: 18,
+      specializationDomain: 48,
+      electives: 15,
+      practicalLabs: 22,
+      projectsAndInternships: 18,
+    },
+    learningRoadmap: [
+      { stage: 'Year 1 (Sem 1-2): Mathematical & Computing Foundations', semesters: 'Sem 1 & 2', focus: 'Calculus, Linear Algebra, Probability, Statistics, and Python Programming', milestone: 'Master algorithmic problem solving and statistical inference' },
+      { stage: 'Year 2 (Sem 3-4): Core Machine Learning & Data Infrastructure', semesters: 'Sem 3 & 4', focus: 'Data Structures, DBMS, Search-based AI, Supervised & Unsupervised ML, Data Mining', milestone: 'Build and train end-to-end predictive machine learning models' },
+      { stage: 'Year 3 (Sem 5-6): Deep Learning, Vision, NLP & Generative AI', semesters: 'Sem 5 & 6', focus: 'Deep Neural Networks, Big Data (Spark), Computer Vision (YOLO), LLMs, Reinforcement Learning', milestone: 'Architect multi-modal vision, NLP, and generative AI systems' },
+      { stage: 'Year 4 (Sem 7-8): MLOps, Autonomous Systems & Industry Capstone', semesters: 'Sem 7 & 8', focus: 'Production MLOps CI/CD, Explainable AI, GNNs, Full-Semester Corporate Internship & Thesis', milestone: 'Deploy production AI pipelines and defend major capstone defense' },
+    ],
+    careerRoles: ['Machine Learning Engineer', 'Data Scientist', 'AI Research Engineer', 'Computer Vision Specialist', 'Generative AI Developer', 'Big Data Architect'],
+  },
+
+  // ───────────────────────────────────────────────────────────────────────────
+  // 2. B.TECH ARTIFICIAL INTELLIGENCE & MACHINE LEARNING (AI & ML)
+  // ───────────────────────────────────────────────────────────────────────────
+  {
+    id: 'btech-ai-ml',
+    name: 'B.Tech in Artificial Intelligence & Machine Learning',
+    shortName: 'B.Tech AI & ML',
+    departmentId: 'aids',
+    degree: 'B.Tech',
+    durationYears: 4,
+    totalSemesters: 8,
+    totalCredits: 160,
+    totalCoursesCount: 62,
+    theorySubjectsCount: 40,
+    practicalLabsCount: 18,
+    capstoneProjectsCount: 4,
+    specializationSubjectsCount: 18,
+    specializationSubjects: [
+      { name: 'Python for AI & Scientific Computing', code: 'AIM101', semester: 1, credits: 3, category: 'Specialization Core', description: 'NumPy vectorized arrays, SciPy optimization, Matplotlib and algorithmic structures.' },
+      { name: 'Probability, Random Variables & Stochastic Processes', code: 'AIM201', semester: 2, credits: 4, category: 'Core AI', description: 'Multivariate distributions, Markov chains, maximum likelihood estimation.' },
+      { name: 'Foundations of Artificial Intelligence', code: 'AIM301', semester: 3, credits: 3, category: 'Core AI', description: 'Heuristic search, adversarial gaming, constraint satisfaction, propositional logic.' },
+      { name: 'Knowledge Representation and Ontologies', code: 'AIM302', semester: 3, credits: 3, category: 'Core AI', description: 'First-order logic, semantic networks, description logics, and OWL ontologies.' },
+      { name: 'Supervised Machine Learning Algorithms', code: 'AIM401', semester: 4, credits: 3, category: 'Core AI', description: 'Ridge/Lasso regression, SVM dual form, kernel tricks, gradient boosted decision trees.' },
+      { name: 'Unsupervised Learning & Pattern Recognition', code: 'AIM402', semester: 4, credits: 3, category: 'Core AI', description: 'Hierarchical clustering, Gaussian Mixture Models, Expectation-Maximization, t-SNE.' },
+      { name: 'Mathematical Optimization for Deep Learning', code: 'AIM403', semester: 4, credits: 4, category: 'Core AI', description: 'Convex optimization, SGD with momentum, Adam optimizer math, KKT conditions.' },
+      { name: 'Deep Learning & Artificial Neural Networks', code: 'AIM501', semester: 5, credits: 3, category: 'Deep Tech', description: 'Multi-layer perceptrons, backprop calculus, ResNets, LSTMs, and regularization.' },
+      { name: 'Natural Language Processing & Speech Synthesis', code: 'AIM502', semester: 5, credits: 3, category: 'Deep Tech', description: 'Word embeddings, Seq2Seq, attention mechanisms, BERT, CTC loss speech recognition.' },
+      { name: 'Computer Vision & Deep Feature Learning', code: 'AIM601', semester: 6, credits: 3, category: 'Deep Tech', description: 'CNN backbones, spatial pyramid pooling, YOLOv8, U-Net semantic segmentation.' },
+      { name: 'Reinforcement Learning & Multi-Agent Systems', code: 'AIM602', semester: 6, credits: 3, category: 'Core AI', description: 'MDPs, Bellman optimality, Deep Q-Networks (DQN), Actor-Critic, PPO, multi-agent games.' },
+      { name: 'Generative AI, Diffusion Models & LLMs', code: 'AIM603', semester: 6, credits: 3, category: 'Deep Tech', description: 'VAEs, Denoising Diffusion Probabilistic Models (DDPM), Transformer decoders, RLHF.' },
+      { name: 'MLOps: Production Machine Learning Engineering', code: 'AIM701', semester: 7, credits: 3, category: 'MLOps/Systems', description: 'MLflow registries, automated retraining pipelines, Triton model serving, latency tuning.' },
+      { name: 'Edge AI & Embedded Machine Learning (TinyML)', code: 'AIM702', semester: 7, credits: 3, category: 'Deep Tech', description: 'Quantization (INT8/FP4), pruning, knowledge distillation, TensorFlow Lite Micro on ARM.' },
+      { name: 'Graph Neural Networks & Geometric Deep Learning', code: 'AIM703', semester: 7, credits: 3, category: 'Deep Tech', description: 'Message Passing Neural Networks, Graph Convolutional Networks (GCN), GAT.' },
+      { name: 'Cognitive Computing & Neuroscience for AI', code: 'AIM704', semester: 7, credits: 3, category: 'Applied Elective', description: 'Spiking neural networks, brain-computer interfaces, neuromorphic computing concepts.' },
+      { name: 'AI Safety, Alignment, Ethics & Governance', code: 'AIM705', semester: 7, credits: 3, category: 'Applied Elective', description: 'Reward hacking mitigation, red teaming, algorithmic fairness metrics, EU AI Act.' },
+      { name: 'Major AI & ML Research Capstone Project', code: 'AIM801', semester: 8, credits: 9, category: 'Specialization Core', description: 'Turnkey algorithmic AI research implementation with benchmarking, paper thesis and viva.' },
+    ],
+    categoryBreakdown: {
+      basicSciences: 18,
+      engineeringSciences: 12,
+      humanitiesAndMgmt: 9,
+      coreComputing: 18,
+      specializationDomain: 52,
+      electives: 15,
+      practicalLabs: 21,
+      projectsAndInternships: 15,
+    },
+    learningRoadmap: [
+      { stage: 'Year 1: Optimization & Algorithmic Foundations', semesters: 'Sem 1 & 2', focus: 'Vector Calculus, Linear Algebra, Probability, Data Structures in Python & C++', milestone: 'Firm mathematical ground for machine learning formulations' },
+      { stage: 'Year 2: Core Machine Learning & Reasoning Engines', semesters: 'Sem 3 & 4', focus: 'Foundations of AI, Mathematical Optimization, Supervised & Unsupervised ML, Logic Ontologies', milestone: 'Implement foundational ML algorithms from scratch without frameworks' },
+      { stage: 'Year 3: Deep Neural Architectures & Generative Systems', semesters: 'Sem 5 & 6', focus: 'Deep Learning, NLP, Computer Vision, Reinforcement Learning, Diffusion Models, LLMs', milestone: 'Train and fine-tune state-of-the-art vision and language models' },
+      { stage: 'Year 4: Edge AI, MLOps & Capstone Industrial Thesis', semesters: 'Sem 7 & 8', focus: 'MLOps deployment, TinyML edge inference, GNNs, AI Safety & Capstone Internship', milestone: 'Deliver enterprise-ready intelligent systems meeting industrial standards' },
+    ],
+    careerRoles: ['Deep Learning Engineer', 'Machine Learning Scientist', 'NLP Engineer', 'Generative AI Architect', 'Reinforcement Learning Researcher', 'Edge AI Engineer'],
+  },
+
+  // ───────────────────────────────────────────────────────────────────────────
+  // 3. B.TECH ROBOTICS & ARTIFICIAL INTELLIGENCE (RAI)
+  // ───────────────────────────────────────────────────────────────────────────
+  {
+    id: 'btech-robotics-ai',
+    name: 'B.Tech in Robotics & Artificial Intelligence',
+    shortName: 'B.Tech Robotics & AI',
+    departmentId: 'aids',
+    degree: 'B.Tech',
+    durationYears: 4,
+    totalSemesters: 8,
+    totalCredits: 161,
+    totalCoursesCount: 60,
+    theorySubjectsCount: 38,
+    practicalLabsCount: 18,
+    capstoneProjectsCount: 4,
+    specializationSubjectsCount: 15,
+    specializationSubjects: [
+      { name: 'Kinematics & Mechanisms of Robots', code: 'RO301', semester: 3, credits: 3, category: 'Specialization Core', description: 'Forward/inverse kinematics, Denavit-Hartenberg (D-H) convention, transformation matrices.' },
+      { name: 'Sensors, Actuators & Signal Conditioning', code: 'RO302', semester: 3, credits: 3, category: 'Specialization Core', description: 'LiDAR, IMUs, optical encoders, DC servomotors, stepper drives, pneumatic actuators.' },
+      { name: 'Foundations of Artificial Intelligence for Robotics', code: 'AI301', semester: 3, credits: 3, category: 'Core AI', description: 'State-space search, heuristic path finding (A*), motion planning logic.' },
+      { name: 'Robot Dynamics & Control Systems', code: 'RO401', semester: 4, credits: 4, category: 'Specialization Core', description: 'Euler-Lagrange dynamics, Jacobian singularities, PID feedback control, state-space stability.' },
+      { name: 'Microcontrollers & Embedded Systems (ARM/ESP32)', code: 'RO402', semester: 4, credits: 3, category: 'Specialization Core', description: 'ARM Cortex register programming, real-time interrupts, PWM motor control, UART/SPI/I2C.' },
+      { name: 'Machine Learning for Autonomous Robotics', code: 'AI401', semester: 4, credits: 3, category: 'Core AI', description: 'Behavioral cloning, sensor data classification, supervised learning for robot control.' },
+      { name: 'Robot Operating System (ROS & ROS2) Simulation', code: 'RO501', semester: 5, credits: 4, category: 'Specialization Core', description: 'ROS2 nodes, topics, services, actions, URDF robot modeling, RViz, and Gazebo physics.' },
+      { name: 'Computer Vision & Scene Perception for Robotics', code: 'AI501', semester: 5, credits: 3, category: 'Deep Tech', description: 'Camera calibration, stereo vision, depth mapping (RGB-D), optical flow, visual odometry.' },
+      { name: 'Deep Learning & Neural Control', code: 'AI502', semester: 5, credits: 3, category: 'Deep Tech', description: 'Convolutional neural networks for object tracking, end-to-end visuomotor policies.' },
+      { name: 'Industrial Robotics & PLC Automation', code: 'RO502', semester: 5, credits: 3, category: 'Specialization Core', description: 'Articulated arm manipulation, SCARA robots, PLC ladder logic, SCADA integration.' },
+      { name: 'Autonomous Mobile Robots & SLAM', code: 'RO601', semester: 6, credits: 3, category: 'Deep Tech', description: 'LiDAR SLAM (Cartographer, Gmapping), Extended Kalman Filter (EKF), RRT* global planning.' },
+      { name: 'Reinforcement Learning for Robotic Control', code: 'AI601', semester: 6, credits: 3, category: 'Core AI', description: 'Deep deterministic policy gradient (DDPG), Soft Actor-Critic (SAC) for continuous joint control.' },
+      { name: 'Edge AI & Embedded Intelligence for Robots', code: 'AI602', semester: 6, credits: 3, category: 'MLOps/Systems', description: 'TensorRT optimization, inference on NVIDIA Jetson / Coral TPU, low-latency vision.' },
+      { name: 'Human-Robot Interaction & Cognitive Systems', code: 'RO701', semester: 7, credits: 3, category: 'Applied Elective', description: 'Collaborative robots (Cobots), safety standards (ISO 10218), speech/gesture command interfaces.' },
+      { name: 'Working Autonomous Robot Capstone Project', code: 'RO801', semester: 8, credits: 9, category: 'Specialization Core', description: 'Turnkey physical autonomous robot prototype design, fabrication, programming and field testing.' },
+    ],
+    categoryBreakdown: {
+      basicSciences: 18,
+      engineeringSciences: 15,
+      humanitiesAndMgmt: 9,
+      coreComputing: 12,
+      specializationDomain: 50,
+      electives: 15,
+      practicalLabs: 22,
+      projectsAndInternships: 20,
+    },
+    learningRoadmap: [
+      { stage: 'Year 1: Mechanics, Electronics & Coding Essentials', semesters: 'Sem 1 & 2', focus: 'Engineering Mechanics, CAD Graphics, Calculus, Electronics, C & Python Programming', milestone: 'Design basic mechanical parts and program microcontrollers' },
+      { stage: 'Year 2: Robot Kinematics, Dynamics & Embedded Systems', semesters: 'Sem 3 & 4', focus: 'Forward/Inverse Kinematics, Sensors, Actuators, PID Control, ARM Cortex, Basic ML', milestone: 'Calculate transformation matrices and build closed-loop sensor-actuator loops' },
+      { stage: 'Year 3: ROS2, Computer Vision & Autonomous Navigation', semesters: 'Sem 5 & 6', focus: 'ROS2 middleware, Gazebo simulation, Computer Vision, SLAM mapping, Deep Reinforcement Learning', milestone: 'Simulate and deploy autonomous navigation with obstacle avoidance' },
+      { stage: 'Year 4: Edge Intelligence, Cobots & Physical Robot Capstone', semesters: 'Sem 7 & 8', focus: 'NVIDIA Jetson Edge AI, Human-Robot Interaction, Safety Certification, Full Robot Hardware Build', milestone: 'Construct and demonstrate a fully functional autonomous robotic system' },
+    ],
+    careerRoles: ['Robotics Software Engineer', 'Autonomous Systems Developer', 'Computer Vision & SLAM Engineer', 'Embedded Robotics Specialist', 'Industrial Automation Lead', 'Drone Systems Engineer'],
+  },
+
+  // ───────────────────────────────────────────────────────────────────────────
+  // 4. B.TECH CSE (CYBER SECURITY)
+  // ───────────────────────────────────────────────────────────────────────────
+  {
+    id: 'btech-cse-cyber',
+    name: 'B.Tech CSE (Cyber Security)',
+    shortName: 'B.Tech CSE - Cyber',
+    departmentId: 'cse',
+    degree: 'B.Tech',
+    durationYears: 4,
+    totalSemesters: 8,
+    totalCredits: 160,
+    totalCoursesCount: 58,
+    theorySubjectsCount: 36,
+    practicalLabsCount: 18,
+    capstoneProjectsCount: 4,
+    specializationSubjectsCount: 13,
+    specializationSubjects: [
+      { name: 'Foundations of Cyber Security & Threat Vectors', code: 'CYC301', semester: 3, credits: 3, category: 'Specialization Core', description: 'Attack surfaces, threat modeling, vulnerability life cycles, access control models.' },
+      { name: 'Applied Cryptography & Public Key Infrastructure', code: 'CYC401', semester: 4, credits: 3, category: 'Specialization Core', description: 'AES, RSA, ECC, hash algorithms (SHA-256), digital signatures, PKI X.509 certs.' },
+      { name: 'Network Security & Protocols', code: 'CYC501', semester: 5, credits: 3, category: 'Specialization Core', description: 'Firewalls, IDS/IPS, VPNs, IPsec, TLS 1.3 handshake, DNSSEC, packet sniffing.' },
+      { name: 'Ethical Hacking & Penetration Testing', code: 'CYC502', semester: 5, credits: 3, category: 'Specialization Core', description: 'Reconnaissance, port scanning, exploitation frameworks (Metasploit), privilege escalation.' },
+      { name: 'Web Application Security & OWASP Top 10', code: 'CYC503', semester: 5, credits: 3, category: 'Specialization Core', description: 'SQL injection, XSS, CSRF, SSRF, broken authentication, secure cookie handling.' },
+      { name: 'Cyber Crime Investigation & Digital Forensics', code: 'CYC601', semester: 6, credits: 3, category: 'Specialization Core', description: 'Disk imaging, memory forensics (Volatility), network packet forensics, chain of custody.' },
+      { name: 'Cloud Security Architecture & IAM', code: 'CYC602', semester: 6, credits: 3, category: 'Specialization Core', description: 'AWS/Azure IAM policies, VPC security groups, secrets management, cloud compliance.' },
+      { name: 'AI & Machine Learning for Cyber Analytics', code: 'CYC701', semester: 7, credits: 3, category: 'Deep Tech', description: 'Anomaly detection with random forests, autoencoders for intrusion detection, threat intelligence.' },
+      { name: 'Security Operations Center (SOC) & SIEM', code: 'CYC702', semester: 7, credits: 3, category: 'Specialization Core', description: 'Log aggregation (Splunk/ELK), correlation rules, incident response playbooks, MITRE ATT&CK.' },
+      { name: 'Malware Analysis & Reverse Engineering', code: 'CYC703', semester: 7, credits: 3, category: 'Deep Tech', description: 'Static analysis (Ghidra/IDA Pro), dynamic sandbox execution, obfuscation analysis.' },
+      { name: 'IoT & Operational Technology (OT) Security', code: 'CYC704', semester: 7, credits: 3, category: 'Applied Elective', description: 'SCADA/PLC protocols, firmware reverse engineering, Zero Trust microsegmentation.' },
+      { name: 'Cyber Laws, IT Act 2000 & DPDP Act Compliance', code: 'HSMC801', semester: 8, credits: 3, category: 'Applied Elective', description: 'Indian IT Act 2000, Digital Personal Data Protection Act 2023, ISO 27001 auditing.' },
+      { name: 'Enterprise Cyber Security Capstone Project', code: 'PROJ801', semester: 8, credits: 8, category: 'Specialization Core', description: 'Defensive or offensive security framework implementation, audit manifesto and viva.' },
+    ],
+    categoryBreakdown: {
+      basicSciences: 18,
+      engineeringSciences: 15,
+      humanitiesAndMgmt: 11,
+      coreComputing: 24,
+      specializationDomain: 45,
+      electives: 15,
+      practicalLabs: 18,
+      projectsAndInternships: 14,
+    },
+    learningRoadmap: [
+      { stage: 'Year 1: Programming, Systems & Electronics Base', semesters: 'Sem 1 & 2', focus: 'C, C++, Calculus, Digital Logic, Linux CLI, and Networking Fundamentals', milestone: 'Understand low-level memory layout and network socket communication' },
+      { stage: 'Year 2: Operating Systems, Cryptography & Security Core', semesters: 'Sem 3 & 4', focus: 'Data Structures, OS Kernels, Applied Cryptography, PKI, Security Threat Modeling', milestone: 'Implement cryptographic primitives and analyze system security vulnerabilities' },
+      { stage: 'Year 3: Offensive Security, Penetration Testing & Cloud', semesters: 'Sem 5 & 6', focus: 'Ethical Hacking, OWASP Web Security, Digital Forensics, Cloud IAM, Intrusion Detection', milestone: 'Perform certified vulnerability assessments and digital forensic investigations' },
+      { stage: 'Year 4: SOC Operations, Threat Intelligence & Capstone', semesters: 'Sem 7 & 8', focus: 'SIEM management, Malware Analysis, Zero Trust, Cyber Regulations & Industry Internship', milestone: 'Defend enterprise infrastructure and run automated incident response operations' },
+    ],
+    careerRoles: ['Information Security Analyst', 'Penetration Tester / Ethical Hacker', 'SOC Analyst (L2/L3)', 'Cloud Security Architect', 'Digital Forensics Investigator', 'Cyber Threat Intelligence Specialist'],
+  },
+
+  // ───────────────────────────────────────────────────────────────────────────
+  // 5. B.TECH CSE (CLOUD COMPUTING & DEVOPS)
+  // ───────────────────────────────────────────────────────────────────────────
+  {
+    id: 'btech-cse-cloud',
+    name: 'B.Tech CSE (Cloud Computing & DevOps)',
+    shortName: 'B.Tech CSE - Cloud & DevOps',
+    departmentId: 'cse',
+    degree: 'B.Tech',
+    durationYears: 4,
+    totalSemesters: 8,
+    totalCredits: 160,
+    totalCoursesCount: 57,
+    theorySubjectsCount: 36,
+    practicalLabsCount: 17,
+    capstoneProjectsCount: 4,
+    specializationSubjectsCount: 13,
+    specializationSubjects: [
+      { name: 'Virtualization Technologies & Hypervisors', code: 'CCD301', semester: 3, credits: 3, category: 'Specialization Core', description: 'Type-1/Type-2 hypervisors, KVM, hardware virtualization VT-x, virtual storage.' },
+      { name: 'Cloud Computing & NIST Architecture', code: 'CCD401', semester: 4, credits: 3, category: 'Specialization Core', description: 'IaaS, PaaS, SaaS, public/private/hybrid clouds, multi-tenant resource pooling.' },
+      { name: 'DevOps Principles & Agile Engineering', code: 'CCD402', semester: 4, credits: 3, category: 'Specialization Core', description: 'Continuous integration culture, trunk-based development, automated testing pyramids.' },
+      { name: 'Public Cloud Architecture (AWS, Azure, GCP)', code: 'CCD501', semester: 5, credits: 4, category: 'Specialization Core', description: 'EC2, S3, VPC networking, Azure VMs, IAM security, cloud databases.' },
+      { name: 'Continuous Integration & Delivery (CI/CD Pipelines)', code: 'CCD502', semester: 5, credits: 3, category: 'Specialization Core', description: 'GitHub Actions, Jenkins pipelines, automated testing gates, artifact repositories.' },
+      { name: 'Containerization with Docker & Container Runtimes', code: 'CCD503', semester: 5, credits: 3, category: 'Specialization Core', description: 'Docker multi-stage builds, Linux cgroups, namespaces, containerd runtime.' },
+      { name: 'Container Orchestration with Production Kubernetes', code: 'CCD601', semester: 6, credits: 3, category: 'Deep Tech', description: 'Pod lifecycles, Deployments, Services (ClusterIP, NodePort), Ingress, Helm charts.' },
+      { name: 'Infrastructure as Code (Terraform & Ansible)', code: 'CCD602', semester: 6, credits: 3, category: 'Specialization Core', description: 'Declarative HCL syntax, state management, Ansible playbooks, cloud provisioning.' },
+      { name: 'Cloud Security, Governance & DevSecOps', code: 'CCD603', semester: 6, credits: 3, category: 'Specialization Core', description: 'Container vulnerability scanning (Trivy), static analysis, secret management.' },
+      { name: 'Site Reliability Engineering (SRE) & Chaos Engineering', code: 'PEC602', semester: 6, credits: 3, category: 'MLOps/Systems', description: 'SLIs, SLOs, Error Budgets, Chaos Monkey resilience testing, post-mortems.' },
+      { name: 'Observability & Monitoring (Prometheus, Grafana, ELK)', code: 'CCD701', semester: 7, credits: 3, category: 'MLOps/Systems', description: 'Metrics scraping, PromQL, Grafana alerting dashboards, distributed tracing.' },
+      { name: 'Multi-Cloud Architecture & Cloud FinOps', code: 'CCD702', semester: 7, credits: 3, category: 'Applied Elective', description: 'Cross-cloud migration, hybrid connectivity, cloud cost optimization, spot instances.' },
+      { name: 'Enterprise Cloud & DevOps Capstone Project', code: 'PROJ801', semester: 8, credits: 9, category: 'Specialization Core', description: 'Automated scalable microservice platform with CI/CD, Kubernetes and zero-downtime deploy.' },
+    ],
+    categoryBreakdown: {
+      basicSciences: 18,
+      engineeringSciences: 15,
+      humanitiesAndMgmt: 11,
+      coreComputing: 24,
+      specializationDomain: 45,
+      electives: 15,
+      practicalLabs: 17,
+      projectsAndInternships: 15,
+    },
+    learningRoadmap: [
+      { stage: 'Year 1: Linux & Systems Programming Fundamentals', semesters: 'Sem 1 & 2', focus: 'C, Java, Linux CLI, Bash Scripting, Computer Hardware, and Discrete Math', milestone: 'Command Linux terminal and write automated shell scripts' },
+      { stage: 'Year 2: Cloud Foundations, Virtualization & Git DevOps', semesters: 'Sem 3 & 4', focus: 'Data Structures, OS Kernels, Hypervisors, Cloud Service Models, Git Workflows', milestone: 'Provision virtual machines and structure automated version control' },
+      { stage: 'Year 3: Docker Containers, Kubernetes & CI/CD Pipelines', semesters: 'Sem 5 & 6', focus: 'AWS/Azure, Dockerfiles, Kubernetes Clusters, Terraform IaC, DevSecOps Security', milestone: 'Deploy containerized microservices across orchestrated Kubernetes clusters' },
+      { stage: 'Year 4: Observability, SRE & Production Deployment', semesters: 'Sem 7 & 8', focus: 'Prometheus monitoring, SRE error budgets, FinOps, Full-Semester Corporate Internship', milestone: 'Architect reliable, self-healing cloud platforms with automated zero-downtime CI/CD' },
+    ],
+    careerRoles: ['DevOps Engineer', 'Cloud Solutions Architect', 'Site Reliability Engineer (SRE)', 'Kubernetes Administrator', 'Infrastructure Engineer', 'Platform Engineer'],
+  },
+
+  // ───────────────────────────────────────────────────────────────────────────
+  // 6. BCA IN ARTIFICIAL INTELLIGENCE & DATA SCIENCE
+  // ───────────────────────────────────────────────────────────────────────────
+  {
+    id: 'bca-ai-ds',
+    name: 'BCA in Artificial Intelligence & Data Science',
+    shortName: 'BCA (AI & Data Science)',
+    departmentId: 'bca',
+    degree: 'BCA',
+    durationYears: 3,
+    totalSemesters: 6,
+    totalCredits: 126,
+    totalCoursesCount: 39,
+    theorySubjectsCount: 26,
+    practicalLabsCount: 11,
+    capstoneProjectsCount: 2,
+    specializationSubjectsCount: 10,
+    specializationSubjects: [
+      { name: 'Foundations of Data Science & Python Basics', code: 'BCA204', semester: 2, credits: 4, category: 'Specialization Core', description: 'Python programming, NumPy vectors, Pandas DataFrames, and exploratory statistics.' },
+      { name: 'Applied Statistics & Probability for Analytics', code: 'BCA303', semester: 3, credits: 4, category: 'Core AI', description: 'Central tendency, probability distributions, regression, correlation analysis.' },
+      { name: 'Data Wrangling and Exploratory Data Analysis (EDA)', code: 'BCA304', semester: 3, credits: 3, category: 'Specialization Core', description: 'Missing data handling, outlier detection, Tableau and Power BI visual dashboards.' },
+      { name: 'Principles of Artificial Intelligence & Search Methods', code: 'BCA403', semester: 4, credits: 4, category: 'Core AI', description: 'State-space search, heuristic algorithms, game playing, rule-based systems.' },
+      { name: 'Machine Learning Algorithms (Supervised & Unsupervised)', code: 'BCA404', semester: 4, credits: 4, category: 'Core AI', description: 'Decision trees, linear/logistic regression, K-nearest neighbors, K-means clustering.' },
+      { name: 'Deep Learning & Artificial Neural Networks', code: 'BCA501', semester: 5, credits: 4, category: 'Deep Tech', description: 'Perceptrons, multi-layer networks, backpropagation, CNNs in Keras/TensorFlow.' },
+      { name: 'Big Data Analytics (Hadoop & PySpark Ecosystem)', code: 'BCA502', semester: 5, credits: 4, category: 'Specialization Core', description: 'HDFS, MapReduce concepts, Spark DataFrames, NoSQL database management.' },
+      { name: 'Natural Language Processing & Text Analytics', code: 'BCA503', semester: 5, credits: 4, category: 'Deep Tech', description: 'Tokenization, TF-IDF, sentiment analysis, sentiment classifiers in Python.' },
+      { name: 'Generative AI & Prompt Engineering', code: 'DSE601', semester: 6, credits: 4, category: 'Deep Tech', description: 'Transformer basics, prompt design, fine-tuning API integrations, RAG basics.' },
+      { name: 'Major AI & Data Science Capstone Project', code: 'BCA602', semester: 6, credits: 8, category: 'Specialization Core', description: 'End-to-end predictive or generative AI web application with full documentation and viva.' },
+    ],
+    categoryBreakdown: {
+      basicSciences: 12,
+      engineeringSciences: 0,
+      humanitiesAndMgmt: 10,
+      coreComputing: 36,
+      specializationDomain: 40,
+      electives: 8,
+      practicalLabs: 10,
+      projectsAndInternships: 10,
+    },
+    learningRoadmap: [
+      { stage: 'Year 1: Programming Logic & Data Foundations', semesters: 'Sem 1 & 2', focus: 'C, Java, Discrete Math, Database SQL, and Python for Data Science', milestone: 'Manipulate datasets in Python and build clean relational databases' },
+      { stage: 'Year 2: Statistics, Exploratory Analytics & Machine Learning', semesters: 'Sem 3 & 4', focus: 'Applied Statistics, Power BI Dashboards, Core AI, Supervised Machine Learning', milestone: 'Train Scikit-Learn models and produce executive analytics reports' },
+      { stage: 'Year 3: Deep Learning, Big Data & Generative AI Capstone', semesters: 'Sem 5 & 6', focus: 'TensorFlow Neural Nets, PySpark Big Data, NLP, Generative AI, Major Industry Project', milestone: 'Deploy full-stack AI web applications with real-time inference' },
+    ],
+    careerRoles: ['Junior Data Scientist', 'Machine Learning Associate', 'Data Analyst', 'Business Intelligence Developer', 'Python AI Programmer'],
+  },
+
+  // ───────────────────────────────────────────────────────────────────────────
+  // 7. MCA IN ARTIFICIAL INTELLIGENCE & MACHINE LEARNING
+  // ───────────────────────────────────────────────────────────────────────────
+  {
+    id: 'mca-ai-ml',
+    name: 'MCA in Artificial Intelligence & Machine Learning',
+    shortName: 'MCA (AI & ML)',
+    departmentId: 'mca',
+    degree: 'MCA',
+    durationYears: 2,
+    totalSemesters: 4,
+    totalCredits: 84,
+    totalCoursesCount: 25,
+    theorySubjectsCount: 15,
+    practicalLabsCount: 8,
+    capstoneProjectsCount: 2,
+    specializationSubjectsCount: 8,
+    specializationSubjects: [
+      { name: 'Python for AI & Scientific Computing', code: 'AIM101', semester: 1, credits: 3, category: 'Specialization Core', description: 'High-performance computing with NumPy, Pandas, Scipy, and matrix algorithms.' },
+      { name: 'Artificial Intelligence & Knowledge Representation', code: 'AIM201', semester: 2, credits: 4, category: 'Core AI', description: 'First-order logic, probabilistic reasoning, ontology engineering, planning.' },
+      { name: 'Machine Learning: Theory, Algorithms & Practice', code: 'AIM202', semester: 2, credits: 4, category: 'Core AI', description: 'Mathematical derivations of SVM, gradient boosting, clustering, cross-validation.' },
+      { name: 'Deep Learning Architectures (CNN, RNN, Transformers)', code: 'AIM301', semester: 3, credits: 4, category: 'Deep Tech', description: 'PyTorch deep models, ResNet, vision transformers, sequence-to-sequence models.' },
+      { name: 'Natural Language Processing & Generative AI', code: 'AIM302', semester: 3, credits: 3, category: 'Deep Tech', description: 'Self-attention, Transformer encoders/decoders, LLMs, LoRA tuning, RAG systems.' },
+      { name: 'MLOps: Pipeline Deployment & Feature Stores', code: 'PE302', semester: 3, credits: 3, category: 'MLOps/Systems', description: 'Docker packaging, model registries, CI/CD for ML models, latency benchmarking.' },
+      { name: 'Explainable AI (XAI) & Ethical AI Systems', code: 'PE401', semester: 4, credits: 3, category: 'Applied Elective', description: 'SHAP, LIME, counterfactuals, model interpretability in enterprise domains.' },
+      { name: 'Major Master Thesis / Corporate AI Dissertation', code: 'AIM402', semester: 4, credits: 13, category: 'Specialization Core', description: 'Full-semester corporate internship or research dissertation with peer-reviewed publication.' },
+    ],
+    categoryBreakdown: {
+      basicSciences: 4,
+      engineeringSciences: 0,
+      humanitiesAndMgmt: 0,
+      coreComputing: 28,
+      specializationDomain: 27,
+      electives: 6,
+      practicalLabs: 4,
+      projectsAndInternships: 15,
+    },
+    learningRoadmap: [
+      { stage: 'Semester 1: Advanced Algorithms & Scientific Python', semesters: 'Sem 1', focus: 'Advanced Data Structures, Distributed DBs, Mathematical Foundations, Python for AI', milestone: 'Implement complex algorithmic proofs and statistical data pipelines' },
+      { stage: 'Semester 2: AI Knowledge Systems & Machine Learning', semesters: 'Sem 2', focus: 'Knowledge Engineering, Statistical Machine Learning, Full-Stack Enterprise Web', milestone: 'Derive and build mathematical ML algorithms with production APIs' },
+      { stage: 'Semester 3: Deep Neural Networks, NLP & MLOps', semesters: 'Sem 3', focus: 'Deep Learning in PyTorch, Large Language Models, MLOps, Computer Vision Elective', milestone: 'Architect production deep learning pipelines with automated CI/CD' },
+      { stage: 'Semester 4: Full-Semester Corporate Internship & Thesis', semesters: 'Sem 4', focus: 'Full-Time Corporate AI Internship, Research Thesis, Oral Defense Presentation', milestone: 'Deliver enterprise AI solutions and defend master dissertation' },
+    ],
+    careerRoles: ['Lead AI Engineer', 'Senior Machine Learning Engineer', 'Data Science Lead', 'MLOps Architect', 'AI Solutions Consultant'],
+  },
+];
+
+// Helper functions for specializations lookups
+export function getAllSpecializations(): ProgramSpecialization[] {
+  return PROGRAM_SPECIALIZATIONS_REGISTRY;
+}
+
+export function getSpecializationById(id: string): ProgramSpecialization | undefined {
+  if (!id) return undefined;
+  return PROGRAM_SPECIALIZATIONS_REGISTRY.find(s => s.id.toLowerCase() === id.toLowerCase());
+}
+
 // Helper functions for curriculum lookups
 export function getAllDepartments(): DepartmentCurriculum[] {
   return DEPARTMENT_CURRICULA;
@@ -1030,3 +1449,4 @@ export function getCurriculumStats() {
     totalInteractiveSubjects,
   };
 }
+
