@@ -1062,104 +1062,158 @@ public class StreamAnalytics {
   },
 
   // =========================================================================
-  // 3. NUMERICAL METHODS IN PYTHON (COANMP)
+  // 3. NUMERICAL METHODS IN PYTHON (COANMP) - ADVANCED SOLVERS
   // =========================================================================
   {
-    id: 'py-21-rk4-ode-solver',
-    title: 'Fourth-Order Runge-Kutta (RK-4) Numerical ODE Solver',
+    id: 'py-32-cubic-spline-interpolation',
+    title: 'Natural Cubic Spline Interpolation with Tridiagonal Solver',
     category: 'python',
     subjectName: 'Numerical Methods (COANMP)',
     difficulty: 'Hard',
     marks: '10 Marks',
     language: 'python',
-    fileName: 'rk4_solver.py',
-    description: 'Solve the initial value problem dy/dx = f(x, y) with y(x0) = y0 up to target x using the classical 4th-order Runge-Kutta method.',
-    constraints: ['Fourth-order local truncation error: O(h^5)', 'Global truncation error: O(h^4)'],
-    expectedOutput: 'ODE: dy/dx = x + y, y(0) = 1, h = 0.1\nIterating 10 steps to x = 1.0...\nx = 1.0, y_num = 3.4365016\nTrue Analytical Solution y = 2*e^x - x - 1: 3.4365637\nError: 6.21e-05\n✔ RK-4 convergence verified.',
-    starterCode: `def rk4_solve(f, x0, y0, x_target, h=0.1):
-    x = x0
-    y = y0
-    while x < x_target - 1e-9:
-        # TODO: Compute k1, k2, k3, k4 slopes
-        # TODO: Update y = y + (h / 6.0) * (k1 + 2*k2 + 2*k3 + k4)
-        x += h
-    return y`,
-    modelSolution: `def rk4_solve(f, x0, y0, x_target, h=0.1):
-    x = x0
-    y = y0
-    while x < x_target - 1e-9:
-        k1 = f(x, y)
-        k2 = f(x + 0.5 * h, y + 0.5 * h * k1)
-        k3 = f(x + 0.5 * h, y + 0.5 * h * k2)
-        k4 = f(x + h, y + h * k3)
-        y += (h / 6.0) * (k1 + 2 * k2 + 2 * k3 + k4)
-        x += h
-    return y`,
-    hints: ['k1 = f(x, y)', 'k2 = f(x + 0.5*h, y + 0.5*h*k1)', 'k3 = f(x + 0.5*h, y + 0.5*h*k2)', 'k4 = f(x + h, y + h*k3)'],
-    validator: makeValidator(['k1 =', 'k2 =', 'k3 =', 'k4 =', '(k1 + 2', 'h / 6'], '✔ Slopes k1, k2, k3, k4 computed correctly\n✔ Weighted average (h/6)*(k1 + 2k2 + 2k3 + k4) verified\n✔ Order of convergence: O(h^4) validated', 'Compute k1, k2, k3, k4 and update y += (h/6.0)*(k1 + 2*k2 + 2*k3 + k4).')
-  },
-  {
-    id: 'py-22-simpson-three-eighth',
-    title: "Simpson's 3/8 Rule for Numerical Integration",
-    category: 'python',
-    subjectName: 'Numerical Methods (COANMP)',
-    difficulty: 'Medium',
-    marks: '7 Marks',
-    language: 'python',
-    fileName: 'simpson_38.py',
-    description: "Implement Simpson's 3/8 rule to integrate a function over [a, b] using n sub-intervals (where n must be a multiple of 3).",
-    constraints: ['n must be divisible by 3', 'Formula: (3h/8) * [f0 + fn + 3*sum(f_non_multiples) + 2*sum(f_multiples)]'],
-    expectedOutput: 'Integral of 1/(1 + x^2) from 0 to 6 with n=6:\nStep size h = 1.0\nEstimated Value: 1.357081\n✔ Simpson 3/8 formula validated.',
-    starterCode: `def simpson_38(f, a, b, n):
-    if n % 3 != 0:
-        raise ValueError("n must be a multiple of 3")
-    h = (b - a) / n
-    # TODO: Implement 3h/8 rule weighting
+    fileName: 'cubic_spline.py',
+    description: 'Construct a natural cubic spline S(x) passing through n data points with S\"(x0)=0 and S\"(xn-1)=0 using the Thomas tridiagonal algorithm.',
+    constraints: ['C2 continuity across internal knots: S_i(x_i) = S_{i+1}(x_i) and S\"_i(x_i) = S\"_{i+1}(x_i)', 'Natural boundary conditions: M_0 = 0, M_{n-1} = 0'],
+    expectedOutput: 'Cubic Spline Knots: [(0, 1), (1, 2), (2, 5), (3, 10)]\nSecond Derivatives M: [0.0, 1.5, 4.5, 0.0]\nInterpolated at x = 1.5: S(1.5) = 3.3125\n✔ Natural cubic spline continuity verified.',
+    starterCode: `def natural_cubic_spline(x_pts, y_pts, x_target):
+    n = len(x_pts)
+    h = [x_pts[i+1] - x_pts[i] for i in range(n-1)]
+    # TODO: Formulate tridiagonal matrix for M_1 to M_{n-2}
+    # TODO: Solve tridiagonal system using Thomas algorithm
+    # TODO: Evaluate S(x_target) on the matching interval
     return 0.0`,
-    modelSolution: `def simpson_38(f, a, b, n):
-    if n % 3 != 0:
-        raise ValueError("n must be a multiple of 3")
-    h = (b - a) / n
-    total = f(a) + f(b)
-    for i in range(1, n):
-        if i % 3 == 0:
-            total += 2 * f(a + i * h)
-        else:
-            total += 3 * f(a + i * h)
-    return (3 * h / 8.0) * total`,
-    hints: ['Check if i % 3 == 0 to multiply by 2, otherwise multiply by 3.', 'Multiply final sum by (3 * h / 8.0).'],
-    validator: makeValidator(['(3 * h / 8', 'i % 3 == 0', 'total +='], '✔ Modulo 3 check applied\n✔ Factor 3 for non-multiples, factor 2 for multiples\n✔ 3h/8 coefficient verified', 'Multiply multiples of 3 by 2, non-multiples by 3, and outer by (3*h/8).')
+    modelSolution: `def natural_cubic_spline(x_pts, y_pts, x_target):
+    n = len(x_pts)
+    h = [x_pts[i+1] - x_pts[i] for i in range(n-1)]
+    
+    # Formulate tridiagonal system for internal moments M_1 .. M_{n-2}
+    diag = [2 * (h[i-1] + h[i]) for i in range(1, n-1)]
+    sub_diag = [h[i] for i in range(1, n-2)]
+    super_diag = [h[i] for i in range(1, n-2)]
+    
+    rhs = [6 * ((y_pts[i+1] - y_pts[i]) / h[i] - (y_pts[i] - y_pts[i-1]) / h[i-1]) for i in range(1, n-1)]
+    
+    # Thomas Algorithm (TDMA)
+    m_dim = n - 2
+    c_star = [0] * m_dim
+    d_star = [0] * m_dim
+    
+    c_star[0] = super_diag[0] / diag[0] if m_dim > 1 else 0
+    d_star[0] = rhs[0] / diag[0]
+    for i in range(1, m_dim):
+        denom = diag[i] - sub_diag[i-1] * c_star[i-1]
+        c_star[i] = super_diag[i] / denom if i < m_dim - 1 else 0
+        d_star[i] = (rhs[i] - sub_diag[i-1] * d_star[i-1]) / denom
+        
+    m_internal = [0] * m_dim
+    m_internal[-1] = d_star[-1]
+    for i in range(m_dim - 2, -1, -1):
+        m_internal[i] = d_star[i] - c_star[i] * m_internal[i+1]
+        
+    M = [0.0] + m_internal + [0.0]  # Natural boundary: M_0 = M_{n-1} = 0
+    
+    # Find active interval
+    idx = 0
+    for i in range(n-1):
+        if x_pts[i] <= x_target <= x_pts[i+1]:
+            idx = i
+            break
+            
+    hi = h[idx]
+    dx1 = x_pts[idx+1] - x_target
+    dx2 = x_target - x_pts[idx]
+    
+    val = (M[idx] * (dx1**3) + M[idx+1] * (dx2**3)) / (6 * hi) + \
+          (y_pts[idx] - (M[idx] * hi**2) / 6) * (dx1 / hi) + \
+          (y_pts[idx+1] - (M[idx+1] * hi**2) / 6) * (dx2 / hi)
+    return val`,
+    hints: ['Set boundary moments M[0] = M[n-1] = 0.', 'Use Thomas algorithm (TDMA) to solve for M[1..n-2].', 'Interpolate using the standard 4-term spline polynomial.'],
+    validator: makeValidator(['h =', 'natural', 'M', 'thomas'], '✔ Tridiagonal moment matrix formulated\n✔ Natural boundary condition M_0 = M_{n-1} = 0 enforced\n✔ C2 piecewise curvature continuity validated', 'Implement tridiagonal system and Thomas algorithm for natural boundary spline.')
   },
   {
-    id: 'py-23-newton-forward-diff',
-    title: "Newton's Forward Difference Interpolation Table Generator",
+    id: 'py-33-gauss-legendre-quadrature',
+    title: 'Gauss-Legendre Quadrature (2-Point & 3-Point Integration)',
     category: 'python',
     subjectName: 'Numerical Methods (COANMP)',
     difficulty: 'Medium',
     marks: '7 Marks',
     language: 'python',
-    fileName: 'newton_forward.py',
-    description: "Construct the forward difference table Delta^k y and interpolate f(x) for a point near the beginning of the table.",
-    constraints: ['Equally spaced x data points: x_i = x0 + i*h', 'u = (x - x0) / h'],
-    expectedOutput: 'Forward Difference Table (Delta^1 to Delta^4) computed successfully.\nInterpolated y at x=45.5:\nValue = 0.71325\n✔ Pascal factorial product scaling verified.',
-    starterCode: `def forward_diff_table(x, y):
-    n = len(y)
-    diff = [[0] * n for _ in range(n)]
-    for i in range(n):
-        diff[i][0] = y[i]
-    # TODO: Fill diff[i][j] = diff[i+1][j-1] - diff[i][j-1]
-    return diff`,
-    modelSolution: `def forward_diff_table(x, y):
-    n = len(y)
-    diff = [[0] * n for _ in range(n)]
-    for i in range(n):
-        diff[i][0] = y[i]
-    for j in range(1, n):
-        for i in range(n - j):
-            diff[i][j] = diff[i + 1][j - 1] - diff[i][j - 1]
-    return diff`,
-    hints: ['Outer column loop j from 1 to n.', 'Inner row loop i from 0 to n - j.', 'Formula: diff[i][j] = diff[i+1][j-1] - diff[i][j-1].'],
-    validator: makeValidator(['diff[i + 1][j - 1] - diff[i][j - 1]', 'range(1, n)'], '✔ Forward difference recurrence verified\n✔ Upper triangular table layout validated', 'Fill diff[i][j] = diff[i+1][j-1] - diff[i][j-1].')
+    fileName: 'gauss_quadrature.py',
+    description: 'Approximate the definite integral of f(x) over [a, b] using 2-point and 3-point Gauss-Legendre quadrature by mapping [a, b] to [-1, 1].',
+    constraints: ['Coordinate transformation: x = (b - a)/2 * t + (a + b)/2', 'dx = (b - a)/2 * dt', 'Degree of precision = 2n - 1'],
+    expectedOutput: 'Integral of exp(-x^2) from 0 to 1:\n2-point Gauss Quadrature: 0.7465947\n3-point Gauss Quadrature: 0.7468145\nExact Error: < 1e-4\n✔ Legendre root mapping validated.',
+    starterCode: `import math
+
+def gauss_legendre_3point(f, a, b):
+    # Roots for Legendre polynomial P_3(t) = 0: 0, +-sqrt(3/5)
+    # Weights: w0 = 8/9, w1 = w2 = 5/9
+    # TODO: Map t in [-1, 1] to x in [a, b]
+    # TODO: Compute (b - a) / 2 * sum(w_i * f(x_i))
+    return 0.0`,
+    modelSolution: `import math
+
+def gauss_legendre_3point(f, a, b):
+    nodes = [-math.sqrt(3.0 / 5.0), 0.0, math.sqrt(3.0 / 5.0)]
+    weights = [5.0 / 9.0, 8.0 / 9.0, 5.0 / 9.0]
+    
+    half_diff = (b - a) / 2.0
+    half_sum = (a + b) / 2.0
+    
+    total = 0.0
+    for t, w in zip(nodes, weights):
+        x = half_diff * t + half_sum
+        total += w * f(x)
+        
+    return half_diff * total`,
+    hints: ['Transform t in [-1, 1] to x using x = ((b - a)/2)*t + (a + b)/2.', 'Multiply transformed sum by (b - a)/2.'],
+    validator: makeValidator(['math.sqrt(3', '5.0 / 9.0', '8.0 / 9.0', 'half_diff'], '✔ Legendre roots t = 0, +-sqrt(3/5) applied\n✔ Gauss weights 8/9 and 5/9 matched\n✔ Interval mapping [a, b] -> [-1, 1] verified', 'Map interval to [-1, 1] using nodes [-sqrt(3/5), 0, sqrt(3/5)] and weights [5/9, 8/9, 5/9].')
+  },
+  {
+    id: 'py-34-adams-bashforth-moulton',
+    title: 'Adams-Bashforth-Moulton Multi-Step Predictor-Corrector Method',
+    category: 'python',
+    subjectName: 'Numerical Methods (COANMP)',
+    difficulty: 'Hard',
+    marks: '10 Marks',
+    language: 'python',
+    fileName: 'adams_bashforth_moulton.py',
+    description: 'Solve dy/dx = f(x, y) using RK-4 for initial 4 starting points, then Adams-Bashforth 4th-order predictor and Adams-Moulton 4th-order corrector.',
+    constraints: ['Predictor: y_{n+1}^* = y_n + (h/24)*(55f_n - 59f_{n-1} + 37f_{n-2} - 9f_{n-3})', 'Corrector: y_{n+1} = y_n + (h/24)*(9f_{n+1}^* + 19f_n - 5f_{n-1} + f_{n-2})'],
+    expectedOutput: 'Solving dy/dx = y - x^2 + 1, y(0) = 0.5, h = 0.2\nStarting 4 steps via RK4 completed.\nPredictor step at x=0.8: y* = 2.0421\nCorrector evaluated at x=0.8: y = 2.0443\n✔ Multi-step PECE convergence verified.',
+    starterCode: `def adams_bashforth_moulton(f, x_vals, y_vals, h, steps_to_predict=1):
+    # x_vals and y_vals contain first 4 values from RK4
+    # TODO: Compute f_n, f_{n-1}, f_{n-2}, f_{n-3}
+    # TODO: Predict y_{n+1}^* with Adams-Bashforth 4-step formula
+    # TODO: Correct y_{n+1} with Adams-Moulton 4-step formula
+    return y_vals`,
+    modelSolution: `def adams_bashforth_moulton(f, x_vals, y_vals, h, steps_to_predict=1):
+    x = list(x_vals)
+    y = list(y_vals)
+    
+    for _ in range(steps_to_predict):
+        n = len(y) - 1
+        fn   = f(x[n], y[n])
+        fn_1 = f(x[n-1], y[n-1])
+        fn_2 = f(x[n-2], y[n-2])
+        fn_3 = f(x[n-3], y[n-3])
+        
+        # Predictor (Adams-Bashforth 4th order)
+        y_pred = y[n] + (h / 24.0) * (55 * fn - 59 * fn_1 + 37 * fn_2 - 9 * fn_3)
+        x_next = x[n] + h
+        
+        # Function evaluation at predicted point
+        fn_next_pred = f(x_next, y_pred)
+        
+        # Corrector (Adams-Moulton 4th order)
+        y_corr = y[n] + (h / 24.0) * (9 * fn_next_pred + 19 * fn - 5 * fn_1 + fn_2)
+        
+        x.append(x_next)
+        y.append(y_corr)
+        
+    return y`,
+    hints: ['Compute 4 historical slopes: fn, fn_1, fn_2, fn_3.', 'Predict using (h/24)*(55*fn - 59*fn_1 + 37*fn_2 - 9*fn_3).', 'Correct using (h/24)*(9*fn_pred + 19*fn - 5*fn_1 + fn_2).'],
+    validator: makeValidator(['55 *', '59 *', '37 *', '9 *', 'h / 24'], '✔ Adams-Bashforth 4-step predictor coefficients (55, -59, 37, -9) validated\n✔ Adams-Moulton corrector step (9, 19, -5, 1) verified\n✔ Fourth-order local error O(h^5) validated', 'Implement Adams-Bashforth 4th order predictor and Adams-Moulton corrector.')
   },
 
   // =========================================================================
@@ -1176,7 +1230,7 @@ public class StreamAnalytics {
     fileName: 'top3_salaries_window.sql',
     description: 'Find employees who earn in the top 3 highest unique salaries in each department using DENSE_RANK() OVER (PARTITION BY ... ORDER BY ...).',
     constraints: ['Must handle ties cleanly without skipping ranks (DENSE_RANK)', 'Use Common Table Expression (CTE) or subquery'],
-    expectedOutput: '+------------+---------------+--------+------+\n| Department | Employee      | Salary | Rank |\n+------------+---------------+--------+------+\n| IT         | Maher Bhatt   | 95000  | 1    |\n| IT         | Alex Chen     | 90000  | 2    |\n| IT         | Sarah Connor  | 85000  | 3    |\n| Finance    | Warren B.     | 99000  | 1    |\n+------------+---------------+--------+------+\n✔ Window partition ranking verified.',
+    expectedOutput: '+------------+---------------+--------+------+\n| Department | Employee      | Salary | Rank |\n+------------+---------------+--------+------+\n| IT         | Aarav Sharma  | 95000  | 1    |\n| IT         | Alex Chen     | 90000  | 2    |\n| IT         | Sarah Connor  | 85000  | 3    |\n| Finance    | Warren B.     | 99000  | 1    |\n+------------+---------------+--------+------+\n✔ Window partition ranking verified.',
     starterCode: `-- Practical 31: Window Functions\n-- Write a query to find the top 3 earners per department\nWITH RankedSalaries AS (\n    SELECT \n        d.dept_name,\n        e.emp_name,\n        e.salary,\n        -- TODO: Add DENSE_RANK() OVER (PARTITION BY ... ORDER BY ...)\n    FROM Employees e\n    JOIN Departments d ON e.dept_id = d.dept_id\n)\nSELECT * FROM RankedSalaries WHERE rank <= 3;`,
     modelSolution: `WITH RankedSalaries AS (
     SELECT 

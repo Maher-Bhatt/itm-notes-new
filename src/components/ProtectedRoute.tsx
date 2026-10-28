@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Loader2, ShieldAlert, ArrowLeft } from "lucide-react";
+import { CampusButton } from "@/components/campusloop/CampusButton";
 
 export function ProtectedRoute({ 
   children, 
@@ -14,29 +15,25 @@ export function ProtectedRoute({
   const location = useLocation();
   const navigate = useNavigate();
 
+  // Show clean spinner while auth session is initializing
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="min-h-screen flex items-center justify-center bg-[#F6F3EC] dark:bg-[#111111]">
+        <Loader2 className="h-8 w-8 animate-spin text-[#2B4EFF]" />
       </div>
     );
   }
 
-  const isGuest = typeof window !== "undefined" && sessionStorage.getItem("itm_guest_mode") === "true";
-
-  // Guest users can browse public academic pages but cannot access admin
-  if (!user && !isGuest) {
+  // COMPULSORY SIGN-IN: Signed-out users are strictly redirected to /auth
+  // No guest bypass allowed anywhere in the app
+  if (!user) {
     return <Navigate to="/auth" state={{ from: location }} replace />;
   }
 
-  // Admin routes strictly disallow guests
-  if (requireAdmin && (!user || isGuest)) {
-    return <Navigate to="/auth" state={{ from: location }} replace />;
-  }
-
-  // Admin routes bypass student onboarding requirements
+  // Onboarding enforcement for regular students
   if (!requireAdmin && user) {
-    const hasCompletedOnboarding = profile?.onboarding_completed === true || (profile?.onboarding_completed === null && Boolean(profile?.semester));
+    const hasCompletedOnboarding = profile?.onboarding_completed === true || 
+      (profile?.onboarding_completed === null && Boolean(profile?.semester));
 
     if (!hasCompletedOnboarding && location.pathname !== "/onboarding") {
       return <Navigate to="/onboarding" replace />;
@@ -52,37 +49,26 @@ export function ProtectedRoute({
 
   if (requireAdmin && !isVerifiedAdmin) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4 antialiased">
-        <div className="w-full max-w-md bg-slate-900 border border-rose-500/30 rounded-2xl p-8 shadow-2xl space-y-6 text-center">
-          <div className="w-16 h-16 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-400 mx-auto flex items-center justify-center">
+      <div className="min-h-screen bg-[#F6F3EC] dark:bg-[#111111] flex items-center justify-center p-4 antialiased">
+        <div className="w-full max-w-md bg-white dark:bg-[#1C1C1E] border border-rose-500/30 rounded-[24px] p-8 shadow-xl space-y-6 text-center">
+          <div className="w-16 h-16 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-500 mx-auto flex items-center justify-center">
             <ShieldAlert className="h-8 w-8" />
           </div>
           <div>
-            <span className="px-2.5 py-0.5 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 text-[10px] font-bold uppercase tracking-wider">
-              403 • Unauthorized Access
-            </span>
-            <h2 className="text-xl font-bold text-white tracking-tight mt-2">Platform Admin Console Restricted</h2>
-            <p className="text-xs text-slate-400 mt-2 leading-relaxed">
-              Signed in as <span className="text-slate-200 font-mono font-semibold">{user?.email}</span>. This command area is strictly reserved for the platform founder and authorized university administrators.
+            <h2 className="text-xl font-bold text-[#111111] dark:text-white">Access Denied (403)</h2>
+            <p className="text-xs text-[#6B7280] dark:text-neutral-400 mt-2 leading-relaxed">
+              The Admin Portal is restricted to verified administrators of ITM SLS Baroda. Your current account (<span className="font-mono text-foreground font-semibold">{user.email}</span>) does not have administrative privileges.
             </p>
           </div>
-
-          <div className="p-3.5 rounded-xl bg-slate-950/60 border border-slate-800 text-left space-y-1.5 text-xs text-slate-400">
-            <div className="flex items-center gap-1.5 font-bold text-slate-300">
-              <span className="w-2 h-2 rounded-full bg-rose-500" />
-              <span>Security Policy Enforced</span>
-            </div>
-            <p className="text-[11px] leading-relaxed">
-              Direct access requires authenticated administrator credentials in the university database.
-            </p>
+          <div className="pt-2">
+            <button
+              onClick={() => navigate("/dashboard")}
+              className="w-full py-2.5 px-4 rounded-full bg-[#111111] dark:bg-white text-white dark:text-[#111111] text-xs font-bold hover:opacity-90 transition-all flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              <span>Return to Student Dashboard</span>
+            </button>
           </div>
-
-          <button
-            onClick={() => navigate("/dashboard")}
-            className="w-full h-11 bg-[#18181B] hover:bg-neutral-800 text-[#FAFAFA] rounded-xl text-xs font-bold shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer border border-[#FAFAFA]/30"
-          >
-            <ArrowLeft className="h-4 w-4" /> Return to Student Dashboard
-          </button>
         </div>
       </div>
     );

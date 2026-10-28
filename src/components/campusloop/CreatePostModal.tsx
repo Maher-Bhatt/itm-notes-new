@@ -86,6 +86,18 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
     } catch {}
   }, []);
 
+  // Handle Escape key to close modal
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   // Listen to global open event
   useEffect(() => {
     const handleGlobalOpen = () => {
@@ -214,7 +226,10 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
   const selectedAudience = AUDIENCES[selectedAudienceIndex];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm animate-fade-in overflow-y-auto">
+    <div 
+      onClick={onClose}
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm animate-fade-in overflow-y-auto"
+    >
       <div
         className="w-full max-w-lg bg-white dark:bg-[#18181B] rounded-[24px] border border-[#E8E4DA] dark:border-neutral-800 shadow-2xl overflow-hidden flex flex-col my-auto max-h-[92vh] animate-scale-in"
         onClick={(e) => e.stopPropagation()}

@@ -589,31 +589,7 @@ export default function BookmarksPage() {
             ))}
           </div>
         )}
-        {/* Friendly Empty State (Part C) */}
-        {processedItems.length === 0 && (
-          <div className="bg-card border border-border/80 rounded-3xl p-10 text-center space-y-4 max-w-md mx-auto my-8 animate-fade-in">
-            <div className="w-16 h-16 rounded-3xl bg-primary/10 text-primary flex items-center justify-center mx-auto shadow-inner">
-              <Bookmark className="h-8 w-8 stroke-[1.5]" />
-            </div>
-            <div className="space-y-1">
-              <h3 className="font-bold text-base text-foreground">
-                {selectedFolder !== "All" ? `No bookmarks in "${selectedFolder}"` : "No saved bookmarks yet"}
-              </h3>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                {selectedFolder !== "All" 
-                  ? "Move bookmarked topics into this folder or explore your subjects."
-                  : "Tap the bookmark icon while studying any unit topic to save high-priority notes here for quick revision."}
-              </p>
-            </div>
-            <button
-              onClick={() => navigate('/subjects')}
-              className="px-5 py-2.5 rounded-xl bg-primary text-primary-foreground font-bold text-xs shadow-sm hover:opacity-90 transition-opacity apple-press inline-flex items-center gap-1.5"
-            >
-              <BookOpen className="h-4 w-4" />
-              <span>Explore Curriculum Notes</span>
-            </button>
-          </div>
-        )}
+
       </div>
     </div>
   );

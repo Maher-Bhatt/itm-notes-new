@@ -97,8 +97,12 @@ export function PortalTopNav({
           <Menu className="h-5 w-5" />
         </button>
 
-        {/* CampusLoop Logo */}
-        <Link to="/community" className="flex items-center gap-2 group select-none shrink-0" title="CampusLoop Home">
+        {/* CampusLoop Logo (mobile or when sidebar is collapsed) */}
+        <Link 
+          to="/community" 
+          className={`items-center gap-2 group select-none shrink-0 ${isFocusMode ? 'flex' : 'flex md:hidden'}`} 
+          title="CampusLoop Home"
+        >
           <CampusLoopLogo size="sm" showSubtitle />
         </Link>
 
@@ -293,7 +297,7 @@ export function PortalTopNav({
               <DropdownMenuItem onClick={() => navigate("/bookmarks")} className="cursor-pointer text-xs rounded-xl">
                 Saved Bookmarks
               </DropdownMenuItem>
-              {role === "admin" && (
+              {(role === "admin" || user?.email?.toLowerCase() === "maherbhatt01@gmail.com") && (
                 <DropdownMenuItem onClick={() => navigate("/admin")} className="cursor-pointer text-xs font-bold text-[#2B4EFF] rounded-xl">
                   Admin Portal
                 </DropdownMenuItem>

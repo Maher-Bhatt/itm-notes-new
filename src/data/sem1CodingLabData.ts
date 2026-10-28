@@ -33,18 +33,18 @@ export const SEM1_CODING_PROBLEMS: CodingProblem[] = [
     fileName: 'hello_formatted.py',
     description: 'Write a Python program to read a student\'s name and university enrollment number, then display a formatted welcome message using f-strings.',
     constraints: ['Must use input() or default parameters', 'Must format output using f-strings'],
-    expectedOutput: 'Welcome Maher Bhatt to ITM SLS Baroda University! Enrollment: 2026BT0101',
+    expectedOutput: 'Welcome Student to ITM SLS Baroda University! Enrollment: 2026BT0001',
     starterCode: `# Write a Python program to print a formatted university welcome message
-name = "Maher Bhatt"
-enrollment = "2026BT0101"
+name = "Student"
+enrollment = "2026BT0001"
 
 # TODO: Print using f-string
 `,
-    modelSolution: `name = "Maher Bhatt"
-enrollment = "2026BT0101"
+    modelSolution: `name = "Student"
+enrollment = "2026BT0001"
 print(f"Welcome {name} to ITM SLS Baroda University! Enrollment: {enrollment}")`,
     hints: ['Use f"Welcome {name} to ITM SLS Baroda University! Enrollment: {enrollment}"'],
-    validator: makeValidator(['print', 'f"', '{name}'], 'Welcome Maher Bhatt to ITM SLS Baroda University! Enrollment: 2026BT0101', 'Use f-string formatting with print(f"...").')
+    validator: makeValidator(['print', 'f"', '{name}'], 'Welcome Student to ITM SLS Baroda University! Enrollment: 2026BT0001', 'Use f-string formatting with print(f"...").')
   },
   {
     id: 'py1-ps1-02',
@@ -346,11 +346,11 @@ print(f"5^3 = {power(5, 3)}")`,
   {
     id: 'wt-ps1-01',
     title: 'PS 4.1: HTML5 Semantic Portal Layout',
-    category: 'python', // grouped under web tech category
+    category: 'web',
     subjectName: 'Web Technology',
     difficulty: 'Easy',
     marks: '5 Marks',
-    language: 'c', // web practical
+    language: 'web',
     fileName: 'index.html',
     description: 'Construct a semantic HTML5 page with header, nav, main (section & article), aside, and footer elements.',
     constraints: ['Must use <!DOCTYPE html>', 'Include semantic tags: header, nav, main, article, footer'],
@@ -390,11 +390,11 @@ print(f"5^3 = {power(5, 3)}")`,
   {
     id: 'wt-ps1-02',
     title: 'PS 4.2: Student Attendance Form Validation (JavaScript DOM)',
-    category: 'python',
+    category: 'web',
     subjectName: 'Web Technology',
     difficulty: 'Medium',
     marks: '7 Marks',
-    language: 'c',
+    language: 'web',
     fileName: 'validate.js',
     description: 'Write a JavaScript function to validate a student registration form, checking that email matches university domain (@itmuniversity.ac.in) and attendance is between 0 and 100.',
     constraints: ['Use regex for email validation', 'Return boolean validation result'],
@@ -407,7 +407,7 @@ print(f"5^3 = {power(5, 3)}")`,
 }
 
 // Test call
-console.log(validateStudent("maher.b@itmuniversity.ac.in", 85));`,
+console.log(validateStudent("student@itmuniversity.ac.in", 85));`,
     modelSolution: `function validateStudent(email, attendance) {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@itmuniversity\\.ac\\.in$/;
     if (!emailRegex.test(email)) {
@@ -419,7 +419,7 @@ console.log(validateStudent("maher.b@itmuniversity.ac.in", 85));`,
     return true;
 }
 
-console.log(validateStudent("maher.b@itmuniversity.ac.in", 85) ? "Validation Passed: Valid student credentials verified." : "Failed");`,
+console.log(validateStudent("student@itmuniversity.ac.in", 85) ? "Validation Passed: Valid student credentials verified." : "Failed");`,
     hints: ['Check emailRegex.test(email) and attendance >= 0 && attendance <= 100.'],
     validator: makeValidator(['emailregex', 'test(', 'attendance'], 'Validation Passed: Valid student credentials verified.', 'Validate email using test() and check attendance range.')
   }

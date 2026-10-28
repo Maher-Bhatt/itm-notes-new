@@ -1084,3 +1084,272 @@ export const VIVA_INSTRUCTIONS = [
 ];
 
 export const VIVA_SCHEDULE_DATA = VIVA_SCHEDULE;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DAILY LECTURE TIMETABLE (ODD SEMESTER 2026-2027)
+// Authentic semester 3 timetable periods mapped by division groups
+// ─────────────────────────────────────────────────────────────────────────────
+export interface DailyLectureItem {
+  id: string;
+  classGroup: 1 | 2 | 3 | 4 | 5; // 1: Div A, 2: Div B, 3: Div C, 4: Div D, 5: Div E
+  className: string;
+  timeSlot: string;
+  subjectCode: string;
+  subjectName: string;
+  facultyName: string;
+  location: string;
+  roomType: 'Lab' | 'Classroom';
+  notes?: string;
+}
+
+export const DAILY_LECTURE_SCHEDULE: DailyLectureItem[] = [
+  // ── Division A (Group 1) ──
+  {
+    id: "lec-a-1",
+    classGroup: 1,
+    className: "Div A",
+    timeSlot: "10:10 AM - 11:15 AM",
+    subjectCode: "JAVA303",
+    subjectName: "OOP Java Practical Lab",
+    facultyName: "Prof. Diksha Durgapal",
+    location: "Lab-4",
+    roomType: "Lab",
+    notes: "Practical batch implementation & exception handling exercises."
+  },
+  {
+    id: "lec-a-2",
+    classGroup: 1,
+    className: "Div A",
+    timeSlot: "11:15 AM - 12:15 PM",
+    subjectCode: "DBMS302",
+    subjectName: "Database Management Systems",
+    facultyName: "Prof. Raju Nakum",
+    location: "EB-15",
+    roomType: "Classroom",
+    notes: "Relational schema design and BCNF normalization."
+  },
+  {
+    id: "lec-a-3",
+    classGroup: 1,
+    className: "Div A",
+    timeSlot: "01:00 PM - 02:00 PM",
+    subjectCode: "COA304",
+    subjectName: "Computer Architecture",
+    facultyName: "Prof. Ankita Kumari",
+    location: "EB-15",
+    roomType: "Classroom",
+    notes: "5-stage RISC pipeline execution and data hazards."
+  },
+  {
+    id: "lec-a-4",
+    classGroup: 1,
+    className: "Div A",
+    timeSlot: "02:05 PM - 03:05 PM",
+    subjectCode: "DSA301",
+    subjectName: "Data Structures & Algorithms",
+    facultyName: "Prof. Madonna Lamin",
+    location: "EB-15",
+    roomType: "Classroom",
+    notes: "Binary search tree traversals and heap construction."
+  },
+
+  // ── Division B (Group 2) ──
+  {
+    id: "lec-b-1",
+    classGroup: 2,
+    className: "Div B",
+    timeSlot: "10:10 AM - 11:15 AM",
+    subjectCode: "DSA301",
+    subjectName: "Data Structures Practical Lab",
+    facultyName: "Prof. Madonna Lamin",
+    location: "Lab-2",
+    roomType: "Lab",
+    notes: "Doubly linked list reversals and circular queues."
+  },
+  {
+    id: "lec-b-2",
+    classGroup: 2,
+    className: "Div B",
+    timeSlot: "11:15 AM - 12:15 PM",
+    subjectCode: "DBMS302",
+    subjectName: "Database Management Systems",
+    facultyName: "Prof. Raju Nakum",
+    location: "EB-16",
+    roomType: "Classroom",
+    notes: "SQL joins, nested queries, and constraint checking."
+  },
+  {
+    id: "lec-b-3",
+    classGroup: 2,
+    className: "Div B",
+    timeSlot: "01:00 PM - 02:00 PM",
+    subjectCode: "COA304",
+    subjectName: "Computer Architecture",
+    facultyName: "Prof. Ankita Kumari",
+    location: "EB-16",
+    roomType: "Classroom",
+    notes: "Hierarchical cache mapping and AMAT calculations."
+  },
+  {
+    id: "lec-b-4",
+    classGroup: 2,
+    className: "Div B",
+    timeSlot: "02:05 PM - 03:05 PM",
+    subjectCode: "JAVA303",
+    subjectName: "OOP Java Programming",
+    facultyName: "Prof. Diksha Durgapal",
+    location: "EB-16",
+    roomType: "Classroom",
+    notes: "Custom exceptions and Java Collections framework."
+  },
+
+  // ── Division C (Group 3) ──
+  {
+    id: "lec-c-1",
+    classGroup: 3,
+    className: "Div C",
+    timeSlot: "10:10 AM - 11:15 AM",
+    subjectCode: "CONMP305",
+    subjectName: "Numerical Methods Lab",
+    facultyName: "Prof. Sneha Patel",
+    location: "Lab-3",
+    roomType: "Lab",
+    notes: "Newton-Raphson iteration and Runge-Kutta ODE solvers."
+  },
+  {
+    id: "lec-c-2",
+    classGroup: 3,
+    className: "Div C",
+    timeSlot: "11:15 AM - 12:15 PM",
+    subjectCode: "DBMS302",
+    subjectName: "Database Management Systems",
+    facultyName: "Prof. Raju Nakum",
+    location: "EB-20",
+    roomType: "Classroom",
+    notes: "Transaction isolation levels and ACID guarantees."
+  },
+  {
+    id: "lec-c-3",
+    classGroup: 3,
+    className: "Div C",
+    timeSlot: "01:00 PM - 02:00 PM",
+    subjectCode: "COA304",
+    subjectName: "Computer Architecture",
+    facultyName: "Prof. Ankita Kumari",
+    location: "EB-20",
+    roomType: "Classroom",
+    notes: "Addressing modes and instruction cycle timing."
+  },
+  {
+    id: "lec-c-4",
+    classGroup: 3,
+    className: "Div C",
+    timeSlot: "02:05 PM - 03:05 PM",
+    subjectCode: "DSA301",
+    subjectName: "Data Structures & Algorithms",
+    facultyName: "Prof. Hiren Patel",
+    location: "EB-20",
+    roomType: "Classroom",
+    notes: "Graph adjacency list representation and BFS/DFS."
+  },
+
+  // ── Division D (Group 4) ──
+  {
+    id: "lec-d-1",
+    classGroup: 4,
+    className: "Div D",
+    timeSlot: "10:10 AM - 11:15 AM",
+    subjectCode: "JAVA303",
+    subjectName: "OOP Java Practical Lab",
+    facultyName: "Prof. Narendra Gamit",
+    location: "Lab-4",
+    roomType: "Lab",
+    notes: "Multithreading synchronization and lambda expressions."
+  },
+  {
+    id: "lec-d-2",
+    classGroup: 4,
+    className: "Div D",
+    timeSlot: "11:15 AM - 12:15 PM",
+    subjectCode: "DBMS302",
+    subjectName: "Database Management Systems",
+    facultyName: "Prof. Raju Nakum",
+    location: "EB-39",
+    roomType: "Classroom",
+    notes: "ER-to-Relational mapping and referential integrity."
+  },
+  {
+    id: "lec-d-3",
+    classGroup: 4,
+    className: "Div D",
+    timeSlot: "01:00 PM - 02:00 PM",
+    subjectCode: "COA304",
+    subjectName: "Computer Architecture",
+    facultyName: "Prof. Ankita Kumari",
+    location: "EB-39",
+    roomType: "Classroom",
+    notes: "Booth's signed multiplication algorithm and ALU design."
+  },
+  {
+    id: "lec-d-4",
+    classGroup: 4,
+    className: "Div D",
+    timeSlot: "02:05 PM - 03:05 PM",
+    subjectCode: "DSA301",
+    subjectName: "Data Structures & Algorithms",
+    facultyName: "Prof. Madonna Lamin",
+    location: "EB-39",
+    roomType: "Classroom",
+    notes: "AVL tree rotations and balance factor preservation."
+  },
+
+  // ── Division E (Group 5) ──
+  {
+    id: "lec-e-1",
+    classGroup: 5,
+    className: "Div E",
+    timeSlot: "10:10 AM - 11:15 AM",
+    subjectCode: "DBMS302",
+    subjectName: "DBMS Practical SQL Lab",
+    facultyName: "Prof. Raju Nakum",
+    location: "Lab-1",
+    roomType: "Lab",
+    notes: "Complex aggregate queries and window functions."
+  },
+  {
+    id: "lec-e-2",
+    classGroup: 5,
+    className: "Div E",
+    timeSlot: "11:15 AM - 12:15 PM",
+    subjectCode: "JAVA303",
+    subjectName: "OOP Java Programming",
+    facultyName: "Prof. Diksha Durgapal",
+    location: "EB-25",
+    roomType: "Classroom",
+    notes: "Interface inheritance and package architecture."
+  },
+  {
+    id: "lec-e-3",
+    classGroup: 5,
+    className: "Div E",
+    timeSlot: "01:00 PM - 02:00 PM",
+    subjectCode: "COA304",
+    subjectName: "Computer Architecture",
+    facultyName: "Prof. Ankita Kumari",
+    location: "EB-25",
+    roomType: "Classroom",
+    notes: "Microprogrammed control units vs hardwired state machines."
+  },
+  {
+    id: "lec-e-4",
+    classGroup: 5,
+    className: "Div E",
+    timeSlot: "02:05 PM - 03:05 PM",
+    subjectCode: "CONMP305",
+    subjectName: "Numerical Methods in Computing",
+    facultyName: "Prof. Sneha Patel",
+    location: "EB-25",
+    roomType: "Classroom",
+    notes: "Lagrange interpolation and error propagation bounds."
+  }
+];

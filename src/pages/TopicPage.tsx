@@ -139,7 +139,7 @@ const ContentTOC = memo(function ContentTOC({ markdown }: { markdown: string }) 
 
   return (
     <div className="space-y-0.5">
-      <p className="text-[10px] font-semibold text-white/50 uppercase tracking-wider mb-2 px-2">On This Page</p>
+      <p className="text-[10px] font-semibold text-[#6B7280] dark:text-neutral-400 uppercase tracking-wider mb-2 px-2">On This Page</p>
       {toc.map((item) => (
         <a
           key={item.id}
@@ -259,11 +259,18 @@ export default function TopicPage() {
     const list: Flashcard[] = [];
     if (resolvedTopic?.topic.keyPoints) {
       resolvedTopic.topic.keyPoints.forEach((kp, idx) => {
+        const hasColon = kp.includes(":");
+        const frontText = hasColon 
+          ? kp.split(":")[0].trim() 
+          : `Concept #${idx + 1}: ${resolvedTopic?.topic.title}`;
+        const backText = hasColon 
+          ? kp.split(":").slice(1).join(":").trim() 
+          : kp.trim();
         list.push({
           id: `kp-${idx}`,
           category: "Exam Point",
-          front: kp.split(":")[0] || `Key Concept ${idx + 1}`,
-          back: kp.includes(":") ? kp.split(":").slice(1).join(":").trim() : kp,
+          front: frontText,
+          back: backText,
         });
       });
     }
@@ -389,30 +396,30 @@ export default function TopicPage() {
 
       <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
 
-      <header className={`sticky top-0 z-50 bg-black/40 backdrop-blur-md border-b border-white/10 transition-all duration-300 ${focusMode ? "opacity-0 pointer-events-none -translate-y-full" : ""}`}>
+      <header className={`sticky top-0 z-50 bg-white/95 dark:bg-[#18181B]/95 backdrop-blur-md border-b border-[#E8E4DA] dark:border-neutral-800 transition-all duration-300 ${focusMode ? "opacity-0 pointer-events-none -translate-y-full" : ""}`}>
         <div className="max-w-[1400px] mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <button onClick={() => setSidebarOpen(!sidebarOpen)} className="lg:hidden p-2 -ml-2 rounded-lg hover:bg-white/10 text-white press">
+            <button onClick={() => setSidebarOpen(!sidebarOpen)} className="lg:hidden p-2 -ml-2 rounded-lg hover:bg-[#F6F3EC] dark:hover:bg-neutral-800 text-[#111111] dark:text-white press">
               {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
-            <button onClick={() => navigate(`/subject/${subjectId}`)} className="p-1.5 -ml-1.5 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-colors press">
+            <button onClick={() => navigate(`/subject/${subjectId}`)} className="p-1.5 -ml-1.5 rounded-lg hover:bg-[#F6F3EC] dark:hover:bg-neutral-800 text-[#6B7280] dark:text-neutral-400 hover:text-[#111111] dark:hover:text-white transition-colors press">
               <ChevronLeft className="h-5 w-5" />
             </button>
-            <nav className="hidden sm:flex items-center gap-2 text-[14px] text-white/60 font-medium">
-              <Link to="/" className="hover:text-white transition-colors press">Home</Link>
+            <nav className="hidden sm:flex items-center gap-2 text-[14px] text-[#6B7280] dark:text-neutral-400 font-medium">
+              <Link to="/community" className="hover:text-[#2B4EFF] dark:hover:text-blue-400 transition-colors press">Campus</Link>
               <ChevronRight className="h-4 w-4 opacity-40" />
-              <Link to={`/subject/${subjectId}`} className="hover:text-white transition-colors press">{subject?.name}</Link>
+              <Link to={`/subject/${subjectId}`} className="hover:text-[#2B4EFF] dark:hover:text-blue-400 transition-colors press">{subject?.name}</Link>
               <ChevronRight className="h-4 w-4 opacity-40" />
-              <span className="text-white truncate max-w-[250px]">{topic.title}</span>
+              <span className="text-[#111111] dark:text-white font-semibold truncate max-w-[250px]">{topic.title}</span>
             </nav>
           </div>
           <div className="flex items-center gap-1 sm:gap-2">
             <button
               onClick={handleComplete}
-              className={`h-8 sm:h-9 px-2.5 sm:px-4 rounded-lg text-[12px] sm:text-[13px] font-semibold inline-flex items-center gap-1.5 sm:gap-2 transition-all press ${
+              className={`h-8 sm:h-9 px-2.5 sm:px-4 rounded-full text-[12px] sm:text-[13px] font-semibold inline-flex items-center gap-1.5 sm:gap-2 transition-all press cursor-pointer ${
                 completed
-                  ? "bg-accent/10 text-accent-foreground hover:bg-accent/20 border border-accent/20"
-                  : "bg-white/10 hover:bg-white/20 text-white border border-white/10"
+                  ? "bg-[#D7F75B] text-[#111111] font-bold shadow-2xs"
+                  : "bg-[#111111] dark:bg-white text-white dark:text-[#111111] hover:bg-[#222222] dark:hover:bg-neutral-200"
               }`}
             >
               <CheckCircle className="h-4 w-4" />
@@ -429,13 +436,13 @@ export default function TopicPage() {
                 }
               }}
               title={isPomodoroRunning ? `Focus session active: ${Math.floor(pomodoroTimeLeft / 60)}m left` : "Start 25m Focus Sprint directly"}
-              className={`hidden sm:inline-flex h-8 sm:h-9 px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] font-semibold items-center gap-1.5 transition-all press ${
+              className={`hidden sm:inline-flex h-8 sm:h-9 px-2.5 sm:px-3 rounded-full text-[12px] sm:text-[13px] font-semibold items-center gap-1.5 transition-all press cursor-pointer border border-[#E8E4DA] dark:border-neutral-800 ${
                 isPomodoroRunning
-                  ? "bg-accent/20 text-accent-foreground border border-accent/30 animate-pulse"
-                  : "bg-white/10 hover:bg-white/20 text-white border border-white/10"
+                  ? "bg-[#E6EAFD] text-[#2B4EFF] dark:bg-blue-950/60 dark:text-blue-300 font-bold animate-pulse"
+                  : "bg-white dark:bg-[#18181B] text-[#111111] dark:text-white hover:bg-[#F6F3EC] dark:hover:bg-neutral-800"
               }`}
             >
-              <Clock className={`h-4 w-4 ${isPomodoroRunning ? "text-accent-foreground" : "text-primary"}`} />
+              <Clock className={`h-4 w-4 ${isPomodoroRunning ? "text-[#2B4EFF]" : "text-[#6B7280]"}`} />
               <span className="hidden md:inline font-mono">
                 {isPomodoroRunning
                   ? `${String(Math.floor(pomodoroTimeLeft / 60)).padStart(2, '0')}:${String(pomodoroTimeLeft % 60).padStart(2, '0')}`
@@ -446,16 +453,16 @@ export default function TopicPage() {
             <button
               onClick={() => setFlashcardsOpen(true)}
               title="Active Recall Flashcards"
-              className="hidden md:inline-flex h-8 sm:h-9 px-2.5 sm:px-3 rounded-lg text-[12px] sm:text-[13px] font-semibold items-center gap-1.5 bg-white/10 hover:bg-white/20 text-white transition-all press"
+              className="hidden md:inline-flex h-8 sm:h-9 px-2.5 sm:px-3 rounded-full text-[12px] sm:text-[13px] font-semibold items-center gap-1.5 border border-[#E8E4DA] dark:border-neutral-800 bg-white dark:bg-[#18181B] text-[#111111] dark:text-white hover:bg-[#F6F3EC] dark:hover:bg-neutral-800 transition-all press cursor-pointer"
             >
-              <Layers className="h-4 w-4 text-accent-foreground" />
+              <Layers className="h-4 w-4 text-[#2B4EFF]" />
               <span className="hidden lg:inline">Flashcards</span>
             </button>
 
             <button
               onClick={handleShare}
               title="Share Topic Link with Classmates"
-              className="hidden sm:inline-flex p-1.5 sm:p-2 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-colors press"
+              className="hidden sm:inline-flex p-1.5 sm:p-2 rounded-full hover:bg-[#F6F3EC] dark:hover:bg-neutral-800 text-[#6B7280] dark:text-neutral-400 hover:text-[#111111] dark:hover:text-white transition-colors press cursor-pointer"
             >
               <Share2 className="h-4 w-4 sm:h-5 sm:w-5" />
             </button>
@@ -463,11 +470,11 @@ export default function TopicPage() {
             <button
               onClick={() => setAnnotationsDrawerOpen(true)}
               title={`Personal Notes & Highlights (${annotations.length})`}
-              className="relative p-1.5 sm:p-2 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-colors press"
+              className="relative p-1.5 sm:p-2 rounded-full hover:bg-[#F6F3EC] dark:hover:bg-neutral-800 text-[#6B7280] dark:text-neutral-400 hover:text-[#111111] dark:hover:text-white transition-colors press cursor-pointer"
             >
-              <Highlighter className="h-4 w-4 sm:h-5 sm:w-5 text-accent-foreground" />
+              <Highlighter className="h-4 w-4 sm:h-5 sm:w-5 text-[#2B4EFF]" />
               {annotations.length > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary text-white font-bold text-[9px] flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#2B4EFF] text-white font-bold text-[9px] flex items-center justify-center">
                   {annotations.length}
                 </span>
               )}
@@ -476,7 +483,7 @@ export default function TopicPage() {
             <button
               onClick={() => window.print()}
               title="Save Topic as PDF / Print Exam Guide"
-              className="hidden sm:inline-flex p-1.5 sm:p-2 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-colors press"
+              className="hidden sm:inline-flex p-1.5 sm:p-2 rounded-full hover:bg-[#F6F3EC] dark:hover:bg-neutral-800 text-[#6B7280] dark:text-neutral-400 hover:text-[#111111] dark:hover:text-white transition-colors press cursor-pointer"
             >
               <Printer className="h-4 w-4 sm:h-5 sm:w-5" />
             </button>
@@ -484,47 +491,47 @@ export default function TopicPage() {
             <button
               onClick={() => setFocusMode(!focusMode)}
               title={focusMode ? "Exit Focus Mode (F)" : "Focus Mode (F)"}
-              className="hidden sm:inline-flex p-1.5 sm:p-2 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-colors press"
+              className="hidden sm:inline-flex p-1.5 sm:p-2 rounded-full hover:bg-[#F6F3EC] dark:hover:bg-neutral-800 text-[#6B7280] dark:text-neutral-400 hover:text-[#111111] dark:hover:text-white transition-colors press cursor-pointer"
             >
               {focusMode ? <Minimize2 className="h-4 w-4 sm:h-5 sm:w-5" /> : <Maximize2 className="h-4 w-4 sm:h-5 sm:w-5" />}
             </button>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="sm:hidden p-1.5 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-colors press">
+                <button className="sm:hidden p-1.5 rounded-full hover:bg-[#F6F3EC] dark:hover:bg-neutral-800 text-[#6B7280] dark:text-neutral-400 hover:text-[#111111] dark:hover:text-white transition-colors press cursor-pointer">
                   <MoreVertical className="h-4 w-4" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 sm:hidden rounded-xl shadow-xl border border-white/10 glass-card">
-                <DropdownMenuItem onClick={() => setFlashcardsOpen(true)} className="press hover:bg-white/5">
-                  <Layers className="mr-2 h-4 w-4 text-accent-foreground" />
+              <DropdownMenuContent align="end" className="w-48 sm:hidden rounded-2xl shadow-xl border border-[#E8E4DA] dark:border-neutral-800 bg-white dark:bg-[#1C1C1E]">
+                <DropdownMenuItem onClick={() => setFlashcardsOpen(true)} className="press hover:bg-[#F6F3EC] dark:hover:bg-neutral-800">
+                  <Layers className="mr-2 h-4 w-4 text-[#2B4EFF]" />
                   <span>Flashcards</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleShare} className="press hover:bg-white/5">
-                  <Share2 className="mr-2 h-4 w-4 text-accent-foreground" />
+                <DropdownMenuItem onClick={handleShare} className="press hover:bg-[#F6F3EC] dark:hover:bg-neutral-800">
+                  <Share2 className="mr-2 h-4 w-4 text-[#2B4EFF]" />
                   <span>Share Topic</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setAnnotationsDrawerOpen(true)} className="press hover:bg-white/5">
-                  <Highlighter className="mr-2 h-4 w-4 text-accent-foreground" />
+                <DropdownMenuItem onClick={() => setAnnotationsDrawerOpen(true)} className="press hover:bg-[#F6F3EC] dark:hover:bg-neutral-800">
+                  <Highlighter className="mr-2 h-4 w-4 text-[#2B4EFF]" />
                   <span>My Notes ({annotations.length})</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setVivaModalOpen(true)} className="press hover:bg-white/5">
-                  <HelpCircle className="mr-2 h-4 w-4 text-primary" />
+                <DropdownMenuItem onClick={() => setVivaModalOpen(true)} className="press hover:bg-[#F6F3EC] dark:hover:bg-neutral-800">
+                  <HelpCircle className="mr-2 h-4 w-4 text-[#2B4EFF]" />
                   <span>Oral / Viva Prep</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setErrataModalOpen(true)} className="press hover:bg-white/5">
-                  <Flag className="mr-2 h-4 w-4 text-destructive" />
+                <DropdownMenuItem onClick={() => setErrataModalOpen(true)} className="press hover:bg-[#F6F3EC] dark:hover:bg-neutral-800">
+                  <Flag className="mr-2 h-4 w-4 text-rose-500" />
                   <span>Report Error (+25 XP)</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => window.print()} className="press hover:bg-white/5">
-                  <Printer className="mr-2 h-4 w-4 text-white/60" />
+                <DropdownMenuItem onClick={() => window.print()} className="press hover:bg-[#F6F3EC] dark:hover:bg-neutral-800">
+                  <Printer className="mr-2 h-4 w-4 text-[#6B7280]" />
                   <span>Save / Print PDF</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <button onClick={() => toggleBookmark(topic.id)} className="p-1.5 sm:p-2 rounded-lg hover:bg-white/10 transition-colors press">
-              <Bookmark className={`h-4 w-4 sm:h-5 sm:w-5 ${bookmarked ? "fill-accent text-accent-foreground" : "text-white/60 hover:text-white"}`} />
+            <button onClick={() => toggleBookmark(topic.id)} className="p-1.5 sm:p-2 rounded-full hover:bg-[#F6F3EC] dark:hover:bg-neutral-800 transition-colors press cursor-pointer">
+              <Bookmark className={`h-4 w-4 sm:h-5 sm:w-5 ${bookmarked ? "fill-[#2B4EFF] text-[#2B4EFF]" : "text-[#6B7280] dark:text-neutral-400 hover:text-[#111111] dark:hover:text-white"}`} />
             </button>
           </div>
         </div>
@@ -535,12 +542,12 @@ export default function TopicPage() {
           {sidebarOpen && <div className="fixed inset-0 bg-black/60 backdrop-blur-sm lg:hidden z-40" onClick={() => setSidebarOpen(false)} />}
           <div className={`${sidebarOpen ? "fixed left-0 top-14 bottom-0 w-72 z-50 bg-background shadow-xl" : ""} lg:sticky lg:top-14 lg:h-[calc(100vh-3.5rem)] overflow-y-auto border-r border-white/10 p-4 scrollbar-thin`}>
             <div className="mb-4 pb-3 border-b border-white/10">
-              <h3 className="font-bold text-sm text-white truncate">{subject?.name}</h3>
-              <p className="text-[11px] text-white/60">{subject?.code} • Semester {subject?.semester}</p>
+              <h3 className="font-bold text-sm text-[#111111] dark:text-white truncate">{subject?.name}</h3>
+              <p className="text-[11px] text-[#6B7280] dark:text-neutral-400">{subject?.code} • Semester {subject?.semester}</p>
             </div>
             {allUnits.map((unit, uIdx) => (
               <div key={unit.id} className="mb-4">
-                <p className="text-[11px] font-bold text-white/50 uppercase tracking-wider mb-1.5 px-2">
+                <p className="text-[11px] font-bold text-[#6B7280] dark:text-neutral-400 uppercase tracking-wider mb-1.5 px-2">
                   Unit {uIdx + 1}: {unit.title}
                 </p>
                 <div className="space-y-0.5">
@@ -554,8 +561,8 @@ export default function TopicPage() {
                         onClick={() => setSidebarOpen(false)}
                         className={`flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg transition-colors press ${
                           isActive
-                            ? "bg-gradient-electric text-white font-semibold shadow-lg shadow-primary/40"
-                            : "text-white/60 hover:text-white hover:bg-white/5"
+                            ? "bg-[#E6EAFD] text-[#2B4EFF] dark:bg-blue-950/60 dark:text-blue-300 font-bold shadow-2xs"
+                            : "text-[#6B7280] dark:text-neutral-400 hover:text-[#111111] dark:hover:text-white hover:bg-[#F6F3EC] dark:hover:bg-neutral-800"
                         }`}
                       >
                         <span className="truncate pr-2">{t.title}</span>
@@ -598,14 +605,14 @@ export default function TopicPage() {
                   </button>
                   <button
                     onClick={() => setErrataModalOpen(true)}
-                    className="px-2 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white/60 hover:text-white text-[11px] font-medium inline-flex items-center gap-1 transition-all press"
+                    className="px-2.5 py-1 rounded-full bg-white dark:bg-neutral-800 border border-[#E8E4DA] dark:border-neutral-700 hover:border-rose-300 text-[#6B7280] dark:text-neutral-300 hover:text-rose-500 text-[11px] font-semibold inline-flex items-center gap-1 transition-all press cursor-pointer"
                   >
                     <Flag className="h-3 w-3 text-destructive" /> Report Typo
                   </button>
                 </div>
               </div>
 
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold mb-3 sm:mb-4 leading-tight text-white tracking-tight">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold mb-3 sm:mb-4 leading-tight text-[#111111] dark:text-white tracking-tight">
                 {topic.title}
               </h1>
 
@@ -656,11 +663,11 @@ export default function TopicPage() {
                         </button>
                       )}
                     </div>
-                    <div className="mb-6 sm:mb-10 bg-white/10 rounded-xl p-4 sm:p-6 border border-white/10">
-                      <p className="text-[11px] sm:text-[12px] font-bold text-primary uppercase tracking-widest mb-2 sm:mb-3 flex items-center gap-2">
+                    <div className="mb-6 sm:mb-10 bg-[#E6EAFD]/40 dark:bg-neutral-800/60 rounded-[20px] p-5 sm:p-6 border border-[#2B4EFF]/20 shadow-2xs">
+                      <p className="text-[11px] sm:text-[12px] font-bold text-[#2B4EFF] dark:text-blue-400 uppercase tracking-widest mb-2 sm:mb-3 flex items-center gap-2">
                         <BookOpen className="h-4 w-4" /> Quick Summary
                       </p>
-                      <p className="text-[14px] sm:text-[16px] leading-[1.7] sm:leading-[1.8] text-white/90 font-medium">{topic.simpleExplanation}</p>
+                      <p className="text-[14px] sm:text-[16px] leading-[1.7] sm:leading-[1.8] text-[#111111] dark:text-neutral-100 font-medium">{topic.simpleExplanation}</p>
                     </div>
                     <div className="rich-content prose-lg max-w-none">
                       <MarkdownRenderer content={topic.richContent || topic.detailedExplanation} />
@@ -696,17 +703,17 @@ export default function TopicPage() {
 
                 {topic.theoryQuestions && topic.theoryQuestions.length > 0 && (
                   <div className="mt-12 sm:mt-16">
-                    <h2 className="text-xl sm:text-2xl font-extrabold mb-4 sm:mb-6 pb-2 sm:pb-3 border-b border-white/10 text-white">Important Exam Questions</h2>
+                    <h2 className="text-xl sm:text-2xl font-extrabold mb-4 sm:mb-6 pb-2 sm:pb-3 border-b border-[#E8E4DA] dark:border-neutral-800 text-[#111111] dark:text-white">Important Exam Questions</h2>
                     <Accordion type="single" collapsible className="w-full space-y-2 sm:space-y-3">
                       {topic.theoryQuestions.map((q, idx) => (
-                        <AccordionItem key={idx} value={`item-${idx}`} className="border border-white/10 rounded-xl bg-white/5">
+                        <AccordionItem key={idx} value={`item-${idx}`} className="border border-[#E8E4DA] dark:border-neutral-800 rounded-2xl bg-white dark:bg-[#18181B]">
                           <AccordionTrigger className="text-left font-bold text-[13px] sm:text-[15px] hover:no-underline py-3 sm:py-4 press">
                             <span className="flex items-center gap-2">
                               <span className="text-xs px-2 py-0.5 rounded bg-primary/10 text-primary font-mono">{q.marks}</span>
                               {q.question}
                             </span>
                           </AccordionTrigger>
-                          <AccordionContent className="pt-2 pb-4 text-white/60 text-xs sm:text-sm leading-relaxed border-t border-white/10">
+                          <AccordionContent className="pt-2 pb-4 text-[#6B7280] dark:text-neutral-300 text-xs sm:text-sm leading-relaxed border-t border-[#E8E4DA] dark:border-neutral-800">
                             <MarkdownRenderer content={q.answer} />
                           </AccordionContent>
                         </AccordionItem>
@@ -717,7 +724,7 @@ export default function TopicPage() {
 
                 {topic.mcqs && topic.mcqs.length > 0 && (
                   <div className="mt-16 mb-8">
-                    <h2 className="text-2xl font-extrabold mb-6 pb-3 border-b border-white/10 text-white">Practice Quiz ({topic.mcqs.length} MCQs)</h2>
+                    <h2 className="text-2xl font-extrabold mb-6 pb-3 border-b border-[#E8E4DA] dark:border-neutral-800 text-[#111111] dark:text-white">Practice Quiz ({topic.mcqs.length} MCQs)</h2>
                     <MCQQuiz
                       mcqs={topic.mcqs}
                       topicId={topic.id}
@@ -730,7 +737,7 @@ export default function TopicPage() {
                 )}
               </div>
 
-              <div className="flex items-center justify-between mt-12 pt-8 border-t border-white/10">
+              <div className="flex items-center justify-between mt-12 pt-8 border-t border-[#E8E4DA] dark:border-neutral-800">
                 {adjacent.prev ? (
                   <button onClick={() => navigate(`/subject/${subjectId}/topic/${adjacent.prev!.id}`)} className="press inline-flex items-center gap-1.5 text-[14px] text-white/60 hover:text-white transition-colors">
                     <ChevronLeft className="h-4 w-4" /> Previous
@@ -751,7 +758,21 @@ export default function TopicPage() {
             )}
           </div>
 
-          {!focusMode && <Footer />}
+          {!focusMode && (
+            <footer className="mt-16 pt-8 pb-12 border-t border-[#E8E4DA] dark:border-neutral-800 text-xs text-[#6B7280] dark:text-neutral-400">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#2B4EFF]" />
+                  <span className="font-semibold text-[#111111] dark:text-white">ITM SLS Baroda University</span>
+                  <span>·</span>
+                  <span>{subject?.name} ({subject?.code})</span>
+                </div>
+                <div className="text-[11px] text-[#6B7280]">
+                  Academic Suite · Verified Syllabus Notes
+                </div>
+              </div>
+            </footer>
+          )}
         </main>
       </div>
 

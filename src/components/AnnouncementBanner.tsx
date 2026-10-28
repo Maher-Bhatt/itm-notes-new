@@ -93,46 +93,23 @@ export function AnnouncementBanner() {
 
   if (isMaintenanceActive || !announcement || !announcement.active) return null;
 
-  const severityStyles = {
-    info: {
-      wrapper: 'bg-primary/10 border-primary/30 text-primary-foreground',
-      badge: 'bg-primary/20 text-primary border-primary/30',
-      icon: <Info className="h-4 w-4 text-primary shrink-0" />,
-      text: 'text-foreground',
-    },
-    warning: {
-      wrapper: 'bg-amber-500/15 border-amber-500/30 text-amber-950 dark:text-amber-100',
-      badge: 'bg-amber-500/25 text-amber-600 dark:text-amber-400 border-amber-500/40',
-      icon: <AlertTriangle className="h-4 w-4 text-amber-500 shrink-0" />,
-      text: 'text-amber-950 dark:text-amber-100',
-    },
-    critical: {
-      wrapper: 'bg-rose-500/15 border-rose-500/30 text-rose-950 dark:text-rose-100',
-      badge: 'bg-rose-500/25 text-rose-600 dark:text-rose-400 border-rose-500/40',
-      icon: <AlertCircle className="h-4 w-4 text-rose-500 shrink-0" />,
-      text: 'text-rose-950 dark:text-rose-100',
-    },
-  };
-
-  const style = severityStyles[announcement.severity] || severityStyles.info;
-
   return (
-    <div className={`relative z-40 border-b px-4 py-2 transition-all text-xs ${style.wrapper}`}>
+    <div className="relative z-40 border-b border-[#111111] bg-[#111111] text-white px-4 py-2 transition-all text-xs">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
         <div className="flex items-center gap-2.5 min-w-0">
-          {style.icon}
+          <span className="w-2 h-2 rounded-full bg-[#D7F75B] shrink-0 animate-pulse" />
           <div className="flex flex-wrap items-center gap-2 min-w-0">
-            <span className={`font-bold uppercase tracking-wider text-[10px] px-2 py-0.5 rounded-full border ${style.badge}`}>
-              {announcement.severity}
+            <span className="font-bold uppercase tracking-wider text-[10px] px-2.5 py-0.5 rounded-full bg-[#D7F75B] text-[#111111]">
+              {announcement.severity === 'critical' ? 'Alert' : 'Campus Update'}
             </span>
-            <span className="font-bold text-foreground text-[11px] sm:text-xs">{announcement.title}:</span>
-            <span className={`${style.text} font-medium text-[11px] sm:text-xs line-clamp-2 sm:line-clamp-1`}>
+            <span className="font-bold text-white text-[11px] sm:text-xs">{announcement.title}:</span>
+            <span className="text-[#EFECE6] font-normal text-[11px] sm:text-xs line-clamp-2 sm:line-clamp-1">
               {announcement.body}
             </span>
             <button
               type="button"
               onClick={() => openTimetable('viva')}
-              className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-[#18181B] text-[#FAFAFA] hover:bg-[#27272A] font-bold text-[10px] shadow-xs cursor-pointer transition-all ml-1"
+              className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white/15 hover:bg-white/25 text-white font-bold text-[10px] cursor-pointer transition-all ml-1 shadow-2xs"
             >
               <Calendar className="h-3 w-3" />
               <span>View Timetables</span>
@@ -143,7 +120,7 @@ export function AnnouncementBanner() {
         <button
           type="button"
           onClick={handleDismiss}
-          className="p-1.5 -mr-1 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 text-muted-foreground hover:text-foreground transition-colors shrink-0 flex items-center justify-center cursor-pointer"
+          className="p-1.5 -mr-1 rounded-full hover:bg-white/10 text-white/70 hover:text-white transition-colors shrink-0 flex items-center justify-center cursor-pointer"
           title="Dismiss announcement"
           aria-label="Dismiss announcement"
         >

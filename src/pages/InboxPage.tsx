@@ -131,10 +131,12 @@ const REQUESTS_STORAGE_KEY = 'campusloop_inbox_requests';
 
 export default function InboxPage() {
   const { user } = useAuth();
+  const userStoragePrefix = user?.id ? `campusloop_inbox_${user.id}` : 'campusloop_inbox_guest';
+  const requestsStorageKey = user?.id ? `campusloop_requests_${user.id}` : 'campusloop_requests_guest';
 
   const [conversations, setConversations] = useState<Conversation[]>(() => {
     try {
-      const stored = localStorage.getItem(INBOX_STORAGE_KEY);
+      const stored = localStorage.getItem(userStoragePrefix);
       if (stored) return JSON.parse(stored);
     } catch {}
     return DEFAULT_CONVERSATIONS;
@@ -142,7 +144,7 @@ export default function InboxPage() {
 
   const [requests, setRequests] = useState<MessageRequest[]>(() => {
     try {
-      const stored = localStorage.getItem(REQUESTS_STORAGE_KEY);
+      const stored = localStorage.getItem(requestsStorageKey);
       if (stored) return JSON.parse(stored);
     } catch {}
     return DEFAULT_REQUESTS;
@@ -156,19 +158,32 @@ export default function InboxPage() {
   const [showComposeModal, setShowComposeModal] = useState(false);
   const [newRecipientName, setNewRecipientName] = useState('');
 
+  // Close modals on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (activeConversation) setActiveConversation(null);
+        if (showRequestsModal) setShowRequestsModal(false);
+        if (showComposeModal) setShowComposeModal(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeConversation, showRequestsModal, showComposeModal]);
+
   // Persist conversations
   useEffect(() => {
     try {
-      localStorage.setItem(INBOX_STORAGE_KEY, JSON.stringify(conversations));
+      localStorage.setItem(userStoragePrefix, JSON.stringify(conversations));
     } catch {}
-  }, [conversations]);
+  }, [conversations, userStoragePrefix]);
 
   // Persist requests
   useEffect(() => {
     try {
-      localStorage.setItem(REQUESTS_STORAGE_KEY, JSON.stringify(requests));
+      localStorage.setItem(requestsStorageKey, JSON.stringify(requests));
     } catch {}
-  }, [requests]);
+  }, [requests, requestsStorageKey]);
 
   // Total unread count
   const totalUnread = useMemo(() => {
@@ -379,7 +394,10 @@ export default function InboxPage() {
 
       {/* 6. Active Chat Thread Modal / Drawer */}
       {activeConversation && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-3 sm:p-4">
+        <div 
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-3 sm:p-4"
+          onClick={() => setActiveConversation(null)}
+        >
           <div
             className="w-full max-w-lg h-[90vh] bg-white dark:bg-[#18181B] rounded-[24px] border border-[#E8E4DA] dark:border-neutral-800 shadow-2xl flex flex-col overflow-hidden animate-scale-in"
             onClick={(e) => e.stopPropagation()}
@@ -469,7 +487,7 @@ export default function InboxPage() {
       {/* 7. Message Requests Modal */}
       {showRequestsModal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
           onClick={() => setShowRequestsModal(false)}
         >
           <div

@@ -150,7 +150,7 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
   const [heroSandboxTab, setHeroSandboxTab] = useState<'attendance' | 'code' | 'questions' | 'flashcards'>('attendance');
 
   // Interactive Attendance Demo State
-  const [demoAttended, setDemoAttended] = useState(39);
+  const [demoAttended, setDemoAttended] = useState(38);
   const [demoTotal, setDemoTotal] = useState(48);
 
   // Interactive Code Demo State
@@ -169,10 +169,10 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
   // Counter Animation
   const statsRef = useRef<HTMLDivElement>(null);
   const [countersStarted, setCountersStarted] = useState(false);
-  const [mcqCount, setMcqCount] = useState(0);
-  const [pdfCount, setPdfCount] = useState(0);
-  const [labCount, setLabCount] = useState(0);
-  const [studentCount, setStudentCount] = useState(0);
+  const [mcqCount, setMcqCount] = useState(954);
+  const [pdfCount, setPdfCount] = useState(84);
+  const [labCount, setLabCount] = useState(154);
+  const [studentCount, setStudentCount] = useState(1250);
 
   // Redirect for authenticated users
   const [redirectCountdown, setRedirectCountdown] = useState(2);
@@ -232,10 +232,10 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
       ([entry]) => {
         if (entry.isIntersecting && !countersStarted) {
           setCountersStarted(true);
-          animateCounter(setMcqCount, 520, 1600);
+          animateCounter(setMcqCount, 954, 1600);
           animateCounter(setPdfCount, 84, 1400);
           animateCounter(setLabCount, 154, 1500);
-          animateCounter(setStudentCount, 1850, 1800);
+          animateCounter(setStudentCount, 1250, 1800);
         }
       },
       { threshold: 0.25 }
@@ -830,7 +830,7 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
                   </div>
 
                   <p className="text-xs text-[#6B7280] dark:text-neutral-400 leading-relaxed">
-                    Under university guidelines, falling below 75% attendance leads to debasement from end-semester examination hall tickets. Use our radar to plan leaves safely without risking detention.
+                    Under university guidelines, falling below 75% attendance leads to debarment from end-semester examination hall tickets. Use our radar to plan leaves safely without risking detention.
                   </p>
                 </div>
 

@@ -275,10 +275,7 @@ export default function GpaCalculatorPage() {
     } catch (e) {
       console.warn('Failed to load CGPA history from localStorage:', e);
     }
-    return [
-      { sem: 1, sgpa: 8.2, credits: 20 },
-      { sem: 2, sgpa: 8.4, credits: 21 },
-    ];
+    return [];
   });
 
   useEffect(() => {
@@ -952,7 +949,7 @@ export default function GpaCalculatorPage() {
                           <div className="flex justify-between items-center">
                             <span className="text-muted-foreground font-medium">To reach {targetGradeName} ({targetSgpa} Goal):</span>
                             <span className={`font-bold font-mono ${needForTarget > 50 ? 'text-rose-500' : 'text-primary'}`}>
-                              {needForTarget > 50 ? 'Need >50 (Hard)' : `≥ ${needForTarget}/50`}
+                              {needForTarget > 50 ? 'Requires >50 (Exceeds 50 Max)' : `≥ ${needForTarget}/50`}
                             </span>
                           </div>
                           <div className="flex justify-between items-center text-[10px] text-muted-foreground">

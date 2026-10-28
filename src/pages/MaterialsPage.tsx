@@ -614,7 +614,7 @@ function SemesterSection({
 
 // ─── Trend chart data ──────────────────────────────────────────────────────
 const TREND_DATA = [
-  { date: "Oct 00", count: 18 },
+  { date: "Oct 01", count: 18 },
   { date: "Oct 08", count: 32 },
   { date: "Oct 16", count: 48 },
   { date: "Oct 24", count: 38 },
@@ -671,12 +671,12 @@ export default function MaterialsPage() {
 
   // Stats
   const stats = useMemo(() => {
-    const notes = liveMaterials.filter((m) => m.category === "Notes").length + SUBJECT_OVERVIEW_CARDS.filter((c) => c.category === "Notes").length;
-    const labs = liveMaterials.filter((m) => m.category === "Lab Manual").length + SUBJECT_OVERVIEW_CARDS.filter((c) => c.category === "Lab Manual").length;
-    const qps = liveMaterials.filter((m) => m.category === "Question Paper").length;
-    const total = liveMaterials.length + SUBJECT_OVERVIEW_CARDS.length;
+    const notes = plainMaterials.filter((m) => m.category === "Notes").length + SUBJECT_OVERVIEW_CARDS.filter((c) => c.category === "Notes").length;
+    const labs = plainMaterials.filter((m) => m.category === "Lab Manual").length + SUBJECT_OVERVIEW_CARDS.filter((c) => c.category === "Lab Manual").length;
+    const qps = plainMaterials.filter((m) => m.category === "Question Paper").length + SUBJECT_OVERVIEW_CARDS.filter((c) => c.category === "Question Paper").length;
+    const total = plainMaterials.length + SUBJECT_OVERVIEW_CARDS.length;
     return { notes, labs, qps, total };
-  }, [liveMaterials]);
+  }, [plainMaterials]);
 
   // Filter plain materials
   const filteredPlain = useMemo(() => {
@@ -966,7 +966,7 @@ export default function MaterialsPage() {
                 Distribution of solved exam questions across Semester 3 units
               </p>
             </div>
-            <span className="text-xs font-bold text-primary font-mono">+42% this week</span>
+            <span className="text-xs font-medium text-muted-foreground font-mono">Updated Weekly</span>
           </div>
           <div className="h-44 w-full pt-2">
             <ResponsiveContainer width="100%" height="100%">

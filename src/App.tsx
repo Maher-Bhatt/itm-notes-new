@@ -147,7 +147,10 @@ const App = () => (
                 <Sonner />
                 <BrowserRouter>
                   <NativeAppInitializer />
-                  <AppStartupSplashScreen />
+                  {/* Native-only or initial splash check */}
+                  {typeof window !== "undefined" && window.location.hash.includes("native") && (
+                    <AppStartupSplashScreen />
+                  )}
                   <ErrorBoundary>
                     <AppStartup />
                     <MaintenanceBanner />
@@ -164,7 +167,11 @@ const App = () => (
                         <Route path="/onboarding" element={<ProtectedRoute><OnboardingPage /></ProtectedRoute>} />
 
                         {/* Distraction-Free Topic Reader */}
-                        <Route path="/subject/:subjectId/topic/:topicId" element={<TopicPage />} />
+                        <Route path="/subject/:subjectId/topic/:topicId" element={<ProtectedRoute><TopicPage /></ProtectedRoute>} />
+
+                        {/* Redirects for legacy and intuitive routes */}
+                        <Route path="/notes" element={<Navigate to="/subjects" replace />} />
+                        <Route path="/settings" element={<Navigate to="/profile" replace />} />
 
                         {/* Unified Modern Portal Layout */}
                         <Route element={<PortalLayout />}>
@@ -186,8 +193,8 @@ const App = () => (
                           <Route path="/bookmarks" element={<ProtectedRoute><BookmarksPage /></ProtectedRoute>} />
                           <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
                           <Route path="/subjects" element={<ProtectedRoute><SubjectsPage /></ProtectedRoute>} />
-                          <Route path="/subject/:subjectId" element={<SubjectDashboard />} />
-                          <Route path="/subject/:subjectId/cheat-sheet" element={<SubjectCheatSheetPage />} />
+                          <Route path="/subject/:subjectId" element={<ProtectedRoute><SubjectDashboard /></ProtectedRoute>} />
+                          <Route path="/subject/:subjectId/cheat-sheet" element={<ProtectedRoute><SubjectCheatSheetPage /></ProtectedRoute>} />
 
                           {/* 32 High-Value Features Routes */}
                           <Route path="/today" element={<ProtectedRoute><TodayPage /></ProtectedRoute>} />
@@ -200,7 +207,7 @@ const App = () => (
 
                           <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminDashboard /></ProtectedRoute>} />
                           <Route path="/admin/seed" element={<ProtectedRoute requireAdmin><SeedPage /></ProtectedRoute>} />
-                          <Route path="/explore" element={<ExplorePage />} />
+                          <Route path="/explore" element={<ProtectedRoute><ExplorePage /></ProtectedRoute>} />
                           <Route path="/inbox" element={<ProtectedRoute><InboxPage /></ProtectedRoute>} />
                           <Route path="/messages" element={<ProtectedRoute><InboxPage /></ProtectedRoute>} />
                         </Route>

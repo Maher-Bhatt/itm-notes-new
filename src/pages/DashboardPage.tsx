@@ -530,7 +530,7 @@ export default function DashboardPage() {
                   Database Management Systems
                 </h4>
                 <p className="text-[11px] text-muted-foreground mt-0.5">
-                  Room {profile?.division?.includes("D") ? "EB-39" : profile?.division?.includes("E") ? "EB-25" : profile?.division?.includes("B") ? "EB-16" : profile?.division?.includes("C") ? "EB-20" : "EB-15"} · Prof. Hardik Vyas
+                  Room {profile?.division?.includes("D") ? "EB-39" : profile?.division?.includes("E") ? "EB-25" : profile?.division?.includes("B") ? "EB-16" : profile?.division?.includes("C") ? "EB-20" : "EB-15"} · Prof. Raju Nakum
                 </p>
               </div>
             </div>

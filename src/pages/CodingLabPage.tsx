@@ -1284,7 +1284,7 @@ export default function CodingLabPage() {
             {/* Quick Filter Pills inside Sidebar */}
             <div className="flex items-center justify-between gap-1 pt-1">
               <div className="flex items-center gap-1 overflow-x-auto scrollbar-none py-0.5">
-                {['all', 'c', 'java', 'sql', 'python'].map(l => (
+                {['all', 'c', 'java', 'sql', 'python', 'web'].map(l => (
                   <button
                     key={l}
                     onClick={() => setSelectedLanguage(l)}
@@ -1341,6 +1341,7 @@ export default function CodingLabPage() {
               filteredProblems.map((prob, idx) => {
                 const isSelected = prob.id === currentProblem?.id;
                 const isSolved = solvedProblems.includes(prob.id);
+                const globalIndex = CODING_PROBLEMS.findIndex(p => p.id === prob.id) + 1;
                 return (
                   <button
                     key={prob.id}
@@ -1354,13 +1355,14 @@ export default function CodingLabPage() {
                     <div className="flex items-center justify-between mb-1.5 gap-2">
                       <div className="flex items-center gap-1.5">
                         <span className="text-[10px] font-mono font-bold text-muted-foreground bg-secondary/80 px-1.5 py-0.5 rounded">
-                          #{idx + 1}
+                          #{globalIndex > 0 ? globalIndex : idx + 1}
                         </span>
                         <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded uppercase ${
                           prob.language === 'c' ? 'bg-amber-500/15 text-amber-500 border border-amber-500/30' :
-                          prob.language === 'java' ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30' :
-                          prob.language === 'sql' ? 'bg-amber-500/15 text-amber-500 border border-amber-500/30' :
-                          'bg-amber-500/15 text-amber-500 border border-amber-500/30'
+                          prob.language === 'java' ? 'bg-blue-500/15 text-blue-500 border border-blue-500/30' :
+                          prob.language === 'sql' ? 'bg-purple-500/15 text-purple-500 border border-purple-500/30' :
+                          prob.language === 'web' ? 'bg-emerald-500/15 text-emerald-500 border border-emerald-500/30' :
+                          'bg-cyan-500/15 text-cyan-500 border border-cyan-500/30'
                         }`}>
                           {prob.language}
                         </span>
@@ -1419,7 +1421,7 @@ export default function CodingLabPage() {
                     <ChevronRight className="h-3 w-3" />
                     <span className="truncate max-w-[110px] sm:max-w-[140px]">{currentProblem.subjectName.split('(')[0].trim()}</span>
                     <ChevronRight className="h-3 w-3" />
-                    <span className="font-mono text-primary font-bold">#{currentIndex + 1}</span>
+                    <span className="font-mono text-primary font-bold">#{CODING_PROBLEMS.findIndex(p => p.id === currentProblem.id) + 1}</span>
                   </div>
 
                   <div className="flex items-center gap-1 shrink-0">
@@ -2072,45 +2074,70 @@ export default function CodingLabPage() {
                       <div className="flex-1 flex flex-col min-h-0 bg-black/95">
                         <div className="px-3 py-1.5 bg-zinc-900/60 border-b border-zinc-800/60 flex items-center gap-1.5 overflow-x-auto text-[11px] font-mono text-zinc-400 shrink-0 scrollbar-none">
                           <span className="text-zinc-500 font-bold uppercase tracking-wider text-[10px] mr-1">Quick:</span>
-                          <button
-                            onClick={() => handleTerminalSubmit(undefined, '1 101')}
-                            className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors shrink-0"
-                          >
-                            1: Add #101
-                          </button>
-                          <button
-                            onClick={() => handleTerminalSubmit(undefined, '1 102')}
-                            className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors shrink-0"
-                          >
-                            1: Add #102
-                          </button>
-                          <button
-                            onClick={() => handleTerminalSubmit(undefined, '2')}
-                            className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors shrink-0"
-                          >
-                            2: Allocate Seat
-                          </button>
-                          <button
-                            onClick={() => handleTerminalSubmit(undefined, '3')}
-                            className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors shrink-0"
-                          >
-                            3: Display
-                          </button>
-                          <button
-                            onClick={() => handleTerminalSubmit(undefined, '4')}
-                            className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors shrink-0"
-                          >
-                            4: Peek
-                          </button>
-                          <button
-                            onClick={() => handleTerminalSubmit(undefined, '5')}
-                            className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors shrink-0"
-                          >
-                            5: Count
-                          </button>
+                          {(currentProblem.id.includes('railway') || currentProblem.title.toLowerCase().includes('railway')) ? (
+                            <>
+                              <button
+                                onClick={() => handleTerminalSubmit(undefined, '1 101')}
+                                className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors shrink-0"
+                              >
+                                1: Add #101
+                              </button>
+                              <button
+                                onClick={() => handleTerminalSubmit(undefined, '1 102')}
+                                className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors shrink-0"
+                              >
+                                1: Add #102
+                              </button>
+                              <button
+                                onClick={() => handleTerminalSubmit(undefined, '2')}
+                                className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors shrink-0"
+                              >
+                                2: Allocate Seat
+                              </button>
+                              <button
+                                onClick={() => handleTerminalSubmit(undefined, '3')}
+                                className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors shrink-0"
+                              >
+                                3: Display
+                              </button>
+                              <button
+                                onClick={() => handleTerminalSubmit(undefined, '4')}
+                                className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors shrink-0"
+                              >
+                                4: Peek
+                              </button>
+                              <button
+                                onClick={() => handleTerminalSubmit(undefined, '5')}
+                                className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors shrink-0"
+                              >
+                                5: Count
+                              </button>
+                            </>
+                          ) : (
+                            <>
+                              <button
+                                onClick={() => handleTerminalSubmit(undefined, 'help')}
+                                className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors shrink-0"
+                              >
+                                ? Help
+                              </button>
+                              <button
+                                onClick={() => handleTerminalSubmit(undefined, 'status')}
+                                className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors shrink-0"
+                              >
+                                ℹ Status
+                              </button>
+                              <button
+                                onClick={() => setTerminalLogs([`[TERMINAL READY] Initialized for ${currentProblem.fileName}. Type commands or click ▶ Run Suite.`])}
+                                className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors shrink-0"
+                              >
+                                ⟲ Clear
+                              </button>
+                            </>
+                          )}
                           <button
                             onClick={() => handleTerminalSubmit(undefined, 'run')}
-                            className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-white transition-colors shrink-0"
+                            className="px-2 py-0.5 rounded bg-primary hover:bg-primary/90 text-primary-foreground font-semibold transition-colors shrink-0"
                           >
                             ▶ Run Suite
                           </button>

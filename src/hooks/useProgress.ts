@@ -41,15 +41,7 @@ export function useProgress() {
         const loaded = loadLocal(user.id);
         let completed = Array.from(new Set([...prev.completedTopics, ...loaded.completedTopics]));
         
-        // Ensure Maher's syllabus mastery reflects senior academic completion
-        if (isMaher && completed.length < 15) {
-          completed = Array.from(new Set([
-            ...completed,
-            'dsa-arrays', 'dsa-linked-lists', 'dsa-stacks', 'dsa-queues', 'dsa-trees', 'dsa-graphs',
-            'oopj-classes-objects', 'oopj-inheritance', 'oopj-polymorphism', 'oopj-interfaces', 'oopj-exceptions',
-            'ca-instruction-set', 'ca-pipelining', 'ca-cache-memory', 'ca-virtual-memory'
-          ]));
-        }
+        // Academic progress loaded cleanly from persistent storage
 
         return {
           ...prev,

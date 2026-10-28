@@ -28,7 +28,7 @@ import {
 import { toast } from "sonner";
 import { getDueCards, getSrsStatistics } from "@/utils/srsEngine";
 import { getActiveStudyPlan, togglePlanTask, StudyPlan } from "@/utils/studyPlannerEngine";
-import { VIVA_SCHEDULE_DATA, TIMETABLE_DATA } from "@/data/timetableData";
+import { DAILY_LECTURE_SCHEDULE, TIMETABLE_DATA } from "@/data/timetableData";
 import { FlashcardsModal, Flashcard } from "@/components/FlashcardsModal";
 
 export default function TodayPage() {
@@ -106,8 +106,8 @@ export default function TodayPage() {
 
   // 2. Classes for selected division (A6)
   const divisionClasses = useMemo(() => {
-    const matched = VIVA_SCHEDULE_DATA.filter((item) => item.classGroup === selectedDivision);
-    return matched.length > 0 ? matched : VIVA_SCHEDULE_DATA.slice(0, 4);
+    const matched = DAILY_LECTURE_SCHEDULE.filter((item) => item.classGroup === selectedDivision);
+    return matched.length > 0 ? matched : DAILY_LECTURE_SCHEDULE.slice(0, 4);
   }, [selectedDivision]);
 
   // Next class calculation

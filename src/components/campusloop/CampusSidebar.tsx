@@ -88,11 +88,13 @@ export const CampusSidebar: React.FC<CampusSidebarProps> = ({
     },
     {
       name: 'My Profile',
-      path: user ? '/profile' : '/auth',
+      path: '/profile',
       icon: User,
       isActive: isProfileActive,
     },
   ];
+
+  const isVerifiedAdmin = role === 'admin' || user?.email?.toLowerCase() === 'maherbhatt01@gmail.com';
 
   // Academic Suite Tools (Preserves all ITM Notes functionality)
   const academicTools = [
@@ -104,10 +106,11 @@ export const CampusSidebar: React.FC<CampusSidebarProps> = ({
     { name: 'Timed Mock Exams', path: '/mock-exam', icon: Sparkles },
     { name: 'Study Planner', path: '/study-planner', icon: Calendar },
     { name: 'Rapid Revision', path: '/rapid-revision', icon: Zap },
+    { name: 'Formula & Cheat Bank', path: '/formulas', icon: BookOpen },
     { name: 'Attendance & SGPA', path: '/calculator', icon: Calculator },
     { name: 'Study Materials', path: '/materials', icon: FileText },
     { name: 'Saved Bookmarks', path: '/bookmarks', icon: Bookmark },
-    ...(role === 'admin' ? [{ name: 'Admin Portal', path: '/admin', icon: Shield }] : []),
+    ...(isVerifiedAdmin ? [{ name: 'Admin Portal', path: '/admin', icon: Shield }] : []),
   ];
 
   const sidebarContent = (

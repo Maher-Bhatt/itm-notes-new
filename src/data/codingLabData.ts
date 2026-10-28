@@ -1,11 +1,11 @@
 export interface CodingProblem {
   id: string;
   title: string;
-  category: 'dsa' | 'dbms' | 'java' | 'python';
+  category: 'dsa' | 'dbms' | 'java' | 'python' | 'web';
   subjectName: string;
   difficulty: 'Easy' | 'Medium' | 'Hard';
   marks: string;
-  language: 'c' | 'java' | 'python' | 'sql';
+  language: 'c' | 'java' | 'python' | 'sql' | 'web';
   fileName: string;
   description: string;
   constraints: string[];
