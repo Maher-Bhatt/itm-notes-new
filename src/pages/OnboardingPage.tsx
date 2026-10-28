@@ -70,6 +70,17 @@ export default function OnboardingPage() {
   const [selectedPriorities, setSelectedPriorities] = useState<string[]>(["qb", "notes", "coding", "calc"]);
   const [academicGoal, setAcademicGoal] = useState("Score 8.5+ SGPA and excel in technical campus placements");
 
+  // Redirect if already completed
+  useEffect(() => {
+    const isDone = typeof window !== 'undefined' && (
+      localStorage.getItem('campusloop_onboarding_done') === 'true' ||
+      localStorage.getItem('itm_student_onboarding_completed') === 'true'
+    );
+    if (profile?.onboarding_completed === true || isDone) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [profile?.onboarding_completed, navigate]);
+
   // Keep in sync with user profile if already loaded
   useEffect(() => {
     if (profile) {
@@ -119,10 +130,11 @@ export default function OnboardingPage() {
   const handleComplete = async () => {
     setIsSubmitting(true);
     try {
+      localStorage.setItem('campusloop_onboarding_done', 'true');
+      localStorage.setItem('itm_student_onboarding_completed', 'true');
       const semNumber = Number(semester) || 3;
       await updateProfile({
         display_name: displayName.trim() || user?.email?.split('@')[0] || "Student",
-        university: selectedUniversityId,
         program: program || "B.Tech",
         branch: branch || "Computer Science & Engineering",
         semester: semNumber,
@@ -143,10 +155,12 @@ export default function OnboardingPage() {
       });
 
       toast.success(`Welcome to CampusLoop! Onboarding complete for ${activeUniversity.shortName}.`);
-      navigate("/dashboard");
+      navigate("/dashboard", { replace: true });
     } catch (err) {
       console.error("Failed to complete onboarding:", err);
-      toast.error("Could not save preferences. Please try again.");
+      // Ensure user is never trapped even if network failed
+      localStorage.setItem('campusloop_onboarding_done', 'true');
+      navigate("/dashboard", { replace: true });
     } finally {
       setIsSubmitting(false);
     }
@@ -154,9 +168,11 @@ export default function OnboardingPage() {
 
   const handleSkip = async () => {
     try {
+      localStorage.setItem('campusloop_onboarding_done', 'true');
+      localStorage.setItem('itm_onboarding_skipped', 'true');
+      localStorage.setItem('itm_student_onboarding_completed', 'true');
       const semNumber = Number(semester) || 3;
       await updateProfile({
-        university: selectedUniversityId || "itm-baroda",
         program: program || "B.Tech",
         branch: branch || "Computer Science & Engineering",
         semester: semNumber,
@@ -170,7 +186,7 @@ export default function OnboardingPage() {
     } catch (err) {
       console.warn('Failed to save onboarding skip data:', err);
     }
-    navigate("/dashboard");
+    navigate("/dashboard", { replace: true });
   };
 
   const togglePriority = (id: string) => {

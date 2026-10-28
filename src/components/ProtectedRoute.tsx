@@ -32,8 +32,16 @@ export function ProtectedRoute({
 
   // Onboarding enforcement for regular students
   if (!requireAdmin && user) {
-    const hasCompletedOnboarding = profile?.onboarding_completed === true || 
-      (profile?.onboarding_completed === null && Boolean(profile?.semester));
+    const isLocallyDone = typeof window !== 'undefined' && (
+      localStorage.getItem('campusloop_onboarding_done') === 'true' ||
+      localStorage.getItem('itm_student_onboarding_completed') === 'true' ||
+      localStorage.getItem('itm_onboarding_skipped') === 'true'
+    );
+
+    const hasCompletedOnboarding = isLocallyDone || 
+      profile?.onboarding_completed === true || 
+      (profile?.onboarding_completed === null && Boolean(profile?.semester)) ||
+      Boolean(profile?.semester);
 
     if (!hasCompletedOnboarding && location.pathname !== "/onboarding") {
       return <Navigate to="/onboarding" replace />;

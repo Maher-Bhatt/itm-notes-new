@@ -113,6 +113,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           };
         }
 
+        if (typeof window !== 'undefined' && localStorage.getItem('campusloop_onboarding_done') === 'true') {
+          currentProfile.onboarding_completed = true;
+        }
+
         setProfile(currentProfile);
         try {
           localStorage.setItem('itm_student_profile', JSON.stringify(currentProfile));
@@ -314,6 +318,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const merged = { ...prev, ...updates };
       try {
         localStorage.setItem('itm_student_profile', JSON.stringify(merged));
+        if (updates.onboarding_completed) {
+          localStorage.setItem('campusloop_onboarding_done', 'true');
+          localStorage.setItem('itm_student_onboarding_completed', 'true');
+        }
       } catch (err) {
         console.error('Failed to save profile to localStorage:', err);
       }
