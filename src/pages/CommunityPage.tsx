@@ -31,7 +31,7 @@ import {
   toggleCampusSavedPost,
   reportCampusPost,
 } from '@/services/campusLoopService';
-import { CommunityPost, isFakePost } from '@/data/communityData';
+import { CommunityPost, isFakePost, MULTI_CAMPUS_POSTS } from '@/data/communityData';
 import {
   CampusPulseTile,
   CampusPostCard,
@@ -83,9 +83,16 @@ export default function CommunityPage() {
         fetchCampusClubs(user?.id),
       ]);
 
-      // Filter out fake test posts
+      // Filter out malicious posts and merge curated multi-campus posts
       const realPosts = (fetchedPosts || []).filter((p) => !isFakePost(p));
-      setPosts(realPosts);
+      const mergedPosts = [...realPosts];
+      const seenIds = new Set(realPosts.map((p) => p.id));
+      for (const mp of MULTI_CAMPUS_POSTS) {
+        if (!seenIds.has(mp.id)) {
+          mergedPosts.push(mp);
+        }
+      }
+      setPosts(mergedPosts);
       setPulseTiles(tiles);
       setSavedPostIds(saved);
       setFollowingIds(follows.followingIds);
@@ -123,12 +130,13 @@ export default function CommunityPage() {
     return posts.filter((post) => {
       // 1. Tab filter
       if (activeTab === 'my_campus') {
-        const u = (post as any).university_id;
+        const u = (post as any).university_id || (post as any).universityId;
         const matchesCampus =
           u === currentUniversity.id ||
           post.authorBranch?.toLowerCase().includes(currentUniversity.shortName.toLowerCase()) ||
           post.authorBranch?.toLowerCase().includes(currentUniversity.code.toLowerCase()) ||
-          !u || u === 'all';
+          (post as any).universityBadge?.toLowerCase().includes(currentUniversity.shortName.toLowerCase()) ||
+          (post as any).universityName?.toLowerCase().includes(currentUniversity.shortName.toLowerCase());
         if (!matchesCampus) return false;
       } else if (activeTab === 'following') {
         if (!followingIds.has(post.authorId)) return false;
@@ -293,7 +301,7 @@ export default function CommunityPage() {
                   : 'text-[#6B7280] dark:text-neutral-400 hover:text-[#111111] dark:hover:text-white'
               }`}
             >
-              All Gujarat
+              All Campuses
               {activeTab === 'for_you' && (
                 <span className="absolute bottom-0 inset-x-0 h-[3px] bg-[#2B4EFF] dark:bg-[#3D5EFF] rounded-full" />
               )}
@@ -487,7 +495,11 @@ export default function CommunityPage() {
                 authorName={post.authorName}
                 authorAvatar={post.authorAvatar}
                 authorBranch={post.authorBranch}
-                communityOrClub={post.category}
+                communityOrClub={
+                  (post as any).universityBadge 
+                    ? `${(post as any).universityBadge} · ${post.category}`
+                    : post.category
+                }
                 createdAt={post.createdAt}
                 content={post.content}
                 images={post.mediaUrl ? [post.mediaUrl] : []}

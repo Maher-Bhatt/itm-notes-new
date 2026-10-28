@@ -18,10 +18,10 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["DM Sans", "Inter", "system-ui", "-apple-system", "sans-serif"],
-        display: ["Manrope", "Inter", "system-ui", "-apple-system", "sans-serif"],
-        heading: ["Manrope", "Inter", "system-ui", "-apple-system", "sans-serif"],
-        body: ["DM Sans", "Inter", "system-ui", "-apple-system", "sans-serif"],
+        sans: ["Plus Jakarta Sans", "DM Sans", "Inter", "system-ui", "-apple-system", "sans-serif"],
+        display: ["Plus Jakarta Sans", "Manrope", "Inter", "system-ui", "-apple-system", "sans-serif"],
+        heading: ["Plus Jakarta Sans", "Manrope", "Inter", "system-ui", "-apple-system", "sans-serif"],
+        body: ["Plus Jakarta Sans", "DM Sans", "Inter", "system-ui", "-apple-system", "sans-serif"],
         mono: ["SF Mono", "JetBrains Mono", "Fira Code", "monospace"],
       },
       colors: {

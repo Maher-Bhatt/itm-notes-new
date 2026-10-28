@@ -29,6 +29,9 @@ import { sem5AimlMaster } from './sem5-aiml-master';
 import { sem5SeMaster } from './sem5-se-master';
 import { sem5TocMaster } from './sem5-toc-master';
 
+// BCA Master Curriculum (30 Subjects)
+import { bcaMasterSubjects } from './bca-master-subjects';
+
 function injectRichContent(subject: Subject, contentMap: Record<string, string>): Subject {
   return {
     ...subject,
@@ -45,7 +48,7 @@ function injectRichContent(subject: Subject, contentMap: Record<string, string>)
 const enrichedDE = injectRichContent(digitalElectronicsSubject, deRichContent);
 const enrichedPSR = injectRichContent(probabilityStatsSubject, psrRichContent);
 
-export const subjects: Subject[] = [
+export const btechSubjects: Subject[] = [
   // Semester 5 (Core)
   sem5AimlMaster,
   sem5SeMaster,
@@ -83,6 +86,13 @@ export const subjects: Subject[] = [
       !['sub-dsa', 'sub-dbms', 'sem3-dbms', 'sem3-java', 'sub-coanmp', 'sem2-cg', 'sem2-dsa'].includes(es.id) &&
       es.units.some((u) => u.topics.length > 0)
   ),
+];
+
+export const bcaSubjects: Subject[] = bcaMasterSubjects;
+
+export const subjects: Subject[] = [
+  ...btechSubjects,
+  ...bcaSubjects,
 ];
 
 export function getSubject(id: string): Subject | undefined {

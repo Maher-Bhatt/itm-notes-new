@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { supabase } from '@/integrations/supabase/client';
-import { CommunityPost, CommunityComment, isFakePost } from '@/data/communityData';
+import { CommunityPost, CommunityComment, isFakePost, MULTI_CAMPUS_POSTS } from '@/data/communityData';
 import { MAHER_CANONICAL_AVATAR } from '@/components/UserAvatar';
 
 const LOCAL_STORAGE_KEY = 'itm_campus_feed_posts';
