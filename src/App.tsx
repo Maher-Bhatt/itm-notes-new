@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { AcademicProvider } from "@/contexts/AcademicContext";
+import { UniversityProvider } from "@/contexts/UniversityContext";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Index from "./pages/Index";
 import SubjectDashboard from "./pages/SubjectDashboard";
@@ -139,7 +140,8 @@ const App = () => (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <AcademicProvider>
-          <GamificationProvider>
+          <UniversityProvider>
+            <GamificationProvider>
             <PomodoroProvider>
               <FocusModeProvider>
                 <TooltipProvider>
@@ -222,6 +224,7 @@ const App = () => (
           </FocusModeProvider>
         </PomodoroProvider>
       </GamificationProvider>
+          </UniversityProvider>
         </AcademicProvider>
       </AuthProvider>
     </QueryClientProvider>

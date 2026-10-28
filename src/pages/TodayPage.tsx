@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useUniversity } from "@/contexts/UniversityContext";
 import { useGamification } from "@/hooks/useGamification";
 import { useProgress } from "@/hooks/useProgress";
 import { 
@@ -34,6 +35,7 @@ import { FlashcardsModal, Flashcard } from "@/components/FlashcardsModal";
 export default function TodayPage() {
   const navigate = useNavigate();
   const { user, profile, updateProfile } = useAuth();
+  const { currentUniversity, activeTimetable, activeExamSchedule } = useUniversity();
   const { streak, xp, levelInfo, weeklyGoalDays, weeklyStudyDaysCount, weeklyGoalPercent } = useGamification();
   const { isCompleted, toggleComplete } = useProgress();
 
@@ -95,6 +97,16 @@ export default function TodayPage() {
         }
       }
     }
+    if (activeExamSchedule && activeExamSchedule.items && activeExamSchedule.items.length > 0) {
+      const firstExam = activeExamSchedule.items[0];
+      return {
+        courseName: firstExam.courseName,
+        courseCode: firstExam.courseCode,
+        examDateStr: firstExam.date,
+        daysLeft: 3,
+        milestoneText: `🎯 ${currentUniversity.shortName} ${activeExamSchedule.examType}`,
+      };
+    }
     return {
       courseName: "Object Oriented Programming Java (OOPJ)",
       courseCode: "JAVA303",
@@ -106,9 +118,25 @@ export default function TodayPage() {
 
   // 2. Classes for selected division (A6)
   const divisionClasses = useMemo(() => {
+    if (activeTimetable && activeTimetable.length > 0) {
+      return activeTimetable.map((item, idx) => ({
+        id: item.id || `per-${idx}`,
+        classGroup: selectedDivision as 1 | 2 | 3 | 4 | 5,
+        className: item.division,
+        date: 'Today',
+        timeSlot: item.timeSlot,
+        subjectCode: item.subjectCode,
+        subjectName: item.subjectName,
+        facultyName: item.facultyName,
+        location: item.location,
+        roomType: item.roomType,
+        fileSubmissionRequired: false,
+        notes: item.notes,
+      }));
+    }
     const matched = DAILY_LECTURE_SCHEDULE.filter((item) => item.classGroup === selectedDivision);
     return matched.length > 0 ? matched : DAILY_LECTURE_SCHEDULE.slice(0, 4);
-  }, [selectedDivision]);
+  }, [activeTimetable, selectedDivision]);
 
   // Next class calculation
   const nextClass = divisionClasses[0] || null;
@@ -170,7 +198,7 @@ export default function TodayPage() {
           <div>
             <div className="flex items-center gap-2 mb-2">
               <span className="px-3 py-1 rounded-full bg-[#f59e0b] text-[#060709] text-[10px] font-black uppercase tracking-wider font-mono">
-                Daily Focus Checklist
+                {currentUniversity.shortName} Daily Focus
               </span>
               <span className="text-xs text-white/80 font-medium">
                 {todayDateFormatted}

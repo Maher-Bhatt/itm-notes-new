@@ -18,6 +18,7 @@ import { usePomodoro } from "@/contexts/PomodoroContext";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { CampusAvatar } from "@/components/campusloop/CampusAvatar";
 import { CampusLoopLogo } from "@/components/campusloop/CampusLoopLogo";
+import { UniversityDropdown } from "@/components/campusloop/UniversityDropdown";
 import { resolveAvatarUrl } from "@/components/UserAvatar";
 import { openTimetable } from "@/components/GlobalTimetableModal";
 import {
@@ -131,6 +132,9 @@ export function PortalTopNav({
 
       {/* Right: Search + Timetable + Focus + Notifications + Theme + Profile */}
       <div className="flex items-center gap-2 sm:gap-2.5">
+        {/* Active Gujarat University Switcher */}
+        <UniversityDropdown className="hidden sm:flex shrink-0" />
+
         {/* Universal Search Pill */}
         <button
           onClick={onOpenSearch}

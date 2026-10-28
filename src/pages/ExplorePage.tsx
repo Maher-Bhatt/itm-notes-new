@@ -12,6 +12,8 @@ import {
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
 import { useGamification } from '@/hooks/useGamification';
+import { useUniversity } from '@/contexts/UniversityContext';
+import { searchStudents, sendFriendRequest } from '@/services/friendService';
 import {
   CampusSearchField,
   CampusFilterChip,
@@ -45,8 +47,9 @@ const TRENDING_HASHTAGS = [
 ];
 
 export default function ExplorePage() {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const { addXp } = useGamification();
+  const { currentUniversity } = useUniversity();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilter, setSelectedFilter] = useState<FilterCategory>('All');
@@ -61,15 +64,25 @@ export default function ExplorePage() {
     async function loadExploreData() {
       try {
         setIsLoading(true);
-        const [loadedClubs, loadedEvents, followData] = await Promise.all([
+        const [loadedClubs, loadedEvents, followData, realStudents] = await Promise.all([
           fetchCampusClubs(user?.id),
           fetchCampusEvents(user?.id),
           fetchCampusFollows(user?.id),
+          searchStudents('', user?.id, currentUniversity.id),
         ]);
 
         setClubs(loadedClubs);
         setEvents(loadedEvents);
         setFollowingIds(followData.followingIds);
+        if (realStudents && realStudents.length > 0) {
+          setPeople(realStudents.slice(0, 10).map((s) => ({
+            id: s.id,
+            name: s.displayName,
+            department: s.branch.split(' ')[0] || 'Engg',
+            year: s.division || 'Cohort',
+            avatarUrl: s.avatarUrl,
+          })));
+        }
       } catch (err) {
         console.warn('Failed loading explore data:', err);
       } finally {

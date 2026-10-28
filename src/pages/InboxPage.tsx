@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import {
   Edit3,
   Search,
@@ -8,11 +8,19 @@ import {
   Check,
   UserCheck,
   UserX,
+  UserPlus,
   ArrowLeft,
   Sparkles,
+  Users,
+  MessageSquare,
+  Clock,
+  MapPin,
+  GraduationCap,
+  ShieldAlert,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
+import { useUniversity } from '@/contexts/UniversityContext';
 import {
   CampusSearchField,
   CampusFilterChip,
@@ -21,578 +29,674 @@ import {
   CampusButton,
   CampusCountBadge,
 } from '@/components/campusloop';
+import {
+  fetchFriendRequests,
+  acceptFriendRequest,
+  declineFriendRequest,
+  cancelFriendRequest,
+  sendFriendRequest,
+  fetchFriendsList,
+  searchStudents,
+  fetchDirectMessages,
+  sendDirectMessage,
+  subscribeToFriendRequests,
+  FriendRequestItem,
+  StudentFriendItem,
+  DirectMessageItem,
+} from '@/services/friendService';
 
-type MessageFilter = 'All' | 'Unread' | 'Clubs' | 'Groups';
-
-interface Conversation {
-  id: string;
-  name: string;
-  avatarUrl?: string | null;
-  lastMessage: string;
-  timestamp: string;
-  unreadCount: number;
-  isOnline: boolean;
-  type: 'direct' | 'club' | 'group';
-  messages: Array<{ id: string; sender: 'me' | 'them'; text: string; time: string }>;
-}
-
-interface MessageRequest {
-  id: string;
-  name: string;
-  department: string;
-  snippet: string;
-  time: string;
-}
-
-const DEFAULT_CONVERSATIONS: Conversation[] = [
-  {
-    id: 'conv-study-dsa',
-    name: 'Study Squad · DSA',
-    lastMessage: "Kabir: I'll book the room for 6 PM",
-    timestamp: '2m',
-    unreadCount: 3,
-    isOnline: true,
-    type: 'group',
-    messages: [
-      { id: 'm1', sender: 'them', text: 'Hey guys, are we meeting today for Trees revision?', time: '5:45 PM' },
-      { id: 'm2', sender: 'them', text: "Kabir: I'll book the room for 6 PM", time: '5:48 PM' },
-    ],
-  },
-  {
-    id: 'conv-diya',
-    name: 'Diya Shah',
-    lastMessage: 'Sent you the Figma file. Check the project notes!',
-    timestamp: '12m',
-    unreadCount: 1,
-    isOnline: true,
-    type: 'direct',
-    messages: [
-      { id: 'm1', sender: 'me', text: 'Hey Diya, did you finalize the UI layout for our project?', time: '4:20 PM' },
-      { id: 'm2', sender: 'them', text: 'Sent you the Figma file. Check the project notes!', time: '4:30 PM' },
-    ],
-  },
-  {
-    id: 'conv-robotics',
-    name: 'Robotics Club',
-    lastMessage: 'Build night moved to Block C, 7 PM',
-    timestamp: '1h',
-    unreadCount: 0,
-    isOnline: false,
-    type: 'club',
-    messages: [
-      { id: 'm1', sender: 'them', text: 'Build night moved to Block C, 7 PM', time: '1:00 PM' },
-    ],
-  },
-  {
-    id: 'conv-sana',
-    name: 'Sana Qureshi',
-    lastMessage: 'Thanks for the notes!',
-    timestamp: '3h',
-    unreadCount: 0,
-    isOnline: true,
-    type: 'direct',
-    messages: [
-      { id: 'm1', sender: 'them', text: 'Thanks for the notes!', time: '11:15 AM' },
-    ],
-  },
-  {
-    id: 'conv-placement',
-    name: 'Placement Cell Group',
-    lastMessage: 'Resume workshop registration closes tonight at 9 PM',
-    timestamp: '5h',
-    unreadCount: 1,
-    isOnline: false,
-    type: 'group',
-    messages: [
-      { id: 'm1', sender: 'them', text: 'Resume workshop registration closes tonight at 9 PM', time: '9:00 AM' },
-    ],
-  },
-  {
-    id: 'conv-rohan',
-    name: 'Rohan Desai',
-    lastMessage: 'You: See you at the amphitheatre...',
-    timestamp: 'Yesterday',
-    unreadCount: 0,
-    isOnline: false,
-    type: 'direct',
-    messages: [
-      { id: 'm1', sender: 'me', text: 'See you at the amphitheatre...', time: 'Yesterday' },
-    ],
-  },
-];
-
-const DEFAULT_REQUESTS: MessageRequest[] = [
-  { id: 'req-1', name: 'Ishaan Patel', department: 'B.Tech CSE Y2', snippet: 'Hey, are you taking Microprocessors with Prof. Trivedi?', time: '1d ago' },
-  { id: 'req-2', name: 'Tara Joshi', department: 'B.Tech IT Y3', snippet: 'Do you have the question bank for Unit 3?', time: '2d ago' },
-];
-
-const INBOX_STORAGE_KEY = 'campusloop_inbox_conversations';
-const REQUESTS_STORAGE_KEY = 'campusloop_inbox_requests';
+type InboxTab = 'messages' | 'requests' | 'find';
 
 export default function InboxPage() {
-  const { user } = useAuth();
-  const userStoragePrefix = user?.id ? `campusloop_inbox_${user.id}` : 'campusloop_inbox_guest';
-  const requestsStorageKey = user?.id ? `campusloop_requests_${user.id}` : 'campusloop_requests_guest';
+  const { user, profile } = useAuth();
+  const { currentUniversity, allUniversities } = useUniversity();
 
-  const [conversations, setConversations] = useState<Conversation[]>(() => {
-    try {
-      const stored = localStorage.getItem(userStoragePrefix);
-      if (stored) return JSON.parse(stored);
-    } catch {}
-    return DEFAULT_CONVERSATIONS;
-  });
-
-  const [requests, setRequests] = useState<MessageRequest[]>(() => {
-    try {
-      const stored = localStorage.getItem(requestsStorageKey);
-      if (stored) return JSON.parse(stored);
-    } catch {}
-    return DEFAULT_REQUESTS;
-  });
-
+  const [activeTab, setActiveTab] = useState<InboxTab>('messages');
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedFilter, setSelectedFilter] = useState<MessageFilter>('All');
-  const [activeConversation, setActiveConversation] = useState<Conversation | null>(null);
+  const [selectedUnivFilter, setSelectedUnivFilter] = useState<string>('all');
+
+  // Friends & conversations
+  const [friends, setFriends] = useState<StudentFriendItem[]>([]);
+  const [activeFriend, setActiveFriend] = useState<StudentFriendItem | null>(null);
+  const [activeThreadMessages, setActiveThreadMessages] = useState<DirectMessageItem[]>([]);
   const [newMessageText, setNewMessageText] = useState('');
-  const [showRequestsModal, setShowRequestsModal] = useState(false);
-  const [showComposeModal, setShowComposeModal] = useState(false);
-  const [newRecipientName, setNewRecipientName] = useState('');
+  const [isSendingMessage, setIsSendingMessage] = useState(false);
 
-  // Close modals on Escape key
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        if (activeConversation) setActiveConversation(null);
-        if (showRequestsModal) setShowRequestsModal(false);
-        if (showComposeModal) setShowComposeModal(false);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [activeConversation, showRequestsModal, showComposeModal]);
+  // Friend requests
+  const [receivedRequests, setReceivedRequests] = useState<FriendRequestItem[]>([]);
+  const [sentRequests, setSentRequests] = useState<FriendRequestItem[]>([]);
 
-  // Persist conversations
-  useEffect(() => {
+  // Classmate discovery
+  const [discoveredStudents, setDiscoveredStudents] = useState<any[]>([]);
+  const [isSearchingStudents, setIsSearchingStudents] = useState(false);
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Load all user network data
+  const loadNetworkData = useCallback(async () => {
+    if (!user?.id) return;
     try {
-      localStorage.setItem(userStoragePrefix, JSON.stringify(conversations));
-    } catch {}
-  }, [conversations, userStoragePrefix]);
+      setIsLoading(true);
+      const [friendsData, requestsData] = await Promise.all([
+        fetchFriendsList(user.id),
+        fetchFriendRequests(user.id),
+      ]);
+      setFriends(friendsData);
+      setReceivedRequests(requestsData.received);
+      setSentRequests(requestsData.sent);
+    } catch (err) {
+      console.warn('Failed loading network data:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [user?.id]);
 
-  // Persist requests
   useEffect(() => {
-    try {
-      localStorage.setItem(requestsStorageKey, JSON.stringify(requests));
-    } catch {}
-  }, [requests, requestsStorageKey]);
+    loadNetworkData();
 
-  // Total unread count
-  const totalUnread = useMemo(() => {
-    return conversations.reduce((acc, c) => acc + c.unreadCount, 0);
-  }, [conversations]);
+    // Subscribe to realtime friend requests
+    if (user?.id) {
+      const unsub = subscribeToFriendRequests(user.id, () => {
+        loadNetworkData();
+        toast.info('New friend request activity received!');
+      });
+      return () => unsub();
+    }
+  }, [user?.id, loadNetworkData]);
 
-  // Filter conversations
-  const filteredConversations = useMemo(() => {
-    return conversations.filter((c) => {
-      if (selectedFilter === 'Unread' && c.unreadCount === 0) return false;
-      if (selectedFilter === 'Clubs' && c.type !== 'club') return false;
-      if (selectedFilter === 'Groups' && c.type !== 'group') return false;
+  // Load classmate directory when switching to "find" tab
+  useEffect(() => {
+    if (activeTab === 'find') {
+      const fetchDirectory = async () => {
+        setIsSearchingStudents(true);
+        const results = await searchStudents(searchQuery, user?.id, selectedUnivFilter);
+        setDiscoveredStudents(results);
+        setIsSearchingStudents(false);
+      };
+      fetchDirectory();
+    }
+  }, [activeTab, searchQuery, selectedUnivFilter, user?.id]);
 
-      if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase();
-        return c.name.toLowerCase().includes(q) || c.lastMessage.toLowerCase().includes(q);
-      }
-      return true;
-    });
-  }, [conversations, selectedFilter, searchQuery]);
-
-  // Open conversation
-  const handleOpenConversation = (conv: Conversation) => {
-    // Mark as read
-    setConversations((prev) =>
-      prev.map((c) => (c.id === conv.id ? { ...c, unreadCount: 0 } : c))
-    );
-    setActiveConversation({ ...conv, unreadCount: 0 });
+  // Open direct chat thread
+  const handleOpenChat = async (friend: StudentFriendItem) => {
+    setActiveFriend(friend);
+    if (user?.id) {
+      const msgs = await fetchDirectMessages(user.id, friend.userId);
+      setActiveThreadMessages(msgs);
+    }
   };
 
   // Send message in active thread
-  const handleSendMessage = (e: React.FormEvent) => {
+  const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newMessageText.trim() || !activeConversation) return;
+    if (!newMessageText.trim() || !activeFriend || !user?.id || isSendingMessage) return;
 
-    const newMsg = {
-      id: `m-${Date.now()}`,
-      sender: 'me' as const,
-      text: newMessageText.trim(),
-      time: 'Just now',
-    };
+    try {
+      setIsSendingMessage(true);
+      const content = newMessageText.trim();
+      setNewMessageText('');
 
-    const updatedConv: Conversation = {
-      ...activeConversation,
-      lastMessage: `You: ${newMsg.text}`,
-      timestamp: 'Just now',
-      messages: [...activeConversation.messages, newMsg],
-    };
+      const sentMsg = await sendDirectMessage(user.id, activeFriend.userId, content);
+      setActiveThreadMessages((prev) => [...prev, sentMsg]);
 
-    setActiveConversation(updatedConv);
-    setConversations((prev) =>
-      prev.map((c) => (c.id === activeConversation.id ? updatedConv : c))
+      // Update friend's last message in conversation list
+      setFriends((prev) =>
+        prev.map((f) =>
+          f.userId === activeFriend.userId
+            ? { ...f, lastMessageSnippet: `You: ${content}`, lastMessageTime: 'Just now' }
+            : f
+        )
+      );
+    } catch (err) {
+      toast.error('Could not send message.');
+    } finally {
+      setIsSendingMessage(false);
+    }
+  };
+
+  // Handle Accept Friend Request
+  const handleAccept = async (req: FriendRequestItem) => {
+    if (!user?.id) return;
+    const success = await acceptFriendRequest(req.id, user.id, {
+      id: req.senderId,
+      name: req.user.displayName,
+      email: req.user.email,
+      branch: req.user.branch,
+      university: req.user.university,
+      avatarUrl: req.user.avatarUrl,
+    });
+
+    if (success) {
+      toast.success(`You and ${req.user.displayName} are now connected!`);
+      loadNetworkData();
+    } else {
+      toast.error('Could not accept friend request.');
+    }
+  };
+
+  // Handle Decline Friend Request
+  const handleDecline = async (reqId: string) => {
+    const success = await declineFriendRequest(reqId);
+    if (success) {
+      toast.info('Friend request declined.');
+      setReceivedRequests((prev) => prev.filter((r) => r.id !== reqId));
+    }
+  };
+
+  // Handle Cancel Sent Request
+  const handleCancelSent = async (reqId: string) => {
+    const success = await cancelFriendRequest(reqId);
+    if (success) {
+      toast.info('Sent request cancelled.');
+      setSentRequests((prev) => prev.filter((r) => r.id !== reqId));
+    }
+  };
+
+  // Handle Send Friend Request to Discovered Student
+  const handleSendRequestToStudent = async (targetStudent: any) => {
+    if (!user?.id) {
+      toast.info('Please sign in to send friend requests.');
+      return;
+    }
+
+    const res = await sendFriendRequest(
+      {
+        id: user.id,
+        name: profile?.display_name || user.email?.split('@')[0] || 'Student',
+        email: user.email,
+        branch: profile?.branch || 'Engineering',
+        university: currentUniversity.id,
+      },
+      targetStudent.id
     );
-    setNewMessageText('');
+
+    if (res.success) {
+      toast.success(`Friend request sent to ${targetStudent.displayName}!`);
+      setDiscoveredStudents((prev) =>
+        prev.map((s) => (s.id === targetStudent.id ? { ...s, friendshipStatus: 'pending_sent' } : s))
+      );
+      loadNetworkData();
+    } else {
+      toast.error(res.error || 'Failed to send friend request.');
+    }
   };
 
-  // Accept request
-  const handleAcceptRequest = (req: MessageRequest) => {
-    const newConv: Conversation = {
-      id: `conv-${Date.now()}`,
-      name: req.name,
-      lastMessage: req.snippet,
-      timestamp: 'Just now',
-      unreadCount: 1,
-      isOnline: true,
-      type: 'direct',
-      messages: [{ id: 'm1', sender: 'them', text: req.snippet, time: 'Just now' }],
-    };
-    setConversations((prev) => [newConv, ...prev]);
-    setRequests((prev) => prev.filter((r) => r.id !== req.id));
-    toast.success(`Connected with ${req.name}!`);
-  };
-
-  // Decline request
-  const handleDeclineRequest = (reqId: string) => {
-    setRequests((prev) => prev.filter((r) => r.id !== reqId));
-    toast.info('Request removed.');
-  };
-
-  // Start new conversation from compose
-  const handleStartCompose = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newRecipientName.trim()) return;
-
-    const newConv: Conversation = {
-      id: `conv-${Date.now()}`,
-      name: newRecipientName.trim(),
-      lastMessage: 'Conversation started',
-      timestamp: 'Just now',
-      unreadCount: 0,
-      isOnline: true,
-      type: 'direct',
-      messages: [{ id: 'm1', sender: 'me', text: 'Hey! Connected via CampusLoop.', time: 'Just now' }],
-    };
-
-    setConversations((prev) => [newConv, ...prev]);
-    setActiveConversation(newConv);
-    setShowComposeModal(false);
-    setNewRecipientName('');
-  };
+  // Filtered friends list
+  const filteredFriends = useMemo(() => {
+    if (!searchQuery.trim()) return friends;
+    const q = searchQuery.toLowerCase();
+    return friends.filter(
+      (f) =>
+        f.displayName.toLowerCase().includes(q) ||
+        f.branch.toLowerCase().includes(q) ||
+        f.university.toLowerCase().includes(q)
+    );
+  }, [friends, searchQuery]);
 
   return (
-    <div className="min-h-screen bg-[#F6F3EC] dark:bg-[#0E0E10] text-[#111111] dark:text-neutral-100 pb-20">
+    <div className="min-h-screen bg-[#F6F3EC] dark:bg-[#0E0E10] text-[#111111] dark:text-neutral-100 pb-20 select-none">
       <div className="max-w-2xl mx-auto px-3 sm:px-4 pt-4 sm:pt-6 space-y-5">
-        {/* 1. Header: "Messages" + Blue compose button */}
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5">
-            <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-[#111111] dark:text-white">
-              Messages
+        
+        {/* 1. Header: "Messages & Campus Connections" */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#2B4EFF]/10 text-[#2B4EFF] dark:bg-blue-950/40 dark:text-blue-300">
+                {currentUniversity.shortName} Network
+              </span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-[#111111] dark:text-white font-display mt-0.5">
+              Messages & Connections
             </h1>
-            {totalUnread > 0 && <CampusCountBadge count={totalUnread} variant="blue" />}
           </div>
 
-          <button
-            type="button"
-            onClick={() => setShowComposeModal(true)}
-            title="New Message"
-            className="w-11 h-11 rounded-2xl bg-[#2B4EFF] hover:bg-[#1E3EDB] text-white flex items-center justify-center shadow-sm active:scale-95 transition-all cursor-pointer"
-          >
-            <Edit3 className="w-5 h-5" />
-          </button>
+          {/* Quick Tab Switcher */}
+          <div className="flex items-center bg-white dark:bg-neutral-800 p-1 rounded-full border border-[#E8E4DA] dark:border-neutral-700 shadow-2xs self-start sm:self-auto">
+            <button
+              onClick={() => setActiveTab('messages')}
+              className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                activeTab === 'messages'
+                  ? 'bg-[#111111] text-white dark:bg-white dark:text-[#111111] shadow-2xs'
+                  : 'text-[#6B7280] dark:text-neutral-400 hover:text-[#111111] dark:hover:text-white'
+              }`}
+            >
+              <MessageSquare className="h-3.5 w-3.5" />
+              <span>Chats</span>
+              {friends.length > 0 && (
+                <span className="px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-white/20">
+                  {friends.length}
+                </span>
+              )}
+            </button>
+
+            <button
+              onClick={() => setActiveTab('requests')}
+              className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer relative ${
+                activeTab === 'requests'
+                  ? 'bg-[#111111] text-white dark:bg-white dark:text-[#111111] shadow-2xs'
+                  : 'text-[#6B7280] dark:text-neutral-400 hover:text-[#111111] dark:hover:text-white'
+              }`}
+            >
+              <UserCheck className="h-3.5 w-3.5" />
+              <span>Requests</span>
+              {receivedRequests.length > 0 && (
+                <span className="px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-rose-500 text-white font-bold animate-pulse">
+                  {receivedRequests.length}
+                </span>
+              )}
+            </button>
+
+            <button
+              onClick={() => setActiveTab('find')}
+              className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                activeTab === 'find'
+                  ? 'bg-[#2B4EFF] text-white shadow-2xs'
+                  : 'text-[#6B7280] dark:text-neutral-400 hover:text-[#111111] dark:hover:text-white'
+              }`}
+            >
+              <UserPlus className="h-3.5 w-3.5" />
+              <span>Find Classmates</span>
+            </button>
+          </div>
         </div>
 
         {/* 2. Search Field */}
-        <CampusSearchField
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search people, clubs, groups..."
-        />
-
-        {/* 3. Filter Chips: All, Unread, Clubs, Groups */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none -mx-3 px-3 sm:mx-0 sm:px-0">
-          {(['All', 'Unread', 'Clubs', 'Groups'] as MessageFilter[]).map((filter) => (
-            <CampusFilterChip
-              key={filter}
-              active={selectedFilter === filter}
-              onClick={() => setSelectedFilter(filter)}
-            >
-              {filter}
-            </CampusFilterChip>
-          ))}
+        <div className="relative">
+          <CampusSearchField
+            value={searchQuery}
+            onChange={setSearchQuery}
+            placeholder={
+              activeTab === 'find'
+                ? "Search classmates by name, enrollment no, or branch..."
+                : "Search conversations and connected friends..."
+            }
+          />
         </div>
 
-        {/* 4. "Message Requests" Row */}
-        {requests.length > 0 && (
-          <div
-            onClick={() => setShowRequestsModal(true)}
-            className="rounded-[22px] bg-[#E6EAFD] dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900/50 p-3.5 sm:p-4 flex items-center justify-between gap-3 shadow-xs hover:border-[#2B4EFF] transition-all cursor-pointer select-none"
-          >
-            <div className="flex items-center gap-3.5 min-w-0">
-              {/* Stacked Avatars */}
-              <div className="flex -space-x-2 shrink-0">
-                <div className="w-8 h-8 rounded-full bg-[#FDE8E0] text-[#B91C1C] flex items-center justify-center text-xs font-bold border-2 border-white dark:border-[#1C1C1E]">
-                  IP
+        {/* ── TAB 1: DIRECT CHATS & CONNECTED FRIENDS ── */}
+        {activeTab === 'messages' && (
+          <div className="space-y-4 animate-fade-in">
+            {filteredFriends.length === 0 ? (
+              <div className="p-8 sm:p-12 text-center rounded-[24px] bg-white dark:bg-[#18181B] border border-[#E8E4DA] dark:border-neutral-800 space-y-4 shadow-xs">
+                <div className="w-16 h-16 rounded-3xl bg-[#2B4EFF]/10 text-[#2B4EFF] flex items-center justify-center mx-auto shadow-inner">
+                  <MessageSquare className="h-8 w-8 stroke-[1.5]" />
                 </div>
-                <div className="w-8 h-8 rounded-full bg-[#EAF6B0] text-[#3E5200] flex items-center justify-center text-xs font-bold border-2 border-white dark:border-[#1C1C1E]">
-                  TJ
+                <div className="space-y-1.5 max-w-md mx-auto">
+                  <h3 className="text-base sm:text-lg font-bold text-[#111111] dark:text-white">
+                    No Direct Conversations Yet
+                  </h3>
+                  <p className="text-xs sm:text-sm text-[#6B7280] dark:text-neutral-400 leading-relaxed">
+                    Connect with fellow engineering students across Gujarat universities to exchange notes, discuss practical solutions, and form study groups.
+                  </p>
                 </div>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('find')}
+                  className="px-5 py-2.5 rounded-full bg-[#2B4EFF] hover:bg-blue-600 text-white font-bold text-xs shadow-sm transition-all inline-flex items-center gap-2 cursor-pointer"
+                >
+                  <UserPlus className="h-4 w-4" />
+                  <span>Find & Add Classmates</span>
+                </button>
+              </div>
+            ) : (
+              <div className="rounded-[24px] bg-white dark:bg-[#18181B] border border-[#E8E4DA] dark:border-neutral-800 p-2 divide-y divide-[#EFECE6] dark:divide-neutral-800/80 shadow-xs">
+                {filteredFriends.map((f) => (
+                  <CampusConversationRow
+                    key={f.userId}
+                    id={f.userId}
+                    name={f.displayName}
+                    avatarUrl={f.avatarUrl}
+                    lastMessage={f.lastMessageSnippet || 'Connected on CampusLoop'}
+                    timestamp={f.lastMessageTime || 'Recent'}
+                    unreadCount={0}
+                    isOnline={f.isOnline}
+                    onClick={() => handleOpenChat(f)}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── TAB 2: FRIEND REQUESTS (RECEIVED & SENT) ── */}
+        {activeTab === 'requests' && (
+          <div className="space-y-5 animate-fade-in">
+            {/* Received Requests */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xs font-black uppercase tracking-wider text-[#6B7280] dark:text-neutral-400">
+                  Received Requests ({receivedRequests.length})
+                </h3>
               </div>
 
-              <div className="min-w-0">
-                <h4 className="font-bold text-sm text-[#111111] dark:text-white leading-tight">
-                  Message requests
-                </h4>
-                <p className="text-xs text-[#2B4EFF] dark:text-blue-300 font-medium truncate mt-0.5">
-                  {requests.map((r) => r.name.split(' ')[0]).join(', ')}
-                </p>
-              </div>
+              {receivedRequests.length === 0 ? (
+                <div className="p-6 text-center rounded-[20px] bg-white dark:bg-[#18181B] border border-[#E8E4DA] dark:border-neutral-800 text-xs text-[#6B7280] dark:text-neutral-400">
+                  No incoming friend requests. Classmates who add you will appear here.
+                </div>
+              ) : (
+                <div className="space-y-2.5">
+                  {receivedRequests.map((req) => (
+                    <div
+                      key={req.id}
+                      className="p-4 rounded-[20px] bg-white dark:bg-[#18181B] border border-[#E8E4DA] dark:border-neutral-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs"
+                    >
+                      <div className="flex items-start gap-3">
+                        <CampusAvatar
+                          src={req.user.avatarUrl}
+                          name={req.user.displayName}
+                          size={44}
+                        />
+                        <div className="space-y-0.5">
+                          <h4 className="font-bold text-sm text-[#111111] dark:text-white">
+                            {req.user.displayName}
+                          </h4>
+                          <p className="text-xs text-[#6B7280] dark:text-neutral-400">
+                            {req.user.branch} • <span className="uppercase font-semibold text-primary">{req.user.university}</span>
+                          </p>
+                          {req.message && (
+                            <p className="text-xs text-[#111111] dark:text-neutral-200 bg-[#F6F3EC] dark:bg-neutral-800/80 p-2 rounded-xl mt-1 leading-snug">
+                              "{req.message}"
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => handleAccept(req)}
+                          className="px-4 py-2 rounded-full bg-[#111111] dark:bg-white text-white dark:text-[#111111] text-xs font-bold shadow-2xs hover:opacity-90 transition-opacity flex items-center gap-1.5 cursor-pointer"
+                        >
+                          <Check className="h-3.5 w-3.5" />
+                          <span>Accept</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDecline(req.id)}
+                          className="px-3 py-2 rounded-full border border-[#E8E4DA] dark:border-neutral-700 text-[#6B7280] dark:text-neutral-400 hover:text-rose-500 hover:border-rose-300 text-xs font-semibold transition-colors cursor-pointer"
+                        >
+                          Decline
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
-            <div className="flex items-center gap-2 shrink-0">
-              <span className="w-5 h-5 rounded-full bg-[#2B4EFF] text-white text-xs font-bold flex items-center justify-center">
-                {requests.length}
-              </span>
-              <ChevronRight className="w-5 h-5 text-neutral-400" />
+            {/* Sent Requests */}
+            <div className="space-y-3 pt-2">
+              <h3 className="text-xs font-black uppercase tracking-wider text-[#6B7280] dark:text-neutral-400">
+                Pending Sent Requests ({sentRequests.length})
+              </h3>
+
+              {sentRequests.length === 0 ? (
+                <div className="p-4 text-center rounded-[18px] bg-white dark:bg-[#18181B] border border-[#E8E4DA] dark:border-neutral-800 text-xs text-[#6B7280] dark:text-neutral-400">
+                  No pending sent requests.
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {sentRequests.map((req) => (
+                    <div
+                      key={req.id}
+                      className="p-3.5 rounded-[18px] bg-white dark:bg-[#18181B] border border-[#E8E4DA] dark:border-neutral-800 flex items-center justify-between gap-3 text-xs"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <Clock className="h-4 w-4 text-amber-500 shrink-0" />
+                        <div>
+                          <p className="font-bold text-[#111111] dark:text-white">
+                            Request sent to {req.user.displayName}
+                          </p>
+                          <span className="text-[11px] text-[#6B7280] dark:text-neutral-400">
+                            Awaiting response
+                          </span>
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => handleCancelSent(req.id)}
+                        className="px-3 py-1.5 rounded-full border border-border hover:bg-rose-500/10 hover:text-rose-600 text-[11px] font-semibold transition-colors cursor-pointer"
+                      >
+                        Cancel Request
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         )}
 
-        {/* 5. Conversation Rows List */}
-        <div className="rounded-[24px] bg-white dark:bg-[#1C1C1E] border border-[#E8E4DA] dark:border-neutral-800 divide-y divide-[#EFECE6] dark:divide-neutral-800/80 overflow-hidden shadow-xs">
-          {filteredConversations.length === 0 ? (
-            <div className="p-8 text-center space-y-2">
-              <p className="font-bold text-sm text-[#111111] dark:text-white">
-                No conversations found
-              </p>
-              <p className="text-xs text-[#6B7280] dark:text-neutral-400">
-                Start a new chat by tapping the compose icon above.
-              </p>
+        {/* ── TAB 3: FIND CLASSMATES (CAMPUS DIRECTORY) ── */}
+        {activeTab === 'find' && (
+          <div className="space-y-4 animate-fade-in">
+            {/* Campus Filter Row */}
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+              <button
+                type="button"
+                onClick={() => setSelectedUnivFilter('all')}
+                className={`px-3 py-1 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer ${
+                  selectedUnivFilter === 'all'
+                    ? 'bg-[#111111] text-white dark:bg-white dark:text-[#111111]'
+                    : 'bg-white dark:bg-neutral-800 border border-[#E8E4DA] dark:border-neutral-700 text-[#6B7280] dark:text-neutral-300'
+                }`}
+              >
+                All Gujarat
+              </button>
+              {allUniversities.map((u) => (
+                <button
+                  key={u.id}
+                  type="button"
+                  onClick={() => setSelectedUnivFilter(u.id)}
+                  className={`px-3 py-1 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer ${
+                    selectedUnivFilter === u.id
+                      ? 'bg-[#2B4EFF] text-white shadow-2xs'
+                      : 'bg-white dark:bg-neutral-800 border border-[#E8E4DA] dark:border-neutral-700 text-[#6B7280] dark:text-neutral-300'
+                  }`}
+                >
+                  {u.shortName}
+                </button>
+              ))}
             </div>
-          ) : (
-            filteredConversations.map((conv) => (
-              <CampusConversationRow
-                key={conv.id}
-                id={conv.id}
-                name={conv.name}
-                avatarUrl={conv.avatarUrl}
-                lastMessage={conv.lastMessage}
-                timestamp={conv.timestamp}
-                unreadCount={conv.unreadCount}
-                isOnline={conv.isOnline}
-                onClick={() => handleOpenConversation(conv)}
-              />
-            ))
-          )}
-        </div>
+
+            {/* Students List */}
+            {isSearchingStudents ? (
+              <div className="p-8 text-center text-xs text-[#6B7280] dark:text-neutral-400">
+                Searching verified student directory...
+              </div>
+            ) : discoveredStudents.length === 0 ? (
+              <div className="p-8 text-center rounded-[20px] bg-white dark:bg-[#18181B] border border-[#E8E4DA] dark:border-neutral-800 text-xs text-[#6B7280] dark:text-neutral-400">
+                No students found matching your search.
+              </div>
+            ) : (
+              <div className="space-y-2.5">
+                {discoveredStudents.map((st) => {
+                  const isFriend = st.friendshipStatus === 'friends';
+                  const isSent = st.friendshipStatus === 'pending_sent';
+                  const isReceived = st.friendshipStatus === 'pending_received';
+
+                  return (
+                    <div
+                      key={st.id}
+                      className="p-3.5 sm:p-4 rounded-[20px] bg-white dark:bg-[#18181B] border border-[#E8E4DA] dark:border-neutral-800 flex items-center justify-between gap-3 shadow-2xs hover:border-[#2B4EFF]/40 transition-colors"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <CampusAvatar
+                          src={st.avatarUrl}
+                          name={st.displayName}
+                          size={44}
+                        />
+                        <div className="space-y-0.5 min-w-0">
+                          <h4 className="font-bold text-sm text-[#111111] dark:text-white truncate">
+                            {st.displayName}
+                          </h4>
+                          <p className="text-xs text-[#6B7280] dark:text-neutral-400 truncate">
+                            {st.branch} {st.division ? `(${st.division})` : ''}
+                          </p>
+                          <div className="flex items-center gap-2 text-[10px] text-[#6B7280] dark:text-neutral-400">
+                            <span className="font-semibold text-primary uppercase">{st.university}</span>
+                            {st.enrollmentNo && <span>• {st.enrollmentNo}</span>}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="shrink-0">
+                        {isFriend ? (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setActiveTab('messages');
+                              handleOpenChat({
+                                id: st.id,
+                                userId: st.id,
+                                displayName: st.displayName,
+                                email: st.email,
+                                avatarUrl: st.avatarUrl,
+                                branch: st.branch,
+                                university: st.university,
+                                isOnline: true,
+                                connectedAt: 'Connected',
+                              });
+                            }}
+                            className="px-3.5 py-1.5 rounded-full bg-[#E6EAFD] dark:bg-blue-950/40 text-[#2B4EFF] dark:text-blue-300 text-xs font-bold border border-blue-200 dark:border-blue-900/40 hover:bg-[#D8E0FC] transition-colors cursor-pointer"
+                          >
+                            Message 💬
+                          </button>
+                        ) : isSent ? (
+                          <span className="px-3 py-1.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 text-xs font-semibold">
+                            Request Sent
+                          </span>
+                        ) : isReceived ? (
+                          <button
+                            type="button"
+                            onClick={() => setActiveTab('requests')}
+                            className="px-3.5 py-1.5 rounded-full bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-700 transition-colors cursor-pointer"
+                          >
+                            Respond to Req
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => handleSendRequestToStudent(st)}
+                            className="px-3.5 py-1.5 rounded-full bg-[#111111] dark:bg-white text-white dark:text-[#111111] text-xs font-bold hover:opacity-90 shadow-2xs transition-opacity flex items-center gap-1.5 cursor-pointer"
+                          >
+                            <UserPlus className="h-3.5 w-3.5" />
+                            <span>Add Friend</span>
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
       </div>
 
-      {/* 6. Active Chat Thread Modal / Drawer */}
-      {activeConversation && (
-        <div 
+      {/* ── ACTIVE CHAT MODAL ── */}
+      {activeFriend && (
+        <div
           className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-3 sm:p-4"
-          onClick={() => setActiveConversation(null)}
+          onClick={() => setActiveFriend(null)}
         >
           <div
-            className="w-full max-w-lg h-[90vh] bg-white dark:bg-[#18181B] rounded-[24px] border border-[#E8E4DA] dark:border-neutral-800 shadow-2xl flex flex-col overflow-hidden animate-scale-in"
+            className="w-full max-w-lg h-[85vh] bg-white dark:bg-[#18181B] rounded-[24px] border border-[#E8E4DA] dark:border-neutral-800 shadow-2xl flex flex-col overflow-hidden animate-scale-in"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Chat Header */}
+            {/* Header */}
             <div className="p-4 border-b border-[#EFECE6] dark:border-neutral-800 flex items-center justify-between shrink-0">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 min-w-0">
                 <button
                   type="button"
-                  onClick={() => setActiveConversation(null)}
-                  className="p-1.5 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                  onClick={() => setActiveFriend(null)}
+                  className="p-1.5 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer"
                 >
                   <ArrowLeft className="w-5 h-5 text-neutral-600 dark:text-neutral-300" />
                 </button>
                 <CampusAvatar
-                  src={activeConversation.avatarUrl}
-                  name={activeConversation.name}
-                  size={36}
-                  status={activeConversation.isOnline ? 'online' : undefined}
+                  src={activeFriend.avatarUrl}
+                  name={activeFriend.displayName}
+                  size={38}
+                  status="online"
                 />
-                <div>
-                  <h3 className="font-bold text-sm sm:text-base text-[#111111] dark:text-white">
-                    {activeConversation.name}
+                <div className="min-w-0">
+                  <h3 className="font-bold text-sm sm:text-base text-[#111111] dark:text-white truncate">
+                    {activeFriend.displayName}
                   </h3>
-                  <span className="text-[11px] text-[#6B7280] dark:text-neutral-400 font-medium">
-                    {activeConversation.isOnline ? 'Online now' : 'Campus Member'}
-                  </span>
+                  <p className="text-[11px] text-[#6B7280] dark:text-neutral-400 font-medium truncate">
+                    {activeFriend.branch} • <span className="uppercase text-primary font-bold">{activeFriend.university}</span>
+                  </p>
                 </div>
               </div>
 
               <button
                 type="button"
-                onClick={() => setActiveConversation(null)}
-                className="p-1.5 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                onClick={() => setActiveFriend(null)}
+                className="p-1.5 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-400 cursor-pointer"
               >
-                <X className="w-5 h-5 text-neutral-400" />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
-            {/* Chat Messages Body */}
+            {/* Message Body */}
             <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-[#F6F3EC]/50 dark:bg-neutral-900/40">
-              {activeConversation.messages.map((m) => (
-                <div
-                  key={m.id}
-                  className={`flex flex-col ${m.sender === 'me' ? 'items-end' : 'items-start'}`}
-                >
-                  <div
-                    className={`max-w-[78%] rounded-2xl px-4 py-2.5 text-xs sm:text-sm font-normal shadow-2xs leading-relaxed ${
-                      m.sender === 'me'
-                        ? 'bg-[#2B4EFF] text-white rounded-br-xs'
-                        : 'bg-white dark:bg-[#1C1C1E] text-[#111111] dark:text-neutral-200 border border-[#E8E4DA] dark:border-neutral-800 rounded-bl-xs'
-                    }`}
-                  >
-                    {m.text}
-                  </div>
-                  <span className="text-[10px] text-[#6B7280] dark:text-neutral-500 mt-1 px-1">
-                    {m.time}
-                  </span>
+              {activeThreadMessages.length === 0 ? (
+                <div className="text-center py-12 text-[#6B7280] dark:text-neutral-400 space-y-2">
+                  <Sparkles className="h-8 w-8 mx-auto text-[#2B4EFF]" />
+                  <p className="font-bold text-sm text-[#111111] dark:text-white">
+                    Start of your direct academic chat
+                  </p>
+                  <p className="text-xs max-w-xs mx-auto">
+                    Share exam preparation queries, ask for lab advice, or coordinate study sessions.
+                  </p>
                 </div>
-              ))}
+              ) : (
+                activeThreadMessages.map((msg) => {
+                  const isMe = msg.senderId === user?.id;
+                  return (
+                    <div
+                      key={msg.id}
+                      className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}
+                    >
+                      <div
+                        className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-xs sm:text-sm font-normal shadow-2xs leading-relaxed ${
+                          isMe
+                            ? 'bg-[#2B4EFF] text-white rounded-br-xs'
+                            : 'bg-white dark:bg-[#27272A] text-[#111111] dark:text-white border border-[#E8E4DA] dark:border-neutral-700 rounded-bl-xs'
+                        }`}
+                      >
+                        {msg.content}
+                      </div>
+                      <span className="text-[10px] text-neutral-400 px-1 mt-1 font-mono">
+                        {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </span>
+                    </div>
+                  );
+                })
+              )}
             </div>
 
-            {/* Chat Send Input */}
+            {/* Input Bar */}
             <form
               onSubmit={handleSendMessage}
-              className="p-3.5 border-t border-[#EFECE6] dark:border-neutral-800 bg-white dark:bg-[#18181B] flex items-center gap-2 shrink-0"
+              className="p-3 border-t border-[#EFECE6] dark:border-neutral-800 flex items-center gap-2 bg-white dark:bg-[#18181B]"
             >
               <input
                 type="text"
                 value={newMessageText}
                 onChange={(e) => setNewMessageText(e.target.value)}
-                placeholder={`Message ${activeConversation.name.split(' ')[0]}...`}
-                className="h-11 flex-1 rounded-full bg-[#F6F3EC] dark:bg-neutral-800 text-xs sm:text-sm px-4 border border-[#E8E4DA] dark:border-neutral-700 focus:outline-none focus:border-[#2B4EFF]"
+                placeholder={`Message ${activeFriend.displayName}...`}
+                className="flex-1 h-11 px-4 rounded-full bg-[#F6F3EC] dark:bg-neutral-800 border border-[#E8E4DA] dark:border-neutral-700 text-xs sm:text-sm outline-none focus:ring-2 focus:ring-[#2B4EFF] text-[#111111] dark:text-white placeholder:text-neutral-400"
               />
               <button
                 type="submit"
-                disabled={!newMessageText.trim()}
-                className="w-11 h-11 rounded-full bg-[#2B4EFF] text-white flex items-center justify-center hover:bg-[#1E3EDB] disabled:opacity-50 transition-all shrink-0 cursor-pointer"
+                disabled={!newMessageText.trim() || isSendingMessage}
+                className="w-11 h-11 rounded-full bg-[#2B4EFF] text-white flex items-center justify-center hover:bg-blue-600 disabled:opacity-40 transition-all shadow-xs cursor-pointer shrink-0"
               >
                 <Send className="w-4 h-4" />
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* 7. Message Requests Modal */}
-      {showRequestsModal && (
-        <div
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
-          onClick={() => setShowRequestsModal(false)}
-        >
-          <div
-            className="w-full max-w-md bg-white dark:bg-[#18181B] rounded-[24px] border border-[#E8E4DA] p-5 shadow-2xl space-y-4"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between pb-3 border-b">
-              <h3 className="font-bold text-base text-[#111111] dark:text-white">
-                Message Requests ({requests.length})
-              </h3>
-              <button
-                type="button"
-                onClick={() => setShowRequestsModal(false)}
-                className="p-1 rounded-full hover:bg-neutral-100"
-              >
-                <X className="w-5 h-5 text-neutral-500" />
-              </button>
-            </div>
-
-            <div className="space-y-3 max-h-72 overflow-y-auto">
-              {requests.map((req) => (
-                <div
-                  key={req.id}
-                  className="p-3.5 rounded-2xl bg-[#F6F3EC] dark:bg-neutral-800 space-y-2"
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="font-bold text-sm text-[#111111] dark:text-white">{req.name}</h4>
-                      <p className="text-[11px] text-neutral-500">{req.department}</p>
-                    </div>
-                    <span className="text-[10px] text-neutral-400">{req.time}</span>
-                  </div>
-
-                  <p className="text-xs text-neutral-700 dark:text-neutral-300 font-medium">
-                    "{req.snippet}"
-                  </p>
-
-                  <div className="flex items-center gap-2 pt-1">
-                    <button
-                      type="button"
-                      onClick={() => handleAcceptRequest(req)}
-                      className="flex-1 h-9 rounded-full bg-[#2B4EFF] text-white font-bold text-xs hover:bg-[#1E3EDB] flex items-center justify-center gap-1.5"
-                    >
-                      <UserCheck className="w-3.5 h-3.5" />
-                      <span>Accept</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleDeclineRequest(req.id)}
-                      className="flex-1 h-9 rounded-full bg-white dark:bg-neutral-700 border border-[#E8E4DA] text-neutral-700 dark:text-neutral-200 font-bold text-xs hover:bg-neutral-100 flex items-center justify-center gap-1.5"
-                    >
-                      <UserX className="w-3.5 h-3.5" />
-                      <span>Decline</span>
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 8. Compose New Message Modal */}
-      {showComposeModal && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
-          onClick={() => setShowComposeModal(false)}
-        >
-          <div
-            className="w-full max-w-md bg-white dark:bg-[#18181B] rounded-[24px] border border-[#E8E4DA] p-5 shadow-2xl space-y-4"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between pb-3 border-b">
-              <h3 className="font-bold text-base text-[#111111] dark:text-white">
-                New Campus Message
-              </h3>
-              <button
-                type="button"
-                onClick={() => setShowComposeModal(false)}
-                className="p-1 rounded-full hover:bg-neutral-100"
-              >
-                <X className="w-5 h-5 text-neutral-500" />
-              </button>
-            </div>
-
-            <form onSubmit={handleStartCompose} className="space-y-3">
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-neutral-500 mb-1.5">
-                  Send to:
-                </label>
-                <input
-                  type="text"
-                  value={newRecipientName}
-                  onChange={(e) => setNewRecipientName(e.target.value)}
-                  placeholder="Enter peer name (e.g. Kabir, Diya, Rohan)..."
-                  className="w-full h-11 rounded-xl bg-[#F6F3EC] dark:bg-neutral-800 text-sm px-4 border border-[#E8E4DA] dark:border-neutral-700 focus:outline-none focus:border-[#2B4EFF]"
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={!newRecipientName.trim()}
-                className="w-full h-11 rounded-full bg-[#2B4EFF] text-white font-bold text-sm hover:bg-[#1E3EDB] disabled:opacity-50 transition-all cursor-pointer"
-              >
-                Start Conversation
               </button>
             </form>
           </div>

@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { subjects } from "@/data/subjects";
+import { MASSIVE_QUESTION_BANK } from "@/data/massiveQuestionBank";
 import { useGamification } from "@/hooks/useGamification";
 import type { MCQ } from "@/data/types";
 import { 
@@ -130,7 +131,18 @@ export default function QuizPage() {
         });
       });
     });
-    return pool;
+    const bankItems: EnrichedMCQ[] = MASSIVE_QUESTION_BANK.map((item) => ({
+      question: item.question,
+      options: item.options,
+      correctIndex: item.correctIndex,
+      explanation: item.explanation,
+      subjectId: item.subjectId,
+      subjectName: item.subjectName,
+      topicId: item.topicId,
+      topicTitle: item.topicTitle,
+      unitTitle: item.unitTitle,
+    }));
+    return [...pool, ...bankItems];
   }, [availableSubjects]);
 
   // Active question pool based on selected subject and topic search

@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useUniversity } from '@/contexts/UniversityContext';
 import { useGamification } from '@/hooks/useGamification';
 import {
   Sparkles,
@@ -41,10 +42,11 @@ import {
 } from '@/components/campusloop';
 import { CreatePostModal } from '@/components/campusloop/CreatePostModal';
 
-type HomeFeedTab = 'for_you' | 'following' | 'my_clubs';
+type HomeFeedTab = 'for_you' | 'my_campus' | 'following' | 'my_clubs';
 
 export default function CommunityPage() {
   const { user, profile, role } = useAuth();
+  const { currentUniversity } = useUniversity();
   const { addXp } = useGamification();
 
   const [activeTab, setActiveTab] = useState<HomeFeedTab>('for_you');
@@ -120,7 +122,15 @@ export default function CommunityPage() {
   const filteredPosts = useMemo(() => {
     return posts.filter((post) => {
       // 1. Tab filter
-      if (activeTab === 'following') {
+      if (activeTab === 'my_campus') {
+        const u = (post as any).university_id;
+        const matchesCampus =
+          u === currentUniversity.id ||
+          post.authorBranch?.toLowerCase().includes(currentUniversity.shortName.toLowerCase()) ||
+          post.authorBranch?.toLowerCase().includes(currentUniversity.code.toLowerCase()) ||
+          !u || u === 'all';
+        if (!matchesCampus) return false;
+      } else if (activeTab === 'following') {
         if (!followingIds.has(post.authorId)) return false;
       } else if (activeTab === 'my_clubs') {
         const cat = (post.category || '').toLowerCase();
@@ -283,8 +293,23 @@ export default function CommunityPage() {
                   : 'text-[#6B7280] dark:text-neutral-400 hover:text-[#111111] dark:hover:text-white'
               }`}
             >
-              For You
+              All Gujarat
               {activeTab === 'for_you' && (
+                <span className="absolute bottom-0 inset-x-0 h-[3px] bg-[#2B4EFF] dark:bg-[#3D5EFF] rounded-full" />
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTab('my_campus')}
+              className={`pb-2.5 text-base sm:text-lg font-bold transition-all relative cursor-pointer ${
+                activeTab === 'my_campus'
+                  ? 'text-[#2B4EFF] dark:text-[#3D5EFF]'
+                  : 'text-[#6B7280] dark:text-neutral-400 hover:text-[#111111] dark:hover:text-white'
+              }`}
+            >
+              {currentUniversity.shortName}
+              {activeTab === 'my_campus' && (
                 <span className="absolute bottom-0 inset-x-0 h-[3px] bg-[#2B4EFF] dark:bg-[#3D5EFF] rounded-full" />
               )}
             </button>

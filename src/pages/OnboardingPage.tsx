@@ -1,8 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "@/assets/logo.png";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAcademic } from "@/contexts/AcademicContext";
+import { useUniversity } from "@/contexts/UniversityContext";
+import { 
+  getAllUniversities, 
+  ALL_BTECH_BRANCHES, 
+  UniversityData 
+} from "@/data/universitiesData";
 import { 
   GraduationCap, 
   BookOpen, 
@@ -17,23 +23,35 @@ import {
   User, 
   IdCard, 
   Award,
-  Loader2
+  Loader2,
+  Building2,
+  Search,
+  Check,
+  Cpu,
+  Layers,
+  MapPin,
+  Trophy,
+  Users
 } from "lucide-react";
 import { toast } from "sonner";
 import { GRADIENT_AVATARS, renderAvatarBox } from "@/pages/ProfilePage";
 
 const STUDY_PRIORITIES = [
-  { id: "qb", label: "Exam Question Banks & Formats", icon: "📑", desc: "MST & CET-2 question papers" },
-  { id: "notes", label: "Curriculum Syllabus Notes", icon: "📚", desc: "Detailed unit concepts & formulas" },
-  { id: "coding", label: "University Coding Practicals", icon: "💻", desc: "Tested DSA, Java & Python code" },
-  { id: "calc", label: "75% Attendance & SGPA Calculator", icon: "🧮", desc: "Track buffer days & grades" },
-  { id: "achievements", label: "Student Streaks & Badges", icon: "🏆", desc: "Gamified focus timer & XP" },
+  { id: "qb", label: "Exam Question Banks & Formats", icon: "📑", desc: "Previous years' university exam questions & paper formats" },
+  { id: "notes", label: "Curriculum Syllabus Notes", icon: "📚", desc: "Unit notes, algorithms, proofs & formula banks" },
+  { id: "coding", label: "Interactive Coding Lab", icon: "💻", desc: "LeetCode & HackerRank style practical harness" },
+  { id: "calc", label: "75% Attendance & SGPA Calculator", icon: "🧮", desc: "Track attendance threshold and semester SGPA" },
+  { id: "community", label: "Campus Community & Friends", icon: "🤝", desc: "Connect with classmates, share posts & notes" },
+  { id: "achievements", label: "Streaks, Badges & Leaderboard", icon: "🏆", desc: "Gamified focus timer, daily quests and XP" },
 ];
 
 export default function OnboardingPage() {
   const navigate = useNavigate();
   const { user, profile, updateProfile, uploadAvatar } = useAuth();
   const { setAcademicContext } = useAcademic();
+  const { setUniversity, setActiveDivision } = useUniversity();
+
+  const allUniversities = useMemo(() => getAllUniversities(), []);
 
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -41,25 +59,45 @@ export default function OnboardingPage() {
 
   // Form State
   const [displayName, setDisplayName] = useState(profile?.display_name || user?.email?.split('@')[0] || "");
+  const [selectedUniversityId, setSelectedUniversityId] = useState<string>(profile?.university || "itm-baroda");
+  const [universitySearch, setUniversitySearch] = useState("");
   const [program, setProgram] = useState(profile?.program || "B.Tech");
   const [branch, setBranch] = useState(profile?.branch || "Computer Science & Engineering");
-  const [semester, setSemester] = useState<number>(profile?.semester || 1);
+  const [semester, setSemester] = useState<number>(profile?.semester || 3);
+  const [division, setDivision] = useState(profile?.division || "Div A");
   const [enrollmentNo, setEnrollmentNo] = useState(profile?.enrollment_no || "");
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(profile?.avatar_url || null);
-  const [selectedPriorities, setSelectedPriorities] = useState<string[]>(["qb", "notes", "calc"]);
-  const [academicGoal, setAcademicGoal] = useState("Score 8.5+ SGPA and clear upcoming MST exams with confidence");
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(profile?.avatar_url || "grad-blue");
+  const [selectedPriorities, setSelectedPriorities] = useState<string[]>(["qb", "notes", "coding", "calc"]);
+  const [academicGoal, setAcademicGoal] = useState("Score 8.5+ SGPA and excel in technical campus placements");
 
   // Keep in sync with user profile if already loaded
   useEffect(() => {
     if (profile) {
       if (profile.display_name && !displayName) setDisplayName(profile.display_name);
+      if (profile.university) setSelectedUniversityId(profile.university);
       if (profile.program) setProgram(profile.program);
       if (profile.branch) setBranch(profile.branch);
       if (profile.semester) setSemester(profile.semester);
+      if (profile.division) setDivision(profile.division);
       if (profile.enrollment_no) setEnrollmentNo(profile.enrollment_no);
       if (profile.avatar_url) setAvatarUrl(profile.avatar_url);
     }
   }, [profile]);
+
+  const activeUniversity = useMemo(() => {
+    return allUniversities.find(u => u.id === selectedUniversityId) || allUniversities[0];
+  }, [allUniversities, selectedUniversityId]);
+
+  const filteredUniversities = useMemo(() => {
+    if (!universitySearch.trim()) return allUniversities;
+    const q = universitySearch.toLowerCase().trim();
+    return allUniversities.filter(u => 
+      u.name.toLowerCase().includes(q) ||
+      u.shortName.toLowerCase().includes(q) ||
+      u.location.toLowerCase().includes(q) ||
+      u.accreditation.toLowerCase().includes(q)
+    );
+  }, [allUniversities, universitySearch]);
 
   const handleAvatarFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -81,28 +119,34 @@ export default function OnboardingPage() {
   const handleComplete = async () => {
     setIsSubmitting(true);
     try {
-      const semNumber = Number(semester) || 1;
+      const semNumber = Number(semester) || 3;
       await updateProfile({
         display_name: displayName.trim() || user?.email?.split('@')[0] || "Student",
+        university: selectedUniversityId,
         program: program || "B.Tech",
         branch: branch || "Computer Science & Engineering",
         semester: semNumber,
+        division: division || "Div A",
         enrollment_no: enrollmentNo.trim() || null,
         avatar_url: avatarUrl,
         goal: academicGoal,
         onboarding_completed: true,
       });
 
-      // Also set academic context for semester selector
+      // Synchronize university context & division
+      await setUniversity(selectedUniversityId);
+      await setActiveDivision(division);
+
+      // Set academic context
       setAcademicContext({
         semesterId: `sem-${semNumber}`,
       });
 
-      toast.success("Welcome aboard! Your student profile is set up.");
+      toast.success(`Welcome to CampusLoop! Onboarding complete for ${activeUniversity.shortName}.`);
       navigate("/dashboard");
     } catch (err) {
       console.error("Failed to complete onboarding:", err);
-      toast.error("Could not save your preferences. Please try again.");
+      toast.error("Could not save preferences. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -110,13 +154,16 @@ export default function OnboardingPage() {
 
   const handleSkip = async () => {
     try {
-      const semNumber = Number(semester) || 1;
+      const semNumber = Number(semester) || 3;
       await updateProfile({
+        university: selectedUniversityId || "itm-baroda",
         program: program || "B.Tech",
         branch: branch || "Computer Science & Engineering",
         semester: semNumber,
+        division: division || "Div A",
         onboarding_completed: true,
       });
+      await setUniversity(selectedUniversityId || "itm-baroda");
       setAcademicContext({
         semesterId: `sem-${semNumber}`,
       });
@@ -133,397 +180,530 @@ export default function OnboardingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col justify-between selection:bg-amber-500/30">
-      {/* Aesthetic Top Bar */}
-      <header className="border-b border-border/80 bg-card/60 backdrop-blur-xl px-4 sm:px-8 py-3.5 flex items-center justify-between">
+    <div className="min-h-screen bg-[#F6F3EC] dark:bg-[#121214] text-[#111111] dark:text-white flex flex-col justify-between selection:bg-[#2B4EFF]/20">
+      
+      {/* Top Branding Navigation */}
+      <header className="border-b border-[#E8E4DA] dark:border-neutral-800 bg-white/80 dark:bg-[#1C1C1E]/80 backdrop-blur-xl px-4 sm:px-8 py-3.5 flex items-center justify-between sticky top-0 z-30">
         <div className="flex items-center gap-3">
-          <img src={logo} alt="ITM Notes" className="w-7 h-7 object-contain dark:invert" />
+          <img src={logo} alt="CampusLoop" className="w-7 h-7 object-contain rounded-lg" />
           <div>
-            <h1 className="font-extrabold text-sm text-foreground tracking-tight">ITM Notes</h1>
-            <p className="text-[10px] text-muted-foreground font-mono">SLS Baroda University • Onboarding</p>
+            <h1 className="font-extrabold text-sm text-[#111111] dark:text-white tracking-tight flex items-center gap-1.5">
+              <span>CampusLoop</span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#E6EAFD] text-[#2B4EFF] dark:bg-blue-950/40 dark:text-blue-300 font-bold uppercase tracking-wider">
+                India Multi-University
+              </span>
+            </h1>
+            <p className="text-[10px] text-neutral-500 font-mono">Student Onboarding · Academic Personalization</p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-[11px] font-bold text-amber-500 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20">
-            Step {step} of 4
-          </span>
+
+        <div className="flex items-center gap-3">
+          <div className="hidden sm:flex items-center gap-1.5 text-xs text-neutral-500">
+            <span>Step {step} of 4</span>
+            <span>·</span>
+            <span className="font-semibold text-[#111111] dark:text-white">
+              {step === 1 && "Identity & Avatar"}
+              {step === 2 && "University & Campus"}
+              {step === 3 && "Degree & Branch"}
+              {step === 4 && "Goals & Priorities"}
+            </span>
+          </div>
+
+          <button
+            onClick={handleSkip}
+            className="text-xs text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200 underline transition-colors cursor-pointer"
+          >
+            Skip for now
+          </button>
         </div>
       </header>
 
-      <main className="flex-1 max-w-xl mx-auto w-full px-4 sm:px-6 py-8 sm:py-12 flex flex-col justify-center">
-        {/* Progress Bar & Step Indicator */}
+      {/* Main Wizard Area */}
+      <main className="flex-1 max-w-2xl mx-auto w-full px-4 sm:px-6 py-8 sm:py-10 flex flex-col justify-center">
+        
+        {/* Step Progress Bar */}
         <div className="mb-8">
-          <div className="flex items-center justify-between text-xs font-semibold text-muted-foreground mb-2">
+          <div className="flex items-center justify-between text-xs font-semibold text-neutral-500 mb-2">
             <span>Step {step} of 4</span>
-            <button
-              onClick={handleSkip}
-              className="text-xs text-muted-foreground hover:text-foreground underline transition-colors"
-            >
-              Skip to Dashboard
-            </button>
+            <span className="text-[#2B4EFF] font-bold">{Math.round((step / 4) * 100)}% Completed</span>
           </div>
-          <div className="h-2 w-full bg-secondary rounded-full overflow-hidden">
+          <div className="h-2 w-full bg-[#E8E4DA] dark:bg-neutral-800 rounded-full overflow-hidden">
             <div
-              className="h-full bg-primary transition-all duration-500 ease-out rounded-full"
+              className="h-full bg-[#2B4EFF] transition-all duration-300 rounded-full"
               style={{ width: `${(step / 4) * 100}%` }}
             />
           </div>
         </div>
 
-        {/* STEP 1: Welcome to ITM Notes */}
+        {/* =========================================================================
+            STEP 1: IDENTITY & AVATAR
+        ========================================================================= */}
         {step === 1 && (
-          <div className="bg-card border border-border/80 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6 animate-fade-in">
-            <div className="h-12 w-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center font-bold text-2xl">
-              🎓
-            </div>
-
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
-                Welcome to ITM Notes
-              </h1>
-              <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
-                The centralized study portal for students of <strong className="text-foreground">ITM (SLS) Baroda University</strong>. Access verified question banks, semester notes, practical coding labs, and grade predictors.
+          <div className="rounded-[24px] border border-[#E8E4DA] dark:border-neutral-800 bg-white dark:bg-[#1C1C1E] p-6 sm:p-8 shadow-sm space-y-6 animate-fade-in">
+            <div className="space-y-1">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E6EAFD] text-[#2B4EFF] dark:bg-blue-950/40 dark:text-blue-300 text-xs font-bold">
+                <User className="h-3.5 w-3.5" />
+                <span>Step 1: Your Student Identity</span>
+              </div>
+              <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[#111111] dark:text-white">
+                How should classmates find you?
+              </h2>
+              <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed">
+                Set up your profile identity for campus friend requests, study groups, and notes sharing.
               </p>
             </div>
 
+            {/* Avatar Selector */}
             <div className="space-y-3 pt-2">
-              <div className="flex items-start gap-3 p-3 rounded-xl bg-secondary/30 border border-border/60">
-                <CheckCircle2 className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
-                <div className="text-xs">
-                  <span className="font-bold text-foreground">Verified University Notes & Syllabi</span>
-                  <p className="text-muted-foreground mt-0.5">Aligned with your exact branch & semester syllabus.</p>
-                </div>
-              </div>
+              <label className="text-xs font-bold uppercase tracking-wider text-neutral-600 dark:text-neutral-400">
+                Choose Your Avatar or Upload Photo
+              </label>
 
-              <div className="flex items-start gap-3 p-3 rounded-xl bg-secondary/30 border border-border/60">
-                <CheckCircle2 className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
-                <div className="text-xs">
-                  <span className="font-bold text-foreground">MST & CET-2 Question Banks</span>
-                  <p className="text-muted-foreground mt-0.5">High-yield question banks, paper patterns, and timetables.</p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3 p-3 rounded-xl bg-secondary/30 border border-border/60">
-                <CheckCircle2 className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
-                <div className="text-xs">
-                  <span className="font-bold text-foreground">Academic Tools & 75% Attendance Buffer</span>
-                  <p className="text-muted-foreground mt-0.5">Calculate your safe attendance margin and predict your SGPA.</p>
-                </div>
-              </div>
-            </div>
-
-            <button
-              onClick={() => setStep(2)}
-              className="w-full py-3 px-4 rounded-xl bg-primary text-primary-foreground font-bold text-sm shadow-md hover:opacity-90 transition-opacity flex items-center justify-center gap-2 apple-press"
-            >
-              <span>Get Started</span>
-              <ArrowRight className="h-4 w-4" />
-            </button>
-          </div>
-        )}
-
-        {/* STEP 2: Academic Setup */}
-        {step === 2 && (
-          <div className="bg-card border border-border/80 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6 animate-fade-in">
-            <div>
-              <div className="inline-flex items-center gap-1.5 text-xs font-bold text-primary uppercase tracking-wider mb-1">
-                <GraduationCap className="h-4 w-4" /> Academic Setup
-              </div>
-              <h2 className="text-xl sm:text-2xl font-extrabold text-foreground">
-                Your Course & Semester
-              </h2>
-              <p className="text-xs text-muted-foreground mt-1">
-                This personalizes your dashboard with relevant subjects and exam schedules.
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              <div>
-                <label className="text-xs font-semibold text-muted-foreground block mb-1">
-                  University
-                </label>
-                <input
-                  type="text"
-                  disabled
-                  value="ITM (SLS) Baroda University"
-                  className="w-full h-10 px-3 rounded-xl border border-input bg-secondary/50 text-xs font-semibold text-foreground cursor-not-allowed"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="text-xs font-semibold text-muted-foreground block mb-1">
-                    Program / Degree
-                  </label>
-                  <select
-                    value={program}
-                    onChange={(e) => setProgram(e.target.value)}
-                    className="w-full h-10 px-3 rounded-xl border border-input bg-background text-xs font-medium focus:ring-2 focus:ring-primary focus:outline-none"
-                  >
-                    <option value="B.Tech">B.Tech Engineering</option>
-                    <option value="BCA">BCA (Computer Applications)</option>
-                    <option value="MCA">MCA (Master of Computer Apps)</option>
-                    <option value="Diploma">Diploma Engineering</option>
-                  </select>
+              <div className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-[20px] bg-[#F6F3EC] dark:bg-neutral-800/60 border border-[#E8E4DA] dark:border-neutral-700">
+                <div className="shrink-0">
+                  {renderAvatarBox(avatarUrl, displayName, "h-20 w-20 text-2xl")}
                 </div>
 
-                <div>
-                  <label className="text-xs font-semibold text-muted-foreground block mb-1">
-                    Semester
-                  </label>
-                  <select
-                    value={semester}
-                    onChange={(e) => setSemester(Number(e.target.value))}
-                    className="w-full h-10 px-3 rounded-xl border border-input bg-background text-xs font-medium focus:ring-2 focus:ring-primary focus:outline-none"
-                  >
-                    {[1, 2, 3, 4, 5, 6, 7, 8].map((s) => (
-                      <option key={s} value={s}>Semester {s}</option>
+                <div className="flex-1 space-y-2 text-center sm:text-left">
+                  <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
+                    {GRADIENT_AVATARS.map((grad) => (
+                      <button
+                        key={grad.id}
+                        type="button"
+                        onClick={() => setAvatarUrl(grad.id)}
+                        className={`h-8 w-8 rounded-full bg-linear-to-tr ${grad.bgClass} flex items-center justify-center transition-all ${
+                          avatarUrl === grad.id ? "ring-2 ring-offset-2 ring-[#2B4EFF] scale-110" : "opacity-80 hover:opacity-100"
+                        }`}
+                      >
+                        {avatarUrl === grad.id && <Check className="h-4 w-4 text-white stroke-[3]" />}
+                      </button>
                     ))}
-                  </select>
+                  </div>
+
+                  <div className="pt-1">
+                    <label className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold bg-white dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200 border border-[#E8E4DA] dark:border-neutral-600 hover:bg-neutral-50 transition-colors cursor-pointer">
+                      {isUploadingPhoto ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Upload className="h-3.5 w-3.5 text-[#2B4EFF]" />}
+                      <span>Upload Custom Photo</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleAvatarFile}
+                        disabled={isUploadingPhoto}
+                      />
+                    </label>
+                  </div>
                 </div>
               </div>
-
-              <div>
-                <label className="text-xs font-semibold text-muted-foreground block mb-1">
-                  Branch / Department
-                </label>
-                <select
-                  value={branch}
-                  onChange={(e) => setBranch(e.target.value)}
-                  className="w-full h-10 px-3 rounded-xl border border-input bg-background text-xs font-medium focus:ring-2 focus:ring-primary focus:outline-none"
-                >
-                  <option value="Computer Science & Engineering">Computer Science & Engineering (CSE)</option>
-                  <option value="Information Technology">Information Technology (IT)</option>
-                  <option value="Artificial Intelligence & ML">Artificial Intelligence & ML</option>
-                  <option value="Mechanical Engineering">Mechanical Engineering</option>
-                  <option value="Civil Engineering">Civil Engineering</option>
-                  <option value="Electrical Engineering">Electrical Engineering</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="text-xs font-semibold text-muted-foreground block mb-1">
-                  University Enrollment Number (Optional)
-                </label>
-                <input
-                  type="text"
-                  value={enrollmentNo}
-                  onChange={(e) => setEnrollmentNo(e.target.value)}
-                  placeholder="e.g. 23010101001"
-                  className="w-full h-10 px-3 rounded-xl border border-input bg-background text-xs font-medium focus:ring-2 focus:ring-primary focus:outline-none"
-                />
-                <span className="text-[10px] text-muted-foreground mt-1 block">
-                  Enables a "Verified Student" badge on your campus profile.
-                </span>
-              </div>
             </div>
 
-            <div className="flex items-center justify-between pt-2">
-              <button
-                type="button"
-                onClick={() => setStep(1)}
-                className="py-2.5 px-4 rounded-xl text-xs font-semibold text-muted-foreground hover:bg-secondary transition-colors"
-              >
-                Back
-              </button>
-              <button
-                type="button"
-                onClick={() => setStep(3)}
-                className="py-2.5 px-5 rounded-xl bg-primary text-primary-foreground font-bold text-xs shadow-sm hover:opacity-90 transition-opacity flex items-center gap-1.5 apple-press"
-              >
-                <span>Continue</span>
-                <ArrowRight className="h-3.5 w-3.5" />
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* STEP 3: Study Priorities */}
-        {step === 3 && (
-          <div className="bg-card border border-border/80 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6 animate-fade-in">
-            <div>
-              <div className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-500 uppercase tracking-wider mb-1">
-                <Sparkles className="h-4 w-4" /> Personalization
-              </div>
-              <h2 className="text-xl sm:text-2xl font-extrabold text-foreground">
-                What are your study priorities?
-              </h2>
-              <p className="text-xs text-muted-foreground mt-1">
-                Select the modules you want fast-tracked on your daily dashboard.
-              </p>
+            {/* Display Name Input */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-neutral-600 dark:text-neutral-400">
+                Full Name / Preferred Display Name
+              </label>
+              <input
+                type="text"
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+                placeholder="e.g. Maher Bhatt"
+                className="w-full h-11 px-4 rounded-xl border border-[#E8E4DA] dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-[#2B4EFF]/30 focus:border-[#2B4EFF] transition-all"
+              />
             </div>
 
-            <div className="space-y-2.5">
-              {STUDY_PRIORITIES.map((pri) => {
-                const isSelected = selectedPriorities.includes(pri.id);
-                return (
-                  <button
-                    type="button"
-                    key={pri.id}
-                    onClick={() => togglePriority(pri.id)}
-                    className={`w-full p-3.5 rounded-2xl border text-left flex items-center justify-between gap-3 transition-all ${
-                      isSelected
-                        ? "border-primary bg-primary/5 shadow-2xs"
-                        : "border-border/70 hover:border-border hover:bg-secondary/20"
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="text-2xl shrink-0">{pri.icon}</span>
-                      <div>
-                        <h4 className="text-xs font-bold text-foreground">{pri.label}</h4>
-                        <p className="text-[11px] text-muted-foreground mt-0.5">{pri.desc}</p>
-                      </div>
-                    </div>
-                    <div className={`h-5 w-5 rounded-full border flex items-center justify-center shrink-0 ${
-                      isSelected ? "border-primary bg-primary text-primary-foreground" : "border-border"
-                    }`}>
-                      {isSelected && <CheckCircle2 className="h-3.5 w-3.5" />}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-
-            <div className="flex items-center justify-between pt-2">
+            {/* Navigation Buttons */}
+            <div className="pt-4 flex items-center justify-end">
               <button
                 type="button"
                 onClick={() => setStep(2)}
-                className="py-2.5 px-4 rounded-xl text-xs font-semibold text-muted-foreground hover:bg-secondary transition-colors"
+                disabled={!displayName.trim()}
+                className="h-11 px-6 rounded-full bg-[#2B4EFF] hover:bg-[#1E3ECC] text-white text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer shadow-xs disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Back
-              </button>
-              <button
-                type="button"
-                onClick={() => setStep(4)}
-                className="py-2.5 px-5 rounded-xl bg-primary text-primary-foreground font-bold text-xs shadow-sm hover:opacity-90 transition-opacity flex items-center gap-1.5 apple-press"
-              >
-                <span>Continue</span>
-                <ArrowRight className="h-3.5 w-3.5" />
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* STEP 4: Profile & Finish */}
-        {step === 4 && (
-          <div className="bg-card border border-border/80 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6 animate-fade-in">
-            <div>
-              <div className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-500 uppercase tracking-wider mb-1">
-                <User className="h-4 w-4" /> Profile & Passport
-              </div>
-              <h2 className="text-xl sm:text-2xl font-extrabold text-foreground">
-                Set up your student identity
-              </h2>
-              <p className="text-xs text-muted-foreground mt-1">
-                Your name and avatar appear on your dashboard and study streak badges.
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              {/* Avatar Selector */}
-              <div className="flex items-center gap-4">
-                {renderAvatarBox(avatarUrl, displayName || "S", "w-16 h-16 text-2xl")}
-                <div className="flex flex-col gap-1.5">
-                  <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold cursor-pointer hover:opacity-90 shadow-2xs">
-                    {isUploadingPhoto ? (
-                      <>
-                        <Loader2 className="h-3 w-3 animate-spin" />
-                        <span>Uploading...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Upload className="h-3 w-3" />
-                        <span>Upload Photo</span>
-                      </>
-                    )}
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleAvatarFile}
-                      disabled={isUploadingPhoto}
-                      className="hidden"
-                    />
-                  </label>
-                  <span className="text-[10px] text-muted-foreground">PNG, JPG, WebP up to 5MB</span>
-                </div>
-              </div>
-
-              {/* Gradient Options */}
-              <div>
-                <span className="text-[11px] font-semibold text-muted-foreground block mb-1.5">
-                  Or select a student avatar style:
-                </span>
-                <div className="grid grid-cols-6 gap-2">
-                  {GRADIENT_AVATARS.map((av) => (
-                    <button
-                      type="button"
-                      key={av.id}
-                      onClick={() => setAvatarUrl(av.id)}
-                      className={`h-10 rounded-xl bg-gradient-to-tr ${av.bgClass} text-white font-bold text-xs flex items-center justify-center border-2 transition-transform ${
-                        avatarUrl === av.id ? "border-primary scale-105" : "border-transparent"
-                      }`}
-                    >
-                      {displayName ? displayName.charAt(0).toUpperCase() : "S"}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Full Name */}
-              <div>
-                <label className="text-xs font-semibold text-muted-foreground block mb-1">
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  value={displayName}
-                  onChange={(e) => setDisplayName(e.target.value)}
-                  placeholder="e.g. Maher Bhatt"
-                  className="w-full h-10 px-3 rounded-xl border border-input bg-background text-xs font-medium focus:ring-2 focus:ring-primary focus:outline-none"
-                  required
-                />
-              </div>
-
-              {/* Academic Goal */}
-              <div>
-                <label className="text-xs font-semibold text-muted-foreground block mb-1">
-                  Current Semester Goal
-                </label>
-                <input
-                  type="text"
-                  value={academicGoal}
-                  onChange={(e) => setAcademicGoal(e.target.value)}
-                  placeholder="e.g. Ace Computer Architecture and clear MST with 90%+"
-                  className="w-full h-10 px-3 rounded-xl border border-input bg-background text-xs font-medium focus:ring-2 focus:ring-primary focus:outline-none"
-                />
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between pt-2">
-              <button
-                type="button"
-                onClick={() => setStep(3)}
-                className="py-2.5 px-4 rounded-xl text-xs font-semibold text-muted-foreground hover:bg-secondary transition-colors"
-              >
-                Back
-              </button>
-              <button
-                type="button"
-                onClick={handleComplete}
-                disabled={isSubmitting}
-                className="py-2.5 px-6 rounded-xl bg-primary text-primary-foreground font-bold text-xs shadow-md hover:opacity-90 disabled:opacity-50 transition-all flex items-center gap-2 apple-press"
-              >
-                {isSubmitting && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-                <span>Launch Dashboard</span>
+                <span>Continue to University</span>
                 <ArrowRight className="h-4 w-4" />
               </button>
             </div>
           </div>
         )}
+
+        {/* =========================================================================
+            STEP 2: UNIVERSITY & CAMPUS SELECTION
+        ========================================================================= */}
+        {step === 2 && (
+          <div className="rounded-[24px] border border-[#E8E4DA] dark:border-neutral-800 bg-white dark:bg-[#1C1C1E] p-6 sm:p-8 shadow-sm space-y-6 animate-fade-in">
+            <div className="space-y-1">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E6EAFD] text-[#2B4EFF] dark:bg-blue-950/40 dark:text-blue-300 text-xs font-bold">
+                <Building2 className="h-3.5 w-3.5" />
+                <span>Step 2: Choose Your University</span>
+              </div>
+              <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[#111111] dark:text-white">
+                Which Indian campus are you studying at?
+              </h2>
+              <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed">
+                Connects your personal dashboard, daily timetables, syllabi, and campus community feed.
+              </p>
+            </div>
+
+            {/* University Search Box */}
+            <div className="relative">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" />
+              <input
+                type="text"
+                value={universitySearch}
+                onChange={(e) => setUniversitySearch(e.target.value)}
+                placeholder="Search across IITs, BITS, DTU, GTU, ITM, Parul, Anna Univ..."
+                className="w-full h-11 pl-10 pr-4 rounded-xl border border-[#E8E4DA] dark:border-neutral-700 bg-[#F6F3EC] dark:bg-neutral-900 text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#2B4EFF]/30 focus:border-[#2B4EFF] transition-all"
+              />
+            </div>
+
+            {/* Universities Radio List */}
+            <div className="max-h-80 overflow-y-auto space-y-2.5 pr-1 scrollbar-thin">
+              {filteredUniversities.map((uni) => {
+                const isSelected = selectedUniversityId === uni.id;
+                return (
+                  <div
+                    key={uni.id}
+                    onClick={() => setSelectedUniversityId(uni.id)}
+                    className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${
+                      isSelected
+                        ? "border-[#2B4EFF] bg-[#E6EAFD]/40 dark:bg-blue-950/20 shadow-xs ring-1 ring-[#2B4EFF]"
+                        : "border-[#E8E4DA] dark:border-neutral-800 hover:border-neutral-400 bg-white dark:bg-neutral-900/60"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className={`h-10 w-10 rounded-xl flex items-center justify-center font-bold text-xs shrink-0 ${
+                        isSelected ? "bg-[#2B4EFF] text-white" : "bg-[#F6F3EC] dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300"
+                      }`}>
+                        {uni.code.slice(0, 4)}
+                      </div>
+
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-sm text-[#111111] dark:text-white truncate">
+                            {uni.name}
+                          </span>
+                          <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-[#F6F3EC] dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 shrink-0">
+                            {uni.affiliationType}
+                          </span>
+                        </div>
+                        <p className="text-xs text-neutral-500 truncate flex items-center gap-1.5 mt-0.5">
+                          <MapPin className="h-3 w-3 text-neutral-400" />
+                          <span>{uni.location}</span>
+                          <span>·</span>
+                          <span>{uni.accreditation.split('·')[0].trim()}</span>
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="shrink-0">
+                      <div className={`h-5 w-5 rounded-full border flex items-center justify-center transition-all ${
+                        isSelected ? "border-[#2B4EFF] bg-[#2B4EFF] text-white" : "border-neutral-300 dark:border-neutral-700"
+                      }`}>
+                        {isSelected && <Check className="h-3 w-3 stroke-[3]" />}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Navigation Buttons */}
+            <div className="pt-4 flex items-center justify-between">
+              <button
+                type="button"
+                onClick={() => setStep(1)}
+                className="h-11 px-5 rounded-full border border-[#E8E4DA] dark:border-neutral-700 text-neutral-700 dark:text-neutral-200 text-xs sm:text-sm font-semibold flex items-center gap-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all cursor-pointer"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                <span>Back</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setStep(3)}
+                className="h-11 px-6 rounded-full bg-[#2B4EFF] hover:bg-[#1E3ECC] text-white text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer shadow-xs"
+              >
+                <span>Continue to Branch</span>
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* =========================================================================
+            STEP 3: DEGREE, BRANCH & SECTION
+        ========================================================================= */}
+        {step === 3 && (
+          <div className="rounded-[24px] border border-[#E8E4DA] dark:border-neutral-800 bg-white dark:bg-[#1C1C1E] p-6 sm:p-8 shadow-sm space-y-6 animate-fade-in">
+            <div className="space-y-1">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E6EAFD] text-[#2B4EFF] dark:bg-blue-950/40 dark:text-blue-300 text-xs font-bold">
+                <GraduationCap className="h-3.5 w-3.5" />
+                <span>Step 3: Academic Details</span>
+              </div>
+              <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[#111111] dark:text-white">
+                Select your engineering program & branch
+              </h2>
+              <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed">
+                Personalizes your curriculum subjects, lab manuals, and division timetables for {activeUniversity.shortName}.
+              </p>
+            </div>
+
+            {/* Program Pills */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-neutral-600 dark:text-neutral-400">
+                Degree Program
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {["B.Tech", "B.E.", "BCA", "M.Tech"].map((prog) => (
+                  <button
+                    key={prog}
+                    type="button"
+                    onClick={() => setProgram(prog)}
+                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                      program === prog
+                        ? "bg-[#2B4EFF] text-white shadow-xs"
+                        : "bg-[#F6F3EC] dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-[#E6EAFD]"
+                    }`}
+                  >
+                    {prog}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Branch Cards */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-neutral-600 dark:text-neutral-400">
+                Engineering Branch / Field
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-56 overflow-y-auto pr-1 scrollbar-thin">
+                {ALL_BTECH_BRANCHES.map((b) => {
+                  const isSelected = branch.toLowerCase().includes(b.shortCode.toLowerCase()) || branch.toLowerCase().includes(b.name.toLowerCase());
+                  return (
+                    <div
+                      key={b.id}
+                      onClick={() => setBranch(b.name)}
+                      className={`p-3 rounded-xl border transition-all cursor-pointer flex flex-col justify-between gap-1.5 ${
+                        isSelected
+                          ? "border-[#2B4EFF] bg-[#E6EAFD]/50 dark:bg-blue-950/30 ring-1 ring-[#2B4EFF]"
+                          : "border-[#E8E4DA] dark:border-neutral-800 hover:border-neutral-400 bg-white dark:bg-neutral-900/60"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-xs text-[#111111] dark:text-white truncate">
+                          {b.name}
+                        </span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full font-mono font-bold bg-[#2B4EFF]/10 text-[#2B4EFF]">
+                          {b.shortCode}
+                        </span>
+                      </div>
+                      <p className="text-[10px] text-neutral-500 line-clamp-1">
+                        {b.description}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Semester & Division Row */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+              {/* Semester Selector */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold uppercase tracking-wider text-neutral-600 dark:text-neutral-400">
+                  Current Semester
+                </label>
+                <div className="flex flex-wrap gap-1.5">
+                  {[1, 2, 3, 4, 5, 6, 7, 8].map((sem) => (
+                    <button
+                      key={sem}
+                      type="button"
+                      onClick={() => setSemester(sem)}
+                      className={`h-9 w-9 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                        semester === sem
+                          ? "bg-[#2B4EFF] text-white shadow-xs"
+                          : "bg-[#F6F3EC] dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-[#E6EAFD]"
+                      }`}
+                    >
+                      S{sem}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Division / Section */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold uppercase tracking-wider text-neutral-600 dark:text-neutral-400">
+                  Section / Division
+                </label>
+                <select
+                  value={division}
+                  onChange={(e) => setDivision(e.target.value)}
+                  className="w-full h-10 px-3 rounded-xl border border-[#E8E4DA] dark:border-neutral-700 bg-white dark:bg-neutral-900 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#2B4EFF]/30 focus:border-[#2B4EFF] transition-all cursor-pointer"
+                >
+                  {(activeUniversity.divisions || ['Div A', 'Div B', 'Div C']).map((divName) => (
+                    <option key={divName} value={divName}>
+                      {divName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Optional Enrollment Number */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-neutral-600 dark:text-neutral-400">
+                Enrollment / Roll Number (Optional)
+              </label>
+              <input
+                type="text"
+                value={enrollmentNo}
+                onChange={(e) => setEnrollmentNo(e.target.value)}
+                placeholder="e.g. 23010101001 or CS23B042"
+                className="w-full h-10 px-4 rounded-xl border border-[#E8E4DA] dark:border-neutral-700 bg-white dark:bg-neutral-900 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#2B4EFF]/30 focus:border-[#2B4EFF] transition-all"
+              />
+            </div>
+
+            {/* Navigation Buttons */}
+            <div className="pt-4 flex items-center justify-between">
+              <button
+                type="button"
+                onClick={() => setStep(2)}
+                className="h-11 px-5 rounded-full border border-[#E8E4DA] dark:border-neutral-700 text-neutral-700 dark:text-neutral-200 text-xs sm:text-sm font-semibold flex items-center gap-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all cursor-pointer"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                <span>Back</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setStep(4)}
+                className="h-11 px-6 rounded-full bg-[#2B4EFF] hover:bg-[#1E3ECC] text-white text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer shadow-xs"
+              >
+                <span>Continue to Goals</span>
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* =========================================================================
+            STEP 4: GOALS & STUDY PRIORITIES
+        ========================================================================= */}
+        {step === 4 && (
+          <div className="rounded-[24px] border border-[#E8E4DA] dark:border-neutral-800 bg-white dark:bg-[#1C1C1E] p-6 sm:p-8 shadow-sm space-y-6 animate-fade-in">
+            <div className="space-y-1">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E6EAFD] text-[#2B4EFF] dark:bg-blue-950/40 dark:text-blue-300 text-xs font-bold">
+                <Trophy className="h-3.5 w-3.5" />
+                <span>Step 4: Goals & Priorities</span>
+              </div>
+              <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[#111111] dark:text-white">
+                Customize your academic focus
+              </h2>
+              <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed">
+                Choose what tools matter most to you for exam preparation and campus engagement.
+              </p>
+            </div>
+
+            {/* Academic Goal Input */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-neutral-600 dark:text-neutral-400">
+                Primary Target Goal for this Semester
+              </label>
+              <input
+                type="text"
+                value={academicGoal}
+                onChange={(e) => setAcademicGoal(e.target.value)}
+                placeholder="e.g. Score 9.0+ SGPA, maintain 85% attendance, master DSA"
+                className="w-full h-11 px-4 rounded-xl border border-[#E8E4DA] dark:border-neutral-700 bg-white dark:bg-neutral-900 text-xs sm:text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-[#2B4EFF]/30 focus:border-[#2B4EFF] transition-all"
+              />
+            </div>
+
+            {/* Study Priorities Grid */}
+            <div className="space-y-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-neutral-600 dark:text-neutral-400">
+                Select Your CampusLoop Priorities (Pick all that apply)
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                {STUDY_PRIORITIES.map((p) => {
+                  const isChecked = selectedPriorities.includes(p.id);
+                  return (
+                    <div
+                      key={p.id}
+                      onClick={() => togglePriority(p.id)}
+                      className={`p-3 rounded-xl border transition-all cursor-pointer flex items-start gap-3 ${
+                        isChecked
+                          ? "border-[#2B4EFF] bg-[#E6EAFD]/40 dark:bg-blue-950/20 ring-1 ring-[#2B4EFF]"
+                          : "border-[#E8E4DA] dark:border-neutral-800 hover:border-neutral-400 bg-white dark:bg-neutral-900/60"
+                      }`}
+                    >
+                      <span className="text-xl shrink-0">{p.icon}</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-xs text-[#111111] dark:text-white truncate">
+                            {p.label}
+                          </span>
+                          {isChecked && <Check className="h-3.5 w-3.5 text-[#2B4EFF] stroke-[3]" />}
+                        </div>
+                        <p className="text-[10px] text-neutral-500 leading-tight mt-0.5">
+                          {p.desc}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Summary Preview Box */}
+            <div className="p-4 rounded-2xl bg-[#E6EAFD]/50 dark:bg-blue-950/20 border border-[#2B4EFF]/20 space-y-1">
+              <div className="flex items-center gap-2 text-xs font-bold text-[#2B4EFF] dark:text-blue-300">
+                <Sparkles className="h-4 w-4" />
+                <span>Ready to Launch Your Experience</span>
+              </div>
+              <p className="text-xs text-neutral-600 dark:text-neutral-300">
+                Configured for <strong>{displayName || "Student"}</strong> at <strong>{activeUniversity.name}</strong> ({branch}, Semester {semester}, {division}).
+              </p>
+            </div>
+
+            {/* Final Action Buttons */}
+            <div className="pt-4 flex items-center justify-between">
+              <button
+                type="button"
+                onClick={() => setStep(3)}
+                className="h-11 px-5 rounded-full border border-[#E8E4DA] dark:border-neutral-700 text-neutral-700 dark:text-neutral-200 text-xs sm:text-sm font-semibold flex items-center gap-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all cursor-pointer"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                <span>Back</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleComplete}
+                disabled={isSubmitting}
+                className="h-11 px-8 rounded-full bg-[#2B4EFF] hover:bg-[#1E3ECC] text-white text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer shadow-md disabled:opacity-50"
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span>Configuring Workspace...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Launch My Campus Hub</span>
+                    <Sparkles className="h-4 w-4" />
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        )}
+
       </main>
 
-      <footer className="py-4 border-t border-border/60 text-center text-xs text-muted-foreground">
-        ITM (SLS) Baroda University Academic Portal • Built by Velocity Web
+      {/* Footer */}
+      <footer className="py-4 text-center text-xs text-neutral-500 border-t border-[#E8E4DA] dark:border-neutral-800 bg-white/60 dark:bg-[#1C1C1E]/60">
+        CampusLoop Student Network · Pan-India Universities & Engineering Curriculums
       </footer>
     </div>
   );

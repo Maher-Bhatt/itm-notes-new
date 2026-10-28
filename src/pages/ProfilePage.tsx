@@ -29,6 +29,7 @@ import {
   MessageCircle,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useUniversity } from '@/contexts/UniversityContext';
 import {
   CampusAvatar,
   CampusButton,
@@ -92,6 +93,7 @@ type ProfileTab = 'posts' | 'events' | 'saved' | 'settings';
 
 export default function ProfilePage() {
   const { user, profile, role, updateProfile, uploadAvatar, signOut } = useAuth();
+  const { currentUniversity, allUniversities, setUniversity: setGlobalUniversity } = useUniversity();
   const navigate = useNavigate();
   const { state: game, levelInfo } = useGamification();
   const { progress } = useProgress();
@@ -100,8 +102,8 @@ export default function ProfilePage() {
   const [userPosts, setUserPosts] = useState<CommunityPost[]>([]);
   const [userEvents, setUserEvents] = useState<CampusEventItem[]>([]);
   const [savedPosts, setSavedPosts] = useState<CommunityPost[]>([]);
-  const [followersCount, setFollowersCount] = useState(248);
-  const [followingCount, setFollowingCount] = useState(190);
+  const [followersCount, setFollowersCount] = useState(0);
+  const [followingCount, setFollowingCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
   // Edit profile state
@@ -109,6 +111,10 @@ export default function ProfilePage() {
   const [editName, setEditName] = useState('');
   const [editBranch, setEditBranch] = useState('');
   const [editBio, setEditBio] = useState('');
+  const [editUniversity, setEditUniversity] = useState('itm-baroda');
+  const [editEnrollment, setEditEnrollment] = useState('');
+  const [editDivision, setEditDivision] = useState('Div A');
+  const [editSemester, setEditSemester] = useState(3);
   const [isSaving, setIsSaving] = useState(false);
 
   // Settings & notifications state
@@ -172,6 +178,10 @@ export default function ProfilePage() {
     setEditName(displayName);
     setEditBranch(branchName);
     setEditBio(bio);
+    setEditUniversity(profile?.university || currentUniversity.id || 'itm-baroda');
+    setEditEnrollment(profile?.enrollment_no || '');
+    setEditDivision(profile?.division || 'Div A');
+    setEditSemester(profile?.semester || 3);
     setIsEditModalOpen(true);
   };
 
@@ -704,13 +714,75 @@ export default function ProfilePage() {
 
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-neutral-500 mb-1">
-                  Department & Year
+                  Gujarat University
+                </label>
+                <select
+                  value={editUniversity}
+                  onChange={(e) => setEditUniversity(e.target.value)}
+                  className="w-full h-11 rounded-xl bg-[#F6F3EC] dark:bg-neutral-800 text-sm px-4 border border-[#E8E4DA] focus:outline-none focus:border-[#2B4EFF] font-medium"
+                >
+                  {allUniversities.map((u) => (
+                    <option key={u.id} value={u.id}>
+                      {u.name} ({u.shortName})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-neutral-500 mb-1">
+                    Semester
+                  </label>
+                  <select
+                    value={editSemester}
+                    onChange={(e) => setEditSemester(Number(e.target.value))}
+                    className="w-full h-11 rounded-xl bg-[#F6F3EC] dark:bg-neutral-800 text-sm px-3 border border-[#E8E4DA] focus:outline-none focus:border-[#2B4EFF] font-medium"
+                  >
+                    {[1, 2, 3, 4, 5, 6, 7, 8].map((s) => (
+                      <option key={s} value={s}>
+                        Semester {s}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-neutral-500 mb-1">
+                    Division / Batch
+                  </label>
+                  <input
+                    type="text"
+                    value={editDivision}
+                    onChange={(e) => setEditDivision(e.target.value)}
+                    placeholder="e.g. Div A / Div 1"
+                    className="w-full h-11 rounded-xl bg-[#F6F3EC] dark:bg-neutral-800 text-sm px-3 border border-[#E8E4DA] focus:outline-none focus:border-[#2B4EFF]"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-neutral-500 mb-1">
+                  Enrollment Number
+                </label>
+                <input
+                  type="text"
+                  value={editEnrollment}
+                  onChange={(e) => setEditEnrollment(e.target.value)}
+                  placeholder="e.g. 2026BT0101 / 240280107012"
+                  className="w-full h-11 rounded-xl bg-[#F6F3EC] dark:bg-neutral-800 text-sm px-4 border border-[#E8E4DA] focus:outline-none focus:border-[#2B4EFF]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-neutral-500 mb-1">
+                  Department & Branch
                 </label>
                 <input
                   type="text"
                   value={editBranch}
                   onChange={(e) => setEditBranch(e.target.value)}
-                  placeholder="e.g. B.Tech CSE · Year 2"
+                  placeholder="e.g. B.Tech Computer Science & Engineering"
                   className="w-full h-11 rounded-xl bg-[#F6F3EC] dark:bg-neutral-800 text-sm px-4 border border-[#E8E4DA] focus:outline-none focus:border-[#2B4EFF]"
                 />
               </div>

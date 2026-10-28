@@ -131,6 +131,11 @@ export const CampusSidebar: React.FC<CampusSidebarProps> = ({
         )}
       </div>
 
+      {/* Gujarat Campus Selector Bar */}
+      <div className="px-4 py-2.5 border-b border-[#EFECE6] dark:border-neutral-800/60 bg-[#F6F3EC]/50 dark:bg-neutral-900/40 shrink-0">
+        <UniversityDropdown variant="full" className="w-full justify-between" />
+      </div>
+
       {/* Nav Content Scrollable */}
       <div className="flex-1 overflow-y-auto px-3.5 py-4 space-y-6">
         {/* Core 5 Destinations */}

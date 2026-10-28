@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useGamification } from "@/hooks/useGamification";
 import { useAcademic } from "@/contexts/AcademicContext";
+import { useUniversity } from "@/contexts/UniversityContext";
 import { subjects, getAllTopicIds } from "@/data/subjects";
 import { useProgress } from "@/hooks/useProgress";
 import {
@@ -52,6 +53,7 @@ export default function DashboardPage() {
   const navigate = useNavigate();
   const { user, profile } = useAuth();
   const { semesterNumber } = useAcademic();
+  const { currentUniversity, activeTimetable } = useUniversity();
   const {
     state: game,
     weeklyGoalDays,
@@ -93,10 +95,10 @@ export default function DashboardPage() {
               {user ? `Semester ${activeSemester} Active Term` : "Guest Preview"}
             </span>
             <span className="text-xs text-muted-foreground/40">·</span>
-            <span className="text-xs text-muted-foreground font-medium">ITM SLS Baroda University</span>
+            <span className="text-xs text-muted-foreground font-medium">{currentUniversity.name}</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-foreground font-display">
-            {user ? `Welcome back, ${studentDisplayName || "Student"}` : "ITM Student Hub"}
+            {user ? `Welcome back, ${studentDisplayName || "Student"}` : `${currentUniversity.shortName} Student Hub`}
           </h1>
         </div>
 
@@ -137,6 +139,32 @@ export default function DashboardPage() {
           )}
         </div>
       </div>
+
+      {/* ── ONBOARDING BANNER (If incomplete) ── */}
+      {user && profile && !profile.onboarding_completed && (
+        <div className="relative overflow-hidden rounded-[22px] border border-[#2B4EFF]/30 bg-gradient-to-r from-[#2B4EFF]/10 via-[#D7F75B]/15 to-transparent p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl bg-[#2B4EFF] text-white flex items-center justify-center shrink-0">
+              <Sparkles className="h-5 w-5" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-[#111111] dark:text-white">
+                Complete your CampusLoop student onboarding
+              </h3>
+              <p className="text-xs text-neutral-500">
+                Select your Indian university, engineering branch, and section to get personalized timetables and notes.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => navigate("/onboarding")}
+            className="px-5 py-2.5 rounded-full bg-[#2B4EFF] hover:bg-[#1E3ECC] text-white text-xs font-bold shrink-0 flex items-center gap-1.5 cursor-pointer shadow-xs"
+          >
+            <span>Complete Setup</span>
+            <ArrowRight className="h-4 w-4" />
+          </button>
+        </div>
+      )}
 
       {/* ── STREAMLINED LIVE EXAM & VIVA NOTICE (CAMPUSLOOP) ── */}
       <div className="relative overflow-hidden rounded-[22px] border border-[#2B4EFF]/20 bg-[#E6EAFD]/35 dark:bg-blue-950/20 p-5 sm:p-6 shadow-xs">
@@ -515,25 +543,36 @@ export default function DashboardPage() {
               </span>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-secondary/50 border border-border flex items-start gap-3">
-              <div className="p-2.5 rounded-lg bg-card text-foreground border border-border shrink-0 mt-0.5 shadow-xs">
-                <MapPin className="h-4 w-4 text-amber-500" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center justify-between gap-1">
-                  <span className="text-[10px] font-mono font-bold text-amber-600 dark:text-amber-400">10:30 AM · LECTURE</span>
-                  <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-card text-foreground font-semibold border border-border">
-                    {profile?.division?.includes("D") ? "EB-39" : profile?.division?.includes("E") ? "EB-25" : profile?.division?.includes("B") ? "EB-16" : profile?.division?.includes("C") ? "EB-20" : "EB-15"}
-                  </span>
+            {(() => {
+              const nextClass = activeTimetable[0] || {
+                timeSlot: '10:30 AM · LECTURE',
+                subjectName: 'Database Management Systems',
+                subjectCode: 'DBMS',
+                location: 'EB-15',
+                facultyName: 'Prof. Raju Nakum',
+              };
+              return (
+                <div className="p-3.5 rounded-xl bg-secondary/50 border border-border flex items-start gap-3">
+                  <div className="p-2.5 rounded-lg bg-card text-foreground border border-border shrink-0 mt-0.5 shadow-xs">
+                    <MapPin className="h-4 w-4 text-amber-500" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between gap-1">
+                      <span className="text-[10px] font-mono font-bold text-amber-600 dark:text-amber-400">{nextClass.timeSlot}</span>
+                      <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-card text-foreground font-semibold border border-border">
+                        {nextClass.location}
+                      </span>
+                    </div>
+                    <h4 className="text-xs font-bold text-foreground truncate mt-0.5">
+                      {nextClass.subjectName} ({nextClass.subjectCode})
+                    </h4>
+                    <p className="text-[11px] text-muted-foreground mt-0.5">
+                      Room {nextClass.location} · {nextClass.facultyName}
+                    </p>
+                  </div>
                 </div>
-                <h4 className="text-xs font-bold text-foreground truncate mt-0.5">
-                  Database Management Systems
-                </h4>
-                <p className="text-[11px] text-muted-foreground mt-0.5">
-                  Room {profile?.division?.includes("D") ? "EB-39" : profile?.division?.includes("E") ? "EB-25" : profile?.division?.includes("B") ? "EB-16" : profile?.division?.includes("C") ? "EB-20" : "EB-15"} · Prof. Raju Nakum
-                </p>
-              </div>
-            </div>
+              );
+            })()}
 
             <div className="flex items-center justify-between pt-1">
               <Link

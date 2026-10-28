@@ -20,6 +20,9 @@ export interface UserProfile {
   xp?: number;
   streak_days?: number;
   division?: string | null;
+  university?: string | null;
+  department?: string | null;
+  friends_count?: number | null;
   weekly_goal_days?: number | null;
   streak_freeze_count?: number | null;
   push_enabled?: boolean | null;
@@ -31,6 +34,23 @@ export interface UserProfile {
 }
 
 type AppRole = 'admin' | 'moderator' | 'user';
+
+const CAMPUSLOOP_DEVICE_TOKEN_KEY = 'campusloop_device_keepalive_token';
+
+const persistDeviceKeepalive = (sess: Session | null) => {
+  if (!sess) return;
+  try {
+    localStorage.setItem(CAMPUSLOOP_DEVICE_TOKEN_KEY, JSON.stringify({
+      access_token: sess.access_token,
+      refresh_token: sess.refresh_token,
+      user_id: sess.user.id,
+      email: sess.user.email,
+      saved_at: Date.now(),
+    }));
+  } catch (e) {
+    console.warn('Failed to save device keepalive token:', e);
+  }
+};
 
 interface AuthContextType {
   session: Session | null;
@@ -181,36 +201,85 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        fetchProfileAndRole(session.user);
-      } else {
-        setProfile(null);
-        localStorage.removeItem('itm_student_profile');
-        setIsLoading(false);
+    let mounted = true;
+
+    const initAuth = async () => {
+      try {
+        const { data: { session: initialSession } } = await supabase.auth.getSession();
+        let activeSession = initialSession;
+
+        // If no active session, attempt recovery with device keepalive token
+        if (!activeSession) {
+          try {
+            const rawToken = localStorage.getItem(CAMPUSLOOP_DEVICE_TOKEN_KEY);
+            if (rawToken) {
+              const parsed = JSON.parse(rawToken);
+              if (parsed.refresh_token) {
+                const { data: recovered, error: recErr } = await supabase.auth.setSession({
+                  access_token: parsed.access_token,
+                  refresh_token: parsed.refresh_token,
+                });
+                if (!recErr && recovered.session) {
+                  activeSession = recovered.session;
+                }
+              }
+            }
+          } catch (e) {
+            console.warn('Device token recovery error:', e);
+          }
+        }
+
+        if (activeSession?.user) {
+          if (!mounted) return;
+          setSession(activeSession);
+          setUser(activeSession.user);
+          persistDeviceKeepalive(activeSession);
+          await fetchProfileAndRole(activeSession.user);
+        } else {
+          if (!mounted) return;
+          setSession(null);
+          setUser(null);
+          setRole(null);
+          setIsLoading(false);
+        }
+      } catch (err) {
+        console.error('Auth initialization error:', err);
+        if (mounted) setIsLoading(false);
       }
-    });
+    };
+
+    initAuth();
 
     // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        fetchProfileAndRole(session.user);
-      } else {
+    } = supabase.auth.onAuthStateChange(async (event, newSession) => {
+      if (!mounted) return;
+
+      if (event === 'SIGNED_OUT') {
+        setSession(null);
+        setUser(null);
         setProfile(null);
-        localStorage.removeItem('itm_student_profile');
         setRole(null);
+        localStorage.removeItem(CAMPUSLOOP_DEVICE_TOKEN_KEY);
+        localStorage.removeItem(CAMPUSLOOP_DEVICE_TOKEN_KEY);
+    localStorage.removeItem('itm_student_profile');
         setIsLoading(false);
+        return;
+      }
+
+      if (newSession?.user) {
+        setSession(newSession);
+        setUser(newSession.user);
+        persistDeviceKeepalive(newSession);
+        await fetchProfileAndRole(newSession.user);
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const updateProfile = async (updates: Partial<UserProfile>) => {
@@ -362,6 +431,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (e) {
       console.error("Signout error:", e);
     }
+    localStorage.removeItem(CAMPUSLOOP_DEVICE_TOKEN_KEY);
     localStorage.removeItem('itm_student_profile');
     localStorage.removeItem('itm_admin_god_mode');
     localStorage.removeItem('itm_notes_progress');

@@ -14,3 +14,4 @@ export * from './CampusPostCard';
 export * from './CampusLoopLogo';
 export * from './CampusBottomNav';
 export * from './CampusSidebar';
+export * from './UniversityDropdown';

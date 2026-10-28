@@ -16,6 +16,7 @@ import {
 import { CampusAvatar } from './CampusAvatar';
 import { CampusButton } from './CampusButton';
 import { useAuth } from '@/contexts/AuthContext';
+import { useUniversity } from '@/contexts/UniversityContext';
 import { createCommunityPost } from '@/services/communityService';
 import { toast } from 'sonner';
 
@@ -61,6 +62,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
   onPostCreated,
 }) => {
   const { user, profile } = useAuth();
+  const { currentUniversity } = useUniversity();
 
   const [content, setContent] = useState('');
   const [selectedCommunity, setSelectedCommunity] = useState('Study Groups');
@@ -201,12 +203,13 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
           authorName,
           authorEmail: user?.email || '',
           authorAvatar: profile?.avatar_url,
-          authorBranch,
+          authorBranch: `${authorBranch} · ${currentUniversity.shortName}`,
           isMasked: false,
           category: selectedCommunity as any,
           content: content.trim(),
           mediaUrl: images[0] || undefined,
-        },
+          university_id: currentUniversity.id,
+        } as any,
         user?.id
       );
 

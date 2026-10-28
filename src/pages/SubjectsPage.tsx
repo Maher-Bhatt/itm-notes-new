@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { subjects, getAllTopicIds } from "@/data/subjects";
 import { useProgress } from "@/hooks/useProgress";
+import { useUniversity } from "@/contexts/UniversityContext";
 import { SUBJECT_IMP_DATA } from "@/data/impQuestionsData";
 import {
   BookOpen,
@@ -117,6 +118,7 @@ function SubjectCard({
 export default function SubjectsPage() {
   const navigate = useNavigate();
   const { getSubjectProgress } = useProgress();
+  const { currentUniversity } = useUniversity();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSemester, setSelectedSemester] = useState<number | "all">(3);
@@ -175,57 +177,57 @@ export default function SubjectsPage() {
       </div>
 
       {/* Hero Header Banner */}
-      <div className="relative overflow-hidden rounded-2xl border border-border glass-card p-6 sm:p-8 lg:p-10 shadow-xs">
+      <div className="relative overflow-hidden rounded-[22px] border border-[#E8E4DA] dark:border-neutral-800 bg-white dark:bg-[#1C1C1E] p-6 sm:p-8 lg:p-10 shadow-xs">
         <div className="relative z-10 max-w-3xl space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-bold border border-amber-500/20">
-            <Flame className="h-3.5 w-3.5 text-amber-500" />
-            <span>Curriculum & Notes Hub</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#E6EAFD] text-[#2B4EFF] dark:bg-blue-950/40 dark:text-blue-300 text-xs font-bold border border-[#2B4EFF]/20">
+            <Flame className="h-3.5 w-3.5 text-[#2B4EFF]" />
+            <span>{currentUniversity.shortName} Syllabus & Notes Hub</span>
             <span className="text-muted-foreground/40">·</span>
-            <span className="text-muted-foreground font-medium">B.Tech CSE & IT</span>
+            <span className="text-muted-foreground font-medium">{currentUniversity.accreditation} · {currentUniversity.location}</span>
           </div>
 
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight font-display text-foreground">
-            Choose Your Course & Study Syllabus
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight font-display text-[#111111] dark:text-white">
+            {currentUniversity.shortName} Curriculum & Subject Notes
           </h1>
 
-          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-            Select any course below to explore unit lecture notes, runnable code implementations,
-            algorithmic proofs, solved university exam questions, and rapid revision sheets.
+          <p className="text-sm sm:text-base text-neutral-600 dark:text-neutral-400 leading-relaxed">
+            Personalized syllabus for {currentUniversity.name}. Explore unit lecture notes, runnable code implementations,
+            algorithmic proofs, solved university PYQ papers, and rapid revision sheets.
           </p>
 
           {/* Quick Metrics Bar */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3">
-            <div className="bg-secondary/60 border border-border rounded-xl p-3">
-              <span className="text-[11px] font-semibold text-muted-foreground block">Total Courses</span>
-              <span className="text-xl font-extrabold text-foreground font-display">{totalSubjects}+ Subjects</span>
+            <div className="bg-[#F6F3EC] dark:bg-neutral-800/80 border border-[#E8E4DA] dark:border-neutral-800 rounded-xl p-3">
+              <span className="text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 block">Total Courses</span>
+              <span className="text-xl font-extrabold text-[#111111] dark:text-white font-display">{totalSubjects}+ Subjects</span>
             </div>
-            <div className="bg-secondary/60 border border-border rounded-xl p-3">
-              <span className="text-[11px] font-semibold text-muted-foreground block">Syllabus Units</span>
-              <span className="text-xl font-extrabold text-amber-600 dark:text-amber-400 font-display">{totalUnits}+ Units</span>
+            <div className="bg-[#F6F3EC] dark:bg-neutral-800/80 border border-[#E8E4DA] dark:border-neutral-800 rounded-xl p-3">
+              <span className="text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 block">Syllabus Units</span>
+              <span className="text-xl font-extrabold text-[#2B4EFF] font-display">{totalUnits}+ Units</span>
             </div>
-            <div className="bg-secondary/60 border border-border rounded-xl p-3">
-              <span className="text-[11px] font-semibold text-muted-foreground block">Detailed Topics</span>
-              <span className="text-xl font-extrabold text-foreground font-display">{totalTopics}+ Topics</span>
+            <div className="bg-[#F6F3EC] dark:bg-neutral-800/80 border border-[#E8E4DA] dark:border-neutral-800 rounded-xl p-3">
+              <span className="text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 block">Detailed Topics</span>
+              <span className="text-xl font-extrabold text-[#111111] dark:text-white font-display">{totalTopics}+ Topics</span>
             </div>
-            <div className="bg-secondary/60 border border-border rounded-xl p-3">
-              <span className="text-[11px] font-semibold text-muted-foreground block">Exam Solved</span>
-              <span className="text-xl font-extrabold text-amber-500 font-display">100% Solved</span>
+            <div className="bg-[#F6F3EC] dark:bg-neutral-800/80 border border-[#E8E4DA] dark:border-neutral-800 rounded-xl p-3">
+              <span className="text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 block">Exam Solved</span>
+              <span className="text-xl font-extrabold text-emerald-600 dark:text-emerald-400 font-display">100% Solved</span>
             </div>
           </div>
 
           {/* Quick Jump Bar */}
-          <div className="relative z-10 mt-6 pt-5 border-t border-border flex items-center gap-2 overflow-x-auto no-scrollbar max-w-full pb-1">
-            <span className="text-xs font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1.5 shrink-0">
-              <Flame className="h-3.5 w-3.5 text-amber-500" />
+          <div className="relative z-10 mt-6 pt-5 border-t border-[#E8E4DA] dark:border-neutral-800 flex items-center gap-2 overflow-x-auto no-scrollbar max-w-full pb-1">
+            <span className="text-xs font-bold text-[#2B4EFF] flex items-center gap-1.5 shrink-0">
+              <Flame className="h-3.5 w-3.5 text-[#2B4EFF]" />
               Quick Jump Sem 3:
             </span>
             {coreSem3Subjects.map((sub) => (
               <Link
                 key={sub.id}
                 to={`/subject/${sub.id}`}
-                className="px-2.5 py-1 rounded-xl text-xs font-semibold bg-secondary hover:bg-secondary/80 text-foreground border border-border transition-all shrink-0 whitespace-nowrap press"
+                className="px-2.5 py-1 rounded-xl text-xs font-semibold bg-[#F6F3EC] dark:bg-neutral-800 hover:bg-[#E6EAFD] text-[#111111] dark:text-white border border-[#E8E4DA] dark:border-neutral-700 transition-all shrink-0 whitespace-nowrap press"
               >
-                {sub.name.replace("Comprehensive University Syllabus for ", "").split("—")[0].trim()}
+                {sub.name.replace("Comprehensive University Syllabus for ", "").split("(")[0].split("—")[0].trim()}
               </Link>
             ))}
           </div>

@@ -6,13 +6,12 @@ import {
   Lightbulb, Sparkles, BookOpen, Terminal, ChevronRight, ChevronLeft,
   Layers, Check, Copy, Flame, Award, HelpCircle, FileText, Search, Filter,
   Maximize2, Minimize2, Trash2, Send, Bot, GraduationCap, ArrowLeft, ArrowRight,
-  X, ExternalLink, Cpu
+  X, ExternalLink, Cpu, Printer, Timer, Clock, ArrowUpRight
 } from 'lucide-react';
 import { useGamification } from '@/hooks/useGamification';
 import { useAcademic } from '@/contexts/AcademicContext';
 import { useFocusMode } from '@/contexts/FocusModeContext';
 import { toast } from 'sonner';
-import { Printer } from 'lucide-react';
 import { LabManualPrintModal, LabManualData } from '@/components/LabManualPrintModal';
 import { CodingProblem, ALL_CODING_PROBLEMS as CODING_PROBLEMS } from '@/data/codingLabData';
 
@@ -35,11 +34,11 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     shortName: 'Data Structures',
     code: 'DSA301',
     semester: 3,
-    icon: '🌲',
-    badgeClass: 'bg-amber-500/15 text-amber-500 border-amber-500/30',
-    borderClass: 'border-amber-500/40',
-    textClass: 'text-amber-500',
-    bgClass: 'bg-amber-500/10',
+    icon: '⚡',
+    badgeClass: 'bg-blue-500/15 text-blue-500 border-blue-500/30',
+    borderClass: 'border-blue-500/40',
+    textClass: 'text-blue-500',
+    bgClass: 'bg-blue-500/10',
     description: 'Queues, Stacks, Linked Lists, Trees, Graphs & Dynamic Programming in C/Java',
   },
   {
@@ -60,10 +59,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     code: 'JAVA303',
     semester: 3,
     icon: '☕',
-    badgeClass: 'bg-amber-500/15 text-amber-400 border-amber-500/30',
-    borderClass: 'border-amber-500/40',
-    textClass: 'text-amber-400',
-    bgClass: 'bg-amber-500/10',
+    badgeClass: 'bg-orange-500/15 text-orange-400 border-orange-500/30',
+    borderClass: 'border-orange-500/40',
+    textClass: 'text-orange-400',
+    bgClass: 'bg-orange-500/10',
     description: 'Classes, Inheritance, Polymorphism, Concurrency & Stream API in Java',
   },
   {
@@ -71,7 +70,7 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     shortName: 'Numerical Methods',
     code: 'COANMP',
     semester: 3,
-    icon: '🐍',
+    icon: '🔢',
     badgeClass: 'bg-purple-500/15 text-purple-400 border-purple-500/30',
     borderClass: 'border-purple-500/40',
     textClass: 'text-purple-400',
@@ -83,11 +82,11 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     shortName: 'Python 1',
     code: 'PY101',
     semester: 1,
-    icon: '💻',
-    badgeClass: 'bg-amber-500/15 text-amber-500 border-amber-500/30',
-    borderClass: 'border-amber-500/40',
-    textClass: 'text-amber-500',
-    bgClass: 'bg-amber-500/10',
+    icon: '🐍',
+    badgeClass: 'bg-emerald-500/15 text-emerald-500 border-emerald-500/30',
+    borderClass: 'border-emerald-500/40',
+    textClass: 'text-emerald-500',
+    bgClass: 'bg-emerald-500/10',
     description: 'Syntax, Control Flow, Lists, Tuples, Dictionaries & Functions in Python',
   },
   {
@@ -200,17 +199,17 @@ This practical executes against relational database schemas enforcing Primary Ke
       blueprint: [
         '1. Define class with proper access modifiers and type parameters.',
         '2. Implement constructors to initialize state.',
-        '3. Implement business logic methods matching the problem specifications.',
+        '3. Implement business logic methods matching problem specifications.',
         '4. Write test harness in main() to verify execution.',
       ],
       vivaQuestions: [
         {
-          q: 'What is the difference between method overloading and method overriding?',
-          a: 'Overloading happens within the same class with identical method names but different parameter lists (compile-time polymorphism). Overriding happens in subclasses replacing superclass methods with the same signature (runtime polymorphism).'
+          q: 'What is the difference between method overloading and method overriding in Java?',
+          a: 'Overloading occurs within the same class with identical names but different parameter signatures (static polymorphism). Overriding occurs in child classes replacing inherited methods with the exact same signature (runtime dynamic dispatch).'
         },
         {
           q: 'Why are String objects immutable in Java?',
-          a: 'Immutability ensures security (e.g. database connections, file paths), enables thread-safety without synchronization, and allows the JVM String Constant Pool to optimize memory.'
+          a: 'Immutability guarantees thread safety without synchronization, security for sensitive data like classloading and network URLs, and permits the JVM String Constant Pool to optimize memory footprint.'
         }
       ],
       commonBugs: [
@@ -247,23 +246,38 @@ Understand the core input constraints, invariants, and edge cases. Strive for op
 export default function CodingLabPage() {
   const { semesterNumber } = useAcademic();
   const { focusMode, toggleFocusMode } = useFocusMode();
+  const { addXp, unlockAchievement } = useGamification();
+
+  // Filters state
   const [selectedSemester, setSelectedSemester] = useState<number | 'all'>('all');
   const [selectedSubject, setSelectedSubject] = useState<string>('all');
   const [selectedLanguage, setSelectedLanguage] = useState<string>('all');
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('all');
   const [searchProblemQuery, setSearchProblemQuery] = useState<string>('');
-  
-  const [activeProblemId, setActiveProblemId] = useState<string>(CODING_PROBLEMS[0].id);
-  const [code, setCode] = useState<string>(CODING_PROBLEMS[0].starterCode);
+  const [isProblemPickerOpen, setIsProblemPickerOpen] = useState(false);
+
+  // Active Problem & Code state
+  const [activeProblemId, setActiveProblemId] = useState<string>(CODING_PROBLEMS[0]?.id || 'dsa-01-array-reverse');
+  const [code, setCode] = useState<string>(CODING_PROBLEMS[0]?.starterCode || '');
   const [output, setOutput] = useState<string | null>(null);
   const [status, setStatus] = useState<'idle' | 'compiling' | 'running' | 'success' | 'failed'>('idle');
   const [showSolution, setShowSolution] = useState(false);
   const [isLabManualOpen, setIsLabManualOpen] = useState(false);
-  
-  // LeetCode / HackerRank Engine States
+
+  // Editor configuration
   const [editorFontSize, setEditorFontSize] = useState<'12px' | '13px' | '14px' | '16px'>('13px');
+  const [activeConsoleTab, setActiveConsoleTab] = useState<'testcase' | 'result' | 'terminal'>('result');
   const [activeTestcaseIndex, setActiveTestcaseIndex] = useState<number | 'custom'>(0);
-  const [customTestInput, setCustomTestInput] = useState<string>('6\n1 101\n1 102\n2\n3');
+  const [customTestInput, setCustomTestInput] = useState<string>('5\n1 2 3 4 5');
+  const [isConsoleExpanded, setIsConsoleExpanded] = useState<boolean>(false);
+
+  // Stop watch / Exam Timer
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const [timerSeconds, setTimerSeconds] = useState(0);
+
+  // Saved user progress
+  const [solvedProblems, setSolvedProblems] = useState<string[]>([]);
+  const [submissionHistory, setSubmissionHistory] = useState<Array<{ problemId: string; problemTitle?: string; timestamp: string; passed: boolean; runtimeMs?: number; memoryMb?: number }>>([]);
   const [lastSubmissionStats, setLastSubmissionStats] = useState<{
     status: 'accepted' | 'wrong_answer' | 'compile_error';
     runtimeMs: number;
@@ -274,38 +288,20 @@ export default function CodingLabPage() {
     actualOutput?: string;
     expectedOutput?: string;
   } | null>(null);
-  
-  // Interactive Terminal State
+
+  // Interactive Terminal
   const [terminalInput, setTerminalInput] = useState<string>('');
-  const [isTerminalExpanded, setIsTerminalExpanded] = useState<boolean>(false);
-  const [activeConsoleTab, setActiveConsoleTab] = useState<'terminal' | 'harness'>('terminal');
   const [terminalLogs, setTerminalLogs] = useState<string[]>([
-    'itm@lab:~/dsa$ # Interactive Sandbox Ready. Click "Run Code" or type commands below.'
+    'campusloop@sandbox:~/workspace$ # Linux C/C++/Java/Python/SQL Sandbox initialized.',
+    'campusloop@sandbox:~/workspace$ # Type commands (run, test, clear, help) or click "Run Code".',
   ]);
-  const [simQueue, setSimQueue] = useState<number[]>([101, 102, 103]);
   const terminalBottomRef = useRef<HTMLDivElement | null>(null);
-  
-  // Left side of workspace tabs
+
+  // Left Tab Navigation
   const [leftTab, setLeftTab] = useState<'specs' | 'hints' | 'agent' | 'history' | 'solution'>('specs');
-  
-  // Mobile layout state
-  const [mobileView, setMobileView] = useState<'list' | 'workspace'>('list');
-  const [showFilters, setShowFilters] = useState(false);
+  const [mobileView, setMobileView] = useState<'specs' | 'editor' | 'console'>('editor');
 
-  // Faculty AI Tutor audit state
-  const [aiAuditRunning, setAiAuditRunning] = useState(false);
-  const [aiAuditReport, setAiAuditReport] = useState<{
-    score: number;
-    passed: boolean;
-    findings: string[];
-    recommendations: string[];
-  } | null>(null);
-
-  const [solvedProblems, setSolvedProblems] = useState<string[]>([]);
-  const [submissionHistory, setSubmissionHistory] = useState<Array<{ problemId: string; problemTitle?: string; timestamp: string; passed: boolean }>>([]);
-
-  const { addXp, unlockAchievement } = useGamification();
-
+  // Load saved state
   useEffect(() => {
     try {
       const savedSolved = localStorage.getItem('itm_coding_lab_solved');
@@ -315,6 +311,24 @@ export default function CodingLabPage() {
     } catch {}
   }, []);
 
+  // Timer interval
+  useEffect(() => {
+    let interval: any = null;
+    if (isTimerRunning) {
+      interval = setInterval(() => {
+        setTimerSeconds(s => s + 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [isTimerRunning]);
+
+  const formatTimer = (secs: number) => {
+    const mins = Math.floor(secs / 60);
+    const remainder = secs % 60;
+    return `${mins.toString().padStart(2, '0')}:${remainder.toString().padStart(2, '0')}`;
+  };
+
+  // Auto-save code draft
   useEffect(() => {
     if (!activeProblemId) return;
     const timer = setTimeout(() => {
@@ -323,6 +337,7 @@ export default function CodingLabPage() {
     return () => clearTimeout(timer);
   }, [code, activeProblemId]);
 
+  // Restore draft when active problem changes
   useEffect(() => {
     const draft = localStorage.getItem(`itm_coding_draft_${activeProblemId}`);
     if (draft !== null) {
@@ -331,30 +346,18 @@ export default function CodingLabPage() {
       const prob = CODING_PROBLEMS.find(p => p.id === activeProblemId);
       if (prob) setCode(prob.starterCode);
     }
-    setAiAuditReport(null);
+    setLastSubmissionStats(null);
+    setStatus('idle');
   }, [activeProblemId]);
 
+  // Scroll terminal logs
   useEffect(() => {
     if (activeConsoleTab === 'terminal') {
       terminalBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
   }, [terminalLogs, activeConsoleTab]);
 
-  // Compute stats per subject
-  const subjectStats = useMemo(() => {
-    const counts: Record<string, { total: number; solved: number }> = {};
-    for (const p of CODING_PROBLEMS) {
-      if (!counts[p.subjectName]) {
-        counts[p.subjectName] = { total: 0, solved: 0 };
-      }
-      counts[p.subjectName].total += 1;
-      if (solvedProblems.includes(p.id)) {
-        counts[p.subjectName].solved += 1;
-      }
-    }
-    return counts;
-  }, [solvedProblems]);
-
+  // Filter problems
   const filteredProblems = useMemo(() => {
     return CODING_PROBLEMS.filter((p) => {
       const probSem = getSubjectSemester(p.subjectName);
@@ -375,16 +378,6 @@ export default function CodingLabPage() {
     });
   }, [selectedSemester, selectedSubject, selectedLanguage, selectedDifficulty, searchProblemQuery]);
 
-  useEffect(() => {
-    if (filteredProblems.length > 0 && !filteredProblems.find(p => p.id === activeProblemId)) {
-      setActiveProblemId(filteredProblems[0].id);
-      setCode(filteredProblems[0].starterCode);
-      setOutput(null);
-      setStatus('idle');
-      setShowSolution(false);
-    }
-  }, [filteredProblems, activeProblemId]);
-
   const currentProblem = useMemo(() => {
     const found = filteredProblems.find(p => p.id === activeProblemId);
     if (found) return found;
@@ -395,46 +388,14 @@ export default function CodingLabPage() {
     return filteredProblems.findIndex(p => p.id === currentProblem?.id);
   }, [filteredProblems, currentProblem]);
 
-
-
-
-
-  const labManualData: LabManualData = useMemo(() => {
-    return {
-      practicalNumber: (currentIndex >= 0 ? currentIndex + 1 : 1),
-      subjectCode: currentProblem?.category?.toUpperCase() || 'ITM-LAB',
-      subjectName: currentProblem?.subjectName || 'Computer Science Laboratory',
-      title: currentProblem?.title || 'Practical Implementation',
-      aim: currentProblem?.description || 'Implement the algorithm and verify test cases.',
-      theory: `Theory & Concepts: This laboratory exercise explores practical concepts in ${currentProblem?.subjectName || 'Computer Science'}. Students analyze problem constraints, implement efficient algorithms, and verify edge cases.`,
-      algorithm: [
-        'Step 1: Parse and validate input data structures.',
-        'Step 2: Apply the algorithm logic maintaining time and space complexity constraints.',
-        'Step 3: Execute boundary and test condition checks.',
-        'Step 4: Output the formatted results to stdout.'
-      ],
-      code: code || currentProblem?.starterCode || '',
-      sampleInput: 'Sample standard inputs as defined in test suite.',
-      sampleOutput: currentProblem?.expectedOutput || 'Execution completed with 0 errors.',
-      vivaQuestions: [
-        {
-          q: `What is the time complexity of ${currentProblem?.title}?`,
-          a: `Typically analyzed based on input size: loops and traversals contribute to O(N) or O(N log N) scaling.`
-        },
-        {
-          q: 'What potential edge conditions must be handled in production?',
-          a: 'Null or empty inputs, integer overflow, index out of bounds, and memory deallocation.'
-        }
-      ]
-    };
-  }, [currentProblem, currentIndex, code]);
-
-
-
-
-
-
-
+  const handleSelectProblem = (prob: CodingProblem) => {
+    setActiveProblemId(prob.id);
+    setCode(prob.starterCode);
+    setOutput(null);
+    setStatus('idle');
+    setShowSolution(false);
+    setIsProblemPickerOpen(false);
+  };
 
   const goToPrevProblem = () => {
     if (currentIndex > 0) {
@@ -448,84 +409,37 @@ export default function CodingLabPage() {
     }
   };
 
-  const handleSelectProblem = (prob: CodingProblem) => {
-    setActiveProblemId(prob.id);
-    setCode(prob.starterCode);
-    setOutput(null);
-    setStatus('idle');
-    setShowSolution(false);
-    setLeftTab('specs');
-    setMobileView('workspace');
-  };
-
-  const handleSelectSubject = (subjName: string) => {
-    setSelectedSubject(subjName);
-    if (subjName !== 'all') {
-      const meta = ALL_SUBJECTS_METADATA.find(s => s.name === subjName);
-      if (meta && selectedSemester !== 'all' && selectedSemester !== meta.semester) {
-        setSelectedSemester(meta.semester);
-      }
-    }
-  };
-
-  const handleSelectSemester = (sem: number | 'all') => {
-    setSelectedSemester(sem);
-    if (sem !== 'all' && selectedSubject !== 'all') {
-      const meta = ALL_SUBJECTS_METADATA.find(s => s.name === selectedSubject);
-      if (meta && meta.semester !== sem) {
-        setSelectedSubject('all');
-      }
-    }
-  };
-
   const handleResetCode = () => {
-    setCode(currentProblem?.starterCode);
-    setOutput(null);
-    setStatus('idle');
-    toast.info('Starter code reset to default.');
+    if (!currentProblem) return;
+    setCode(currentProblem.starterCode);
+    localStorage.removeItem(`itm_coding_draft_${currentProblem.id}`);
+    toast.success('Code reset to official university starter template.');
   };
 
-  const handleCopyCode = (text: string) => {
-    navigator.clipboard.writeText(text);
-    toast.success('Code copied to clipboard!');
-  };
-
-  const handleCopyFacultySubmission = () => {
-    const formattedRecord = [
-      `================================================================================`,
-      `ITM SLS BARODA UNIVERSITY — LABORATORY PRACTICAL RECORD`,
-      `Subject: ${currentProblem?.subjectName}`,
-      `Practical Title: ${currentProblem?.title}`,
-      `Marks / Syllabus Reference: ${currentProblem?.marks}`,
-      `File Name: ${currentProblem?.fileName} (${currentProblem?.language.toUpperCase()})`,
-      `Difficulty Level: ${currentProblem?.difficulty}`,
-      `================================================================================`,
-      ``,
-      `[1. AIM / OBJECTIVE]:`,
-      currentProblem?.description,
-      ``,
-      `[2. CONSTRAINTS & EVALUATION CRITERIA]:`,
-      ...(currentProblem?.constraints || []).map(c => `• ${c}`),
-      ``,
-      `[3. SOURCE CODE / SQL IMPLEMENTATION]:`,
-      code || currentProblem?.starterCode,
-      ``,
-      `[4. EXPECTED OUTPUT / TEST HARNESS RESULTS]:`,
-      currentProblem?.expectedOutput,
-      ``,
-      `[5. SUBMISSION VERIFICATION]:`,
-      `Status: ${solvedProblems.includes(currentProblem?.id) ? 'VERIFIED & PASSED (100%)' : 'READY FOR FACULTY SUBMISSION'}`,
-      `Verification Engine: ITM Notes University Practical Lab Sandbox`,
-      `Export Timestamp: ${new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}`,
-      `================================================================================`,
-    ].join('\n');
-
-    navigator.clipboard.writeText(formattedRecord);
-    toast.success('📋 University Practical Record copied! Paste directly into your lab manual or report.');
+  const handleFormatCode = () => {
+    try {
+      const lines = code.split('\n');
+      let indentLevel = 0;
+      const formatted = lines.map(line => {
+        const trimmed = line.trim();
+        if (!trimmed) return '';
+        if (trimmed.startsWith('}') || trimmed.startsWith(']') || trimmed.startsWith(')')) {
+          indentLevel = Math.max(0, indentLevel - 1);
+        }
+        const indented = '    '.repeat(indentLevel) + trimmed;
+        if (trimmed.endsWith('{') || trimmed.endsWith(':') || trimmed.endsWith('(')) {
+          indentLevel++;
+        }
+        return indented;
+      }).join('\n');
+      setCode(formatted);
+      toast.success('Code auto-formatted with standard indentation.');
+    } catch {
+      toast.info('Formatting applied.');
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    // Ctrl+Enter = Run, Ctrl+Shift+Enter = Submit
     if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
       e.preventDefault();
       if (e.shiftKey) {
@@ -538,9 +452,10 @@ export default function CodingLabPage() {
 
     if ((e.ctrlKey || e.metaKey) && e.key === 's') {
       e.preventDefault();
-      toast.success('Code saved to local browser cache');
+      toast.success('Code saved to browser storage');
       return;
     }
+
     if (e.key === 'Tab') {
       e.preventDefault();
       const textarea = e.currentTarget;
@@ -554,1657 +469,1023 @@ export default function CodingLabPage() {
     }
   };
 
-  const handleRunAiAudit = () => {
-    setAiAuditRunning(true);
+  const handleRun = () => {
+    if (!currentProblem) return;
+    setStatus('compiling');
+    setActiveConsoleTab('result');
+
+    setTerminalLogs(prev => [
+      ...prev,
+      `\n[BUILD: ${new Date().toLocaleTimeString()}] compiling ${currentProblem.fileName}...`,
+      `compiler: gcc/javac sandbox -O2 optimization enabled`,
+      `status: 0 syntax errors, 0 warnings`
+    ]);
+
     setTimeout(() => {
-      setAiAuditRunning(false);
-      if (!currentProblem) return;
+      setStatus('running');
+      setTimeout(() => {
+        const result = currentProblem.validator ? currentProblem.validator(code) : { passed: false, output: 'Validator not found' };
+        setOutput(result.output);
 
-      const findings: string[] = [];
-      const recommendations: string[] = [];
-      const clean = code.toLowerCase();
-      let passed = false;
-      let score = 70;
-
-      // 1. Language checks
-      if (currentProblem.language === 'c') {
-        if (!clean.includes('#include')) {
-          findings.push('Missing standard header files like #include <stdio.h>.');
+        if (result.passed) {
+          setStatus('success');
+          setLastSubmissionStats({
+            status: 'accepted',
+            runtimeMs: Math.floor(Math.random() * 8) + 2,
+            runtimePercentile: 94.6,
+            memoryMb: 14.2,
+            memoryPercentile: 88.4,
+            actualOutput: result.output,
+            expectedOutput: currentProblem.expectedOutput,
+          });
+          toast.success('All test assertions passed! Ready for submission.');
         } else {
-          findings.push('✔ Standard library headers correctly included.');
+          setStatus('failed');
+          setLastSubmissionStats({
+            status: 'wrong_answer',
+            runtimeMs: Math.floor(Math.random() * 15) + 8,
+            runtimePercentile: 45.0,
+            memoryMb: 14.8,
+            memoryPercentile: 60.0,
+            failedCaseIndex: 1,
+            actualOutput: result.output,
+            expectedOutput: currentProblem.expectedOutput,
+          });
+          toast.error('Test Assertion Mismatch: Review expected output vs actual.');
         }
-        if (clean.includes('waitq') || clean.includes('queue') || clean.includes('front') || clean.includes('rear')) {
-          findings.push('✔ Core Queue data structure & pointer variables detected.');
-        }
-      } else if (currentProblem.language === 'java') {
-        if (clean.includes('class')) {
-          findings.push('✔ Java class declaration structure verified.');
-        } else {
-          findings.push('Missing top-level class declaration.');
-        }
-      } else if (currentProblem.language === 'sql') {
-        if (clean.includes('select') || clean.includes('create') || clean.includes('insert')) {
-          findings.push('✔ Valid SQL relational statements detected.');
-        }
-      }
-
-      // 2. Run validator
-      if (currentProblem.validator) {
-        const valRes = currentProblem.validator(code);
-        if (valRes.passed) {
-          passed = true;
-          score = 100;
-          findings.push('✔ All syllabus requirements and logic assertions are 100% satisfied!');
-          recommendations.push('Your implementation is complete. Click "Run Code" in the top bar to earn +75 XP.');
-        } else {
-          passed = false;
-          score = 65;
-          findings.push(`⚠ Incomplete condition: ${valRes.output?.split('\n')[1] || 'Required logic not yet implemented.'}`);
-          recommendations.push('Inspect the Hints tab and check the Faculty AI Blueprint below.');
-        }
-      } else {
-        passed = true;
-        score = 90;
-        findings.push('Basic syntactic checks passed.');
-      }
-
-      setAiAuditReport({
-        score,
-        passed,
-        findings,
-        recommendations
-      });
-      toast.success('Faculty AI Code Audit Complete!');
-    }, 700);
-  };
-
-  const handleFormatCode = () => {
-    try {
-      const lines = code.split('\n');
-      let indentLevel = 0;
-      const formatted = lines.map(line => {
-        const trimmed = line.trim();
-        if (trimmed.startsWith('}') || trimmed.startsWith(']') || trimmed.startsWith(')')) {
-          indentLevel = Math.max(0, indentLevel - 1);
-        }
-        const indented = '    '.repeat(indentLevel) + trimmed;
-        if (trimmed.endsWith('{') || trimmed.endsWith('[') || trimmed.endsWith('(')) {
-          indentLevel++;
-        }
-        return indented;
-      }).join('\n');
-      setCode(formatted);
-      toast.success('Code formatted successfully (4 spaces indentation)');
-    } catch {
-      toast.info('Formatting complete');
-    }
+      }, 400);
+    }, 400);
   };
 
   const handleSubmit = () => {
-    const isSql = currentProblem?.language === 'sql';
+    if (!currentProblem) return;
     setStatus('compiling');
-    setOutput('Running test suite against all hidden testcases (LeetCode verification engine)...');
     setActiveConsoleTab('result');
 
     setTimeout(() => {
       setStatus('running');
       setTimeout(() => {
-        const result = currentProblem?.validator 
-          ? currentProblem.validator(code) 
-          : { passed: false, output: 'Validator not configured.' };
+        const result = currentProblem.validator ? currentProblem.validator(code) : { passed: false, output: 'Validator not found' };
+        setOutput(result.output);
 
-        const runtime = Number((Math.random() * 2 + 1.2).toFixed(1));
-        const runtimePerc = Number((88 + Math.random() * 10).toFixed(1));
-        const memory = Number((34 + Math.random() * 6).toFixed(1));
-        const memoryPerc = Number((82 + Math.random() * 14).toFixed(1));
+        const runtime = Math.floor(Math.random() * 6) + 2;
+        const memory = +(13.8 + Math.random() * 1.5).toFixed(1);
 
         if (result.passed) {
           setStatus('success');
           setLastSubmissionStats({
             status: 'accepted',
             runtimeMs: runtime,
-            runtimePercentile: runtimePerc,
+            runtimePercentile: 96.2,
             memoryMb: memory,
-            memoryPercentile: memoryPerc,
+            memoryPercentile: 92.1,
             actualOutput: result.output,
-            expectedOutput: currentProblem?.expectedOutput || result.output
+            expectedOutput: currentProblem.expectedOutput,
           });
 
-          try {
-            const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.frequency.setValueAtTime(523.25, ctx.currentTime);
-            osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1);
-            osc.frequency.setValueAtTime(783.99, ctx.currentTime + 0.2);
-            osc.frequency.setValueAtTime(1046.50, ctx.currentTime + 0.3);
-            gain.gain.setValueAtTime(0.15, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
-            osc.start();
-            osc.stop(ctx.currentTime + 0.6);
-          } catch {}
-
-          if (!solvedProblems.includes(currentProblem?.id)) {
-            const updated = [...solvedProblems, currentProblem?.id];
-            setSolvedProblems(updated);
-            localStorage.setItem('itm_coding_lab_solved', JSON.stringify(updated));
-            addXp(75, `Solved Practical: ${currentProblem?.title}`);
-            unlockAchievement('code-ninja');
-            toast.success(`🎉 Practical Accepted! +75 XP earned! (${updated.length}/${CODING_PROBLEMS.length} Solved)`);
+          // Mark as solved
+          if (!solvedProblems.includes(currentProblem.id)) {
+            const next = [...solvedProblems, currentProblem.id];
+            setSolvedProblems(next);
+            try {
+              localStorage.setItem('itm_coding_lab_solved', JSON.stringify(next));
+            } catch {}
+            addXp(75, 'Completed Coding Lab Practical');
+            toast.success(`🎉 Accepted! Earned +75 XP. (${next.length}/${CODING_PROBLEMS.length} Solved)`);
           } else {
-            toast.success('Accepted! All test cases passed with 100% assertions satisfied.');
+            toast.success('Accepted! All test cases passed.');
           }
 
-          if (currentProblem) {
-            const record = {
-              problemId: currentProblem.id,
-              problemTitle: currentProblem.title,
-              timestamp: new Date().toISOString(),
-              passed: true,
-            };
-            setSubmissionHistory(prev => {
-              const next = [record, ...prev.slice(0, 49)];
+          // Add to submission history
+          const record = {
+            problemId: currentProblem.id,
+            problemTitle: currentProblem.title,
+            timestamp: new Date().toISOString(),
+            passed: true,
+            runtimeMs: runtime,
+            memoryMb: memory,
+          };
+          setSubmissionHistory(prev => {
+            const next = [record, ...prev.slice(0, 49)];
+            try {
               localStorage.setItem('itm_coding_history', JSON.stringify(next));
-              return next;
-            });
-          }
+            } catch {}
+            return next;
+          });
         } else {
           setStatus('failed');
           setLastSubmissionStats({
             status: 'wrong_answer',
             runtimeMs: runtime,
-            runtimePercentile: 45.0,
+            runtimePercentile: 40.0,
             memoryMb: memory,
             memoryPercentile: 50.0,
             failedCaseIndex: 1,
             actualOutput: result.output,
-            expectedOutput: currentProblem?.expectedOutput || 'Execution completed with 0 errors.'
+            expectedOutput: currentProblem.expectedOutput,
           });
-          toast.error(isSql ? 'SQL query assertion mismatch. Check schema and syntax.' : 'Wrong Answer: Code did not satisfy expected assertion invariants.');
+          toast.error('Submission Failed: Wrong Answer assertion.');
         }
-      }, 700);
+      }, 500);
     }, 400);
   };
 
-  const handleRun = () => {
-    const isSql = currentProblem?.language === 'sql';
-    const isC = currentProblem?.language === 'c';
-    const isJava = currentProblem?.language === 'java';
-    setStatus('compiling');
-    setOutput(
-      isSql
-        ? 'Parsing SQL syntax AST and verifying relational schema integrity...'
-        : 'Compiling source code with native sandbox compiler...'
-    );
+  const handleCopyFacultySubmission = () => {
+    if (!currentProblem) return;
+    const formattedRecord = [
+      `================================================================================`,
+      `CAMPUSLOOP UNIVERSITY PRACTICAL SUBMISSION RECORD`,
+      `Course: ${currentProblem.subjectName}`,
+      `Practical Title: ${currentProblem.title}`,
+      `Difficulty Level: ${currentProblem.difficulty} | Evaluation Marks: ${currentProblem.marks}`,
+      `================================================================================`,
+      ``,
+      `[1. AIM / OBJECTIVE]:`,
+      currentProblem.description,
+      ``,
+      `[2. CONSTRAINTS & EVALUATION CRITERIA]:`,
+      ...(currentProblem.constraints || []).map(c => `• ${c}`),
+      ``,
+      `[3. SOURCE CODE / IMPLEMENTATION]:`,
+      code || currentProblem.starterCode,
+      ``,
+      `[4. EXPECTED OUTPUT / TEST HARNESS RESULTS]:`,
+      currentProblem.expectedOutput,
+      ``,
+      `[5. VERIFICATION STATUS]:`,
+      `Status: ${solvedProblems.includes(currentProblem.id) ? 'VERIFIED & PASSED (100%)' : 'READY FOR FACULTY SUBMISSION'}`,
+      `Engine: CampusLoop National Engineering Code Sandbox`,
+      `Export Timestamp: ${new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}`,
+      `================================================================================`,
+    ].join('\n');
 
-    const compileCmd = isC 
-      ? `gcc -Wall -Wextra -O2 ${currentProblem?.fileName} -o output_bin`
-      : isJava 
-        ? `javac -Xlint:all ${currentProblem?.fileName}`
-        : isSql
-          ? `sqlite3 :memory: < ${currentProblem?.fileName}`
-          : `python3 -u ${currentProblem?.fileName}`;
-
-    setTerminalLogs(prev => [
-      ...prev,
-      `\n--- [BUILD & EXECUTE: ${new Date().toLocaleTimeString()}] ---`,
-      `itm@lab-terminal:~/workspace$ ${compileCmd}`,
-      `✔ Build succeeded (0 errors, 0 warnings)`
-    ]);
-
-    setTimeout(() => {
-      setStatus('running');
-      setOutput(
-        isSql
-          ? 'Executing relational queries in in-memory database engine against schema tables...'
-          : 'Executing binary in interactive Linux sandbox harness...'
-      );
-
-      setTerminalLogs(prev => [
-        ...prev,
-        `itm@lab-terminal:~/workspace$ ./${currentProblem?.fileName.replace(/\.(c|java|py|sql)$/, '') || 'output_bin'}`
-      ]);
-
-      setTimeout(() => {
-        const result = currentProblem?.validator 
-          ? currentProblem.validator(code) 
-          : { passed: false, output: 'Problem validator not found.' };
-        setOutput(result.output);
-        setTerminalLogs(prev => [
-          ...prev,
-          result.output,
-          result.passed 
-            ? `[Process exited with status 0 (SUCCESS)]` 
-            : `[Process exited with non-zero exit status (FAILED)]`
-        ]);
-
-        if (currentProblem) {
-          const record = {
-            problemId: currentProblem.id,
-            problemTitle: currentProblem.title,
-            timestamp: new Date().toISOString(),
-            passed: result.passed,
-          };
-          setSubmissionHistory(prev => {
-            const next = [record, ...prev.slice(0, 49)];
-            localStorage.setItem('itm_coding_history', JSON.stringify(next));
-            return next;
-          });
-        }
-
-        if (result.passed) {
-          setStatus('success');
-          try {
-            const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.frequency.setValueAtTime(523.25, ctx.currentTime);
-            osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1);
-            osc.frequency.setValueAtTime(783.99, ctx.currentTime + 0.2);
-            osc.frequency.setValueAtTime(1046.50, ctx.currentTime + 0.3);
-            gain.gain.setValueAtTime(0.15, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
-            osc.start();
-            osc.stop(ctx.currentTime + 0.6);
-          } catch {}
-
-          if (!solvedProblems.includes(currentProblem?.id)) {
-            const updated = [...solvedProblems, currentProblem?.id];
-            setSolvedProblems(updated);
-            localStorage.setItem('itm_coding_lab_solved', JSON.stringify(updated));
-            addXp(75, `Solved Practical: ${currentProblem?.title}`);
-            unlockAchievement('code-ninja');
-            toast.success(`🎉 Practical Solved! +75 XP earned! (${updated.length}/${CODING_PROBLEMS.length} Solved)`);
-          } else {
-            toast.success('All test cases passed successfully!');
-          }
-        } else {
-          setStatus('failed');
-          toast.error(isSql ? 'SQL validation failed. Check syntax and hints.' : 'Test cases failed. Check console output and hints.');
-        }
-      }, isSql ? 600 : 900);
-    }, isSql ? 350 : 600);
+    navigator.clipboard.writeText(formattedRecord);
+    toast.success('Practical record copied! Ready to paste into your college lab manual.');
   };
 
-  const handleTerminalSubmit = (e?: React.FormEvent, customCmd?: string) => {
-    if (e) e.preventDefault();
-    const rawCmd = (customCmd !== undefined ? customCmd : terminalInput).trim();
-    if (!rawCmd) return;
+  const handleTerminalSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const raw = terminalInput.trim();
+    if (!raw) return;
+
+    const cmd = raw.toLowerCase();
     setTerminalInput('');
 
-    if (rawCmd.toLowerCase() === 'clear' || rawCmd.toLowerCase() === 'cls') {
-      setTerminalLogs(['itm@lab-terminal:~/dsa$ # Terminal cleared']);
+    setTerminalLogs(prev => [...prev, `campusloop@sandbox:~/workspace$ ${raw}`]);
+
+    if (cmd === 'clear') {
+      setTerminalLogs(['campusloop@sandbox:~/workspace$ # Terminal cleared.']);
       return;
     }
-
-    if (rawCmd.toLowerCase() === 'help') {
-      setTerminalLogs(prev => [
-        ...prev,
-        `itm@lab-terminal:~/dsa$ help`,
-        `Available Interactive Commands:`,
-        `  1 <token>  : Add passenger token to waiting list (e.g. '1 105')`,
-        `  2          : Allocate seat to next passenger (dequeue)`,
-        `  3          : Display current waiting list`,
-        `  4          : Peek next passenger in line`,
-        `  5          : Count number of waiting passengers`,
-        `  6 / exit   : Exit program`,
-        `  run        : Execute full compilation and validation test suite`,
-        `  clear      : Clear terminal screen`
-      ]);
-      return;
-    }
-
-    if (rawCmd.toLowerCase() === 'run') {
+    if (cmd === 'run') {
       handleRun();
       return;
     }
-
-    const tokens = rawCmd.split(' ');
-    const choice = tokens[0];
-    const newLogs: string[] = [`itm@lab-terminal:~/dsa$ ${rawCmd}`];
-
-    if (choice === '1' || choice === 'add' || choice === 'enqueue') {
-      const token = tokens[1] ? parseInt(tokens[1]) : Math.floor(100 + Math.random() * 900);
-      if (simQueue.length >= 6) {
-        newLogs.push(`The Waiting List Queue is Full.. (Overflow: MAX 6 reached)`);
-      } else {
-        setSimQueue(prev => [...prev, token]);
-        newLogs.push(`Token Number?: ${token}`, `${token} is added to wait Queue`);
-      }
-    } else if (choice === '2' || choice === 'allocate' || choice === 'dequeue') {
-      if (simQueue.length === 0) {
-        newLogs.push(`The Waiting List Queue is Empty.. (Underflow: No passengers waiting)`);
-      } else {
-        const allocated = simQueue[0];
-        setSimQueue(prev => prev.slice(1));
-        newLogs.push(`Seat allocated to Passenger: ${allocated} (Allocated seat confirmed)`);
-      }
-    } else if (choice === '3' || choice === 'display') {
-      if (simQueue.length === 0) {
-        newLogs.push(`The Waiting List Queue is Empty..`);
-      } else {
-        newLogs.push(`Waiting Passengers: ${simQueue.join(' ')}`);
-      }
-    } else if (choice === '4' || choice === 'peek' || choice === 'next') {
-      if (simQueue.length === 0) {
-        newLogs.push(`The Waiting List Queue is Empty..`);
-      } else {
-        newLogs.push(`Next Passenger: ${simQueue[0]}`);
-      }
-    } else if (choice === '5' || choice === 'count') {
-      newLogs.push(`Total Waiting Passengers: ${simQueue.length}`);
-    } else if (choice === '6' || choice.toLowerCase() === 'exit') {
-      newLogs.push(`Exiting Railway Reservation System. Program terminated with exit code 0.`);
-    } else {
-      newLogs.push(`Command "${rawCmd}" executed.`);
+    if (cmd === 'test' || cmd === 'submit') {
+      handleSubmit();
+      return;
+    }
+    if (cmd === 'ls') {
+      setTerminalLogs(prev => [...prev, `${currentProblem?.fileName || 'solution.c'}  Makefile  test_cases.json  README.md`]);
+      return;
+    }
+    if (cmd === 'help') {
+      setTerminalLogs(prev => [
+        ...prev,
+        'Available sandbox commands:',
+        '  run     - Compile and execute against active testcase',
+        '  submit  - Run full test harness for submission & XP',
+        '  ls      - List files in workspace',
+        '  cat     - Print current buffer code',
+        '  clear   - Clear terminal output',
+      ]);
+      return;
+    }
+    if (cmd === 'cat') {
+      setTerminalLogs(prev => [...prev, code]);
+      return;
     }
 
-    setTerminalLogs(prev => [...prev, ...newLogs]);
+    setTerminalLogs(prev => [...prev, `bash: ${raw}: command not found. Type "help" for valid commands.`]);
   };
 
   const currentFacultyAI = useMemo(() => {
     return getFacultyAIAssistance(currentProblem);
   }, [currentProblem]);
 
-  const activeSubjectMeta = useMemo(() => {
-    return ALL_SUBJECTS_METADATA.find(s => s.name === selectedSubject) || null;
-  }, [selectedSubject]);
-
-  const activeFiltersCount = (selectedSemester !== 'all' ? 1 : 0) +
-    (selectedSubject !== 'all' ? 1 : 0) +
-    (selectedLanguage !== 'all' ? 1 : 0) +
-    (selectedDifficulty !== 'all' ? 1 : 0);
-
   return (
-    <div className="flex-1 flex flex-col bg-background selection:bg-primary/20">
+    <div className="flex-1 flex flex-col bg-[#F6F3EC] dark:bg-[#121214] min-h-[calc(100vh-64px)] selection:bg-[#2B4EFF]/20">
       
-      {/* ─────────────────────────────────────────────────────────────
-          TOP BRANDING & GLOBAL STATS HEADER
-      ───────────────────────────────────────────────────────────── */}
-      <div className="bg-card border-b py-2.5 px-4 sm:px-6 shadow-xs z-20">
-        <div className="max-w-[1700px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-3 w-full sm:w-auto">
-            <div className="p-2 bg-primary/10 rounded-xl text-primary flex items-center justify-center shadow-xs">
-              <Code className="h-5 w-5" />
+      {/* =========================================================================
+          LEETCODE-GRADE TOP BAR
+      ========================================================================= */}
+      <header className="h-13 bg-white dark:bg-[#1C1C1E] border-b border-[#E8E4DA] dark:border-neutral-800 px-4 sm:px-6 flex items-center justify-between shrink-0 z-20">
+        
+        {/* Left: Problem Quick Switcher */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-2">
+            <div className="p-1.5 rounded-lg bg-[#2B4EFF] text-white">
+              <Code className="h-4 w-4" />
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-base sm:text-lg font-bold tracking-tight">ITM Notes Practical & Coding Lab</h1>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/30 font-semibold">
-                  154 Practicals Live
-                </span>
-              </div>
-              <p className="text-xs text-muted-foreground flex items-center gap-2 mt-0.5">
-                <Award className="h-3.5 w-3.5 text-primary" /> {solvedProblems.length}/{CODING_PROBLEMS.length} Solved ({Math.round((solvedProblems.length / CODING_PROBLEMS.length) * 100)}%)
-                <span className="text-border">|</span>
-                <Flame className="h-3.5 w-3.5 text-amber-500" /> +75 XP per Practical
-              </p>
-            </div>
+            <span className="font-bold text-xs sm:text-sm text-[#111111] dark:text-white hidden md:inline">
+              Coding Lab
+            </span>
           </div>
-          
-          <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
-            <div className="relative flex-1 sm:w-72">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-              <input
-                type="text"
-                value={searchProblemQuery}
-                onChange={(e) => setSearchProblemQuery(e.target.value)}
-                placeholder="Search by topic, function, code..."
-                className="w-full h-8 pl-8 pr-7 rounded-full border bg-secondary/50 text-xs focus:bg-background focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-muted-foreground"
-              />
-              {searchProblemQuery && (
-                <button
-                  onClick={() => setSearchProblemQuery('')}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              )}
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowFilters(!showFilters)}
-              className={`h-8 rounded-full px-3 text-xs gap-1.5 ${
-                showFilters || activeFiltersCount > 0 ? 'bg-primary text-primary-foreground border-primary shadow-xs' : ''
-              }`}
-            >
-              <Filter className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">Filters</span>
-              {activeFiltersCount > 0 && (
-                <span className="ml-1 h-4 w-4 rounded-full bg-background text-foreground text-[10px] flex items-center justify-center font-bold">
-                  {activeFiltersCount}
-                </span>
-              )}
-            </Button>
 
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                toggleFocusMode();
-                toast.info(!focusMode ? "🎯 Focus Mode Enabled (Sidebar Hidden)" : "Focus Mode Disabled");
-              }}
-              className={`h-8 rounded-full px-3 text-xs gap-1.5 transition-all ${
-                focusMode 
-                  ? 'bg-[#18181B] text-[#FAFAFA] border-[#18181B] font-bold shadow-md hover:bg-[#27272A]' 
-                  : 'bg-card hover:bg-secondary text-muted-foreground hover:text-foreground border-border'
-              }`}
-              title={focusMode ? "Exit Focus Mode (Press F or Esc)" : "Focus Mode: Hide Sidebar & Focus on Coding (Press F)"}
+          <div className="h-4 w-px bg-neutral-300 dark:bg-neutral-700 hidden sm:block" />
+
+          {/* Problem Selector Trigger Button */}
+          <button
+            onClick={() => setIsProblemPickerOpen(true)}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#F6F3EC] dark:bg-neutral-800 hover:bg-[#E6EAFD] dark:hover:bg-neutral-700 border border-[#E8E4DA] dark:border-neutral-700 transition-all cursor-pointer text-xs font-semibold text-[#111111] dark:text-white max-w-[220px] sm:max-w-[340px] truncate"
+          >
+            <span className="font-mono text-[#2B4EFF] font-bold">
+              #{currentIndex + 1}
+            </span>
+            <span className="truncate">{currentProblem?.title}</span>
+            <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold uppercase shrink-0 ${
+              currentProblem?.difficulty === 'Easy' ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400' :
+              currentProblem?.difficulty === 'Medium' ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400' : 'bg-rose-500/15 text-rose-600 dark:text-rose-400'
+            }`}>
+              {currentProblem?.difficulty}
+            </span>
+          </button>
+
+          {/* Prev / Next Arrows */}
+          <div className="flex items-center gap-0.5">
+            <button
+              onClick={goToPrevProblem}
+              disabled={currentIndex <= 0}
+              className="p-1 rounded-md text-neutral-500 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+              title="Previous Problem"
             >
-              {focusMode ? (
-                <>
-                  <Minimize2 className="h-3.5 w-3.5" />
-                  <span className="hidden sm:inline">Exit Focus</span>
-                </>
-              ) : (
-                <>
-                  <Maximize2 className="h-3.5 w-3.5" />
-                  <span className="hidden sm:inline">Focus Mode</span>
-                  <kbd className="hidden lg:inline-flex items-center px-1 text-[9px] font-mono bg-background/50 rounded border border-border/60">F</kbd>
-                </>
-              )}
-            </Button>
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <button
+              onClick={goToNextProblem}
+              disabled={currentIndex >= filteredProblems.length - 1}
+              className="p-1 rounded-md text-neutral-500 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+              title="Next Problem"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
           </div>
         </div>
-      </div>
 
-      {/* ─────────────────────────────────────────────────────────────
-          PERSISTENT SUBJECT SELECTION CAROUSEL & NAVIGATION RIBBON
-      ───────────────────────────────────────────────────────────── */}
-      <div className="bg-card/70 backdrop-blur-md border-b sticky top-0 z-10 shadow-xs">
-        <div className="max-w-[1700px] mx-auto px-4 sm:px-6 py-2 flex items-center gap-3 overflow-x-auto scrollbar-none">
+        {/* Center: Run & Submit Actions */}
+        <div className="flex items-center gap-2">
+          {/* LeetCode Run Button */}
+          <button
+            onClick={handleRun}
+            disabled={status === 'compiling' || status === 'running'}
+            className="h-8 px-3.5 rounded-full bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 text-[#111111] dark:text-white text-xs font-bold border border-neutral-300 dark:border-neutral-700 flex items-center gap-1.5 transition-all cursor-pointer shadow-xs disabled:opacity-50"
+            title="Run Code (Ctrl + Enter)"
+          >
+            <Play className="h-3.5 w-3.5 fill-current" />
+            <span className="hidden sm:inline">Run</span>
+          </button>
+
+          {/* LeetCode Submit Button */}
+          <button
+            onClick={handleSubmit}
+            disabled={status === 'compiling' || status === 'running'}
+            className="h-8 px-4 rounded-full bg-[#2B4EFF] hover:bg-[#1E3ECC] text-white text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm disabled:opacity-50"
+            title="Submit Solution (Ctrl + Shift + Enter)"
+          >
+            {status === 'compiling' || status === 'running' ? (
+              <span className="flex items-center gap-1.5 animate-pulse">Evaluating...</span>
+            ) : (
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 className="h-3.5 w-3.5" />
+                <span>Submit</span>
+              </span>
+            )}
+          </button>
+
+          {/* Practice Timer */}
+          <button
+            onClick={() => setIsTimerRunning(!isTimerRunning)}
+            className={`h-8 px-2.5 rounded-full text-xs font-mono font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+              isTimerRunning 
+                ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30' 
+                : 'text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800'
+            }`}
+            title="Practice Stopwatch Timer"
+          >
+            <Timer className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">{formatTimer(timerSeconds)}</span>
+          </button>
+        </div>
+
+        {/* Right: Tools & Utilities */}
+        <div className="flex items-center gap-1.5">
+          <button
+            onClick={handleCopyFacultySubmission}
+            className="h-8 px-2.5 rounded-lg text-xs font-semibold text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 hidden md:flex items-center gap-1 transition-all cursor-pointer"
+            title="Export Verified College Practical Record"
+          >
+            <FileText className="h-3.5 w-3.5" />
+            <span>Export</span>
+          </button>
+
+          <button
+            onClick={() => setIsLabManualOpen(true)}
+            className="h-8 px-2.5 rounded-lg text-xs font-semibold text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 hidden lg:flex items-center gap-1 transition-all cursor-pointer"
+            title="Print University Lab Manual"
+          >
+            <Printer className="h-3.5 w-3.5" />
+            <span>Print Manual</span>
+          </button>
+
+          <button
+            onClick={handleResetCode}
+            className="h-8 w-8 rounded-lg text-neutral-500 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 flex items-center justify-center transition-all cursor-pointer"
+            title="Reset code to starter template"
+          >
+            <RotateCcw className="h-3.5 w-3.5" />
+          </button>
+
+          <button
+            onClick={toggleFocusMode}
+            className={`h-8 w-8 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
+              focusMode ? 'bg-[#2B4EFF] text-white' : 'text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800'
+            }`}
+            title="Toggle Focus Mode (Full Screen)"
+          >
+            {focusMode ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
+          </button>
+        </div>
+      </header>
+
+      {/* =========================================================================
+          MAIN DUAL SPLIT-PANE WORKSPACE
+      ========================================================================= */}
+      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden h-[calc(100vh-115px)]">
+        
+        {/* Mobile View Toggle Pills */}
+        <div className="lg:hidden flex border-b border-[#E8E4DA] dark:border-neutral-800 bg-white dark:bg-[#1C1C1E]">
+          <button
+            onClick={() => setMobileView('specs')}
+            className={`flex-1 py-2 text-xs font-bold border-b-2 transition-all ${
+              mobileView === 'specs' ? 'border-[#2B4EFF] text-[#2B4EFF] bg-[#2B4EFF]/5' : 'border-transparent text-neutral-500'
+            }`}
+          >
+            Problem Specs
+          </button>
+          <button
+            onClick={() => setMobileView('editor')}
+            className={`flex-1 py-2 text-xs font-bold border-b-2 transition-all ${
+              mobileView === 'editor' ? 'border-[#2B4EFF] text-[#2B4EFF] bg-[#2B4EFF]/5' : 'border-transparent text-neutral-500'
+            }`}
+          >
+            Code Editor
+          </button>
+          <button
+            onClick={() => setMobileView('console')}
+            className={`flex-1 py-2 text-xs font-bold border-b-2 transition-all ${
+              mobileView === 'console' ? 'border-[#2B4EFF] text-[#2B4EFF] bg-[#2B4EFF]/5' : 'border-transparent text-neutral-500'
+            }`}
+          >
+            Test Harness
+          </button>
+        </div>
+
+        {/* -------------------------------------------------------------------------
+            LEFT PANE: PROBLEM STATEMENT & SUPPORTING TABS (45% Width)
+        ------------------------------------------------------------------------- */}
+        <div className={`w-full lg:w-[46%] xl:w-[44%] flex flex-col border-r border-[#E8E4DA] dark:border-neutral-800 bg-white dark:bg-[#1C1C1E] overflow-hidden ${
+          mobileView === 'specs' ? 'flex' : 'hidden lg:flex'
+        }`}>
           
-          {/* Semester Selector Pills */}
-          <div className="flex items-center bg-secondary/60 p-0.5 rounded-xl border shrink-0">
+          {/* Sub-Tabs Navigation */}
+          <div className="flex items-center overflow-x-auto border-b border-[#E8E4DA] dark:border-neutral-800 bg-[#F6F3EC]/80 dark:bg-neutral-900/80 px-3 scrollbar-none shrink-0">
             {[
-              { id: 'all', label: 'All Sem' },
-              { id: 1, label: 'Sem 1' },
-              { id: 3, label: 'Sem 3' },
-            ].map(sem => (
+              { id: 'specs', icon: BookOpen, label: 'Description' },
+              { id: 'hints', icon: Lightbulb, label: 'Hints' },
+              { id: 'agent', icon: Bot, label: 'Faculty AI Tutor' },
+              { id: 'history', icon: RotateCcw, label: 'Submissions' },
+              { id: 'solution', icon: Sparkles, label: 'Solution' },
+            ].map(tab => (
               <button
-                key={sem.id}
-                onClick={() => handleSelectSemester(sem.id as any)}
-                className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-all ${
-                  selectedSemester === sem.id
-                    ? 'bg-background text-foreground shadow-xs font-bold'
-                    : 'text-muted-foreground hover:text-foreground'
+                key={tab.id}
+                onClick={() => setLeftTab(tab.id as any)}
+                className={`flex items-center gap-1.5 px-3.5 py-2.5 text-xs font-semibold whitespace-nowrap border-b-2 transition-all cursor-pointer ${
+                  leftTab === tab.id 
+                    ? 'border-[#2B4EFF] text-[#2B4EFF] font-bold bg-white dark:bg-[#1C1C1E]' 
+                    : 'border-transparent text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200'
                 }`}
               >
-                {sem.label}
+                <tab.icon className={`h-3.5 w-3.5 ${tab.id === 'agent' ? 'text-amber-500' : ''}`} /> 
+                <span>{tab.label}</span>
               </button>
             ))}
           </div>
 
-          <div className="h-5 w-px bg-border shrink-0" />
-
-          {/* All Subjects Pill */}
-          <button
-            onClick={() => handleSelectSubject('all')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0 transition-all border flex items-center gap-2 ${
-              selectedSubject === 'all'
-                ? 'bg-primary text-primary-foreground border-primary shadow-xs font-bold ring-2 ring-primary/20'
-                : 'bg-card text-muted-foreground hover:text-foreground hover:bg-secondary/60 border-border/80'
-            }`}
-          >
-            <Sparkles className="h-3.5 w-3.5" />
-            <span>All Subjects</span>
-            <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
-              selectedSubject === 'all' ? 'bg-primary-foreground/20 text-primary-foreground' : 'bg-secondary text-muted-foreground'
-            }`}>
-              {CODING_PROBLEMS.length}
-            </span>
-          </button>
-
-          {/* 1-Click Spotlight: Practical 3 Railway Reservation Queue */}
-          <button
-            onClick={() => {
-              setSelectedSemester(3);
-              setSelectedSubject('Data Structures (DSA301)');
-              const p3 = CODING_PROBLEMS.find(p => p.id === 'dsa-38-railway-reservation-queue-c' || p.id.includes('railway'));
-              if (p3) handleSelectProblem(p3);
-            }}
-            className="px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 transition-all border flex items-center gap-1.5 bg-amber-500/10 border-amber-500/40 text-amber-500 hover:bg-amber-500/20 shadow-xs"
-          >
-            <span>🚂</span>
-            <span>Practical 3: Railway Queue (C / Java)</span>
-            <span className="text-[10px] px-1.5 py-0.2 rounded-full font-mono bg-amber-500/20 text-amber-500 font-bold">
-              HOT
-            </span>
-          </button>
-
-          {/* Subject Pills with Counts & Status */}
-          {ALL_SUBJECTS_METADATA.filter(s => selectedSemester === 'all' || s.semester === selectedSemester).map(subj => {
-            const isSelected = selectedSubject === subj.name;
-            const stats = subjectStats[subj.name] || { total: 0, solved: 0 };
-            return (
-              <button
-                key={subj.name}
-                onClick={() => handleSelectSubject(subj.name)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0 transition-all border flex items-center gap-2 group ${
-                  isSelected
-                    ? `${subj.bgClass} ${subj.borderClass} ${subj.textClass} shadow-xs font-bold ring-2 ring-current/20`
-                    : 'bg-card text-muted-foreground hover:text-foreground hover:bg-secondary/60 border-border/80'
-                }`}
-                title={subj.description}
-              >
-                <span className="text-sm">{subj.icon}</span>
-                <span className="whitespace-nowrap">{subj.shortName}</span>
-                <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono transition-colors ${
-                  isSelected ? 'bg-current/20 text-current' : 'bg-secondary text-muted-foreground group-hover:text-foreground'
-                }`}>
-                  {stats.total}
-                </span>
-                {stats.solved > 0 && (
-                  <span className="text-[10px] text-amber-500 flex items-center font-bold font-mono">
-                    ✔ {stats.solved}
-                  </span>
-                )}
-              </button>
-            );
-          })}
-
-          {/* Reset Filters Shortcut */}
-          {activeFiltersCount > 0 && (
-            <button
-              onClick={() => {
-                setSelectedSemester('all');
-                setSelectedSubject('all');
-                setSelectedLanguage('all');
-                setSelectedDifficulty('all');
-                setSearchProblemQuery('');
-              }}
-              className="ml-auto text-xs text-muted-foreground hover:text-foreground underline underline-offset-4 shrink-0 px-2"
-            >
-              Reset All
-            </button>
-          )}
-
-        </div>
-      </div>
-
-      {/* ─────────────────────────────────────────────────────────────
-          EXPANDABLE ADVANCED FILTERS PANEL
-      ───────────────────────────────────────────────────────────── */}
-      {showFilters && (
-        <div className="bg-card border-b p-4 shadow-inner animate-in slide-in-from-top-2 z-10">
-          <div className="max-w-[1700px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 text-sm">
-            <div className="space-y-2">
-              <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Semester</label>
-              <div className="flex flex-wrap gap-1.5">
-                {[{ id: 'all', label: 'All Semesters' }, { id: 1, label: 'Semester 1' }, { id: 3, label: 'Semester 3' }].map(sem => (
-                  <button
-                    key={sem.id}
-                    onClick={() => handleSelectSemester(sem.id as any)}
-                    className={`px-3 py-1 rounded-lg border text-xs font-medium transition-all ${
-                      selectedSemester === sem.id ? 'bg-primary text-primary-foreground border-primary shadow-xs' : 'bg-background hover:bg-secondary'
-                    }`}
-                  >
-                    {sem.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Programming Language</label>
-              <div className="flex flex-wrap gap-1.5">
-                {['all', 'c', 'java', 'sql', 'python'].map(lang => (
-                  <button
-                    key={lang}
-                    onClick={() => setSelectedLanguage(lang)}
-                    className={`px-3 py-1 rounded-lg border text-xs font-medium uppercase transition-all ${
-                      selectedLanguage === lang ? 'bg-primary text-primary-foreground border-primary shadow-xs' : 'bg-background hover:bg-secondary'
-                    }`}
-                  >
-                    {lang === 'all' ? 'All Languages' : lang}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Difficulty Level</label>
-              <div className="flex flex-wrap gap-1.5">
-                {[
-                  { id: 'all', label: 'All' },
-                  { id: 'easy', label: 'Easy' },
-                  { id: 'medium', label: 'Medium' },
-                  { id: 'hard', label: '🔥 Hard' },
-                ].map(diff => (
-                  <button
-                    key={diff.id}
-                    onClick={() => setSelectedDifficulty(diff.id)}
-                    className={`px-3 py-1 rounded-lg border text-xs font-medium transition-all ${
-                      selectedDifficulty === diff.id 
-                        ? (diff.id === 'hard' ? 'bg-rose-600 text-white border-rose-600 shadow-xs' : 'bg-primary text-primary-foreground border-primary shadow-xs')
-                        : 'bg-background hover:bg-secondary'
-                    }`}
-                  >
-                    {diff.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Active Subject</label>
-              <div className="text-xs text-muted-foreground">
-                {activeSubjectMeta ? (
-                  <div className="p-2.5 rounded-xl border bg-secondary/30">
-                    <div className="font-bold text-foreground flex items-center gap-1.5">
-                      <span>{activeSubjectMeta.icon}</span> {activeSubjectMeta.name}
-                    </div>
-                    <div className="text-[11px] text-muted-foreground mt-1 line-clamp-2">
-                      {activeSubjectMeta.description}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="p-2.5 rounded-xl border bg-secondary/30 text-muted-foreground italic">
-                    Showing practicals across all engineering subjects.
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ─────────────────────────────────────────────────────────────
-          MAIN SPLIT PANE WORKSPACE LAYOUT
-      ───────────────────────────────────────────────────────────── */}
-      <main className="flex-1 max-w-[1700px] w-full mx-auto flex flex-col lg:flex-row overflow-hidden bg-background">
-        
-        {/* Mobile View Toggle Segment */}
-        <div className="lg:hidden flex border-b bg-card">
-          <button 
-            onClick={() => setMobileView('list')}
-            className={`flex-1 py-2.5 text-xs font-bold border-b-2 transition-all ${
-              mobileView === 'list' ? 'border-primary text-primary bg-primary/5' : 'border-transparent text-muted-foreground'
-            }`}
-          >
-            Practicals List ({filteredProblems.length})
-          </button>
-          <button 
-            onClick={() => setMobileView('workspace')}
-            className={`flex-1 py-2.5 text-xs font-bold border-b-2 transition-all ${
-              mobileView === 'workspace' ? 'border-primary text-primary bg-primary/5' : 'border-transparent text-muted-foreground'
-            }`}
-          >
-            Code Workspace & Terminal
-          </button>
-        </div>
-
-        {/* ─────────────────────────────────────────────────────────────
-            LEFT SIDEBAR: PROBLEMS LIST & FAST SUBJECT SWITCHER
-        ───────────────────────────────────────────────────────────── */}
-        <div className={`w-full lg:w-84 xl:w-96 flex-shrink-0 flex-col border-r bg-card/30 ${
-          mobileView === 'list' ? 'flex' : 'hidden lg:flex'
-        } h-[calc(100vh-140px)] lg:h-[calc(100vh-105px)]`}>
-          
-          {/* Sidebar Header: Subject Context & Jump Dropdown */}
-          <div className="p-3 border-b bg-card/60 backdrop-blur-xs space-y-2.5 shrink-0">
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-                <BookOpen className="h-3.5 w-3.5 text-primary" /> Practicals ({filteredProblems.length})
-              </span>
-              <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
-                <span className="font-semibold text-amber-500">
-                  {filteredProblems.filter(p => solvedProblems.includes(p.id)).length}
-                </span>
-                <span>/</span>
-                <span>{filteredProblems.length} Solved</span>
-              </div>
-            </div>
-
-            {/* Quick Subject Select Dropdown inside Sidebar */}
-            <div className="relative">
-              <select
-                value={selectedSubject}
-                onChange={(e) => handleSelectSubject(e.target.value)}
-                aria-label="Filter practicals by subject"
-                className="w-full h-8 px-2.5 rounded-lg border bg-secondary/60 text-xs font-semibold text-foreground focus:ring-1 focus:ring-primary outline-none transition-all cursor-pointer truncate"
-              >
-                <option value="all">⚡ All Subjects ({CODING_PROBLEMS.length} practicals)</option>
-                {ALL_SUBJECTS_METADATA.map(s => {
-                  const cnt = subjectStats[s.name]?.total || 0;
-                  return (
-                    <option key={s.name} value={s.name}>
-                      {s.icon} {s.shortName} (Sem {s.semester} • {cnt} practicals)
-                    </option>
-                  );
-                })}
-              </select>
-            </div>
-
-            {/* Quick Filter Pills inside Sidebar */}
-            <div className="flex items-center justify-between gap-1 pt-1">
-              <div className="flex items-center gap-1 overflow-x-auto scrollbar-none py-0.5">
-                {['all', 'c', 'java', 'sql', 'python', 'web'].map(l => (
-                  <button
-                    key={l}
-                    onClick={() => setSelectedLanguage(l)}
-                    className={`text-[10px] px-2 py-0.5 rounded-md font-semibold uppercase transition-all ${
-                      selectedLanguage === l
-                        ? 'bg-primary text-primary-foreground font-bold shadow-xs'
-                        : 'bg-secondary/70 text-muted-foreground hover:text-foreground'
-                    }`}
-                  >
-                    {l}
-                  </button>
-                ))}
-              </div>
-              <div className="flex items-center gap-1 shrink-0">
-                {['all', 'hard'].map(d => (
-                  <button
-                    key={d}
-                    onClick={() => setSelectedDifficulty(d)}
-                    className={`text-[10px] px-2 py-0.5 rounded-md font-semibold transition-all ${
-                      selectedDifficulty === d
-                        ? (d === 'hard' ? 'bg-rose-600 text-white font-bold' : 'bg-primary text-primary-foreground font-bold')
-                        : 'bg-secondary/70 text-muted-foreground hover:text-foreground'
-                    }`}
-                  >
-                    {d === 'hard' ? '🔥 Hard' : 'All'}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Practicals Scrollable List */}
-          <div className="flex-1 overflow-y-auto scrollbar-thin p-2 space-y-1.5">
-            {filteredProblems.length === 0 ? (
-              <div className="p-8 text-center text-sm text-muted-foreground flex flex-col items-center justify-center">
-                <Search className="h-8 w-8 text-muted-foreground/40 mb-2" />
-                <p className="font-semibold">No practicals found</p>
-                <p className="text-xs mt-1">Try resetting your subject or difficulty filters.</p>
-                <Button 
-                  size="sm" 
-                  variant="outline" 
-                  onClick={() => {
-                    setSelectedSubject('all');
-                    setSelectedLanguage('all');
-                    setSelectedDifficulty('all');
-                    setSearchProblemQuery('');
-                  }}
-                  className="mt-3 text-xs"
-                >
-                  Clear Filters
-                </Button>
-              </div>
-            ) : (
-              filteredProblems.map((prob, idx) => {
-                const isSelected = prob.id === currentProblem?.id;
-                const isSolved = solvedProblems.includes(prob.id);
-                const globalIndex = CODING_PROBLEMS.findIndex(p => p.id === prob.id) + 1;
-                return (
-                  <button
-                    key={prob.id}
-                    onClick={() => handleSelectProblem(prob)}
-                    className={`w-full text-left p-3 rounded-xl transition-all border relative group ${
-                      isSelected 
-                        ? 'bg-primary/10 border-primary/40 shadow-sm ring-1 ring-primary/30' 
-                        : 'bg-card/70 border-border/60 hover:border-border hover:bg-secondary/50'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between mb-1.5 gap-2">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-[10px] font-mono font-bold text-muted-foreground bg-secondary/80 px-1.5 py-0.5 rounded">
-                          #{globalIndex > 0 ? globalIndex : idx + 1}
-                        </span>
-                        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded uppercase ${
-                          prob.language === 'c' ? 'bg-amber-500/15 text-amber-500 border border-amber-500/30' :
-                          prob.language === 'java' ? 'bg-blue-500/15 text-blue-500 border border-blue-500/30' :
-                          prob.language === 'sql' ? 'bg-purple-500/15 text-purple-500 border border-purple-500/30' :
-                          prob.language === 'web' ? 'bg-emerald-500/15 text-emerald-500 border border-emerald-500/30' :
-                          'bg-cyan-500/15 text-cyan-500 border border-cyan-500/30'
-                        }`}>
-                          {prob.language}
-                        </span>
-                      </div>
-                      {isSolved && (
-                        <span className="flex items-center gap-1 text-[10px] text-amber-500 font-bold bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/30">
-                          <CheckCircle2 className="h-3 w-3" /> Solved
-                        </span>
-                      )}
-                    </div>
-
-                    <h4 className={`text-xs font-bold leading-snug line-clamp-2 ${
-                      isSelected ? 'text-foreground' : 'text-foreground/90 group-hover:text-foreground'
+          {/* Tab Content Container */}
+          <div className="flex-1 overflow-y-auto p-5 sm:p-6 scrollbar-thin space-y-6">
+            
+            {/* TAB 1: DESCRIPTION */}
+            {leftTab === 'specs' && (
+              <div className="space-y-6 animate-fade-in">
+                {/* Problem Header Info */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${
+                      currentProblem.difficulty === 'Easy' ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400' :
+                      currentProblem.difficulty === 'Medium' ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400' : 'bg-rose-500/15 text-rose-600 dark:text-rose-400'
                     }`}>
-                      {prob.title}
-                    </h4>
+                      {currentProblem.difficulty}
+                    </span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 font-mono">
+                      {currentProblem.marks}
+                    </span>
+                    <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#E6EAFD] text-[#2B4EFF] dark:bg-blue-950/40 dark:text-blue-300">
+                      {currentProblem.subjectName}
+                    </span>
+                    {solvedProblems.includes(currentProblem.id) && (
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 flex items-center gap-1">
+                        <Check className="h-3 w-3 stroke-[3]" /> Solved
+                      </span>
+                    )}
+                  </div>
 
-                    <div className="flex items-center justify-between mt-2 pt-1 border-t border-border/40 text-[10px]">
-                      <span className={`font-semibold ${
-                        prob.difficulty === 'Easy' ? 'text-amber-500' :
-                        prob.difficulty === 'Medium' ? 'text-amber-500' : 'text-rose-500 font-bold'
-                      }`}>
-                        {prob.difficulty}
-                      </span>
-                      <span className="text-muted-foreground truncate max-w-[140px]">
-                        {prob.subjectName.split(' ')[0]}
-                      </span>
-                      <span className="text-muted-foreground font-mono font-semibold">
-                        {prob.marks}
-                      </span>
+                  <h1 className="text-xl sm:text-2xl font-black text-[#111111] dark:text-white leading-tight">
+                    {currentProblem.title}
+                  </h1>
+                </div>
+
+                {/* Problem Description */}
+                <div className="space-y-2">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-500">
+                    Objective & Requirements
+                  </h3>
+                  <div className="text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed whitespace-pre-line bg-[#F6F3EC] dark:bg-neutral-800/40 p-4 rounded-2xl border border-[#E8E4DA] dark:border-neutral-800">
+                    {currentProblem.description}
+                  </div>
+                </div>
+
+                {/* Constraints */}
+                {currentProblem.constraints && currentProblem.constraints.length > 0 && (
+                  <div className="space-y-2">
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-500">
+                      Constraints & Bounds
+                    </h3>
+                    <div className="grid grid-cols-1 gap-2">
+                      {currentProblem.constraints.map((c, i) => (
+                        <div key={i} className="flex items-center gap-2 p-2.5 rounded-xl bg-neutral-50 dark:bg-neutral-800/60 border border-[#E8E4DA] dark:border-neutral-700 text-xs font-mono text-neutral-800 dark:text-neutral-200">
+                          <span className="h-1.5 w-1.5 rounded-full bg-[#2B4EFF]" />
+                          <span>{c}</span>
+                        </div>
+                      ))}
                     </div>
-                  </button>
-                );
-              })
+                  </div>
+                )}
+
+                {/* Expected Output Demonstration */}
+                <div className="space-y-2">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-500">
+                    Target Output Specification
+                  </h3>
+                  <pre className="p-4 rounded-2xl bg-neutral-900 text-neutral-100 font-mono text-xs overflow-x-auto leading-relaxed border border-neutral-800">
+                    <code>{currentProblem.expectedOutput}</code>
+                  </pre>
+                </div>
+              </div>
             )}
+
+            {/* TAB 2: HINTS */}
+            {leftTab === 'hints' && (
+              <div className="space-y-4 animate-fade-in">
+                <div className="flex items-center gap-2 text-xs font-bold text-amber-600 dark:text-amber-400">
+                  <Lightbulb className="h-4 w-4" />
+                  <span>Step-by-Step Problem Hints</span>
+                </div>
+                {currentProblem.hints && currentProblem.hints.length > 0 ? (
+                  currentProblem.hints.map((hint, idx) => (
+                    <div key={idx} className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-900 dark:text-amber-200 leading-relaxed">
+                      <strong className="block font-bold mb-1">Hint {idx + 1}:</strong>
+                      {hint}
+                    </div>
+                  ))
+                ) : (
+                  <div className="p-4 rounded-xl text-xs text-neutral-500 italic bg-neutral-50 dark:bg-neutral-800">
+                    No additional hints provided for this practical.
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* TAB 3: FACULTY AI TUTOR & VIVA QUESTIONS */}
+            {leftTab === 'agent' && (
+              <div className="space-y-5 animate-fade-in">
+                <div className="p-4 rounded-2xl bg-[#E6EAFD]/50 dark:bg-blue-950/30 border border-[#2B4EFF]/20 space-y-2">
+                  <div className="flex items-center gap-2 text-xs font-bold text-[#2B4EFF] dark:text-blue-300">
+                    <Bot className="h-4 w-4" />
+                    <span>Faculty Architectural Concept</span>
+                  </div>
+                  <div className="text-xs text-neutral-700 dark:text-neutral-300 leading-relaxed whitespace-pre-line">
+                    {currentFacultyAI.concept}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-500">
+                    Implementation Blueprint
+                  </h4>
+                  <div className="space-y-1.5">
+                    {currentFacultyAI.blueprint.map((step, idx) => (
+                      <div key={idx} className="p-2.5 rounded-xl bg-[#F6F3EC] dark:bg-neutral-800 border border-[#E8E4DA] dark:border-neutral-700 text-xs text-neutral-800 dark:text-neutral-200">
+                        {step}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {currentFacultyAI.vivaQuestions && currentFacultyAI.vivaQuestions.length > 0 && (
+                  <div className="space-y-2 pt-2">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                      College Viva Exam Questions
+                    </h4>
+                    <div className="space-y-2">
+                      {currentFacultyAI.vivaQuestions.map((viva, idx) => (
+                        <div key={idx} className="p-3.5 rounded-2xl border border-amber-500/20 bg-amber-500/5 space-y-1.5">
+                          <p className="text-xs font-bold text-amber-900 dark:text-amber-300">
+                            Q{idx + 1}: {viva.q}
+                          </p>
+                          <p className="text-xs text-neutral-700 dark:text-neutral-300 leading-relaxed">
+                            {viva.a}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* TAB 4: SUBMISSIONS HISTORY */}
+            {leftTab === 'history' && (
+              <div className="space-y-4 animate-fade-in">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-500">
+                  Your Past Practical Submissions
+                </h3>
+                {submissionHistory.filter(s => s.problemId === currentProblem.id).length > 0 ? (
+                  submissionHistory
+                    .filter(s => s.problemId === currentProblem.id)
+                    .map((sub, idx) => (
+                      <div key={idx} className="p-3.5 rounded-2xl border border-[#E8E4DA] dark:border-neutral-800 bg-[#F6F3EC] dark:bg-neutral-800/40 flex items-center justify-between">
+                        <div className="flex items-center gap-2.5">
+                          <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                          <div>
+                            <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                              Accepted
+                            </span>
+                            <span className="text-[10px] text-neutral-400 block font-mono">
+                              {new Date(sub.timestamp).toLocaleDateString()} · {new Date(sub.timestamp).toLocaleTimeString()}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="text-right text-xs font-mono text-neutral-500">
+                          <span>{sub.runtimeMs || 3} ms</span> · <span>{sub.memoryMb || 14.1} MB</span>
+                        </div>
+                      </div>
+                    ))
+                ) : (
+                  <div className="p-6 rounded-2xl border border-dashed border-[#E8E4DA] dark:border-neutral-800 text-center text-xs text-neutral-500 space-y-1">
+                    <p className="font-semibold">No submissions recorded for this practical yet.</p>
+                    <p className="text-[11px]">Click "Run" or "Submit" to test your code against university harness.</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* TAB 5: MODEL SOLUTION */}
+            {leftTab === 'solution' && (
+              <div className="space-y-4 animate-fade-in">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-neutral-500 uppercase tracking-wider">
+                    Official Reference Solution
+                  </span>
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(currentProblem.modelSolution);
+                      toast.success('Model solution copied to clipboard!');
+                    }}
+                    className="text-xs font-semibold text-[#2B4EFF] hover:underline flex items-center gap-1 cursor-pointer"
+                  >
+                    <Copy className="h-3 w-3" />
+                    <span>Copy Solution</span>
+                  </button>
+                </div>
+                <pre className="p-4 rounded-2xl bg-neutral-900 text-neutral-100 font-mono text-xs overflow-x-auto leading-relaxed border border-neutral-800">
+                  <code>{currentProblem.modelSolution}</code>
+                </pre>
+              </div>
+            )}
+
           </div>
         </div>
 
-        {/* ─────────────────────────────────────────────────────────────
-            RIGHT AREA: WORKSPACE (QUESTION / SPECS / IDE / TERMINAL)
-        ───────────────────────────────────────────────────────────── */}
-        <div className={`flex-1 flex-col overflow-hidden bg-background ${
-          mobileView === 'workspace' ? 'flex' : 'hidden lg:flex'
-        } h-[calc(100vh-140px)] lg:h-[calc(100vh-105px)]`}>
+        {/* -------------------------------------------------------------------------
+            RIGHT PANE: MONOSPACE IDE & TEST RUNNER CONSOLE (55% Width)
+        ------------------------------------------------------------------------- */}
+        <div className={`flex-1 flex flex-col bg-[#18181B] overflow-hidden ${
+          mobileView === 'editor' || mobileView === 'console' ? 'flex' : 'hidden lg:flex'
+        }`}>
           
-          {currentProblem ? (
-            <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+          {/* Editor Header Bar */}
+          <div className="h-10 bg-[#27272A] border-b border-neutral-800 px-4 flex items-center justify-between shrink-0 select-none">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-mono font-semibold text-neutral-200 bg-neutral-800 px-2.5 py-0.5 rounded border border-neutral-700">
+                {currentProblem?.fileName || 'solution.c'}
+              </span>
+
+              {/* Font Size Pills */}
+              <div className="hidden sm:flex items-center bg-neutral-800 rounded p-0.5 text-[10px] font-mono text-neutral-400">
+                {(['12px', '13px', '14px', '16px'] as const).map(sz => (
+                  <button
+                    key={sz}
+                    onClick={() => setEditorFontSize(sz)}
+                    className={`px-1.5 py-0.5 rounded cursor-pointer ${
+                      editorFontSize === sz ? 'bg-neutral-700 text-white font-bold' : 'hover:text-neutral-200'
+                    }`}
+                  >
+                    {sz.replace('px', '')}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleFormatCode}
+                className="text-xs text-neutral-400 hover:text-white px-2 py-0.5 rounded hover:bg-neutral-800 transition-colors cursor-pointer"
+                title="Format indentation"
+              >
+                Format
+              </button>
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(code);
+                  toast.success('Code copied to clipboard.');
+                }}
+                className="text-xs text-neutral-400 hover:text-white px-2 py-0.5 rounded hover:bg-neutral-800 transition-colors flex items-center gap-1 cursor-pointer"
+              >
+                <Copy className="h-3 w-3" />
+                <span>Copy</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Code Editor Body */}
+          <div className="flex-1 flex overflow-hidden relative">
+            {/* Line Numbers */}
+            <div className="w-10 bg-[#1F1F23] border-r border-neutral-800/80 text-neutral-600 font-mono text-[11px] py-4 flex flex-col items-center select-none shrink-0 overflow-hidden">
+              {Array.from({ length: Math.max(1, code.split('\n').length) }).map((_, i) => (
+                <div key={i} className="leading-relaxed">{i + 1}</div>
+              ))}
+            </div>
+
+            {/* Core Textarea */}
+            <Textarea
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+              onKeyDown={handleKeyDown}
+              spellCheck={false}
+              style={{ fontSize: editorFontSize }}
+              className="flex-1 w-full h-full p-4 font-mono bg-transparent border-0 text-neutral-100 resize-none focus-visible:ring-0 leading-relaxed selection:bg-neutral-800 rounded-none shadow-none"
+            />
+          </div>
+
+          {/* =========================================================================
+              LEETCODE / HACKERRANK BOTTOM CONSOLE & TEST HARNESS
+          ========================================================================= */}
+          <div className={`${isConsoleExpanded ? 'h-80 sm:h-96' : 'h-56 sm:h-64'} flex flex-col bg-[#141416] border-t border-neutral-800 shrink-0 transition-all duration-200`}>
+            
+            {/* Console Tabs & Runner Bar */}
+            <div className="h-10 px-4 bg-[#1F1F23] border-b border-neutral-800 flex items-center justify-between shrink-0 select-none">
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={() => setActiveConsoleTab('result')}
+                  className={`px-3 py-1 text-xs font-mono rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
+                    activeConsoleTab === 'result' ? 'bg-[#27272A] text-white font-bold' : 'text-neutral-400 hover:text-neutral-200'
+                  }`}
+                >
+                  <Award className="h-3.5 w-3.5" />
+                  <span>Test Result</span>
+                </button>
+
+                <button
+                  onClick={() => setActiveConsoleTab('testcase')}
+                  className={`px-3 py-1 text-xs font-mono rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
+                    activeConsoleTab === 'testcase' ? 'bg-[#27272A] text-white font-bold' : 'text-neutral-400 hover:text-neutral-200'
+                  }`}
+                >
+                  <CheckCircle2 className="h-3.5 w-3.5" />
+                  <span>Testcases</span>
+                </button>
+
+                <button
+                  onClick={() => setActiveConsoleTab('terminal')}
+                  className={`px-3 py-1 text-xs font-mono rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
+                    activeConsoleTab === 'terminal' ? 'bg-[#27272A] text-white font-bold' : 'text-neutral-400 hover:text-neutral-200'
+                  }`}
+                >
+                  <Terminal className="h-3.5 w-3.5" />
+                  <span>Terminal</span>
+                </button>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setIsConsoleExpanded(!isConsoleExpanded)}
+                  className="text-neutral-400 hover:text-white p-1 rounded hover:bg-neutral-800 transition-colors cursor-pointer"
+                  title="Expand / Collapse Console"
+                >
+                  {isConsoleExpanded ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
+                </button>
+              </div>
+            </div>
+
+            {/* Console Content Area */}
+            <div className="flex-1 overflow-y-auto p-4 font-mono text-xs text-neutral-300 scrollbar-thin">
               
-              {/* LeetCode-Style Left Tab Pane: Description / Hints / AI Tutor / Submissions / Solution */}
-              <div className="w-full lg:w-[46%] xl:w-[44%] flex flex-col border-b lg:border-b-0 lg:border-r bg-card/20 overflow-hidden">
-                
-                {/* Stepper & Breadcrumb Top Navigation Bar */}
-                <div className="h-10 px-4 bg-card border-b flex items-center justify-between shrink-0 text-xs">
-                  <div className="flex items-center gap-1.5 text-muted-foreground truncate">
-                    <span className="font-semibold text-foreground">Coding Lab</span>
-                    <ChevronRight className="h-3 w-3" />
-                    <span className="truncate max-w-[110px] sm:max-w-[140px]">{currentProblem.subjectName.split('(')[0].trim()}</span>
-                    <ChevronRight className="h-3 w-3" />
-                    <span className="font-mono text-primary font-bold">#{CODING_PROBLEMS.findIndex(p => p.id === currentProblem.id) + 1}</span>
-                  </div>
+              {/* TAB 1: TEST RESULT */}
+              {activeConsoleTab === 'result' && (
+                <div className="space-y-4">
+                  {lastSubmissionStats ? (
+                    <div className="space-y-4 animate-fade-in">
+                      {lastSubmissionStats.status === 'accepted' ? (
+                        <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-base font-bold flex items-center gap-2">
+                              <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                              Accepted
+                            </span>
+                            <span className="text-xs bg-emerald-500/20 px-2 py-0.5 rounded font-mono">
+                              +75 XP Earned
+                            </span>
+                          </div>
 
-                  <div className="flex items-center gap-1 shrink-0">
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={goToPrevProblem}
-                      disabled={currentIndex <= 0}
-                      className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground"
-                      title="Previous Practical"
-                    >
-                      <ChevronLeft className="h-3.5 w-3.5 mr-0.5" /> Prev
-                    </Button>
-                    <span className="text-[11px] font-mono text-muted-foreground px-1 select-none">
-                      {currentIndex + 1} / {filteredProblems.length}
-                    </span>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={goToNextProblem}
-                      disabled={currentIndex >= filteredProblems.length - 1}
-                      className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground"
-                      title="Next Practical"
-                    >
-                      Next <ChevronRight className="h-3.5 w-3.5 ml-0.5" />
-                    </Button>
-                  </div>
-                </div>
-
-                {/* Left Workspace Tabs Bar */}
-                <div className="flex items-center overflow-x-auto border-b bg-card/80 scrollbar-none sticky top-0 z-10">
-                  {[
-                    { id: 'specs', icon: BookOpen, label: 'Description' },
-                    { id: 'hints', icon: Lightbulb, label: 'Hints' },
-                    { id: 'agent', icon: Bot, label: 'Faculty AI Tutor' },
-                    { id: 'history', icon: RotateCcw, label: 'Submissions' },
-                    { id: 'solution', icon: Sparkles, label: 'Solution' },
-                  ].map(tab => (
-                    <button
-                      key={tab.id}
-                      onClick={() => setLeftTab(tab.id as any)}
-                      className={`flex items-center gap-1.5 px-3.5 py-2.5 text-xs font-semibold whitespace-nowrap border-b-2 transition-colors ${
-                        leftTab === tab.id 
-                          ? 'border-primary text-primary bg-primary/5 font-bold' 
-                          : 'border-transparent text-muted-foreground hover:text-foreground hover:bg-secondary/50'
-                      }`}
-                    >
-                      <tab.icon className={`h-3.5 w-3.5 ${tab.id === 'agent' ? 'text-amber-500' : ''}`} /> 
-                      {tab.label}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Tab Contents Scroll Area */}
-                <div className="flex-1 overflow-y-auto p-4 sm:p-5 scrollbar-thin space-y-5">
-                  
-                  {/* TAB 1: SPECS & PROBLEM DEFINITION */}
-                  {leftTab === 'specs' && (
-                    <div className="space-y-5 animate-fade-in">
-                      <div>
-                        <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                            currentProblem.difficulty === 'Easy' ? 'bg-amber-500/10 text-amber-500 dark:text-amber-500' :
-                            currentProblem.difficulty === 'Medium' ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400' : 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
-                          }`}>
-                            {currentProblem.difficulty}
-                          </span>
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground font-mono">
-                            {currentProblem.marks}
-                          </span>
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary/10 text-primary">
-                            {currentProblem.subjectName}
-                          </span>
+                          <div className="flex items-center gap-4 text-xs font-mono text-neutral-300 pt-1">
+                            <div>
+                              Runtime: <strong className="text-white">{lastSubmissionStats.runtimeMs} ms</strong>
+                              <span className="text-emerald-400 text-[10px] ml-1">({lastSubmissionStats.runtimePercentile}% faster)</span>
+                            </div>
+                            <div>
+                              Memory: <strong className="text-white">{lastSubmissionStats.memoryMb} MB</strong>
+                            </div>
+                          </div>
                         </div>
-                        <h2 className="text-lg sm:text-xl font-bold text-foreground leading-snug mt-1">
-                          {currentProblem.title}
-                        </h2>
-                      </div>
+                      ) : (
+                        <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 space-y-2">
+                          <div className="text-base font-bold flex items-center gap-2">
+                            <XCircle className="h-5 w-5 text-rose-500" />
+                            Wrong Answer
+                          </div>
+                          <p className="text-xs text-neutral-300">
+                            Assertion failed on Case {lastSubmissionStats.failedCaseIndex || 1}. Inspect output below.
+                          </p>
+                        </div>
+                      )}
 
-                      <div className="p-3.5 rounded-xl bg-card border border-border/80 shadow-xs">
-                        <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2 flex items-center gap-1.5">
-                          <FileText className="h-3.5 w-3.5 text-primary" /> Problem Statement
-                        </h3>
-                        <p className="text-foreground/90 leading-relaxed whitespace-pre-line text-xs sm:text-sm font-sans">
-                          {currentProblem.description}
-                        </p>
-                      </div>
-
-                      <div className="space-y-2">
-                        <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-                          <Layers className="h-3.5 w-3.5 text-primary" /> Technical Constraints & Invariants
-                        </h3>
-                        <ul className="list-disc pl-5 space-y-1 text-xs text-muted-foreground">
-                          {currentProblem.constraints.map((c, i) => (
-                            <li key={i} className="leading-relaxed font-mono">{c}</li>
-                          ))}
-                        </ul>
-                      </div>
-
-                      <div className="space-y-2">
-                        <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-                          <Terminal className="h-3.5 w-3.5 text-primary" /> Expected Standard Output Format
-                        </h3>
-                        <pre className="p-3.5 rounded-xl bg-zinc-950 text-zinc-300 font-mono text-xs overflow-x-auto border border-zinc-800 shadow-inner leading-relaxed">
-                          {currentProblem.expectedOutput}
+                      {/* Output Details */}
+                      <div className="space-y-1">
+                        <span className="text-[10px] text-neutral-400 uppercase tracking-wider block">
+                          Standard Sandbox Output
+                        </span>
+                        <pre className="p-3 rounded-lg bg-neutral-900 border border-neutral-800 text-neutral-200 overflow-x-auto whitespace-pre-wrap">
+                          {output || 'Execution completed with 0 errors.'}
                         </pre>
                       </div>
                     </div>
-                  )}
-
-                  {/* TAB 2: FACULTY HINTS */}
-                  {leftTab === 'hints' && (
-                    <div className="space-y-4 animate-fade-in">
-                      <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-400 text-xs flex gap-2.5 items-start">
-                        <Lightbulb className="h-4 w-4 shrink-0 mt-0.5" />
-                        <p className="leading-relaxed">
-                          <strong>Faculty Examiner Note:</strong> Code evaluation verifies edge-case handling (e.g. empty queues, overflow, zero elements) and standard output structure.
-                        </p>
-                      </div>
-                      {currentProblem.hints.map((hint, idx) => (
-                        <div key={idx} className="p-3.5 rounded-xl bg-card border flex items-start gap-3 shadow-xs">
-                          <span className="font-bold text-xs text-primary font-mono bg-primary/10 px-2 py-0.5 rounded">
-                            Hint {idx + 1}
-                          </span>
-                          <p className="text-xs sm:text-sm text-foreground/90 leading-relaxed">{hint}</p>
-                        </div>
-                      ))}
+                  ) : (
+                    <div className="h-full flex flex-col items-center justify-center text-center text-neutral-500 py-8 space-y-2">
+                      <Terminal className="h-8 w-8 text-neutral-600" />
+                      <p>Run your code or submit to view test results and runtime benchmarks.</p>
                     </div>
                   )}
-
-                  {/* TAB 3: FACULTY AI TUTOR & CODING AGENT */}
-                  {leftTab === 'agent' && (
-                    <div className="space-y-4 animate-fade-in">
-                      {/* Faculty AI Hero Banner */}
-                      <div className="p-4 rounded-xl bg-gradient-to-r from-amber-600/40 via-zinc-900 to-zinc-900 border border-amber-500/30/40 shadow-sm">
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="flex items-center gap-2">
-                            <div className="p-1.5 bg-amber-500/20 rounded-lg text-amber-500">
-                              <Bot className="h-4 w-4" />
-                            </div>
-                            <div>
-                              <h3 className="text-xs sm:text-sm font-bold text-foreground">Faculty AI Coding Tutor</h3>
-                              <p className="text-[10px] text-muted-foreground">Real-time semantic analysis & university viva preparation</p>
-                            </div>
-                          </div>
-                          <Button
-                            size="sm"
-                            onClick={handleRunAiAudit}
-                            disabled={aiAuditRunning}
-                            className="h-7 text-xs bg-amber-500 hover:bg-amber-500 text-white font-semibold gap-1.5"
-                          >
-                            {aiAuditRunning ? (
-                              <span className="animate-spin">⏳</span>
-                            ) : (
-                              <Sparkles className="h-3 w-3" />
-                            )}
-                            {aiAuditRunning ? 'Auditing...' : 'Audit My Code'}
-                          </Button>
-                        </div>
-
-                        {/* Audit Report Card */}
-                        {aiAuditReport && (
-                          <div className="mt-3 p-3 rounded-lg bg-black/60 border border-zinc-800 space-y-2 animate-in fade-in">
-                            <div className="flex items-center justify-between text-xs">
-                              <span className="font-bold text-zinc-300">Semantic Audit Score</span>
-                              <span className={`font-mono font-bold px-2 py-0.5 rounded text-[11px] ${
-                                aiAuditReport.passed ? 'bg-amber-500 text-amber-500 border border-amber-500/30' : 'bg-amber-950 text-amber-400 border border-amber-800'
-                              }`}>
-                                {aiAuditReport.score} / 100
-                              </span>
-                            </div>
-                            <ul className="space-y-1 text-xs">
-                              {aiAuditReport.findings.map((f, i) => (
-                                <li key={i} className="text-zinc-300 flex items-start gap-1.5">
-                                  <span className="text-primary font-bold">•</span> {f}
-                                </li>
-                              ))}
-                            </ul>
-                            <div className="pt-2 border-t border-zinc-800 text-[11px] text-amber-500 font-medium">
-                              💡 {aiAuditReport.recommendations[0]}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Conceptual Logic Blueprint */}
-                      <div className="p-3.5 rounded-xl bg-card border space-y-2 shadow-xs">
-                        <h4 className="text-xs font-bold text-foreground flex items-center gap-1.5 uppercase tracking-wider">
-                          <Cpu className="h-3.5 w-3.5 text-primary" /> Conceptual Logic & Invariants
-                        </h4>
-                        <div className="text-xs text-foreground/90 leading-relaxed whitespace-pre-line font-sans">
-                          {currentFacultyAI.concept}
-                        </div>
-                      </div>
-
-                      {/* Step-by-Step Implementation Blueprint */}
-                      <div className="p-3.5 rounded-xl bg-card border space-y-2 shadow-xs">
-                        <h4 className="text-xs font-bold text-foreground flex items-center gap-1.5 uppercase tracking-wider">
-                          <Layers className="h-3.5 w-3.5 text-primary" /> Step-by-Step Implementation Blueprint
-                        </h4>
-                        <ol className="list-decimal pl-4 space-y-1.5 text-xs text-muted-foreground leading-relaxed">
-                          {currentFacultyAI.blueprint.map((step, idx) => (
-                            <li key={idx} className="font-sans text-foreground/80">{step}</li>
-                          ))}
-                        </ol>
-                      </div>
-
-                      {/* University Viva Voce Examination Questions */}
-                      {currentFacultyAI.vivaQuestions.length > 0 && (
-                        <div className="p-3.5 rounded-xl bg-card border space-y-2 shadow-xs">
-                          <h4 className="text-xs font-bold text-foreground flex items-center gap-1.5 uppercase tracking-wider">
-                            <GraduationCap className="h-3.5 w-3.5 text-amber-500" /> University Viva Voce Questions
-                          </h4>
-                          <div className="space-y-2.5 pt-1">
-                            {currentFacultyAI.vivaQuestions.map((v, i) => (
-                              <div key={i} className="p-2.5 rounded-lg bg-secondary/40 border border-border/60 text-xs space-y-1">
-                                <p className="font-bold text-foreground">Q: {v.q}</p>
-                                <p className="text-muted-foreground leading-relaxed">A: {v.a}</p>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {/* TAB 4: SUBMISSION ATTEMPTS */}
-                  {leftTab === 'history' && (
-                    <div className="space-y-3 animate-fade-in">
-                      {submissionHistory.filter(s => s.problemId === currentProblem.id).length === 0 ? (
-                        <div className="text-center py-12 text-muted-foreground border border-dashed rounded-xl">
-                          <RotateCcw className="h-8 w-8 mx-auto mb-2 text-muted-foreground/40" />
-                          <p className="text-sm font-medium">No recorded attempts yet.</p>
-                          <p className="text-xs mt-1">Click "Run Code" in the top bar to record test evaluations.</p>
-                        </div>
-                      ) : (
-                        submissionHistory.filter(s => s.problemId === currentProblem.id).map((sub, idx) => (
-                          <div key={idx} className={`p-3.5 rounded-xl border flex items-center justify-between shadow-xs ${
-                            sub.passed ? 'bg-amber-500/5 border-amber-500/20' : 'bg-rose-500/5 border-rose-500/20'
-                          }`}>
-                            <div className="flex items-center gap-3">
-                              {sub.passed ? <CheckCircle2 className="h-4 w-4 text-amber-500" /> : <XCircle className="h-4 w-4 text-rose-500" />}
-                              <div>
-                                <p className={`text-xs font-bold ${sub.passed ? 'text-amber-500 dark:text-amber-500' : 'text-rose-700 dark:text-rose-400'}`}>
-                                  {sub.passed ? 'Accepted (100% Passed)' : 'Execution / Validation Failed'}
-                                </p>
-                                <p className="text-[10px] text-muted-foreground font-mono">{new Date(sub.timestamp).toLocaleString()}</p>
-                              </div>
-                            </div>
-                          </div>
-                        ))
-                      )}
-                    </div>
-                  )}
-
-                  {/* TAB 5: REFERENCE SOLUTION */}
-                  {leftTab === 'solution' && (
-                    <div className="animate-fade-in">
-                      {!showSolution ? (
-                        <div className="text-center py-14 px-4 bg-card border rounded-xl shadow-xs">
-                          <HelpCircle className="h-10 w-10 text-muted-foreground/60 mx-auto mb-3" />
-                          <h3 className="font-bold text-base mb-1.5">Reveal Faculty Solution?</h3>
-                          <p className="text-xs text-muted-foreground mb-5 max-w-sm mx-auto leading-relaxed">
-                            It is highly recommended to code the logic yourself first to earn your +75 XP and prepare for laboratory practical exams.
-                          </p>
-                          <Button onClick={() => setShowSolution(true)} variant="outline" className="gap-2 text-xs">
-                            <Sparkles className="h-3.5 w-3.5" /> Reveal Model Solution
-                          </Button>
-                        </div>
-                      ) : (
-                        <div className="space-y-3">
-                          <div className="flex items-center justify-between mb-2">
-                            <h3 className="text-xs font-bold text-foreground">Faculty Model Solution</h3>
-                            <Button variant="ghost" size="sm" onClick={() => handleCopyCode(currentProblem.modelSolution)} className="h-7 text-xs">
-                              <Copy className="h-3 w-3 mr-1" /> Copy Code
-                            </Button>
-                          </div>
-                          <pre className="p-3.5 rounded-xl bg-zinc-950 text-amber-500 font-mono text-xs overflow-x-auto border border-zinc-800 shadow-inner leading-relaxed">
-                            <code>{currentProblem.modelSolution}</code>
-                          </pre>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
                 </div>
-              </div>
+              )}
 
-              {/* ─────────────────────────────────────────────────────────────
-                  RIGHT PANE: CODE EDITOR + REAL INTERACTIVE TERMINAL
-              ───────────────────────────────────────────────────────────── */}
-              <div className="flex-1 flex flex-col bg-zinc-950 overflow-hidden">
-                
-                {/* Editor Header */}
-                <div className="h-11 flex items-center justify-between px-3.5 bg-zinc-900 border-b border-zinc-800 shrink-0">
-                  <div className="flex items-center gap-2.5">
-                    <div className="flex gap-1.5">
-                      <div className="h-2.5 w-2.5 rounded-full bg-rose-500/80"></div>
-                      <div className="h-2.5 w-2.5 rounded-full bg-amber-500/80"></div>
-                      <div className="h-2.5 w-2.5 rounded-full bg-zinc-600"></div>
-                    </div>
-                    <span className="font-mono text-xs font-semibold text-zinc-300 ml-1 bg-zinc-800 px-2 py-0.5 rounded border border-zinc-700/60">
-                      {currentProblem.fileName}
-                    </span>
-
-                    {/* Font Size Selector */}
-                    <div className="hidden sm:flex items-center bg-zinc-800 rounded-lg p-0.5 border border-zinc-700/80 text-[10px] font-mono text-zinc-400">
-                      {(['12px', '13px', '14px', '16px'] as const).map((sz) => (
-                        <button
-                          key={sz}
-                          onClick={() => setEditorFontSize(sz)}
-                          className={`px-1.5 py-0.5 rounded ${
-                            editorFontSize === sz ? 'bg-zinc-700 text-zinc-100 font-bold' : 'hover:text-zinc-200'
-                          }`}
-                        >
-                          {sz.replace('px', '')}
-                        </button>
-                      ))}
-                    </div>
-
-                    {/* C / Java Hot-Swap Toggle for Practical 3 */}
-                    {(currentProblem.id.includes('railway') || currentProblem.id.includes('dsa-38') || currentProblem.id.includes('dsa-39')) && (
-                      <div className="flex items-center bg-zinc-800 rounded-lg p-0.5 border border-zinc-700 text-xs">
-                        <button
-                          onClick={() => {
-                            const cProb = CODING_PROBLEMS.find(p => p.id === 'dsa-38-railway-reservation-queue-c');
-                            if (cProb) handleSelectProblem(cProb);
-                          }}
-                          className={`px-2 py-0.5 text-[10px] font-bold rounded transition-all ${
-                            currentProblem.language === 'c' ? 'bg-zinc-700 text-white shadow-xs' : 'text-zinc-400 hover:text-zinc-200'
-                          }`}
-                        >
-                          C99
-                        </button>
-                        <button
-                          onClick={() => {
-                            const javaProb = CODING_PROBLEMS.find(p => p.id === 'dsa-39-railway-reservation-queue-java');
-                            if (javaProb) handleSelectProblem(javaProb);
-                          }}
-                          className={`px-2 py-0.5 text-[10px] font-bold rounded transition-all ${
-                            currentProblem.language === 'java' ? 'bg-zinc-700 text-white shadow-xs' : 'text-zinc-400 hover:text-zinc-200'
-                          }`}
-                        >
-                          Java OOP
-                        </button>
-                      </div>
-                    )}
-                  </div>
-
+              {/* TAB 2: TESTCASES */}
+              {activeConsoleTab === 'testcase' && (
+                <div className="space-y-4">
                   <div className="flex items-center gap-2">
-                    <Button 
-                      variant="ghost" 
-                      size="sm"
-                      onClick={handleFormatCode}
-                      className="h-7 text-xs text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 hidden md:flex"
-                      title="Format Code (Auto-Indentation)"
-                    >
-                      Format
-                    </Button>
-                    <Button 
-                      variant="ghost" 
-                      size="sm"
-                      onClick={handleCopyFacultySubmission}
-                      className="h-7 text-xs text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 hidden sm:flex"
-                    >
-                      <FileText className="h-3.5 w-3.5 mr-1" /> Export Record
-                    </Button>
-                    <Button 
-                      variant="ghost" 
-                      size="sm"
-                      onClick={() => setIsLabManualOpen(true)}
-                      className="h-7 text-xs text-zinc-300 hover:text-zinc-100 hover:bg-zinc-800 hidden lg:flex border border-zinc-700"
-                    >
-                      <Printer className="h-3.5 w-3.5 mr-1" /> Print Manual
-                    </Button>
-                    <Button variant="ghost" size="sm" onClick={handleResetCode} className="h-7 text-xs text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800">
-                      <RotateCcw className="h-3.5 w-3.5 mr-1" /> Reset
-                    </Button>
-
-                    {/* LeetCode Run Code Button */}
-                    <Button
-                      size="sm"
-                      onClick={handleRun}
-                      disabled={status === 'compiling' || status === 'running'}
-                      className="h-7 text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-100 border border-zinc-700 shadow-xs font-semibold gap-1.5"
-                    >
-                      <Play className="h-3 w-3 fill-current" />
-                      <span className="hidden sm:inline">Run Code</span>
-                    </Button>
-
-                    {/* LeetCode Primary Submit Solution Button */}
-                    <Button
-                      size="sm"
-                      onClick={handleSubmit}
-                      disabled={status === 'compiling' || status === 'running'}
-                      className="h-7 text-xs bg-white text-zinc-950 hover:bg-zinc-200 shadow-sm font-bold gap-1.5 cursor-pointer"
-                    >
-                      {status === 'compiling' || status === 'running' ? (
-                        <span className="flex items-center gap-1.5 animate-pulse">Evaluating...</span>
-                      ) : (
-                        <span className="flex items-center gap-1.5">
-                          <CheckCircle2 className="h-3.5 w-3.5 text-zinc-950" />
-                          <span>Submit</span>
-                        </span>
-                      )}
-                    </Button>
-                  </div>
-                </div>
-                                  {/* Editor Body */}
-                <div className="flex-1 flex overflow-hidden relative group">
-                  <div className="w-10 bg-zinc-900/40 border-r border-zinc-800/80 text-zinc-600 font-mono text-[11px] py-4 flex flex-col items-center select-none shrink-0 overflow-hidden">
-                    {Array.from({ length: Math.max(1, code.split('\n').length) }).map((_, i) => (
-                      <div key={i} className="leading-relaxed">{i + 1}</div>
+                    {['Case 1', 'Case 2', 'Custom'].map((tc, idx) => (
+                      <button
+                        key={tc}
+                        onClick={() => setActiveTestcaseIndex(idx === 2 ? 'custom' : idx)}
+                        className={`px-3 py-1 rounded-lg text-xs font-mono transition-all cursor-pointer ${
+                          activeTestcaseIndex === (idx === 2 ? 'custom' : idx)
+                            ? 'bg-neutral-800 text-white font-bold'
+                            : 'text-neutral-500 hover:text-neutral-300'
+                        }`}
+                      >
+                        {tc}
+                      </button>
                     ))}
                   </div>
-                  <Textarea
-                    value={code}
-                    onChange={(e) => setCode(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                    spellCheck={false}
-                    style={{ fontSize: editorFontSize }}
-                    className="flex-1 w-full h-full p-4 font-mono bg-transparent border-0 text-zinc-100 resize-none focus-visible:ring-0 leading-relaxed selection:bg-zinc-800 rounded-none shadow-none"
-                  />
+
+                  {activeTestcaseIndex === 'custom' ? (
+                    <div className="space-y-2">
+                      <label className="text-[10px] text-neutral-400 uppercase tracking-wider">
+                        Custom Stdin Input Harness
+                      </label>
+                      <textarea
+                        value={customTestInput}
+                        onChange={(e) => setCustomTestInput(e.target.value)}
+                        className="w-full h-24 p-3 rounded-lg bg-neutral-900 border border-neutral-800 text-xs font-mono text-neutral-100 outline-none focus:ring-1 focus:ring-[#2B4EFF]"
+                        placeholder="Enter custom input parameters..."
+                      />
+                    </div>
+                  ) : (
+                    <div className="p-3 rounded-lg bg-neutral-900 border border-neutral-800 space-y-2 text-xs">
+                      <div>
+                        <span className="text-neutral-500 block text-[10px] uppercase">Input:</span>
+                        <span className="text-neutral-200 font-mono">
+                          {activeTestcaseIndex === 0 ? 'arr = [1, 2, 3, 4, 5], n = 5' : 'arr = [10, 20, 30, 40], n = 4'}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-neutral-500 block text-[10px] uppercase">Expected:</span>
+                        <span className="text-emerald-400 font-mono">
+                          {activeTestcaseIndex === 0 ? '[5, 4, 3, 2, 1]' : '[40, 30, 20, 10]'}
+                        </span>
+                      </div>
+                    </div>
+                  )}
                 </div>
+              )}
 
-                {/* ─────────────────────────────────────────────────────────────
-                    LEETCODE & HACKERRANK GRADE CONSOLE & TEST HARNESS
-                ───────────────────────────────────────────────────────────── */}
-                <div className={`${isTerminalExpanded ? 'h-96 sm:h-[480px]' : 'h-64 sm:h-72'} flex flex-col bg-zinc-950 border-t border-zinc-800 shrink-0 transition-all duration-200`}>
-                  
-                  {/* Console Header Bar */}
-                  <div className="h-10 px-3.5 flex items-center justify-between bg-zinc-900 border-b border-zinc-800 shrink-0 select-none">
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => setActiveConsoleTab('testcase' as any)}
-                        className={`text-xs font-mono px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer ${
-                          (activeConsoleTab as any) === 'testcase'
-                            ? 'bg-zinc-800 text-zinc-100 font-bold shadow-xs'
-                            : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
-                        }`}
-                      >
-                        <CheckCircle2 className="h-3.5 w-3.5" /> Testcase
-                      </button>
-
-                      <button
-                        onClick={() => setActiveConsoleTab('harness' as any)}
-                        className={`text-xs font-mono px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer ${
-                          (activeConsoleTab as any) === 'harness' || (activeConsoleTab as any) === 'result'
-                            ? 'bg-zinc-800 text-zinc-100 font-bold shadow-xs'
-                            : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
-                        }`}
-                      >
-                        <Award className="h-3.5 w-3.5" /> Test Result
-                      </button>
-
-                      <button
-                        onClick={() => setActiveConsoleTab('terminal')}
-                        className={`text-xs font-mono px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer ${
-                          activeConsoleTab === 'terminal'
-                            ? 'bg-zinc-800 text-zinc-100 font-bold shadow-xs'
-                            : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
-                        }`}
-                      >
-                        <Terminal className="h-3.5 w-3.5" /> Interactive Terminal
-                      </button>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      {status === 'compiling' && (
-                        <span className="text-[11px] font-mono text-zinc-300 font-bold flex items-center gap-1 animate-pulse">
-                          ● Compiling sandbox...
-                        </span>
-                      )}
-                      {status === 'running' && (
-                        <span className="text-[11px] font-mono text-zinc-200 font-bold flex items-center gap-1 animate-pulse">
-                          ● Running assertions...
-                        </span>
-                      )}
-                      {status === 'success' && (
-                        <span className="text-[11px] font-mono text-zinc-100 font-bold flex items-center gap-1 bg-zinc-800 px-2 py-0.5 rounded border border-zinc-700">
-                          <CheckCircle2 className="h-3 w-3" /> Accepted
-                        </span>
-                      )}
-                      {status === 'failed' && (
-                        <span className="text-[11px] font-mono text-rose-400 font-bold flex items-center gap-1 bg-rose-950/60 px-2 py-0.5 rounded border border-rose-800/50">
-                          <XCircle className="h-3 w-3" /> Failed
-                        </span>
-                      )}
-
-                      <button
-                        onClick={() => {
-                          setTerminalLogs(['itm@lab-terminal:~/workspace$ # Terminal reset']);
-                          setOutput(null);
-                          setLastSubmissionStats(null);
-                        }}
-                        title="Clear console logs"
-                        className="p-1 rounded text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 transition-colors cursor-pointer"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </button>
-
-                      <button
-                        onClick={() => setIsTerminalExpanded(!isTerminalExpanded)}
-                        title={isTerminalExpanded ? "Collapse console" : "Expand console"}
-                        className="p-1 rounded text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 transition-colors cursor-pointer"
-                      >
-                        {isTerminalExpanded ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
-                      </button>
-                    </div>
+              {/* TAB 3: INTERACTIVE TERMINAL */}
+              {activeConsoleTab === 'terminal' && (
+                <div className="flex flex-col h-full space-y-2">
+                  <div className="flex-1 space-y-1">
+                    {terminalLogs.map((log, i) => (
+                      <div key={i} className="leading-relaxed whitespace-pre-wrap text-neutral-300">
+                        {log}
+                      </div>
+                    ))}
+                    <div ref={terminalBottomRef} />
                   </div>
 
-                  {/* Console Body */}
-                  <div className="flex-1 flex flex-col min-h-0 bg-black/95 overflow-hidden">
-                    
-                    {/* TAB 1: TESTCASE */}
-                    {(activeConsoleTab as any) === 'testcase' && (
-                      <div className="flex-1 p-4 font-mono text-xs overflow-y-auto space-y-4">
-                        <div className="flex items-center gap-2">
-                          {[
-                            { idx: 0, label: 'Case 1 (Standard)' },
-                            { idx: 1, label: 'Case 2 (Boundary)' },
-                            { idx: 2, label: 'Case 3 (Stress)' },
-                            { idx: 'custom', label: '+ Custom Testcase' },
-                          ].map((tc) => (
-                            <button
-                              key={String(tc.idx)}
-                              onClick={() => setActiveTestcaseIndex(tc.idx as any)}
-                              className={`px-3 py-1.5 rounded-lg text-xs font-mono font-semibold transition-colors cursor-pointer ${
-                                activeTestcaseIndex === tc.idx
-                                  ? 'bg-zinc-800 text-zinc-100 border border-zinc-700'
-                                  : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900'
-                              }`}
-                            >
-                              {tc.label}
-                            </button>
-                          ))}
-                        </div>
-
-                        {activeTestcaseIndex !== 'custom' ? (
-                          <div className="space-y-3">
-                            <div>
-                              <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider block mb-1">
-                                Input Constraints & Parameters
-                              </span>
-                              <div className="p-3 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300">
-                                {activeTestcaseIndex === 0 && `tokenSequence = [101, 102, 103, 104]\ncapacity = 6\noperations = ["enqueue", "enqueue", "dequeue", "display"]`}
-                                {activeTestcaseIndex === 1 && `tokenSequence = [101, 102, 103, 104, 105, 106, 107]\ncapacity = 6\noperations = ["overflow_check", "underflow_check"]`}
-                                {activeTestcaseIndex === 2 && `tokenSequence = [range(1, 100)]\ncapacity = 100\noperations = ["stress_test", "modulo_wraparound"]`}
-                              </div>
-                            </div>
-                            <div>
-                              <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider block mb-1">
-                                Expected Output Format
-                              </span>
-                              <pre className="p-3 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 overflow-x-auto leading-relaxed">
-                                {currentProblem.expectedOutput}
-                              </pre>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="space-y-2">
-                            <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider block">
-                              Custom Standard Input (stdin)
-                            </span>
-                            <textarea
-                              value={customTestInput}
-                              onChange={(e) => setCustomTestInput(e.target.value)}
-                              rows={4}
-                              className="w-full p-3 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-100 font-mono text-xs focus:outline-none focus:border-zinc-600"
-                              placeholder="Enter custom input lines here..."
-                            />
-                            <p className="text-[11px] text-zinc-500">Click "Run Code" above to execute against your custom testcase.</p>
-                          </div>
-                        )}
-                      </div>
-                    )}
-
-                    {/* TAB 2: TEST RESULT */}
-                    {((activeConsoleTab as any) === 'harness' || (activeConsoleTab as any) === 'result') && (
-                      <div className="flex-1 p-4 font-mono text-xs overflow-y-auto space-y-4">
-                        {status === 'compiling' || status === 'running' ? (
-                          <div className="flex flex-col items-center justify-center py-10 space-y-3 text-zinc-400">
-                            <span className="animate-spin text-xl">⏳</span>
-                            <p className="font-semibold text-zinc-200">Compiling sandbox and executing LeetCode assertions...</p>
-                            <p className="text-[11px] text-zinc-500 font-mono">Verifying time complexity, edge cases, and memory invariants</p>
-                          </div>
-                        ) : lastSubmissionStats ? (
-                          <div className="space-y-4 animate-fade-in">
-                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl bg-zinc-900 border border-zinc-800">
-                              <div>
-                                <h4 className={`text-xl font-black ${
-                                  lastSubmissionStats.status === 'accepted' ? 'text-zinc-100' : 'text-rose-400'
-                                }`}>
-                                  {lastSubmissionStats.status === 'accepted' ? '✔ Accepted' : '✖ Wrong Answer'}
-                                </h4>
-                                <p className="text-[11px] text-zinc-400 mt-0.5">
-                                  {lastSubmissionStats.status === 'accepted'
-                                    ? 'All 3/3 testcases passed with verified asymptotic complexity.'
-                                    : 'Test assertion failed on Case 1. Check expected output diff.'}
-                                </p>
-                              </div>
-
-                              {lastSubmissionStats.status === 'accepted' && (
-                                <div className="flex items-center gap-4 text-xs font-mono">
-                                  <div className="p-2.5 rounded-xl bg-zinc-950 border border-zinc-800 text-center">
-                                    <span className="text-zinc-500 text-[10px] uppercase block font-bold">Runtime</span>
-                                    <span className="font-bold text-zinc-100">{lastSubmissionStats.runtimeMs} ms</span>
-                                    <span className="text-[9px] text-zinc-400 block">Beats {lastSubmissionStats.runtimePercentile}%</span>
-                                  </div>
-                                  <div className="p-2.5 rounded-xl bg-zinc-950 border border-zinc-800 text-center">
-                                    <span className="text-zinc-500 text-[10px] uppercase block font-bold">Memory</span>
-                                    <span className="font-bold text-zinc-100">{lastSubmissionStats.memoryMb} MB</span>
-                                    <span className="text-[9px] text-zinc-400 block">Beats {lastSubmissionStats.memoryPercentile}%</span>
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                              <div>
-                                <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider block mb-1">
-                                  Your Output
-                                </span>
-                                <pre className="p-3 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-200 overflow-x-auto min-h-[90px] leading-relaxed">
-                                  {lastSubmissionStats.actualOutput || output || 'Execution finished.'}
-                                </pre>
-                              </div>
-                              <div>
-                                <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider block mb-1">
-                                  Expected Output
-                                </span>
-                                <pre className="p-3 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-200 overflow-x-auto min-h-[90px] leading-relaxed">
-                                  {lastSubmissionStats.expectedOutput || currentProblem.expectedOutput}
-                                </pre>
-                              </div>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="text-center py-10 text-zinc-500 space-y-2">
-                            <Terminal className="h-8 w-8 mx-auto text-zinc-700" />
-                            <p className="font-semibold text-zinc-400">No test results yet.</p>
-                            <p className="text-[11px]">Click "Run Code" to test example cases or "Submit" to evaluate all hidden assertions.</p>
-                          </div>
-                        )}
-                      </div>
-                    )}
-
-                    {/* TAB 3: INTERACTIVE TERMINAL */}
-                    {activeConsoleTab === 'terminal' && (
-                      <div className="flex-1 flex flex-col min-h-0 bg-black/95">
-                        <div className="px-3 py-1.5 bg-zinc-900/60 border-b border-zinc-800/60 flex items-center gap-1.5 overflow-x-auto text-[11px] font-mono text-zinc-400 shrink-0 scrollbar-none">
-                          <span className="text-zinc-500 font-bold uppercase tracking-wider text-[10px] mr-1">Quick:</span>
-                          {(currentProblem.id.includes('railway') || currentProblem.title.toLowerCase().includes('railway')) ? (
-                            <>
-                              <button
-                                onClick={() => handleTerminalSubmit(undefined, '1 101')}
-                                className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors shrink-0"
-                              >
-                                1: Add #101
-                              </button>
-                              <button
-                                onClick={() => handleTerminalSubmit(undefined, '1 102')}
-                                className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors shrink-0"
-                              >
-                                1: Add #102
-                              </button>
-                              <button
-                                onClick={() => handleTerminalSubmit(undefined, '2')}
-                                className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors shrink-0"
-                              >
-                                2: Allocate Seat
-                              </button>
-                              <button
-                                onClick={() => handleTerminalSubmit(undefined, '3')}
-                                className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors shrink-0"
-                              >
-                                3: Display
-                              </button>
-                              <button
-                                onClick={() => handleTerminalSubmit(undefined, '4')}
-                                className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors shrink-0"
-                              >
-                                4: Peek
-                              </button>
-                              <button
-                                onClick={() => handleTerminalSubmit(undefined, '5')}
-                                className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors shrink-0"
-                              >
-                                5: Count
-                              </button>
-                            </>
-                          ) : (
-                            <>
-                              <button
-                                onClick={() => handleTerminalSubmit(undefined, 'help')}
-                                className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors shrink-0"
-                              >
-                                ? Help
-                              </button>
-                              <button
-                                onClick={() => handleTerminalSubmit(undefined, 'status')}
-                                className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors shrink-0"
-                              >
-                                ℹ Status
-                              </button>
-                              <button
-                                onClick={() => setTerminalLogs([`[TERMINAL READY] Initialized for ${currentProblem.fileName}. Type commands or click ▶ Run Suite.`])}
-                                className="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors shrink-0"
-                              >
-                                ⟲ Clear
-                              </button>
-                            </>
-                          )}
-                          <button
-                            onClick={() => handleTerminalSubmit(undefined, 'run')}
-                            className="px-2 py-0.5 rounded bg-primary hover:bg-primary/90 text-primary-foreground font-semibold transition-colors shrink-0"
-                          >
-                            ▶ Run Suite
-                          </button>
-                        </div>
-
-                        <div className="flex-1 p-3 font-mono text-xs text-zinc-300 overflow-y-auto whitespace-pre-wrap leading-relaxed select-text space-y-1">
-                          {terminalLogs.map((line, idx) => (
-                            <div key={idx} className={line.startsWith('itm@') ? 'text-zinc-100 font-semibold' : 'text-zinc-300'}>
-                              {line}
-                            </div>
-                          ))}
-                          <div ref={terminalBottomRef} />
-                        </div>
-
-                        <form 
-                          onSubmit={handleTerminalSubmit}
-                          className="h-10 px-3 bg-zinc-900 border-t border-zinc-800 flex items-center gap-2 shrink-0"
-                        >
-                          <span className="font-mono text-xs text-zinc-400 font-bold select-none shrink-0 flex items-center gap-1">
-                            <Terminal className="h-3 w-3" /> itm@sandbox:~$
-                          </span>
-                          <input
-                            type="text"
-                            value={terminalInput}
-                            onChange={(e) => setTerminalInput(e.target.value)}
-                            placeholder="Type command (e.g. '1 105', '2', 'clear')..."
-                            className="flex-1 bg-transparent border-0 text-zinc-100 font-mono text-xs focus:outline-none placeholder:text-zinc-600 h-full"
-                          />
-                          <Button type="submit" size="sm" variant="ghost" className="h-7 px-2 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800">
-                            <Send className="h-3.5 w-3.5" />
-                          </Button>
-                        </form>
-                      </div>
-                    )}
-
-                  </div>
-
+                  <form onSubmit={handleTerminalSubmit} className="flex items-center gap-2 pt-2 border-t border-neutral-800">
+                    <span className="text-emerald-400 font-bold">$</span>
+                    <input
+                      type="text"
+                      value={terminalInput}
+                      onChange={(e) => setTerminalInput(e.target.value)}
+                      placeholder="Type command (run, test, clear, help)..."
+                      className="flex-1 bg-transparent text-xs font-mono text-white outline-none placeholder:text-neutral-600"
+                    />
+                  </form>
                 </div>
+              )}
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      {/* =========================================================================
+          LEETCODE-STYLE PROBLEM SELECTOR MODAL
+      ========================================================================= */}
+      {isProblemPickerOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
+          <div className="w-full max-w-2xl bg-white dark:bg-[#1C1C1E] border border-[#E8E4DA] dark:border-neutral-800 rounded-[24px] shadow-2xl flex flex-col max-h-[85vh] overflow-hidden">
+            
+            {/* Modal Header */}
+            <div className="p-5 border-b border-[#E8E4DA] dark:border-neutral-800 flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-bold text-[#111111] dark:text-white">
+                  Problem Directory ({filteredProblems.length})
+                </h3>
+                <p className="text-xs text-neutral-500">
+                  Select practical problems across DSA, Java, DBMS, Python, and Web Tech.
+                </p>
+              </div>
+              <button
+                onClick={() => setIsProblemPickerOpen(false)}
+                className="p-1.5 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-500 cursor-pointer"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* Modal Search & Filter Chips */}
+            <div className="p-4 border-b border-[#E8E4DA] dark:border-neutral-800 space-y-3 bg-[#F6F3EC]/50 dark:bg-neutral-900/50">
+              <div className="relative">
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" />
+                <input
+                  type="text"
+                  value={searchProblemQuery}
+                  onChange={(e) => setSearchProblemQuery(e.target.value)}
+                  placeholder="Search by problem title, topic, or language..."
+                  className="w-full h-10 pl-10 pr-4 rounded-xl border border-[#E8E4DA] dark:border-neutral-700 bg-white dark:bg-[#1C1C1E] text-xs font-semibold outline-none focus:ring-2 focus:ring-[#2B4EFF]/20"
+                />
+              </div>
+
+              {/* Subject Category Pills */}
+              <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-1">
+                <button
+                  onClick={() => setSelectedSubject('all')}
+                  className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                    selectedSubject === 'all' ? 'bg-[#2B4EFF] text-white' : 'bg-white dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300'
+                  }`}
+                >
+                  All Subjects
+                </button>
+                {ALL_SUBJECTS_METADATA.map(meta => (
+                  <button
+                    key={meta.name}
+                    onClick={() => setSelectedSubject(meta.name)}
+                    className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                      selectedSubject === meta.name ? 'bg-[#2B4EFF] text-white' : 'bg-white dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300'
+                    }`}
+                  >
+                    {meta.shortName}
+                  </button>
+                ))}
               </div>
             </div>
-          ) : (
-            <div className="flex-1 flex items-center justify-center text-muted-foreground p-8 flex-col text-center">
-              <Code className="h-12 w-12 mb-4 opacity-20" />
-              <p className="text-lg font-medium">No Practical Selected</p>
-              <p className="text-sm">Choose a problem from the left sidebar to start coding.</p>
-            </div>
-          )}
-        </div>
-      </main>
 
-      {/* Floating Exit Focus Mode Button */}
-      {focusMode && (
-        <div className="fixed bottom-6 right-8 z-50 animate-fade-in">
-          <button
-            onClick={() => {
-              toggleFocusMode();
-              toast.info("Focus Mode Disabled");
-            }}
-            className="flex items-center gap-2 px-3.5 py-2 rounded-full bg-[#18181B] text-[#FAFAFA] border border-[#27272A] shadow-2xl text-xs font-bold hover:scale-105 active:scale-95 transition-all cursor-pointer"
-            title="Click to restore sidebar (or press Esc / F)"
-          >
-            <Minimize2 className="h-4 w-4" />
-            <span>Exit Focus Mode (F)</span>
-          </button>
+            {/* Problems List */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-2 scrollbar-thin">
+              {filteredProblems.map((prob, idx) => {
+                const isSelected = prob.id === currentProblem?.id;
+                const isSolved = solvedProblems.includes(prob.id);
+
+                return (
+                  <div
+                    key={prob.id}
+                    onClick={() => handleSelectProblem(prob)}
+                    className={`p-3.5 rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${
+                      isSelected 
+                        ? 'border-[#2B4EFF] bg-[#E6EAFD]/40 dark:bg-blue-950/30 ring-1 ring-[#2B4EFF]'
+                        : 'border-[#E8E4DA] dark:border-neutral-800 hover:border-neutral-400 bg-white dark:bg-neutral-900/60'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className={`h-8 w-8 rounded-lg flex items-center justify-center font-mono font-bold text-xs shrink-0 ${
+                        isSolved ? 'bg-emerald-500/15 text-emerald-600' : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400'
+                      }`}>
+                        {isSolved ? <Check className="h-4 w-4 stroke-[3]" /> : idx + 1}
+                      </div>
+
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-xs sm:text-sm text-[#111111] dark:text-white truncate">
+                            {prob.title}
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-neutral-500 truncate">
+                          {prob.subjectName} · {prob.fileName}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                        prob.difficulty === 'Easy' ? 'bg-emerald-500/15 text-emerald-600' :
+                        prob.difficulty === 'Medium' ? 'bg-amber-500/15 text-amber-600' : 'bg-rose-500/15 text-rose-600'
+                      }`}>
+                        {prob.difficulty}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+          </div>
         </div>
       )}
-      <LabManualPrintModal isOpen={isLabManualOpen} onClose={() => setIsLabManualOpen(false)} data={labManualData} />
+
+      {/* Lab Manual Print Modal */}
+      <LabManualPrintModal
+        isOpen={isLabManualOpen}
+        onClose={() => setIsLabManualOpen(false)}
+        manualData={{
+          studentName: 'Student Developer',
+          enrollmentNo: 'ENROLL-CURRENT',
+          subjectName: currentProblem?.subjectName || 'Engineering Lab',
+          semester: getSubjectSemester(currentProblem?.subjectName || ''),
+          division: 'Division A',
+          practicals: CODING_PROBLEMS.filter(p => p.subjectName === currentProblem?.subjectName).map(p => ({
+            id: p.id,
+            title: p.title,
+            aim: p.description,
+            code: p.starterCode,
+            output: p.expectedOutput,
+            verified: solvedProblems.includes(p.id)
+          }))
+        }}
+      />
+
     </div>
   );
 }
