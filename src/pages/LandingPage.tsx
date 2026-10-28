@@ -549,7 +549,10 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
                   <ArrowRight className="h-4 w-4" />
                 </button>
                 <button
-                  onClick={() => navigate("/materials")}
+                  onClick={() => {
+                    sessionStorage.setItem('itm_guest_mode', 'true');
+                    navigate("/materials");
+                  }}
                   className="px-6 py-3.5 rounded-xl border border-border bg-card text-foreground font-semibold text-xs sm:text-sm hover:bg-secondary transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <BookOpen className="h-4 w-4" />
@@ -692,7 +695,10 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
                 <div className="mt-4 pt-3.5 border-t border-border/80 flex items-center justify-between text-xs">
                   <span className="text-muted-foreground text-[11px]">Just browsing?</span>
                   <button
-                    onClick={() => navigate("/dashboard")}
+                    onClick={() => {
+                      sessionStorage.setItem('itm_guest_mode', 'true');
+                      navigate("/dashboard");
+                    }}
                     className="font-bold text-foreground hover:underline text-[11px] cursor-pointer"
                   >
                     Continue as Guest →

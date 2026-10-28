@@ -138,27 +138,27 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* ── STREAMLINED LIVE EXAM & VIVA NOTICE (DECLUTTERED) ── */}
-      <div className="relative overflow-hidden rounded-2xl border border-amber-500/30 bg-amber-500/5 p-5 sm:p-6 shadow-sm">
+      {/* ── STREAMLINED LIVE EXAM & VIVA NOTICE (CAMPUSLOOP) ── */}
+      <div className="relative overflow-hidden rounded-[22px] border border-[#2B4EFF]/20 bg-[#E6EAFD]/35 dark:bg-blue-950/20 p-5 sm:p-6 shadow-xs">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div className="space-y-1.5 max-w-3xl">
             <div className="flex items-center gap-2.5 flex-wrap">
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-500 text-white flex items-center gap-1.5 shadow-xs">
-                <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#D7F75B] text-[#111111] flex items-center gap-1.5 shadow-2xs">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-ping" />
                 Live Notice
               </span>
-              <span className="text-xs text-amber-700 dark:text-amber-300 font-mono font-bold">
+              <span className="text-xs text-[#2B4EFF] dark:text-blue-300 font-mono font-bold">
                 Odd Sem 2026-2027 · Oct 26 – Nov 03
               </span>
               <span className="text-xs text-muted-foreground/50 hidden sm:inline">·</span>
-              <span className="text-xs text-muted-foreground hidden sm:inline">
+              <span className="text-xs text-[#6B7280] dark:text-neutral-400 hidden sm:inline">
                 Venues: NL-2, JAVA LAB, NL-6, EB-39, EB-25
               </span>
             </div>
-            <h2 className="text-base sm:text-lg font-bold text-foreground font-display">
+            <h2 className="text-base sm:text-lg font-bold text-[#111111] dark:text-white font-display">
               B.Tech Sem 3 Submission Viva & Remedial Exam Schedules
             </h2>
-            <p className="text-xs text-muted-foreground leading-relaxed">
+            <p className="text-xs text-[#6B7280] dark:text-neutral-400 leading-relaxed">
               Submissions begin at <strong className="text-foreground">10:00 AM daily</strong>. Check your assigned laboratory venue, faculty evaluator, and prepare the 38 OOPJ remedial solved questions.
             </p>
           </div>
@@ -166,25 +166,25 @@ export default function DashboardPage() {
           <div className="flex items-center gap-2.5 shrink-0">
             <button
               onClick={() => openTimetable("viva")}
-              className="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-sm shadow-amber-500/20 press flex items-center gap-2 cursor-pointer font-display"
+              className="px-4 py-2.5 rounded-full bg-[#2B4EFF] hover:bg-[#1E3EDB] text-white font-bold text-xs shadow-xs press flex items-center gap-2 cursor-pointer font-display"
             >
               <Calendar className="h-4 w-4" />
               <span>View Timetables & Venues</span>
             </button>
             <button
               onClick={() => navigate("/imp-questions/oopj")}
-              className="px-3.5 py-2.5 rounded-xl bg-secondary hover:bg-secondary/80 text-foreground font-bold text-xs border border-border press flex items-center gap-1.5 cursor-pointer"
+              className="px-3.5 py-2.5 rounded-full bg-white dark:bg-[#1C1C1E] hover:bg-neutral-100 text-[#111111] dark:text-white font-bold text-xs border border-[#E8E4DA] dark:border-neutral-800 press flex items-center gap-1.5 cursor-pointer"
               title="Open OOPJ Solved Master Question Bank"
             >
-              <BookOpen className="h-3.5 w-3.5 text-amber-500" />
+              <BookOpen className="h-3.5 w-3.5 text-[#2B4EFF]" />
               <span>OOPJ Solved Bank</span>
             </button>
           </div>
         </div>
 
         {/* Minimal Class Quick Venue Jump Pills */}
-        <div className="mt-4 pt-3 border-t border-amber-500/20 flex items-center gap-2 overflow-x-auto no-scrollbar">
-          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider shrink-0">
+        <div className="mt-4 pt-3 border-t border-[#2B4EFF]/15 flex items-center gap-2 overflow-x-auto no-scrollbar">
+          <span className="text-[10px] font-bold text-[#6B7280] dark:text-neutral-400 uppercase tracking-wider shrink-0">
             Class Venues:
           </span>
           {[
@@ -197,17 +197,17 @@ export default function DashboardPage() {
             <button
               key={item.cls}
               onClick={() => openTimetable("viva", item.cls)}
-              className="px-2.5 py-1 rounded-lg bg-card hover:bg-secondary text-foreground font-semibold text-xs border border-border transition-all shrink-0 flex items-center gap-1.5 cursor-pointer press"
+              className="px-3 py-1 rounded-full bg-white dark:bg-[#1C1C1E] hover:bg-[#F6F3EC] text-[#111111] dark:text-white font-semibold text-xs border border-[#E8E4DA] dark:border-neutral-800 transition-all shrink-0 flex items-center gap-1.5 cursor-pointer"
             >
               <span>Class {item.cls}</span>
-              <span className="text-[10px] font-mono text-muted-foreground bg-secondary px-1 rounded">
+              <span className="text-[10px] font-mono text-neutral-500 bg-neutral-100 dark:bg-neutral-800 px-1 rounded">
                 {item.room}
               </span>
             </button>
           ))}
           <button
             onClick={() => openTimetable("faculty")}
-            className="px-2.5 py-1 rounded-lg text-amber-600 dark:text-amber-400 hover:text-foreground text-xs font-bold transition-colors ml-auto shrink-0 flex items-center gap-1 press"
+            className="px-3 py-1 rounded-full text-[#2B4EFF] dark:text-blue-300 hover:underline text-xs font-bold transition-colors ml-auto shrink-0 flex items-center gap-1 cursor-pointer"
           >
             <Users className="h-3 w-3" />
             <span>Faculty Directory</span>

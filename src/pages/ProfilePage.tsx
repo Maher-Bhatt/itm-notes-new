@@ -1,1571 +1,759 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { useGamification, Achievement } from '@/hooks/useGamification';
+import { useGamification } from '@/hooks/useGamification';
 import { useProgress } from '@/hooks/useProgress';
-import { PomodoroTimer } from '@/components/PomodoroTimer';
-import { 
-  Award, 
-  Flame, 
-  Clock, 
-  BookOpen, 
-  Sparkles, 
-  CheckCircle, 
-  Bookmark, 
-  Edit3, 
-  GraduationCap, 
-  Trophy, 
-  Target, 
-  ChevronRight, 
-  Camera, 
-  X,
-  Share2,
-  Upload,
-  Copy,
+import {
   Check,
-  Zap,
-  HelpCircle,
-  Loader2,
-  FileCheck2,
-  IdCard,
-  Rocket,
-  CheckCircle2,
-  TrendingUp,
-  ShieldCheck,
-  BarChart2,
+  Menu,
+  Share2,
+  Edit3,
+  Calendar,
+  Bookmark,
+  Award,
+  Trophy,
+  Flame,
+  Clock,
+  Sparkles,
+  Sliders,
+  Shield,
   Bell,
   BellOff,
-  Shield,
-  Sliders,
-  CalendarDays
+  LogOut,
+  Camera,
+  X,
+  Target,
+  FileText,
+  Trash2,
+  Heart,
+  MessageCircle,
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { 
-  registerPushSubscription, 
-  unsubscribePush, 
-  getPushSubscriptionStatus, 
-  sendTestNotification 
+import {
+  CampusAvatar,
+  CampusButton,
+  CampusPostCard,
+  CampusEventRow,
+  CampusTag,
+} from '@/components/campusloop';
+import {
+  fetchCampusFollows,
+  fetchCampusEvents,
+  CampusEventItem,
+  fetchCampusSavedPostIds,
+} from '@/services/campusLoopService';
+import { fetchCommunityPosts } from '@/services/communityService';
+import { CommunityPost, isFakePost } from '@/data/communityData';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {
+  registerPushSubscription,
+  unsubscribePush,
+  getPushSubscriptionStatus,
 } from '@/services/pushNotificationService';
 import { DataExportDeleteModal } from '@/components/DataExportDeleteModal';
-import { subjects, getAllTopicIds } from '@/data/subjects';
-import { MAHER_CANONICAL_AVATAR, resolveAvatarUrl } from '@/components/UserAvatar';
 
-export interface GradientAvatar {
-  id: string;
-  label: string;
-  bgClass: string;
-}
-
-export const GRADIENT_AVATARS: GradientAvatar[] = [
-  { id: 'grad-indigo', label: 'Cosmic Indigo', bgClass: 'from-amber-600 via-purple-600 to-pink-500' },
-  { id: 'grad-emerald', label: 'Solar Amber', bgClass: 'from-amber-600 via-amber-500 to-orange-600' },
-  { id: 'grad-solar', label: 'Solar Flare', bgClass: 'from-amber-500 via-orange-600 to-rose-600' },
-  { id: 'grad-cyber', label: 'Cyber Violet', bgClass: 'from-fuchsia-600 via-purple-700 to-amber-500' },
-  { id: 'grad-ocean', label: 'Titanium Slate', bgClass: 'from-zinc-700 via-zinc-800 to-zinc-950' },
-  { id: 'grad-midnight', label: 'Midnight Slate', bgClass: 'from-zinc-800 via-slate-800 to-neutral-900' },
+export const GRADIENT_AVATARS = [
+  { id: 'grad-blue', bgClass: 'from-blue-600 to-indigo-700' },
+  { id: 'grad-purple', bgClass: 'from-purple-600 to-pink-600' },
+  { id: 'grad-amber', bgClass: 'from-amber-500 to-orange-600' },
+  { id: 'grad-emerald', bgClass: 'from-emerald-500 to-teal-700' },
+  { id: 'grad-rose', bgClass: 'from-rose-500 to-red-600' },
+  { id: 'grad-dark', bgClass: 'from-zinc-700 to-zinc-950' },
 ];
 
-export const renderAvatarBox = (url: string | null | undefined, name: string, sizeClass = "w-20 h-20 text-3xl", email?: string | null) => {
-  let effectiveUrl = url;
-  const isMaher = 
-    email?.toLowerCase() === 'maherbhatt01@gmail.com' || 
-    email?.toLowerCase() === 'maher@gmail.com' ||
-    name?.toLowerCase().includes('maher');
-  if (effectiveUrl && effectiveUrl.includes('photo-1535713875002-d1d0cf377fde')) {
-    effectiveUrl = MAHER_CANONICAL_AVATAR;
-  }
-  if (isMaher && (!effectiveUrl || effectiveUrl.startsWith('grad-'))) {
-    effectiveUrl = MAHER_CANONICAL_AVATAR;
-  }
-
-  if (effectiveUrl && (effectiveUrl.startsWith('data:image') || effectiveUrl.startsWith('http'))) {
+export function renderAvatarBox(avatarUrl?: string | null, name?: string, sizeClass = 'w-12 h-12 text-lg') {
+  if (avatarUrl?.startsWith('http') || avatarUrl?.startsWith('blob:') || avatarUrl?.startsWith('data:')) {
     return (
       <img
-        src={effectiveUrl}
-        alt={name}
-        className={`${sizeClass} rounded-2xl object-cover shadow-md border-2 border-primary/50 bg-secondary`}
+        src={avatarUrl}
+        alt={name || 'Avatar'}
+        className={`${sizeClass} rounded-2xl object-cover border border-border shadow-2xs`}
       />
     );
   }
-  const matched = GRADIENT_AVATARS.find(g => g.id === effectiveUrl || effectiveUrl?.includes(g.id));
-  const gradientClass = matched ? matched.bgClass : 'from-amber-600 via-purple-600 to-pink-500';
-  const initial = name?.trim() ? name.trim().charAt(0).toUpperCase() : 'S';
-
+  const grad = GRADIENT_AVATARS.find((g) => g.id === avatarUrl) || GRADIENT_AVATARS[0];
+  const initial = (name || 'S').charAt(0).toUpperCase();
   return (
-    <div className={`${sizeClass} rounded-2xl bg-gradient-to-tr ${gradientClass} text-white flex items-center justify-center font-black shadow-md border-2 border-background/60 select-none`}>
+    <div
+      className={`${sizeClass} rounded-2xl bg-gradient-to-tr ${grad.bgClass} text-white font-bold flex items-center justify-center border border-border shadow-2xs`}
+    >
       {initial}
     </div>
   );
-};
+}
+
+type ProfileTab = 'posts' | 'events' | 'saved' | 'settings';
 
 export default function ProfilePage() {
-  const { user, profile, role, updateProfile, uploadAvatar } = useAuth();
+  const { user, profile, role, updateProfile, uploadAvatar, signOut } = useAuth();
   const navigate = useNavigate();
-  const { 
-    state: game, 
-    levelInfo, 
-    unlockAchievement,
-    claimWeeklyFreeze,
-    setWeeklyGoal,
-    weeklyGoalDays,
-    weeklyStudyDaysCount,
-    weeklyGoalPercent,
-    streakFreezeCount,
-  } = useGamification();
+  const { state: game, levelInfo } = useGamification();
   const { progress } = useProgress();
 
-  const [isDataExportOpen, setIsDataExportOpen] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
+  const [activeTab, setActiveTab] = useState<ProfileTab>('posts');
+  const [userPosts, setUserPosts] = useState<CommunityPost[]>([]);
+  const [userEvents, setUserEvents] = useState<CampusEventItem[]>([]);
+  const [savedPosts, setSavedPosts] = useState<CommunityPost[]>([]);
+  const [followersCount, setFollowersCount] = useState(248);
+  const [followingCount, setFollowingCount] = useState(190);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Edit profile state
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editName, setEditName] = useState('');
+  const [editBranch, setEditBranch] = useState('');
+  const [editBio, setEditBio] = useState('');
   const [isSaving, setIsSaving] = useState(false);
-  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
-  const [activeTierFilter, setActiveTierFilter] = useState<'all' | 'unlocked' | 'bronze' | 'silver' | 'gold' | 'legendary' | 'mythic'>('all');
-  const [activeCategoryFilter, setActiveCategoryFilter] = useState<'all' | 'coding' | 'quiz' | 'streak' | 'time' | 'learning'>('all');
-  const [activeProfileTab, setActiveProfileTab] = useState<'achievements' | 'academic' | 'focus' | 'bookmarks' | 'habits'>('achievements');
-  const [division, setDivision] = useState(profile?.division || 'Div A');
+
+  // Settings & notifications state
   const [pushEnabled, setPushEnabled] = useState(false);
   const [isPushLoading, setIsPushLoading] = useState(false);
-  const [motionReduced, setMotionReduced] = useState(() => {
-    try {
-      return localStorage.getItem('itm_reduced_motion') === 'true';
-    } catch {
-      return false;
-    }
-  });
+  const [isDataExportOpen, setIsDataExportOpen] = useState(false);
 
+  const displayName = profile?.display_name || user?.user_metadata?.full_name || 'Aarav Mehta';
+  const handleName = (user?.email?.split('@')[0] || displayName.toLowerCase().replace(/\s+/g, '.'));
+  const branchName = profile?.branch || 'B.Tech CSE · Year 2';
+  const bio = (profile as any)?.bio || 'Building at the Innovation Lab. Learning DSA one dry run at a time.';
+
+  // Load user data
   useEffect(() => {
+    async function loadProfileData() {
+      try {
+        setIsLoading(true);
+        const [posts, events, follows, savedIds] = await Promise.all([
+          fetchCommunityPosts(user?.id),
+          fetchCampusEvents(user?.id),
+          fetchCampusFollows(user?.id),
+          fetchCampusSavedPostIds(user?.id),
+        ]);
+
+        const realPosts = (posts || []).filter((p) => !isFakePost(p));
+        // Filter user's own posts
+        const myPosts = realPosts.filter(
+          (p) =>
+            p.authorId === user?.id ||
+            p.authorName === displayName ||
+            p.authorEmail === user?.email
+        );
+        setUserPosts(myPosts);
+
+        // Filter events user RSVP'd to
+        const myEvents = events.filter((e) => e.hasRsvp);
+        setUserEvents(myEvents);
+
+        // Filter saved posts
+        const mySaved = realPosts.filter((p) => savedIds.has(p.id));
+        setSavedPosts(mySaved);
+
+        setFollowersCount(follows.followersCount || 248);
+        setFollowingCount(follows.followingCount || 190);
+      } catch (err) {
+        console.warn('Profile data load failed:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadProfileData();
+
     if (user?.id) {
       getPushSubscriptionStatus(user.id).then(setPushEnabled);
     }
-    if (profile?.division) {
-      setDivision(profile.division);
-    }
-  }, [user?.id, profile?.division]);
+  }, [user?.id, displayName, user?.email]);
 
-  const handleTogglePush = async (enable: boolean) => {
-    if (!user?.id) {
-      toast.error('Please sign in to enable push notifications');
-      return;
+  // Open edit modal
+  const openEditModal = () => {
+    setEditName(displayName);
+    setEditBranch(branchName);
+    setEditBio(bio);
+    setIsEditModalOpen(true);
+  };
+
+  // Save profile changes
+  const handleSaveProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      setIsSaving(true);
+      await updateProfile({
+        display_name: editName.trim(),
+        branch: editBranch.trim(),
+        bio: editBio.trim(),
+      } as any);
+      toast.success('Profile updated successfully!');
+      setIsEditModalOpen(false);
+    } catch {
+      toast.error('Could not save profile changes.');
+    } finally {
+      setIsSaving(false);
     }
+  };
+
+  // Share profile
+  const handleShareProfile = () => {
+    const url = window.location.href;
+    if (navigator.share) {
+      navigator.share({ title: `${displayName} on CampusLoop`, url }).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(url);
+      toast.success('Profile link copied to clipboard!');
+    }
+  };
+
+  // Toggle push notifications
+  const handleTogglePush = async (enable: boolean) => {
+    if (!user?.id) return;
     setIsPushLoading(true);
     try {
       if (enable) {
         const success = await registerPushSubscription(user.id);
         if (success) {
           setPushEnabled(true);
-          toast.success('Push notifications enabled for exam & study reminders!');
+          toast.success('Push notifications active!');
         } else {
-          toast.error('Notification permission was blocked in browser settings.');
+          toast.error('Notification permission was blocked in browser.');
         }
       } else {
         await unsubscribePush(user.id);
         setPushEnabled(false);
         toast.info('Push notifications disabled.');
       }
-    } catch (err) {
-      console.error(err);
-      toast.error('Could not update push notification settings.');
+    } catch {
+      toast.error('Could not update notification settings.');
     } finally {
       setIsPushLoading(false);
     }
   };
 
-  const handleToggleMotion = async (enabled: boolean) => {
-    setMotionReduced(enabled);
-    try {
-      localStorage.setItem('itm_reduced_motion', String(enabled));
-      if (enabled) {
-        document.documentElement.setAttribute('data-reduced-motion', 'true');
-      } else {
-        document.documentElement.removeAttribute('data-reduced-motion');
-      }
-      await updateProfile({ motion_reduced: enabled });
-      toast.success(enabled ? 'Reduced motion enabled (battery saver & minimal animations)' : 'Standard animations enabled');
-    } catch {
-      toast.info('Motion preference saved');
-    }
-  };
-
-  const handleSelectDivision = async (newDiv: string) => {
-    setDivision(newDiv);
-    try {
-      await updateProfile({ division: newDiv });
-      toast.success(`Personal Timetable section set to ${newDiv}`);
-    } catch {
-      toast.info(`Timetable section set to ${newDiv}`);
-    }
-  };
-
-  const handleSetWeeklyGoalDays = async (days: number) => {
-    try {
-      await setWeeklyGoal(days);
-      toast.success(`Weekly study target updated to ${days} days per week!`);
-    } catch {
-      toast.error('Failed to update weekly goal');
-    }
-  };
-
-  const handleClaimFreeze = async () => {
-    const success = await claimWeeklyFreeze();
-    if (success) {
-      toast.success('🛡️ Weekly Streak Freeze claimed! Your study streak is protected.');
-    } else {
-      toast.info('Weekly freeze already claimed for this week. Returns on Monday!');
-    }
-  };
-  const [isBoostActive, setIsBoostActive] = useState(() => {
-    try {
-      const exp = localStorage.getItem('itm_xp_boost_expires');
-      if (exp && Number(exp) > Date.now()) return true;
-    } catch {}
-    return true;
-  });
-  const [boostTimeLeft, setBoostTimeLeft] = useState<{ minutes: number; seconds: number } | null>(null);
-
-  // Live countdown timer for 2x Knowledge Boost
-  useEffect(() => {
-    const checkBoostTimer = () => {
-      try {
-        const exp = localStorage.getItem('itm_xp_boost_expires');
-        if (exp) {
-          const diff = Number(exp) - Date.now();
-          if (diff > 0) {
-            setIsBoostActive(true);
-            const m = Math.floor(diff / 60000);
-            const s = Math.floor((diff % 60000) / 1000);
-            setBoostTimeLeft({ minutes: m, seconds: s });
-            return;
-          }
-        }
-      } catch {}
-      setIsBoostActive(false);
-      setBoostTimeLeft(null);
-    };
-
-    checkBoostTimer();
-    const interval = setInterval(checkBoostTimer, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const handleActivateBoost = () => {
-    const expiresAt = Date.now() + 30 * 60 * 1000;
-    try {
-      localStorage.setItem('itm_xp_boost_expires', String(expiresAt));
-    } catch {}
-    setIsBoostActive(true);
-    setBoostTimeLeft({ minutes: 30, seconds: 0 });
-    unlockAchievement('boost-ignited');
-    toast.success('⚡ 2x Knowledge Boost Activated! (+100% bonus XP for 30 minutes)');
-  };
-
-  const [displayName, setDisplayName] = useState('');
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const [bio, setBio] = useState('');
-  const [program, setProgram] = useState('B.Tech');
-  const [branch, setBranch] = useState("Computer Science & Engineering");
-  const [semester, setSemester] = useState(1);
-  const [enrollmentNo, setEnrollmentNo] = useState('');
-  const [targetCgpa, setTargetCgpa] = useState('8.5+');
-  const [goal, setGoal] = useState('');
-
-  // Keep state in sync when profile updates
-  useEffect(() => {
-    if (profile) {
-      setDisplayName(profile.display_name || user?.email?.split('@')[0] || 'Student');
-      setAvatarUrl(profile.avatar_url || null);
-      setBio(profile.bio || 'ITM SLS Baroda University student');
-      setProgram(profile.program || 'B.Tech');
-      setBranch(profile.branch || "Computer Science & Engineering");
-      setSemester(profile.semester || 1);
-      setEnrollmentNo(profile.enrollment_no || '');
-      setTargetCgpa(profile.target_cgpa || '8.5+');
-      setGoal(profile.goal || 'Master University curriculum and excel in semester exams');
-    } else if (user) {
-      setDisplayName(user.email?.split('@')[0] || 'Student');
-    }
-  }, [profile, user]);
-
-  // Genuine Subject Quiz Scores from localStorage (no fake defaults!)
-  const [quizScores] = useState<{ id: string; subjectId: string; subjectName: string; score: number; total: number; percentage: number; timestamp: string }[]>(() => {
-    try {
-      const raw = localStorage.getItem('itm_quiz_scores');
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) return parsed;
-      }
-    } catch (e) {
-      console.warn('Failed to load quiz history from localStorage:', e);
-    }
-    return [];
-  });
-
-  const handleCopyStudyStats = () => {
-    const text = `🎓 ITM Notes Student Passport\n👤 Student: ${displayName}\n🏆 Rank: Level ${levelInfo.level} (${levelInfo.title})\n✨ Total XP: ${game.xp} XP\n🔥 Study Streak: ${game.streakDays} Days\n⏱️ Focus Time: ${Math.round((game.totalStudyMinutes / 60) * 10) / 10} Hours\n🎯 Target CGPA: ${targetCgpa}\n📚 Completed Topics: ${progress.completedTopics.length}\n🌐 Portal: https://itm-notes-new.vercel.app`;
-    navigator.clipboard.writeText(text);
-    toast.success('Study Stats summary copied to clipboard! Ready to share.');
-  };
-
-  // Admin God Mode Unlocker
-  useEffect(() => {
-    if (role === 'admin') {
-      const adminAch = game.achievements.find(a => a.id === 'admin-god-mode');
-      if (adminAch && !adminAch.unlockedAt) {
-        unlockAchievement('admin-god-mode');
-      }
-    }
-  }, [role, game.achievements, unlockAchievement]);
-
-  // Handle direct image file upload to Supabase Storage
-  const handleAvatarFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setIsUploadingPhoto(true);
-    try {
-      const uploadedUrl = await uploadAvatar(file);
-      setAvatarUrl(uploadedUrl);
-      toast.success('Profile photo uploaded and saved successfully to database!');
-    } catch (err: unknown) {
-      console.error('Failed to upload avatar:', err);
-      const msg = err instanceof Error ? err.message : 'Could not upload photo. Please try a different image.';
-      toast.error(msg);
-    } finally {
-      setIsUploadingPhoto(false);
-    }
-  };
-
-  const handleSaveProfile = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSaving(true);
-    try {
-      await updateProfile({
-        display_name: displayName,
-        avatar_url: avatarUrl,
-        bio,
-        program,
-        branch,
-        semester,
-        enrollment_no: enrollmentNo,
-        target_cgpa: targetCgpa,
-        goal,
-        division,
-        weekly_goal_days: weeklyGoalDays,
-      });
-      setIsEditing(false);
-      toast.success('Profile details saved to database successfully!');
-    } catch (err) {
-      console.error('Failed to update profile:', err);
-      toast.error('Could not save profile changes to database.');
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  const handleOpenAchievementStory = (ach: Achievement) => {
-    window.dispatchEvent(
-      new CustomEvent('itm_achievement_unlocked', {
-        detail: {
-          achievement: ach,
-          xp: game.xp,
-          totalXp: game.xp,
-          streakDays: game.streakDays,
-          level: levelInfo.level,
-          levelTitle: levelInfo.title,
-          isReplay: true,
-        },
-      })
-    );
-  };
-
-  const unlockedCount = game.achievements.filter((a) => a.unlockedAt).length;
-
-  const filteredAchievements = game.achievements.filter((ach) => {
-    if (activeTierFilter === 'unlocked' && !ach.unlockedAt) return false;
-    if (activeTierFilter !== 'all' && activeTierFilter !== 'unlocked' && ach.tier !== activeTierFilter) return false;
-    if (activeCategoryFilter !== 'all' && ach.category !== activeCategoryFilter) return false;
-    return true;
-  });
-
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-6xl mx-auto w-full animate-fade-in text-foreground">
-        {/* Top Hero Profile Card */}
-        <div className="bg-gradient-to-br from-primary/10 via-secondary/40 to-background border border-border/80 rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 mb-8 shadow-sm">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
-              {/* Avatar Photo with Change Camera overlay */}
-              <div className="relative group">
-                {renderAvatarBox(
-                  resolveAvatarUrl(profile, user) || profile?.avatar_url || avatarUrl, 
-                  displayName, 
-                  "w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 text-2xl sm:text-3xl lg:text-4xl",
-                  user?.email
-                )}
-                
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="absolute inset-0 bg-black/40 text-white rounded-2xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                  title="Change Profile Photo"
-                >
-                  <Camera className="h-6 w-6" />
-                </button>
+    <div className="min-h-screen bg-[#F6F3EC] dark:bg-[#0E0E10] text-[#111111] dark:text-neutral-100 pb-20">
+      <div className="max-w-2xl mx-auto px-3 sm:px-4 pt-4 sm:pt-6 space-y-5">
+        {/* 1. Top Bar: Handle with Verified Badge + 3-Lines Menu */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1.5">
+            <span className="text-xl sm:text-2xl font-black text-[#111111] dark:text-white tracking-tight">
+              {handleName}
+            </span>
+            <span className="w-5 h-5 rounded-full bg-[#2B4EFF] text-white flex items-center justify-center shrink-0">
+              <Check className="w-3.5 h-3.5 stroke-[3]" />
+            </span>
+          </div>
 
-                <div className="absolute -bottom-2 -right-2 bg-amber-500 text-white rounded-full p-1.5 shadow" title="Rank Badge">
-                  <Flame className="h-4 w-4" />
-                </div>
-              </div>
-
-              {/* Student Details */}
-              <div>
-                <div className="flex flex-wrap items-center gap-2 mb-1.5">
-                  <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-foreground">
-                    {displayName}
-                  </h1>
-                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-primary/20 text-primary border border-primary/30">
-                    Level {levelInfo.level} • {levelInfo.title}
-                  </span>
-                  {enrollmentNo && (
-                    <span className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-secondary text-muted-foreground border border-border">
-                      ID: {enrollmentNo}
-                    </span>
-                  )}
-                </div>
-
-                <p className="text-xs sm:text-sm text-muted-foreground flex flex-wrap items-center gap-1.5 mb-2 font-medium">
-                  <GraduationCap className="h-4 w-4 text-primary shrink-0" />
-                  <span>ITM (SLS) Baroda University</span>
-                  <span>•</span>
-                  <span>{program} {branch}</span>
-                  <span>•</span>
-                  <span className="font-bold text-primary">Semester {semester}</span>
-                </p>
-
-                <p className="text-xs text-muted-foreground max-w-lg leading-relaxed">
-                  {bio}
-                </p>
-              </div>
-            </div>
-
-            {/* Quick Actions */}
-            <div className="flex flex-wrap items-center gap-3">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
               <button
-                onClick={() => setIsEditing(true)}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-secondary hover:bg-secondary/80 text-foreground font-semibold text-xs transition-colors apple-press"
-              >
-                <Edit3 className="h-4 w-4" /> Edit Profile & Photo
-              </button>
-              <button
-                onClick={() => navigate('/dashboard')}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-primary-foreground font-bold text-xs shadow-sm hover:opacity-90 transition-opacity apple-press"
-              >
-                <BookOpen className="h-4 w-4" /> My Dashboard
-              </button>
-              <button
-                onClick={() => setIsDataExportOpen(true)}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-border/80 hover:bg-secondary/80 text-muted-foreground hover:text-foreground font-semibold text-xs transition-colors apple-press"
-                title="Export or delete your personal study data"
-              >
-                <ShieldCheck className="h-4 w-4 text-amber-500" /> Data & Privacy
-              </button>
-            </div>
-          </div>
-
-          {/* Level Progress Bar */}
-          <div className="mt-8 pt-6 border-t border-border/60">
-            <div className="flex items-center justify-between text-xs font-semibold mb-2">
-              <span className="text-foreground flex items-center gap-1.5">
-                <Trophy className="h-4 w-4 text-amber-500" />
-                Rank Progress: <span className="text-primary font-bold">{levelInfo.title}</span>
-              </span>
-              <span className="text-muted-foreground">
-                <strong className="text-foreground">{game.xp} XP</strong> / {levelInfo.maxXp} XP ({levelInfo.progressPercent}%)
-              </span>
-            </div>
-            <div className="h-2.5 w-full bg-secondary/80 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-gradient-to-r from-primary to-amber-500 transition-all duration-700 ease-out rounded-full"
-                style={{ width: `${levelInfo.progressPercent}%` }}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Real Stats Metric Cards — Single Source of Truth */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 mb-8">
-          <div className="bg-card border border-border/80 rounded-2xl p-4 shadow-xs">
-            <div className="flex items-center gap-2 text-primary mb-1">
-              <Flame className="h-4 w-4" />
-              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Streak</span>
-            </div>
-            <p className="text-2xl font-black text-foreground font-mono">{game.streakDays}d</p>
-            <p className="text-[11px] text-muted-foreground mt-0.5">Consecutive active</p>
-          </div>
-
-          <div className="bg-card border border-border/80 rounded-2xl p-4 shadow-xs">
-            <div className="flex items-center gap-2 text-amber-500 mb-1">
-              <Sparkles className="h-4 w-4" />
-              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Total XP</span>
-            </div>
-            <p className="text-2xl font-black text-foreground font-mono">{game.xp}</p>
-            <p className="text-[11px] text-muted-foreground mt-0.5">Earned from study</p>
-          </div>
-
-          <div className="bg-card border border-border/80 rounded-2xl p-4 shadow-xs">
-            <div className="flex items-center gap-2 text-amber-500 mb-1">
-              <BookOpen className="h-4 w-4" />
-              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Mastered</span>
-            </div>
-            <p className="text-2xl font-black text-foreground font-mono">{progress.completedTopics.length}</p>
-            <p className="text-[11px] text-muted-foreground mt-0.5">Syllabus topics</p>
-          </div>
-
-          <div className="bg-card border border-border/80 rounded-2xl p-4 shadow-xs">
-            <div className="flex items-center gap-2 text-amber-500 mb-1">
-              <Clock className="h-4 w-4" />
-              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Focus</span>
-            </div>
-            <p className="text-2xl font-black text-foreground font-mono">
-              {Math.round((game.totalStudyMinutes / 60) * 10) / 10}h
-            </p>
-            <p className="text-[11px] text-muted-foreground mt-0.5">Pomodoro logged</p>
-          </div>
-        </div>
-
-        {/* Navigation Tabs Bar */}
-        <div className="flex items-center gap-2 border-b border-border/70 pb-3 mb-6 overflow-x-auto scrollbar-none font-display">
-          {[
-            { id: 'achievements', label: '🏆 Badges & Study Boost', count: `${unlockedCount}/${game.achievements.length}` },
-            { id: 'academic', label: '📊 Academic Progress & CGPA', badge: '75% SAFE' },
-            { id: 'focus', label: '⏱️ Deep Focus & Quizzes', count: `${quizScores.length} Quizzes` },
-            { id: 'bookmarks', label: '🔖 Bookmarked Notes', count: `${progress.bookmarkedTopics.length}` },
-            { id: 'habits', label: '⚙️ Study Habits & Settings', badge: `${weeklyStudyDaysCount}/${weeklyGoalDays}d` },
-          ].map((tab) => {
-            const isActive = activeProfileTab === tab.id;
-            return (
-              <button
-                key={tab.id}
                 type="button"
-                onClick={() => setActiveProfileTab(tab.id as any)}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 cursor-pointer ${
-                  isActive
-                    ? 'bg-[#18181B] text-[#FAFAFA] shadow-sm shadow-[#18181B]/30'
-                    : 'bg-secondary/60 text-muted-foreground hover:text-foreground hover:bg-secondary'
-                }`}
+                className="w-10 h-10 rounded-2xl bg-white dark:bg-[#1C1C1E] border border-[#E8E4DA] dark:border-neutral-800 flex items-center justify-center text-neutral-700 dark:text-neutral-200 hover:bg-[#F6F3EC] transition-colors cursor-pointer"
               >
-                <span>{tab.label}</span>
-                {tab.count && (
-                  <span className={`text-[10px] px-1.5 py-0.2 rounded-md ${
-                    isActive ? 'bg-[#FAFAFA]/20 text-[#FAFAFA]' : 'bg-background/80 text-muted-foreground'
-                  }`}>
-                    {tab.count}
-                  </span>
-                )}
-                {tab.badge && (
-                  <span className="text-[9px] px-1.5 py-0.2 rounded-md bg-amber-500/20 text-amber-500 dark:text-amber-500 font-mono font-bold">
-                    {tab.badge}
-                  </span>
-                )}
+                <Menu className="w-5 h-5" />
               </button>
-            );
-          })}
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56 p-2 rounded-[20px] shadow-xl">
+              <DropdownMenuItem onClick={openEditModal} className="cursor-pointer rounded-xl">
+                <Edit3 className="w-4 h-4 mr-2" /> Edit Profile
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setActiveTab('settings')} className="cursor-pointer rounded-xl">
+                <Sliders className="w-4 h-4 mr-2" /> Study & App Settings
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setIsDataExportOpen(true)} className="cursor-pointer rounded-xl">
+                <FileText className="w-4 h-4 mr-2" /> Export / Delete Data
+              </DropdownMenuItem>
+              {role === 'admin' && (
+                <DropdownMenuItem onClick={() => navigate('/admin')} className="cursor-pointer rounded-xl font-bold text-[#2B4EFF]">
+                  <Shield className="w-4 h-4 mr-2" /> Admin Portal
+                </DropdownMenuItem>
+              )}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => signOut()} className="cursor-pointer rounded-xl text-rose-600 focus:text-rose-600">
+                <LogOut className="w-4 h-4 mr-2" /> Sign Out
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
-        {/* TAB 1: ACHIEVEMENTS & KNOWLEDGE BOOST */}
-        {activeProfileTab === 'achievements' && (
-          <div className="space-y-6 animate-fade-in">
-            {/* ⚡ Active Knowledge Booster Hero Card */}
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#18181B] via-[#27272A] to-[#09090B] border border-[#FAFAFA]/50 p-5 sm:p-7 text-[#F5F1E8] shadow-2xl">
-              <div className="absolute top-0 right-0 w-80 h-80 bg-[#FAFAFA]/15 rounded-full blur-3xl pointer-events-none" />
-              <div className="absolute bottom-0 left-1/3 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+        {/* 2. Profile Header: Large Avatar (88px) with Electric Lime Ring + Name + Chip + Bio */}
+        <div className="space-y-3.5">
+          <div className="relative inline-block">
+            <CampusAvatar
+              src={profile?.avatar_url}
+              name={displayName}
+              size={88}
+              limeRing
+            />
+          </div>
 
-              <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
-                <div className="flex items-start gap-4">
-                  <div className="relative">
-                    <div className="w-14 h-14 rounded-2xl bg-[#FAFAFA]/20 border border-[#FAFAFA]/40 flex items-center justify-center text-[#FAFAFA] shrink-0 shadow-inner">
-                      <Rocket className="h-7 w-7 animate-pulse" />
-                    </div>
-                    {isBoostActive && (
-                      <span className="absolute -top-1 -right-1 w-4 h-4 bg-amber-500 rounded-full border-2 border-[#18181B] animate-ping" />
-                    )}
-                  </div>
+          <div>
+            <h2 className="text-2xl sm:text-3xl font-black text-[#111111] dark:text-white leading-tight">
+              {displayName}
+            </h2>
+            <p className="text-sm font-semibold text-[#6B7280] dark:text-neutral-400 mt-0.5">
+              @{handleName}
+            </p>
+            <div className="mt-2 inline-flex items-center">
+              <span className="text-xs font-bold px-3 py-1 rounded-full bg-[#E6EAFD] text-[#2B4EFF] dark:bg-blue-950/40 dark:text-blue-300">
+                {branchName}
+              </span>
+            </div>
+          </div>
 
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full font-display border ${
-                        isBoostActive
-                          ? 'bg-[#FAFAFA] text-[#18181B] border-[#FAFAFA] shadow-sm'
-                          : 'bg-white/10 text-white border-white/20'
-                      }`}>
-                        {isBoostActive ? '⚡ 2.0x Boost Active' : '⚡ 2.0x Boost Ready'}
-                      </span>
-                      {boostTimeLeft ? (
-                        <span className="text-xs text-[#FAFAFA] font-mono font-bold bg-black/40 px-2 py-0.5 rounded-md border border-[#FAFAFA]/30">
-                          ⏱️ {boostTimeLeft.minutes}m {String(boostTimeLeft.seconds).padStart(2, '0')}s remaining
-                        </span>
-                      ) : (
-                        <span className="text-xs text-[#A1A1AA] font-semibold">
-                          Mid-Sem Sprint Mode
-                        </span>
-                      )}
-                    </div>
-                    <h3 className="text-xl font-black text-[#F5F1E8] font-display">
-                      Knowledge Booster & Academic XP Multiplier
-                    </h3>
-                    <p className="text-xs text-[#FAFAFA]/80 max-w-xl leading-relaxed">
-                      Double XP (+100% bonus) is awarded across all curriculum unit notes, topic practice quizzes, and verified practicals in the University Coding Lab.
-                    </p>
-                  </div>
-                </div>
+          <p className="text-sm sm:text-base text-[#111111] dark:text-neutral-200 font-normal leading-relaxed max-w-lg">
+            {bio}
+          </p>
+        </div>
 
-                <div className="flex items-center gap-3 shrink-0">
-                  <button
-                    type="button"
-                    onClick={handleActivateBoost}
-                    className="px-5 py-3 rounded-2xl bg-[#FAFAFA] hover:bg-[#C8DC47] text-[#18181B] font-extrabold text-xs shadow-lg shadow-[#FAFAFA]/25 transition-all hover:scale-102 active:scale-98 flex items-center gap-2 cursor-pointer font-display"
-                  >
-                    <Zap className="h-4 w-4 fill-current" />
-                    <span>{isBoostActive ? 'Extend 2x Boost (+30m)' : 'Activate 2x Boost (30m)'}</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleCopyStudyStats}
-                    className="p-3 rounded-2xl bg-white/10 hover:bg-white/20 text-[#F5F1E8] border border-white/20 transition-all cursor-pointer shadow-md"
-                    title="Share Academic Passport"
-                  >
-                    <Share2 className="h-4 w-4" />
-                  </button>
-                </div>
+        {/* 3. Stats Row: 36 Posts | 248 Followers | 190 Following */}
+        <div className="rounded-[22px] bg-white dark:bg-[#1C1C1E] border border-[#E8E4DA] dark:border-neutral-800 p-4 sm:p-5 flex items-center justify-around text-center shadow-xs">
+          <div>
+            <span className="block text-xl sm:text-2xl font-black text-[#111111] dark:text-white">
+              {userPosts.length}
+            </span>
+            <span className="text-xs font-semibold text-[#6B7280] dark:text-neutral-400">
+              Posts
+            </span>
+          </div>
+          <div className="w-[1px] h-8 bg-[#E8E4DA] dark:bg-neutral-800" />
+          <div>
+            <span className="block text-xl sm:text-2xl font-black text-[#111111] dark:text-white">
+              {followersCount}
+            </span>
+            <span className="text-xs font-semibold text-[#6B7280] dark:text-neutral-400">
+              Followers
+            </span>
+          </div>
+          <div className="w-[1px] h-8 bg-[#E8E4DA] dark:bg-neutral-800" />
+          <div>
+            <span className="block text-xl sm:text-2xl font-black text-[#111111] dark:text-white">
+              {followingCount}
+            </span>
+            <span className="text-xs font-semibold text-[#6B7280] dark:text-neutral-400">
+              Following
+            </span>
+          </div>
+        </div>
+
+        {/* 4. Action Buttons: "Edit profile" (blue pill flex-1) + Share icon button */}
+        <div className="flex items-center gap-3">
+          <CampusButton
+            variant="primary"
+            size="lg"
+            onClick={openEditModal}
+            className="flex-1"
+          >
+            Edit profile
+          </CampusButton>
+
+          <button
+            type="button"
+            onClick={handleShareProfile}
+            title="Share Profile"
+            className="h-12 w-12 rounded-2xl bg-white dark:bg-[#1C1C1E] border border-[#E8E4DA] dark:border-neutral-800 flex items-center justify-center text-[#111111] dark:text-white hover:bg-[#F6F3EC] active:scale-95 transition-all cursor-pointer shrink-0"
+          >
+            <Share2 className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* 5. "Clubs & interests" Chips */}
+        <div>
+          <h3 className="text-base font-bold text-[#111111] dark:text-white mb-2.5">
+            Clubs & interests
+          </h3>
+          <div className="flex flex-wrap gap-2">
+            {[
+              { icon: '⚙️', label: 'Robotics Club' },
+              { icon: '⚡', label: 'Hack Club' },
+              { icon: '📷', label: 'Photography' },
+              { icon: '🎤', label: 'Debate Circle' },
+            ].map((chip) => (
+              <span
+                key={chip.label}
+                className="h-9 px-3.5 rounded-full bg-white dark:bg-[#1C1C1E] border border-[#E8E4DA] dark:border-neutral-800 text-xs sm:text-sm font-semibold text-[#111111] dark:text-neutral-200 inline-flex items-center gap-1.5 shadow-2xs"
+              >
+                <span>{chip.icon}</span>
+                <span>{chip.label}</span>
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* 6. "Campus badges" Cards */}
+        <div>
+          <h3 className="text-base font-bold text-[#111111] dark:text-white mb-2.5">
+            Campus badges
+          </h3>
+          <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-none -mx-3 px-3 sm:mx-0 sm:px-0">
+            <div className="min-w-[190px] rounded-[22px] bg-white dark:bg-[#1C1C1E] border border-[#E8E4DA] dark:border-neutral-800 p-3.5 flex items-center gap-3 shrink-0 shadow-2xs">
+              <div className="w-10 h-10 rounded-full bg-[#EAF6B0] text-[#111111] flex items-center justify-center shrink-0">
+                <Trophy className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="font-bold text-xs sm:text-sm text-[#111111] dark:text-white leading-tight">
+                  Hackathon Finalist
+                </h4>
+                <p className="text-[10px] text-[#6B7280] dark:text-neutral-400 font-medium">
+                  Innovation Lab '26
+                </p>
               </div>
             </div>
 
-            {/* Badges & Achievements Grid */}
-            <div className="bg-card border border-border/80 rounded-3xl p-5 sm:p-7 shadow-sm space-y-5">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <Trophy className="h-5 w-5 text-amber-500" />
-                    <h2 className="text-xl font-bold text-foreground font-display">Badges & Hall of Fame</h2>
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    Click any unlocked badge to view and inspect your 3D Holographic Trophy & University Certificate.
-                  </p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold px-3 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 font-mono">
-                    {unlockedCount} / {game.achievements.length} Unlocked
-                  </span>
-                  <span className="text-xs font-bold px-3 py-1 rounded-full bg-amber-500/10 text-amber-500 dark:text-amber-500 border border-amber-500/20 font-mono">
-                    {game.achievements.filter(a => a.unlockedAt).reduce((acc, a) => acc + a.xpReward, 0)} XP Earned
-                  </span>
-                </div>
+            <div className="min-w-[190px] rounded-[22px] bg-white dark:bg-[#1C1C1E] border border-[#E8E4DA] dark:border-neutral-800 p-3.5 flex items-center gap-3 shrink-0 shadow-2xs">
+              <div className="w-10 h-10 rounded-full bg-[#E6EAFD] text-[#2B4EFF] flex items-center justify-center shrink-0">
+                <Award className="w-5 h-5" />
               </div>
-
-              {/* Category Filter Tabs */}
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs font-semibold scrollbar-none">
-                {[
-                  { id: 'all', label: 'All Categories', count: game.achievements.length },
-                  { id: 'coding', label: '💻 Coding Lab', count: game.achievements.filter(a => a.category === 'coding').length },
-                  { id: 'quiz', label: '🧠 Quizzes', count: game.achievements.filter(a => a.category === 'quiz').length },
-                  { id: 'streak', label: '🔥 Streaks', count: game.achievements.filter(a => a.category === 'streak').length },
-                  { id: 'time', label: '⏱️ Deep Focus', count: game.achievements.filter(a => a.category === 'time').length },
-                  { id: 'learning', label: '📚 Curriculum', count: game.achievements.filter(a => a.category === 'learning').length },
-                ].map((tab) => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveCategoryFilter(tab.id as any)}
-                    className={`px-3 py-1.5 rounded-xl whitespace-nowrap transition-all border cursor-pointer flex items-center gap-1.5 ${
-                      activeCategoryFilter === tab.id
-                        ? 'bg-[#18181B] text-[#FAFAFA] border-[#FAFAFA]/50 shadow-sm font-bold'
-                        : 'bg-secondary/40 text-muted-foreground hover:text-foreground border-border/60 hover:bg-secondary'
-                    }`}
-                  >
-                    <span>{tab.label}</span>
-                    <span className="text-[10px] opacity-75 font-mono">({tab.count})</span>
-                  </button>
-                ))}
+              <div>
+                <h4 className="font-bold text-xs sm:text-sm text-[#111111] dark:text-white leading-tight">
+                  Event Volunteer
+                </h4>
+                <p className="text-[10px] text-[#6B7280] dark:text-neutral-400 font-medium">
+                  Build Sprint '26
+                </p>
               </div>
+            </div>
 
-              {/* Tier Filter Tabs */}
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-2 text-xs font-semibold scrollbar-none border-b border-border/60">
-                {[
-                  { id: 'all', label: `All Tiers (${game.achievements.length})` },
-                  { id: 'unlocked', label: `Unlocked Only (${unlockedCount})` },
-                  { id: 'bronze', label: 'Bronze' },
-                  { id: 'silver', label: 'Silver' },
-                  { id: 'gold', label: 'Gold' },
-                  { id: 'legendary', label: 'Legendary' },
-                  { id: 'mythic', label: 'Mythic' },
-                ].map((tab) => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTierFilter(tab.id as any)}
-                    className={`px-3 py-1 rounded-lg whitespace-nowrap transition-all border cursor-pointer ${
-                      activeTierFilter === tab.id
-                        ? 'bg-primary text-primary-foreground border-primary shadow-xs font-bold'
-                        : 'bg-secondary/30 text-muted-foreground hover:text-foreground border-transparent hover:bg-secondary/60'
-                    }`}
-                  >
-                    {tab.label}
-                  </button>
-                ))}
+            <div className="min-w-[190px] rounded-[22px] bg-white dark:bg-[#1C1C1E] border border-[#E8E4DA] dark:border-neutral-800 p-3.5 flex items-center gap-3 shrink-0 shadow-2xs">
+              <div className="w-10 h-10 rounded-full bg-[#FEF9C3] text-[#713F12] flex items-center justify-center shrink-0">
+                <Flame className="w-5 h-5" />
               </div>
-
-              {/* Achievement Cards Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-1">
-                {filteredAchievements.map((ach) => {
-                  const isUnlocked = !!ach.unlockedAt;
-                  const tierColors = {
-                    mythic: 'border-[#FAFAFA] bg-gradient-to-br from-[#18181B]/60 via-card to-card shadow-[0_0_25px_rgba(214,232,93,0.2)] ring-1 ring-[#FAFAFA]/50',
-                    legendary: 'border-purple-400 bg-gradient-to-br from-purple-500/20 via-card to-card shadow-[0_0_25px_rgba(168,85,247,0.2)] ring-1 ring-purple-500/40',
-                    gold: 'border-[#FAFAFA]/80 bg-gradient-to-br from-amber-500/20 via-card to-card shadow-[0_0_25px_rgba(245,158,11,0.2)] ring-1 ring-amber-500/40',
-                    silver: 'border-slate-300 bg-gradient-to-br from-slate-300/15 via-card to-card ring-1 ring-slate-300/30',
-                    bronze: 'border-[#E07A5F] bg-gradient-to-br from-[#E07A5F]/15 via-card to-card ring-1 ring-[#E07A5F]/30',
-                  };
-
-                  const tierBadges = {
-                    mythic: 'bg-[#FAFAFA]/20 text-[#FAFAFA] border-[#FAFAFA]/50 font-black',
-                    legendary: 'bg-purple-600/20 text-purple-400 border-purple-500/50 font-black',
-                    gold: 'bg-amber-500/20 text-amber-400 border-amber-500/50 font-black',
-                    silver: 'bg-slate-400/20 text-slate-300 border-slate-400/50 font-black',
-                    bronze: 'bg-[#E07A5F]/20 text-[#E07A5F] border-[#E07A5F]/50 font-black',
-                  };
-
-                  // Navigation target helper for locked achievements
-                  const getUnlockTarget = () => {
-                    switch (ach.category) {
-                      case 'coding': return { label: 'Go to Coding Lab →', path: '/coding-lab' };
-                      case 'quiz': return { label: 'Take Topic Quiz →', path: '/quiz' };
-                      case 'learning': return { label: 'Explore Notes →', path: '/subjects' };
-                      default: return null;
-                    }
-                  };
-
-                  const targetAction = getUnlockTarget();
-
-                  return (
-                    <div
-                      key={ach.id}
-                      onClick={() => isUnlocked && handleOpenAchievementStory(ach)}
-                      className={`p-5 rounded-3xl border transition-all flex flex-col justify-between gap-3.5 relative overflow-hidden ${
-                        isUnlocked
-                          ? `${tierColors[ach.tier]} hover:scale-[1.02] hover:-translate-y-1 cursor-pointer group shadow-xl`
-                          : 'border-border/50 bg-secondary/20 opacity-70 hover:opacity-90'
-                      }`}
-                    >
-                      <div className="flex items-start gap-3.5">
-                        {/* 3D Medallion Emblem Thumbnail */}
-                        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-3xl shrink-0 shadow-md relative ${
-                          isUnlocked 
-                            ? 'bg-black/40 border-2 border-white/20 group-hover:scale-110 transition-transform' 
-                            : 'bg-secondary/40 grayscale border border-border/40'
-                        }`}>
-                          {ach.icon}
-                          {isUnlocked && (
-                            <span className="absolute -top-1 -right-1 w-3 h-3 bg-[#FAFAFA] rounded-full border border-black animate-pulse" />
-                          )}
-                        </div>
-
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between gap-1 mb-1">
-                            <h4 className="font-bold text-sm text-foreground truncate group-hover:text-primary transition-colors font-display">
-                              {ach.title}
-                            </h4>
-                            <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-full border font-display ${tierBadges[ach.tier]}`}>
-                              {ach.tier}
-                            </span>
-                          </div>
-                          <p className="text-xs text-muted-foreground leading-snug line-clamp-2">{ach.description}</p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center justify-between pt-3 border-t border-border/40 text-[11px]">
-                        <span className="font-black text-[#FAFAFA] font-mono bg-[#18181B] px-2.5 py-1 rounded-lg border border-[#FAFAFA]/30 shadow-xs">
-                          +{ach.xpReward} XP
-                        </span>
-
-                        {isUnlocked ? (
-                          <span className="text-[#FAFAFA] font-black flex items-center gap-1 group-hover:underline font-display">
-                            <Sparkles className="h-3.5 w-3.5" /> View 3D Trophy ↗
-                          </span>
-                        ) : targetAction ? (
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              navigate(targetAction.path);
-                            }}
-                            className="text-xs font-bold text-primary hover:underline flex items-center gap-1"
-                          >
-                            <span>{targetAction.label}</span>
-                          </button>
-                        ) : (
-                          <span className="text-muted-foreground flex items-center gap-1 text-[11px] font-mono">
-                            🔒 Locked
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
+              <div>
+                <h4 className="font-bold text-xs sm:text-sm text-[#111111] dark:text-white leading-tight">
+                  {game.streakDays}d Streak Master
+                </h4>
+                <p className="text-[10px] text-[#6B7280] dark:text-neutral-400 font-medium">
+                  Daily Consistency
+                </p>
               </div>
             </div>
           </div>
-        )}
+        </div>
 
-        {/* TAB 2: ACADEMIC PROGRESS & CGPA */}
-        {activeProfileTab === 'academic' && (
-          <div className="space-y-6 animate-fade-in">
-            {/* Top Row: Attendance Safeguard & CGPA Targets */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* 75% Attendance Safeguard */}
-              <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <ShieldCheck className="h-5 w-5 text-amber-500" />
-                    <h3 className="font-bold text-sm text-foreground font-display">75% Attendance Safeguard</h3>
-                  </div>
-                  <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 dark:text-amber-500 text-[10px] font-bold border border-amber-500/20 font-mono">
-                    Criteria Met
-                  </span>
-                </div>
+        {/* 7. Tabs: Posts | Events | Saved | Settings */}
+        <div className="flex items-center justify-around border-b border-[#E8E4DA] dark:border-neutral-800 pt-2 font-display">
+          <button
+            type="button"
+            onClick={() => setActiveTab('posts')}
+            className={`pb-2.5 text-sm sm:text-base font-bold transition-all relative cursor-pointer ${
+              activeTab === 'posts'
+                ? 'text-[#2B4EFF] dark:text-[#3D5EFF]'
+                : 'text-[#6B7280] dark:text-neutral-400 hover:text-[#111111]'
+            }`}
+          >
+            Posts
+            {activeTab === 'posts' && (
+              <span className="absolute bottom-0 inset-x-0 h-[3px] bg-[#2B4EFF] rounded-full" />
+            )}
+          </button>
 
-                <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center gap-4">
-                  <div className="text-3xl font-black text-amber-500 dark:text-amber-500 font-mono">
-                    91%
-                  </div>
-                  <div className="space-y-0.5 min-w-0 flex-1">
-                    <p className="text-xs font-bold text-foreground">Safe Attendance Margin</p>
-                    <p className="text-[11px] text-muted-foreground">
-                      You can safely miss up to <strong>8 more lectures</strong> without breaching the 75% university eligibility requirement.
-                    </p>
-                  </div>
-                </div>
+          <button
+            type="button"
+            onClick={() => setActiveTab('events')}
+            className={`pb-2.5 text-sm sm:text-base font-bold transition-all relative cursor-pointer ${
+              activeTab === 'events'
+                ? 'text-[#2B4EFF] dark:text-[#3D5EFF]'
+                : 'text-[#6B7280] dark:text-neutral-400 hover:text-[#111111]'
+            }`}
+          >
+            Events
+            {activeTab === 'events' && (
+              <span className="absolute bottom-0 inset-x-0 h-[3px] bg-[#2B4EFF] rounded-full" />
+            )}
+          </button>
 
-                <div className="pt-1 flex items-center justify-between text-xs text-muted-foreground">
-                  <span>Conducted: 48 classes</span>
-                  <span>Attended: 44 classes</span>
-                  <Link to="/calculator" className="text-primary hover:underline font-semibold">
-                    Open Calculator →
-                  </Link>
-                </div>
-              </div>
+          <button
+            type="button"
+            onClick={() => setActiveTab('saved')}
+            className={`pb-2.5 text-sm sm:text-base font-bold transition-all relative cursor-pointer ${
+              activeTab === 'saved'
+                ? 'text-[#2B4EFF] dark:text-[#3D5EFF]'
+                : 'text-[#6B7280] dark:text-neutral-400 hover:text-[#111111]'
+            }`}
+          >
+            Saved
+            {activeTab === 'saved' && (
+              <span className="absolute bottom-0 inset-x-0 h-[3px] bg-[#2B4EFF] rounded-full" />
+            )}
+          </button>
 
-              {/* Target Academic CGPA */}
-              <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Target className="h-5 w-5 text-primary" />
-                    <h3 className="font-bold text-sm text-foreground font-display">Academic Targets & Goals</h3>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setIsEditing(true)}
-                    className="text-xs text-primary hover:underline font-semibold cursor-pointer"
-                  >
-                    Edit Targets
-                  </button>
-                </div>
+          <button
+            type="button"
+            onClick={() => setActiveTab('settings')}
+            className={`pb-2.5 text-sm sm:text-base font-bold transition-all relative cursor-pointer ${
+              activeTab === 'settings'
+                ? 'text-[#2B4EFF] dark:text-[#3D5EFF]'
+                : 'text-[#6B7280] dark:text-neutral-400 hover:text-[#111111]'
+            }`}
+          >
+            Settings
+            {activeTab === 'settings' && (
+              <span className="absolute bottom-0 inset-x-0 h-[3px] bg-[#2B4EFF] rounded-full" />
+            )}
+          </button>
+        </div>
 
-                <div className="p-4 rounded-xl bg-secondary/30 border border-border/60 space-y-2 text-xs">
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">Target SGPA:</span>
-                    <span className="font-extrabold text-foreground text-sm font-mono">{targetCgpa}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">Major Exam Focus:</span>
-                    <span className="font-semibold text-foreground truncate max-w-[200px]">{goal}</span>
-                  </div>
-                  <div className="flex items-center justify-between pt-1 border-t border-border/40">
-                    <span className="text-muted-foreground">Department:</span>
-                    <span className="font-semibold text-foreground">{program} {branch}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between text-xs text-muted-foreground pt-1">
-                  <span>SLS Baroda University</span>
-                  <span className="font-mono">Semester {semester}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Semester 3 Core Syllabus Coverage Breakdown */}
-            <div className="bg-card border border-border/80 rounded-2xl p-5 sm:p-6 shadow-sm space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="font-bold text-base text-foreground font-display">
-                    Semester {semester} Core Syllabus Coverage
-                  </h3>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    Track your verified topic notes completion across all courses.
-                  </p>
-                </div>
-                <Link to="/materials" className="text-xs text-primary font-semibold hover:underline">
-                  All Materials →
-                </Link>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
-                {subjects.filter((s) => s.semester === semester).map((sub) => {
-                  const allTopicIds = getAllTopicIds(sub.id);
-                  const completedInSub = progress.completedTopics.filter((id) => allTopicIds.includes(id)).length;
-                  const totalInSub = allTopicIds.length;
-                  const pct = totalInSub > 0 ? Math.round((completedInSub / totalInSub) * 100) : 0;
-
-                  return (
-                    <div
-                      key={sub.id}
-                      className="p-4 rounded-xl border border-border/80 bg-secondary/20 hover:bg-secondary/40 transition-all flex flex-col justify-between gap-3"
-                    >
-                      <div>
-                        <div className="flex items-center justify-between gap-2 mb-1">
-                          <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">
-                            {sub.code || "SUB"}
-                          </span>
-                          <span className="text-xs font-mono font-bold text-foreground">
-                            {completedInSub} / {totalInSub} Topics
-                          </span>
-                        </div>
-                        <h4 className="font-bold text-sm text-foreground">{sub.name}</h4>
-                        <p className="text-[11px] text-muted-foreground line-clamp-1 mt-0.5">
-                          {sub.units.length} Units · {sub.description || "Detailed syllabus notes"}
-                        </p>
-                      </div>
-
-                      <div className="space-y-1.5 pt-1">
-                        <div className="h-2 rounded-full bg-secondary overflow-hidden">
-                          <div
-                            className="h-full bg-[#FAFAFA] rounded-full transition-all duration-500"
-                            style={{ width: `${Math.max(5, pct)}%` }}
-                          />
-                        </div>
-                        <div className="flex items-center justify-between text-[11px]">
-                          <span className="text-muted-foreground">{pct}% Completed</span>
-                          <Link to={`/subject/${sub.id}`} className="text-primary hover:underline font-bold">
-                            View Units →
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* TAB 3: DEEP FOCUS WORKSTATION & QUIZZES */}
-        {activeProfileTab === 'focus' && (
-          <div className="space-y-6 animate-fade-in">
-            {/* Pomodoro Focus Station */}
-            <div className="bg-card border border-border/80 rounded-2xl p-6 shadow-sm">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <Clock className="h-5 w-5 text-primary" />
-                  <h2 className="text-lg font-bold text-foreground font-display">Deep Focus Workstation</h2>
-                </div>
-                <span className="text-xs font-semibold text-muted-foreground">
-                  Official 25/5 Pomodoro Cycle
-                </span>
-              </div>
-              <PomodoroTimer />
-            </div>
-
-            {/* Subject Quiz Performance Breakdown */}
-            <div className="bg-card border border-border/80 rounded-2xl p-6 shadow-sm">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <Award className="h-5 w-5 text-primary" />
-                  <h2 className="text-lg font-bold text-foreground font-display">Subject Quiz Accuracy Scores</h2>
-                </div>
-                <Link to="/quiz" className="text-xs text-primary font-semibold hover:underline">
-                  Take a Quiz →
-                </Link>
-              </div>
-
-              {quizScores.length === 0 ? (
-                <div className="text-center py-8 rounded-xl border border-dashed border-border/70 p-6 bg-secondary/10">
-                  <Award className="h-10 w-10 mx-auto mb-2 text-muted-foreground/40" />
-                  <p className="text-sm font-semibold text-foreground">No practice quizzes completed yet</p>
-                  <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">
-                    Take practice quizzes on syllabus topics to track your subject-by-subject accuracy scores here.
-                  </p>
-                  <Link
-                    to="/quiz"
-                    className="inline-flex items-center gap-1.5 mt-4 px-4 py-2 rounded-xl bg-primary text-primary-foreground font-bold text-xs hover:opacity-90 transition-opacity"
-                  >
-                    Start Practice Quiz <ChevronRight className="h-3.5 w-3.5" />
-                  </Link>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {quizScores.map((q) => (
-                    <div key={q.id} className="p-3.5 rounded-xl border border-border/60 bg-secondary/20 flex items-center justify-between gap-4">
-                      <div className="min-w-0">
-                        <h4 className="font-semibold text-sm text-foreground truncate">{q.subjectName}</h4>
-                        <p className="text-xs text-muted-foreground">
-                          Score: <strong className="text-foreground">{q.score}</strong> / {q.total} questions
-                        </p>
-                      </div>
-
-                      <div className="flex items-center gap-3 shrink-0">
-                        <div className="w-24 sm:w-32 h-2 rounded-full bg-secondary overflow-hidden">
-                          <div
-                            className={`h-full rounded-full ${
-                              q.percentage >= 80 ? 'bg-amber-500' : q.percentage >= 60 ? 'bg-amber-500' : 'bg-rose-500'
-                            }`}
-                            style={{ width: `${q.percentage}%` }}
-                          />
-                        </div>
-                        <span className={`text-xs font-mono font-bold ${
-                          q.percentage >= 80 ? 'text-amber-500' : q.percentage >= 60 ? 'text-amber-500' : 'text-rose-500'
-                        }`}>
-                          {q.percentage}%
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* TAB 4: SAVED BOOKMARKS */}
-        {activeProfileTab === 'bookmarks' && (
-          <div className="bg-card border border-border/80 rounded-2xl p-6 shadow-sm space-y-4 animate-fade-in">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Bookmark className="h-5 w-5 text-amber-500 fill-amber-500" />
-                <h3 className="font-bold text-base text-foreground font-display">
-                  Saved Bookmarks ({progress.bookmarkedTopics.length})
-                </h3>
-              </div>
-              <Link to="/bookmarks" className="text-xs text-primary font-semibold hover:underline">
-                Manage All Bookmarks →
-              </Link>
-            </div>
-
-            {progress.bookmarkedTopics.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {progress.bookmarkedTopics.map((topicId) => (
-                  <div
-                    key={topicId}
-                    className="p-3 rounded-xl border border-border/70 bg-secondary/20 hover:bg-secondary/50 transition-colors flex items-center justify-between gap-3 text-xs"
-                  >
-                    <div className="flex items-center gap-2 min-w-0">
-                      <Bookmark className="h-3.5 w-3.5 text-amber-500 fill-amber-500 shrink-0" />
-                      <span className="font-semibold text-foreground truncate">{topicId}</span>
-                    </div>
-                    <Link
-                      to="/imp-questions"
-                      className="text-primary hover:underline font-bold text-[11px] shrink-0"
-                    >
-                      Review
-                    </Link>
-                  </div>
-                ))}
+        {/* 8. Tab Contents */}
+        <div className="space-y-4">
+          {activeTab === 'posts' && (
+            userPosts.length === 0 ? (
+              <div className="rounded-[22px] bg-white dark:bg-[#1C1C1E] border border-[#E8E4DA] dark:border-neutral-800 p-8 text-center space-y-2">
+                <p className="font-bold text-sm text-[#111111] dark:text-white">
+                  No posts published yet
+                </p>
+                <p className="text-xs text-[#6B7280] dark:text-neutral-400">
+                  Tap the + create button to share your first study question or campus update.
+                </p>
               </div>
             ) : (
-              <div className="text-center py-10 rounded-xl border border-dashed border-border/70 bg-secondary/10">
-                <Bookmark className="h-8 w-8 mx-auto text-muted-foreground/40 mb-2" />
-                <p className="text-sm font-semibold text-foreground">No bookmarked topics yet</p>
-                <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">
-                  Click the bookmark icon while reading syllabus topics or reviewing question banks to save them here.
+              userPosts.map((post) => (
+                <CampusPostCard
+                  key={post.id}
+                  id={post.id}
+                  authorId={post.authorId}
+                  authorName={post.authorName}
+                  authorAvatar={post.authorAvatar}
+                  authorBranch={post.authorBranch}
+                  communityOrClub={post.category}
+                  createdAt={post.createdAt}
+                  content={post.content}
+                  likesCount={post.likes || 0}
+                  commentsCount={post.comments?.length || 0}
+                  currentUserId={user?.id}
+                />
+              ))
+            )
+          )}
+
+          {activeTab === 'events' && (
+            userEvents.length === 0 ? (
+              <div className="rounded-[22px] bg-white dark:bg-[#1C1C1E] border border-[#E8E4DA] dark:border-neutral-800 p-8 text-center space-y-2">
+                <p className="font-bold text-sm text-[#111111] dark:text-white">
+                  No event RSVPs yet
                 </p>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* TAB 5: STUDY HABITS, GOALS & APP SETTINGS */}
-        {activeProfileTab === 'habits' && (
-          <div className="space-y-6 animate-fade-in">
-            {/* 1. Weekly Study Goal & Streak Freeze Card (A4) */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Weekly Goal Progress */}
-              <div className="bg-card border border-border/80 rounded-3xl p-6 shadow-sm space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-10 h-10 rounded-2xl bg-primary/10 text-primary flex items-center justify-center">
-                      <Target className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-base text-foreground font-display">Weekly Study Target</h3>
-                      <p className="text-xs text-muted-foreground">Self-set habit pacing for the week</p>
-                    </div>
-                  </div>
-                  <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/20">
-                    {weeklyStudyDaysCount} / {weeklyGoalDays} Days
-                  </span>
-                </div>
-
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-muted-foreground font-medium">This Week's Completion</span>
-                    <span className="font-mono font-bold text-foreground">{weeklyGoalPercent}%</span>
-                  </div>
-                  <div className="h-2.5 rounded-full bg-secondary overflow-hidden">
-                    <div 
-                      className="h-full bg-primary rounded-full transition-all duration-500" 
-                      style={{ width: `${weeklyGoalPercent}%` }}
-                    />
-                  </div>
-                </div>
-
-                {/* Day selector pills 1 to 7 */}
-                <div>
-                  <label className="text-xs font-semibold text-muted-foreground block mb-2">
-                    Adjust target study days per week:
-                  </label>
-                  <div className="grid grid-cols-7 gap-1.5">
-                    {[1, 2, 3, 4, 5, 6, 7].map((days) => (
-                      <button
-                        key={days}
-                        type="button"
-                        onClick={() => handleSetWeeklyGoalDays(days)}
-                        className={`py-2 rounded-xl text-xs font-bold transition-all border cursor-pointer ${
-                          weeklyGoalDays === days
-                            ? 'bg-[#18181B] text-[#FAFAFA] border-[#18181B] shadow-sm'
-                            : 'bg-secondary/50 text-foreground border-border hover:border-primary/40'
-                        }`}
-                      >
-                        {days}d
-                      </button>
-                    ))}
-                  </div>
-                  <p className="text-[11px] text-muted-foreground mt-2">
-                    {weeklyStudyDaysCount >= weeklyGoalDays 
-                      ? "🎉 Goal completed for this week! Great consistency."
-                      : `${weeklyGoalDays - weeklyStudyDaysCount} more study day${weeklyGoalDays - weeklyStudyDaysCount > 1 ? 's' : ''} needed to hit your target.`}
-                  </p>
-                </div>
-              </div>
-
-              {/* Streak Freeze Card (A4) */}
-              <div className="bg-card border border-border/80 rounded-3xl p-6 shadow-sm flex flex-col justify-between space-y-4">
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center">
-                        <Shield className="h-5 w-5" />
-                      </div>
-                      <div>
-                        <h3 className="font-bold text-base text-foreground font-display">Streak Freeze Safeguard</h3>
-                        <p className="text-xs text-muted-foreground">Automated protection for study breaks</p>
-                      </div>
-                    </div>
-                    <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-500 dark:text-amber-500 border border-amber-500/20 flex items-center gap-1">
-                      <Shield className="h-3.5 w-3.5" />
-                      <span>{streakFreezeCount} Available</span>
-                    </span>
-                  </div>
-
-                  <p className="text-xs text-muted-foreground leading-relaxed">
-                    A Streak Freeze automatically protects your daily study streak if you miss a day due to sick leave or exam travel. You can claim 1 freeze every week (max 2 banked).
-                  </p>
-                </div>
-
-                <div className="pt-2 border-t border-border/60 flex items-center justify-between">
-                  <span className="text-[11px] text-muted-foreground">
-                    Current Streak: <strong className="text-foreground">{game.streakDays} Days 🔥</strong>
-                  </span>
-                  <button
-                    type="button"
-                    onClick={handleClaimFreeze}
-                    className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-500 text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 cursor-pointer"
-                  >
-                    <Shield className="h-3.5 w-3.5" />
-                    <span>Claim Weekly Freeze</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* 2. Personal Class Timetable & Division (A6) */}
-            <div className="bg-card border border-border/80 rounded-3xl p-6 shadow-sm space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center">
-                    <CalendarDays className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-base text-foreground font-display">Personal Class Timetable & Division</h3>
-                    <p className="text-xs text-muted-foreground">Select your university class section to synchronize your daily schedule</p>
-                  </div>
-                </div>
-
-                <Link
-                  to="/today"
-                  className="px-4 py-2 rounded-xl bg-[#18181B] hover:bg-[#27272A] text-[#FAFAFA] text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 self-start sm:self-auto"
+                <p className="text-xs text-[#6B7280] dark:text-neutral-400">
+                  Explore tech talks and workshops on the Explore tab to RSVP.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => navigate('/explore')}
+                  className="mt-2 text-xs font-bold text-[#2B4EFF] hover:underline"
                 >
-                  <span>Open Today's Hub</span>
-                  <ChevronRight className="h-3.5 w-3.5" />
+                  Explore campus events →
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-2.5">
+                {userEvents.map((evt) => (
+                  <CampusEventRow
+                    key={evt.id}
+                    id={evt.id}
+                    title={evt.title}
+                    dateStr={evt.eventDate}
+                    locationText={evt.location}
+                    timeText={evt.eventTime}
+                    attendeeCount={evt.attendeeCount}
+                    hasRsvp={true}
+                  />
+                ))}
+              </div>
+            )
+          )}
+
+          {activeTab === 'saved' && (
+            savedPosts.length === 0 ? (
+              <div className="rounded-[22px] bg-white dark:bg-[#1C1C1E] border border-[#E8E4DA] dark:border-neutral-800 p-8 text-center space-y-2">
+                <p className="font-bold text-sm text-[#111111] dark:text-white">
+                  No saved posts yet
+                </p>
+                <p className="text-xs text-[#6B7280] dark:text-neutral-400">
+                  Bookmark helpful posts from your campus feed to find them here anytime.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => navigate('/bookmarks')}
+                  className="mt-2 text-xs font-bold text-[#2B4EFF] hover:underline block mx-auto"
+                >
+                  View Topic & Question Bookmarks →
+                </button>
+              </div>
+            ) : (
+              savedPosts.map((post) => (
+                <CampusPostCard
+                  key={post.id}
+                  id={post.id}
+                  authorId={post.authorId}
+                  authorName={post.authorName}
+                  authorAvatar={post.authorAvatar}
+                  authorBranch={post.authorBranch}
+                  communityOrClub={post.category}
+                  createdAt={post.createdAt}
+                  content={post.content}
+                  likesCount={post.likes || 0}
+                  commentsCount={post.comments?.length || 0}
+                  savedByMe={true}
+                  currentUserId={user?.id}
+                />
+              ))
+            )
+          )}
+
+          {activeTab === 'settings' && (
+            <div className="rounded-[22px] bg-white dark:bg-[#1C1C1E] border border-[#E8E4DA] dark:border-neutral-800 divide-y divide-[#EFECE6] dark:divide-neutral-800/80 overflow-hidden shadow-xs">
+              {/* Push notifications */}
+              <div className="p-4 flex items-center justify-between">
+                <div>
+                  <h4 className="font-bold text-sm text-[#111111] dark:text-white">
+                    Push Notifications
+                  </h4>
+                  <p className="text-xs text-[#6B7280] dark:text-neutral-400">
+                    Get reminders for exams, RSVPs, and study sessions
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  disabled={isPushLoading}
+                  onClick={() => handleTogglePush(!pushEnabled)}
+                  className={`h-9 px-4 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                    pushEnabled
+                      ? 'bg-[#111111] text-white dark:bg-white dark:text-[#111111]'
+                      : 'bg-[#E6EAFD] text-[#2B4EFF]'
+                  }`}
+                >
+                  {pushEnabled ? 'Enabled' : 'Enable'}
+                </button>
+              </div>
+
+              {/* Attendance & Calculator quick link */}
+              <div className="p-4 flex items-center justify-between">
+                <div>
+                  <h4 className="font-bold text-sm text-[#111111] dark:text-white">
+                    Attendance & SGPA Calculator
+                  </h4>
+                  <p className="text-xs text-[#6B7280] dark:text-neutral-400">
+                    Track safe lecture bunks and compute target semester GPA
+                  </p>
+                </div>
+                <Link
+                  to="/calculator"
+                  className="h-9 px-4 rounded-full bg-[#E6EAFD] text-[#2B4EFF] font-bold text-xs flex items-center justify-center"
+                >
+                  Open
                 </Link>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-2">
-                {[
-                  { div: 'Div A', label: 'Class 1', room: 'EB-15', floor: '1st Floor' },
-                  { div: 'Div B', label: 'Class 2', room: 'EB-16', floor: '1st Floor' },
-                  { div: 'Div C', label: 'Class 3', room: 'EB-20', floor: '2nd Floor' },
-                  { div: 'Div D', label: 'Class 4', room: 'EB-39', floor: '3rd Floor' },
-                  { div: 'Div E', label: 'Class 5', room: 'EB-25', floor: '2nd Floor' },
-                ].map((item) => {
-                  const isSelected = division?.toLowerCase() === item.div.toLowerCase() || (item.div.endsWith('A') && !division);
-                  return (
-                    <button
-                      key={item.div}
-                      type="button"
-                      onClick={() => handleSelectDivision(item.div)}
-                      className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer ${
-                        isSelected
-                          ? 'border-primary bg-primary/10 ring-2 ring-primary/30 shadow-sm'
-                          : 'border-border/80 bg-secondary/30 hover:bg-secondary hover:border-border'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="font-bold text-sm text-foreground">{item.div}</span>
-                        {isSelected && <Check className="h-4 w-4 text-primary" />}
-                      </div>
-                      <span className="text-xs text-muted-foreground block">{item.label}</span>
-                      <span className="text-[11px] font-mono text-primary font-semibold block mt-1">
-                        {item.room} · {item.floor}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* 3. Push Notifications & Reduced Motion (A1 & B6) */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Push Notifications (A1) */}
-              <div className="bg-card border border-border/80 rounded-3xl p-6 shadow-sm space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center">
-                      <Bell className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-base text-foreground font-display">Push Notifications</h3>
-                      <p className="text-xs text-muted-foreground">Mobile & browser study reminders</p>
-                    </div>
-                  </div>
-
-                  <button
-                    type="button"
-                    disabled={isPushLoading}
-                    onClick={() => handleTogglePush(!pushEnabled)}
-                    className={`w-12 h-6 rounded-full transition-colors relative cursor-pointer ${
-                      pushEnabled ? 'bg-primary' : 'bg-secondary border border-border'
-                    }`}
-                  >
-                    <span 
-                      className={`block w-5 h-5 rounded-full bg-white shadow-md transform transition-transform ${
-                        pushEnabled ? 'translate-x-6' : 'translate-x-0.5'
-                      }`} 
-                    />
-                  </button>
-                </div>
-
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  Real push notifications alert you about SRS flashcards due for review, daily streak reminders at 8:00 PM, and upcoming university exam slots.
-                </p>
-
-                <div className="pt-2 border-t border-border/60 flex items-center justify-between">
-                  <span className="text-[11px] text-muted-foreground font-mono">
-                    Status: <strong className={pushEnabled ? "text-amber-500" : "text-muted-foreground"}>
-                      {pushEnabled ? "Subscribed to Backend" : "Disabled"}
-                    </strong>
-                  </span>
-                  <button
-                    type="button"
-                    onClick={sendTestNotification}
-                    className="px-3 py-1.5 rounded-lg border border-border text-xs font-semibold text-foreground hover:bg-secondary transition-colors cursor-pointer"
-                  >
-                    Test Push Alert
-                  </button>
-                </div>
-              </div>
-
-              {/* Reduced Motion System (B6) */}
-              <div className="bg-card border border-border/80 rounded-3xl p-6 shadow-sm space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-10 h-10 rounded-2xl bg-purple-500/10 text-purple-500 flex items-center justify-center">
-                      <Sliders className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-base text-foreground font-display">Reduce Motion</h3>
-                      <p className="text-xs text-muted-foreground">Accessibility & battery saver mode</p>
-                    </div>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => handleToggleMotion(!motionReduced)}
-                    className={`w-12 h-6 rounded-full transition-colors relative cursor-pointer ${
-                      motionReduced ? 'bg-primary' : 'bg-secondary border border-border'
-                    }`}
-                  >
-                    <span 
-                      className={`block w-5 h-5 rounded-full bg-white shadow-md transform transition-transform ${
-                        motionReduced ? 'translate-x-6' : 'translate-x-0.5'
-                      }`} 
-                    />
-                  </button>
-                </div>
-
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  Disables non-essential 3D card flips, transition springs, and pulsating badges for students sensitive to motion or running on budget Android devices.
-                </p>
-
-                <div className="pt-2 border-t border-border/60 flex items-center justify-between">
-                  <span className="text-[11px] text-muted-foreground font-mono">
-                    Mode: <strong>{motionReduced ? "Reduced Animations" : "Full Dynamic Motion"}</strong>
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setIsDataExportOpen(true)}
-                    className="text-xs text-muted-foreground hover:text-foreground underline transition-colors cursor-pointer"
-                  >
-                    Data & Privacy
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-      {/* Edit Profile & Photo Modal */}
-      {isEditing && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in overflow-y-auto">
-          <div className="bg-card border border-border rounded-2xl max-w-lg w-full p-6 shadow-2xl relative my-auto">
-            <button
-              onClick={() => setIsEditing(false)}
-              className="absolute right-4 top-4 p-1.5 rounded-full hover:bg-secondary text-muted-foreground"
-            >
-              <X className="h-5 w-5" />
-            </button>
-
-            <h2 className="text-lg font-bold text-foreground mb-1">Edit Student Profile & Photo</h2>
-            <p className="text-xs text-muted-foreground mb-5">
-              Customize your profile details. Changes are saved directly to your university account.
-            </p>
-
-            <form onSubmit={handleSaveProfile} className="space-y-4">
-              {/* Profile Photo / Avatar Selector */}
-              <div>
-                <label className="text-xs font-bold text-foreground block mb-2">
-                  Profile Photo / Avatar
-                </label>
-
-                <div className="flex items-center gap-4 mb-3">
-                  {renderAvatarBox(avatarUrl || resolveAvatarUrl(profile, user), displayName, "w-16 h-16 text-2xl", user?.email)}
-
-                  <div className="flex flex-col gap-1.5">
-                    <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold cursor-pointer hover:opacity-90 shadow-xs">
-                      {isUploadingPhoto ? (
-                        <>
-                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                          <span>Uploading...</span>
-                        </>
-                      ) : (
-                        <>
-                          <Upload className="h-3.5 w-3.5" />
-                          <span>Upload Photo to Cloud</span>
-                        </>
-                      )}
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleAvatarFileUpload}
-                        disabled={isUploadingPhoto}
-                        className="hidden"
-                      />
-                    </label>
-                    <span className="text-[10px] text-muted-foreground">PNG, JPG, WebP up to 5MB (stored securely in database)</span>
-                  </div>
-                </div>
-
-                {/* Preset Gradient Avatars */}
+              {/* Data Export / Privacy */}
+              <div className="p-4 flex items-center justify-between">
                 <div>
-                  <span className="text-[11px] font-semibold text-muted-foreground block mb-2">
-                    Or choose a gradient avatar:
-                  </span>
-                  <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
-                    {GRADIENT_AVATARS.map((av) => (
-                      <button
-                        type="button"
-                        key={av.id}
-                        onClick={() => setAvatarUrl(av.id)}
-                        title={av.label}
-                        className={`h-11 rounded-xl bg-gradient-to-tr ${av.bgClass} text-white font-black text-sm flex items-center justify-center border-2 transition-transform ${
-                          avatarUrl === av.id ? 'border-primary ring-2 ring-primary/40 scale-105' : 'border-transparent hover:scale-102'
-                        }`}
-                      >
-                        {displayName ? displayName.charAt(0).toUpperCase() : 'S'}
-                      </button>
-                    ))}
-                  </div>
+                  <h4 className="font-bold text-sm text-[#111111] dark:text-white">
+                    Data Privacy & Account
+                  </h4>
+                  <p className="text-xs text-[#6B7280] dark:text-neutral-400">
+                    Download your notes data or manage account privacy
+                  </p>
                 </div>
+                <button
+                  type="button"
+                  onClick={() => setIsDataExportOpen(true)}
+                  className="h-9 px-4 rounded-full bg-[#F6F3EC] dark:bg-neutral-800 text-[#111111] dark:text-white font-bold text-xs"
+                >
+                  Manage
+                </button>
               </div>
+            </div>
+          )}
+        </div>
+      </div>
 
-              {/* Display Name */}
+      {/* Edit Profile Modal */}
+      {isEditModalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+          onClick={() => setIsEditModalOpen(false)}
+        >
+          <div
+            className="w-full max-w-md bg-white dark:bg-[#18181B] rounded-[24px] border border-[#E8E4DA] p-5 shadow-2xl space-y-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between pb-3 border-b">
+              <h3 className="font-bold text-base text-[#111111] dark:text-white">
+                Edit Profile
+              </h3>
+              <button
+                type="button"
+                onClick={() => setIsEditModalOpen(false)}
+                className="p-1 rounded-full hover:bg-neutral-100"
+              >
+                <X className="w-5 h-5 text-neutral-500" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveProfile} className="space-y-3.5">
               <div>
-                <label className="text-xs font-semibold text-muted-foreground block mb-1">
+                <label className="block text-xs font-bold uppercase tracking-wider text-neutral-500 mb-1">
                   Full Name
                 </label>
                 <input
                   type="text"
-                  value={displayName}
-                  onChange={(e) => setDisplayName(e.target.value)}
-                  className="w-full h-10 px-3 rounded-lg border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="Your full name"
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  className="w-full h-11 rounded-xl bg-[#F6F3EC] dark:bg-neutral-800 text-sm px-4 border border-[#E8E4DA] focus:outline-none focus:border-[#2B4EFF]"
                   required
                 />
               </div>
 
-              {/* Academic Details: Program, Branch, Semester, Enrollment No */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="text-xs font-semibold text-muted-foreground block mb-1">
-                    Program / Degree
-                  </label>
-                  <select
-                    value={program}
-                    onChange={(e) => setProgram(e.target.value)}
-                    className="w-full h-10 px-3 rounded-lg border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                  >
-                    <option value="B.Tech">B.Tech</option>
-                    <option value="BCA">BCA</option>
-                    <option value="MCA">MCA</option>
-                    <option value="Diploma">Diploma Engineering</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="text-xs font-semibold text-muted-foreground block mb-1">
-                    Branch / Specialization
-                  </label>
-                  <input
-                    type="text"
-                    value={branch}
-                    onChange={(e) => setBranch(e.target.value)}
-                    className="w-full h-10 px-3 rounded-lg border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                    placeholder="e.g. Computer Science & Engineering"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-xs font-semibold text-muted-foreground block mb-1">
-                    Current Semester
-                  </label>
-                  <select
-                    value={semester}
-                    onChange={(e) => setSemester(Number(e.target.value))}
-                    className="w-full h-10 px-3 rounded-lg border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                  >
-                    {[1, 2, 3, 4, 5, 6, 7, 8].map((s) => (
-                      <option key={s} value={s}>Semester {s}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="text-xs font-semibold text-muted-foreground block mb-1">
-                    Class Division / Section
-                  </label>
-                  <select
-                    value={division}
-                    onChange={(e) => setDivision(e.target.value)}
-                    className="w-full h-10 px-3 rounded-lg border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                  >
-                    <option value="Div A">Div A (Class 1 · EB-15)</option>
-                    <option value="Div B">Div B (Class 2 · EB-16)</option>
-                    <option value="Div C">Div C (Class 3 · EB-20)</option>
-                    <option value="Div D">Div D (Class 4 · EB-39)</option>
-                    <option value="Div E">Div E (Class 5 · EB-25)</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="text-xs font-semibold text-muted-foreground block mb-1">
-                    University Enrollment No (Optional)
-                  </label>
-                  <input
-                    type="text"
-                    value={enrollmentNo}
-                    onChange={(e) => setEnrollmentNo(e.target.value)}
-                    className="w-full h-10 px-3 rounded-lg border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                    placeholder="e.g. 23010101001"
-                  />
-                </div>
-              </div>
-
-              {/* Bio / Status */}
               <div>
-                <label className="text-xs font-semibold text-muted-foreground block mb-1">
-                  Bio / Student Status
+                <label className="block text-xs font-bold uppercase tracking-wider text-neutral-500 mb-1">
+                  Department & Year
                 </label>
-                <textarea
-                  value={bio}
-                  onChange={(e) => setBio(e.target.value)}
-                  rows={2}
-                  className="w-full p-3 rounded-lg border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-none"
-                  placeholder="Tell peers what you are preparing for..."
+                <input
+                  type="text"
+                  value={editBranch}
+                  onChange={(e) => setEditBranch(e.target.value)}
+                  placeholder="e.g. B.Tech CSE · Year 2"
+                  className="w-full h-11 rounded-xl bg-[#F6F3EC] dark:bg-neutral-800 text-sm px-4 border border-[#E8E4DA] focus:outline-none focus:border-[#2B4EFF]"
                 />
               </div>
 
-              {/* Target CGPA & Goal */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="text-xs font-semibold text-muted-foreground block mb-1">
-                    Target CGPA
-                  </label>
-                  <input
-                    type="text"
-                    value={targetCgpa}
-                    onChange={(e) => setTargetCgpa(e.target.value)}
-                    className="w-full h-10 px-3 rounded-lg border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                    placeholder="e.g. 9.0+"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-xs font-semibold text-muted-foreground block mb-1">
-                    Exam / Career Goal
-                  </label>
-                  <input
-                    type="text"
-                    value={goal}
-                    onChange={(e) => setGoal(e.target.value)}
-                    className="w-full h-10 px-3 rounded-lg border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                    placeholder="e.g. Score 90%+ in MST"
-                  />
-                </div>
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-neutral-500 mb-1">
+                  Bio
+                </label>
+                <textarea
+                  rows={3}
+                  value={editBio}
+                  onChange={(e) => setEditBio(e.target.value)}
+                  placeholder="Tell your campus about what you are building or studying..."
+                  className="w-full rounded-xl bg-[#F6F3EC] dark:bg-neutral-800 text-sm p-3 border border-[#E8E4DA] focus:outline-none focus:border-[#2B4EFF] resize-none"
+                />
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
+              <div className="flex items-center gap-2 pt-2">
                 <button
                   type="button"
-                  onClick={() => setIsEditing(false)}
-                  className="px-4 py-2 rounded-lg bg-secondary text-foreground text-xs font-semibold hover:bg-secondary/80"
+                  onClick={() => setIsEditModalOpen(false)}
+                  className="flex-1 h-11 rounded-full bg-[#F6F3EC] dark:bg-neutral-800 font-bold text-xs"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-primary text-primary-foreground text-xs font-bold shadow-sm hover:opacity-90 disabled:opacity-50"
+                  className="flex-1 h-11 rounded-full bg-[#2B4EFF] text-white font-bold text-xs hover:bg-[#1E3EDB] disabled:opacity-50"
                 >
-                  {isSaving && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-                  <span>Save Profile</span>
+                  {isSaving ? 'Saving...' : 'Save Changes'}
                 </button>
               </div>
             </form>
           </div>
         </div>
       )}
-      <DataExportDeleteModal isOpen={isDataExportOpen} onClose={() => setIsDataExportOpen(false)} />
+
+      {/* Data Export / Delete Modal */}
+      <DataExportDeleteModal
+        isOpen={isDataExportOpen}
+        onClose={() => setIsDataExportOpen(false)}
+      />
     </div>
   );
 }

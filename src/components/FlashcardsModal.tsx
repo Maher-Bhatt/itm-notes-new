@@ -240,12 +240,12 @@ export function FlashcardsModal({
               : 'border-border/80 bg-card hover:border-primary/30 shadow-md'
           }`}>
             {/* FRONT of card */}
-            <div className={`absolute inset-0 backface-hidden p-6 flex flex-col justify-between ${isFlipped ? 'pointer-events-none' : ''}`}>
+            <div className={`absolute inset-0 backface-hidden p-6 flex flex-col justify-between transition-opacity duration-200 ${isFlipped ? 'pointer-events-none opacity-0 invisible' : 'opacity-100 visible'}`}>
               <div className="flex items-center justify-between text-[11px] font-semibold text-muted-foreground">
                 <span className="uppercase tracking-wider px-2 py-0.5 rounded bg-secondary">
                   {currentCard.category || 'Question / Concept'}
                 </span>
-                <span className="flex items-center gap-1 text-primary">
+                <span className="flex items-center gap-1 text-[#2B4EFF]">
                   <RotateCw className="h-3 w-3" /> Click or Space to Flip
                 </span>
               </div>
@@ -267,9 +267,9 @@ export function FlashcardsModal({
             </div>
 
             {/* BACK of card */}
-            <div className={`absolute inset-0 backface-hidden rotate-y-180 p-6 flex flex-col justify-between ${!isFlipped ? 'pointer-events-none' : ''}`}>
-              <div className="flex items-center justify-between text-[11px] font-semibold text-primary">
-                <span className="uppercase tracking-wider px-2 py-0.5 rounded bg-primary/10">
+            <div className={`absolute inset-0 backface-hidden rotate-y-180 p-6 flex flex-col justify-between transition-opacity duration-200 ${!isFlipped ? 'pointer-events-none opacity-0 invisible' : 'opacity-100 visible'}`}>
+              <div className="flex items-center justify-between text-[11px] font-semibold text-[#2B4EFF]">
+                <span className="uppercase tracking-wider px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950/40 text-[#2B4EFF]">
                   Model Answer & Explanation
                 </span>
                 <span className="flex items-center gap-1 text-muted-foreground">

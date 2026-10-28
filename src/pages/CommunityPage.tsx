@@ -1,1177 +1,501 @@
-import React, { useState, useMemo, useEffect, useCallback, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
-import { useGamification } from "@/hooks/useGamification";
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
+import { useGamification } from '@/hooks/useGamification';
 import {
-  MessageSquare,
-  ThumbsUp,
-  Share2,
-  Send,
   Sparkles,
-  Search,
-  CheckCircle,
-  TrendingUp,
-  Flame,
-  Users,
-  Image as ImageIcon,
-  Smile,
-  MoreHorizontal,
-  ChevronRight,
-  ExternalLink,
   Plus,
-  Eye,
-  EyeOff,
-  Trash2,
-  Globe,
-  Heart,
-  Loader2,
-  Check,
-  Award,
-  Trophy,
-  X
-} from "lucide-react";
-import { toast } from "sonner";
+  Image as ImageIcon,
+  Flame,
+  Search,
+  Filter,
+  RefreshCw,
+  Bell,
+  X,
+} from 'lucide-react';
+import { toast } from 'sonner';
 import {
   fetchCommunityPosts,
-  verifyComment,
   createCommunityPost,
   toggleCommunityLike,
   addCommunityComment,
   deleteCommunityPost,
   subscribeToCommunityFeed,
-  fetchUserFriends,
-  toggleFriendInDb,
-} from "@/services/communityService";
-import { CommunityPost, CommunityComment, ClassmateProfile, INITIAL_CLASSMATES, isFakePost } from "@/data/communityData";
-import { SharePostModal } from "@/components/SharePostModal";
-import { FriendComparisonModal } from "@/components/FriendComparisonModal";
-import { UserAvatar, resolveAvatarUrl, MAHER_CANONICAL_AVATAR } from "@/components/UserAvatar";
+} from '@/services/communityService';
+import {
+  fetchCampusPulseTiles,
+  PulseTileItem,
+  fetchCampusClubs,
+  fetchCampusFollows,
+  fetchCampusSavedPostIds,
+  toggleCampusSavedPost,
+  reportCampusPost,
+} from '@/services/campusLoopService';
+import { CommunityPost, isFakePost } from '@/data/communityData';
+import {
+  CampusPulseTile,
+  CampusPostCard,
+  CampusAvatar,
+  CampusTag,
+  CampusButton,
+  CampusSearchField,
+} from '@/components/campusloop';
+import { CreatePostModal } from '@/components/campusloop/CreatePostModal';
 
-// 100% real Supabase data — no fake/seed posts
+type HomeFeedTab = 'for_you' | 'following' | 'my_clubs';
 
 export default function CommunityPage() {
-  const navigate = useNavigate();
   const { user, profile, role } = useAuth();
   const { addXp } = useGamification();
 
-  // Consistent User Avatar & Identity resolution using canonical resolver
-  const currentUserAvatar = useMemo(() => {
-    return resolveAvatarUrl(profile, user);
-  }, [profile, user]);
+  const [activeTab, setActiveTab] = useState<HomeFeedTab>('for_you');
+  const [posts, setPosts] = useState<CommunityPost[]>([]);
+  const [pulseTiles, setPulseTiles] = useState<PulseTileItem[]>([]);
+  const [savedPostIds, setSavedPostIds] = useState<Set<string>>(new Set());
+  const [followingIds, setFollowingIds] = useState<Set<string>>(new Set());
+  const [myClubNames, setMyClubNames] = useState<Set<string>>(new Set());
+  const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-  const currentUserName = useMemo(() => {
-    return profile?.display_name || user?.user_metadata?.full_name || user?.email?.split("@")[0] || "Maher Bhatt";
-  }, [profile, user]);
-
-  const isAdmin = useMemo(() => {
-    return role === "admin" || user?.email?.toLowerCase() === "maherbhatt01@gmail.com";
-  }, [role, user]);
-
-  // Feed State
-  const [posts, setPosts] = useState<CommunityPost[]>(() => {
+  // Announcement banner dismissible state
+  const [showAnnouncement, setShowAnnouncement] = useState(() => {
     try {
-      const cached = localStorage.getItem("itm_campus_feed_posts");
-      if (cached) {
-        const parsed = JSON.parse(cached);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed.filter((p) => !isFakePost(p)).map((p: CommunityPost) => {
-            const isMaher = 
-              p.authorName === "Maher Bhatt" || 
-              p.authorId === "admin-maher" ||
-              p.authorEmail?.toLowerCase() === "maherbhatt01@gmail.com" ||
-              p.authorEmail?.toLowerCase() === "maher@gmail.com";
-            if (isMaher) {
-              return { ...p, authorAvatar: MAHER_CANONICAL_AVATAR };
-            }
-            if (p.authorAvatar && p.authorAvatar.includes("photo-1535713875002-d1d0cf377fde")) {
-              return { ...p, authorAvatar: undefined };
-            }
-            return p;
-          });
-        }
-      }
+      return localStorage.getItem('itm_feed_announcement_dismissed') !== 'true';
     } catch {
-      // Fallback
+      return true;
     }
-    return [];
   });
 
-  const [isLoadingPosts, setIsLoadingPosts] = useState(false);
-  const [activeCategoryFilter, setActiveCategoryFilter] = useState("Community");
-  const [sortFilter, setSortFilter] = useState("Latest Posts");
-  const [postCardType, setPostCardType] = useState<"Campus" | "Videos" | "Polls">("Campus");
+  const isAdmin = role === 'admin' || user?.email?.toLowerCase() === 'maherbhatt01@gmail.com';
 
-  // Create Post State & Image Attachment
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [newPostText, setNewPostText] = useState("");
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [isMaskedPost, setIsMaskedPost] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Comments & Interaction State
-  const [activeCommentsPostId, setActiveCommentsPostId] = useState<string | null>(null);
-  const [commentInput, setCommentInput] = useState("");
-  const [isSubmittingComment, setIsSubmittingComment] = useState(false);
-  const [shareModalPost, setShareModalPost] = useState<CommunityPost | null>(null);
-  const [comparisonFriend, setComparisonFriend] = useState<ClassmateProfile | null>(null);
-
-  const handleImageFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error("Image file size should be less than 5MB");
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const result = event.target?.result as string;
-      setSelectedImage(result);
-      toast.success("Image attached! Ready to publish.");
-    };
-    reader.readAsDataURL(file);
-  };
-
-  // Study Friends State
-  const [connectedFriendIds, setConnectedFriendIds] = useState<Set<string>>(() => {
+  // Load all home feed data
+  const loadData = useCallback(async () => {
     try {
-      const raw = localStorage.getItem("itm_user_friends_ids");
-      if (raw) return new Set(JSON.parse(raw));
-    } catch {}
-    return new Set<string>();
-  });
+      setIsRefreshing(true);
+      const [fetchedPosts, tiles, saved, follows, clubs] = await Promise.all([
+        fetchCommunityPosts(user?.id),
+        fetchCampusPulseTiles(),
+        fetchCampusSavedPostIds(user?.id),
+        fetchCampusFollows(user?.id),
+        fetchCampusClubs(user?.id),
+      ]);
 
-  // Load feed from Supabase Backend with local fallback
-  const loadFeed = useCallback(async (showLoading = false) => {
-    if (showLoading) setIsLoadingPosts(true);
-    try {
-      const remote = await fetchCommunityPosts(user?.id);
-      const authentic = (remote || []).filter((p) => !isFakePost(p));
-      
-      const normalized = authentic.map((p) => {
-        if (p.authorName === "Maher Bhatt" || p.authorId === "admin-maher") {
-          return {
-            ...p,
-            authorAvatar: currentUserAvatar || MAHER_CANONICAL_AVATAR,
-            verified: true,
-          };
-        }
-        return p;
-      });
+      // Filter out fake test posts
+      const realPosts = (fetchedPosts || []).filter((p) => !isFakePost(p));
+      setPosts(realPosts);
+      setPulseTiles(tiles);
+      setSavedPostIds(saved);
+      setFollowingIds(follows.followingIds);
 
-      setPosts(normalized);
-      try {
-        localStorage.setItem("itm_campus_feed_posts", JSON.stringify(normalized));
-      } catch {}
+      const joinedClubs = new Set(clubs.filter((c) => c.isMember).map((c) => c.name.toLowerCase()));
+      setMyClubNames(joinedClubs);
     } catch (err) {
-      console.warn("Using offline feed data:", err);
+      console.warn('Failed loading feed data:', err);
     } finally {
-      if (showLoading) setIsLoadingPosts(false);
-    }
-  }, [user?.id, currentUserAvatar]);
-
-  // Initial feed load and Realtime Subscription
-  useEffect(() => {
-    // Purge cached fake posts from localStorage
-    try {
-      const raw = localStorage.getItem("itm_campus_feed_posts");
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) {
-          const clean = parsed.filter((p) => !isFakePost(p));
-          localStorage.setItem("itm_campus_feed_posts", JSON.stringify(clean));
-        }
-      }
-    } catch {}
-    loadFeed(true);
-    const unsubscribe = subscribeToCommunityFeed(() => {
-      loadFeed(false);
-    });
-    return () => {
-      unsubscribe();
-    };
-  }, [loadFeed]);
-
-  // Load User Friends
-  useEffect(() => {
-    if (user?.id) {
-      fetchUserFriends(user.id).then((ids) => {
-        if (ids && ids.length > 0) {
-          setConnectedFriendIds(new Set(ids));
-        }
-      });
+      setIsLoading(false);
+      setIsRefreshing(false);
     }
   }, [user?.id]);
 
-  // Create Post
-  const handleCreatePost = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newPostText.trim() && !selectedImage) return;
-
-    setIsSubmitting(true);
-    const postCategory = activeCategoryFilter === "Confessions" ? "Campus Confessions" : "College Feedback";
-
-    const newPostData = {
-      authorId: user?.id || "student-local",
-      authorName: currentUserName,
-      authorEmail: user?.email || undefined,
-      authorAvatar: currentUserAvatar || MAHER_CANONICAL_AVATAR,
-      authorBranch: profile?.branch || "Computer Science & Engineering",
-      isMasked: isMaskedPost || activeCategoryFilter === "Confessions",
-      maskAlias: isMaskedPost || activeCategoryFilter === "Confessions" ? "Anonymous Student 🎭" : currentUserName,
-      category: postCategory,
-      content: newPostText.trim(),
-      mediaUrl: selectedImage || undefined,
-    };
-
-    // Optimistic UI insert
-    const tempPost: CommunityPost = {
-      id: `post-${Date.now()}`,
-      authorId: newPostData.authorId,
-      authorName: newPostData.authorName,
-      authorEmail: newPostData.authorEmail || "",
-      authorAvatar: newPostData.authorAvatar,
-      authorBranch: newPostData.authorBranch,
-      isMasked: newPostData.isMasked,
-      maskAlias: newPostData.maskAlias,
-      category: newPostData.category as any,
-      content: newPostData.content,
-      mediaUrl: selectedImage || undefined,
-      createdAt: "Just now",
-      likes: 1,
-      likedByMe: true,
-      comments: [],
-      verified: isAdmin,
-    };
-
-    setPosts((prev) => [tempPost, ...prev]);
-    setNewPostText("");
-    setSelectedImage(null);
-    if (fileInputRef.current) fileInputRef.current.value = "";
-    setIsSubmitting(false);
-    addXp(25);
-    toast.success("Post published to Campus Pulse! +25 XP 🔥");
-
-    // Sync to Supabase Backend
-    try {
-      const persisted = await createCommunityPost(newPostData);
-      setPosts((prev) => prev.map((p) => (p.id === tempPost.id ? { ...p, id: persisted.id } : p)));
-    } catch (err) {
-      console.warn("Supabase post sync fallback to local cache:", err);
-    }
-  };
-
-  // Like Toggle
-  const handleToggleLike = async (postId: string) => {
-    const targetPost = posts.find((p) => p.id === postId);
-    if (!targetPost) return;
-
-    const isLiked = !!targetPost.likedByMe;
-    const currentLikes = targetPost.likes || 0;
-    const nextLikes = isLiked ? Math.max(0, currentLikes - 1) : currentLikes + 1;
-
-    // Optimistic state update
-    setPosts((prev) =>
-      prev.map((p) => (p.id === postId ? { ...p, likedByMe: !isLiked, likes: nextLikes } : p))
-    );
-    toast.success(isLiked ? "Like removed" : "Liked post! ❤️");
-
-    // Sync to Supabase
-    try {
-      await toggleCommunityLike(postId, user?.id || "guest-user", isLiked, currentLikes);
-    } catch (err) {
-      console.warn("Failed to sync like with backend:", err);
-    }
-  };
-
-  // Add Comment
-  const handleToggleVerifyComment = async (postId: string, commentId: string, currentVerified: boolean) => {
-    if (!user) {
-      toast.error("Please log in to verify community answers.");
-      return;
-    }
-    const canVerify = role === 'admin' || (levelInfo && levelInfo.level >= 7);
-    if (!canVerify) {
-      toast.error("Only Platform Admins and Senior Scholars (Level 7+) can verify answers.");
-      return;
-    }
-
-    const nextVerified = !currentVerified;
-    const success = await verifyComment(commentId, user.id, nextVerified);
-    if (success) {
-      setPosts(prev => prev.map(p => {
-        if (p.id !== postId) return p;
-        const updatedComments = (p.comments || []).map(c => 
-          c.id === commentId ? { ...c, isVerified: nextVerified, verifiedBy: nextVerified ? user.id : undefined } : c
-        );
-        return { ...p, comments: updatedComments };
-      }));
-      toast.success(nextVerified ? "Answer marked as Verified Solution! 🌟" : "Verification revoked.");
-    } else {
-      toast.error("Failed to update verification status.");
-    }
-  };
-
-  const handleAddComment = async (postId: string) => {
-    if (!commentInput.trim()) return;
-
-    setIsSubmittingComment(true);
-    const newCommentData = {
-      postId,
-      authorId: user?.id || "student-local",
-      authorName: currentUserName,
-      authorEmail: user?.email || undefined,
-      authorAvatar: currentUserAvatar || MAHER_CANONICAL_AVATAR,
-      isMasked: false,
-      maskAlias: currentUserName,
-      content: commentInput.trim(),
-    };
-
-    const optimisticComment: CommunityComment = {
-      id: `c-${Date.now()}`,
-      postId,
-      authorId: newCommentData.authorId,
-      authorName: newCommentData.authorName,
-      authorEmail: newCommentData.authorEmail || "",
-      authorAvatar: newCommentData.authorAvatar,
-      isMasked: false,
-      maskAlias: newCommentData.maskAlias,
-      content: newCommentData.content,
-      createdAt: "Just now",
-      likes: 0,
-    };
-
-    setPosts((prev) =>
-      prev.map((p) => {
-        if (p.id === postId) {
-          return {
-            ...p,
-            comments: [...(p.comments || []), optimisticComment],
-          };
-        }
-        return p;
-      })
-    );
-
-    setCommentInput("");
-    setIsSubmittingComment(false);
-    addXp(5);
-    toast.success("Comment posted! (+5 XP)");
-
-    // Sync to Supabase
-    try {
-      await addCommunityComment(newCommentData);
-    } catch (err) {
-      console.warn("Failed to sync comment with backend:", err);
-    }
-  };
-
-  // Delete Post
-  const handleDeletePost = async (postId: string) => {
-    if (!confirm("Are you sure you want to delete this post?")) return;
-    setPosts((prev) => prev.filter((p) => p.id !== postId));
-    toast.success("Post removed.");
-    try {
-      await deleteCommunityPost(postId);
-    } catch (err) {
-      console.warn("Failed to delete post from Supabase:", err);
-    }
-  };
-
-  // Friend Connect Toggle
-  const handleToggleFriend = async (friendId: string, friendName: string) => {
-    const isConnected = connectedFriendIds.has(friendId);
-    setConnectedFriendIds((prev) => {
-      const next = new Set(prev);
-      if (isConnected) next.delete(friendId);
-      else next.add(friendId);
-      try {
-        localStorage.setItem("itm_user_friends_ids", JSON.stringify(Array.from(next)));
-      } catch {}
-      return next;
+  useEffect(() => {
+    loadData();
+    // Realtime Supabase post feed updates
+    const unsubscribe = subscribeToCommunityFeed(() => {
+      loadData();
     });
+    return () => {
+      if (typeof unsubscribe === 'function') unsubscribe();
+    };
+  }, [loadData]);
 
-    toast.success(isConnected ? `Disconnected from ${friendName}` : `Connected with ${friendName}! 🎉`);
+  // Global listener for "Create Post" modal trigger
+  useEffect(() => {
+    const handleOpen = () => setIsCreateModalOpen(true);
+    window.addEventListener('campus_open_create_post', handleOpen);
+    return () => window.removeEventListener('campus_open_create_post', handleOpen);
+  }, []);
 
-    if (user?.id) {
-      try {
-        await toggleFriendInDb(user.id, friendId, { name: friendName });
-      } catch (err) {
-        console.warn("Friend sync error:", err);
+  // Filter posts based on active tab and search query
+  const filteredPosts = useMemo(() => {
+    return posts.filter((post) => {
+      // 1. Tab filter
+      if (activeTab === 'following') {
+        if (!followingIds.has(post.authorId)) return false;
+      } else if (activeTab === 'my_clubs') {
+        const cat = (post.category || '').toLowerCase();
+        if (!myClubNames.has(cat) && !myClubNames.has(cat.replace(' club', ''))) return false;
       }
+
+      // 2. Search query filter
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        const matchesContent = post.content.toLowerCase().includes(q);
+        const matchesAuthor = post.authorName.toLowerCase().includes(q);
+        const matchesCat = (post.category || '').toLowerCase().includes(q);
+        if (!matchesContent && !matchesAuthor && !matchesCat) return false;
+      }
+
+      return true;
+    });
+  }, [posts, activeTab, followingIds, myClubNames, searchQuery]);
+
+  // Handle Like Toggle
+  const handleLikeToggle = async (postId: string) => {
+    try {
+      const post = posts.find((p) => p.id === postId);
+      if (!post) return;
+
+      const willLike = !post.likedByMe;
+      // Optimistic update
+      setPosts((prev) =>
+        prev.map((p) =>
+          p.id === postId
+            ? {
+                ...p,
+                likedByMe: willLike,
+                likes: Math.max(0, p.likes + (willLike ? 1 : -1)),
+              }
+            : p
+        )
+      );
+
+      await toggleCommunityLike(postId, user?.id);
+      if (willLike) {
+        addXp(5, 'Liked campus post');
+      }
+    } catch {
+      toast.error('Could not update like.');
+      loadData();
     }
   };
 
-  // Filtered and Sorted Posts
-  const filteredPosts = useMemo(() => {
-    return posts
-      .filter((post) => {
-        if (activeCategoryFilter === "Community") return true;
-        if (activeCategoryFilter === "Confessions") return post.category === "Campus Confessions" || post.isMasked;
-        if (activeCategoryFilter === "Verified") return post.isVerified || (post.comments || []).some(c => c.isVerified);
-        if (activeCategoryFilter === "DSA") return post.content.toLowerCase().includes("dsa") || post.content.toLowerCase().includes("data structure") || post.content.toLowerCase().includes("tree") || post.content.toLowerCase().includes("graph");
-        if (activeCategoryFilter === "DBMS") return post.content.toLowerCase().includes("dbms") || post.content.toLowerCase().includes("sql") || post.content.toLowerCase().includes("database");
-        if (activeCategoryFilter === "Java") return post.content.toLowerCase().includes("java") || post.content.toLowerCase().includes("oop");
-        return post.category === activeCategoryFilter;
-      })
-      .sort((a, b) => {
-        if (sortFilter === "Most Liked") return (b.likes || 0) - (a.likes || 0);
-        if (sortFilter === "Discussions") return (b.comments?.length || 0) - (a.comments?.length || 0);
-        return 0; // Default order
+  // Handle Save / Bookmark Toggle
+  const handleSaveToggle = async (postId: string) => {
+    try {
+      const isSaved = await toggleCampusSavedPost(postId, user?.id);
+      setSavedPostIds((prev) => {
+        const next = new Set(prev);
+        if (isSaved) {
+          next.add(postId);
+          toast.success('Post saved to your collection!');
+        } else {
+          next.delete(postId);
+          toast.info('Post removed from saved.');
+        }
+        return next;
       });
-  }, [posts, activeCategoryFilter, sortFilter]);
+    } catch {
+      toast.error('Failed saving post.');
+    }
+  };
 
-  const categoryPills = [
-    { label: "👥 All Community", value: "Community" },
-    { label: "✓ Verified Solutions", value: "Verified" },
-    { label: "🌲 DSA Doubts", value: "DSA" },
-    { label: "🗄️ DBMS Doubts", value: "DBMS" },
-    { label: "☕ Java OOP", value: "Java" },
-    { label: "💬 Confessions", value: "Confessions" },
-  ];
+  // Handle Comment Submission
+  const handleAddComment = async (postId: string, commentText: string) => {
+    try {
+      const authorName = profile?.display_name || user?.email?.split('@')[0] || 'Campus Student';
+      await addCommunityComment(
+        postId,
+        {
+          authorId: user?.id || 'guest-user',
+          authorName,
+          authorEmail: user?.email || '',
+          authorAvatar: profile?.avatar_url,
+          isMasked: false,
+          content: commentText,
+        },
+        user?.id
+      );
+
+      // Optimistically update comments
+      setPosts((prev) =>
+        prev.map((p) => {
+          if (p.id === postId) {
+            const newComment = {
+              id: `c-${Date.now()}`,
+              postId,
+              authorId: user?.id || 'guest',
+              authorName,
+              authorEmail: user?.email || '',
+              authorAvatar: profile?.avatar_url,
+              isMasked: false,
+              maskAlias: 'Student',
+              content: commentText,
+              createdAt: 'Just now',
+              likes: 0,
+            };
+            return {
+              ...p,
+              comments: [...(p.comments || []), newComment],
+            };
+          }
+          return p;
+        })
+      );
+      addXp(10, 'Replied to campus discussion');
+    } catch {
+      toast.error('Could not send reply.');
+    }
+  };
+
+  // Handle Delete Post (for author or admin)
+  const handleDeletePost = async (postId: string) => {
+    if (!confirm('Are you sure you want to delete this post?')) return;
+    try {
+      await deleteCommunityPost(postId, user?.id);
+      setPosts((prev) => prev.filter((p) => p.id !== postId));
+      toast.success('Post deleted.');
+    } catch {
+      toast.error('Failed to delete post.');
+    }
+  };
+
+  // Handle Report Post
+  const handleReportPost = async (postId: string, reason: string) => {
+    try {
+      await reportCampusPost(postId, reason, user?.id);
+      toast.success('Thank you. Post reported to campus moderators.');
+    } catch {
+      toast.error('Failed submitting report.');
+    }
+  };
+
+  // Dismiss Announcement
+  const dismissAnnouncement = () => {
+    setShowAnnouncement(false);
+    try {
+      localStorage.setItem('itm_feed_announcement_dismissed', 'true');
+    } catch {}
+  };
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-[1600px] mx-auto w-full space-y-6 animate-fade-in text-foreground overflow-x-hidden">
-      {/* ── TOP HEADER SECTION ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-border/60">
-        <div>
-          <h1 className="text-2xl font-black tracking-tight text-foreground">
-            Campus Pulse & Confessions
-          </h1>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            Real-time student discussions, study group calls, and university announcements.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <Link
-            to="/materials"
-            className="text-xs font-semibold text-primary hover:underline flex items-center gap-1 bg-primary/10 px-3 py-1.5 rounded-xl border border-primary/20"
-          >
-            <span>Academic Media</span>
-            <ExternalLink className="h-3 w-3" />
-          </Link>
-        </div>
-      </div>
-
-      {/* ── CATEGORY FILTER PILL BAR ── */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-        {categoryPills.map((pill) => {
-          const isActive = activeCategoryFilter === pill.value;
-          return (
+    <div className="min-h-screen bg-[#F6F3EC] dark:bg-[#0E0E10] text-[#111111] dark:text-neutral-100 pb-20">
+      <div className="max-w-2xl mx-auto px-3 sm:px-4 pt-4 sm:pt-6 space-y-4 sm:space-y-5">
+        {/* 1. Feed Navigation Tabs: For You / Following / My Clubs */}
+        <div className="flex items-center justify-between border-b border-[#E8E4DA] dark:border-neutral-800 pb-1">
+          <div className="flex items-center gap-6 sm:gap-8 font-display">
             <button
-              key={pill.value}
-              onClick={() => setActiveCategoryFilter(pill.value)}
-              className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all shadow-xs cursor-pointer ${
-                isActive
-                  ? "bg-brand-forest text-white shadow-brand-forest/30 scale-[1.02] border border-brand-chartreuse/40"
-                  : "bg-secondary text-foreground hover:bg-secondary/80 border border-border/60"
+              type="button"
+              onClick={() => setActiveTab('for_you')}
+              className={`pb-2.5 text-base sm:text-lg font-bold transition-all relative cursor-pointer ${
+                activeTab === 'for_you'
+                  ? 'text-[#2B4EFF] dark:text-[#3D5EFF]'
+                  : 'text-[#6B7280] dark:text-neutral-400 hover:text-[#111111] dark:hover:text-white'
               }`}
             >
-              {pill.label}
-            </button>
-          );
-        })}
-
-        <div className="ml-auto hidden sm:block">
-          <select
-            value={sortFilter}
-            onChange={(e) => setSortFilter(e.target.value)}
-            className="h-9 px-3 rounded-xl border border-input bg-card text-xs font-semibold text-foreground outline-none cursor-pointer hover:border-primary/50"
-          >
-            <option value="Latest Posts">Latest Posts</option>
-            <option value="Most Liked">Most Liked</option>
-            <option value="Discussions">Discussions</option>
-          </select>
-        </div>
-      </div>
-
-      {/* ── THREE-COLUMN SOCIAL LAYOUT ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* ── COLUMN 1: CAMPUS HIGHLIGHTS & BUDDIES (lg:col-span-3) ── */}
-        <div className="lg:col-span-3 space-y-5">
-          {/* 1. Campus Hero Image Card */}
-          <div className="rounded-2xl overflow-hidden relative shadow-md h-52 bg-slate-900 border border-border group">
-            <img
-              src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=600&h=400&fit=crop"
-              alt="ITM Campus"
-              className="w-full h-full object-cover opacity-70 group-hover:scale-105 transition-transform duration-500"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
-
-            <div className="absolute top-3 left-3">
-              <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-black/60 text-white backdrop-blur-md border border-white/20">
-                ITM / 2026
-              </span>
-            </div>
-
-            <div className="absolute top-3 right-3">
-              <button
-                onClick={() => {
-                  const input = document.getElementById("post-composer-input");
-                  input?.focus();
-                  toast.info("Search & Post Composer ready — ask anything or share notes!");
-                }}
-                className="w-7 h-7 rounded-full bg-black/50 text-white flex items-center justify-center backdrop-blur-md hover:bg-black/80 transition-colors cursor-pointer"
-                title="Search campus"
-              >
-                <Search className="h-3.5 w-3.5" />
-              </button>
-            </div>
-
-            <div className="absolute bottom-3 left-3 right-3 text-white space-y-0.5">
-              <h3 className="font-bold text-sm tracking-tight">Campus Pulse & Confessions</h3>
-              <p className="text-[11px] text-slate-300">Find campus AI Desk or look at feed</p>
-            </div>
-          </div>
-
-          {/* 2. Campus Trends & Tags Card */}
-          <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-3">
-            <h3 className="font-bold text-sm text-foreground">Campus Trends</h3>
-
-            <div className="flex flex-wrap gap-1.5">
-              <button
-                onClick={() => setActiveCategoryFilter("Community")}
-                className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20 hover:scale-105 transition-transform cursor-pointer"
-              >
-                🔥 Campus
-              </button>
-              <button
-                onClick={() => {
-                  setActiveCategoryFilter("Academics");
-                  toast.success("Filtered to Academic & Exam Discussions");
-                }}
-                className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-amber-500/10 text-amber-500 dark:text-amber-500 border border-amber-500/20 hover:scale-105 transition-transform cursor-pointer"
-              >
-                Academic Tests
-              </button>
-              <button
-                onClick={() => navigate("/materials")}
-                className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 hover:scale-105 transition-transform cursor-pointer"
-              >
-                Diverse Notes
-              </button>
-              <button
-                onClick={() => setActiveCategoryFilter("Confessions")}
-                className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-amber-500/10 text-amber-500 dark:text-amber-500 border border-amber-500/20 hover:scale-105 transition-transform cursor-pointer"
-              >
-                Study Messages
-              </button>
-            </div>
-
-            <div className="pt-2 border-t border-border/60 flex items-center justify-around text-muted-foreground">
-              <Globe
-                onClick={() => window.open("https://itmuniversity.org", "_blank")}
-                className="h-4 w-4 hover:text-foreground cursor-pointer transition-colors"
-                title="ITM University Portal"
-              />
-              <Share2
-                onClick={() => {
-                  navigator.clipboard.writeText(window.location.href);
-                  toast.success("Community link copied!");
-                }}
-                className="h-4 w-4 hover:text-foreground cursor-pointer transition-colors"
-                title="Share Community"
-              />
-              <Heart
-                onClick={() => toast.success("You spread love to the campus community! ❤️")}
-                className="h-4 w-4 hover:text-rose-500 cursor-pointer transition-colors"
-                title="Cheer Community"
-              />
-              <MessageSquare
-                onClick={() => {
-                  const input = document.getElementById("post-composer-input");
-                  input?.focus();
-                }}
-                className="h-4 w-4 hover:text-foreground cursor-pointer transition-colors"
-                title="Write Post"
-              />
-            </div>
-          </div>
-
-          {/* 3. Study Buddies List */}
-          <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-3">
-            <div className="flex items-center justify-between">
-              <h3 className="font-bold text-sm text-foreground">Study Buddies</h3>
-              <span className="text-[10px] text-amber-500 font-bold flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
-                Online
-              </span>
-            </div>
-            <p className="text-[11px] text-muted-foreground">Community Friends Active Now</p>
-
-            <div className="space-y-3">
-              {/* Friend 1: Khalid Gutierrez */}
-              <div className="flex items-center justify-between gap-3 text-xs">
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="w-8 h-8 rounded-full bg-amber-500 text-white font-bold flex items-center justify-center shrink-0">
-                    KG
-                  </div>
-                  <div className="min-w-0">
-                    <p className="font-bold text-foreground truncate">Khalid Gutierrez</p>
-                    <p className="text-[10px] text-muted-foreground">2h ago · 👍 112</p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => handleToggleFriend("friend-khalid", "Khalid Gutierrez")}
-                  className={`px-2.5 py-1 rounded-lg border text-[10px] font-bold shrink-0 transition-all cursor-pointer ${
-                    connectedFriendIds.has("friend-khalid")
-                      ? "bg-primary text-primary-foreground border-primary"
-                      : "border-border text-foreground hover:bg-secondary"
-                  }`}
-                >
-                  {connectedFriendIds.has("friend-khalid") ? "Connected" : "Connect"}
-                </button>
-              </div>
-
-              {/* Friend 2: Yumatria Hallitary */}
-              <div className="flex items-center justify-between gap-3 text-xs">
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="w-8 h-8 rounded-full bg-amber-500 text-white font-bold flex items-center justify-center shrink-0">
-                    YH
-                  </div>
-                  <div className="min-w-0">
-                    <p className="font-bold text-foreground truncate">Yumatria Hallitary</p>
-                    <p className="text-[10px] text-muted-foreground">3h ago · 👍 16</p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => handleToggleFriend("friend-yumatria", "Yumatria Hallitary")}
-                  className={`px-2.5 py-1 rounded-lg border text-[10px] font-bold shrink-0 transition-all cursor-pointer ${
-                    connectedFriendIds.has("friend-yumatria")
-                      ? "bg-primary text-primary-foreground border-primary"
-                      : "border-border text-foreground hover:bg-secondary"
-                  }`}
-                >
-                  {connectedFriendIds.has("friend-yumatria") ? "Connected" : "Connect"}
-                </button>
-              </div>
-            </div>
-
-            <div className="pt-2 border-t border-border/60">
-              <button
-                onClick={() => {
-                  setActiveCategoryFilter("Academics");
-                  const input = document.getElementById("post-composer-input");
-                  if (input) {
-                    (input as HTMLInputElement).value = "#StudyGroup: Looking for study partners for ";
-                    input.focus();
-                  }
-                  toast.info("Ready to form a study group! Complete your topic and post.");
-                }}
-                className="text-xs text-primary font-semibold hover:underline w-full text-center flex items-center justify-center gap-1 cursor-pointer"
-              >
-                <span>Find for Groups &gt;</span>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* ── COLUMN 2: MAIN SOCIAL FEED (lg:col-span-6) ── */}
-        <div className="lg:col-span-6 space-y-5">
-          {/* 1. Create Post Input Box with Canonical User Avatar & Image Attachment */}
-          <div className="bg-card border border-border rounded-2xl p-4 shadow-sm space-y-3">
-            <form onSubmit={handleCreatePost} className="space-y-3">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-3 w-full">
-                <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto flex-1 min-w-0">
-                  <UserAvatar
-                    avatarUrl={currentUserAvatar}
-                    displayName={currentUserName}
-                    email={user?.email}
-                    className="w-9 h-9 text-xs shrink-0"
-                  />
-
-                  <input
-                    id="post-composer-input"
-                    type="text"
-                    placeholder={
-                      activeCategoryFilter === "Confessions"
-                        ? "Post an anonymous campus confession..."
-                        : "Write a new question, share campus news..."
-                    }
-                    value={newPostText}
-                    onChange={(e) => setNewPostText(e.target.value)}
-                    className="flex-1 min-w-0 h-10 px-3 sm:px-4 rounded-full border border-input bg-secondary/40 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
-                  />
-                </div>
-
-                <div className="flex items-center gap-1 sm:gap-2 self-end sm:self-auto shrink-0">
-                  {/* Hidden Image File Input */}
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={handleImageFileSelect}
-                  />
-
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    className={`p-2 rounded-full transition-colors cursor-pointer ${
-                      selectedImage ? "text-primary bg-primary/10" : "text-muted-foreground hover:text-foreground hover:bg-secondary"
-                    }`}
-                    title="Attach Photo / Diagram / Screenshot"
-                  >
-                    <ImageIcon className="h-5 w-5" />
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setNewPostText((prev) => prev + " 😊 ")}
-                    className="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer"
-                    title="Add Emoji"
-                  >
-                    <Smile className="h-5 w-5" />
-                  </button>
-
-                  <button
-                    type="submit"
-                    disabled={isSubmitting || (!newPostText.trim() && !selectedImage)}
-                    className="px-4 py-2 ml-1 rounded-full bg-brand-forest hover:bg-brand-deep text-white text-xs font-bold shadow-md shadow-brand-forest/20 border border-brand-chartreuse/30 disabled:opacity-50 transition-all shrink-0 cursor-pointer"
-                  >
-                    {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : "Post"}
-                  </button>
-                </div>
-              </div>
-
-              {/* Image Preview thumbnail if selected */}
-              {selectedImage && (
-                <div className="relative inline-flex items-center gap-2 p-2 rounded-xl bg-secondary/60 border border-border">
-                  <img
-                    src={selectedImage}
-                    alt="Selected Upload Preview"
-                    className="h-20 w-28 object-cover rounded-lg border border-border/80 shadow-xs"
-                  />
-                  <div className="text-xs space-y-0.5">
-                    <p className="font-bold text-foreground">Photo Attachment Attached</p>
-                    <p className="text-[10px] text-muted-foreground">Will be published with your post</p>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSelectedImage(null);
-                        if (fileInputRef.current) fileInputRef.current.value = "";
-                      }}
-                      className="text-[10px] text-rose-500 hover:underline font-bold flex items-center gap-1 cursor-pointer pt-1"
-                    >
-                      <Trash2 className="h-3 w-3" /> Remove
-                    </button>
-                  </div>
-                </div>
+              For You
+              {activeTab === 'for_you' && (
+                <span className="absolute bottom-0 inset-x-0 h-[3px] bg-[#2B4EFF] dark:bg-[#3D5EFF] rounded-full" />
               )}
-            </form>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTab('following')}
+              className={`pb-2.5 text-base sm:text-lg font-bold transition-all relative cursor-pointer ${
+                activeTab === 'following'
+                  ? 'text-[#2B4EFF] dark:text-[#3D5EFF]'
+                  : 'text-[#6B7280] dark:text-neutral-400 hover:text-[#111111] dark:hover:text-white'
+              }`}
+            >
+              Following
+              {activeTab === 'following' && (
+                <span className="absolute bottom-0 inset-x-0 h-[3px] bg-[#2B4EFF] dark:bg-[#3D5EFF] rounded-full" />
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTab('my_clubs')}
+              className={`pb-2.5 text-base sm:text-lg font-bold transition-all relative cursor-pointer ${
+                activeTab === 'my_clubs'
+                  ? 'text-[#2B4EFF] dark:text-[#3D5EFF]'
+                  : 'text-[#6B7280] dark:text-neutral-400 hover:text-[#111111] dark:hover:text-white'
+              }`}
+            >
+              My Clubs
+              {activeTab === 'my_clubs' && (
+                <span className="absolute bottom-0 inset-x-0 h-[3px] bg-[#2B4EFF] dark:bg-[#3D5EFF] rounded-full" />
+              )}
+            </button>
           </div>
 
-          {/* 2. Feed Posts */}
-          <div className="space-y-4">
-            {isLoadingPosts && (
-              <div className="p-8 text-center bg-card rounded-2xl border border-border">
-                <Loader2 className="h-6 w-6 animate-spin mx-auto text-primary mb-2" />
-                <p className="text-xs text-muted-foreground">Loading verified campus pulse...</p>
-              </div>
-            )}
+          <button
+            type="button"
+            onClick={loadData}
+            title="Refresh Feed"
+            className={`p-2 rounded-full text-neutral-400 hover:text-[#2B4EFF] transition-colors cursor-pointer ${
+              isRefreshing ? 'animate-spin text-[#2B4EFF]' : ''
+            }`}
+          >
+            <RefreshCw className="w-4 h-4" />
+          </button>
+        </div>
 
-            {!isLoadingPosts && filteredPosts.length === 0 && (
-              <div className="p-10 text-center bg-card rounded-2xl border border-dashed border-border space-y-3">
-                <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto">
-                  <MessageSquare className="h-6 w-6" />
-                </div>
-                <h3 className="font-bold text-foreground text-sm">No community posts yet</h3>
-                <p className="text-xs text-muted-foreground max-w-sm mx-auto">
-                  Be the first to share an exam tip, ask a practical question, or drop campus feedback above!
+        {/* 2. Campus Pulse LIVE Carousel (Horizontal Scrollable) */}
+        <div>
+          <div className="flex items-center gap-2 mb-2.5">
+            <span className="text-[11px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#D7F75B] text-[#111111] inline-flex items-center gap-1 shadow-2xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
+              LIVE
+            </span>
+            <span className="text-xs font-bold text-[#6B7280] dark:text-neutral-400 uppercase tracking-wider">
+              Campus Pulse · ITM SLS Baroda
+            </span>
+          </div>
+
+          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none snap-x -mx-3 px-3 sm:mx-0 sm:px-0">
+            {pulseTiles.map((tile) => (
+              <CampusPulseTile
+                key={tile.id}
+                tone={tile.tone}
+                tag={tile.tag}
+                title={tile.title}
+                subtitle={tile.subtitle}
+                icon={tile.icon}
+                className="snap-start"
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* 3. Integrated Dismissible Announcement Banner */}
+        {showAnnouncement && (
+          <div className="rounded-[22px] bg-white dark:bg-[#1C1C1E] border border-[#E8E4DA] dark:border-neutral-800 p-3.5 sm:p-4 flex items-start justify-between gap-3 shadow-xs">
+            <div className="flex items-start gap-3">
+              <div className="w-9 h-9 rounded-2xl bg-[#E6EAFD] text-[#2B4EFF] flex items-center justify-center shrink-0 mt-0.5">
+                <Bell className="w-4 h-4" />
+              </div>
+              <div>
+                <h4 className="font-bold text-sm text-[#111111] dark:text-white leading-tight">
+                  Welcome to CampusLoop at ITM SLS Baroda
+                </h4>
+                <p className="text-xs text-[#6B7280] dark:text-neutral-400 font-medium mt-0.5 leading-relaxed">
+                  Connect with classmates, join university clubs, RSVP for tech sprints, and study together.
                 </p>
               </div>
-            )}
-
-            {filteredPosts.map((post) => {
-              const isAuthor = user?.id && post.authorId === user.id;
-              const isMaher = 
-                post.authorName === "Maher Bhatt" || 
-                post.authorId === "admin-maher" ||
-                post.authorEmail?.toLowerCase() === "maherbhatt01@gmail.com" ||
-                post.authorEmail?.toLowerCase() === "maher@gmail.com";
-              const postAvatar = isMaher 
-                ? (currentUserAvatar || MAHER_CANONICAL_AVATAR) 
-                : (post.authorAvatar?.includes("photo-1535713875002-d1d0cf377fde") ? undefined : post.authorAvatar);
-              const isLiked = !!post.likedByMe;
-              const commentsList = post.comments || [];
-
-              return (
-                <div
-                  key={post.id}
-                  className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-3 hover:border-border/90 transition-all"
-                >
-                  {/* Post Header */}
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-3">
-                      <UserAvatar
-                        avatarUrl={postAvatar}
-                        displayName={post.authorName}
-                        email={post.authorEmail}
-                        className="w-10 h-10 text-xs"
-                      />
-                      <div>
-                        <div className="flex items-center gap-1.5">
-                          <span className="font-bold text-sm text-foreground">{post.authorName}</span>
-                          {(post.verified || isMaher || isAdmin) && (
-                            <span
-                              className="w-4 h-4 rounded-full bg-brand-forest text-brand-chartreuse flex items-center justify-center text-[10px] font-bold shadow-xs border border-brand-chartreuse/40"
-                              title="Verified Campus Contributor"
-                            >
-                              ✓
-                            </span>
-                          )}
-                        </div>
-                        <span className="text-[11px] text-muted-foreground flex items-center gap-1">
-                          <span>{post.createdAt}</span>
-                          <span>·</span>
-                          <Globe className="h-3 w-3" />
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-1">
-                      {(isAuthor || isAdmin) && (
-                        <button
-                          onClick={() => handleDeletePost(post.id)}
-                          className="text-muted-foreground hover:text-rose-500 p-1.5 rounded-lg transition-colors cursor-pointer"
-                          title="Delete Post"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      )}
-                      <button
-                        onClick={() => setShareModalPost(post)}
-                        className="text-muted-foreground hover:text-foreground p-1.5 rounded-lg transition-colors cursor-pointer"
-                      >
-                        <MoreHorizontal className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Post Content Body */}
-                  <p className="text-xs sm:text-sm text-foreground/90 leading-relaxed font-normal whitespace-pre-line">
-                    {post.content}
-                  </p>
-
-                  {/* Optional Link Preview */}
-                  {post.linkUrl && (
-                    <a
-                      href={post.linkUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-xs text-amber-500 dark:text-amber-500 font-semibold hover:underline block truncate p-2 rounded-xl bg-amber-500/10 border border-amber-500/20"
-                    >
-                      {post.linkUrl}
-                    </a>
-                  )}
-
-                  {/* Optional Photo Attachment */}
-                  {(post.mediaUrl || (post as any).imageUrl) && (
-                    <div className="rounded-xl overflow-hidden border border-border max-h-80 mt-2 bg-slate-950/20">
-                      <img
-                        src={post.mediaUrl || (post as any).imageUrl}
-                        alt="Post Attachment"
-                        className="w-full h-full object-cover max-h-80 hover:scale-[1.01] transition-transform cursor-pointer"
-                        onClick={() => window.open(post.mediaUrl || (post as any).imageUrl, "_blank")}
-                      />
-                    </div>
-                  )}
-
-                  {/* Action Bar */}
-                  <div className="pt-3 border-t border-border/60 flex items-center justify-around text-xs text-muted-foreground font-semibold">
-                    <button
-                      onClick={() => handleToggleLike(post.id)}
-                      className={`flex items-center gap-1.5 py-1.5 px-3 rounded-lg hover:bg-secondary transition-colors cursor-pointer ${
-                        isLiked ? "text-amber-500 dark:text-amber-500 font-bold bg-amber-500/10" : ""
-                      }`}
-                    >
-                      <ThumbsUp className={`h-4 w-4 ${isLiked ? "fill-current" : ""}`} />
-                      <span>Like ({post.likes || 0})</span>
-                    </button>
-
-                    <button
-                      onClick={() => setActiveCommentsPostId(activeCommentsPostId === post.id ? null : post.id)}
-                      className="flex items-center gap-1.5 py-1.5 px-3 rounded-lg hover:bg-secondary transition-colors cursor-pointer"
-                    >
-                      <MessageSquare className="h-4 w-4" />
-                      <span>Comment ({commentsList.length})</span>
-                    </button>
-
-                    <button
-                      onClick={() => setShareModalPost(post)}
-                      className="flex items-center gap-1.5 py-1.5 px-3 rounded-lg hover:bg-secondary transition-colors cursor-pointer"
-                    >
-                      <Share2 className="h-4 w-4" />
-                      <span>Share Post</span>
-                    </button>
-                  </div>
-
-                  {/* Comments Drawer */}
-                  {activeCommentsPostId === post.id && (
-                    <div className="pt-3 border-t border-border/40 space-y-3">
-                      {commentsList.length > 0 ? (
-                        <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
-                          {commentsList.map((c, i) => (
-                            <div 
-                              key={c.id || i} 
-                              className={`p-3 rounded-xl text-xs space-y-1.5 transition-all ${
-                                c.isVerified 
-                                  ? "bg-[#18181B]/15 border border-[#FAFAFA]/60 shadow-xs" 
-                                  : "bg-secondary/40 border border-transparent"
-                              }`}
-                            >
-                              <div className="flex items-center justify-between gap-2">
-                                <div className="flex items-center gap-1.5 flex-wrap">
-                                  <span className="font-bold text-foreground">{c.authorName}</span>
-                                  {c.isVerified && (
-                                    <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#FAFAFA] text-[#18181B] flex items-center gap-1 shadow-2xs">
-                                      <CheckCircle className="h-3 w-3 stroke-[2.5]" />
-                                      <span>Verified Solution</span>
-                                    </span>
-                                  )}
-                                  {c.isAiGenerated && (
-                                    <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-purple-500/15 text-purple-400 border border-purple-500/30 flex items-center gap-1">
-                                      <Sparkles className="h-3 w-3" />
-                                      <span>AI Answer</span>
-                                    </span>
-                                  )}
-                                </div>
-                                <div className="flex items-center gap-2">
-                                  <span className="text-[10px] text-muted-foreground">{c.createdAt}</span>
-                                  {(role === 'admin' || (levelInfo && levelInfo.level >= 7)) && (
-                                    <button
-                                      type="button"
-                                      onClick={() => handleToggleVerifyComment(post.id, c.id, !!c.isVerified)}
-                                      className={`text-[10px] font-bold px-1.5 py-0.5 rounded transition-all cursor-pointer ${
-                                        c.isVerified 
-                                          ? "text-rose-400 hover:bg-rose-500/10" 
-                                          : "text-[#FAFAFA] bg-[#18181B] hover:bg-[#27272A]"
-                                      }`}
-                                      title="Admins and Senior Scholars can verify peer solutions"
-                                    >
-                                      {c.isVerified ? "Unverify" : "Verify ✓"}
-                                    </button>
-                                  )}
-                                </div>
-                              </div>
-                              <p className="text-muted-foreground leading-relaxed select-text">{c.content}</p>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <p className="text-[11px] text-muted-foreground italic text-center py-1">
-                          No replies yet. Be the first to reply!
-                        </p>
-                      )}
-
-                      <div className="flex gap-2">
-                        <input
-                          type="text"
-                          placeholder="Write a reply..."
-                          value={commentInput}
-                          onChange={(e) => setCommentInput(e.target.value)}
-                          onKeyDown={(e) => e.key === "Enter" && handleAddComment(post.id)}
-                          className="flex-1 h-9 px-3 rounded-xl border border-input bg-background text-xs outline-none focus:ring-1 focus:ring-primary"
-                        />
-                        <button
-                          onClick={() => handleAddComment(post.id)}
-                          disabled={isSubmittingComment || !commentInput.trim()}
-                          className="px-4 h-9 rounded-xl bg-primary text-primary-foreground font-bold text-xs hover:opacity-90 disabled:opacity-50 transition-all shrink-0 cursor-pointer"
-                        >
-                          Reply
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+            </div>
+            <button
+              type="button"
+              onClick={dismissAnnouncement}
+              className="p-1 rounded-full text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
           </div>
+        )}
+
+        {/* 4. "Share with your campus" Composer Bar */}
+        <div
+          onClick={() => setIsCreateModalOpen(true)}
+          className="rounded-full bg-white dark:bg-[#1C1C1E] border border-[#E8E4DA] dark:border-neutral-800 p-2 pl-3 sm:pl-3.5 flex items-center justify-between gap-3 shadow-xs hover:border-[#2B4EFF]/50 transition-all cursor-pointer select-none"
+        >
+          <div className="flex items-center gap-3 min-w-0 flex-1">
+            <CampusAvatar
+              src={profile?.avatar_url}
+              name={profile?.display_name || user?.email || 'Student'}
+              size={36}
+            />
+            <span className="text-sm font-medium text-neutral-400 truncate">
+              Share with your campus...
+            </span>
+          </div>
+
+          <button
+            type="button"
+            className="w-9 h-9 rounded-full bg-[#E6EAFD] text-[#2B4EFF] hover:bg-[#D8E0FC] flex items-center justify-center transition-colors shrink-0"
+            title="Add photo or flyer"
+          >
+            <ImageIcon className="w-4 h-4" />
+          </button>
         </div>
 
-        {/* ── COLUMN 3: TRENDING TOPICS & BUDDIES (lg:col-span-3) ── */}
-        <div className="lg:col-span-3 space-y-5">
-          {/* 1. Classmate Rivalry & Top Rankers Leaderboard */}
-          <div className="bg-card border border-border rounded-2xl p-4 sm:p-5 shadow-sm space-y-3.5">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-500">
-                  <Trophy className="h-4 w-4" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-sm text-foreground">Top Rankers & Rivalry</h3>
-                  <p className="text-[10px] text-muted-foreground">Classmate Head-to-Head Comparison</p>
-                </div>
-              </div>
-              <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-bold border border-primary/20">
-                Live Rank
-              </span>
-            </div>
+        {/* 5. Search & Filter Bar */}
+        <CampusSearchField
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Filter discussions, questions, or announcements..."
+        />
 
-            <div className="space-y-2">
-              {INITIAL_CLASSMATES && INITIAL_CLASSMATES.length > 0 ? (
-                INITIAL_CLASSMATES.slice(0, 4).map((cm, idx) => {
-                  const badgeStyles = [
-                    "bg-amber-400 text-black shadow-xs",
-                    "bg-slate-300 text-black shadow-xs",
-                    "bg-amber-700 text-white shadow-xs",
-                    "bg-secondary text-muted-foreground"
-                  ];
-                  return (
-                    <div
-                      key={cm.id}
-                      className="p-2.5 rounded-xl border border-border/80 bg-secondary/20 hover:bg-secondary/50 transition-all flex items-center justify-between gap-2 text-xs group"
-                    >
-                      <div className="flex items-center gap-2 min-w-0">
-                        <span className={`w-5 h-5 rounded-full flex items-center justify-center font-black text-[10px] shrink-0 ${badgeStyles[idx] || badgeStyles[3]}`}>
-                          #{idx + 1}
-                        </span>
-                        <div className="min-w-0">
-                          <p className="font-bold text-foreground truncate">{cm.name}</p>
-                          <p className="text-[10px] text-muted-foreground truncate">
-                            Lvl {cm.level} · {cm.xp} XP · 🔥 {cm.streakDays}d
-                          </p>
-                        </div>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => setComparisonFriend(cm)}
-                        className="px-2.5 py-1 rounded-lg bg-primary/10 hover:bg-primary text-primary hover:text-primary-foreground border border-primary/20 text-[10px] font-bold transition-all shrink-0 cursor-pointer flex items-center gap-1"
-                        title={`Compare your stats with ${cm.name}`}
-                      >
-                        <span>Compare</span>
-                        <ChevronRight className="h-3 w-3" />
-                      </button>
-                    </div>
-                  );
-                })
-              ) : (
-                <div className="p-4 text-center bg-secondary/15 rounded-xl border border-border/50 space-y-1">
-                  <Users className="h-5 w-5 mx-auto text-muted-foreground/40" />
-                  <p className="text-xs font-semibold text-foreground">Peer Leaderboard</p>
-                  <p className="text-[10px] text-muted-foreground leading-relaxed">
-                    Student rankings will appear here as peers take quizzes and earn XP.
-                  </p>
-                </div>
-              )}
-            </div>
+        {/* 6. Posts Feed */}
+        {isLoading ? (
+          <div className="py-16 flex flex-col items-center justify-center space-y-3">
+            <div className="w-8 h-8 rounded-full border-3 border-[#2B4EFF] border-t-transparent animate-spin" />
+            <p className="text-xs font-semibold text-[#6B7280] dark:text-neutral-400">
+              Loading campus feed...
+            </p>
           </div>
-
-          {/* 2. Post Card Types Selector */}
-          <div className="bg-card border border-border rounded-2xl p-4 shadow-sm space-y-3">
-            <h3 className="font-bold text-xs uppercase tracking-wider text-muted-foreground">Post Card Types</h3>
-            <div className="flex items-center gap-1.5">
-              <button
-                onClick={() => setPostCardType("Campus")}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                  postCardType === "Campus"
-                    ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-xs"
-                    : "bg-secondary text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                Campus
-              </button>
-              <button
-                onClick={() => {
-                  setPostCardType("Videos");
-                  toast.info("Showing campus videos & viva clips");
-                }}
-                className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-                  postCardType === "Videos"
-                    ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-xs"
-                    : "bg-secondary text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                Videos
-              </button>
-              <button
-                onClick={() => {
-                  setPostCardType("Polls");
-                  toast.info("Showing campus election & academic polls");
-                }}
-                className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-                  postCardType === "Polls"
-                    ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-xs"
-                    : "bg-secondary text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                Polls
-              </button>
+        ) : filteredPosts.length === 0 ? (
+          <div className="rounded-[24px] bg-white dark:bg-[#1C1C1E] border border-[#E8E4DA] dark:border-neutral-800 p-8 sm:p-12 text-center space-y-3 shadow-xs">
+            <div className="w-14 h-14 rounded-full bg-[#E6EAFD] text-[#2B4EFF] flex items-center justify-center mx-auto">
+              <Sparkles className="w-7 h-7" />
             </div>
+            <h3 className="font-bold text-lg text-[#111111] dark:text-white">
+              {activeTab === 'following'
+                ? 'No posts from people you follow yet'
+                : activeTab === 'my_clubs'
+                ? 'No posts from your clubs yet'
+                : 'No campus posts found'}
+            </h3>
+            <p className="text-xs sm:text-sm text-[#6B7280] dark:text-neutral-400 max-w-sm mx-auto">
+              {activeTab === 'following'
+                ? 'Follow peers from Explore to see their updates right here in your feed.'
+                : activeTab === 'my_clubs'
+                ? 'Join clubs in the Explore tab to see community discussions and activities.'
+                : 'Be the first to ask a doubt, share notes, or announce an event to your batch!'}
+            </p>
+            <button
+              type="button"
+              onClick={() => setIsCreateModalOpen(true)}
+              className="mt-2 h-10 px-5 rounded-full bg-[#2B4EFF] text-white font-bold text-xs hover:bg-[#1E3EDB] transition-all cursor-pointer"
+            >
+              Start the first discussion
+            </button>
           </div>
-
-          {/* 3. Trending Topics Widget */}
-          <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-3">
-            <div className="flex items-center justify-between">
-              <h3 className="font-bold text-sm text-foreground">Trending Topics</h3>
-              <span
-                onClick={() => navigate("/profile")}
-                className="text-xs text-primary font-semibold hover:underline cursor-pointer"
-              >
-                See All
-              </span>
-            </div>
-
-            <div className="space-y-3">
-              {/* Item 1: Maher Bhatt */}
-              <div className="flex items-center justify-between gap-3 text-xs">
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <UserAvatar
-                    avatarUrl={currentUserAvatar || MAHER_CANONICAL_AVATAR}
-                    displayName="Maher Bhatt"
-                    className="w-8 h-8 text-[10px]"
-                  />
-                  <div className="min-w-0">
-                    <p className="font-bold text-foreground truncate">Maher Bhatt</p>
-                    <p className="text-[10px] text-muted-foreground truncate">Over 5k views · 23 responses</p>
-                  </div>
-                </div>
-                <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 dark:text-amber-500 font-bold text-xs font-mono shrink-0">
-                  +180%
-                </span>
-              </div>
-
-              {/* Item 2: Semester Exam Prep */}
-              <div className="flex items-center justify-between gap-3 text-xs">
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <img
-                    src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=60&h=60&fit=crop"
-                    alt="Exam Prep"
-                    className="w-8 h-8 rounded-full object-cover shrink-0"
-                  />
-                  <div className="min-w-0">
-                    <p className="font-bold text-foreground truncate">Semester Exam Prep</p>
-                    <p className="text-[10px] text-muted-foreground truncate">Question banks · 14 responses</p>
-                  </div>
-                </div>
-                <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 dark:text-amber-500 font-bold text-xs font-mono shrink-0">
-                  +146%
-                </span>
-              </div>
-            </div>
+        ) : (
+          <div className="space-y-4">
+            {filteredPosts.map((post) => (
+              <CampusPostCard
+                key={post.id}
+                id={post.id}
+                authorId={post.authorId}
+                authorName={post.authorName}
+                authorAvatar={post.authorAvatar}
+                authorBranch={post.authorBranch}
+                communityOrClub={post.category}
+                createdAt={post.createdAt}
+                content={post.content}
+                images={post.mediaUrl ? [post.mediaUrl] : []}
+                likesCount={post.likes || 0}
+                likedByMe={Boolean(post.likedByMe)}
+                commentsCount={post.comments?.length || 0}
+                savedByMe={savedPostIds.has(post.id)}
+                comments={(post.comments || []).map((c) => ({
+                  id: c.id,
+                  authorName: c.authorName,
+                  authorAvatar: c.authorAvatar,
+                  content: c.content,
+                  createdAt: c.createdAt,
+                }))}
+                currentUserId={user?.id}
+                isAdmin={isAdmin}
+                onLikeToggle={handleLikeToggle}
+                onSaveToggle={handleSaveToggle}
+                onAddComment={handleAddComment}
+                onDeletePost={handleDeletePost}
+                onReportPost={handleReportPost}
+              />
+            ))}
           </div>
-        </div>
+        )}
       </div>
 
-      {/* Share Post Modal */}
-      {shareModalPost && (
-        <SharePostModal
-          isOpen={!!shareModalPost}
-          onClose={() => setShareModalPost(null)}
-          post={shareModalPost}
-        />
-      )}
-
-      {/* Classmate Rivalry & Head-to-Head Comparison Modal */}
-      {comparisonFriend && (
-        <FriendComparisonModal
-          isOpen={!!comparisonFriend}
-          onClose={() => setComparisonFriend(null)}
-          friend={comparisonFriend}
-        />
-      )}
+      {/* 7. Create Post Modal Component */}
+      <CreatePostModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onPostCreated={loadData}
+      />
     </div>
   );
 }

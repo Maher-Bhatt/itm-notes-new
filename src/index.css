@@ -9,100 +9,98 @@
 @tailwind utilities;
 
 @layer base {
-  /* ── LIGHT MODE (DEFAULT) ── */
+  /* ── LIGHT MODE (DEFAULT CAMPUSLOOP) ── */
   :root {
-    --background: 240 5% 98%;          /* #f8f9fa Soft Crisp Chalk */
-    --foreground: 240 10% 4%;          /* #09090b Deep Sharp Charcoal */
+    --background: 43 28% 95%;          /* #F6F3EC Warm Off-White / Cream Canvas */
+    --foreground: 0 0% 7%;             /* #111111 Near-Black High Contrast Text */
 
-    --card: 0 0% 100%;                 /* #ffffff Pure White Card */
-    --card-foreground: 240 10% 4%;
+    --card: 0 0% 100%;                 /* #FFFFFF Pure White Card */
+    --card-foreground: 0 0% 7%;        /* #111111 */
 
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 4%;
+    --popover-foreground: 0 0% 7%;
 
-    /* Monolithic High-Contrast Primary Button */
-    --primary: 240 10% 4%;             /* #09090b Solid Black in Light Mode */
-    --primary-foreground: 0 0% 100%;   /* #ffffff */
-    --primary-glow: 240 10% 4% / 0.12;
+    /* Vivid Electric Blue */
+    --primary: 230 100% 58%;           /* #2B4EFF Electric Campus Blue */
+    --primary-foreground: 0 0% 100%;   /* #FFFFFF */
+    --primary-glow: 230 100% 58% / 0.18;
 
-    --secondary: 240 5% 94%;           /* #efeff1 Soft Gray */
-    --secondary-foreground: 240 10% 4%;
+    --secondary: 231 82% 95%;          /* #E6EAFD Light Blue Tint */
+    --secondary-foreground: 230 100% 45%;
 
-    --muted: 240 5% 94%;               /* #efeff1 */
-    --muted-foreground: 240 4% 46%;    /* #71717a Muted Zinc */
+    --muted: 43 20% 92%;               /* #EDEAE2 Warm Neutral Border/Fill */
+    --muted-foreground: 220 9% 46%;    /* #6B7280 Muted Secondary Text */
 
-    /* Solar Amber / Warm Gold Accent (No green, no blue, no rainbow) */
-    --accent: 38 92% 50%;              /* #f59e0b Solar Amber */
-    --accent-foreground: 0 0% 100%;
+    /* Lime / Chartreuse Accent */
+    --accent: 72 90% 66%;              /* #D7F75B Electric Lime */
+    --accent-foreground: 0 0% 7%;      /* #111111 */
 
-    --destructive: 0 84% 60%;          /* #ef4444 Crimson */
+    --destructive: 0 84% 60%;          /* #EF4444 Crimson */
     --destructive-foreground: 0 0% 100%;
 
-    --border: 240 6% 90%;              /* #e4e4e7 Hairline Border */
-    --input: 240 6% 90%;
-    --ring: 38 92% 50%;                /* #f59e0b */
+    --border: 43 16% 88%;              /* #E8E4DA Soft Canvas Hairline Border */
+    --input: 43 16% 88%;
+    --ring: 230 100% 58%;              /* #2B4EFF Focus Ring */
 
-    --radius: 0.75rem;
+    --radius: 1.25rem;                 /* 20px - 24px CampusLoop Card Radius */
 
-    --success: 38 92% 50%;
+    --success: 142 71% 45%;
     --success-foreground: 0 0% 100%;
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
-    --info: 240 10% 4%;
+    --info: 230 100% 58%;
     --info-foreground: 0 0% 100%;
 
     /* Sidebar in Light Mode */
     --sidebar-background: 0 0% 100%;   /* Pure White */
-    --sidebar-foreground: 240 10% 4%;
-    --sidebar-primary: 240 10% 4%;
+    --sidebar-foreground: 0 0% 7%;
+    --sidebar-primary: 230 100% 58%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 5% 94%;
-    --sidebar-accent-foreground: 240 10% 4%;
-    --sidebar-border: 240 6% 90%;
-    --sidebar-ring: 38 92% 50%;
+    --sidebar-accent: 231 82% 95%;
+    --sidebar-accent-foreground: 230 100% 45%;
+    --sidebar-border: 43 16% 88%;
+    --sidebar-ring: 230 100% 58%;
   }
 
   /* ── DARK MODE ── */
   .dark {
-    --background: 240 10% 4%;          /* #09090b Inky Carbon */
-    --foreground: 0 0% 98%;            /* #fafafa Crisp Off-White */
+    --background: 0 0% 7%;             /* #111111 Inky Obsidian Canvas */
+    --foreground: 43 28% 96%;          /* #F6F3EC Off-White Text */
 
-    --card: 240 8% 7%;                 /* #111114 Charcoal Slate */
-    --card-foreground: 0 0% 98%;
+    --card: 0 0% 11%;                  /* #1C1C1E Charcoal Surface */
+    --card-foreground: 43 28% 96%;
 
-    --popover: 240 8% 8%;              /* #141418 */
-    --popover-foreground: 0 0% 98%;
+    --popover: 0 0% 12%;               /* #1E1E22 */
+    --popover-foreground: 43 28% 96%;
 
-    /* Monolithic High-Contrast Primary Button */
-    --primary: 0 0% 98%;               /* #fafafa Solid White in Dark Mode */
-    --primary-foreground: 240 10% 4%;  /* #09090b */
-    --primary-glow: 0 0% 100% / 0.15;
+    --primary: 230 100% 62%;           /* #3D5EFF Electric Blue */
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 230 100% 62% / 0.25;
 
-    --secondary: 240 6% 12%;           /* #1c1c21 */
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 230 30% 18%;          /* Dark Blue Surface */
+    --secondary-foreground: 230 100% 88%;
 
-    --muted: 240 6% 12%;               /* #1c1c21 */
-    --muted-foreground: 240 5% 65%;    /* #a1a1aa Zinc */
+    --muted: 0 0% 16%;                 /* Dark neutral */
+    --muted-foreground: 220 9% 65%;    /* #9CA3AF */
 
-    /* Solar Amber / Warm Gold Accent (Zero blue, zero green, zero rainbow) */
-    --accent: 38 92% 50%;              /* #f59e0b Solar Amber */
-    --accent-foreground: 0 0% 100%;
+    --accent: 72 90% 66%;              /* #D7F75B Lime */
+    --accent-foreground: 0 0% 7%;
 
-    --destructive: 0 84% 60%;          /* #ef4444 Crimson */
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 240 5% 18%;              /* #27272a */
-    --input: 240 5% 16%;               /* #222226 */
-    --ring: 38 92% 50%;
+    --border: 0 0% 18%;
+    --input: 0 0% 18%;
+    --ring: 230 100% 62%;
 
-    --sidebar-background: 240 10% 5%;  /* #0c0c0f */
-    --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 0 0% 98%;
-    --sidebar-primary-foreground: 240 10% 4%;
-    --sidebar-accent: 240 6% 10%;      /* #16161b */
-    --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 240 5% 15%;      /* #232328 */
-    --sidebar-ring: 38 92% 50%;
+    --sidebar-background: 0 0% 9%;     /* #17171A */
+    --sidebar-foreground: 43 28% 96%;
+    --sidebar-primary: 230 100% 62%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 230 30% 18%;
+    --sidebar-accent-foreground: 230 100% 88%;
+    --sidebar-border: 0 0% 18%;
+    --sidebar-ring: 230 100% 62%;
   }
 }
 
@@ -140,19 +138,19 @@
   }
 
   ::selection {
-    background: rgba(245, 158, 11, 0.25);
+    background: rgba(43, 78, 255, 0.25);
     color: hsl(var(--foreground));
   }
 }
 
 /* ==========================================================================
-   Tactile Bento Utilities, Adaptive Patterns & Micro-Animations
+   CampusLoop Minimalist Bento Utilities, Adaptive Patterns & Micro-Animations
    ========================================================================== */
 
 @layer utilities {
   /* ── Precision Adaptive Dot Matrix Grid (Light & Dark) ── */
   .pattern-dots {
-    background-image: radial-gradient(rgba(0, 0, 0, 0.06) 1px, transparent 1px);
+    background-image: radial-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px);
     background-size: 24px 24px;
   }
 
@@ -176,7 +174,7 @@
     background-size: 32px 32px;
   }
 
-  /* ── Ambient Soft Warm Amber Vignette (Non-AI, subtle elegance) ── */
+  /* ── Ambient Soft Warm Blue Vignette ── */
   .ambient-spotlight {
     position: fixed;
     top: 0;
@@ -184,13 +182,13 @@
     transform: translateX(-50%);
     width: 1000px;
     height: 440px;
-    background: radial-gradient(50% 50% at 50% 0%, rgba(245, 158, 11, 0.035) 0%, transparent 80%);
+    background: radial-gradient(50% 50% at 50% 0%, rgba(43, 78, 255, 0.035) 0%, transparent 80%);
     pointer-events: none;
     z-index: 0;
   }
 
   .dark .ambient-spotlight {
-    background: radial-gradient(50% 50% at 50% 0%, rgba(245, 158, 11, 0.07) 0%, transparent 80%);
+    background: radial-gradient(50% 50% at 50% 0%, rgba(43, 78, 255, 0.08) 0%, transparent 80%);
   }
 
   /* ── Bento Glass Card (Light & Dark Adapted) ── */

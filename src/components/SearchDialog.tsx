@@ -36,6 +36,9 @@ const TOOLS_SEARCH_ITEMS = [
   { title: "Practical Coding Lab (DSA, Java, Python)", category: "Lab", route: "/coding-lab", icon: Code, desc: "Run university practicals with test cases" },
   { title: "Semester Practice Quizzes", category: "Quiz", route: "/quiz", icon: Trophy, desc: "Active recall test with instant feedback" },
   { title: "Campus Social & Student Community", category: "Social", route: "/community", icon: Sparkles, desc: "Connect with verified classmates" },
+  { title: "Campus Clubs & Student Organizations", category: "Community", route: "/explore", icon: Sparkles, desc: "Explore coding, robotics, and cultural clubs at ITM" },
+  { title: "Campus Events & Hackathons", category: "Community", route: "/explore", icon: Sparkles, desc: "RSVP for upcoming campus tech talks and workshops" },
+  { title: "Campus Messages & Inbox", category: "Community", route: "/inbox", icon: Sparkles, desc: "Peer conversations and study group messages" },
   { title: "Mid-Semester (MST) Question Banks", category: "Exam", route: "/materials", icon: FileText, desc: "Official exam question banks and formats" },
 ];
 

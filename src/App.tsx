@@ -26,6 +26,8 @@ import QuizPage from "./pages/QuizPage";
 import SeedPage from "./pages/admin/SeedPage";
 import SubjectImpQuestionsPage from "./pages/SubjectImpQuestionsPage";
 import ProfilePage from "./pages/ProfilePage";
+import ExplorePage from "./pages/ExplorePage";
+import InboxPage from "./pages/InboxPage";
 import GpaCalculatorPage from "./pages/GpaCalculatorPage";
 import SubjectCheatSheetPage from "./pages/SubjectCheatSheetPage";
 import SubjectsPage from "./pages/SubjectsPage";
@@ -198,7 +200,9 @@ const App = () => (
 
                           <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminDashboard /></ProtectedRoute>} />
                           <Route path="/admin/seed" element={<ProtectedRoute requireAdmin><SeedPage /></ProtectedRoute>} />
-                          <Route path="/explore" element={<Index />} />
+                          <Route path="/explore" element={<ExplorePage />} />
+                          <Route path="/inbox" element={<ProtectedRoute><InboxPage /></ProtectedRoute>} />
+                          <Route path="/messages" element={<ProtectedRoute><InboxPage /></ProtectedRoute>} />
                         </Route>
 
                         <Route path="*" element={<NotFound />} />

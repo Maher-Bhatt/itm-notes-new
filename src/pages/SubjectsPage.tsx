@@ -29,29 +29,29 @@ function SubjectCard({
   return (
     <div
       onClick={() => navigateRef(`/subject/${sub.id}`)}
-      className="group relative rounded-2xl border border-border bg-card hover:bg-secondary/40 hover:border-amber-500/40 transition-all p-5 flex flex-col justify-between gap-4 card-lift press cursor-pointer select-none shadow-xs"
+      className="group relative rounded-[22px] border border-[#E8E4DA] dark:border-neutral-800 bg-white dark:bg-[#1C1C1E] hover:border-[#2B4EFF]/50 transition-all p-5 flex flex-col justify-between gap-4 card-lift press cursor-pointer select-none shadow-xs"
     >
       <div className="space-y-3">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-1.5">
-            <span className="px-2.5 py-0.5 rounded-md font-mono text-[10px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+            <span className="px-2.5 py-0.5 rounded-full font-mono text-[10px] font-bold bg-[#E6EAFD] text-[#2B4EFF] dark:bg-blue-950/40 dark:text-blue-300">
               {sub.code || "SUB"}
             </span>
-            <span className="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-secondary text-muted-foreground">
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#F6F3EC] dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400">
               Semester {sub.semester}
             </span>
           </div>
-          <span className="text-[11px] font-medium text-muted-foreground flex items-center gap-1">
+          <span className="text-[11px] font-medium text-[#6B7280] dark:text-neutral-400 flex items-center gap-1">
             <BookOpen className="h-3 w-3" />
             {totalUnits} Units · {totalTopics} Topics
           </span>
         </div>
 
-        <h3 className="font-bold text-base text-foreground group-hover:text-amber-500 transition-colors leading-snug">
+        <h3 className="font-bold text-base text-[#111111] dark:text-white group-hover:text-[#2B4EFF] transition-colors leading-snug">
           {sub.name}
         </h3>
 
-        <p className="text-[11px] text-muted-foreground line-clamp-2 leading-relaxed">
+        <p className="text-[11px] text-[#6B7280] dark:text-neutral-400 line-clamp-2 leading-relaxed">
           {sub.description || "Detailed syllabus notes, algorithmic proofs, diagrams, and exam review questions."}
         </p>
 
@@ -61,14 +61,14 @@ function SubjectCard({
             {sub.units?.slice(0, 3).map((unit: any, idx: number) => (
               <span
                 key={unit.id}
-                className="text-[10px] px-2 py-0.5 rounded-md bg-secondary text-foreground/80 font-medium truncate max-w-[190px]"
+                className="text-[10px] px-2.5 py-0.5 rounded-full bg-[#F6F3EC] dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 font-medium truncate max-w-[190px]"
                 title={unit.title}
               >
                 U{idx + 1}: {unit.title.replace(/^Unit \d+:\s*/i, "")}
               </span>
             ))}
             {totalUnits > 3 && (
-              <span className="text-[10px] px-1.5 py-0.5 rounded text-muted-foreground font-semibold">
+              <span className="text-[10px] px-1.5 py-0.5 rounded-full text-[#6B7280] font-semibold">
                 +{sub.units?.length - 3} more
               </span>
             )}
@@ -77,15 +77,15 @@ function SubjectCard({
       </div>
 
       {/* Footer: Progress & 1 Clean Action */}
-      <div className="pt-3 border-t border-border flex items-center justify-between gap-2">
+      <div className="pt-3 border-t border-[#EFECE6] dark:border-neutral-800 flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 flex-1 max-w-[140px]">
-          <div className="h-1.5 flex-1 rounded-full bg-secondary overflow-hidden">
+          <div className="h-1.5 flex-1 rounded-full bg-[#F6F3EC] dark:bg-neutral-800 overflow-hidden">
             <div
-              className="h-full bg-amber-500 rounded-full transition-all duration-500"
+              className="h-full bg-[#2B4EFF] rounded-full transition-all duration-500"
               style={{ width: `${progressPct}%` }}
             />
           </div>
-          <span className="text-[10px] font-mono text-muted-foreground">{progressPct}%</span>
+          <span className="text-[10px] font-mono text-neutral-500">{progressPct}%</span>
         </div>
 
         <div className="flex items-center gap-2">
@@ -96,7 +96,7 @@ function SubjectCard({
                 e.stopPropagation();
                 navigateRef(`/imp-questions/${sub.id}`);
               }}
-              className="px-2 py-1 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 font-bold text-[10px] border border-amber-500/20 press flex items-center gap-1 cursor-pointer"
+              className="px-2.5 py-1 rounded-full bg-[#E6EAFD] hover:bg-[#D8E0FC] text-[#2B4EFF] font-bold text-[10px] press flex items-center gap-1 cursor-pointer"
               title="Solved Exam Questions"
             >
               <Zap className="h-3 w-3" />
@@ -104,7 +104,7 @@ function SubjectCard({
             </button>
           )}
 
-          <span className="text-xs font-bold text-foreground group-hover:text-amber-500 group-hover:translate-x-1 transition-all flex items-center gap-1 font-display">
+          <span className="text-xs font-bold text-foreground group-hover:text-[#2B4EFF] group-hover:translate-x-1 transition-all flex items-center gap-1 font-display">
             <span>Explore</span>
             <ArrowRight className="h-3.5 w-3.5" />
           </span>

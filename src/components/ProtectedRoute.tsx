@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { Loader2, ShieldAlert, KeyRound, ArrowLeft } from "lucide-react";
-import { toast } from "sonner";
+import { Loader2, ShieldAlert, ArrowLeft } from "lucide-react";
 
 export function ProtectedRoute({ 
   children, 
@@ -14,8 +13,6 @@ export function ProtectedRoute({
   const { user, role, profile, isLoading } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
-  const [pin, setPin] = useState("");
-  const [isUnlocked, setIsUnlocked] = useState(false);
 
   if (isLoading) {
     return (
@@ -25,12 +22,20 @@ export function ProtectedRoute({
     );
   }
 
-  if (!user) {
+  const isGuest = typeof window !== "undefined" && sessionStorage.getItem("itm_guest_mode") === "true";
+
+  // Guest users can browse public academic pages but cannot access admin
+  if (!user && !isGuest) {
+    return <Navigate to="/auth" state={{ from: location }} replace />;
+  }
+
+  // Admin routes strictly disallow guests
+  if (requireAdmin && (!user || isGuest)) {
     return <Navigate to="/auth" state={{ from: location }} replace />;
   }
 
   // Admin routes bypass student onboarding requirements
-  if (!requireAdmin) {
+  if (!requireAdmin && user) {
     const hasCompletedOnboarding = profile?.onboarding_completed === true || (profile?.onboarding_completed === null && Boolean(profile?.semester));
 
     if (!hasCompletedOnboarding && location.pathname !== "/onboarding") {
@@ -58,7 +63,7 @@ export function ProtectedRoute({
             </span>
             <h2 className="text-xl font-bold text-white tracking-tight mt-2">Platform Admin Console Restricted</h2>
             <p className="text-xs text-slate-400 mt-2 leading-relaxed">
-              Signed in as <span className="text-slate-200 font-mono font-semibold">{user.email}</span>. This command area is strictly reserved for the platform founder and authorized university administrators.
+              Signed in as <span className="text-slate-200 font-mono font-semibold">{user?.email}</span>. This command area is strictly reserved for the platform founder and authorized university administrators.
             </p>
           </div>
 
@@ -74,7 +79,7 @@ export function ProtectedRoute({
 
           <button
             onClick={() => navigate("/dashboard")}
-            className="w-full h-11 bg-[#18181B] hover:bg-[#1f5246] text-[#FAFAFA] rounded-xl text-xs font-bold shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer border border-[#FAFAFA]/30"
+            className="w-full h-11 bg-[#18181B] hover:bg-neutral-800 text-[#FAFAFA] rounded-xl text-xs font-bold shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer border border-[#FAFAFA]/30"
           >
             <ArrowLeft className="h-4 w-4" /> Return to Student Dashboard
           </button>

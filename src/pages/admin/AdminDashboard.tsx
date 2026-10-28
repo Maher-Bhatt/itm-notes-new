@@ -39,6 +39,7 @@ import { AdminAuditLogsTab } from "./components/AdminAuditLogsTab";
 import { AdminSupportTab } from "./components/AdminSupportTab";
 import { AdminFlagsTab } from "./components/AdminFlagsTab";
 import { AdminPlatformTab } from "./components/AdminPlatformTab";
+import { AdminPulseTab } from "./components/AdminPulseTab";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -52,6 +53,7 @@ interface CommunityPost {
 
 type TabId =
   | "overview"
+  | "pulse"
   | "users"
   | "errors"
   | "moderation"
@@ -69,6 +71,7 @@ type TabId =
 
 const TABS: { id: TabId; label: string; icon: React.FC<{ className?: string }> }[] = [
   { id: "overview", label: "Overview", icon: LayoutDashboard },
+  { id: "pulse", label: "Campus Pulse", icon: Zap },
   { id: "users", label: "Users", icon: Users },
   { id: "errors", label: "Client Errors", icon: AlertTriangle },
   { id: "moderation", label: "Moderation Queue", icon: MessageSquare },
@@ -508,26 +511,28 @@ export default function AdminDashboard() {
         </div>
       </header>
 
-      {/* 2. Horizontal Scroll Tabs Navigation */}
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 flex gap-1 overflow-x-auto pb-1 scrollbar-none no-scrollbar">
-        {TABS.map((tab) => {
-          const Icon = tab.icon;
-          const active = activeTab === tab.id;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-t-lg border-b-2 transition-all whitespace-nowrap cursor-pointer ${
-                active
-                  ? "border-primary text-primary bg-card/80"
-                  : "border-transparent text-muted-foreground hover:text-foreground hover:bg-secondary/40"
-              }`}
-            >
-              <Icon className="h-3.5 w-3.5" />
-              <span>{tab.label}</span>
-            </button>
-          );
-        })}
+      {/* 2. Horizontal Scroll Tabs Navigation (Pill-styled, zero clipping) */}
+      <div className="w-full border-b border-border/80 bg-card/60 backdrop-blur-md sticky top-0 z-20">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 flex gap-1.5 overflow-x-auto py-2.5 scrollbar-none no-scrollbar">
+          {TABS.map((tab) => {
+            const Icon = tab.icon;
+            const active = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold rounded-full transition-all whitespace-nowrap cursor-pointer shrink-0 ${
+                  active
+                    ? "bg-[#2B4EFF] text-white shadow-xs"
+                    : "bg-secondary/60 text-muted-foreground hover:text-foreground hover:bg-secondary border border-border/50"
+                }`}
+              >
+                <Icon className="h-3.5 w-3.5" />
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* 3. Main Body Viewport */}
@@ -652,6 +657,9 @@ export default function AdminDashboard() {
             </div>
           </div>
         )}
+
+        {/* ── TAB: CAMPUS PULSE CONTROLLER ── */}
+        {activeTab === "pulse" && <AdminPulseTab />}
 
         {/* ── TAB: USERS (Glitch 2 & Feature 4) ── */}
         {activeTab === "users" && (

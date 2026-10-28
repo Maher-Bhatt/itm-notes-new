@@ -60,17 +60,17 @@ const XcodeBlock = memo(function XcodeBlock({ code, label, variant }: { code: st
   }, [code]);
 
   return (
-    <div className="rounded-xl border border-white/10 bg-white/5 overflow-hidden">
-      <div className="flex items-center justify-between px-3 py-2 bg-white/10 border-b border-white/10">
-        <span className={`text-[11px] font-mono ${variant === "output" ? "text-accent-foreground" : "text-white/60"}`}>
+    <div className="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-[#F6F3EC] dark:bg-neutral-900 overflow-hidden my-3">
+      <div className="flex items-center justify-between px-3.5 py-2 bg-neutral-200/60 dark:bg-neutral-800/60 border-b border-neutral-200 dark:border-neutral-800">
+        <span className="text-[11px] font-mono font-bold text-[#111111] dark:text-neutral-300">
           {label || (variant === "output" ? "Output" : "Code")}
         </span>
-        <button onClick={handleCopy} className="text-white/60 hover:text-white transition-colors press p-1 -m-1 rounded">
-          {copied ? <Check className="h-3.5 w-3.5 text-accent-foreground" /> : <Copy className="h-3.5 w-3.5" />}
+        <button onClick={handleCopy} className="text-neutral-500 hover:text-[#111111] dark:hover:text-white transition-colors p-1 rounded">
+          {copied ? <Check className="h-3.5 w-3.5 text-[#2B4EFF]" /> : <Copy className="h-3.5 w-3.5" />}
         </button>
       </div>
-      <div className="p-3 overflow-x-auto">
-        <pre><code className={`text-[13px] leading-relaxed ${variant === "output" ? "text-accent-foreground/80" : ""}`}>{code}</code></pre>
+      <div className="p-3.5 overflow-x-auto text-[#111111] dark:text-neutral-100">
+        <pre><code className="text-[13px] font-mono leading-relaxed">{code}</code></pre>
       </div>
     </div>
   );

@@ -16,7 +16,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useGamification } from "@/hooks/useGamification";
 import { usePomodoro } from "@/contexts/PomodoroContext";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { UserAvatar, resolveAvatarUrl } from "@/components/UserAvatar";
+import { CampusAvatar } from "@/components/campusloop/CampusAvatar";
+import { CampusLoopLogo } from "@/components/campusloop/CampusLoopLogo";
+import { resolveAvatarUrl } from "@/components/UserAvatar";
 import { openTimetable } from "@/components/GlobalTimetableModal";
 import {
   DropdownMenu,
@@ -51,8 +53,8 @@ export function PortalTopNav({
       return saved ? JSON.parse(saved) : [
         {
           id: "notif-mst",
-          title: "MST-1 Exam Schedule Live",
-          message: "Review high-weightage question banks and verified timetable.",
+          title: "Semester Schedule Live",
+          message: "Check exam questions and verified schedules for ITM SLS Baroda.",
           timestamp: new Date().toISOString(),
           read: false,
         },
@@ -83,45 +85,31 @@ export function PortalTopNav({
     localStorage.setItem("itm_notifications", JSON.stringify(updated));
   };
 
-  const topTabs = [
-    { label: "Dashboard", path: "/dashboard" },
-    { label: "Subjects & Notes", path: "/subjects" },
-    { label: "Materials", path: "/materials" },
-    { label: "Coding Lab", path: "/coding-lab" },
-    { label: "Exam Questions", path: "/imp-questions" },
-    { label: "Quizzes", path: "/quiz" },
-  ];
-
   return (
-    <header className="shrink-0 z-30 bg-card/90 backdrop-blur-xl border-b border-border px-3 sm:px-6 flex items-center justify-between transition-all pt-[env(safe-area-inset-top,0px)] h-[calc(3.5rem+env(safe-area-inset-top,0px))] w-full">
-      {/* Left: Mobile Sidebar Trigger + Brand + Primary Nav Tabs */}
+    <header className="shrink-0 z-30 bg-white/95 dark:bg-[#18181B]/95 backdrop-blur-xl border-b border-[#E8E4DA] dark:border-neutral-800 px-3 sm:px-6 flex items-center justify-between transition-all pt-[env(safe-area-inset-top,0px)] h-[calc(3.75rem+env(safe-area-inset-top,0px))] w-full">
+      {/* Left: Mobile Sidebar Trigger + CampusLoop Logo */}
       <div className="flex items-center gap-2.5 sm:gap-3">
         <button
           onClick={onToggleSidebar}
-          className="md:hidden p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors press cursor-pointer"
+          className="md:hidden p-2 rounded-full text-neutral-600 dark:text-neutral-300 hover:bg-[#F6F3EC] dark:hover:bg-neutral-800 transition-colors cursor-pointer"
           title="Toggle Navigation Menu"
         >
           <Menu className="h-5 w-5" />
         </button>
 
-        {/* Brand Logo */}
-        <Link to="/" className="flex items-center gap-2 group select-none shrink-0" title="ITM Notes Portal">
-          <div className="h-7 px-2.5 rounded-lg bg-amber-500 text-white flex items-center justify-center font-black text-xs tracking-wider shadow-sm shadow-amber-500/20 font-display">
-            ITM
-          </div>
-          <span className="font-display font-black tracking-tight text-foreground text-sm sm:text-base">
-            Notes
-          </span>
+        {/* CampusLoop Logo */}
+        <Link to="/community" className="flex items-center gap-2 group select-none shrink-0" title="CampusLoop Home">
+          <CampusLoopLogo size="sm" showSubtitle />
         </Link>
 
         {/* Desktop Sidebar Minimize / Expand Button */}
         {onToggleFocusMode && (
           <button
             onClick={onToggleFocusMode}
-            className={`hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-semibold transition-all cursor-pointer ${
+            className={`hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-semibold transition-all cursor-pointer ${
               isFocusMode
-                ? "bg-primary text-primary-foreground border-transparent font-bold"
-                : "border-border text-muted-foreground hover:text-foreground hover:bg-secondary"
+                ? "bg-[#2B4EFF] text-white border-transparent font-bold"
+                : "border-[#E8E4DA] dark:border-neutral-800 text-[#6B7280] dark:text-neutral-400 hover:text-[#111111] dark:hover:text-white hover:bg-[#F6F3EC] dark:hover:bg-neutral-800"
             }`}
             title={isFocusMode ? "Expand Sidebar (F)" : "Minimize Sidebar (F)"}
           >
@@ -135,26 +123,6 @@ export function PortalTopNav({
             )}
           </button>
         )}
-
-        {/* Top Horizontal Tabs (xl+ only) */}
-        <nav className="hidden xl:flex items-center gap-1 font-display">
-          {topTabs.map((tab) => {
-            const active = location.pathname === tab.path || (tab.path === "/subjects" && (location.pathname.startsWith("/subjects") || location.pathname.startsWith("/subject")));
-            return (
-              <Link
-                key={tab.label}
-                to={tab.path}
-                className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all relative ${
-                  active
-                    ? "text-foreground font-bold bg-secondary border-b-2 border-amber-500"
-                    : "text-muted-foreground hover:text-foreground hover:bg-secondary/60"
-                }`}
-              >
-                {tab.label}
-              </Link>
-            );
-          })}
-        </nav>
       </div>
 
       {/* Right: Search + Timetable + Focus + Notifications + Theme + Profile */}
@@ -162,13 +130,13 @@ export function PortalTopNav({
         {/* Universal Search Pill */}
         <button
           onClick={onOpenSearch}
-          className="flex items-center gap-2 h-9 px-3.5 rounded-full bg-secondary/60 border border-border text-muted-foreground hover:text-foreground hover:bg-secondary text-xs transition-all shadow-xs cursor-pointer group press"
+          className="flex items-center gap-2 h-10 px-3.5 rounded-full bg-[#F6F3EC] dark:bg-neutral-800 border border-[#E8E4DA] dark:border-neutral-700 text-[#6B7280] dark:text-neutral-300 hover:text-[#111111] dark:hover:text-white text-xs transition-all shadow-2xs cursor-pointer group"
           title="Search Notes, Practicals and Question Banks (Ctrl + K)"
         >
-          <Search className="h-3.5 w-3.5 text-muted-foreground group-hover:text-foreground transition-colors" />
-          <span className="hidden md:inline font-medium">Search Courses & Notes...</span>
+          <Search className="h-4 w-4 text-neutral-400 group-hover:text-[#2B4EFF] transition-colors" />
+          <span className="hidden md:inline font-medium">Search clubs, notes, people...</span>
           <span className="md:hidden font-medium">Search...</span>
-          <kbd className="hidden lg:inline-flex items-center px-1.5 py-0.5 text-[10px] font-mono font-semibold bg-background border border-border rounded-md text-muted-foreground">
+          <kbd className="hidden lg:inline-flex items-center px-1.5 py-0.5 text-[10px] font-mono font-semibold bg-white dark:bg-neutral-900 border border-[#E8E4DA] dark:border-neutral-700 rounded-md text-neutral-500">
             ⌘K
           </kbd>
         </button>
@@ -176,21 +144,21 @@ export function PortalTopNav({
         {/* Timetables / Viva Schedule Pill */}
         <button
           onClick={() => openTimetable("viva")}
-          className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border transition-all bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20 hover:bg-amber-500/20 shadow-xs cursor-pointer shrink-0 press"
+          className="hidden md:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold border transition-all bg-[#E6EAFD] text-[#2B4EFF] dark:bg-blue-950/40 dark:text-blue-300 border-blue-200 dark:border-blue-900/40 hover:bg-[#D8E0FC] shadow-2xs cursor-pointer shrink-0"
           title="View Official Remedial & Viva Timetables"
         >
-          <Calendar className="h-3.5 w-3.5 text-amber-500" />
+          <Calendar className="h-3.5 w-3.5 text-[#2B4EFF]" />
           <span>Timetable</span>
-          <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+          <span className="w-1.5 h-1.5 rounded-full bg-[#2B4EFF] animate-pulse" />
         </button>
 
         {/* Pomodoro Focus Pill */}
         <button
           onClick={() => setIsModalOpen(true)}
-          className={`hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all shrink-0 press cursor-pointer ${
+          className={`hidden lg:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold border transition-all shrink-0 cursor-pointer ${
             isRunning
-              ? "bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30 animate-pulse font-bold"
-              : "bg-secondary/60 text-muted-foreground border-border hover:text-foreground hover:bg-secondary"
+              ? "bg-[#D7F75B] text-[#111111] border-[#C6E84A] animate-pulse font-bold"
+              : "bg-[#F6F3EC] dark:bg-neutral-800 text-[#6B7280] dark:text-neutral-400 border-[#E8E4DA] dark:border-neutral-700 hover:text-[#111111] dark:hover:text-white"
           }`}
           title="Study Focus Timer"
         >
@@ -205,10 +173,10 @@ export function PortalTopNav({
         {/* Fullscreen Focus Mode Toggle */}
         <button
           onClick={onToggleFocusMode}
-          className={`flex items-center gap-1.5 h-9 px-3 rounded-full text-xs font-semibold border transition-all cursor-pointer press ${
+          className={`flex items-center gap-1.5 h-10 px-3.5 rounded-full text-xs font-semibold border transition-all cursor-pointer ${
             isFocusMode
-              ? "bg-primary text-primary-foreground border-transparent font-bold"
-              : "bg-secondary/60 hover:bg-secondary text-muted-foreground hover:text-foreground border-border"
+              ? "bg-[#2B4EFF] text-white border-transparent font-bold"
+              : "bg-[#F6F3EC] dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 text-[#6B7280] dark:text-neutral-300 border-[#E8E4DA] dark:border-neutral-700"
           }`}
           title={isFocusMode ? "Exit Focus Mode (Press F or Esc)" : "Focus Mode: Hide Sidebar (Press F)"}
         >
@@ -221,54 +189,52 @@ export function PortalTopNav({
             <>
               <Maximize2 className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">Focus</span>
-              <kbd className="hidden lg:inline-flex items-center px-1 text-[9px] font-mono bg-background rounded border border-border">
+              <kbd className="hidden lg:inline-flex items-center px-1 text-[9px] font-mono bg-white dark:bg-neutral-900 rounded border border-[#E8E4DA] dark:border-neutral-700">
                 F
               </kbd>
             </>
           )}
         </button>
 
-        {/* Notifications Dropdown */}
+        {/* Notifications Dropdown with Dot */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
-              className="relative p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors press cursor-pointer"
+              className="relative p-2 rounded-full text-neutral-600 dark:text-neutral-300 hover:bg-[#F6F3EC] dark:hover:bg-neutral-800 transition-colors cursor-pointer"
               title="Notifications"
             >
-              <Bell className="h-4 w-4" />
+              <Bell className="h-5 w-5" />
               {unreadCount > 0 && (
-                <span className="absolute top-1 right-1 px-1 min-w-[14px] h-3.5 bg-amber-500 text-white rounded-full text-[9px] font-black flex items-center justify-center shadow-xs">
-                  {unreadCount > 9 ? "9+" : unreadCount}
-                </span>
+                <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-[#2B4EFF] rounded-full border-2 border-white dark:border-[#18181B]" />
               )}
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-72 p-2 rounded-2xl shadow-xl border border-border bg-popover text-popover-foreground">
-            <div className="flex items-center justify-between px-3 py-2 border-b border-border">
-              <span className="font-bold text-xs text-foreground">Notifications</span>
+          <DropdownMenuContent align="end" className="w-80 p-2 rounded-[20px] shadow-xl border border-[#E8E4DA] dark:border-neutral-800 bg-white dark:bg-[#1C1C1E] text-foreground">
+            <div className="flex items-center justify-between px-3 py-2 border-b border-[#EFECE6] dark:border-neutral-800">
+              <span className="font-bold text-sm text-[#111111] dark:text-white">Campus Notifications</span>
               {unreadCount > 0 && (
                 <button
                   onClick={markAllRead}
-                  className="text-[10px] font-semibold text-amber-500 hover:underline"
+                  className="text-xs font-semibold text-[#2B4EFF] hover:underline cursor-pointer"
                 >
                   Mark all read
                 </button>
               )}
             </div>
-            <div className="max-h-60 overflow-y-auto divide-y divide-border py-1">
+            <div className="max-h-72 overflow-y-auto divide-y divide-[#EFECE6] dark:divide-neutral-800 py-1">
               {notifications.length === 0 ? (
-                <div className="p-4 text-center text-xs text-muted-foreground">
+                <div className="p-4 text-center text-xs text-neutral-500">
                   No notifications yet.
                 </div>
               ) : (
                 notifications.map((notif) => (
-                  <div key={notif.id} className="p-2.5 hover:bg-secondary/60 rounded-lg transition-colors press">
-                    <div className="flex items-center gap-1.5 mb-0.5">
-                      {!notif.read && <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />}
-                      <span className="font-bold text-xs text-foreground truncate">{notif.title}</span>
+                  <div key={notif.id} className="p-3 hover:bg-[#F6F3EC] dark:hover:bg-neutral-800/60 rounded-xl transition-colors">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      {!notif.read && <span className="w-2 h-2 rounded-full bg-[#2B4EFF] shrink-0" />}
+                      <span className="font-bold text-xs text-[#111111] dark:text-white truncate">{notif.title}</span>
                     </div>
-                    <p className="text-[11px] text-muted-foreground leading-relaxed">{notif.message}</p>
-                    <span className="text-[9px] text-muted-foreground/60 font-mono mt-1 block">
+                    <p className="text-xs text-[#6B7280] dark:text-neutral-400 leading-relaxed">{notif.message}</p>
+                    <span className="text-[10px] text-neutral-400 font-medium mt-1 block">
                       {new Date(notif.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                     </span>
                   </div>
@@ -278,14 +244,14 @@ export function PortalTopNav({
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {/* Theme Toggle (Light / Dark / System) */}
+        {/* Theme Toggle (Light / Dark) */}
         <ThemeToggle />
 
         {/* Profile Avatar / Sign In */}
         {!user ? (
           <Link
             to="/auth"
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-primary text-primary-foreground text-xs font-bold shadow-sm press cursor-pointer"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#2B4EFF] text-white text-xs font-bold shadow-xs hover:bg-[#1E3EDB] transition-all cursor-pointer"
           >
             <LogIn className="h-3.5 w-3.5" />
             <span>Sign In</span>
@@ -293,47 +259,47 @@ export function PortalTopNav({
         ) : (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-1.5 p-0.5 rounded-full ring-2 ring-border hover:ring-amber-500/50 transition-all cursor-pointer press">
-                <UserAvatar
-                  avatarUrl={resolveAvatarUrl(profile, user)}
-                  displayName={profile?.display_name}
-                  email={user?.email}
-                  className="w-8 h-8 text-xs"
+              <button className="flex items-center gap-1.5 p-0.5 rounded-full hover:ring-2 hover:ring-[#2B4EFF] transition-all cursor-pointer">
+                <CampusAvatar
+                  src={resolveAvatarUrl(profile, user)}
+                  name={profile?.display_name || user?.email || "Student"}
+                  size={36}
+                  limeRing
                 />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56 p-1.5 rounded-2xl shadow-xl border border-border bg-popover text-popover-foreground">
-              <div className="px-3 py-2.5 border-b border-border mb-1">
-                <p className="font-bold text-xs text-foreground truncate">
+            <DropdownMenuContent align="end" className="w-60 p-2 rounded-[20px] shadow-xl border border-[#E8E4DA] dark:border-neutral-800 bg-white dark:bg-[#1C1C1E] text-foreground">
+              <div className="px-3 py-2.5 border-b border-[#EFECE6] dark:border-neutral-800 mb-1">
+                <p className="font-bold text-sm text-[#111111] dark:text-white truncate">
                   {profile?.display_name || user?.email?.split("@")[0] || "Student"}
                 </p>
-                <p className="text-[10px] text-muted-foreground truncate">{user?.email || "Student Portal"}</p>
-                <div className="mt-1 flex items-center gap-2">
-                  <span className="text-[10px] font-bold text-amber-500 flex items-center gap-1">
-                    🔥 {game.streakDays}d Streak
+                <p className="text-xs text-[#6B7280] dark:text-neutral-400 truncate">{user?.email}</p>
+                <div className="mt-1.5 flex items-center gap-2">
+                  <span className="text-xs font-bold text-[#2B4EFF] flex items-center gap-1 bg-[#E6EAFD] dark:bg-blue-950/40 px-2 py-0.5 rounded-full">
+                    ⚡ {game.streakDays}d Streak
                   </span>
-                  <span className="text-[10px] text-muted-foreground font-mono">
+                  <span className="text-xs text-neutral-500 font-semibold">
                     {game.xp} XP
                   </span>
                 </div>
               </div>
 
-              <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer text-xs">
-                Profile & Settings
+              <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer text-xs rounded-xl">
+                Profile & Badges
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate("/calculator")} className="cursor-pointer text-xs">
+              <DropdownMenuItem onClick={() => navigate("/calculator")} className="cursor-pointer text-xs rounded-xl">
                 Attendance & SGPA
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate("/bookmarks")} className="cursor-pointer text-xs">
+              <DropdownMenuItem onClick={() => navigate("/bookmarks")} className="cursor-pointer text-xs rounded-xl">
                 Saved Bookmarks
               </DropdownMenuItem>
               {role === "admin" && (
-                <DropdownMenuItem onClick={() => navigate("/admin")} className="cursor-pointer text-xs font-bold text-amber-500">
+                <DropdownMenuItem onClick={() => navigate("/admin")} className="cursor-pointer text-xs font-bold text-[#2B4EFF] rounded-xl">
                   Admin Portal
                 </DropdownMenuItem>
               )}
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => signOut()} className="cursor-pointer text-xs text-destructive">
+              <DropdownMenuItem onClick={() => signOut()} className="cursor-pointer text-xs text-rose-600 rounded-xl">
                 Sign Out
               </DropdownMenuItem>
             </DropdownMenuContent>
