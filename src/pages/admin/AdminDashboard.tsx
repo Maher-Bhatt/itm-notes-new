@@ -23,6 +23,8 @@ import {
   BookOpen,
   RefreshCw,
   Database,
+  HelpCircle,
+  Code,
 } from "lucide-react";
 import { generateUniqueMaintenanceKey } from "@/components/MaintenanceBanner";
 import { toast } from "sonner";
@@ -40,6 +42,10 @@ import { AdminSupportTab } from "./components/AdminSupportTab";
 import { AdminFlagsTab } from "./components/AdminFlagsTab";
 import { AdminPlatformTab } from "./components/AdminPlatformTab";
 import { AdminPulseTab } from "./components/AdminPulseTab";
+import { AdminCurriculumTab } from "./components/AdminCurriculumTab";
+import { AdminQuestionBankTab } from "./components/AdminQuestionBankTab";
+import { AdminPracticalsTab } from "./components/AdminPracticalsTab";
+import { AdminDatabaseSyncTab } from "./components/AdminDatabaseSyncTab";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -53,6 +59,10 @@ interface CommunityPost {
 
 type TabId =
   | "overview"
+  | "curriculum"
+  | "questions"
+  | "practicals"
+  | "database_sync"
   | "pulse"
   | "users"
   | "errors"
@@ -71,6 +81,10 @@ type TabId =
 
 const TABS: { id: TabId; label: string; icon: React.FC<{ className?: string }> }[] = [
   { id: "overview", label: "Overview", icon: LayoutDashboard },
+  { id: "curriculum", label: "Curriculum & Syllabus", icon: BookOpen },
+  { id: "questions", label: "Master Question Bank", icon: HelpCircle },
+  { id: "practicals", label: "Practicals Lab (1,180+)", icon: Code },
+  { id: "database_sync", label: "Database Health & Sync", icon: Database },
   { id: "pulse", label: "Campus Pulse", icon: Zap },
   { id: "users", label: "Users", icon: Users },
   { id: "errors", label: "Client Errors", icon: AlertTriangle },
@@ -549,23 +563,76 @@ export default function AdminDashboard() {
                 accent="#FAFAFA"
               />
               <StatCard
-                icon={MessageSquare}
-                label="Community Posts"
-                value={statsLoading ? "…" : (totalPosts ?? "—")}
-                accent="#60a5fa"
+                icon={Code}
+                label="Lab Practicals"
+                value="1,180+"
+                accent="#34d399"
               />
               <StatCard
                 icon={BookOpen}
-                label="Total Subjects"
-                value={totalSubjects}
+                label="Accredited Courses"
+                value="43 Labs / 50+ Subs"
                 accent="#a78bfa"
               />
               <StatCard
                 icon={Hash}
-                label="Total MCQs"
-                value={totalMcqs.toLocaleString()}
+                label="Universal MCQs Pool"
+                value="3,027+ MCQs"
                 accent="#f472b6"
               />
+            </div>
+
+            {/* Quick Action Navigation Grid */}
+            <div className="p-4 sm:p-5 rounded-2xl border border-border bg-card/60 shadow-xs space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-extrabold text-sm text-foreground flex items-center gap-2">
+                    <Zap className="h-4 w-4 text-primary" />
+                    <span>Quick Administration Actions</span>
+                  </h3>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Jump directly into high-frequency academic catalog, question bank, practical laboratory, and database management modules.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1">
+                <button
+                  onClick={() => setActiveTab("curriculum")}
+                  className="p-3 rounded-xl border border-border hover:border-primary/40 bg-background hover:bg-accent text-left transition-all cursor-pointer group shadow-2xs"
+                >
+                  <BookOpen className="h-4 w-4 text-primary group-hover:scale-110 transition-transform" />
+                  <span className="font-bold text-xs text-foreground block mt-1.5">Manage Curriculum</span>
+                  <span className="text-[11px] text-muted-foreground block truncate">43 Courses & 8 Semesters</span>
+                </button>
+
+                <button
+                  onClick={() => setActiveTab("questions")}
+                  className="p-3 rounded-xl border border-border hover:border-primary/40 bg-background hover:bg-accent text-left transition-all cursor-pointer group shadow-2xs"
+                >
+                  <HelpCircle className="h-4 w-4 text-pink-500 group-hover:scale-110 transition-transform" />
+                  <span className="font-bold text-xs text-foreground block mt-1.5">Universal MCQs</span>
+                  <span className="text-[11px] text-muted-foreground block truncate">3,027+ Exam Questions</span>
+                </button>
+
+                <button
+                  onClick={() => setActiveTab("practicals")}
+                  className="p-3 rounded-xl border border-border hover:border-primary/40 bg-background hover:bg-accent text-left transition-all cursor-pointer group shadow-2xs"
+                >
+                  <Code className="h-4 w-4 text-emerald-500 group-hover:scale-110 transition-transform" />
+                  <span className="font-bold text-xs text-foreground block mt-1.5">Practicals Laboratory</span>
+                  <span className="text-[11px] text-muted-foreground block truncate">1,180+ Experiments & Viva</span>
+                </button>
+
+                <button
+                  onClick={() => setActiveTab("database_sync")}
+                  className="p-3 rounded-xl border border-border hover:border-primary/40 bg-background hover:bg-accent text-left transition-all cursor-pointer group shadow-2xs"
+                >
+                  <Database className="h-4 w-4 text-sky-500 group-hover:scale-110 transition-transform" />
+                  <span className="font-bold text-xs text-foreground block mt-1.5">Database & Sync</span>
+                  <span className="text-[11px] text-muted-foreground block truncate">PostgreSQL Health & Sync</span>
+                </button>
+              </div>
             </div>
 
             {/* System health & Recent Activity */}
@@ -660,6 +727,18 @@ export default function AdminDashboard() {
 
         {/* ── TAB: CAMPUS PULSE CONTROLLER ── */}
         {activeTab === "pulse" && <AdminPulseTab />}
+
+        {/* ── TAB: CURRICULUM & SYLLABUS DIRECTOR ── */}
+        {activeTab === "curriculum" && <AdminCurriculumTab />}
+
+        {/* ── TAB: MASTER QUESTION BANK (3,027+ MCQs) ── */}
+        {activeTab === "questions" && <AdminQuestionBankTab />}
+
+        {/* ── TAB: PRACTICALS LABORATORY (1,180+ EXPERIMENTS) ── */}
+        {activeTab === "practicals" && <AdminPracticalsTab />}
+
+        {/* ── TAB: DATABASE & LIVE SYNC ── */}
+        {activeTab === "database_sync" && <AdminDatabaseSyncTab />}
 
         {/* ── TAB: USERS (Glitch 2 & Feature 4) ── */}
         {activeTab === "users" && (

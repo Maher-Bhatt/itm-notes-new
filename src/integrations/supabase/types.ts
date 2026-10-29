@@ -752,6 +752,314 @@ export interface Database {
           created_at?: string
         }
       }
+      departments: {
+        Row: {
+          id: string
+          name: string
+          code: string
+          icon: string
+          description: string | null
+          total_semesters: number
+          is_active: boolean
+          created_at: string
+        }
+        Insert: {
+          id: string
+          name: string
+          code: string
+          icon?: string
+          description?: string | null
+          total_semesters?: number
+          is_active?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          code?: string
+          icon?: string
+          description?: string | null
+          total_semesters?: number
+          is_active?: boolean
+          created_at?: string
+        }
+      }
+      curriculum_subjects: {
+        Row: {
+          id: string
+          department_id: string
+          name: string
+          short_name: string
+          code: string
+          semester: number
+          icon: string
+          description: string | null
+          units_count: number
+          total_topics: number
+          is_active: boolean
+          metadata: Json
+          created_at: string
+        }
+        Insert: {
+          id: string
+          department_id: string
+          name: string
+          short_name: string
+          code: string
+          semester: number
+          icon?: string
+          description?: string | null
+          units_count?: number
+          total_topics?: number
+          is_active?: boolean
+          metadata?: Json
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          department_id?: string
+          name?: string
+          short_name?: string
+          code?: string
+          semester?: number
+          icon?: string
+          description?: string | null
+          units_count?: number
+          total_topics?: number
+          is_active?: boolean
+          metadata?: Json
+          created_at?: string
+        }
+      }
+      universal_question_bank: {
+        Row: {
+          id: string
+          subject_id: string | null
+          subject_name: string
+          semester: number
+          unit_number: number
+          chapter_title: string
+          question: string
+          options: Json
+          correct_answer: number
+          explanation: string
+          difficulty: 'Easy' | 'Medium' | 'Hard'
+          marks: number
+          exam_weight: string
+          is_verified: boolean
+          created_at: string
+        }
+        Insert: {
+          id: string
+          subject_id?: string | null
+          subject_name: string
+          semester: number
+          unit_number: number
+          chapter_title: string
+          question: string
+          options: Json
+          correct_answer: number
+          explanation: string
+          difficulty?: 'Easy' | 'Medium' | 'Hard'
+          marks?: number
+          exam_weight?: string
+          is_verified?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          subject_id?: string | null
+          subject_name?: string
+          semester?: number
+          unit_number?: number
+          chapter_title?: string
+          question?: string
+          options?: Json
+          correct_answer?: number
+          explanation?: string
+          difficulty?: 'Easy' | 'Medium' | 'Hard'
+          marks?: number
+          exam_weight?: string
+          is_verified?: boolean
+          created_at?: string
+        }
+      }
+      universal_practicals: {
+        Row: {
+          id: string
+          course_id: string | null
+          subject_name: string
+          department: string
+          semester: number
+          title: string
+          category: string
+          difficulty: 'Easy' | 'Medium' | 'Hard'
+          marks: string
+          language: string
+          file_name: string
+          description: string
+          constraints: Json
+          expected_output: string
+          starter_code: string
+          model_solution: string
+          hints: Json
+          viva_questions: Json
+          is_verified: boolean
+          created_at: string
+        }
+        Insert: {
+          id: string
+          course_id?: string | null
+          subject_name: string
+          department: string
+          semester: number
+          title: string
+          category?: string
+          difficulty?: 'Easy' | 'Medium' | 'Hard'
+          marks?: string
+          language: string
+          file_name: string
+          description: string
+          constraints?: Json
+          expected_output: string
+          starter_code: string
+          model_solution: string
+          hints?: Json
+          viva_questions?: Json
+          is_verified?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          course_id?: string | null
+          subject_name?: string
+          department?: string
+          semester?: number
+          title?: string
+          category?: string
+          difficulty?: 'Easy' | 'Medium' | 'Hard'
+          marks?: string
+          language?: string
+          file_name?: string
+          description?: string
+          constraints?: Json
+          expected_output?: string
+          starter_code?: string
+          model_solution?: string
+          hints?: Json
+          viva_questions?: Json
+          is_verified?: boolean
+          created_at?: string
+        }
+      }
+      student_practical_submissions: {
+        Row: {
+          id: string
+          student_id: string
+          practical_id: string
+          code: string
+          language: string
+          status: 'passed' | 'failed' | 'compiling'
+          execution_output: string | null
+          runtime_ms: number
+          memory_mb: number
+          passed_testcases: number
+          total_testcases: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          student_id: string
+          practical_id: string
+          code: string
+          language: string
+          status: 'passed' | 'failed' | 'compiling'
+          execution_output?: string | null
+          runtime_ms?: number
+          memory_mb?: number
+          passed_testcases?: number
+          total_testcases?: number
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          student_id?: string
+          practical_id?: string
+          code?: string
+          language?: string
+          status?: 'passed' | 'failed' | 'compiling'
+          execution_output?: string | null
+          runtime_ms?: number
+          memory_mb?: number
+          passed_testcases?: number
+          total_testcases?: number
+          created_at?: string
+        }
+      }
+      admin_system_diagnostics: {
+        Row: {
+          id: string
+          service_name: string
+          status: 'operational' | 'degraded' | 'offline'
+          latency_ms: number
+          details: Json
+          checked_at: string
+        }
+        Insert: {
+          id?: string
+          service_name: string
+          status: 'operational' | 'degraded' | 'offline'
+          latency_ms?: number
+          details?: Json
+          checked_at?: string
+        }
+        Update: {
+          id?: string
+          service_name?: string
+          status?: 'operational' | 'degraded' | 'offline'
+          latency_ms?: number
+          details?: Json
+          checked_at?: string
+        }
+      }
+      admin_broadcast_announcements: {
+        Row: {
+          id: string
+          author_id: string | null
+          title: string
+          content: string
+          target_departments: Json
+          target_semesters: Json
+          priority: 'low' | 'normal' | 'urgent' | 'critical'
+          is_pinned: boolean
+          expires_at: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          author_id?: string | null
+          title: string
+          content: string
+          target_departments?: Json
+          target_semesters?: Json
+          priority?: 'low' | 'normal' | 'urgent' | 'critical'
+          is_pinned?: boolean
+          expires_at?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          author_id?: string | null
+          title?: string
+          content?: string
+          target_departments?: Json
+          target_semesters?: Json
+          priority?: 'low' | 'normal' | 'urgent' | 'critical'
+          is_pinned?: boolean
+          expires_at?: string | null
+          created_at?: string
+        }
+      }
     }
     Views: {
       [_ in never]: never

@@ -474,7 +474,7 @@ export default function SubjectsPage() {
           {/* Subjects Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {filteredSubjects.map((sub) => {
-              const totalTopicIds = getAllTopicIds(sub);
+              const totalTopicIds = getAllTopicIds(sub.id);
               const completedCount = totalTopicIds.filter((tId) => getSubjectProgress(sub.id, tId)).length;
               const progressPct = totalTopicIds.length > 0 ? Math.round((completedCount / totalTopicIds.length) * 100) : 0;
               const hasImpQuestions = Boolean(SUBJECT_IMP_DATA[sub.id]);

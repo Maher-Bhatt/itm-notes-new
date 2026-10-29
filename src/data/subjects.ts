@@ -156,9 +156,11 @@ export const subjects: Subject[] = [
   ...bcaSubjects,
 ];
 
-export function getSubject(id: string): Subject | undefined {
+export function getSubject(id: any): Subject | undefined {
   if (!id) return undefined;
-  const lower = id.toLowerCase().trim();
+  const raw = typeof id === 'object' && id !== null ? (id.id || id.code || id.name || '') : String(id);
+  if (!raw) return undefined;
+  const lower = raw.toLowerCase().trim();
   return subjects.find(
     (s) =>
       s.id.toLowerCase() === lower ||
@@ -167,16 +169,17 @@ export function getSubject(id: string): Subject | undefined {
   );
 }
 
-export function getTopic(subjectId: string, topicId: string) {
+export function getTopic(subjectId: any, topicId: any) {
   const subject = getSubject(subjectId);
+  const targetTopicId = typeof topicId === 'string' ? topicId : String(topicId || '');
   if (!subject) {
     // If subjectId is a UUID or unknown, search across all subjects for the topicId
     for (const s of subjects) {
       for (const unit of s.units) {
         const topic = unit.topics.find(
           (t) =>
-            t.id.toLowerCase() === (topicId || '').toLowerCase() ||
-            t.title.toLowerCase() === (topicId || '').toLowerCase()
+            t.id.toLowerCase() === targetTopicId.toLowerCase() ||
+            t.title.toLowerCase() === targetTopicId.toLowerCase()
         );
         if (topic) return { subject: s, topic, unitTitle: unit.title };
       }
@@ -187,15 +190,15 @@ export function getTopic(subjectId: string, topicId: string) {
   for (const unit of subject.units) {
     const topic = unit.topics.find(
       (t) =>
-        t.id.toLowerCase() === (topicId || '').toLowerCase() ||
-        t.title.toLowerCase() === (topicId || '').toLowerCase()
+        t.id.toLowerCase() === targetTopicId.toLowerCase() ||
+        t.title.toLowerCase() === targetTopicId.toLowerCase()
     );
     if (topic) return { subject, topic, unitTitle: unit.title };
   }
   return undefined;
 }
 
-export function getAllTopicIds(subjectId: string): string[] {
+export function getAllTopicIds(subjectId: any): string[] {
   const subject = getSubject(subjectId);
   if (!subject) return [];
   return subject.units.flatMap((u) => u.topics.map((t) => t.id));
@@ -235,3 +238,5 @@ export function searchTopics(query: string) {
   }
   return results.slice(0, 20);
 }
+
+export type { Subject };
