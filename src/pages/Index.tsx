@@ -355,7 +355,7 @@ export default function Index() {
               Designed For Academic Success
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground">
-              How ITM Notes Works
+              How CampusLoop Works
             </h2>
             <p className="text-xs sm:text-sm text-muted-foreground mt-2">
               Three streamlined steps to master your engineering curriculum without stress.

@@ -42,7 +42,7 @@ export function generateUniqueMaintenanceKey(): string {
 const DEFAULT_CONFIG: MaintenanceConfig = {
   active: false,
   title: "Scheduled Infrastructure Maintenance",
-  message: "ITM Notes is currently deploying an upgraded multi-university syllabus engine and sandboxed LeetCode-grade coding lab. All user study logs and notes remain 100% safe. We will be back online momentarily.",
+  message: "CampusLoop is currently deploying an upgraded multi-university syllabus engine and sandboxed LeetCode-grade coding lab. All user study logs and notes remain 100% safe. We will be back online momentarily.",
   endTime: null,
   passkey: "",
 };
@@ -368,7 +368,7 @@ export function MaintenanceBanner() {
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-sm font-bold tracking-tight text-zinc-100">ITM Notes Infrastructure</span>
+              <span className="text-sm font-bold tracking-tight text-zinc-100">CampusLoop Infrastructure</span>
               <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-zinc-900 text-zinc-400 border border-zinc-800">
                 STATUS: UPGRADE_ACTIVE
               </span>

@@ -1,4 +1,4 @@
-# robots.txt for ITM Notes (https://itm-notes-new.vercel.app/)
+# robots.txt for CampusLoop (https://itm-notes-new.vercel.app/)
 
 User-agent: *
 Allow: /

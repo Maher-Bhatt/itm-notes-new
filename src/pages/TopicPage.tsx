@@ -334,7 +334,7 @@ export default function TopicPage() {
   const handleShare = () => {
     if (!resolvedTopic) return;
     shareTopicToSocial({
-      subjectName: subject?.name || 'ITM Notes',
+      subjectName: subject?.name || 'CampusLoop',
       topicTitle: resolvedTopic.topic.title,
       url: window.location.href,
       unitTitle: resolvedTopic.unitTitle,

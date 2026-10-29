@@ -1,5 +1,5 @@
 /**
- * ITM Notes - Daily Attendance Tracker Hook
+ * CampusLoop - Daily Attendance Tracker Hook
  * Tracks daily attended, missed, and cancelled lectures per subject.
  * Automatically computes 75% university eligibility criteria,
  * warning buffers, and safe bunking allowances.

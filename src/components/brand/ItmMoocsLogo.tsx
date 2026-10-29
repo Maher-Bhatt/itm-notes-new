@@ -12,7 +12,7 @@ interface ItmMoocsLogoProps {
 }
 
 /**
- * ItmMoocsLogo: Official Brand Kit Logo Component for ITM Notes.
+ * ItmMoocsLogo: Official Brand Kit Logo Component for CampusLoop.
  * Uses the authentic abstract arch/pathway mark, forest green, and chartreuse accents.
  * Supports compact UI, mark-only, or full horizontal lockup with live typography.
  */
@@ -50,7 +50,7 @@ export function ItmMoocsLogo({
       <div className={`relative inline-flex items-center justify-center shrink-0 ${markSizeClasses[size]} ${className}`}>
         <img
           src={markTransparent}
-          alt="ITM Notes Mark"
+          alt="CampusLoop Mark"
           className="w-full h-full object-contain"
           loading="eager"
         />
@@ -63,7 +63,7 @@ export function ItmMoocsLogo({
       <div className={`inline-flex flex-col items-start ${className}`}>
         <img
           src={primaryTransparent}
-          alt="ITM Notes — Your Academic Companion"
+          alt="CampusLoop — Your Academic Companion"
           className={`${heightClasses[size]} w-auto object-contain ${inverted ? "brightness-0 invert" : ""}`}
           loading="eager"
         />
@@ -77,7 +77,7 @@ export function ItmMoocsLogo({
         <div className={`relative shrink-0 ${markSizeClasses[size]}`}>
           <img
             src={markTransparent}
-            alt="ITM Notes Mark"
+            alt="CampusLoop Mark"
             className="w-full h-full object-contain"
           />
         </div>
@@ -117,7 +117,7 @@ export function ItmMoocsLogo({
     <div className={`inline-flex items-center ${className}`}>
       <img
         src={horizontalTransparent}
-        alt="ITM Notes"
+        alt="CampusLoop"
         className={`${heightClasses[size]} w-auto object-contain ${inverted ? "brightness-0 invert" : ""}`}
         loading="eager"
       />

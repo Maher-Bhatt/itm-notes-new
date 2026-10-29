@@ -1,5 +1,5 @@
 /**
- * ITM Notes - Grounded AI Doubt Solver Service
+ * CampusLoop - Grounded AI Doubt Solver Service
  * Answers student doubts instantly using verified course notes, code examples,
  * and exam question banks with strict source citations.
  */

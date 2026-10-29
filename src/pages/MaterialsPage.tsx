@@ -744,7 +744,7 @@ export default function MaterialsPage() {
       <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 pb-2 border-b border-border/60">
         <div>
           <h1 className="text-2xl font-black tracking-tight text-foreground flex items-center gap-2 flex-wrap">
-            <span>ITM Notes · Study Materials</span>
+            <span>CampusLoop · Study Materials</span>
             <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-primary/10 text-amber-500 dark:text-amber-500 border border-primary/20 font-bold">
               {stats.total} Files
             </span>
@@ -1008,7 +1008,7 @@ export default function MaterialsPage() {
               </span>
               <span className="text-[11px] text-slate-400">Baroda University</span>
             </div>
-            <h3 className="font-bold text-base text-white">ITM Notes · Solved Mid-Sem Questions</h3>
+            <h3 className="font-bold text-base text-white">CampusLoop · Solved Mid-Sem Questions</h3>
             <p className="text-xs text-slate-300 leading-relaxed">
               High-yield question banks, algorithm dry-runs, and step-by-step solutions compiled from past SLS university examination papers.
             </p>
@@ -1545,7 +1545,7 @@ export default function MaterialsPage() {
 
             {/* Modal Footer */}
             <div className="p-4 border-t border-border bg-secondary/20 flex items-center justify-between text-xs">
-              <span className="text-muted-foreground text-[11px]">ITM Notes Academic Portal · Baroda University</span>
+              <span className="text-muted-foreground text-[11px]">CampusLoop Academic Portal · Multi-University</span>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setActivePreview(null)}

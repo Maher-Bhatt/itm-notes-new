@@ -445,7 +445,7 @@ export default function QuizPage() {
           <div className="flex items-center gap-2 text-xs text-slate-400 font-medium mb-1">
             <Link to="/" className="hover:text-primary transition-colors">Dashboard</Link>
             <span>/</span>
-            <span className="text-slate-300">ITM Notes</span>
+            <span className="text-slate-300">CampusLoop</span>
             <span>/</span>
             <span className="text-slate-100 font-bold">Subject Quiz</span>
           </div>

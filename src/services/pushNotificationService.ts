@@ -136,7 +136,7 @@ export async function unsubscribePush(userId: string): Promise<boolean> {
 
 export async function sendTestNotification(): Promise<void> {
   if ('Notification' in window && Notification.permission === 'granted') {
-    new Notification('🔔 ITM Notes Push Test', {
+    new Notification('🔔 CampusLoop Push Test', {
       body: 'Study notification enabled! You will receive daily streak reminders & timetable alerts.',
       icon: '/favicon.ico',
     });

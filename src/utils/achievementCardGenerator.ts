@@ -1,7 +1,7 @@
 /**
  * achievementCardGenerator.ts
  * Generates high-resolution (1080x1920) luxury Instagram Story & WhatsApp Status cards
- * directly in the browser using HTML5 Canvas with the official ITM Notes brand aesthetic.
+ * directly in the browser using HTML5 Canvas with the official CampusLoop brand aesthetic.
  */
 
 export interface AchievementCardData {
@@ -369,7 +369,7 @@ export async function generateAchievementStoryCard(data: AchievementCardData): P
   // 9. Call to action & App Watermark
   ctx.fillStyle = '#F59E0B';
   ctx.font = '700 23px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('🎓 ITM Notes • Your Academic Companion', width / 2, 1590);
+  ctx.fillText('🎓 CampusLoop • Your Academic Companion', width / 2, 1590);
 
   ctx.fillStyle = '#A1A1AA';
   ctx.font = '500 18px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';

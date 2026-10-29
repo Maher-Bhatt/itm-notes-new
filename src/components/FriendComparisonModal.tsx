@@ -63,7 +63,7 @@ export function FriendComparisonModal({
 
   const handleShareComparison = () => {
     const shareUrl = `${window.location.origin}/community`;
-    const text = `🎓 Campus Study Rivalry on ITM Notes!\n${userStats.name} (Lvl ${userStats.level} · ${userStats.xp} XP) vs ${friend.name} (Lvl ${friend.level} · ${friend.xp} XP).\nWho has the best 75% attendance and study streak? Check it out: ${shareUrl}`;
+    const text = `🎓 Campus Study Rivalry on CampusLoop!\n${userStats.name} (Lvl ${userStats.level} · ${userStats.xp} XP) vs ${friend.name} (Lvl ${friend.level} · ${friend.xp} XP).\nWho has the best 75% attendance and study streak? Check it out: ${shareUrl}`;
     if (navigator.clipboard) {
       navigator.clipboard.writeText(text);
       toast.success('Comparison summary copied to clipboard!', {

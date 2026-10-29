@@ -1,5 +1,5 @@
 /**
- * ITM Notes - Study Reminders & Push Notification Engine
+ * CampusLoop - Study Reminders & Push Notification Engine
  * Bridges standard Web Notification API with Capacitor Push Notifications
  * for due flashcards, study streaks, and exam milestone countdowns.
  */
@@ -56,7 +56,7 @@ export async function requestNotificationPermission(): Promise<boolean> {
     const perm = await Notification.requestPermission();
     if (perm === 'granted') {
       showLocalNotification(
-        "ITM Notes Study Alerts Active",
+        "CampusLoop Study Alerts Active",
         "You will receive timely nudges for due flashcards and exam milestones."
       );
       return true;
@@ -87,7 +87,7 @@ export function triggerDueCardsNotification(): void {
   if (stats.dueTodayCount > 0) {
     showLocalNotification(
       "📚 Flashcards Due Today",
-      `You have ${stats.dueTodayCount} active recall cards scheduled for review on ITM Notes.`
+      `You have ${stats.dueTodayCount} active recall cards scheduled for review on CampusLoop.`
     );
   }
 }

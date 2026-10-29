@@ -490,7 +490,7 @@ export default function AdminDashboard() {
             </div>
             <div className="min-w-0">
               <h1 className="text-base sm:text-lg font-extrabold text-foreground leading-none truncate">
-                ITM Notes Admin
+                CampusLoop Admin
               </h1>
               <p className="text-[11px] text-muted-foreground font-medium mt-0.5 truncate max-w-[200px] sm:max-w-none">
                 🛡️ Platform Admin &middot; {user?.email}
@@ -779,7 +779,7 @@ export default function AdminDashboard() {
         {activeTab === "maintenance" && (
           <AdminMaintenanceTab
             maintenanceOn={maintenanceOn}
-            maintenanceMessage="ITM Notes is undergoing scheduled maintenance."
+            maintenanceMessage="CampusLoop is undergoing scheduled maintenance."
             maintenanceKey={maintenancePasskey}
             onToggleMaintenance={handleToggleMaintenance}
           />

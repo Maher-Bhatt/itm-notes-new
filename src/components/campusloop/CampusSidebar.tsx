@@ -97,7 +97,7 @@ export const CampusSidebar: React.FC<CampusSidebarProps> = ({
 
   const isVerifiedAdmin = role === 'admin' || user?.email?.toLowerCase() === 'maherbhatt01@gmail.com';
 
-  // Academic Suite Tools (Preserves all ITM Notes functionality)
+  // Academic Suite Tools (Preserves all CampusLoop functionality)
   const academicTools = [
     { name: 'Subjects & Notes', path: '/subjects', icon: BookOpen },
     { name: 'Coding Lab (IDE)', path: '/coding-lab', icon: Code2 },
@@ -187,7 +187,7 @@ export const CampusSidebar: React.FC<CampusSidebarProps> = ({
           </div>
         </div>
 
-        {/* Academic Tools Suite (Preserves all ITM Notes features) */}
+        {/* Academic Tools Suite (Preserves all CampusLoop features) */}
         <div>
           <button
             type="button"

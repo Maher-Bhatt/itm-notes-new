@@ -112,7 +112,7 @@ export function AppStartupSplashScreen({ onComplete }: AppStartupSplashScreenPro
           <div className="relative w-24 h-24 sm:w-28 sm:h-28 p-4 sm:p-5 rounded-3xl bg-[#18181B] border border-[#255b4e] shadow-2xl flex items-center justify-center transform hover:scale-105 transition-transform">
             <img
               src={markTransparent}
-              alt="ITM Notes Logo"
+              alt="CampusLoop Logo"
               className="w-full h-full object-contain filter drop-shadow-[0_4px_12px_rgba(214,232,93,0.3)] animate-pulse"
             />
           </div>

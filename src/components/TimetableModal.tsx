@@ -144,7 +144,7 @@ export function TimetableModal({
       ),
       `----------------------------------------------------`,
       `⚠️ Instructions: Mandatory physical submission of practical files & assignments.`,
-      `Powered by ITM Notes Portal`,
+      `Powered by CampusLoop Portal`,
     ];
 
     navigator.clipboard.writeText(textLines.join("\n"));

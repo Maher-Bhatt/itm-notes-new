@@ -134,7 +134,7 @@ export const AiDoubtSolverModal: React.FC<AiDoubtSolverModalProps> = ({
                   AI Syllabus Doubt Solver
                 </h3>
                 <span className="px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-500 dark:text-amber-500 text-[10px] font-bold">
-                  Grounded in ITM Notes
+                  Grounded in CampusLoop
                 </span>
               </div>
               <p className="text-xs text-muted-foreground">
@@ -193,7 +193,7 @@ export const AiDoubtSolverModal: React.FC<AiDoubtSolverModalProps> = ({
             />
             <div className="flex items-center justify-between mt-2">
               <span className="text-[11px] text-muted-foreground">
-                Press <strong>Enter</strong> to solve • Citations verified against GTU/ITM notes
+                Press <strong>Enter</strong> to solve • Citations verified against university syllabus notes
               </span>
               <button
                 onClick={() => handleAsk()}

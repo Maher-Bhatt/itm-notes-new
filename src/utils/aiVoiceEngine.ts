@@ -1,5 +1,5 @@
 /**
- * ITM Notes - Unified AI Voice Engine
+ * CampusLoop - Unified AI Voice Engine
  * 
  * Provides a single, consistent, studio-quality AI narrator voice across the entire application.
  * Pre-processes technical text, expands computer science acronyms, and formats code for natural listening.

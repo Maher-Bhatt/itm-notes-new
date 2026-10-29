@@ -1,5 +1,5 @@
 /**
- * ITM Notes - Spaced Repetition System (SRS)
+ * CampusLoop - Spaced Repetition System (SRS)
  * Based on the SuperMemo SM-2 Algorithm.
  * Computes optimal review intervals (Again, Hard, Good, Easy)
  * and tracks due cards persistently.

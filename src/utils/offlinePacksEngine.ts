@@ -1,5 +1,5 @@
 /**
- * ITM Notes - Offline Subject Packs Engine
+ * CampusLoop - Offline Subject Packs Engine
  * Saves syllabus notes, formulas, and flashcards into persistent storage
  * for zero-network study during train commutes, hostel outages, or exam mornings.
  */

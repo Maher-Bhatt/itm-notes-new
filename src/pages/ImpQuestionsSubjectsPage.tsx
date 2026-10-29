@@ -225,7 +225,7 @@ export default function ImpQuestionsSubjectsPage() {
             <span>·</span>
             <span>University Question Banks</span>
             <span>·</span>
-            <span>ITM Notes</span>
+            <span>CampusLoop</span>
             <span>·</span>
             <span className="text-foreground font-semibold">Semester 3 (B.Tech CSE)</span>
             <span>·</span>

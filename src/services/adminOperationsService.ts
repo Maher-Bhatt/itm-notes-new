@@ -22,7 +22,7 @@ export async function logAdminAction(
   targetId?: string,
   details?: Record<string, unknown>
 ): Promise<void> {
-  let adminEmail = "admin@itm-notes.edu";
+  let adminEmail = "admin@campusloop.in";
   let adminId: string | null = null;
 
   try {

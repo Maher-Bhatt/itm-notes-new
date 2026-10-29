@@ -1,5 +1,5 @@
 /**
- * ITM Notes - Smart Revision Queue Engine
+ * CampusLoop - Smart Revision Queue Engine
  * Prioritizes topics based on memory decay, previous quiz errors, and exam proximity.
  * Formula: Priority = (Days Since Last Viewed) * (1.0 - Topic Quiz Accuracy) * Weightage
  */

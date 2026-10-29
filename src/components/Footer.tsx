@@ -20,9 +20,9 @@ export function Footer() {
           {/* About & Identity */}
           <div className="space-y-3">
             <Link to="/" className="flex items-center gap-2.5">
-              <img src={logo} alt="ITM Notes" className="w-8 h-8 object-contain dark:invert" />
+              <img src={logo} alt="CampusLoop" className="w-8 h-8 object-contain dark:invert" />
               <div>
-                <span className="font-extrabold text-base text-foreground tracking-tight block">ITM Notes</span>
+                <span className="font-extrabold text-base text-foreground tracking-tight block">CampusLoop</span>
                 <span className="text-[10px] text-muted-foreground font-semibold">ITM (SLS) Baroda University</span>
               </div>
             </Link>
@@ -174,7 +174,7 @@ export function Footer() {
         {/* Disclaimer & Bottom Bar */}
         <div className="border-t border-border/80 pt-6 space-y-4">
           <p className="text-[11px] text-muted-foreground leading-relaxed">
-            <strong>Institutional Disclaimer:</strong> ITM Notes is an independent, student-led study & academic resource portal created for students of ITM (SLS) Baroda University. It is not an official university administration website. Official institutional services, fee receipts, and official notifications are maintained at{" "}
+            <strong>Institutional Disclaimer:</strong> CampusLoop is an independent, student-led multi-university study & academic resource portal. It is not an official university administration website. Official institutional services, fee receipts, and official notifications are maintained at{" "}
             <a href="https://itmbu.ac.in/" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">
               itmbu.ac.in
             </a>{" "}
@@ -185,7 +185,7 @@ export function Footer() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-muted-foreground pt-2 border-t border-border/40">
-            <p>© {new Date().getFullYear()} ITM Notes. All rights reserved.</p>
+            <p>© {new Date().getFullYear()} CampusLoop. All rights reserved.</p>
             <div className="flex items-center gap-4">
               <span className="text-[11px]">Crafted by Maher Bhatt</span>
               <span>•</span>

@@ -1,5 +1,5 @@
 /**
- * ITM Notes - Full-Text Content Search Engine
+ * CampusLoop - Full-Text Content Search Engine
  * Searches inside topic markdown bodies, code blocks, and model solutions.
  * Returns ranked snippet excerpts with line numbers and matched term highlights.
  */

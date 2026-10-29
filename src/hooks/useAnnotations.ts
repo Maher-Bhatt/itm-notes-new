@@ -1,5 +1,5 @@
 /**
- * ITM Notes - In-Reader Highlights & Personal Annotations
+ * CampusLoop - In-Reader Highlights & Personal Annotations
  * Allows students to highlight text ranges in topic markdown
  * and attach sticky notes (e.g., "Asked in MST-2").
  */

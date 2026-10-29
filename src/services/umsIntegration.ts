@@ -98,5 +98,5 @@ export async function saveVerifiedStudentProfile(
 export const ITMBU_OFFICIAL_URLS = {
   mainSite: "https://itmbu.ac.in/",
   studentUms: "https://ums.itmbu.ac.in/StudentPanel/StudentDashboard.aspx",
-  disclaimer: "ITM Notes is an independent academic resource platform created for students of ITM (SLS) Baroda University and is not operated by university administration.",
+  disclaimer: "CampusLoop is an independent multi-university academic resource platform and campus community and is not operated by university administration.",
 };

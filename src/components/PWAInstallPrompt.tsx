@@ -50,7 +50,7 @@ export function PWAInstallPrompt() {
       } catch (e) {
         console.warn('Failed to save PWA dismissal:', e);
       }
-      alert('To install ITM Notes, tap your browser menu (⋮ or Share) and select "Add to Home Screen" or "Install App".');
+      alert('To install CampusLoop, tap your browser menu (⋮ or Share) and select "Add to Home Screen" or "Install App".');
     }
   };
 
@@ -84,7 +84,7 @@ export function PWAInstallPrompt() {
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <h4 className="font-bold text-sm text-foreground">Install ITM Notes</h4>
+              <h4 className="font-bold text-sm text-foreground">Install CampusLoop</h4>
               <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-primary/20 text-primary flex items-center gap-0.5">
                 <Sparkles className="h-2.5 w-2.5" /> PWA
               </span>

@@ -201,7 +201,7 @@ export function AchievementCelebrationModal() {
 
   const studentName = profile?.display_name || user?.email?.split('@')[0] || 'Maher Bhatt';
   const effectiveAvatar = resolveAvatarUrl(profile, user) || MAHER_CANONICAL_AVATAR;
-  const shareText = `🎓 I just unlocked "${activeAchievement.title}" (+${activeAchievement.xpReward} XP) on ITM Notes! Check out our verified Semester 3 Computer Engineering Notes: https://itm-notes-new.vercel.app`;
+  const shareText = `🎓 I just unlocked "${activeAchievement.title}" (+${activeAchievement.xpReward} XP) on CampusLoop! Check out our verified Semester 3 Computer Engineering Notes: https://itm-notes-new.vercel.app`;
 
   // Compute a deterministic accreditation serial number based on student name and achievement ID
   const certSerial = `ITM-ENG-2026-${(activeAchievement.id.split('').reduce((acc, c) => acc + c.charCodeAt(0), 1000) * 7).toString(16).toUpperCase()}`;

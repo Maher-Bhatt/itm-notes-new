@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.itm.notes',
-  appName: 'ITM MOOCs',
+  appId: 'com.campusloop.app',
+  appName: 'CampusLoop',
   webDir: 'dist',
   server: {
     url: 'https://itm-notes-new.vercel.app/',
@@ -13,7 +13,7 @@ const config: CapacitorConfig = {
       launchShowDuration: 1500,
       launchAutoHide: true,
       launchFadeOutDuration: 400,
-      backgroundColor: '#F5F1E8',
+      backgroundColor: '#F6F3EC',
       androidScaleType: 'CENTER_CROP',
       showSpinner: false,
       splashFullScreen: true,
@@ -21,7 +21,7 @@ const config: CapacitorConfig = {
     },
     StatusBar: {
       style: 'DARK',
-      backgroundColor: '#183F36',
+      backgroundColor: '#F6F3EC',
       overlaysWebView: false,
     },
     Keyboard: {

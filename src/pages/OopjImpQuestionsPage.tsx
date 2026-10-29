@@ -1231,7 +1231,7 @@ export default function OopjImpQuestionsPage() {
 
       {/* ── FOOTER BAR ── */}
       <div className="p-4 rounded-2xl bg-secondary/30 border border-border text-center text-xs text-muted-foreground flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-        <span>ITM Notes Portal · Department of Computer Science & Engineering</span>
+        <span>CampusLoop Portal · Department of Computer Science & Engineering</span>
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           className="text-primary hover:underline font-semibold cursor-pointer"

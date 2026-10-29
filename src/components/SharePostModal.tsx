@@ -16,7 +16,7 @@ export function SharePostModal({ isOpen, onClose, post }: SharePostModalProps) {
 
   const postUrl = `${window.location.origin}/community?post=${post.id}`;
   const authorName = post.isMasked ? 'Anonymous Student 🎭' : post.authorName;
-  const shareText = `Check out this ${post.category} post by ${authorName} on ITM Notes:\n"${post.content.slice(0, 100)}${post.content.length > 100 ? '...' : ''}"\n\nRead more & join the discussion: ${postUrl}`;
+  const shareText = `Check out this ${post.category} post by ${authorName} on CampusLoop:\n"${post.content.slice(0, 100)}${post.content.length > 100 ? '...' : ''}"\n\nRead more & join the discussion: ${postUrl}`;
 
   const handleCopyLink = () => {
     if (navigator.clipboard) {

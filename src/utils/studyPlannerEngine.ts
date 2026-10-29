@@ -1,5 +1,5 @@
 /**
- * ITM Notes - Intelligent Study Planner Engine
+ * CampusLoop - Intelligent Study Planner Engine
  * Distributes topics, SRS cards, and practicals across remaining days
  * leading up to university examinations based on unit weightage.
  */

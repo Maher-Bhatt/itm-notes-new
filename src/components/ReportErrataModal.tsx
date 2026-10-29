@@ -59,7 +59,7 @@ export function ReportErrataModal({
       localStorage.setItem("itm_errata_reports", JSON.stringify(list));
 
       addXp(25); // Errata reward
-      toast.success("Error report received! Thank you for improving ITM Notes.", {
+      toast.success("Error report received! Thank you for improving CampusLoop.", {
         description: "+25 XP awarded to your academic profile.",
       });
 

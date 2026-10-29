@@ -61,7 +61,7 @@ export function KeyboardShortcutsModal({
     {
       keys: ['?'],
       label: 'Keyboard Shortcuts',
-      description: 'Open this cheat sheet modal anywhere on ITM Notes.',
+      description: 'Open this cheat sheet modal anywhere on CampusLoop.',
       icon: <HelpCircle className="h-4 w-4 text-amber-500" />,
     },
     {

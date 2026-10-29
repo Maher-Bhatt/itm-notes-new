@@ -30,7 +30,7 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
       return saved ? JSON.parse(saved) : [
         {
           id: 'welcome-notif',
-          title: 'Welcome to ITM Notes',
+          title: 'Welcome to CampusLoop',
           message: 'Explore detailed notes, coding practicals, and university materials.',
           timestamp: new Date().toISOString(),
           read: false,
@@ -86,9 +86,9 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
             )}
 
             <Link to="/" className="flex items-center gap-2 group mr-1">
-              <img src={logo} alt="ITM Notes" className="w-7 h-7 object-contain" />
+              <img src={logo} alt="CampusLoop" className="w-7 h-7 object-contain" />
               <div className="flex flex-col">
-                <span className="font-bold text-sm leading-tight text-foreground">ITM Notes</span>
+                <span className="font-bold text-sm leading-tight text-foreground">CampusLoop</span>
                 <span className="text-[9px] text-foreground/50 leading-none hidden sm:block">by Velocity Web</span>
               </div>
             </Link>
@@ -345,8 +345,8 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
       <div className={`fixed inset-y-0 left-0 w-[280px] bg-background z-[70] transform transition-transform duration-300 md:hidden border-r border-border flex flex-col shadow-2xl ${isDrawerOpen ? "translate-x-0" : "-translate-x-full"}`}>
         <div className="flex items-center justify-between p-4 border-b border-border">
           <div className="flex items-center gap-2">
-            <img src={logo} alt="ITM Notes" className="w-6 h-6 object-contain" />
-            <span className="font-bold text-base leading-tight text-foreground">ITM Notes</span>
+            <img src={logo} alt="CampusLoop" className="w-6 h-6 object-contain" />
+            <span className="font-bold text-base leading-tight text-foreground">CampusLoop</span>
           </div>
           <button onClick={() => setIsDrawerOpen(false)} className="p-2.5 -mr-1.5 rounded-lg hover:bg-secondary text-foreground/60 min-w-[44px] min-h-[44px] flex items-center justify-center press">
             <X className="h-5 w-5" />

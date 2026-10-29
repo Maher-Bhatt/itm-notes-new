@@ -1,5 +1,5 @@
 /**
- * ITM Notes - Focus History & Weekly Focus Report Engine
+ * CampusLoop - Focus History & Weekly Focus Report Engine
  * Tracks completed Pomodoro study sessions, compiles weekly focus bar charts,
  * and breaks down deep work hours across core subjects.
  */

@@ -63,7 +63,7 @@ export function SupportFlow({ open, onDismiss }: SupportFlowProps) {
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
                 <Heart className="h-5 w-5 text-destructive" />
-                Enjoying ITM Notes?
+                Enjoying CampusLoop?
               </DialogTitle>
               <DialogDescription>
                 We hope our notes are helping you learn better!
@@ -81,7 +81,7 @@ export function SupportFlow({ open, onDismiss }: SupportFlowProps) {
             <DialogHeader>
               <DialogTitle>Would you like to support us? 💖</DialogTitle>
               <DialogDescription>
-                Your support helps us keep ITM Notes free and continuously improving with better content.
+                Your support helps us keep CampusLoop free and continuously improving with better content.
               </DialogDescription>
             </DialogHeader>
             <div className="flex gap-3 mt-4">
@@ -96,7 +96,7 @@ export function SupportFlow({ open, onDismiss }: SupportFlowProps) {
             <DialogHeader>
               <DialogTitle>Thank you! 🙏</DialogTitle>
               <DialogDescription>
-                Scan the QR code below to support ITM Notes via UPI.
+                Scan the QR code below to support CampusLoop via UPI.
               </DialogDescription>
             </DialogHeader>
             <div className="flex flex-col items-center gap-4 mt-4">

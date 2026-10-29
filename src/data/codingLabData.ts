@@ -991,9 +991,9 @@ export const JAVA_PROBLEMS: CodingProblem[] = [
     fileName: 'FileIO.java',
     description: 'Write student data to a text file using `FileWriter`, then read and display it line by line using `BufferedReader`.',
     constraints: ['Close streams or use try-with-resources', 'Handle IOException'],
-    expectedOutput: 'Written: "ITM Notes 2026"\nRead back: "ITM Notes 2026"\n✔ File I/O verified.',
+    expectedOutput: 'Written: "CampusLoop 2026"\nRead back: "CampusLoop 2026"\n✔ File I/O verified.',
     starterCode: `import java.io.*;\n// TODO: write and read file using BufferedReader and FileWriter`,
-    modelSolution: `try (FileWriter fw = new FileWriter("notes.txt"); BufferedReader br = new BufferedReader(new FileReader("notes.txt"))) {\n    fw.write("ITM Notes 2026"); fw.flush();\n    String line = br.readLine(); System.out.println(line);\n} catch(IOException e) {}`,
+    modelSolution: `try (FileWriter fw = new FileWriter("notes.txt"); BufferedReader br = new BufferedReader(new FileReader("notes.txt"))) {\n    fw.write("CampusLoop 2026"); fw.flush();\n    String line = br.readLine(); System.out.println(line);\n} catch(IOException e) {}`,
     hints: ['Use try-with-resources `try (FileWriter fw = ...)` for auto-closing.'],
     validator: makeValidator(['filewriter', 'bufferedreader', 'filereader', 'ioexception'], '✔ File writer created\n✔ BufferedReader line reading validated\n✔ Try-with-resources auto-close verified', 'Use FileWriter and BufferedReader inside try-with-resources.')
   },
