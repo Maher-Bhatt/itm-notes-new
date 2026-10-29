@@ -57,7 +57,8 @@ export default function QuizPage() {
   const { recordQuizCompleted, addXp } = useGamification();
 
   // Selection & Config state
-  const [selectedSubject, setSelectedSubject] = useState<string>("all-sem3");
+  const [selectedSubject, setSelectedSubject] = useState<string>("all");
+  const [selectedSemesterFilter, setSelectedSemesterFilter] = useState<number | "all">("all");
   const [selectedUnitFilter, setSelectedUnitFilter] = useState<string>("all");
   const [questionCount, setQuestionCount] = useState<number>(10);
   const [searchTopicInput, setSearchTopicInput] = useState("");
@@ -110,11 +111,10 @@ export default function QuizPage() {
       .filter((s) => s.totalMcqs > 0);
   }, []);
 
-  // Combined Sem 3 MCQs pool with full metadata
-  const allSem3Mcqs = useMemo(() => {
+  // All Universal MCQs pool with full metadata across all engineering curricula
+  const allUniversalMcqs = useMemo(() => {
     let pool: EnrichedMCQ[] = [];
-    const sem3Subjects = (availableSubjects || []).filter((s) => s.semester === 3 || s.id.startsWith("sem3") || s.id === "ca-101");
-    sem3Subjects.forEach((s) => {
+    (availableSubjects || []).forEach((s) => {
       (s.units || []).forEach((u) => {
         (u.topics || []).forEach((t) => {
           if (t.mcqs && t.mcqs.length > 0) {
@@ -131,27 +131,22 @@ export default function QuizPage() {
         });
       });
     });
-    const bankItems: EnrichedMCQ[] = MASSIVE_QUESTION_BANK.map((item) => ({
-      question: item.question,
-      options: item.options,
-      correctIndex: item.correctIndex,
-      explanation: item.explanation,
-      subjectId: item.subjectId,
-      subjectName: item.subjectName,
-      topicId: item.topicId,
-      topicTitle: item.topicTitle,
-      unitTitle: item.unitTitle,
-    }));
-    return [...pool, ...bankItems];
+    return pool;
   }, [availableSubjects]);
 
-  // Active question pool based on selected subject and topic search
+  const allSem3Mcqs = useMemo(() => {
+    return allUniversalMcqs.filter((q) => q.subjectId.includes("sem3") || q.subjectId === "ca-101");
+  }, [allUniversalMcqs]);
+
+  // Active question pool based on selected subject, unit, and search
   const activeQuizPool = useMemo(() => {
     if (customPool && customPool.length > 0) {
       return customPool.slice(0, questionCount > 0 ? questionCount : customPool.length);
     }
     let pool: EnrichedMCQ[] = [];
-    if (selectedSubject === "all-sem3") {
+    if (selectedSubject === "all" || selectedSubject === "all-subjects") {
+      pool = [...allUniversalMcqs];
+    } else if (selectedSubject === "all-sem3") {
       pool = [...allSem3Mcqs];
     } else {
       const subj = subjects.find((s) => s.id === selectedSubject);
@@ -186,7 +181,7 @@ export default function QuizPage() {
     }
 
     return pool.slice(0, questionCount > 0 ? questionCount : pool.length);
-  }, [selectedSubject, selectedUnitFilter, searchTopicInput, questionCount, allSem3Mcqs, customPool]);
+  }, [selectedSubject, selectedUnitFilter, searchTopicInput, questionCount, allUniversalMcqs, allSem3Mcqs, customPool]);
 
   const currentQuestion = activeQuizPool[currentIdx];
 
@@ -512,7 +507,7 @@ export default function QuizPage() {
                   <span>University Subject Examination & Recall Drill</span>
                 </h2>
                 <p className="text-xs text-slate-400 mt-1">
-                  Practice authentic semester 3 university exam questions with instant rationale, error analytics, and gamified XP rewards.
+                  Practice 2,500+ syllabus-aligned university & GATE multiple-choice questions across all semesters, chapters, and topics with instant rationales.
                 </p>
               </div>
               <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20 text-xs font-mono font-bold shrink-0">
@@ -521,56 +516,157 @@ export default function QuizPage() {
               </div>
             </div>
 
-            {/* Subject Selector */}
-            <div className="space-y-2.5">
-              <label className="text-xs font-bold text-slate-300 uppercase tracking-wider block">
-                Select Course / Question Pool
+            {/* Semester Filter Tabs & Subject Selector */}
+            <div className="space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <label className="text-xs font-bold text-slate-300 uppercase tracking-wider block">
+                  1. Filter by Semester
+                </label>
+                <span className="text-[11px] font-mono text-emerald-400 font-bold">
+                  {allUniversalMcqs.length}+ Verified University & GATE MCQs
+                </span>
+              </div>
+
+              {/* Semester Tabs */}
+              <div className="flex flex-wrap gap-1.5 p-1 bg-slate-950/60 rounded-xl border border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedSemesterFilter("all");
+                    setSelectedSubject("all");
+                    setSelectedUnitFilter("all");
+                  }}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    selectedSemesterFilter === "all"
+                      ? "bg-white text-slate-950 shadow-sm font-black"
+                      : "text-slate-400 hover:text-white hover:bg-slate-850"
+                  }`}
+                >
+                  All Semesters ({allUniversalMcqs.length})
+                </button>
+                {[1, 2, 3, 4, 5, 6, 7, 8].map((sem) => (
+                  <button
+                    key={sem}
+                    type="button"
+                    onClick={() => {
+                      setSelectedSemesterFilter(sem);
+                      const firstSubj = availableSubjects.find(s => s.semester === sem);
+                      if (firstSubj) {
+                        setSelectedSubject(firstSubj.id);
+                        setSelectedUnitFilter("all");
+                      }
+                    }}
+                    className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                      selectedSemesterFilter === sem
+                        ? "bg-white text-slate-950 shadow-sm font-black"
+                        : "text-slate-400 hover:text-white hover:bg-slate-850"
+                    }`}
+                  >
+                    Sem {sem}
+                  </button>
+                ))}
+              </div>
+
+              <label className="text-xs font-bold text-slate-300 uppercase tracking-wider block pt-1">
+                2. Select Course / Question Pool
               </label>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                 <button
                   type="button"
-                  onClick={() => setSelectedSubject("all-sem3")}
+                  onClick={() => {
+                    setSelectedSubject("all");
+                    setSelectedUnitFilter("all");
+                  }}
                   className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer ${
-                    selectedSubject === "all-sem3"
-                      ? "border-[#18181B] bg-[#18181B]/40 text-white font-bold shadow-md shadow-[#18181B]/30 ring-2 ring-[#FAFAFA]"
+                    selectedSubject === "all"
+                      ? "border-emerald-500 bg-emerald-950/40 text-white font-bold shadow-md ring-2 ring-emerald-500/50"
                       : "border-slate-700 bg-slate-800/80 text-slate-200 hover:bg-slate-750 hover:border-slate-600"
                   }`}
                 >
-                  <div className="text-sm font-bold text-white">All Semester 3 Core</div>
+                  <div className="text-sm font-bold text-white flex items-center justify-between">
+                    <span>Grand Universal Pool</span>
+                    <span className="px-1.5 py-0.5 text-[10px] rounded bg-emerald-500/20 text-emerald-300 font-mono">ALL</span>
+                  </div>
                   <div className={`text-[11px] mt-1 font-mono flex items-center gap-1.5 ${
-                    selectedSubject === "all-sem3" ? "text-[#FAFAFA] font-bold" : "text-slate-300"
+                    selectedSubject === "all" ? "text-emerald-300 font-bold" : "text-slate-300"
                   }`}>
-                    <span className="w-2 h-2 rounded-full bg-[#FAFAFA] shrink-0" />
-                    <span>{allSem3Mcqs.length} Total Curated MCQs</span>
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
+                    <span>{allUniversalMcqs.length} Total Curated MCQs</span>
                   </div>
                 </button>
 
                 {availableSubjects
-                  .filter((s) => s.semester === 3 || s.id.startsWith("sem3") || s.id === "ca-101")
+                  .filter((s) => selectedSemesterFilter === "all" || s.semester === selectedSemesterFilter)
                   .map((s) => {
                     const isSelected = selectedSubject === s.id;
                     return (
                       <button
                         key={s.id}
                         type="button"
-                        onClick={() => setSelectedSubject(s.id)}
+                        onClick={() => {
+                          setSelectedSubject(s.id);
+                          setSelectedUnitFilter("all");
+                        }}
                         className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer ${
                           isSelected
-                            ? "border-[#18181B] bg-[#18181B]/40 text-white font-bold shadow-md shadow-[#18181B]/30 ring-2 ring-[#FAFAFA]"
+                            ? "border-blue-500 bg-blue-950/40 text-white font-bold shadow-md ring-2 ring-blue-500/50"
                             : "border-slate-700 bg-slate-800/80 text-slate-200 hover:bg-slate-750 hover:border-slate-600"
                         }`}
                       >
-                        <div className="text-sm font-bold text-white truncate">{s.name}</div>
+                        <div className="text-sm font-bold text-white truncate flex items-center justify-between">
+                          <span className="truncate">{s.name}</span>
+                          <span className="text-[10px] text-slate-400 font-mono shrink-0 ml-1">Sem {s.semester}</span>
+                        </div>
                         <div className={`text-[11px] mt-1 font-mono flex items-center gap-1.5 ${
-                          isSelected ? "text-[#FAFAFA] font-bold" : "text-slate-300"
+                          isSelected ? "text-blue-300 font-bold" : "text-slate-300"
                         }`}>
-                          <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0" />
+                          <span className="w-2 h-2 rounded-full bg-blue-400 shrink-0" />
                           <span>{s.totalMcqs} Practice MCQs</span>
                         </div>
                       </button>
                     );
                   })}
               </div>
+
+              {/* Unit / Chapter Filter for Selected Subject */}
+              {selectedSubject !== "all" && selectedSubject !== "all-sem3" && (
+                <div className="space-y-2 pt-2 border-t border-slate-800">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold text-slate-300 uppercase tracking-wider block">
+                      3. Filter by Chapter / Unit
+                    </label>
+                    <span className="text-[11px] text-slate-400 font-mono">Optional</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedUnitFilter("all")}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
+                        selectedUnitFilter === "all"
+                          ? "bg-white text-slate-950 border-white shadow-sm font-black"
+                          : "bg-slate-850 text-slate-300 border-slate-700 hover:bg-slate-800"
+                      }`}
+                    >
+                      All Chapters (Full Syllabus)
+                    </button>
+                    {(subjects.find((s) => s.id === selectedSubject)?.units || []).map((u, uIdx) => (
+                      <button
+                        key={u.id}
+                        type="button"
+                        onClick={() => setSelectedUnitFilter(u.id)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
+                          selectedUnitFilter === u.id
+                            ? "bg-white text-slate-950 border-white shadow-sm font-black"
+                            : "bg-slate-850 text-slate-300 border-slate-700 hover:bg-slate-800"
+                        }`}
+                      >
+                        Unit {uIdx + 1}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Question Count Selector */}
@@ -579,7 +675,7 @@ export default function QuizPage() {
                 Session Question Count
               </label>
               <div className="flex flex-wrap gap-2.5">
-                {[5, 10, 15, 20, 30].map((num) => (
+                {[5, 10, 15, 20, 30, 50, 100].map((num) => (
                   <button
                     key={num}
                     type="button"

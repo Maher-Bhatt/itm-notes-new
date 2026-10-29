@@ -42,6 +42,7 @@ import { sem8DevopsMaster } from './sem8-devops-master';
 
 // BCA Master Curriculum (30 Subjects)
 import { bcaMasterSubjects } from './bca-master-subjects';
+import { MASSIVE_QUESTION_BANK } from './massiveQuestionBank';
 
 function injectRichContent(subject: Subject, contentMap: Record<string, string>): Subject {
   return {
@@ -56,10 +57,46 @@ function injectRichContent(subject: Subject, contentMap: Record<string, string>)
   };
 }
 
+export function enrichSubjectWithBankMCQs(subject: Subject): Subject {
+  const bankForSubject = MASSIVE_QUESTION_BANK.filter(
+    (item) => item.subjectId === subject.id || item.subjectId === subject.id + "-master"
+  );
+  if (bankForSubject.length === 0) return subject;
+
+  return {
+    ...subject,
+    units: subject.units.map((unit, uIdx) => {
+      const bankForUnit = bankForSubject.filter(
+        (q) => q.unitTitle.toLowerCase().includes(`unit ${uIdx + 1}`) || q.id.includes(`-u${uIdx + 1}-`)
+      );
+
+      if (bankForUnit.length === 0 || !unit.topics || unit.topics.length === 0) return unit;
+
+      return {
+        ...unit,
+        topics: unit.topics.map((topic, tIdx) => {
+          const distributedQuestions = bankForUnit.filter((_, qIdx) => qIdx % unit.topics.length === tIdx);
+          const mappedMcqs = distributedQuestions.map((q) => ({
+            question: q.question,
+            options: q.options,
+            correctIndex: q.correctIndex,
+            explanation: q.explanation,
+          }));
+
+          return {
+            ...topic,
+            mcqs: [...(topic.mcqs || []), ...mappedMcqs],
+          };
+        }),
+      };
+    }),
+  };
+}
+
 const enrichedDE = injectRichContent(digitalElectronicsSubject, deRichContent);
 const enrichedPSR = injectRichContent(probabilityStatsSubject, psrRichContent);
 
-export const btechSubjects: Subject[] = [
+const rawBtechSubjects: Subject[] = [
   // Semester 8 (Core & SRE)
   sem8DevopsMaster,
 
@@ -109,6 +146,8 @@ export const btechSubjects: Subject[] = [
       es.units.some((u) => u.topics.length > 0)
   ),
 ];
+
+export const btechSubjects: Subject[] = rawBtechSubjects.map(enrichSubjectWithBankMCQs);
 
 export const bcaSubjects: Subject[] = bcaMasterSubjects;
 
