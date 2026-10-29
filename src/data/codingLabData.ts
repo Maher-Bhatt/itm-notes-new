@@ -1,11 +1,12 @@
 export interface CodingProblem {
   id: string;
   title: string;
-  category: 'dsa' | 'dbms' | 'java' | 'python' | 'web';
+  category: 'dsa' | 'dbms' | 'java' | 'python' | 'web' | 'os' | 'cn' | 'daa' | 'aiml' | 'cloud' | 'cyber' | 'nlp' | 'devops' | 'cd' | 'coa' | 'de' | 'mobile' | 'fullstack' | 'analytics' | string;
+  department?: string;
   subjectName: string;
   difficulty: 'Easy' | 'Medium' | 'Hard';
   marks: string;
-  language: 'c' | 'java' | 'python' | 'sql' | 'web';
+  language: 'c' | 'cpp' | 'java' | 'python' | 'sql' | 'web' | 'bash' | 'verilog' | 'javascript' | string;
   fileName: string;
   description: string;
   constraints: string[];
@@ -13,6 +14,7 @@ export interface CodingProblem {
   starterCode: string;
   modelSolution: string;
   hints: string[];
+  vivaQuestions?: { question: string; answer: string }[];
   validator: (code: string) => { passed: boolean; output: string; error?: string };
 }
 
@@ -1652,9 +1654,10 @@ export const PYTHON_PROBLEMS: CodingProblem[] = [
 import { DBMS_PROBLEMS } from './dbmsPracticalsData';
 import { SEM1_CODING_PROBLEMS } from './sem1CodingLabData';
 import { ADVANCED_PRACTICALS } from './advancedPracticalsData';
-export { DBMS_PROBLEMS, SEM1_CODING_PROBLEMS, ADVANCED_PRACTICALS };
+import { UNIVERSAL_PRACTICALS } from './universalPracticalsData';
+export { DBMS_PROBLEMS, SEM1_CODING_PROBLEMS, ADVANCED_PRACTICALS, UNIVERSAL_PRACTICALS };
 
-// Combine all 150+ university problems across Semesters 1, 2, and 3
+// Combine all 1,180+ university laboratory practicals across all departments and semesters (1 to 8)
 export const ALL_CODING_PROBLEMS: CodingProblem[] = [
   ...SEM1_CODING_PROBLEMS,
   ...DBMS_PROBLEMS,
@@ -1662,4 +1665,5 @@ export const ALL_CODING_PROBLEMS: CodingProblem[] = [
   ...JAVA_PROBLEMS,
   ...PYTHON_PROBLEMS,
   ...ADVANCED_PRACTICALS,
+  ...UNIVERSAL_PRACTICALS,
 ];

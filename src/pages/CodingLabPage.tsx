@@ -30,77 +30,761 @@ export interface SubjectMeta {
 
 export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
   {
-    name: 'Data Structures (DSA301)',
-    shortName: 'Data Structures',
-    code: 'DSA301',
-    semester: 3,
-    icon: '⚡',
-    badgeClass: 'bg-blue-500/15 text-blue-500 border-blue-500/30',
-    borderClass: 'border-blue-500/40',
-    textClass: 'text-blue-500',
-    bgClass: 'bg-blue-500/10',
-    description: 'Queues, Stacks, Linked Lists, Trees, Graphs & Dynamic Programming in C/Java',
+    "name": "Programming in C Lab (CS101L)",
+    "shortName": "C Programming",
+    "code": "CS101L",
+    "semester": 1,
+    "icon": "💻",
+    "badgeClass": "bg-blue-500/15 text-blue-500 border-blue-500/30",
+    "borderClass": "border-blue-500/40",
+    "textClass": "text-blue-500",
+    "bgClass": "bg-blue-500/10",
+    "description": "Quadratic roots, loops, matrices, strings, pointers, DMA & structures in C99"
   },
   {
-    name: 'Database Management Systems (DBMS302)',
-    shortName: 'DBMS / SQL',
-    code: 'DBMS302',
-    semester: 3,
-    icon: '🗄️',
-    badgeClass: 'bg-amber-500/15 text-amber-500 border-amber-500/30',
-    borderClass: 'border-amber-500/40',
-    textClass: 'text-amber-500',
-    bgClass: 'bg-amber-500/10',
-    description: 'Relational Schema, DDL/DML, Joins, Aggregations & Subqueries in SQL',
+    "name": "Python for AI & Data Science Lab (AI101L)",
+    "shortName": "Python for AI",
+    "code": "AI101L",
+    "semester": 1,
+    "icon": "🐍",
+    "badgeClass": "bg-emerald-500/15 text-emerald-500 border-emerald-500/30",
+    "borderClass": "border-emerald-500/40",
+    "textClass": "text-emerald-500",
+    "bgClass": "bg-emerald-500/10",
+    "description": "NumPy tensors, vectorization, Pandas DataFrames & statistical hypothesis testing"
   },
   {
-    name: 'Java OOP (JAVA303)',
-    shortName: 'Java OOP',
-    code: 'JAVA303',
-    semester: 3,
-    icon: '☕',
-    badgeClass: 'bg-orange-500/15 text-orange-400 border-orange-500/30',
-    borderClass: 'border-orange-500/40',
-    textClass: 'text-orange-400',
-    bgClass: 'bg-orange-500/10',
-    description: 'Classes, Inheritance, Polymorphism, Concurrency & Stream API in Java',
+    "name": "C Programming & Problem Solving Lab (BCA101L)",
+    "shortName": "BCA C Lab",
+    "code": "BCA101L",
+    "semester": 1,
+    "icon": "🖥️",
+    "badgeClass": "bg-cyan-500/15 text-cyan-500 border-cyan-500/30",
+    "borderClass": "border-cyan-500/40",
+    "textClass": "text-cyan-500",
+    "bgClass": "bg-cyan-500/10",
+    "description": "Basics, loops, menu calculators, pointers, file I/O & structures"
   },
   {
-    name: 'Numerical Methods (COANMP)',
-    shortName: 'Numerical Methods',
-    code: 'COANMP',
-    semester: 3,
-    icon: '🔢',
-    badgeClass: 'bg-purple-500/15 text-purple-400 border-purple-500/30',
-    borderClass: 'border-purple-500/40',
-    textClass: 'text-purple-400',
-    bgClass: 'bg-purple-500/10',
-    description: 'Newton-Raphson, RK-4, Simplex, Romberg & Interpolation in Python',
+    "name": "Python Programming 1",
+    "shortName": "Python 1",
+    "code": "PY101",
+    "semester": 1,
+    "icon": "🐍",
+    "badgeClass": "bg-emerald-500/15 text-emerald-500 border-emerald-500/30",
+    "borderClass": "border-emerald-500/40",
+    "textClass": "text-emerald-500",
+    "bgClass": "bg-emerald-500/10",
+    "description": "Syntax, Control Flow, Lists, Tuples, Dictionaries & Functions in Python"
   },
   {
-    name: 'Python Programming 1',
-    shortName: 'Python 1',
-    code: 'PY101',
-    semester: 1,
-    icon: '🐍',
-    badgeClass: 'bg-emerald-500/15 text-emerald-500 border-emerald-500/30',
-    borderClass: 'border-emerald-500/40',
-    textClass: 'text-emerald-500',
-    bgClass: 'bg-emerald-500/10',
-    description: 'Syntax, Control Flow, Lists, Tuples, Dictionaries & Functions in Python',
+    "name": "Web Technology",
+    "shortName": "Web Tech 1",
+    "code": "WT102",
+    "semester": 1,
+    "icon": "🌐",
+    "badgeClass": "bg-rose-500/15 text-rose-400 border-rose-500/30",
+    "borderClass": "border-rose-500/40",
+    "textClass": "text-rose-400",
+    "bgClass": "bg-rose-500/10",
+    "description": "DOM Manipulation, HTML5 Forms, CSS Selectors & Modern JavaScript"
   },
   {
-    name: 'Web Technology',
-    shortName: 'Web Tech',
-    code: 'WT102',
-    semester: 1,
-    icon: '🌐',
-    badgeClass: 'bg-rose-500/15 text-rose-400 border-rose-500/30',
-    borderClass: 'border-rose-500/40',
-    textClass: 'text-rose-400',
-    bgClass: 'bg-rose-500/10',
-    description: 'DOM Manipulation, HTML5 Forms, CSS Selectors & Modern JavaScript',
+    "name": "Digital Electronics Lab (EC201L)",
+    "shortName": "Digital Electronics",
+    "code": "EC201L",
+    "semester": 2,
+    "icon": "⚡",
+    "badgeClass": "bg-amber-500/15 text-amber-500 border-amber-500/30",
+    "borderClass": "border-amber-500/40",
+    "textClass": "text-amber-500",
+    "bgClass": "bg-amber-500/10",
+    "description": "Logic gates, adders, decoders, multiplexers, flip-flops, counters & shift registers"
   },
+  {
+    "name": "Data Structures & Algorithms Lab (CS201L)",
+    "shortName": "Data Structures 2",
+    "code": "CS201L",
+    "semester": 2,
+    "icon": "🌳",
+    "badgeClass": "bg-blue-500/15 text-blue-500 border-blue-500/30",
+    "borderClass": "border-blue-500/40",
+    "textClass": "text-blue-500",
+    "bgClass": "bg-blue-500/10",
+    "description": "Linked lists, stacks, queues, BST, AVL trees, heaps & graph BFS/DFS"
+  },
+  {
+    "name": "Data Structures using C++ Lab (BCA201L)",
+    "shortName": "BCA C++ DSA",
+    "code": "BCA201L",
+    "semester": 2,
+    "icon": "⚙️",
+    "badgeClass": "bg-indigo-500/15 text-indigo-400 border-indigo-500/30",
+    "borderClass": "border-indigo-500/40",
+    "textClass": "text-indigo-400",
+    "bgClass": "bg-indigo-500/10",
+    "description": "Templates, dynamic vectors, linked lists, stacks, queues & binary search trees"
+  },
+  {
+    "name": "Data Structures (DSA301)",
+    "shortName": "Data Structures 3",
+    "code": "DSA301",
+    "semester": 3,
+    "icon": "⚡",
+    "badgeClass": "bg-blue-500/15 text-blue-500 border-blue-500/30",
+    "borderClass": "border-blue-500/40",
+    "textClass": "text-blue-500",
+    "bgClass": "bg-blue-500/10",
+    "description": "Queues, Stacks, Linked Lists, Trees, Graphs & Dynamic Programming in C/Java"
+  },
+  {
+    "name": "Database Management Systems (DBMS302)",
+    "shortName": "DBMS / SQL",
+    "code": "DBMS302",
+    "semester": 3,
+    "icon": "🗄️",
+    "badgeClass": "bg-amber-500/15 text-amber-500 border-amber-500/30",
+    "borderClass": "border-amber-500/40",
+    "textClass": "text-amber-500",
+    "bgClass": "bg-amber-500/10",
+    "description": "Relational Schema, DDL/DML, Joins, Aggregations & Subqueries in SQL"
+  },
+  {
+    "name": "Database Management Systems Lab (CS302L)",
+    "shortName": "DBMS Lab",
+    "code": "CS302L",
+    "semester": 3,
+    "icon": "🗄️",
+    "badgeClass": "bg-amber-500/15 text-amber-500 border-amber-500/30",
+    "borderClass": "border-amber-500/40",
+    "textClass": "text-amber-500",
+    "bgClass": "bg-amber-500/10",
+    "description": "DDL, DML, Joins, Subqueries, PL/SQL Cursors, Stored Procedures & Triggers"
+  },
+  {
+    "name": "Java OOP (JAVA303)",
+    "shortName": "Java OOP",
+    "code": "JAVA303",
+    "semester": 3,
+    "icon": "☕",
+    "badgeClass": "bg-orange-500/15 text-orange-400 border-orange-500/30",
+    "borderClass": "border-orange-500/40",
+    "textClass": "text-orange-400",
+    "bgClass": "bg-orange-500/10",
+    "description": "Classes, Inheritance, Polymorphism, Concurrency & Stream API in Java"
+  },
+  {
+    "name": "Object-Oriented Programming (OOP) Lab (CS301L)",
+    "shortName": "OOP Java Lab",
+    "code": "CS301L",
+    "semester": 3,
+    "icon": "☕",
+    "badgeClass": "bg-orange-500/15 text-orange-400 border-orange-500/30",
+    "borderClass": "border-orange-500/40",
+    "textClass": "text-orange-400",
+    "bgClass": "bg-orange-500/10",
+    "description": "Polymorphism, Interfaces, Packages, Multithreading, Exceptions & Streams"
+  },
+  {
+    "name": "Relational Database & PL/SQL Lab (BCA301L)",
+    "shortName": "BCA SQL Lab",
+    "code": "BCA301L",
+    "semester": 3,
+    "icon": "🗃️",
+    "badgeClass": "bg-amber-500/15 text-amber-500 border-amber-500/30",
+    "borderClass": "border-amber-500/40",
+    "textClass": "text-amber-500",
+    "bgClass": "bg-amber-500/10",
+    "description": "Schema constraints, joins, PL/SQL blocks, cursors & row triggers"
+  },
+  {
+    "name": "Java & Advanced Java Programming Lab (BCA302L)",
+    "shortName": "BCA Java Lab",
+    "code": "BCA302L",
+    "semester": 3,
+    "icon": "☕",
+    "badgeClass": "bg-orange-500/15 text-orange-400 border-orange-500/30",
+    "borderClass": "border-orange-500/40",
+    "textClass": "text-orange-400",
+    "bgClass": "bg-orange-500/10",
+    "description": "Inheritance, interfaces, JDBC connectivity, servlets & JSP"
+  },
+  {
+    "name": "Python Programming Lab (BCA303L)",
+    "shortName": "BCA Python Lab",
+    "code": "BCA303L",
+    "semester": 3,
+    "icon": "🐍",
+    "badgeClass": "bg-emerald-500/15 text-emerald-500 border-emerald-500/30",
+    "borderClass": "border-emerald-500/40",
+    "textClass": "text-emerald-500",
+    "bgClass": "bg-emerald-500/10",
+    "description": "Lists, comprehensions, decorators, generators, web scraping & Tkinter GUI"
+  },
+  {
+    "name": "Computer Architecture Lab (COA304L)",
+    "shortName": "COA Lab",
+    "code": "COA304L",
+    "semester": 3,
+    "icon": "🔬",
+    "badgeClass": "bg-purple-500/15 text-purple-400 border-purple-500/30",
+    "borderClass": "border-purple-500/40",
+    "textClass": "text-purple-400",
+    "bgClass": "bg-purple-500/10",
+    "description": "Booth's algorithm, restoring division, ALU, cache mapping & 8085 assembly"
+  },
+  {
+    "name": "Numerical Methods (COANMP)",
+    "shortName": "Numerical Methods",
+    "code": "COANMP",
+    "semester": 3,
+    "icon": "🔢",
+    "badgeClass": "bg-purple-500/15 text-purple-400 border-purple-500/30",
+    "borderClass": "border-purple-500/40",
+    "textClass": "text-purple-400",
+    "bgClass": "bg-purple-500/10",
+    "description": "Newton-Raphson, RK-4, Simplex, Romberg & Interpolation in Python"
+  },
+  {
+    "name": "Computational Mechanics & FEA Lab (ME301L)",
+    "shortName": "Mech Computational",
+    "code": "ME301L",
+    "semester": 3,
+    "icon": "🔧",
+    "badgeClass": "bg-zinc-500/15 text-zinc-400 border-zinc-500/30",
+    "borderClass": "border-zinc-500/40",
+    "textClass": "text-zinc-400",
+    "bgClass": "bg-zinc-500/10",
+    "description": "1D FEA truss, beam deflection, heat conduction, Otto cycle & vibration modes"
+  },
+  {
+    "name": "Structural Analysis & GIS Computation Lab (CE301L)",
+    "shortName": "Civil Computational",
+    "code": "CE301L",
+    "semester": 3,
+    "icon": "🏗️",
+    "badgeClass": "bg-yellow-500/15 text-yellow-500 border-yellow-500/30",
+    "borderClass": "border-yellow-500/40",
+    "textClass": "text-yellow-500",
+    "bgClass": "bg-yellow-500/10",
+    "description": "Stiffness method, continuous beams, RCC sections, Bowditch rule & GIS distance"
+  },
+  {
+    "name": "Operating Systems Lab (OS401L)",
+    "shortName": "Operating Systems",
+    "code": "OS401L",
+    "semester": 4,
+    "icon": "💻",
+    "badgeClass": "bg-teal-500/15 text-teal-400 border-teal-500/30",
+    "borderClass": "border-teal-500/40",
+    "textClass": "text-teal-400",
+    "bgClass": "bg-teal-500/10",
+    "description": "CPU scheduling, fork/exec, IPC pipes, semaphores, Banker algorithm & page replacement"
+  },
+  {
+    "name": "Computer Networks Lab (CN402L)",
+    "shortName": "Computer Networks",
+    "code": "CN402L",
+    "semester": 4,
+    "icon": "🌐",
+    "badgeClass": "bg-sky-500/15 text-sky-400 border-sky-500/30",
+    "borderClass": "border-sky-500/40",
+    "textClass": "text-sky-400",
+    "bgClass": "bg-sky-500/10",
+    "description": "Bit stuffing, CRC, Hamming, Go-Back-N, subnetting, Dijkstra & TCP socket echo"
+  },
+  {
+    "name": "Design & Analysis of Algorithms Lab (DAA403L)",
+    "shortName": "DAA Lab",
+    "code": "DAA403L",
+    "semester": 4,
+    "icon": "⚡",
+    "badgeClass": "bg-violet-500/15 text-violet-400 border-violet-500/30",
+    "borderClass": "border-violet-500/40",
+    "textClass": "text-violet-400",
+    "bgClass": "bg-violet-500/10",
+    "description": "Divide & conquer, 0/1 knapsack, LCS, Floyd-Warshall, Kruskal, Prim & N-Queens"
+  },
+  {
+    "name": "Web Technologies Lab (CS404L)",
+    "shortName": "Web Technologies",
+    "code": "CS404L",
+    "semester": 4,
+    "icon": "🌐",
+    "badgeClass": "bg-rose-500/15 text-rose-400 border-rose-500/30",
+    "borderClass": "border-rose-500/40",
+    "textClass": "text-rose-400",
+    "bgClass": "bg-rose-500/10",
+    "description": "CSS Grid, DOM, Fetch API, HTML5 Canvas, Web Workers, SPA Router & PWA"
+  },
+  {
+    "name": "Microprocessors & Microcontrollers Lab (EC401L)",
+    "shortName": "Microprocessors",
+    "code": "EC401L",
+    "semester": 4,
+    "icon": "📟",
+    "badgeClass": "bg-amber-500/15 text-amber-500 border-amber-500/30",
+    "borderClass": "border-amber-500/40",
+    "textClass": "text-amber-500",
+    "bgClass": "bg-amber-500/10",
+    "description": "8085 arithmetic/sorting, 8086 string handling & 8051 timer square waves"
+  },
+  {
+    "name": "Signals & Systems Lab (EC402L)",
+    "shortName": "Signals & Systems",
+    "code": "EC402L",
+    "semester": 4,
+    "icon": "📊",
+    "badgeClass": "bg-blue-500/15 text-blue-400 border-blue-500/30",
+    "borderClass": "border-blue-500/40",
+    "textClass": "text-blue-400",
+    "bgClass": "bg-blue-500/10",
+    "description": "Convolution, Fourier Series, FFT Radix-2, Laplace, Z-Transform & digital filters"
+  },
+  {
+    "name": "Mobile Application Development Lab (BCA401L)",
+    "shortName": "Mobile App Lab",
+    "code": "BCA401L",
+    "semester": 4,
+    "icon": "📱",
+    "badgeClass": "bg-green-500/15 text-green-400 border-green-500/30",
+    "borderClass": "border-green-500/40",
+    "textClass": "text-green-400",
+    "bgClass": "bg-green-500/10",
+    "description": "Android activity lifecycle, intents, forms, RecyclerView, SQLite & Retrofit"
+  },
+  {
+    "name": "Business & Data Analytics Lab (MBA401L)",
+    "shortName": "Business Analytics",
+    "code": "MBA401L",
+    "semester": 4,
+    "icon": "📈",
+    "badgeClass": "bg-indigo-500/15 text-indigo-400 border-indigo-500/30",
+    "borderClass": "border-indigo-500/40",
+    "textClass": "text-indigo-400",
+    "bgClass": "bg-indigo-500/10",
+    "description": "Pandas wrangling, EDA, t-test, ANOVA, RFM segmentation & linear programming"
+  },
+  {
+    "name": "Financial Modeling & Valuation Lab (MBA402L)",
+    "shortName": "Financial Modeling",
+    "code": "MBA402L",
+    "semester": 4,
+    "icon": "💰",
+    "badgeClass": "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
+    "borderClass": "border-emerald-500/40",
+    "textClass": "text-emerald-400",
+    "bgClass": "bg-emerald-500/10",
+    "description": "DCF valuation, NPV/IRR, Markowitz frontier, Black-Scholes & Value at Risk"
+  },
+  {
+    "name": "Marketing Analytics & Consumer Insights Lab (MBA403L)",
+    "shortName": "Marketing Analytics",
+    "code": "MBA403L",
+    "semester": 4,
+    "icon": "🎯",
+    "badgeClass": "bg-pink-500/15 text-pink-400 border-pink-500/30",
+    "borderClass": "border-pink-500/40",
+    "textClass": "text-pink-400",
+    "bgClass": "bg-pink-500/10",
+    "description": "CLV, Apriori market basket, price elasticity, A/B testing & churn prediction"
+  },
+  {
+    "name": "Quantitative Decision Analytics Lab (MBA404L)",
+    "shortName": "Decision Analytics",
+    "code": "MBA404L",
+    "semester": 4,
+    "icon": "🎲",
+    "badgeClass": "bg-purple-500/15 text-purple-400 border-purple-500/30",
+    "borderClass": "border-purple-500/40",
+    "textClass": "text-purple-400",
+    "bgClass": "bg-purple-500/10",
+    "description": "Linear programming, Hungarian assignment, Markov brand switching & queuing"
+  },
+  {
+    "name": "Supply Chain & Operations Analytics Lab (MBA405L)",
+    "shortName": "Supply Chain Analytics",
+    "code": "MBA405L",
+    "semester": 4,
+    "icon": "📦",
+    "badgeClass": "bg-amber-500/15 text-amber-400 border-amber-500/30",
+    "borderClass": "border-amber-500/40",
+    "textClass": "text-amber-400",
+    "bgClass": "bg-amber-500/10",
+    "description": "Bullwhip effect, safety stocks, vehicle routing, Holt-Winters & Six Sigma"
+  },
+  {
+    "name": "Computer Aided Engineering & CAD Lab (ME401L)",
+    "shortName": "CAD & CAE Lab",
+    "code": "ME401L",
+    "semester": 4,
+    "icon": "📐",
+    "badgeClass": "bg-zinc-500/15 text-zinc-400 border-zinc-500/30",
+    "borderClass": "border-zinc-500/40",
+    "textClass": "text-zinc-400",
+    "bgClass": "bg-zinc-500/10",
+    "description": "Bezier curves, Delaunay triangulation, CST stiffness, CFD cavity & NACA airfoil"
+  },
+  {
+    "name": "Transportation & Environmental Computation Lab (CE401L)",
+    "shortName": "Transport & Env Lab",
+    "code": "CE401L",
+    "semester": 4,
+    "icon": "🛣️",
+    "badgeClass": "bg-yellow-500/15 text-yellow-500 border-yellow-500/30",
+    "borderClass": "border-yellow-500/40",
+    "textClass": "text-yellow-500",
+    "bgClass": "bg-yellow-500/10",
+    "description": "AASHTO pavement, traffic flow, EPANET water pipe, Streeter-Phelps & IS 1893"
+  },
+  {
+    "name": "Artificial Intelligence & ML Lab (AIML501L)",
+    "shortName": "AI & Machine Learning",
+    "code": "AIML501L",
+    "semester": 5,
+    "icon": "🤖",
+    "badgeClass": "bg-indigo-500/15 text-indigo-400 border-indigo-500/30",
+    "borderClass": "border-indigo-500/40",
+    "textClass": "text-indigo-400",
+    "bgClass": "bg-indigo-500/10",
+    "description": "A* search, alpha-beta pruning, regression, decision trees, SVM, K-Means & MLP"
+  },
+  {
+    "name": "Software Engineering & Agile Lab (SE502L)",
+    "shortName": "Software Engineering",
+    "code": "SE502L",
+    "semester": 5,
+    "icon": "📋",
+    "badgeClass": "bg-cyan-500/15 text-cyan-400 border-cyan-500/30",
+    "borderClass": "border-cyan-500/40",
+    "textClass": "text-cyan-400",
+    "bgClass": "bg-cyan-500/10",
+    "description": "SRS, RTM, UML, Design patterns, BVA, ECP, Cyclomatic complexity & COCOMO"
+  },
+  {
+    "name": "Theory of Computation & Automata Lab (TOC503L)",
+    "shortName": "Automata Theory",
+    "code": "TOC503L",
+    "semester": 5,
+    "icon": "🔄",
+    "badgeClass": "bg-orange-500/15 text-orange-400 border-orange-500/30",
+    "borderClass": "border-orange-500/40",
+    "textClass": "text-orange-400",
+    "bgClass": "bg-orange-500/10",
+    "description": "DFA, NFA conversion, Myhill-Nerode, CFG, CNF, CYK parsing & Turing Machines"
+  },
+  {
+    "name": "Advanced Competitive Programming & Problem Solving Lab (CS504L)",
+    "shortName": "Competitive Programming",
+    "code": "CS504L",
+    "semester": 5,
+    "icon": "🏆",
+    "badgeClass": "bg-yellow-500/15 text-yellow-400 border-yellow-500/30",
+    "borderClass": "border-yellow-500/40",
+    "textClass": "text-yellow-400",
+    "bgClass": "bg-yellow-500/10",
+    "description": "Segment trees, Fenwick, LCA binary lifting, Aho-Corasick, Dinic max flow & 2-SAT"
+  },
+  {
+    "name": "Systems Programming & Linux Internals Lab (CS505L)",
+    "shortName": "Linux Systems Lab",
+    "code": "CS505L",
+    "semester": 5,
+    "icon": "🐧",
+    "badgeClass": "bg-slate-500/15 text-slate-300 border-slate-500/30",
+    "borderClass": "border-slate-500/40",
+    "textClass": "text-slate-300",
+    "bgClass": "bg-slate-500/10",
+    "description": "Custom malloc, ptrace debugger, signals, epoll, namespaces & packet sniffer"
+  },
+  {
+    "name": "Full-Stack Web Development Lab (BCA501L)",
+    "shortName": "Full-Stack Web",
+    "code": "BCA501L",
+    "semester": 5,
+    "icon": "🚀",
+    "badgeClass": "bg-rose-500/15 text-rose-400 border-rose-500/30",
+    "borderClass": "border-rose-500/40",
+    "textClass": "text-rose-400",
+    "bgClass": "bg-rose-500/10",
+    "description": "Node.js, Express, MongoDB, JWT auth, WebSockets, Redis cache & Jest tests"
+  },
+  {
+    "name": "Linux & Shell Scripting Lab (BCA502L)",
+    "shortName": "Linux Shell Lab",
+    "code": "BCA502L",
+    "semester": 5,
+    "icon": "🐚",
+    "badgeClass": "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
+    "borderClass": "border-emerald-500/40",
+    "textClass": "text-emerald-400",
+    "bgClass": "bg-emerald-500/10",
+    "description": "Grep, sed, awk, cron backups, system monitor, user admin & networking"
+  },
+  {
+    "name": "Cloud & Serverless Computing Lab (MCA501L)",
+    "shortName": "Cloud Serverless",
+    "code": "MCA501L",
+    "semester": 5,
+    "icon": "☁️",
+    "badgeClass": "bg-sky-500/15 text-sky-400 border-sky-500/30",
+    "borderClass": "border-sky-500/40",
+    "textClass": "text-sky-400",
+    "bgClass": "bg-sky-500/10",
+    "description": "Lambda simulators, SQS, Redis distributed locks, OpenTelemetry & Kafka"
+  },
+  {
+    "name": "Analog & Digital Communication Lab (EC501L)",
+    "shortName": "Analog/Digital Comm",
+    "code": "EC501L",
+    "semester": 5,
+    "icon": "📡",
+    "badgeClass": "bg-blue-500/15 text-blue-400 border-blue-500/30",
+    "borderClass": "border-blue-500/40",
+    "textClass": "text-blue-400",
+    "bgClass": "bg-blue-500/10",
+    "description": "AM/FM modulation, PCM quantizer, ASK/FSK/BPSK, QPSK BER & Eye diagram"
+  },
+  {
+    "name": "Compiler Design Lab (CD601L)",
+    "shortName": "Compiler Design",
+    "code": "CD601L",
+    "semester": 6,
+    "icon": "⚙️",
+    "badgeClass": "bg-purple-500/15 text-purple-400 border-purple-500/30",
+    "borderClass": "border-purple-500/40",
+    "textClass": "text-purple-400",
+    "bgClass": "bg-purple-500/10",
+    "description": "Lex/Yacc, First & Follow, LL(1), SLR(1), TAC generation & DAG optimization"
+  },
+  {
+    "name": "Cloud Computing & Distributed Systems Lab (CLOUD602L)",
+    "shortName": "Cloud Computing",
+    "code": "CLOUD602L",
+    "semester": 6,
+    "icon": "☁️",
+    "badgeClass": "bg-sky-500/15 text-sky-400 border-sky-500/30",
+    "borderClass": "border-sky-500/40",
+    "textClass": "text-sky-400",
+    "bgClass": "bg-sky-500/10",
+    "description": "Docker, Raft consensus, MapReduce, circuit breaker, Saga pattern & KMS envelope"
+  },
+  {
+    "name": "Big Data Analytics with Spark Lab (AI601L)",
+    "shortName": "PySpark Big Data",
+    "code": "AI601L",
+    "semester": 6,
+    "icon": "🔥",
+    "badgeClass": "bg-orange-500/15 text-orange-400 border-orange-500/30",
+    "borderClass": "border-orange-500/40",
+    "textClass": "text-orange-400",
+    "bgClass": "bg-orange-500/10",
+    "description": "PySpark RDD, DataFrames, Window functions, MLlib pipelines & Structured Streaming"
+  },
+  {
+    "name": "Deep Learning & Neural Networks Lab (AI602L)",
+    "shortName": "Deep Learning",
+    "code": "AI602L",
+    "semester": 6,
+    "icon": "🧠",
+    "badgeClass": "bg-violet-500/15 text-violet-400 border-violet-500/30",
+    "borderClass": "border-violet-500/40",
+    "textClass": "text-violet-400",
+    "bgClass": "bg-violet-500/10",
+    "description": "PyTorch autograd, CNN, ResNet transfer learning, LSTM, Autoencoders & GANs"
+  },
+  {
+    "name": "VLSI Design & Verilog HDL Lab (EC601L)",
+    "shortName": "VLSI & Verilog",
+    "code": "EC601L",
+    "semester": 6,
+    "icon": "🔬",
+    "badgeClass": "bg-amber-500/15 text-amber-500 border-amber-500/30",
+    "borderClass": "border-amber-500/40",
+    "textClass": "text-amber-500",
+    "bgClass": "bg-amber-500/10",
+    "description": "Verilog gate/dataflow/behavioral modeling, ALU, FSM sequences & testbenches"
+  },
+  {
+    "name": "Software Testing & QA Lab (BCA601L)",
+    "shortName": "Software Testing",
+    "code": "BCA601L",
+    "semester": 6,
+    "icon": "🧪",
+    "badgeClass": "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
+    "borderClass": "border-emerald-500/40",
+    "textClass": "text-emerald-400",
+    "bgClass": "bg-emerald-500/10",
+    "description": "JUnit 5, Mockito mocking, Selenium WebDriver automation & Jacoco code coverage"
+  },
+  {
+    "name": "Ethical Hacking & Penetration Testing Lab (BCA602L)",
+    "shortName": "Ethical Hacking",
+    "code": "BCA602L",
+    "semester": 6,
+    "icon": "🛡️",
+    "badgeClass": "bg-red-500/15 text-red-400 border-red-500/30",
+    "borderClass": "border-red-500/40",
+    "textClass": "text-red-400",
+    "bgClass": "bg-red-500/10",
+    "description": "Port scanning, ARP spoofing, SQL injection, XSS, reverse shells & buffer overflows"
+  },
+  {
+    "name": "Information & Cyber Security Lab (CYBER701L)",
+    "shortName": "Cyber Security",
+    "code": "CYBER701L",
+    "semester": 7,
+    "icon": "🔒",
+    "badgeClass": "bg-red-500/15 text-red-400 border-red-500/30",
+    "borderClass": "border-red-500/40",
+    "textClass": "text-red-400",
+    "bgClass": "bg-red-500/10",
+    "description": "AES-128, RSA, Diffie-Hellman, SHA-256, HMAC, RSA-PSS signatures & Snort IDS"
+  },
+  {
+    "name": "Natural Language Processing Lab (NLP702L)",
+    "shortName": "NLP & Transformers",
+    "code": "NLP702L",
+    "semester": 7,
+    "icon": "💬",
+    "badgeClass": "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
+    "borderClass": "border-emerald-500/40",
+    "textClass": "text-emerald-400",
+    "bgClass": "bg-emerald-500/10",
+    "description": "BPE tokenization, TF-IDF, Word2Vec, LSTM, Attention, Transformers & LoRA fine-tuning"
+  },
+  {
+    "name": "Distributed Systems & RPC Lab (CS703L)",
+    "shortName": "Distributed Systems",
+    "code": "CS703L",
+    "semester": 7,
+    "icon": "🕸️",
+    "badgeClass": "bg-sky-500/15 text-sky-400 border-sky-500/30",
+    "borderClass": "border-sky-500/40",
+    "textClass": "text-sky-400",
+    "bgClass": "bg-sky-500/10",
+    "description": "gRPC Protobuf, Vector clocks, Bully election, 2PC, Paxos & Gossip protocol"
+  },
+  {
+    "name": "Reinforcement Learning & Multi-Agent AI Lab (AI703L)",
+    "shortName": "Reinforcement Learning",
+    "code": "AI703L",
+    "semester": 7,
+    "icon": "🎯",
+    "badgeClass": "bg-indigo-500/15 text-indigo-400 border-indigo-500/30",
+    "borderClass": "border-indigo-500/40",
+    "textClass": "text-indigo-400",
+    "bgClass": "bg-indigo-500/10",
+    "description": "Multi-armed bandits, Q-learning, DQN, PPO, SAC & multi-agent cooperative AI"
+  },
+  {
+    "name": "Computer Vision & OpenCV Lab (AI701L)",
+    "shortName": "Computer Vision",
+    "code": "AI701L",
+    "semester": 7,
+    "icon": "👁️",
+    "badgeClass": "bg-teal-500/15 text-teal-400 border-teal-500/30",
+    "borderClass": "border-teal-500/40",
+    "textClass": "text-teal-400",
+    "bgClass": "bg-teal-500/10",
+    "description": "Spatial filtering, Canny edges, contours, Haar cascades, optical flow & perspective transform"
+  },
+  {
+    "name": "Advanced Computer Vision & Generative Vision Lab (AI704L)",
+    "shortName": "Generative Vision",
+    "code": "AI704L",
+    "semester": 7,
+    "icon": "🎨",
+    "badgeClass": "bg-pink-500/15 text-pink-400 border-pink-500/30",
+    "borderClass": "border-pink-500/40",
+    "textClass": "text-pink-400",
+    "bgClass": "bg-pink-500/10",
+    "description": "Vision Transformers, DDPM diffusion models, NeRF ray marching & SuperGlue"
+  },
+  {
+    "name": "Game Engine Architecture & Graphics Lab (CS705L)",
+    "shortName": "Game Engine Lab",
+    "code": "CS705L",
+    "semester": 7,
+    "icon": "🎮",
+    "badgeClass": "bg-purple-500/15 text-purple-400 border-purple-500/30",
+    "borderClass": "border-purple-500/40",
+    "textClass": "text-purple-400",
+    "bgClass": "bg-purple-500/10",
+    "description": "2D rigid body physics, quadtrees, ECS architecture, NavMesh & Phong shading"
+  },
+  {
+    "name": "IoT & Embedded Systems Lab (EC701L)",
+    "shortName": "IoT & Embedded",
+    "code": "EC701L",
+    "semester": 7,
+    "icon": "📡",
+    "badgeClass": "bg-green-500/15 text-green-400 border-green-500/30",
+    "borderClass": "border-green-500/40",
+    "textClass": "text-green-400",
+    "bgClass": "bg-green-500/10",
+    "description": "GPIO, ADC, PWM, UART, I2C, FreeRTOS tasks, MQTT telemetry & ESP32 WiFi"
+  },
+  {
+    "name": "DevOps & Cloud Native Lab (DEVOPS801L)",
+    "shortName": "DevOps & SRE",
+    "code": "DEVOPS801L",
+    "semester": 8,
+    "icon": "🛠️",
+    "badgeClass": "bg-slate-500/15 text-slate-300 border-slate-500/30",
+    "borderClass": "border-slate-500/40",
+    "textClass": "text-slate-300",
+    "bgClass": "bg-slate-500/10",
+    "description": "CI/CD pipelines, Terraform IaC, Kubernetes deployments, Canary router & Prometheus"
+  },
+  {
+    "name": "Blockchain & Smart Contracts Lab (CS802L)",
+    "shortName": "Blockchain Lab",
+    "code": "CS802L",
+    "semester": 8,
+    "icon": "⛓️",
+    "badgeClass": "bg-amber-500/15 text-amber-500 border-amber-500/30",
+    "borderClass": "border-amber-500/40",
+    "textClass": "text-amber-500",
+    "bgClass": "bg-amber-500/10",
+    "description": "Proof of Work, Merkle tree, Solidity ERC-20, DAO voting & Reentrancy fix"
+  },
+  {
+    "name": "Generative AI & Prompt Engineering Lab (AI801L)",
+    "shortName": "Generative AI Lab",
+    "code": "AI801L",
+    "semester": 8,
+    "icon": "✨",
+    "badgeClass": "bg-violet-500/15 text-violet-400 border-violet-500/30",
+    "borderClass": "border-violet-500/40",
+    "textClass": "text-violet-400",
+    "bgClass": "bg-violet-500/10",
+    "description": "Prompt templates, RAG vector retrieval, Agentic tool-use loops & semantic caching"
+  },
+  {
+    "name": "MLOps & Model Governance Lab (AI802L)",
+    "shortName": "MLOps Lab",
+    "code": "AI802L",
+    "semester": 8,
+    "icon": "📊",
+    "badgeClass": "bg-teal-500/15 text-teal-400 border-teal-500/30",
+    "borderClass": "border-teal-500/40",
+    "textClass": "text-teal-400",
+    "bgClass": "bg-teal-500/10",
+    "description": "MLflow tracking, ONNX model serving, KS drift detection, Canary & SHAP explainability"
+  },
+  {
+    "name": "Quantum Computing & Qiskit Lab (CS803L)",
+    "shortName": "Quantum Computing",
+    "code": "CS803L",
+    "semester": 8,
+    "icon": "⚛️",
+    "badgeClass": "bg-cyan-500/15 text-cyan-400 border-cyan-500/30",
+    "borderClass": "border-cyan-500/40",
+    "textClass": "text-cyan-400",
+    "bgClass": "bg-cyan-500/10",
+    "description": "Bell states, quantum teleportation, Deutsch-Jozsa, Grover search & Shor algorithm"
+  }
 ];
 
 export function getSubjectSemester(subjectName: string): number {
@@ -118,127 +802,36 @@ export function getFacultyAIAssistance(prob?: CodingProblem) {
     };
   }
 
-  const id = prob.id.toLowerCase();
-  const title = prob.title.toLowerCase();
-
-  if (id.includes('railway') || id.includes('queue') || title.includes('queue')) {
-    return {
-      concept: `**Queue Data Structure (FIFO Principle):**
-In a railway reservation system, when all confirmed berths are reserved, passengers are placed into a waiting list queue. 
-- **Enqueue (Add Passenger):** Passengers join at the \`rear\` pointer.
-- **Dequeue (Allocate Seat):** When a confirmed ticket is cancelled, the first waiting passenger is removed from the \`front\` pointer and issued a confirmed seat.
-- **Queue Overflow:** Occurs when \`rear == MAX - 1\`.
-- **Queue Underflow:** Occurs when \`front == -1 || front > rear\`.`,
-      blueprint: [
-        '1. Initialize waitQ array of capacity MAX (e.g. 6), with front = -1 and rear = -1.',
-        '2. In isFull(): check if rear == MAX - 1.',
-        '3. In isEmpty(): check if front == -1 or front > rear.',
-        '4. In addpassenger(token): if not full, set front = 0 if front == -1, increment rear, and store token.',
-        '5. In allocateseat(): if not empty, display waitQ[front], increment front, and reset pointers to -1 if front > rear.',
-        '6. In displaywaiting(): loop from front to rear and print each waiting token.',
-        '7. In peek/count: return waitQ[front] and (rear - front + 1) without modifying pointers.',
-      ],
-      vivaQuestions: [
+  const viva = prob.vivaQuestions && prob.vivaQuestions.length > 0
+    ? prob.vivaQuestions.map(v => ({ q: v.question, a: v.answer }))
+    : [
         {
-          q: 'Why is FIFO (First-In, First-Out) essential for a railway reservation waiting list?',
-          a: 'FIFO guarantees fairness so that passengers who requested tickets earlier are allocated seats first upon cancellation.'
+          q: 'What is the theoretical principle and primary objective behind this practical?',
+          a: 'The objective is to study operational invariants, state transitions, and asymptotic characteristics under standard engineering constraints.'
         },
         {
-          q: 'What is the memory disadvantage of a simple linear array queue, and how is it resolved?',
-          a: 'In a linear queue, once rear reaches MAX - 1, spaces freed by dequeue at the front cannot be reused. This is resolved by using a Circular Queue where rear wraps around using modulo arithmetic (rear + 1) % MAX.'
+          q: 'Analyze the asymptotic time and space complexity of your implementation.',
+          a: 'Time complexity is bounded by O(n) or O(n log n) based on data partitioning, while auxiliary memory is restricted to O(1) or O(n).'
         },
         {
-          q: 'What is the time complexity of Enqueue and Dequeue operations?',
-          a: 'Both Enqueue and Dequeue operate in O(1) constant time since elements are accessed directly via front and rear pointers without shifting.'
+          q: 'What critical boundary conditions and edge cases must be defensively handled?',
+          a: 'Defensive handling must cover empty/null inputs, buffer underflow/overflow, precision limits, and exceptional runtime conditions.'
         }
-      ],
-      commonBugs: [
-        'Forgetting to initialize front = 0 on the very first enqueue.',
-        'Failing to reset front = -1, rear = -1 when front exceeds rear after dequeuing the last passenger.',
-        'Modifying the front pointer inside peek() or count() functions instead of doing a read-only access.'
-      ]
-    };
-  }
-
-  if (prob.language === 'sql') {
-    return {
-      concept: `**Relational Database Engine & SQL Invariants:**
-This practical executes against relational database schemas enforcing Primary Key, Foreign Key, and Referential Integrity constraints.
-- Always use standard ANSI SQL keywords: \`SELECT\`, \`FROM\`, \`WHERE\`, \`GROUP BY\`, \`HAVING\`, \`ORDER BY\`.
-- Verify column data types and join conditions to avoid Cartesian products (\`CROSS JOIN\`).`,
-      blueprint: [
-        '1. Inspect target table schema and relations.',
-        '2. Identify required filter criteria (WHERE clauses, range checks, pattern matching).',
-        '3. Use appropriate aggregate functions (COUNT, SUM, AVG, MIN, MAX) when grouping rows.',
-        '4. Check sorting order (ASC vs DESC) and null handling.',
-      ],
-      vivaQuestions: [
-        {
-          q: 'What is the difference between WHERE and HAVING clauses in SQL?',
-          a: 'WHERE filters individual rows before any grouping occurs; HAVING filters grouped aggregate rows after the GROUP BY clause.'
-        },
-        {
-          q: 'Explain the difference between INNER JOIN and LEFT OUTER JOIN.',
-          a: 'INNER JOIN returns only matching rows from both tables; LEFT OUTER JOIN returns all rows from the left table and matched rows from the right table, filling non-matching fields with NULL.'
-        }
-      ],
-      commonBugs: [
-        'Selecting non-aggregated columns that are not included in the GROUP BY clause.',
-        'Using = NULL instead of the standard IS NULL operator.',
-        'Missing table alias prefixes in ambiguous multi-table joins.'
-      ]
-    };
-  }
-
-  if (prob.language === 'java') {
-    return {
-      concept: `**Java Object-Oriented Programming (OOP) Principles:**
-- **Encapsulation:** Keep member fields private and provide public getter/setter accessors.
-- **Inheritance & Polymorphism:** Override parent/interface methods using \`@Override\` and support dynamic method dispatch.
-- **Robust Exception Handling:** Guard I/O and resource allocation with try-catch or try-with-resources.`,
-      blueprint: [
-        '1. Define class with proper access modifiers and type parameters.',
-        '2. Implement constructors to initialize state.',
-        '3. Implement business logic methods matching problem specifications.',
-        '4. Write test harness in main() to verify execution.',
-      ],
-      vivaQuestions: [
-        {
-          q: 'What is the difference between method overloading and method overriding in Java?',
-          a: 'Overloading occurs within the same class with identical names but different parameter signatures (static polymorphism). Overriding occurs in child classes replacing inherited methods with the exact same signature (runtime dynamic dispatch).'
-        },
-        {
-          q: 'Why are String objects immutable in Java?',
-          a: 'Immutability guarantees thread safety without synchronization, security for sensitive data like classloading and network URLs, and permits the JVM String Constant Pool to optimize memory footprint.'
-        }
-      ],
-      commonBugs: [
-        'Comparing string contents using == instead of .equals().',
-        'NullPointerException when calling methods on uninstantiated objects.',
-        'Neglecting to handle checked exceptions like InterruptedException or IOException.'
-      ]
-    };
-  }
+      ];
 
   return {
-    concept: `**Algorithm & Logic Design:**
-Understand the core input constraints, invariants, and edge cases. Strive for optimal time complexity and clean modular code architecture.`,
+    concept: prob.description || '**Algorithmic Invariants & Engineering Constraints:**\nUnderstand core requirements and edge cases.',
     blueprint: [
-      '1. Read inputs and determine initial variables.',
+      '1. Review problem input constraints, memory limits, and data types.',
       '2. Guard against edge cases (empty inputs, zero values, boundary limits).',
-      '3. Implement core loop / recursive logic.',
-      '4. Format output strictly according to the problem specification.',
+      '3. Implement core computational or algorithmic logic.',
+      '4. Format output strictly according to the university laboratory manual specification.'
     ],
-    vivaQuestions: [
-      {
-        q: 'What is time complexity and why does Big-O notation matter?',
-        a: 'Big-O notation describes the upper bound asymptotic growth rate of an algorithm as input size n approaches infinity, allowing theoretical performance comparison regardless of machine hardware.'
-      }
-    ],
+    vivaQuestions: viva,
     commonBugs: [
-      'Off-by-one errors in loop boundaries.',
-      'Integer overflow on large arithmetic operations.',
-      'Failing to handle negative or zero values.'
+      'Off-by-one errors in loop boundaries or buffer lengths.',
+      'Memory leaks or uninitialized variables before referencing.',
+      'Mismatched standard console output format strings.'
     ]
   };
 }
@@ -250,6 +843,7 @@ export default function CodingLabPage() {
 
   // Filters state
   const [selectedSemester, setSelectedSemester] = useState<number | 'all'>('all');
+  const [selectedDepartment, setSelectedDepartment] = useState<string>('all');
   const [selectedSubject, setSelectedSubject] = useState<string>('all');
   const [selectedLanguage, setSelectedLanguage] = useState<string>('all');
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('all');
@@ -362,6 +956,21 @@ export default function CodingLabPage() {
     return CODING_PROBLEMS.filter((p) => {
       const probSem = getSubjectSemester(p.subjectName);
       if (selectedSemester !== 'all' && probSem !== selectedSemester) return false;
+      if (selectedDepartment !== 'all') {
+        const d = (p.department || '').toLowerCase();
+        const s = p.subjectName.toLowerCase();
+        const depTarget = selectedDepartment.toLowerCase();
+        const match = d === depTarget || s.includes(depTarget) || 
+          (depTarget === 'cse' && (s.includes('cs') || s.includes('dsa') || s.includes('os') || s.includes('cn'))) ||
+          (depTarget === 'ai&ds' && (s.includes('ai') || s.includes('ml') || s.includes('nlp') || s.includes('vision'))) ||
+          (depTarget === 'ece' && (s.includes('ec') || s.includes('electronics') || s.includes('vlsi') || s.includes('signal'))) ||
+          (depTarget === 'bca' && s.includes('bca')) ||
+          (depTarget === 'mca' && s.includes('mca')) ||
+          (depTarget === 'mba' && s.includes('mba')) ||
+          (depTarget === 'mech' && (s.includes('me') || s.includes('cad') || s.includes('fea'))) ||
+          (depTarget === 'civil' && (s.includes('ce') || s.includes('structural') || s.includes('surveying')));
+        if (!match) return false;
+      }
       if (selectedSubject !== 'all' && p.subjectName !== selectedSubject) return false;
       if (selectedLanguage !== 'all' && p.language.toLowerCase() !== selectedLanguage.toLowerCase()) return false;
       if (selectedDifficulty !== 'all' && p.difficulty.toLowerCase() !== selectedDifficulty.toLowerCase()) return false;
@@ -376,7 +985,7 @@ export default function CodingLabPage() {
       }
       return true;
     });
-  }, [selectedSemester, selectedSubject, selectedLanguage, selectedDifficulty, searchProblemQuery]);
+  }, [selectedSemester, selectedDepartment, selectedSubject, selectedLanguage, selectedDifficulty, searchProblemQuery]);
 
   const currentProblem = useMemo(() => {
     const found = filteredProblems.find(p => p.id === activeProblemId);
@@ -1365,7 +1974,7 @@ export default function CodingLabPage() {
                   Problem Directory ({filteredProblems.length})
                 </h3>
                 <p className="text-xs text-neutral-500">
-                  Select practical problems across DSA, Java, DBMS, Python, and Web Tech.
+                  Browse 1,180+ University Laboratory Experiments across all departments, subjects, semesters, and technologies.
                 </p>
               </div>
               <button
@@ -1389,8 +1998,51 @@ export default function CodingLabPage() {
                 />
               </div>
 
-              {/* Subject Category Pills */}
+              {/* Row 1: Department Filter Pills */}
+              <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-0.5">
+                <span className="text-[10px] font-bold uppercase text-neutral-400 shrink-0 mr-1">Dept:</span>
+                {['all', 'CSE', 'AI&DS', 'ECE', 'BCA', 'MCA', 'MECH', 'CIVIL', 'MBA'].map(dep => (
+                  <button
+                    key={dep}
+                    onClick={() => {
+                      setSelectedDepartment(dep);
+                      setSelectedSubject('all');
+                    }}
+                    className={`px-2.5 py-1 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                      selectedDepartment.toLowerCase() === dep.toLowerCase()
+                        ? 'bg-[#2B4EFF] text-white shadow-xs'
+                        : 'bg-white dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700'
+                    }`}
+                  >
+                    {dep === 'all' ? 'All Depts' : dep}
+                  </button>
+                ))}
+              </div>
+
+              {/* Row 2: Semester Filter Pills */}
+              <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-0.5">
+                <span className="text-[10px] font-bold uppercase text-neutral-400 shrink-0 mr-1">Sem:</span>
+                {(['all', 1, 2, 3, 4, 5, 6, 7, 8] as const).map(sem => (
+                  <button
+                    key={String(sem)}
+                    onClick={() => {
+                      setSelectedSemester(sem);
+                      setSelectedSubject('all');
+                    }}
+                    className={`px-2.5 py-1 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                      selectedSemester === sem
+                        ? 'bg-emerald-600 text-white shadow-xs'
+                        : 'bg-white dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700'
+                    }`}
+                  >
+                    {sem === 'all' ? 'All Sems' : `Sem ${sem}`}
+                  </button>
+                ))}
+              </div>
+
+              {/* Row 3: Subject Category Pills */}
               <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-1">
+                <span className="text-[10px] font-bold uppercase text-neutral-400 shrink-0 mr-1">Subject:</span>
                 <button
                   onClick={() => setSelectedSubject('all')}
                   className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
@@ -1399,7 +2051,10 @@ export default function CodingLabPage() {
                 >
                   All Subjects
                 </button>
-                {ALL_SUBJECTS_METADATA.map(meta => (
+                {ALL_SUBJECTS_METADATA.filter(meta => {
+                  if (selectedSemester !== 'all' && meta.semester !== selectedSemester) return false;
+                  return true;
+                }).map(meta => (
                   <button
                     key={meta.name}
                     onClick={() => setSelectedSubject(meta.name)}
