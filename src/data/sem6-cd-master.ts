@@ -282,6 +282,323 @@ a = t5`
           ]
         }
       ]
+    },
+    {
+      id: "cd-u4",
+      title: "Unit 4: Syntax-Directed Translation (SDT), Type Checking & Runtime Storage",
+      description: "Syntax-Directed Definitions (SDD: S-attributed vs L-attributed), Dependency Graphs, Type Systems (Structural vs Name Equivalence), and Runtime Storage Organization (Activation Records, Calling Conventions, Heap Management).",
+      topics: [
+        {
+          id: "cd-u4-t1",
+          title: "Syntax-Directed Translation, Type Systems, and Activation Record Stack Layout",
+          simpleExplanation: "Parsing only tells you whether code has correct grammar, not what it actually means. Syntax-Directed Translation (SDT) attaches little calculation scripts to grammar rules: as the parser builds the tree, it calculates expressions and checks types on the fly! S-attributed rules compute values from children to parents (bottom-up), while L-attributed rules pass context from left siblings. When your program runs, every time a function is called, the CPU pushes an 'Activation Record' (Stack Frame) containing local variables, return pointers, and registers onto the call stack. Understanding this layout is essential for understanding how recursion works, how stack overflows happen, and how buffer overflows can be exploited.",
+          detailedExplanation: `## 1. Syntax-Directed Definitions (SDD) & Attribute Grammars
+
+An SDD associates each grammar symbol with a set of attributes and each production with semantic rules:
+- **Synthesized Attributes**: Computed solely from the attribute values of the node's children in the parse tree. Evaluated naturally in bottom-up post-order traversals.
+- **Inherited Attributes**: Computed from the attribute values of the node's parent and/or siblings. Passed top-down or left-to-right.
+
+\`\`\`mermaid
+flowchart TD
+    subgraph SAttributed["S-Attributed Definition (Bottom-Up Synthesized)"]
+        E["E.val = 14"]
+        E1["E1.val = 10"] --> E
+        Plus["+"] --> E
+        T["T.val = 4"] --> E
+    end
+    subgraph LAttributed["L-Attributed Definition (Left-to-Right Dependency)"]
+        Decl["D -> T L"]
+        T_type["T.type = int"] --> L_in["L.in = int (Inherited from left sibling)"]
+    end
+\`\`\`
+
+- **S-Attributed Grammar**: Contains exclusively synthesized attributes. Can be evaluated directly during bottom-up LR parsing without building explicit parse trees.
+- **L-Attributed Grammar**: An inherited attribute of child $X_j$ in production $A \\to X_1 X_2 \\dots X_n$ can depend only on:
+  1. The attributes of symbols $X_1, X_2, \\dots, X_{j-1}$ to its left.
+  2. The inherited attributes of parent $A$.
+  - Evaluated in a single depth-first, left-to-right traversal during LL parsing.
+
+---
+
+## 2. Runtime Memory Hierarchy & Activation Record (Stack Frame) Layout
+
+When a function executes, the runtime environment allocates an **Activation Record (Stack Frame)** on the call stack:
+
+\`\`\`mermaid
+flowchart TD
+    subgraph Frame["Activation Record (Stack Frame Layout)"]
+        P1["Actual Arguments / Parameters (Passed by Caller)"]
+        Ret["Return Address (Instruction pointer after call)"]
+        DL["Dynamic Link (Control Link: points to Caller's Frame)"]
+        SL["Static Link (Access Link: points to lexical parent frame)"]
+        Reg["Saved Machine Registers & State"]
+        Local["Local Variables"]
+        Temp["Temporary Expression Evaluations & Spill Registers"]
+    end
+\`\`\`
+
+- **Control Link (Dynamic Link)**: Points to the caller's activation record. Used to restore the stack pointer upon function return.
+- **Access Link (Static Link)**: Points to the activation record of the lexically enclosing function. Used in nested languages (Pascal, Python closures) to resolve non-local variables in $O(\\text{depth})$.
+
+---
+
+## 3. Storage Allocation Paradigms
+
+1. **Static Allocation**: Fixed addresses bound at compile time. No recursion possible (e.g., early FORTRAN).
+2. **Stack Allocation**: Activation records pushed on call, popped on return (LIFO). Supports recursion.
+3. **Heap Allocation**: Unstructured dynamic memory allocation (\`malloc\`, \`new\`). Managed via manual deallocation or automated Garbage Collection (Mark-and-Sweep, Generational GC).`,
+          shortNotes: "S-attributed uses only synthesized attributes (bottom-up LR). L-attributed attributes depend on left siblings and parent. Activation records contain parameters, return address, dynamic link, static link, locals, and temps.",
+          examples: [
+            {
+              title: "Python Implementation: Syntax-Directed Translation Evaluator & Stack Frame Tracer",
+              problem: "Simulate an SDD evaluating arithmetic expressions while tracing function call activation records and dynamic links.",
+              explanation: "Demonstrates S-attributed bottom-up evaluation of expression AST and simulates activation record stack frames with dynamic links.",
+              code: `class ActivationRecord:
+    def __init__(self, func_name: str, args: dict, dynamic_link=None):
+        self.func_name = func_name
+        self.args = args
+        self.locals = {}
+        self.dynamic_link = dynamic_link  # Pointer to caller's frame
+
+    def __repr__(self):
+        caller = self.dynamic_link.func_name if self.dynamic_link else "ROOT"
+        return f"[Frame: {self.func_name}({self.args}) | Caller={caller} | Locals={self.locals}]"
+
+# Simulate call stack
+call_stack = []
+
+def call_function(func_name: str, args: dict):
+    caller_frame = call_stack[-1] if call_stack else None
+    new_frame = ActivationRecord(func_name, args, dynamic_link=caller_frame)
+    call_stack.append(new_frame)
+    print(f"PUSH -> {new_frame}")
+    return new_frame
+
+def return_function():
+    popped = call_stack.pop()
+    print(f"POP  <- {popped.func_name} exited. Stack Depth: {len(call_stack)}")
+
+# Simulate recursive factorial execution
+print("=== Simulating Activation Record Allocation ===")
+f3 = call_function("factorial", {"n": 3})
+f3.locals["partial"] = 3
+f2 = call_function("factorial", {"n": 2})
+f2.locals["partial"] = 2
+f1 = call_function("factorial", {"n": 1})
+f1.locals["result"] = 1
+
+return_function()
+return_function()
+return_function()`,
+              output: `=== Simulating Activation Record Allocation ===
+PUSH -> [Frame: factorial({'n': 3}) | Caller=ROOT | Locals={}]
+PUSH -> [Frame: factorial({'n': 2}) | Caller=factorial | Locals={}]
+PUSH -> [Frame: factorial({'n': 1}) | Caller=factorial | Locals={}]
+POP  <- factorial exited. Stack Depth: 2
+POP  <- factorial exited. Stack Depth: 1
+POP  <- factorial exited. Stack Depth: 0`
+            }
+          ],
+          keyPoints: [
+            "S-attributed definitions use only synthesized attributes and evaluate in bottom-up LR passes.",
+            "L-attributed definitions allow inherited attributes that depend solely on left siblings and parents.",
+            "Activation records store actual parameters, return address, dynamic link, local variables, and temporaries.",
+            "Dynamic link tracks execution call order; Static link tracks lexical scope nesting.",
+            "Buffer overflow attacks overwrite the saved return address inside the activation record."
+          ],
+          theoryQuestions: [
+            {
+              question: "Differentiate between S-Attributed and L-Attributed Syntax-Directed Definitions (SDDs). How can an S-attributed SDD be evaluated during LR parsing?",
+              marks: "5 Marks",
+              answer: "1. Definition: An S-attributed SDD involves only synthesized attributes, where the attribute of a parent node is computed solely from its children's attributes. An L-attributed SDD permits both synthesized and inherited attributes, with the restriction that inherited attributes can only depend on attributes of parent nodes or siblings strictly to the left. 2. Parsing Integration: An S-attributed SDD can be evaluated directly during bottom-up LR parsing on the fly. As the parser performs a 'reduce' action for production A -> XYZ, the attributes of X, Y, and Z already sit at known offsets on the parser value stack. The semantic rule computes A.val and replaces the top 3 attribute entries on the stack with A.val without needing an explicit syntax tree. L-attributed SDDs require depth-first left-to-right evaluation."
+            }
+          ],
+          mcqs: [
+            {
+              question: "In a function's runtime activation record, what is the primary role of the Dynamic Link (Control Link)?",
+              options: [
+                "It points to the activation record of the calling function to restore the stack pointer upon return",
+                "It points to the lexically enclosing scope for variable resolution",
+                "It stores the machine instructions of the function",
+                "It points to the global heap allocator"
+              ],
+              correctIndex: 0,
+              explanation: "The Dynamic Link (Control Link) points directly to the activation record of the function that called the current subroutine, enabling the runtime to unwind the stack frame upon return."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      id: "cd-u5",
+      title: "Unit 5: Target Code Generation & Register Allocation",
+      description: "Code generation design issues, Directed Acyclic Graph (DAG) representation for Basic Blocks, register allocation (Linear Scan, Graph Coloring), Sethi-Ullman algorithm, and Peephole Optimization.",
+      topics: [
+        {
+          id: "cd-u5-t1",
+          title: "DAG Representation for Basic Blocks, Register Allocation, and Peephole Optimization",
+          simpleExplanation: "After the compiler optimizes the code and organizes variables, the final step is translating everything into real machine assembly instructions (like x86-64 or ARM). The biggest challenge is that CPU registers are lightning fast but extremely scarce (a CPU has only 16 or 32 registers), while your program might have thousands of variables! Register Allocation uses graph coloring algorithms to assign variables that are used at the same time to different registers, 'spilling' extras to slower RAM only when forced. Finally, Peephole Optimization looks through a tiny sliding window (a 'peephole') of 2 or 3 assembly instructions to spot silly inefficiencies—like storing a number to memory and immediately loading it back into the same register—and eliminates them.",
+          detailedExplanation: `## 1. Directed Acyclic Graph (DAG) for Basic Blocks
+
+A DAG provides an efficient internal representation for a basic block:
+- **Leaves**: Represent unique initial identifiers or constants.
+- **Interior Nodes**: Represent operators, labelled by operator symbols and associated with variable names assigned to that result.
+
+\`\`\`mermaid
+flowchart TD
+    Plus["+ (t1, a)"] --> B["b"]
+    Plus --> C["c"]
+    Mult["* (t2, d)"] --> Plus
+    Mult --> Plus
+\`\`\`
+
+### Optimizations Automated via DAG Construction:
+1. **Common Subexpression Elimination**: If an operator node with the same children already exists, attach the new variable label to the existing node rather than creating a duplicate node.
+2. **Dead Code Elimination**: Any node with no outward edges and whose labels are not live at the exit of the basic block is deleted.
+3. **Algebraic Identity Simplification**: Simplify $x + 0 = x$, $x \\times 1 = x$, and $x \\times 0 = 0$.
+
+---
+
+## 2. Register Allocation via Graph Coloring (Chaitin's Algorithm)
+
+CPUs possess limited physical registers $K$ (e.g., $K = 16$).
+1. **Liveness Analysis**: Compute the live ranges of all temporary variables (intervals where a variable holds a value needed in future statements).
+2. **Interference Graph $G = (V, E)$**:
+   - Vertices $V$: Variables / temporaries.
+   - Edges $E$: An undirected edge exists between $u$ and $v$ if their live ranges overlap (they cannot share the same register).
+3. **Kempe's K-Coloring Heuristic**:
+   - Find a vertex $v$ with degree $< K$.
+   - Push $v$ onto the stack and remove it from graph $G$.
+   - Repeat until graph is empty.
+   - Pop vertices from stack and assign one of $K$ registers (colors) not used by any neighbor.
+   - If every remaining vertex has degree $\\ge K$, select a node to **Spill** to memory RAM.
+
+---
+
+## 3. Peephole Optimization Techniques
+
+Peephole optimization examines a sliding window of target machine instructions:
+1. **Redundant Load/Store Elimination**:
+   \`\`\`assembly
+   MOV R0, a
+   MOV a, R0     ; REDUNDANT: Eliminate!
+   \`\`\`
+2. **Unreachable Code Elimination**:
+   \`\`\`assembly
+   JMP label
+   MOV R1, #0    ; UNREACHABLE: Eliminate!
+   \`\`\`
+3. **Flow of Control Optimization**:
+   \`\`\`assembly
+   JMP L1
+   ...
+   L1: JMP L2    ; Can be optimized directly to: JMP L2
+   \`\`\`
+4. **Strength Reduction & Machine Idioms**:
+   - Replace \`MUL R0, #2\` with \`SHL R0, #1\`.
+   - Replace \`MOV R0, #0\` with \`XOR R0, R0\` (faster on x86).`,
+          shortNotes: "DAG optimizes basic blocks by eliminating common subexpressions. Register allocation uses Chaitin's graph coloring with K colors. Peephole optimization uses a sliding window to eliminate redundant loads/stores and jumps to jumps.",
+          examples: [
+            {
+              title: "Python Implementation: Peephole Optimizer & DAG Common Subexpression Finder",
+              problem: "Implement a sliding-window peephole optimizer eliminating redundant store-load sequences and algebraic zeroes.",
+              explanation: "Scans assembly instruction tuples and applies peephole transformation rules.",
+              code: `def peephole_optimize(instructions: list[str]) -> list[str]:
+    optimized = []
+    i = 0
+    n = len(instructions)
+
+    while i < n:
+        # Rule 1: Redundant Store followed by immediate Load of same register/variable
+        # e.g., 'MOV [x], R0' followed by 'MOV R0, [x]'
+        if i < n - 1:
+            curr = instructions[i].split()
+            nxt = instructions[i + 1].split()
+
+            if curr[0] == "MOV" and nxt[0] == "MOV":
+                dest1, src1 = curr[1].rstrip(','), curr[2]
+                dest2, src2 = nxt[1].rstrip(','), nxt[2]
+                if dest1 == src2 and src1 == dest2:
+                    # Skip the redundant second load
+                    optimized.append(instructions[i])
+                    print(f"[Peephole] Eliminated redundant load: '{instructions[i+1]}'")
+                    i += 2
+                    continue
+
+        # Rule 2: Machine Idiom - Replace 'MOV R0, #0' with 'XOR R0, R0'
+        parts = instructions[i].split()
+        if len(parts) == 3 and parts[0] == "MOV" and parts[2] == "#0":
+            reg = parts[1].rstrip(',')
+            optimized.append(f"XOR {reg}, {reg}")
+            print(f"[Peephole] Optimized '{instructions[i]}' -> 'XOR {reg}, {reg}'")
+            i += 1
+            continue
+
+        optimized.append(instructions[i])
+        i += 1
+
+    return optimized
+
+raw_assembly = [
+    "MOV R0, #0",
+    "ADD R0, R1",
+    "MOV [mem_a], R0",
+    "MOV R0, [mem_a]",
+    "SUB R2, #1"
+]
+
+print("=== Original Machine Code ===")
+for line in raw_assembly:
+    print(line)
+
+print("\\n=== Peephole Optimization Pass ===")
+opt_assembly = peephole_optimize(raw_assembly)
+
+print("\\n=== Final Optimized Assembly ===")
+for line in opt_assembly:
+    print(line)`,
+              output: `=== Original Machine Code ===
+MOV R0, #0
+ADD R0, R1
+MOV [mem_a], R0
+MOV R0, [mem_a]
+SUB R2, #1
+
+=== Peephole Optimization Pass ===
+[Peephole] Optimized 'MOV R0, #0' -> 'XOR R0, R0'
+[Peephole] Eliminated redundant load: 'MOV R0, [mem_a]'
+
+=== Final Optimized Assembly ===
+XOR R0, R0
+ADD R0, R1
+MOV [mem_a], R0
+SUB R2, #1`
+            }
+          ],
+          keyPoints: [
+            "DAGs identify common subexpressions within basic blocks by sharing nodes with identical operand children.",
+            "Register allocation maps unbounded variables onto K hardware registers via graph coloring.",
+            "Chaitin's heuristic repeatedly prunes nodes with degree < K to color the interference graph.",
+            "Variables whose live ranges conflict cannot be assigned the same physical register.",
+            "Peephole optimization replaces short instruction sequences with faster machine idioms like XOR for zeroing."
+          ],
+          theoryQuestions: [
+            {
+              question: "Explain Register Allocation using Graph Coloring (Chaitin's Algorithm). What steps occur when the graph is not K-colorable?",
+              marks: "7 Marks",
+              answer: "1. Interference Graph: Construct an undirected graph G=(V, E) where each vertex represents a virtual register/temporary, and an edge connects two vertices if their live ranges overlap. 2. Simplification: If a vertex v has degree < K (where K is available registers), removing v cannot prevent the remaining graph from being colored. Push v onto a stack and remove it from G. Repeat until all vertices have degree < K. 3. Select & Coloring: Pop vertices from the stack in reverse order and assign an available register color not used by its neighbors. 4. Spilling: If at any step all remaining nodes have degree >= K, the graph may not be K-colorable. A heuristic selects a candidate node with high memory cost/low usage frequency to 'spill' (store in memory stack frame rather than register). A store is inserted after definition and a load before each use, and the coloring process restarts."
+            }
+          ],
+          mcqs: [
+            {
+              question: "In compiler register allocation, if a CPU provides K physical registers, an interference graph node can be guaranteed colorable if its degree in the graph is:",
+              options: ["Strictly less than K", "Greater than or equal to K", "Equal to 2K", "Infinite"],
+              correctIndex: 0,
+              explanation: "If a node has degree < K, its neighbors can occupy at most K - 1 distinct colors, guaranteeing that at least one of the K colors remains free to assign to this node."
+            }
+          ]
+        }
+      ]
     }
   ]
 };

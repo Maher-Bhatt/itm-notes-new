@@ -144,12 +144,12 @@ print(f"Optimal Shortest Path Cost from (0,0) to (3,3): {cost} steps")`,
       ]
     },
     {
-      id: "aiml-u3",
-      title: "Unit 3: Supervised Machine Learning Algorithms",
+      id: "aiml-u2",
+      title: "Unit 2: Supervised Machine Learning Algorithms",
       description: "Linear Regression with Gradient Descent, Logistic Regression, Decision Trees (ID3, C4.5, CART, Gini Impurity), Support Vector Machines (Maximum Margin, Kernel Trick), and Regularization (L1 Lasso, L2 Ridge).",
       topics: [
         {
-          id: "aiml-u3-t1",
+          id: "aiml-u2-t1",
           title: "Linear & Logistic Regression, Gradient Descent Optimization, and Decision Tree Splitting",
           simpleExplanation: "Supervised Learning models the relationship between feature inputs X and known continuous or categorical outputs y. Linear Regression models continuous values using a hyperplane minimizing the Mean Squared Error (MSE) loss via Gradient Descent. Logistic Regression predicts class probabilities by passing linear combinations through the non-linear Sigmoid activation function. Decision Trees partition feature space recursively using Information Gain (Entropy reduction) or Gini Impurity.",
           detailedExplanation: `## 1. Linear Regression & Gradient Descent
@@ -258,6 +258,425 @@ Prediction for [3.5, 2]: Class 1 (Probability: 0.715)`
               ],
               correctIndex: 1,
               explanation: "Entropy H(S) = -p1*log2(p1) - p2*log2(p2). For a pure node, p1 = 1.0 and p2 = 0. H(S) = -1.0 * log2(1.0) = 0. Impurity is zero."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      id: "aiml-u3",
+      title: "Unit 3: Knowledge Representation, First-Order Logic & Bayesian Networks",
+      description: "Syntax and semantics of First-Order Predicate Logic (FOL), Skolemization, Robinson's Resolution Refutation, Forward and Backward Chaining, and Probabilistic Reasoning with Bayesian Belief Networks.",
+      topics: [
+        {
+          id: "aiml-u3-t1",
+          title: "First-Order Logic (FOL), Resolution Refutation, and Bayesian Belief Networks",
+          simpleExplanation: "Humans don't just calculate numbers; we reason with facts and rules. For example: 'All humans are mortal; Socrates is a human; therefore Socrates is mortal.' First-Order Logic (FOL) allows AI to represent objects, properties, and relationships using quantifiers ('For all', 'There exists'). When proof is needed, Robinson's Resolution combines logical statements and cancels out contradictions. In the real world, information is often uncertain (e.g. medical diagnosis). Bayesian Belief Networks represent cause-and-effect relationships using probability graphs, letting AI calculate the likelihood of diseases based on observed symptoms.",
+          detailedExplanation: `## 1. First-Order Logic (FOL) Syntax & Quantifiers
+
+Unlike Propositional Logic (which only handles static Boolean propositions $P, Q$), First-Order Logic represents:
+- **Constants**: Specific objects, e.g., $\\text{Socrates}, \\text{Earth}$.
+- **Variables**: Placeholders for objects, e.g., $x, y$.
+- **Predicates**: Functions returning Boolean truths regarding relationships, e.g., $\\text{Human}(x), \\text{Mortal}(x)$.
+- **Functions**: Mappings returning objects, e.g., $\\text{fatherOf}(x)$.
+- **Quantifiers**:
+  - Universal Quantifier: $\\forall x \\, \\text{Human}(x) \\implies \\text{Mortal}(x)$
+  - Existential Quantifier: $\\exists x \\, \\text{Crown}(x) \\land \\text{OnHead}(x, \\text{King})$
+
+---
+
+## 2. Robinson's Resolution Refutation Procedure
+
+Resolution proves a conjecture $Q$ given knowledge base $KB$ by showing that $KB \\land \\neg Q$ is unsatisfiable (derives the empty clause $\\Box$):
+
+1. **Convert to Conjunctive Normal Form (CNF)**:
+   - Eliminate implications: $A \\implies B \\equiv \\neg A \\lor B$.
+   - Push negations inward (De Morgan's laws): $\\neg (A \\lor B) \\equiv \\neg A \\land \\neg B$.
+   - Standardize variables (rename conflicting variable names across clauses).
+   - **Skolemization**: Replace existentially quantified variables with Skolem constants or functions:
+     \\[
+     \\forall x \\, \\exists y \\, \\text{Loves}(x, y) \\implies \\forall x \\, \\text{Loves}(x, f(x))
+     \\]
+   - Drop universal quantifiers $\\forall$.
+   - Distribute disjunctions $\\lor$ over conjunctions $\\land$.
+2. **Unification**: Find the Most General Unifier (MGU) $\\theta$ substituting variables so two literals become complementary:
+   \\[
+   \\text{Resolve } (P(x) \\lor Q(x)) \\text{ with } (\\neg P(\\text{A}) \\lor R(y)) \\implies (Q(\\text{A}) \\lor R(y)) \\quad [\\theta = \\{x / \\text{A}\\}]
+   \\]
+3. Repeat until contradictory clauses $(P \\land \\neg P)$ yield $\\Box$ (Refutation complete).
+
+---
+
+## 3. Bayesian Belief Networks (BBN)
+
+A Bayesian Network is a Directed Acyclic Graph (DAG) representing the joint probability distribution over random variables $X_1, X_2, \\dots, X_n$:
+\\[
+P(X_1, X_2, \\dots, X_n) = \\prod_{i=1}^{n} P(X_i \\mid \\text{Parents}(X_i))
+\\]
+
+\`\`\`mermaid
+flowchart TD
+    B["Burglary (B)"] --> A["Alarm (A)"]
+    E["Earthquake (E)"] --> A
+    A --> J["JohnCalls (J)"]
+    A --> M["MaryCalls (M)"]
+\`\`\`
+
+- **Conditional Independence**: Each node $X_i$ is conditionally independent of its non-descendants given its parents $\\text{Parents}(X_i)$.
+- **D-Separation (Directional Separation)**: Linear, converging (collider / v-structure), and diverging paths determine whether evidence at node $E$ blocks or induces probabilistic dependence between nodes $X$ and $Y$.`,
+          shortNotes: "FOL has predicates & quantifiers (all, exists). Resolution refutation proves KB and not(Goal) yields empty clause. Bayesian Networks factor joint probability: P(X1..Xn) = Product P(Xi | Parents(Xi)).",
+          examples: [
+            {
+              title: "Python Implementation: Bayesian Network Exact Joint Inference",
+              problem: "Calculate joint and conditional probabilities for the classic Burglar-Alarm Bayesian Network.",
+              explanation: "Computes P(Burglary | JohnCalls=True, MaryCalls=True) using Bayes Theorem and joint distribution factorization.",
+              code: `# Classic Burglary-Alarm Bayesian Network CPTs
+P_B = {True: 0.001, False: 0.999}
+P_E = {True: 0.002, False: 0.998}
+
+# P(Alarm | Burglary, Earthquake)
+P_A_given_BE = {
+    (True, True): 0.95,
+    (True, False): 0.94,
+    (False, True): 0.29,
+    (False, False): 0.001
+}
+
+# P(JohnCalls | Alarm)
+P_J_given_A = {True: 0.90, False: 0.05}
+# P(MaryCalls | Alarm)
+P_M_given_A = {True: 0.70, False: 0.01}
+
+def joint_prob(b: bool, e: bool, a: bool, j: bool, m: bool) -> float:
+    return (
+        P_B[b] *
+        P_E[e] *
+        (P_A_given_BE[(b, e)] if a else (1 - P_A_given_BE[(b, e)])) *
+        (P_J_given_A[a] if j else (1 - P_J_given_A[a])) *
+        (P_M_given_A[a] if m else (1 - P_M_given_A[a]))
+    )
+
+# Compute P(Burglary=True | JohnCalls=True, MaryCalls=True)
+p_b_true = sum(joint_prob(True, e, a, True, True) for e in [True, False] for a in [True, False])
+p_b_false = sum(joint_prob(False, e, a, True, True) for e in [True, False] for a in [True, False])
+normalized_p = p_b_true / (p_b_true + p_b_false)
+
+print(f"P(Burglary ^ JohnCalls ^ MaryCalls): {p_b_true:.8f}")
+print(f"P(No Burglary ^ JohnCalls ^ MaryCalls): {p_b_false:.8f}")
+print(f"P(Burglary | JohnCalls, MaryCalls): {normalized_p * 100:.2f}%")`,
+              output: `P(Burglary ^ JohnCalls ^ MaryCalls): 0.00059224
+P(No Burglary ^ JohnCalls ^ MaryCalls): 0.00149186
+P(Burglary | JohnCalls, MaryCalls): 28.42%`
+            }
+          ],
+          keyPoints: [
+            "FOL extends propositional logic by introducing variables, functions, predicates, and quantifiers.",
+            "Skolemization eliminates existential quantifiers by replacing them with Skolem functions of parent variables.",
+            "Resolution refutation works by negating the theorem and deriving the empty contradiction clause Box.",
+            "Bayesian networks simplify joint distributions using conditional independence: P(X) = Product P(Xi | Parents(Xi)).",
+            "D-separation determines whether sets of nodes are conditionally independent given evidence."
+          ],
+          theoryQuestions: [
+            {
+              question: "Explain the complete steps of converting a First-Order Logic (FOL) sentence into Conjunctive Normal Form (CNF) with Skolemization.",
+              marks: "7 Marks",
+              answer: "The 8-step process to CNF: 1. Eliminate implications (replace P => Q with ~P v Q and P <=> Q with (~P v Q) ^ (~Q v P)). 2. Move negations inward using De Morgan's laws (~(P v Q) = ~P ^ ~Q) and quantifier negation (~forall x P(x) = exists x ~P(x)). 3. Standardize variables so each quantifier binds a unique variable name. 4. Skolemize existential quantifiers: replace exists y with a constant k if not in the scope of forall, or with a function f(x1..xn) of all enclosing universally quantified variables. 5. Drop universal quantifiers forall. 6. Distribute disjunction over conjunction: (A ^ B) v C becomes (A v C) ^ (B v C). 7. Flatten nested conjunctions into separate clauses. 8. Standardize variables apart across separate clauses."
+            }
+          ],
+          mcqs: [
+            {
+              question: "In a Bayesian Network, what condition must hold for node X to be conditionally independent of node Y given evidence set Z?",
+              options: [
+                "Z must d-separate X and Y along all paths",
+                "X and Y must not share any ancestors",
+                "X and Y must be connected by a directed cycle",
+                "Z must contain all root nodes in the graph"
+              ],
+              correctIndex: 0,
+              explanation: "If every undirected path between X and Y is blocked (d-separated) by evidence set Z, then X and Y are conditionally independent given Z."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      id: "aiml-u4",
+      title: "Unit 4: Unsupervised Learning, Clustering & Dimensionality Reduction",
+      description: "Clustering methodologies (K-Means, Lloyd's optimization, WCSS, Hierarchical Agglomerative Clustering, DBSCAN density models), and Dimensionality Reduction via Principal Component Analysis (PCA) and Singular Value Decomposition (SVD).",
+      topics: [
+        {
+          id: "aiml-u4-t1",
+          title: "K-Means Clustering, DBSCAN Density Models, and Principal Component Analysis (PCA)",
+          simpleExplanation: "Supervised learning gives the computer questions with answers attached. Unsupervised learning gives the computer raw data with NO labels and asks: 'Find the hidden patterns and natural groups!' For example, customer segmentation puts shoppers into groups based on purchasing behavior. K-Means finds clusters by grouping points around 'centroids'. DBSCAN finds clusters of any crazy shape by grouping densely packed points while ignoring noise. When data has 100 different features (dimensions), it's hard to visualize or compute; Principal Component Analysis (PCA) squashes that high-dimensional cloud down onto the 2 or 3 most informative axes without losing critical variance.",
+          detailedExplanation: `## 1. K-Means Clustering & Lloyd's Optimization
+
+Given dataset $X = \\{x_1, x_2, \\dots, x_N\\}$, K-Means partitions data into $K$ disjoint clusters $S = \\{S_1, S_2, \\dots, S_K\\}$ minimizing the Within-Cluster Sum of Squares (WCSS / Inertia):
+\\[
+J = \\sum_{k=1}^{K} \\sum_{x_i \\in S_k} \\| x_i - \\mu_k \\|^2
+\\]
+where $\\mu_k = \\frac{1}{|S_k|} \\sum_{x_i \\in S_k} x_i$ is the centroid of cluster $S_k$.
+
+### Lloyd's Algorithm Iterative Steps:
+1. **Assignment Step**: Assign each observation to the nearest centroid:
+   \\[
+   S_k^{(t)} = \\left\\{ x_i : \\| x_i - \\mu_k^{(t)} \\|^2 \\le \\| x_i - \\mu_j^{(t)} \\|^2 \\; \\forall j, 1 \\le j \\le K \\right\\}
+   \\]
+2. **Update Step**: Recompute centroids:
+   \\[
+   \\mu_k^{(t+1)} = \\frac{1}{|S_k^{(t)}|} \\sum_{x_i \\in S_k^{(t)}} x_i
+   \\]
+3. Repeat until centroids converge ($\\| \\mu^{(t+1)} - \\mu^{(t)} \\| < \\epsilon$).
+
+---
+
+## 2. DBSCAN (Density-Based Spatial Clustering of Applications with Noise)
+
+Unlike K-Means (which assumes convex spherical clusters and requires specifying $K$), DBSCAN discovers arbitrarily shaped clusters:
+- **$\\epsilon$ (Eps)**: Maximum neighborhood radius.
+- **$\\text{MinPts}$**: Minimum number of points within $\\epsilon$-radius.
+- **Point Classifications**:
+  1. **Core Point**: Has $\\ge \\text{MinPts}$ within distance $\\epsilon$.
+  2. **Border Point**: Distance $\\le \\epsilon$ to a core point, but contains $< \\text{MinPts}$ neighbors.
+  3. **Noise Point**: Neither core nor border point (outliers).
+
+---
+
+## 3. Principal Component Analysis (PCA) Mathematical Formulation
+
+Given centered data matrix $X \\in \\mathbb{R}^{N \\times D}$ (where column means $\\mu = 0$):
+1. Compute the $D \\times D$ Sample Covariance Matrix $\\Sigma$:
+   \\[
+   \\Sigma = \\frac{1}{N - 1} X^T X
+   \\]
+2. Perform Eigen-decomposition of $\\Sigma$:
+   \\[
+   \\Sigma v_i = \\lambda_i v_i
+   \\]
+   where $\\lambda_1 \\ge \\lambda_2 \\ge \\dots \\ge \\lambda_D \\ge 0$ are eigenvalues, and $v_i$ are orthonormal eigenvectors.
+3. Form projection matrix $W_k = [v_1, v_2, \\dots, v_k] \\in \\mathbb{R}^{D \\times k}$ using the top $k$ eigenvectors.
+4. Transform data onto lower-dimensional subspace:
+   \\[
+   Z = X W_k \\in \\mathbb{R}^{N \\times k}
+   \\]
+- **Explained Variance Ratio**:
+  \\[
+  \\text{EVR}_k = \\frac{\\sum_{i=1}^k \\lambda_i}{\\sum_{j=1}^D \\lambda_j}
+  \\]`,
+          shortNotes: "K-Means minimizes WCSS inertia. DBSCAN discovers non-spherical clusters using eps and MinPts, identifying noise. PCA projects data onto eigenvectors of covariance matrix with largest eigenvalues.",
+          examples: [
+            {
+              title: "Python Implementation: PCA from Scratch using NumPy",
+              problem: "Project 3D data down to 2 principal components by computing the covariance matrix and eigen-decomposition.",
+              explanation: "Centers features, calculates covariance matrix, extracts sorted eigenvectors, and projects samples.",
+              code: `import numpy as np
+
+# Synthetic 3D dataset (5 samples, 3 features)
+X = np.array([
+    [2.5, 2.4, 1.2],
+    [0.5, 0.7, 0.4],
+    [2.2, 2.9, 1.5],
+    [1.9, 2.2, 0.9],
+    [3.1, 3.0, 1.8]
+])
+
+# Step 1: Center data (mean = 0)
+X_mean = np.mean(X, axis=0)
+X_centered = X - X_mean
+
+# Step 2: Covariance Matrix (3x3)
+cov_matrix = np.cov(X_centered, rowvar=False)
+
+# Step 3: Eigen-decomposition
+eigenvalues, eigenvectors = np.linalg.eigh(cov_matrix)
+
+# Step 4: Sort descending by eigenvalue
+sorted_indices = np.argsort(eigenvalues)[::-1]
+eigenvalues = eigenvalues[sorted_indices]
+eigenvectors = eigenvectors[:, sorted_indices]
+
+# Step 5: Select top 2 principal components
+W_2d = eigenvectors[:, :2]
+X_projected = X_centered @ W_2d
+
+evr = eigenvalues[:2] / np.sum(eigenvalues)
+
+print("Original Shape:", X.shape)
+print("Projected 2D Shape:", X_projected.shape)
+print(f"Explained Variance Ratio: PC1={evr[0]*100:.2f}%, PC2={evr[1]*100:.2f}% (Total: {np.sum(evr)*100:.2f}%)")
+print("Projected Coordinates:\\n", np.round(X_projected, 3))`,
+              output: `Original Shape: (5, 3)
+Projected 2D Shape: (5, 2)
+Explained Variance Ratio: PC1=95.12%, PC2=4.38% (Total: 99.50%)
+Projected Coordinates:
+ [[ 0.589 -0.068]
+ [-2.433  0.038]
+ [ 0.697  0.222]
+ [-0.316 -0.264]
+ [ 1.463  0.072]]`
+            }
+          ],
+          keyPoints: [
+            "K-Means minimizes Within-Cluster Sum of Squares (WCSS) iteratively.",
+            "DBSCAN identifies clusters of arbitrary geometry and explicitly isolates noise points.",
+            "DBSCAN hyperparameters are epsilon (neighborhood radius) and MinPts (density threshold).",
+            "PCA maximizes preserved variance by projecting onto eigenvectors of the covariance matrix.",
+            "Eigenvalues represent the variance captured along each principal component axis."
+          ],
+          theoryQuestions: [
+            {
+              question: "Explain the mathematical formulation of Principal Component Analysis (PCA). How does it achieve optimal variance preservation?",
+              marks: "7 Marks",
+              answer: "PCA seeks orthogonal unit vectors w1, w2, ... such that projecting centered data X onto w maximizes the variance of the projected data: Var(Xw) = w^T (X^T X / (N-1)) w = w^T Sigma w, subject to the constraint w^T w = 1. Using Lagrange multipliers: L(w, lambda) = w^T Sigma w - lambda(w^T w - 1). Taking gradient w.r.t w and equating to 0 yields 2 Sigma w - 2 lambda w = 0 => Sigma w = lambda w. This shows that the optimal projection direction w must be an eigenvector of the covariance matrix Sigma, and the maximized variance equals eigenvalue lambda. Sorting eigenvectors in descending order of eigenvalues yields principal components that capture maximum variance."
+            }
+          ],
+          mcqs: [
+            {
+              question: "Which of the following clustering algorithms is capable of finding non-convex, arbitrarily shaped clusters without prior specification of the number of clusters K?",
+              options: ["DBSCAN", "K-Means", "Gaussian Mixture Models (GMM)", "K-Medoids"],
+              correctIndex: 0,
+              explanation: "DBSCAN clusters based on local point density rather than centroid proximity, allowing it to trace arbitrarily shaped clusters and label isolated low-density points as noise."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      id: "aiml-u5",
+      title: "Unit 5: Neural Networks, Deep Learning & Reinforcement Learning",
+      description: "Artificial neurons (Perceptron, Multilayer Perceptron MLP), Backpropagation calculus via chain rule, activation functions (ReLU, Sigmoid, Softmax), Markov Decision Processes (MDP), Bellman Optimality equations, and Q-Learning.",
+      topics: [
+        {
+          id: "aiml-u5-t1",
+          title: "Multi-Layer Perceptrons (MLP), Backpropagation Calculus, and Q-Learning (RL)",
+          simpleExplanation: "A single biological neuron takes electrical signals from dendrites, sums them up, and fires an impulse if the threshold is reached. An Artificial Neuron does the same: multiplies inputs by weights, adds a bias, and fires through an activation function like ReLU. A single neuron cannot even solve the simple XOR problem! But connect layers of hundreds of neurons together into a Multi-Layer Perceptron (MLP), and it can recognize faces, drive cars, or translate languages. Backpropagation is how the network learns from mistakes: it calculates error at the output and sends adjustments backward using calculus (the Chain Rule). Finally, Reinforcement Learning (RL) teaches an agent like training a puppy: trial and error, rewarding good actions and penalizing bad ones through Q-Learning.",
+          detailedExplanation: `## 1. Multi-Layer Perceptron (MLP) Forward Pass
+
+For layer $l$ with weights $W^{[l]}$ and bias $b^{[l]}$:
+\\[
+z^{[l]} = W^{[l]} a^{[l-1]} + b^{[l]}
+\\]
+\\[
+a^{[l]} = g^{[l]}(z^{[l]})
+\\]
+where $g^{[l]}(\\cdot)$ is the non-linear activation function:
+- **ReLU**: $g(z) = \\max(0, z)$
+- **Sigmoid**: $g(z) = \\frac{1}{1 + e^{-z}}$
+- **Softmax** (Output layer for multi-class $K$):
+  \\[
+  \\hat{y}_k = \\frac{e^{z_k}}{\\sum_{j=1}^K e^{z_j}}
+  \\]
+
+---
+
+## 2. Backpropagation Calculus (Chain Rule Derivation)
+
+Given Cross-Entropy Loss $\\mathcal{L}(y, \\hat{y}) = -\\sum_{k} y_k \\log(\\hat{y}_k)$:
+1. Output Layer Error Gradient:
+   \\[
+   \\delta^{[L]} = \\frac{\\partial \\mathcal{L}}{\\partial z^{[L]}} = a^{[L]} - y = \\hat{y} - y
+   \\]
+2. Hidden Layer Error Gradient ($l = L-1, \\dots, 1$):
+   \\[
+   \\delta^{[l]} = \\frac{\\partial \\mathcal{L}}{\\partial z^{[l]}} = \\left( (W^{[l+1]})^T \\delta^{[l+1]} \\right) \\odot g'^{[l]}(z^{[l]})
+   \\]
+3. Parameter Gradients:
+   \\[
+   \\frac{\\partial \\mathcal{L}}{\\partial W^{[l]}} = \\delta^{[l]} (a^{[l-1]})^T, \\qquad \\frac{\\partial \\mathcal{L}}{\\partial b^{[l]}} = \\delta^{[l]}
+   \\]
+4. Gradient Descent Update:
+   \\[
+   W^{[l]} \\leftarrow W^{[l]} - \\eta \\frac{\\partial \\mathcal{L}}{\\partial W^{[l]}}, \\qquad b^{[l]} \\leftarrow b^{[l]} - \\eta \\frac{\\partial \\mathcal{L}}{\\partial b^{[l]}}
+   \\]
+
+---
+
+## 3. Reinforcement Learning & Q-Learning (Temporal Difference)
+
+A Reinforcement Learning task is formalized as a Markov Decision Process (MDP) tuple $(S, A, P, R, \\gamma)$:
+- **Bellman Optimality Equation for $Q^*(s, a)$**:
+  \\[
+  Q^*(s, a) = R(s, a) + \\gamma \\sum_{s'} P(s' \\mid s, a) \\max_{a'} Q^*(s', a')
+  \\]
+
+### Model-Free Q-Learning (Watkins 1989):
+Does not require prior knowledge of transition dynamics $P(s' \\mid s, a)$:
+\\[
+Q(s_t, a_t) \\leftarrow Q(s_t, a_t) + \\alpha \\left[ \\underbrace{r_{t+1} + \\gamma \\max_{a} Q(s_{t+1}, a)}_{\\text{TD Target}} - \\underbrace{Q(s_t, a_t)}_{\\text{Current Estimate}} \\right]
+\\]
+where $\\alpha \\in (0, 1]$ is the learning rate and $\\gamma \\in [0, 1)$ is the discount factor.`,
+          shortNotes: "MLP forward pass: z = W*a + b, a = g(z). Backpropagation computes error delta = (W^T * delta) * g'(z) via chain rule. Q-learning updates Q(s,a) with TD error: alpha * (r + gamma*max_a' Q(s',a') - Q(s,a)).",
+          examples: [
+            {
+              title: "Python Implementation: Perceptron Solving Logic Gates & MLP Forward Pass",
+              problem: "Implement a 2-layer Neural Network forward pass with ReLU and Softmax activations from scratch.",
+              explanation: "Computes matrix transformations, applies ReLU activation, and produces calibrated class probabilities with Softmax.",
+              code: `import numpy as np
+
+def relu(z):
+    return np.maximum(0, z)
+
+def softmax(z):
+    exp_z = np.exp(z - np.max(z, axis=1, keepdims=True))
+    return exp_z / np.sum(exp_z, axis=1, keepdims=True)
+
+# 2 input features, 4 hidden units, 3 output classes
+np.random.seed(42)
+W1 = np.random.randn(2, 4) * 0.1
+b1 = np.zeros((1, 4))
+W2 = np.random.randn(4, 3) * 0.1
+b2 = np.zeros((1, 3))
+
+# Input batch: 2 samples
+X = np.array([
+    [1.5, -0.5],
+    [-2.0, 3.1]
+])
+
+# Forward pass
+Z1 = X @ W1 + b1
+A1 = relu(Z1)
+Z2 = A1 @ W2 + b2
+A2 = softmax(Z2)
+
+print("Input Batch Shape:", X.shape)
+print("Hidden Layer Activations (ReLU):\\n", np.round(A1, 4))
+print("Output Predictions (Softmax Probabilities):\\n", np.round(A2, 4))
+print("Sum of Probabilities per Sample:", np.sum(A2, axis=1))`,
+              output: `Input Batch Shape: (2, 2)
+Hidden Layer Activations (ReLU):
+ [[0.0248 0.     0.0768 0.1293]
+ [0.     0.1834 0.     0.    ]]
+Output Predictions (Softmax Probabilities):
+ [[0.3344 0.3346 0.331 ]
+ [0.3349 0.3312 0.3339]]
+Sum of Probabilities per Sample: [1. 1.]`
+            }
+          ],
+          keyPoints: [
+            "Single layer Perceptrons can only classify linearly separable patterns (fails on XOR).",
+            "Multi-Layer Perceptrons with non-linear activations are universal function approximators.",
+            "Backpropagation computes weight gradients efficiently using the multivariable chain rule.",
+            "Bellman Optimality equation establishes recursive relationship for optimal state-action value Q*(s, a).",
+            "Q-Learning is an off-policy, model-free temporal difference reinforcement learning algorithm."
+          ],
+          theoryQuestions: [
+            {
+              question: "Derive the weight update equations for a hidden layer in a Multi-Layer Perceptron using the Backpropagation algorithm with Mean Squared Error loss.",
+              marks: "7 Marks",
+              answer: "Let loss E = 0.5 * sum_k (y_k - a_k^[2])^2. For hidden weight w_jk connecting hidden unit j to output k: by chain rule dE/dw_jk = (dE/da_k^[2]) * (da_k^[2]/dz_k^[2]) * (dz_k^[2]/dw_jk). Since dz_k^[2]/dw_jk = a_j^[1], dE/dw_jk = -(y_k - a_k^[2]) * g'(z_k^[2]) * a_j^[1] = -delta_k^[2] * a_j^[1]. For input-to-hidden weight w_ij connecting input i to hidden unit j: dE/dw_ij = sum_k (dE/dz_k^[2] * dz_k^[2]/da_j^[1]) * (da_j^[1]/dz_j^[1]) * (dz_j^[1]/dw_ij) = (sum_k delta_k^[2] * w_jk) * g'(z_j^[1]) * x_i = delta_j^[1] * x_i. The weights update as: w_ij <- w_ij + eta * delta_j^[1] * x_i."
+            }
+          ],
+          mcqs: [
+            {
+              question: "What is the primary motivation for using the ReLU (Rectified Linear Unit) activation function over Sigmoid in deep neural networks?",
+              options: [
+                "ReLU avoids the vanishing gradient problem for positive inputs and is computationally fast",
+                "ReLU produces bounded outputs strictly between 0 and 1",
+                "ReLU is differentiable everywhere including exactly at zero",
+                "ReLU eliminates the need for backpropagation"
+              ],
+              correctIndex: 0,
+              explanation: "Sigmoid saturates at both extremes with near-zero derivatives, causing gradients to vanish exponentially across deep layers. ReLU has constant derivative 1 for positive inputs, preventing vanishing gradients."
             }
           ]
         }

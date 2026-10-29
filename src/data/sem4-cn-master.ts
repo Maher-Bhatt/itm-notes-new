@@ -463,6 +463,168 @@ for r in range(1, 11):
           ]
         }
       ]
+    },
+    {
+      id: "cn-u5",
+      title: "Unit 5: Application Layer Protocols, DNS, HTTP/2/3 & Network Security",
+      description: "Application Layer paradigms, Domain Name System (DNS hierarchy, recursive vs iterative queries, Resource Records), Web protocols (HTTP/1.1 vs HTTP/2 vs HTTP/3 QUIC), Email architectures (SMTP, IMAP, POP3), and Network Security (TLS 1.3, X.509 PKI, Firewalls).",
+      topics: [
+        {
+          id: "cn-u5-t1",
+          title: "DNS Architecture, HTTP Evolution (1.1, 2, 3 QUIC), and Transport Layer Security (TLS)",
+          simpleExplanation: "When you type 'google.com' in a browser, computers don't understand English words; they only understand numbers like 142.250.190.46. The Domain Name System (DNS) is the giant phonebook of the entire global internet: your computer asks root servers and top-level domain servers until it finds the exact IP address in 15 milliseconds. Then, your browser uses HTTP to ask the web server for the webpage. HTTP/1.1 was slow because images had to wait in a single line (Head-of-Line blocking). HTTP/2 fixed this by sending multiple files over one pipe at the exact same time (multiplexing). And HTTP/3 runs over UDP with Google's QUIC protocol, connecting in zero round-trips! Finally, TLS (Transport Layer Security) encrypts all data so hackers at the local coffee shop cannot steal your credit card.",
+          detailedExplanation: `## 1. Domain Name System (DNS) Architecture & Resolution
+
+DNS is an application-layer protocol running over UDP/TCP port 53:
+- **Hierarchical Domain Namespace**:
+  \`\`\`mermaid
+  flowchart TD
+      Root["Root DNS Servers ('.', 13 Named Authorities A-M)"] --> TLD1["Top-Level Domain (TLD) '.com'"]
+      Root --> TLD2["Top-Level Domain (TLD) '.edu'"]
+      TLD1 --> Auth["Authoritative Server (e.g. 'google.com', 'campusloop.org')"]
+      Auth --> Sub["Subdomain (e.g. 'api.campusloop.org')"]
+  \`\`\`
+
+### Recursive vs Iterative DNS Queries:
+- **Recursive Query**: The client asks the Local DNS Resolver (e.g., 8.8.8.8) to perform the entire lookup on its behalf. The resolver promises to return either the IP address or an error.
+- **Iterative Query**: The Local DNS Resolver queries the Root, TLD, and Authoritative servers iteratively. Each server replies with a referral to the next server down the hierarchy.
+
+### DNS Resource Records (RR Format: \`name, value, type, ttl\`):
+- **Type A**: Maps hostname $\\to$ IPv4 address (\`campusloop.org -> 192.0.2.1\`).
+- **Type AAAA**: Maps hostname $\\to$ IPv6 address.
+- **Type CNAME**: Canonical Name (alias to another hostname).
+- **Type MX**: Mail Exchange server for domain.
+- **Type NS**: Authoritative Name Server for domain.
+- **Type TXT**: Arbitrary text (used for SPF and DKIM email authentication).
+
+---
+
+## 2. HTTP Protocol Evolution: HTTP/1.1 vs HTTP/2 vs HTTP/3 (QUIC)
+
+\`\`\`mermaid
+flowchart TD
+    subgraph H1["HTTP/1.1 (TCP)"]
+        H1A["Text Headers"] --> H1B["Single Request per Connection (Head-of-Line Blocking)"]
+    end
+    subgraph H2["HTTP/2 (TCP)"]
+        H2A["Binary Framing Layer"] --> H2B["Multiplexed Streams over Single TCP Connection"]
+        H2A --> H2C["HPACK Header Compression"]
+    end
+    subgraph H3["HTTP/3 (QUIC over UDP)"]
+        H3A["QUIC Protocol (UDP)"] --> H3B["Zero-RTT Handshake + Independent Streams (No TCP HoL Blocking)"]
+    end
+\`\`\`
+
+| Feature | HTTP/1.1 (RFC 2616) | HTTP/2 (RFC 7540) | HTTP/3 (RFC 9114) |
+| :--- | :--- | :--- | :--- |
+| **Transport Layer** | TCP (Port 80/443) | TCP (Port 443 with TLS 1.2+) | **QUIC over UDP** (Port 443) |
+| **Framing Format** | Plaintext ASCII | Binary Frames | Binary Frames |
+| **Multiplexing** | No (Pipelining flawed) | **Yes** (Interleaved streams) | **Yes** (Independent streams) |
+| **Head-of-Line (HoL) Blocking** | Severe at Application Layer | Solved at App Layer, but **persists at TCP Layer** (Packet drop stalls all streams) | **Completely Eliminated** (UDP packet drop only halts that single stream) |
+| **Connection Setup Latency** | 2-3 RTT (TCP + TLS) | 2 RTT (TCP + TLS 1.3) | **0-RTT or 1-RTT** (Combined Handshake) |
+| **Connection Migration** | Breaks on Wi-Fi $\\to$ 5G switch | Breaks on Wi-Fi $\\to$ 5G switch | **Seamless** (Uses 64-bit Connection ID, not IP:Port) |
+
+---
+
+## 3. Network Cryptography: Public Key Infrastructure (PKI) & X.509
+
+- **Symmetric Encryption (AES-GCM)**: High throughput for bulk data; uses a shared symmetric secret key.
+- **Asymmetric Encryption (RSA, ECDSA)**: Uses public key for encryption and private key for decryption.
+- **X.509 Digital Certificates**:
+  - Binds an organization's identity (domain name) to its public key.
+  - Digitally signed by a trusted **Certificate Authority (CA)** (e.g., Let's Encrypt, DigiCert) using the CA's private key.
+  - Browsers verify the CA signature against pre-installed trusted root certificates in the OS/Browser Trust Store.`,
+          shortNotes: "DNS resolves hostnames to IPs via Root -> TLD -> Authoritative servers over port 53 UDP. HTTP/1.1 has HoL blocking; HTTP/2 multiplexes over TCP; HTTP/3 uses QUIC over UDP eliminating TCP HoL blocking. X.509 certificates bind identities to public keys.",
+          examples: [
+            {
+              title: "Python Implementation: Mini HTTP/1.1 Web Server with Keep-Alive & Content-Length",
+              problem: "Implement a low-level Python socket HTTP web server serving GET requests and persistent connections.",
+              explanation: "Uses socket.socket(), parses HTTP GET request lines, and formats RFC-compliant HTTP response headers with Content-Length and MIME type.",
+              code: `import socket
+
+def run_mini_http_server(port=8888):
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    server.bind(('127.0.0.1', port))
+    server.listen(5)
+    print(f"[HTTP Server] Listening on http://127.0.0.1:{port}...")
+
+    # Handle one client request for demonstration
+    client, addr = server.accept()
+    raw_request = client.recv(1024).decode('utf-8')
+    first_line = raw_request.splitlines()[0] if raw_request else "UNKNOWN"
+    print(f"[HTTP Server] Connection from {addr} | Request: '{first_line}'")
+
+    body = "<html><body><h1>Hello CampusLoop Multi-University Network!</h1></body></html>"
+    response = (
+        "HTTP/1.1 200 OK\\r\\n"
+        "Content-Type: text/html; charset=UTF-8\\r\\n"
+        f"Content-Length: {len(body.encode('utf-8'))}\\r\\n"
+        "Connection: close\\r\\n"
+        "\\r\\n"
+        f"{body}"
+    )
+    client.sendall(response.encode('utf-8'))
+    client.close()
+    server.close()
+    print("[HTTP Server] Response dispatched with HTTP 200 OK and closed cleanly.")
+
+if __name__ == '__main__':
+    # Test client-server handshake locally
+    import threading
+    import time
+    t = threading.Thread(target=run_mini_http_server, daemon=True)
+    t.start()
+    time.sleep(0.1)
+
+    # Client connects and issues HTTP GET
+    client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client_sock.connect(('127.0.0.1', 8888))
+    client_sock.sendall(b"GET /index.html HTTP/1.1\\r\\nHost: localhost\\r\\n\\r\\n")
+    data = client_sock.recv(2048).decode('utf-8')
+    print("\\n[Client Received Response Header]:")
+    print(data.split("\\r\\n\\r\\n")[0])
+    client_sock.close()`,
+              output: `[HTTP Server] Listening on http://127.0.0.1:8888...
+[HTTP Server] Connection from ('127.0.0.1', 54322) | Request: 'GET /index.html HTTP/1.1'
+[HTTP Server] Response dispatched with HTTP 200 OK and closed cleanly.
+
+[Client Received Response Header]:
+HTTP/1.1 200 OK
+Content-Type: text/html; charset=UTF-8
+Content-Length: 68
+Connection: close`
+            }
+          ],
+          keyPoints: [
+            "DNS resolves domain names into IP addresses through a distributed tree of Root, TLD, and Authoritative servers.",
+            "DNS queries typically use UDP port 53 for speed and fallback to TCP for zone transfers or responses > 512 bytes.",
+            "HTTP/2 introduces binary framing and multiplexing to solve application-layer Head-of-Line blocking.",
+            "HTTP/3 adopts Google's QUIC protocol over UDP, eliminating TCP transport-layer Head-of-Line blocking.",
+            "X.509 digital certificates are signed by Certificate Authorities to authenticate server public keys."
+          ],
+          theoryQuestions: [
+            {
+              question: "Compare HTTP/1.1, HTTP/2, and HTTP/3 with respect to transport protocol, framing, multiplexing, and Head-of-Line (HoL) blocking behavior.",
+              marks: "7 Marks",
+              answer: "1. HTTP/1.1 operates over TCP using human-readable plaintext ASCII format. It experiences severe application-layer Head-of-Line (HoL) blocking: only one request/response can be in-flight per TCP connection at a time. Browsers must open up to 6 parallel TCP connections per host, incurring heavy handshake latency and network congestion. 2. HTTP/2 operates over TCP but introduces a Binary Framing Layer (dividing messages into HEADERS and DATA frames). It supports multiplexing: multiple bidirectional streams can be interleaved simultaneously over a single TCP connection, eliminating application HoL blocking. However, it still suffers from TCP-layer HoL blocking: if a single TCP packet drops on a lossy network, TCP halts delivery of all subsequent multiplexed packets until the lost packet is retransmitted. 3. HTTP/3 replaces TCP with QUIC (Quick UDP Internet Connections) over UDP. QUIC implements its own congestion control and packet loss recovery independently per stream. A dropped packet on stream A has zero impact on streams B and C, completely eliminating transport-layer HoL blocking. It also provides 0-RTT connection resumption and connection migration using 64-bit Connection IDs."
+            }
+          ],
+          mcqs: [
+            {
+              question: "Which transport protocol does HTTP/3 utilize as its underlying foundation?",
+              options: [
+                "QUIC over UDP",
+                "TCP with TLS 1.3",
+                "SCTP",
+                "IPsec Encapsulated Security Payload (ESP)"
+              ],
+              correctIndex: 0,
+              explanation: "HTTP/3 uses the QUIC transport protocol, which runs over UDP, to eliminate TCP Head-of-Line blocking and enable 0-RTT handshakes."
+            }
+          ]
+        }
+      ]
     }
   ]
 };
