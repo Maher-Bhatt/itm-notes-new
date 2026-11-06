@@ -201,7 +201,7 @@ function SubjectCard({
 
 export default function SubjectsPage() {
   const navigate = useNavigate();
-  const { getSubjectProgress } = useProgress();
+  const { getSubjectProgress, isCompleted } = useProgress();
   const { currentUniversity } = useUniversity();
 
   // Tab View Mode: "interactive" notes vs "specializations" deep research vs "curriculum" directory vs "iimb-topics"
@@ -475,7 +475,7 @@ export default function SubjectsPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {filteredSubjects.map((sub) => {
               const totalTopicIds = getAllTopicIds(sub.id);
-              const completedCount = totalTopicIds.filter((tId) => getSubjectProgress(sub.id, tId)).length;
+              const completedCount = totalTopicIds.filter((tId) => isCompleted(tId)).length;
               const progressPct = totalTopicIds.length > 0 ? Math.round((completedCount / totalTopicIds.length) * 100) : 0;
               const hasImpQuestions = Boolean(SUBJECT_IMP_DATA[sub.id]);
 

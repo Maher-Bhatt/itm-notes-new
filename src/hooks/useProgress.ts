@@ -113,20 +113,30 @@ export function useProgress() {
   }, [user?.id]);
 
   const isCompleted = useCallback(
-    (topicId: string) => progress.completedTopics.includes(topicId),
+    (topicId: any) => {
+      if (!topicId || typeof topicId !== 'string') return false;
+      return Array.isArray(progress.completedTopics) && progress.completedTopics.includes(topicId);
+    },
     [progress.completedTopics]
   );
 
   const isBookmarked = useCallback(
-    (topicId: string) => progress.bookmarkedTopics.includes(topicId),
+    (topicId: any) => {
+      if (!topicId || typeof topicId !== 'string') return false;
+      return Array.isArray(progress.bookmarkedTopics) && progress.bookmarkedTopics.includes(topicId);
+    },
     [progress.bookmarkedTopics]
   );
 
   const getSubjectProgress = useCallback(
-    (topicIds: string[]) => {
-      if (topicIds.length === 0) return 0;
-      const completed = topicIds.filter((id) => progress.completedTopics.includes(id)).length;
-      return Math.round((completed / topicIds.length) * 100);
+    (input: any, maybeTopicId?: any) => {
+      if (typeof input === 'string') {
+        const topicToCheck = typeof maybeTopicId === 'string' ? maybeTopicId : input;
+        return Array.isArray(progress.completedTopics) && progress.completedTopics.includes(topicToCheck) ? 100 : 0;
+      }
+      if (!Array.isArray(input) || input.length === 0) return 0;
+      const completed = input.filter((id) => typeof id === 'string' && progress.completedTopics.includes(id)).length;
+      return Math.round((completed / input.length) * 100);
     },
     [progress.completedTopics]
   );
