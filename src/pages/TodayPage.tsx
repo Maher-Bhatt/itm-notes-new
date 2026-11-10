@@ -466,7 +466,8 @@ export default function TodayPage() {
         {todayPlanItems.length > 0 ? (
           <div className="space-y-2.5">
             {todayPlanItems.map((task) => {
-              const completed = task.completed || isCompleted(task.topicId);
+              const topicIdFromRoute = task.routeUrl?.split('/topic/')[1];
+              const completed = task.completed || (topicIdFromRoute ? isCompleted(topicIdFromRoute) : false);
               return (
                 <div
                   key={task.id}
@@ -494,7 +495,7 @@ export default function TodayPage() {
                     </button>
                     <div className="min-w-0">
                       <p className={`font-bold text-xs sm:text-sm truncate ${completed ? "line-through text-muted-foreground" : "text-foreground"}`}>
-                        {task.topicTitle}
+                        {task.topicTitle || task.title}
                       </p>
                       <p className="text-[10px] text-muted-foreground">
                         {task.subjectName} • Unit {task.unitNumber} ({task.estimatedMinutes} mins)
@@ -503,7 +504,7 @@ export default function TodayPage() {
                   </div>
 
                   <Link
-                    to={`/subject/${task.subjectId}/topic/${task.topicId}`}
+                    to={task.routeUrl || '/subjects'}
                     onClick={(e) => e.stopPropagation()}
                     className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors shrink-0"
                     title="Open Topic Notes"

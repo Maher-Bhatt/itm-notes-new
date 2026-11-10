@@ -61,8 +61,8 @@ export const AiDoubtSolverModal: React.FC<AiDoubtSolverModalProps> = ({
     try {
       const res = await solveStudentDoubt(q);
       setAnswer(res);
-      if (res.remainingDailyQuota <= 3) {
-        toast.warning(`Daily Doubt Quota: ${res.remainingDailyQuota} queries left for today`);
+      if (res.dailyQuotaRemaining <= 3) {
+        toast.warning(`Daily Doubt Quota: ${res.dailyQuotaRemaining} queries left for today`);
       }
     } catch (err: any) {
       toast.error(err.message || 'Failed to solve doubt');
@@ -224,13 +224,10 @@ export const AiDoubtSolverModal: React.FC<AiDoubtSolverModalProps> = ({
                   <span className="text-xs font-bold text-foreground">
                     Verified Answer
                   </span>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-secondary font-medium text-muted-foreground">
-                    Confidence: {Math.round(answer.confidence * 100)}%
-                  </span>
                 </div>
 
                 <button
-                  onClick={() => handleSpeak(answer.answerMarkdown)}
+                  onClick={() => handleSpeak(`${answer.summary}. ${answer.explanation}`)}
                   className="flex items-center gap-1 text-xs font-medium text-primary hover:text-primary/80 transition-colors px-2 py-1 rounded-lg bg-primary/10"
                   title="Listen with Studio AI Voice"
                 >
@@ -248,7 +245,14 @@ export const AiDoubtSolverModal: React.FC<AiDoubtSolverModalProps> = ({
 
               {/* Formatted Answer */}
               <div className="text-sm text-foreground/90 leading-relaxed whitespace-pre-line bg-card/70 p-4 rounded-xl border border-border/60">
-                {answer.answerMarkdown}
+                <p className="font-semibold mb-2">{answer.summary}</p>
+                <p>{answer.explanation}</p>
+                {answer.keyRule && (
+                  <p className="mt-2 text-xs font-medium text-primary">Key rule: {answer.keyRule}</p>
+                )}
+                {answer.codeSnippet && (
+                  <pre className="mt-3 text-xs bg-secondary/60 p-3 rounded-lg overflow-x-auto whitespace-pre"><code>{answer.codeSnippet}</code></pre>
+                )}
               </div>
 
               {/* Citations Box */}
@@ -262,7 +266,7 @@ export const AiDoubtSolverModal: React.FC<AiDoubtSolverModalProps> = ({
                     {answer.citations.map((cite, idx) => (
                       <div
                         key={idx}
-                        onClick={() => handleCitationClick(cite.url)}
+                        onClick={() => handleCitationClick(cite.routeUrl)}
                         className="p-2.5 rounded-xl bg-card border border-border/80 hover:border-primary/50 cursor-pointer transition-all flex items-center justify-between group shadow-sm"
                       >
                         <div className="truncate pr-2">
@@ -270,7 +274,7 @@ export const AiDoubtSolverModal: React.FC<AiDoubtSolverModalProps> = ({
                             {cite.topicTitle}
                           </p>
                           <p className="text-[10px] text-muted-foreground">
-                            {cite.subjectName} • {cite.unitName}
+                            {cite.subjectName}{cite.unitNumber ? ` • Unit ${cite.unitNumber}` : ''}
                           </p>
                         </div>
                         <ExternalLink className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary flex-shrink-0" />
@@ -285,7 +289,7 @@ export const AiDoubtSolverModal: React.FC<AiDoubtSolverModalProps> = ({
 
         {/* Footer quota */}
         <div className="pt-3 border-t border-border/60 flex items-center justify-between text-[11px] text-muted-foreground">
-          <span>Daily Quota: {answer ? answer.remainingDailyQuota : 20} doubts remaining today</span>
+          <span>Daily Quota: {answer ? answer.dailyQuotaRemaining : 20} doubts remaining today</span>
           <span className="text-primary font-medium">Available 24/7 during exam nights</span>
         </div>
       </div>

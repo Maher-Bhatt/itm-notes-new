@@ -32,7 +32,10 @@ export function AdminDraftsTab() {
   const [scheduledAt, setScheduledAt] = useState("");
 
   const currentSubject = subjects.find((s) => s.id === selectedSubjectId);
-  const availableTopics = useMemo(() => currentSubject?.topics || [], [currentSubject]);
+  const availableTopics = useMemo(
+    () => (currentSubject?.units || []).flatMap((u) => u.topics || []),
+    [currentSubject]
+  );
 
   useEffect(() => {
     if (availableTopics.length > 0 && !selectedTopicId) {

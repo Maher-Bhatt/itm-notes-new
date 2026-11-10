@@ -14,6 +14,8 @@ export interface AnnotationItem {
   noteText?: string;
   color: 'yellow' | 'green' | 'blue' | 'pink';
   createdAt: string;
+  type?: 'highlight' | 'sticky_note';
+  highlightedText?: string;
 }
 
 export function useAnnotations(topicId: string | undefined) {
@@ -48,10 +50,26 @@ export function useAnnotations(topicId: string | undefined) {
       noteText: noteText?.trim(),
       color,
       createdAt: new Date().toISOString(),
+      type: 'highlight',
+      highlightedText: selectedText.trim(),
     };
 
     setAnnotations((prev) => [newItem, ...prev]);
     toast.success("Highlight saved to personal notes!");
+  }, [topicId]);
+
+  const addPersonalNote = useCallback((noteText: string) => {
+    if (!noteText.trim() || !topicId) return;
+    const newItem: AnnotationItem = {
+      id: `note-${Date.now()}`,
+      topicId,
+      selectedText: '',
+      noteText: noteText.trim(),
+      color: 'yellow',
+      createdAt: new Date().toISOString(),
+      type: 'sticky_note',
+    };
+    setAnnotations((prev) => [newItem, ...prev]);
   }, [topicId]);
 
   const removeAnnotation = useCallback((id: string) => {
@@ -69,6 +87,8 @@ export function useAnnotations(topicId: string | undefined) {
   return {
     annotations,
     addAnnotation,
+    addHighlight: addAnnotation,
+    addPersonalNote,
     removeAnnotation,
     updateNote,
   };

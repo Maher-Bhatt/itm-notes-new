@@ -26,8 +26,8 @@ export function LabManualPrintModal({
   isOpen,
   onClose,
   data,
-  studentName = "Maher Bhatt",
-  enrollmentNo = "2303031240001",
+  studentName = "Student",
+  enrollmentNo = "—",
 }: LabManualPrintModalProps) {
   if (!isOpen) return null;
 

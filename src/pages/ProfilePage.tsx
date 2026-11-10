@@ -274,7 +274,7 @@ export default function ProfilePage() {
     setEditUniversity(profile?.university || currentUniversity.id || 'itm-baroda');
     setEditBio(profile?.bio || bio);
     setEditGoal(profile?.goal || academicGoal);
-    setEditTargetCgpa(profile?.target_cgpa || 8.5);
+    setEditTargetCgpa(Number(profile?.target_cgpa) || 8.5);
     setEditAvatarUrl(profile?.avatar_url || 'grad-blue');
     setIsEditModalOpen(true);
   };
@@ -724,7 +724,7 @@ export default function ProfilePage() {
                   Level {game.level} · {levelInfo.title}
                 </span>
                 <span className="text-[11px] text-neutral-500 font-medium block">
-                  {game.xp} XP Earned · {levelInfo.nextXp ? `${levelInfo.nextXp - game.xp} XP to next level` : 'Max Level'}
+                  {game.xp} XP Earned · {levelInfo.maxXp && levelInfo.maxXp > game.xp ? `${levelInfo.maxXp - game.xp} XP to next level` : 'Max Level'}
                 </span>
               </div>
             </div>
@@ -898,8 +898,13 @@ export default function ProfilePage() {
                 {userEvents.map((evt) => (
                   <CampusEventRow
                     key={evt.id}
-                    event={evt}
-                    onRsvpToggle={() => {}}
+                    id={evt.id}
+                    title={evt.title}
+                    dateStr={evt.eventDate}
+                    locationText={evt.location}
+                    timeText={evt.eventTime}
+                    attendeeCount={evt.attendeeCount}
+                    hasRsvp={evt.hasRsvp}
                   />
                 ))}
               </div>

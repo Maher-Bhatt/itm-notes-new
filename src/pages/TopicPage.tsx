@@ -41,7 +41,7 @@ import { BilingualExplanation } from "@/components/BilingualExplanation";
 import { VivaOralPrepModal } from "@/components/VivaOralPrepModal";
 import { ReportErrataModal } from "@/components/ReportErrataModal";
 import { useAnnotations } from "@/hooks/useAnnotations";
-import { shareTopicToSocial, shareToWhatsApp } from "@/utils/shareUtils";
+import { shareTopicToSocial } from "@/utils/shareUtils";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useState, useEffect, useCallback, useMemo, useRef, memo } from "react";
 import { SearchDialog } from "@/components/SearchDialog";
@@ -335,9 +335,9 @@ export default function TopicPage() {
     if (!resolvedTopic) return;
     shareTopicToSocial({
       subjectName: subject?.name || 'CampusLoop',
-      topicTitle: resolvedTopic.topic.title,
-      url: window.location.href,
-      unitTitle: resolvedTopic.unitTitle,
+      title: resolvedTopic.topic.title,
+      excerpt: resolvedTopic.topic.simpleExplanation || resolvedTopic.unitTitle || '',
+      urlPath: window.location.pathname,
     });
   };
 

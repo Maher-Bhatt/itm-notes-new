@@ -19,6 +19,7 @@ import { searchTopics, subjects } from "@/data/subjects";
 import { REAL_STUDY_MATERIALS } from "@/data/materialsData";
 import { searchFullTextContent, ContentSearchResult } from "@/utils/contentSearchEngine";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 interface SearchDialogProps {
   open: boolean;
@@ -227,13 +228,13 @@ export function SearchDialog({ open, onOpenChange, onOpenAiDoubt }: SearchDialog
                     {searchResults.inContent.map((item, idx) => (
                       <button
                         key={idx}
-                        onClick={() => handleNavigate(`/subject/${item.subjectId}/topic/${item.topicId}`)}
+                        onClick={() => handleNavigate(item.routeUrl)}
                         className="w-full p-2.5 rounded-xl border border-amber-500/20 hover:border-amber-500/50 bg-amber-500/5 hover:bg-amber-500/10 text-left transition-colors flex items-center justify-between group"
                       >
                         <div className="min-w-0 pr-2">
                           <div className="flex items-center gap-2">
                             <h4 className="text-xs font-bold text-foreground group-hover:text-primary transition-colors truncate">
-                              {item.topicTitle}
+                              {item.title}
                             </h4>
                             <span className="text-[9px] px-1.5 py-0.2 rounded bg-secondary text-muted-foreground">
                               {item.subjectName}

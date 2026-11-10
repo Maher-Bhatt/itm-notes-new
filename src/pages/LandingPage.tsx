@@ -52,7 +52,6 @@ import {
 import { CampusLoopLogo } from "@/components/campusloop/CampusLoopLogo";
 import { CampusAvatar } from "@/components/campusloop/CampusAvatar";
 import { CampusTag } from "@/components/campusloop/CampusTag";
-import { UNIVERSITIES_REGISTRY } from "@/data/universitiesData";
 
 export interface UniversityOption {
   id: string;
@@ -356,18 +355,9 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
           <div className="flex items-center gap-6">
             <Link to="/" className="flex items-center gap-2.5 group">
               <CampusLoopLogo size={32} />
-              <div className="flex flex-col">
-                <div className="flex items-center gap-1 font-extrabold text-base leading-tight">
-                  <span className="text-[#12141C] dark:text-white">Campus</span>
-                  <span className="text-[#2F4BFF]">Loop</span>
-                  <span className="text-[10px] font-mono uppercase bg-[#2F4BFF]/10 text-[#2F4BFF] dark:bg-blue-950/40 dark:text-blue-300 px-1.5 py-0.2 rounded-full ml-1">
-                    PAN-INDIA
-                  </span>
-                </div>
-                <span className="text-[10px] font-medium text-[#5A6072] dark:text-neutral-400">
-                  Campus Community & Academic Suite
-                </span>
-              </div>
+              <span className="hidden xl:inline text-[10px] font-mono uppercase bg-[#2F4BFF]/10 text-[#2F4BFF] dark:bg-blue-950/40 dark:text-blue-300 px-1.5 py-0.5 rounded-full">
+                PAN-INDIA
+              </span>
             </Link>
 
             {/* All-India University Selector Pill */}
@@ -426,14 +416,15 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
             <a href="#auth-portal-card" className="hover:text-[#12141C] dark:hover:text-white transition-colors">Sign In</a>
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             {user ? (
               <button
                 type="button"
                 onClick={() => navigate("/dashboard")}
                 className="px-5 py-2 rounded-full bg-[#12141C] text-white dark:bg-white dark:text-[#12141C] text-xs font-bold shadow-xs hover:opacity-90 transition-all flex items-center gap-2 cursor-pointer"
               >
-                <span>Go to Campus Hub</span>
+                <span className="hidden sm:inline">Go to Campus Hub</span>
+                <span className="sm:hidden">Open App</span>
                 <ArrowRight className="h-3.5 w-3.5" />
               </button>
             ) : (
@@ -444,7 +435,7 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
                     setIsLogin(true);
                     document.getElementById("auth-portal-card")?.scrollIntoView({ behavior: "smooth" });
                   }}
-                  className="px-4 py-2 rounded-full text-xs font-bold text-[#5A6072] dark:text-neutral-300 hover:text-[#12141C] dark:hover:text-white transition-all cursor-pointer"
+                  className="px-3 sm:px-4 py-2 rounded-full text-xs font-bold text-[#5A6072] dark:text-neutral-300 hover:text-[#12141C] dark:hover:text-white transition-all cursor-pointer whitespace-nowrap"
                 >
                   Sign In
                 </button>
@@ -454,9 +445,10 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
                     setIsLogin(false);
                     document.getElementById("auth-portal-card")?.scrollIntoView({ behavior: "smooth" });
                   }}
-                  className="px-5 py-2 rounded-full bg-[#2F4BFF] text-white text-xs font-bold hover:bg-[#1E3EDB] transition-all cursor-pointer shadow-xs flex items-center gap-1.5"
+                  className="px-3 sm:px-5 py-2 rounded-full bg-[#2F4BFF] text-white text-xs font-bold hover:bg-[#1E3EDB] transition-all cursor-pointer shadow-xs flex items-center gap-1.5 whitespace-nowrap"
                 >
-                  <span>Create Account</span>
+                  <span className="hidden sm:inline">Create Account</span>
+                  <span className="sm:hidden">Join</span>
                   <ArrowRight className="h-3.5 w-3.5" />
                 </button>
               </>

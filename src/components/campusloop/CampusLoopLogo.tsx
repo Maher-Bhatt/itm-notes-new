@@ -1,16 +1,19 @@
 import React from 'react';
 
 export interface CampusLoopLogoProps {
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | number;
   showSubtitle?: boolean;
   className?: string;
 }
 
 export const CampusLoopLogo: React.FC<CampusLoopLogoProps> = ({
-  size = 'md',
+  size: rawSize = 'md',
   showSubtitle = false,
   className = '',
 }) => {
+  // Accept numeric pixel sizes too (e.g. size={32}) and map them to the nearest preset
+  const size: 'sm' | 'md' | 'lg' =
+    typeof rawSize === 'number' ? (rawSize <= 28 ? 'sm' : rawSize <= 34 ? 'md' : 'lg') : rawSize;
   const iconSizes = {
     sm: 'w-7 h-7 rounded-lg text-sm',
     md: 'w-8 h-8 rounded-xl text-base',

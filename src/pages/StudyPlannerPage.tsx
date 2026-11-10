@@ -328,7 +328,7 @@ export default function StudyPlannerPage() {
                           </div>
 
                           <button
-                            onClick={() => navigate(task.topicUrl)}
+                            onClick={() => navigate(task.topicUrl || task.routeUrl)}
                             className="text-xs font-semibold text-primary hover:underline flex items-center gap-1 shrink-0 apple-press"
                           >
                             <span>Study Note</span>

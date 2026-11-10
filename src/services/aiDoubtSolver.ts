@@ -74,14 +74,14 @@ function buildKnowledgeIndex(): IndexItem[] {
 
   // Index syllabus topics
   for (const sub of subjects) {
-    for (const unit of sub.units || []) {
+    for (const [unitIdx, unit] of (sub.units || []).entries()) {
       for (const topic of unit.topics || []) {
         index.push({
           subjectCode: sub.code,
           subjectName: sub.name,
-          unitNumber: unit.number,
+          unitNumber: unitIdx + 1,
           title: topic.title,
-          content: `${topic.title} ${topic.content || ''}`,
+          content: `${topic.title} ${topic.simpleExplanation || ''} ${(topic.keyPoints || []).join(' ')} ${topic.detailedExplanation || ''}`,
           routeUrl: `/subject/${sub.id}/topic/${topic.id}`,
         });
       }
@@ -95,7 +95,7 @@ function buildKnowledgeIndex(): IndexItem[] {
         subjectCode: bank.code,
         subjectName: bank.name,
         title: pred.title,
-        content: `${pred.title} ${pred.concept} ${pred.rule} ${pred.explanation}`,
+        content: `${pred.title} ${pred.concept} ${pred.rule} ${pred.output}`,
         routeUrl: `/imp-questions/${key}#part-a`,
         code: pred.code,
       });
@@ -205,7 +205,7 @@ export async function solveStudentDoubt(doubtQuery: string): Promise<DoubtAnswer
   // Construct structured model answer
   return {
     doubt: cleanQuery,
-    summary: `Based on **${bestMatch.subjectName} (${bestMatch.subjectCode})**: ${bestMatch.title}`,
+    summary: `Based on ${bestMatch.subjectName} (${bestMatch.subjectCode}): ${bestMatch.title}`,
     explanation: bestMatch.content.slice(0, 480) + '...',
     codeSnippet: bestMatch.code,
     keyRule: `Exam Standard Invariant: Review unit ${bestMatch.unitNumber || 'Core'} materials and verify edge-cases with our master model solution.`,

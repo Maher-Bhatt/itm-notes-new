@@ -28,9 +28,11 @@ export function searchFullTextContent(query: string, maxResults = 15): ContentSe
 
   // Search inside syllabus topics
   for (const sub of subjects) {
-    for (const unit of sub.units || []) {
+    (sub.units || []).forEach((unit, unitIdx) => {
       for (const topic of unit.topics || []) {
-        const text = topic.content || '';
+        const text = [topic.richContent, topic.detailedExplanation, topic.simpleExplanation, topic.shortNotes]
+          .filter(Boolean)
+          .join('\n');
         const lines = text.split('\n');
 
         for (let i = 0; i < lines.length; i++) {
@@ -48,7 +50,7 @@ export function searchFullTextContent(query: string, maxResults = 15): ContentSe
               id: `${topic.id}-line-${i}`,
               subjectCode: sub.code,
               subjectName: sub.name,
-              unitNumber: unit.number,
+              unitNumber: unitIdx + 1,
               title: topic.title,
               snippet: excerpt,
               matchedLine: i + 1,
@@ -59,7 +61,7 @@ export function searchFullTextContent(query: string, maxResults = 15): ContentSe
           }
         }
       }
-    }
+    });
   }
 
   // Search inside Master Question Banks
@@ -67,7 +69,7 @@ export function searchFullTextContent(query: string, maxResults = 15): ContentSe
     // Predict Output
     for (let pIdx = 0; pIdx < bank.predictOutput.length; pIdx++) {
       const pred = bank.predictOutput[pIdx];
-      const combined = `${pred.title}\n${pred.concept}\n${pred.rule}\n${pred.code}\n${pred.explanation}`;
+      const combined = `${pred.title}\n${pred.concept}\n${pred.rule}\n${pred.code}\n${pred.output}`;
       const lines = combined.split('\n');
 
       for (let i = 0; i < lines.length; i++) {

@@ -304,7 +304,7 @@ export default function InboxPage() {
         <div className="relative">
           <CampusSearchField
             value={searchQuery}
-            onChange={setSearchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={
               activeTab === 'find'
                 ? "Search classmates by name, enrollment no, or branch..."

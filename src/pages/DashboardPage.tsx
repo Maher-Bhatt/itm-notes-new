@@ -438,13 +438,13 @@ export default function DashboardPage() {
 
                       {/* Units Snapshot */}
                       <div className="flex flex-wrap gap-1.5 mt-3">
-                        {sub.units?.slice(0, 3).map((u) => (
+                        {sub.units?.slice(0, 3).map((u, uIdx) => (
                           <span
                             key={u.id}
                             className="text-[10px] px-2 py-0.5 rounded-md bg-secondary text-foreground/80 font-medium truncate max-w-[170px]"
                             title={u.title}
                           >
-                            U{u.number}: {u.title}
+                            U{uIdx + 1}: {u.title}
                           </span>
                         ))}
                         {totalUnits > 3 && (

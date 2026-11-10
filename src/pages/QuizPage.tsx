@@ -34,8 +34,8 @@ import {
   Eye
 } from "lucide-react";
 import { toast } from "sonner";
-import { CustomQuizBuilderModal } from "@/components/CustomQuizBuilderModal";
-import { QuizAttemptReviewModal } from "@/components/QuizAttemptReviewModal";
+import { CustomQuizBuilderModal, type CustomQuizConfig } from "@/components/CustomQuizBuilderModal";
+import { QuizAttemptReviewModal, type QuizAttemptReviewData } from "@/components/QuizAttemptReviewModal";
 
 interface EnrichedMCQ extends MCQ {
   subjectId: string;
@@ -236,8 +236,8 @@ export default function QuizPage() {
     config.selectedSubjectIds.forEach(subId => {
       const subj = subjects.find(s => s.id === subId);
       if (subj) {
-        subj.units.forEach(u => {
-          if (config.selectedUnits.includes(u.unitNumber)) {
+        subj.units.forEach((u, uIdx) => {
+          if (config.selectedUnits.includes(uIdx + 1)) {
             u.topics.forEach(t => {
               if (t.mcqs) {
                 const tagged = t.mcqs.map(m => ({
@@ -296,7 +296,7 @@ export default function QuizPage() {
           questionText: q.question,
           options: q.options,
           userSelectedIndex: rec ? rec.selectedChoice : -1,
-          correctIndex: q.correctAnswer,
+          correctIndex: q.correctIndex,
           explanation: q.explanation || 'Refer to the corresponding unit topic for in-depth concepts.',
         };
       })
@@ -996,7 +996,7 @@ export default function QuizPage() {
                 <h3 className="font-bold text-sm text-white">Subject Questions</h3>
                 <div className="flex rounded-lg bg-slate-800/80 p-0.5 border border-slate-700/60 text-[10px] font-semibold">
                   <button
-                    onClick={() => jumpToQuestion(currentQuestionIndex)}
+                    onClick={() => jumpToQuestion(currentIdx)}
                     className="px-2 py-0.5 rounded bg-[#18181B] text-[#FAFAFA] font-bold shadow-xs cursor-pointer hover:bg-[#1f4e43] transition-colors"
                     title="Return to current active question"
                   >

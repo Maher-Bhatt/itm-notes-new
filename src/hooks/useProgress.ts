@@ -39,7 +39,7 @@ export function useProgress() {
 
       setProgress((prev) => {
         const loaded = loadLocal(user.id);
-        let completed = Array.from(new Set([...prev.completedTopics, ...loaded.completedTopics]));
+        const completed = Array.from(new Set([...prev.completedTopics, ...loaded.completedTopics]));
         
         // Academic progress loaded cleanly from persistent storage
 

@@ -304,6 +304,3 @@ export function AdminDatabaseSyncTab() {
   );
 }
 
-function useMemo<T>(fn: () => T, deps: any[]): T {
-  return fn();
-}

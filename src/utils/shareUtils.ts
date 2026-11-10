@@ -13,11 +13,12 @@ export interface ShareOptions {
 }
 
 export async function shareTopicToSocial({ title, subjectName, excerpt, urlPath }: ShareOptions): Promise<void> {
-  const fullUrl = `https://itm-notes-new.vercel.app${urlPath}`;
+  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://itm-notes-new.vercel.app';
+  const fullUrl = `${origin}${urlPath}`;
   const shareText = `📚 *CampusLoop* · ${subjectName}
 📖 *${title}*
 
-${excerpt.slice(0, 140)}...
+${(excerpt || '').slice(0, 140)}...
 
 🔗 Study topic with full code & diagrams:
 ${fullUrl}`;

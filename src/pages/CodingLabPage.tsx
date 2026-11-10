@@ -11,6 +11,7 @@ import {
 import { useGamification } from '@/hooks/useGamification';
 import { useAcademic } from '@/contexts/AcademicContext';
 import { useFocusMode } from '@/contexts/FocusModeContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { LabManualPrintModal, LabManualData } from '@/components/LabManualPrintModal';
 import { CodingProblem, ALL_CODING_PROBLEMS as CODING_PROBLEMS } from '@/data/codingLabData';
@@ -838,6 +839,7 @@ export function getFacultyAIAssistance(prob?: CodingProblem) {
 
 export default function CodingLabPage() {
   const { semesterNumber } = useAcademic();
+  const { profile } = useAuth();
   const { focusMode, toggleFocusMode } = useFocusMode();
   const { addXp, unlockAchievement } = useGamification();
 
@@ -2121,25 +2123,30 @@ export default function CodingLabPage() {
       )}
 
       {/* Lab Manual Print Modal */}
-      <LabManualPrintModal
-        isOpen={isLabManualOpen}
-        onClose={() => setIsLabManualOpen(false)}
-        manualData={{
-          studentName: 'Student Developer',
-          enrollmentNo: 'ENROLL-CURRENT',
-          subjectName: currentProblem?.subjectName || 'Engineering Lab',
-          semester: getSubjectSemester(currentProblem?.subjectName || ''),
-          division: 'Division A',
-          practicals: CODING_PROBLEMS.filter(p => p.subjectName === currentProblem?.subjectName).map(p => ({
-            id: p.id,
-            title: p.title,
-            aim: p.description,
-            code: p.starterCode,
-            output: p.expectedOutput,
-            verified: solvedProblems.includes(p.id)
-          }))
-        }}
-      />
+      {currentProblem && (
+        <LabManualPrintModal
+          isOpen={isLabManualOpen}
+          onClose={() => setIsLabManualOpen(false)}
+          studentName={profile?.display_name || 'Student'}
+          enrollmentNo={profile?.enrollment_no || '—'}
+          data={{
+            practicalNumber: Math.max(
+              1,
+              CODING_PROBLEMS.filter(p => p.subjectName === currentProblem.subjectName).findIndex(p => p.id === currentProblem.id) + 1
+            ),
+            subjectCode: currentProblem.category.toUpperCase(),
+            subjectName: currentProblem.subjectName,
+            title: currentProblem.title,
+            aim: currentProblem.description,
+            theory: currentProblem.description,
+            algorithm: currentProblem.hints || [],
+            code: currentProblem.modelSolution || currentProblem.starterCode,
+            sampleInput: (currentProblem.constraints || []).join('\n') || 'N/A',
+            sampleOutput: currentProblem.expectedOutput,
+            vivaQuestions: (currentProblem.vivaQuestions || []).map(v => ({ q: v.question, a: v.answer })),
+          }}
+        />
+      )}
 
     </div>
   );

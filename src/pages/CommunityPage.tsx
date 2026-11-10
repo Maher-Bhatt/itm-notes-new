@@ -178,7 +178,9 @@ export default function CommunityPage() {
         )
       );
 
-      await toggleCommunityLike(postId, user?.id);
+      if (user?.id) {
+        await toggleCommunityLike(postId, user.id, !willLike, post.likes);
+      }
       if (willLike) {
         addXp(5, 'Liked campus post');
       }
@@ -212,18 +214,15 @@ export default function CommunityPage() {
   const handleAddComment = async (postId: string, commentText: string) => {
     try {
       const authorName = profile?.display_name || user?.email?.split('@')[0] || 'Campus Student';
-      await addCommunityComment(
+      await addCommunityComment({
         postId,
-        {
-          authorId: user?.id || 'guest-user',
-          authorName,
-          authorEmail: user?.email || '',
-          authorAvatar: profile?.avatar_url,
-          isMasked: false,
-          content: commentText,
-        },
-        user?.id
-      );
+        authorId: user?.id || 'guest-user',
+        authorName,
+        authorEmail: user?.email || '',
+        authorAvatar: profile?.avatar_url,
+        isMasked: false,
+        content: commentText,
+      });
 
       // Optimistically update comments
       setPosts((prev) =>
@@ -260,7 +259,8 @@ export default function CommunityPage() {
   const handleDeletePost = async (postId: string) => {
     if (!confirm('Are you sure you want to delete this post?')) return;
     try {
-      await deleteCommunityPost(postId, user?.id);
+      const ok = await deleteCommunityPost(postId);
+      if (!ok) throw new Error('delete failed');
       setPosts((prev) => prev.filter((p) => p.id !== postId));
       toast.success('Post deleted.');
     } catch {

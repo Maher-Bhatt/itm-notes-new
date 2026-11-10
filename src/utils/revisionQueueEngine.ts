@@ -39,7 +39,8 @@ export function computeDailyRevisionQueue(maxItems = 10): RevisionQueueItem[] {
   for (const sub of subjects) {
     if (sub.semester !== 3) continue; // Focus on active Semester 3 core subjects
 
-    for (const unit of sub.units || []) {
+    for (const [unitIdx, unit] of (sub.units || []).entries()) {
+      const unitNum = unitIdx + 1;
       for (const topic of unit.topics || []) {
         const attempt = quizAttempts[topic.id];
         const isBookmarked = bookmarks.includes(topic.id);
@@ -57,7 +58,7 @@ export function computeDailyRevisionQueue(maxItems = 10): RevisionQueueItem[] {
         const bookmarkBoost = isBookmarked ? 1.5 : 1.0;
 
         // Weightage: Unit 2 & 3 usually carry high 14-mark weightage in ITM university papers
-        const unitWeight = (unit.number === 2 || unit.number === 3) ? 1.3 : 1.0;
+        const unitWeight = (unitNum === 2 || unitNum === 3) ? 1.3 : 1.0;
 
         const priorityScore = Math.round(daysSince * errorRate * bookmarkBoost * unitWeight * 10) / 10;
 
@@ -76,7 +77,7 @@ export function computeDailyRevisionQueue(maxItems = 10): RevisionQueueItem[] {
           id: topic.id,
           subjectCode: sub.code,
           subjectName: sub.name,
-          unitNumber: unit.number,
+          unitNumber: unitNum,
           title: topic.title,
           routeUrl: `/subject/${sub.id}/topic/${topic.id}`,
           priorityScore,

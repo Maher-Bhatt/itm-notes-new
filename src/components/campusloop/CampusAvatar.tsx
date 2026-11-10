@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, Check } from 'lucide-react';
 
-export type CampusAvatarSize = 24 | 32 | 40 | 56 | 88;
+export type CampusAvatarSize = 24 | 32 | 36 | 38 | 40 | 44 | 48 | 56 | 88;
 
 export interface CampusAvatarProps {
   src?: string | null;
@@ -10,7 +10,7 @@ export interface CampusAvatarProps {
   limeRing?: boolean;
   status?: 'online' | 'add' | 'verified';
   className?: string;
-  onClick?: () => void;
+  onClick?: (e?: React.MouseEvent) => void;
 }
 
 const PASTEL_PALETTE = [
@@ -56,7 +56,11 @@ export const CampusAvatar: React.FC<CampusAvatarProps> = ({
   const sizeMap: Record<CampusAvatarSize, { box: string; text: string; badge: string }> = {
     24: { box: 'w-6 h-6', text: 'text-[10px] font-bold', badge: 'w-2 h-2' },
     32: { box: 'w-8 h-8', text: 'text-xs font-bold', badge: 'w-2.5 h-2.5' },
+    36: { box: 'w-9 h-9', text: 'text-xs font-bold', badge: 'w-3 h-3' },
+    38: { box: 'w-[38px] h-[38px]', text: 'text-xs font-bold', badge: 'w-3 h-3' },
     40: { box: 'w-10 h-10', text: 'text-sm font-bold', badge: 'w-3.5 h-3.5' },
+    44: { box: 'w-11 h-11', text: 'text-sm font-bold', badge: 'w-3.5 h-3.5' },
+    48: { box: 'w-12 h-12', text: 'text-base font-bold', badge: 'w-4 h-4' },
     56: { box: 'w-14 h-14', text: 'text-lg font-bold', badge: 'w-4 h-4' },
     88: { box: 'w-[88px] h-[88px]', text: 'text-2xl font-black', badge: 'w-5 h-5' },
   };

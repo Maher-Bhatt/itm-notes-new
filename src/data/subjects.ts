@@ -1,4 +1,4 @@
-import { Subject } from './types';
+import { Subject, Topic } from './types';
 import { computerArchitecture } from './computer-architecture';
 import { sem3JavaMaster } from './sem3-java-master';
 import { sem3CoanmpMaster } from './sem3-coanmp-master';
@@ -222,7 +222,7 @@ export function getAdjacentTopics(subjectId: string, topicId: string) {
 export function searchTopics(query: string) {
   const q = query.toLowerCase().trim();
   if (!q) return [];
-  const results = [];
+  const results: { subject: Subject; topic: Topic }[] = [];
   for (const subject of subjects) {
     for (const unit of subject.units) {
       for (const topic of unit.topics) {

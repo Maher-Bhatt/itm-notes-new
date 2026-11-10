@@ -293,7 +293,7 @@ export async function fetchFriendRequests(currentUserId?: string): Promise<{
       const otherUserIds = data.map((r: any) => (r.sender_id === currentUserId ? r.receiver_id : r.sender_id));
 
       // Fetch profiles
-      let profilesMap: Record<string, any> = {};
+      const profilesMap: Record<string, any> = {};
       if (otherUserIds.length > 0) {
         const { data: profilesData } = await supabase
           .from('profiles')
@@ -433,9 +433,9 @@ export async function searchStudents(
       const filtered = data.filter((p: any) => p.user_id !== currentUserId);
 
       // Query active requests and connections for current user
-      let sentMap: Record<string, string> = {};
-      let receivedMap: Record<string, string> = {};
-      let friendsSet = new Set<string>();
+      const sentMap: Record<string, string> = {};
+      const receivedMap: Record<string, string> = {};
+      const friendsSet = new Set<string>();
 
       if (currentUserId) {
         const { data: requests } = await supabase
