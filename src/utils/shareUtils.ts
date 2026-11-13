@@ -1,4 +1,4 @@
-/**
+﻿/**
  * CampusLoop - Social & WhatsApp Sharing Utility
  * Formats rich academic cards for class WhatsApp groups and social sharing.
  */

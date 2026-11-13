@@ -1,13 +1,9 @@
-import type { CapacitorConfig } from '@capacitor/cli';
+﻿import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.campusloop.app',
   appName: 'CampusLoop',
   webDir: 'dist',
-  server: {
-    url: 'https://itm-notes-new.vercel.app/',
-    cleartext: true,
-  },
   plugins: {
     SplashScreen: {
       launchShowDuration: 1500,

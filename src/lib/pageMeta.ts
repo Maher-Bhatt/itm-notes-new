@@ -1,4 +1,4 @@
-const BASE_TITLE = "CampusLoop";
+﻿const BASE_TITLE = "CampusLoop";
 export const DEFAULT_TITLE = "CampusLoop | Semester 3 notes, study guides & exam prep for B.Tech students";
 
 const ROUTE_TITLES: [RegExp, string][] = [

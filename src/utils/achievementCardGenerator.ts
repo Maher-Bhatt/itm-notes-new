@@ -1,4 +1,4 @@
-/**
+﻿/**
  * achievementCardGenerator.ts
  * Generates high-resolution (1080x1920) luxury Instagram Story & WhatsApp Status cards
  * directly in the browser using HTML5 Canvas with the official CampusLoop brand aesthetic.
@@ -373,7 +373,7 @@ export async function generateAchievementStoryCard(data: AchievementCardData): P
 
   ctx.fillStyle = '#A1A1AA';
   ctx.font = '500 18px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('https://itm-notes-new.vercel.app', width / 2, 1630);
+  ctx.fillText('campusloop.app', width / 2, 1630);
 
   // 10. Stamp of Verification
   ctx.fillStyle = 'rgba(245, 158, 11, 0.08)';

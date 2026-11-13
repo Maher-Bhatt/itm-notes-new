@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -44,7 +44,7 @@
       } catch (e) {}
       // Immediate proactive service-worker and cache purge for CampusLoop rebranding & iOS Safari updates
       try {
-        var CAMPUSLOOP_VER = 'campusloop-v2026.11.13-r25';
+        var CAMPUSLOOP_VER = 'campusloop-v2026.11.13-r30';
         var storedVer = localStorage.getItem('campusloop_app_version');
         var needsPurge = storedVer !== CAMPUSLOOP_VER;
         if (needsPurge) {
@@ -59,11 +59,11 @@
         // Always unregister legacy Service Workers to prevent stale iOS Safari intercept
         if ('serviceWorker' in navigator) {
           navigator.serviceWorker.getRegistrations().then(function(regs) {
-            if (regs && regs.length > 0) {
-              for (var i = 0; i < regs.length; i++) regs[i].unregister();
-              if (navigator.serviceWorker.controller && needsPurge) {
-                window.location.reload();
-              }
+            var hadSW = regs && regs.length > 0;
+            for (var i = 0; i < regs.length; i++) regs[i].unregister();
+            if (hadSW && needsPurge) {
+              // Force hard reload on iOS Safari when SW was active and version changed
+              window.location.reload(true);
             }
           });
         }
