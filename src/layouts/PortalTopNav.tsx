@@ -87,7 +87,7 @@ export function PortalTopNav({
   };
 
   return (
-    <header className="shrink-0 z-30 bg-white/95 dark:bg-background/95 backdrop-blur-xl border-b border-border dark:border-stone-800 px-3 sm:px-6 flex items-center justify-between transition-all pt-[env(safe-area-inset-top,0px)] h-[calc(3.75rem+env(safe-area-inset-top,0px))] w-full">
+    <header className="shrink-0 z-30 bg-background/85 backdrop-blur-md border-b border-border px-3 sm:px-6 flex items-center justify-between transition-all pt-[env(safe-area-inset-top,0px)] h-[calc(3.75rem+env(safe-area-inset-top,0px))] w-full">
       {/* Left: Mobile Sidebar Trigger + CampusLoop Logo */}
       <div className="flex items-center gap-2.5 sm:gap-3">
         <button
@@ -100,7 +100,7 @@ export function PortalTopNav({
 
         {/* CampusLoop Logo (mobile or when sidebar is collapsed) */}
         <Link 
-          to="/community" 
+          to="/dashboard" 
           className={`items-center gap-2 group select-none shrink-0 ${isFocusMode ? 'flex' : 'flex md:hidden'}`} 
           title="CampusLoop Home"
         >
@@ -132,19 +132,16 @@ export function PortalTopNav({
 
       {/* Right: Search + Timetable + Focus + Notifications + Theme + Profile */}
       <div className="flex items-center gap-2 sm:gap-2.5">
-        {/* Active Gujarat University Switcher */}
-        <UniversityDropdown className="hidden sm:flex shrink-0" />
-
         {/* Universal Search Pill */}
         <button
           onClick={onOpenSearch}
-          className="flex items-center gap-2 h-10 px-3.5 rounded-full bg-background dark:bg-stone-800 border border-border dark:border-stone-700 text-muted-foreground dark:text-stone-300 hover:text-foreground dark:hover:text-white text-xs transition-all shadow-2xs cursor-pointer group"
+          className="flex items-center gap-2 h-10 px-3.5 md:min-w-[15rem] rounded-full bg-card border border-border text-muted-foreground hover:text-foreground hover:border-primary/40 text-xs transition-colors cursor-pointer group"
           title="Search Notes, Practicals and Question Banks (Ctrl + K)"
         >
           <Search className="h-4 w-4 text-stone-400 group-hover:text-primary transition-colors" />
-          <span className="hidden md:inline font-medium">Search clubs, notes, people...</span>
+          <span className="hidden md:inline font-medium whitespace-nowrap">Search notes and topics</span>
           <span className="md:hidden font-medium">Search...</span>
-          <kbd className="hidden lg:inline-flex items-center px-1.5 py-0.5 text-[10px] font-mono font-semibold bg-white dark:bg-stone-900 border border-border dark:border-stone-700 rounded-md text-stone-500">
+          <kbd className="hidden lg:inline-flex ml-auto items-center px-1.5 py-0.5 text-[10px] font-mono font-semibold bg-secondary border border-border rounded-md text-muted-foreground">
             ⌘K
           </kbd>
         </button>
@@ -152,12 +149,11 @@ export function PortalTopNav({
         {/* Timetables / Viva Schedule Pill */}
         <button
           onClick={() => openTimetable("viva")}
-          className="hidden md:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold border transition-all bg-primary/10 text-primary dark:bg-primary/15 dark:text-primary border-primary/30 dark:border-primary/40 hover:bg-primary/10 shadow-2xs cursor-pointer shrink-0"
+          className="hidden md:flex items-center gap-1.5 h-10 px-3 rounded-full text-xs font-semibold border border-border bg-card text-foreground hover:border-primary/40 transition-colors cursor-pointer shrink-0"
           title="View Official Remedial & Viva Timetables"
         >
           <Calendar className="h-3.5 w-3.5 text-primary" />
-          <span>Timetable</span>
-          <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+          <span className="hidden xl:inline">Timetable</span>
         </button>
 
         {/* Pomodoro Focus Pill */}
@@ -165,7 +161,7 @@ export function PortalTopNav({
           onClick={() => setIsModalOpen(true)}
           className={`hidden lg:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold border transition-all shrink-0 cursor-pointer ${
             isRunning
-              ? "bg-accent text-foreground border-primary animate-pulse font-bold"
+              ? "bg-accent text-accent-foreground border-primary/40 font-bold"
               : "bg-background dark:bg-stone-800 text-muted-foreground dark:text-stone-400 border-border dark:border-stone-700 hover:text-foreground dark:hover:text-white"
           }`}
           title="Study Focus Timer"
@@ -176,32 +172,6 @@ export function PortalTopNav({
               ? `${String(Math.floor(timeLeft / 60)).padStart(2, "0")}:${String(timeLeft % 60).padStart(2, "0")}`
               : "Focus"}
           </span>
-        </button>
-
-        {/* Fullscreen Focus Mode Toggle */}
-        <button
-          onClick={onToggleFocusMode}
-          className={`flex items-center gap-1.5 h-10 px-3.5 rounded-full text-xs font-semibold border transition-all cursor-pointer ${
-            isFocusMode
-              ? "bg-primary text-white border-transparent font-bold"
-              : "bg-background dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-muted-foreground dark:text-stone-300 border-border dark:border-stone-700"
-          }`}
-          title={isFocusMode ? "Exit Focus Mode (Press F or Esc)" : "Focus Mode: Hide Sidebar (Press F)"}
-        >
-          {isFocusMode ? (
-            <>
-              <Minimize2 className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">Exit Focus</span>
-            </>
-          ) : (
-            <>
-              <Maximize2 className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">Focus</span>
-              <kbd className="hidden lg:inline-flex items-center px-1 text-[9px] font-mono bg-white dark:bg-stone-900 rounded border border-border dark:border-stone-700">
-                F
-              </kbd>
-            </>
-          )}
         </button>
 
         {/* Notifications Dropdown with Dot */}

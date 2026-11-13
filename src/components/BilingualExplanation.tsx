@@ -73,7 +73,7 @@ export function BilingualExplanation({
   }
 
   return (
-    <div className="rounded-2xl border border-primary/60 dark:border-primary/40 bg-gradient-to-r from-primary/10/50 via-white to-primary/7 dark:from-primary/20 dark:via-background dark:to-primary/10 p-3.5 my-3 shadow-2xs">
+    <div className="rounded-2xl border border-primary/60 dark:border-primary/40 bg-gradient-to-r from-primary/10 via-white to-primary/7 dark:from-primary/20 dark:via-background dark:to-primary/10 p-3.5 my-3 shadow-2xs">
       <div className="flex items-center justify-between gap-2">
         <button
           onClick={() => setIsOpen(!isOpen)}

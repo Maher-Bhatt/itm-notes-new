@@ -94,22 +94,22 @@ export function AnnouncementBanner() {
   if (isMaintenanceActive || !announcement || !announcement.active) return null;
 
   return (
-    <div className="relative z-40 border-b border-foreground bg-foreground text-white px-4 py-2 transition-all text-xs">
+    <div className="relative z-40 border-b border-border bg-accent/70 text-foreground px-4 py-2 transition-all text-xs">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
         <div className="flex items-center gap-2.5 min-w-0">
-          <span className="w-2 h-2 rounded-full bg-accent shrink-0 animate-pulse" />
+          <span className="w-2 h-2 rounded-full bg-primary shrink-0" />
           <div className="flex flex-wrap items-center gap-2 min-w-0">
-            <span className="font-bold uppercase tracking-wider text-[10px] px-2.5 py-0.5 rounded-full bg-accent text-foreground">
+            <span className="font-bold uppercase tracking-wider text-[10px] px-2.5 py-0.5 rounded-full bg-primary text-primary-foreground">
               {announcement.severity === 'critical' ? 'Alert' : 'Campus Update'}
             </span>
-            <span className="font-bold text-white text-[11px] sm:text-xs">{announcement.title}:</span>
+            <span className="font-bold text-foreground text-[11px] sm:text-xs">{announcement.title}:</span>
             <span className="text-muted-foreground font-normal text-[11px] sm:text-xs line-clamp-2 sm:line-clamp-1">
               {announcement.body}
             </span>
             <button
               type="button"
               onClick={() => openTimetable('viva')}
-              className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white/15 hover:bg-white/25 text-white font-bold text-[10px] cursor-pointer transition-all ml-1 shadow-2xs"
+              className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-card border border-border hover:border-primary/40 text-foreground font-bold text-[10px] cursor-pointer transition-all ml-1 shadow-2xs"
             >
               <Calendar className="h-3 w-3" />
               <span>View Timetables</span>
@@ -120,7 +120,7 @@ export function AnnouncementBanner() {
         <button
           type="button"
           onClick={handleDismiss}
-          className="p-1.5 -mr-1 rounded-full hover:bg-white/10 text-white/70 hover:text-white transition-colors shrink-0 flex items-center justify-center cursor-pointer"
+          className="p-1.5 -mr-1 rounded-full hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors shrink-0 flex items-center justify-center cursor-pointer"
           title="Dismiss announcement"
           aria-label="Dismiss announcement"
         >

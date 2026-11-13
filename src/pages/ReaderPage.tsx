@@ -7,6 +7,10 @@ import {
   ArrowLeft,
   ArrowRight,
   CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
+  NotebookPen,
+  Link2,
   List,
   Maximize2,
   Minimize2,
@@ -35,6 +39,25 @@ function loadPrefs(): ReaderPrefs {
     return { size: SIZES.includes(p.size) ? p.size : 18, serif: p.serif ?? true };
   } catch {
     return { size: 18, serif: true };
+  }
+}
+
+const NOTES_KEY = "cl_reader_notes_v1";
+function loadNote(key: string) {
+  try {
+    return (JSON.parse(localStorage.getItem(NOTES_KEY) || "{}") as Record<string, string>)[key] ?? "";
+  } catch {
+    return "";
+  }
+}
+function storeNote(key: string, text: string) {
+  try {
+    const all = JSON.parse(localStorage.getItem(NOTES_KEY) || "{}") as Record<string, string>;
+    if (text.trim()) all[key] = text;
+    else delete all[key];
+    localStorage.setItem(NOTES_KEY, JSON.stringify(all));
+  } catch {
+    /* ignore */
   }
 }
 
@@ -152,6 +175,14 @@ export default function ReaderPage() {
   const [activeId, setActiveId] = useState<string>("");
   const [barHidden, setBarHidden] = useState(false);
   const [resumed, setResumed] = useState<number | null>(null);
+  const [panel, setPanel] = useState<"notes" | "related">("notes");
+  const noteKey = `${subjectSlug}/${docSlug}`;
+  const [note, setNote] = useState("");
+  useEffect(() => setNote(loadNote(noteKey)), [noteKey]);
+  useEffect(() => {
+    const id = window.setTimeout(() => storeNote(noteKey, note), 400);
+    return () => window.clearTimeout(id);
+  }, [note, noteKey]);
   const lastY = useRef(0);
   const articleRef = useRef<HTMLDivElement>(null);
 
@@ -283,13 +314,18 @@ export default function ReaderPage() {
 
   const minutesLeft = Math.max(0, Math.round(minutesFor(doc.words) * (1 - pct)));
   const activeHeading = headings.find((h) => h.id === activeId);
+  const activeLine = activeHeading?.line ?? 0;
+  const activeTocIndex = tocHeadings.reduce((acc, h, i) => (h.line <= activeLine ? i : acc), -1);
+  const activeTocId = activeTocIndex >= 0 ? tocHeadings[activeTocIndex].id : "";
+  const related = subject.docs.filter((d) => d.slug !== doc.slug && (doc.unit == null ? d.featured || d.unit == null : d.unit === doc.unit || d.featured)).slice(0, 8);
+  const breadcrumb = ["Library", subject.short, doc.unit != null ? `Unit ${doc.unit}` : doc.kind];
 
   const Toc = (
     <nav aria-label="Contents" className="text-[13px] leading-snug">
       <p className="px-3 pb-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">Contents</p>
       <ul className="space-y-px">
         {tocHeadings.map((h) => {
-          const isActive = h.id === activeId || (activeHeading && activeHeading.level > h.level && false);
+          const isActive = h.id === activeTocId;
           return (
             <li key={h.id}>
               <button
@@ -297,7 +333,7 @@ export default function ReaderPage() {
                 onClick={() => jumpTo(h.id)}
                 className={`w-full text-left rounded-md px-3 py-1.5 transition-colors cursor-pointer ${
                   h.level === topLevel ? "font-medium" : "pl-6"
-                } ${isActive ? "bg-secondary text-foreground" : "text-muted-foreground hover:text-foreground hover:bg-secondary/60"}`}
+                } ${isActive ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:text-foreground hover:bg-secondary/60"}`}
               >
                 {h.text}
               </button>
@@ -333,10 +369,23 @@ export default function ReaderPage() {
               <span className="hidden sm:inline">{subject.short}</span>
             </button>
             <div className="min-w-0 flex-1 px-1">
-              <p className="truncate text-sm font-medium text-foreground">{doc.title}</p>
-              <p className="truncate text-xs text-muted-foreground">
-                {activeHeading ? activeHeading.text : doc.kind}
-                {!doc.scanned && md && ` · ${minutesLeft} min left`}
+              <nav aria-label="Breadcrumb" className="hidden sm:flex items-center gap-1.5 truncate text-xs text-muted-foreground">
+                {breadcrumb.map((b, i) => (
+                  <span key={i} className="inline-flex items-center gap-1.5">
+                    {i > 0 && <ChevronRight className="h-3 w-3" />}
+                    {i === 0 ? (
+                      <Link to="/library" className="hover:text-foreground">{b}</Link>
+                    ) : i === 1 ? (
+                      <Link to={`/library/${subject.slug}`} className="hover:text-foreground">{b}</Link>
+                    ) : (
+                      <span>{b}</span>
+                    )}
+                  </span>
+                ))}
+              </nav>
+              <p className="truncate text-sm font-medium text-foreground">
+                {doc.title}
+                {!doc.scanned && md && <span className="font-normal text-muted-foreground"> · {minutesLeft} min left</span>}
               </p>
             </div>
             {tocHeadings.length > 0 && (
@@ -420,8 +469,8 @@ export default function ReaderPage() {
         </div>
       )}
 
-      <div className={`mx-auto max-w-6xl px-5 sm:px-8 ${focus ? "pt-16" : "pt-24"} pb-24`}>
-        <div className="lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-12">
+      <div className={`mx-auto max-w-[90rem] px-5 sm:px-8 ${focus ? "pt-16" : "pt-24"} pb-28`}>
+        <div className="lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] xl:grid-cols-[15rem_minmax(0,1fr)_17rem] lg:gap-10">
           {/* desktop toc */}
           <aside className={`hidden lg:block ${focus ? "invisible" : ""}`}>
             <div className="sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto pr-2 scrollbar-thin">{tocHeadings.length > 0 && Toc}</div>
@@ -433,7 +482,7 @@ export default function ReaderPage() {
                 {subject.short} · {doc.kind}
                 {doc.unit != null && ` · Unit ${doc.unit}`}
               </p>
-              <h1 className="mt-3 text-3xl sm:text-[2.5rem] font-semibold leading-[1.15] tracking-tight text-foreground">{doc.title}</h1>
+              <h1 className="mt-3 text-[2rem] sm:text-5xl font-medium leading-[1.08] text-foreground">{doc.title}</h1>
               <p className="mt-3 text-sm text-muted-foreground">
                 {doc.scanned
                   ? `${doc.pages} handwritten / scanned pages, shown as images`
@@ -514,8 +563,95 @@ export default function ReaderPage() {
               )}
             </div>
           </main>
+
+          {/* right panel: personal notes + related documents */}
+          <aside className={`hidden xl:block ${focus ? "invisible" : ""}`}>
+            <div className="sticky top-20 space-y-4">
+              <div className="flex gap-1 border-b border-border text-sm">
+                {(["notes", "related"] as const).map((t) => (
+                  <button
+                    key={t}
+                    type="button"
+                    onClick={() => setPanel(t)}
+                    className={`relative px-3 py-2 capitalize transition-colors cursor-pointer ${
+                      panel === t ? "text-foreground font-medium" : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    {t === "notes" ? "My notes" : "Related"}
+                    {panel === t && <span className="absolute inset-x-2 -bottom-px h-0.5 rounded-full bg-primary" />}
+                  </button>
+                ))}
+              </div>
+              {panel === "notes" ? (
+                <div>
+                  <label className="flex items-center gap-2 text-xs text-muted-foreground" htmlFor="reader-note">
+                    <NotebookPen className="h-3.5 w-3.5" /> Saved on this device, for this document
+                  </label>
+                  <textarea
+                    id="reader-note"
+                    value={note}
+                    onChange={(e) => setNote(e.target.value)}
+                    placeholder="Add a note: formulas to memorise, doubts to ask, 'came in CET-2'…"
+                    className="surface-card mt-2 h-64 w-full resize-y p-3 text-sm leading-relaxed text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50"
+                  />
+                </div>
+              ) : (
+                <ul className="space-y-1">
+                  {related.map((d) => (
+                    <li key={d.slug}>
+                      <Link
+                        to={`/library/${subject.slug}/${d.slug}`}
+                        className="flex items-start gap-2.5 rounded-lg px-2.5 py-2 text-sm hover:bg-secondary/70 transition-colors"
+                      >
+                        <Link2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                        <span className="min-w-0">
+                          <span className="block truncate font-medium text-foreground">{d.title}</span>
+                          <span className="block text-xs text-muted-foreground">{d.kind}</span>
+                        </span>
+                      </Link>
+                    </li>
+                  ))}
+                  {related.length === 0 && <p className="text-sm text-muted-foreground">No related documents.</p>}
+                </ul>
+              )}
+            </div>
+          </aside>
         </div>
       </div>
+
+      {/* bottom section navigator */}
+      {md && tocHeadings.length > 1 && !focus && (
+        <div className="fixed bottom-4 left-1/2 z-30 -translate-x-1/2">
+          <div className="surface-card flex items-center gap-1 rounded-full px-2 py-1.5 text-sm text-muted-foreground">
+            <IconBtn
+              label="Previous section"
+              onClick={() => jumpTo(tocHeadings[Math.max(0, activeTocIndex - 1)].id)}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </IconBtn>
+            <span className="min-w-[4.5rem] text-center tabular-nums">
+              {Math.max(1, activeTocIndex + 1)} / {tocHeadings.length}
+            </span>
+            <IconBtn
+              label="Next section"
+              onClick={() => jumpTo(tocHeadings[Math.min(tocHeadings.length - 1, activeTocIndex + 1)].id)}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </IconBtn>
+            <span className="mx-1 h-5 w-px bg-border" aria-hidden />
+            <IconBtn label="Smaller text (-)" onClick={() => setPrefs((p) => ({ ...p, size: SIZES[Math.max(0, SIZES.indexOf(p.size) - 1)] }))}>
+              <Minus className="h-4 w-4" />
+            </IconBtn>
+            <span className="hidden sm:inline w-10 text-center tabular-nums">{Math.round((prefs.size / 18) * 100)}%</span>
+            <IconBtn label="Larger text (+)" onClick={() => setPrefs((p) => ({ ...p, size: SIZES[Math.min(SIZES.length - 1, SIZES.indexOf(p.size) + 1)] }))}>
+              <Plus className="h-4 w-4" />
+            </IconBtn>
+            <IconBtn label="Focus mode (f)" onClick={() => setFocus(true)} className="hidden sm:inline-flex">
+              <Maximize2 className="h-4 w-4" />
+            </IconBtn>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

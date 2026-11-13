@@ -484,11 +484,11 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
                 <span>One Loop. Five Screens. One Design System.</span>
               </div>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-foreground dark:text-white leading-[1.08]">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-medium text-foreground leading-[1.05]">
                 Campus information is scattered.<br />
-                <span className="text-primary">
+                <em className="text-primary">
                   CampusLoop closes the loop.
-                </span>
+                </em>
               </h1>
 
               {/* Dynamic Typewriter Line */}
