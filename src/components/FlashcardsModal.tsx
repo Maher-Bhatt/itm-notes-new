@@ -159,11 +159,11 @@ export function FlashcardsModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
-      <div className="bg-card border border-border rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative animate-scale-in">
+      <div className="bg-card border border-border rounded-2xl max-w-xl w-full p-6 sm:p-8 shadow-lg relative animate-scale-in">
         {/* Header Controls */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <span className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-500 dark:text-amber-500 flex items-center justify-center font-bold text-xs">
+            <span className="w-8 h-8 rounded-lg bg-primary/10 text-primary dark:text-primary flex items-center justify-center font-bold text-xs">
               <Brain className="h-4 w-4" />
             </span>
             <div>
@@ -173,7 +173,7 @@ export function FlashcardsModal({
               <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
                 <span>SM-2 Spaced Repetition</span>
                 <span>•</span>
-                <span className="text-amber-500 dark:text-amber-500 font-semibold">
+                <span className="text-primary dark:text-primary font-semibold">
                   {deckStats.dueCount} due today
                 </span>
               </div>
@@ -189,7 +189,7 @@ export function FlashcardsModal({
               }}
               className={`px-2.5 py-1 rounded-lg text-xs font-semibold border transition-all ${
                 showDueOnly 
-                  ? 'bg-amber-500/15 border-amber-500 text-amber-500 dark:text-amber-500' 
+                  ? 'bg-primary/15 border-primary/60 text-primary dark:text-primary' 
                   : 'bg-secondary border-border text-muted-foreground hover:text-foreground'
               }`}
               title="Toggle Due Only Filter"
@@ -217,11 +217,11 @@ export function FlashcardsModal({
           <span>Card {currentIndex + 1} of {activeDeck.length}</span>
           <div className="flex items-center gap-2 text-[11px]">
             {currentProgress && currentProgress.repetitions > 0 ? (
-              <span className="text-amber-500 dark:text-amber-500 font-medium flex items-center gap-1">
+              <span className="text-primary dark:text-primary font-medium flex items-center gap-1">
                 <Flame className="h-3 w-3" /> Streak {currentProgress.repetitions} (Interval: {currentProgress.interval}d)
               </span>
             ) : (
-              <span className="text-amber-500 font-medium">New Card</span>
+              <span className="text-primary font-medium">New Card</span>
             )}
           </div>
         </div>
@@ -245,7 +245,7 @@ export function FlashcardsModal({
                 <span className="uppercase tracking-wider px-2 py-0.5 rounded bg-secondary">
                   {currentCard.category || 'Question / Concept'}
                 </span>
-                <span className="flex items-center gap-1 text-[#2B4EFF]">
+                <span className="flex items-center gap-1 text-primary">
                   <RotateCw className="h-3 w-3" /> Click or Space to Flip
                 </span>
               </div>
@@ -268,8 +268,8 @@ export function FlashcardsModal({
 
             {/* BACK of card */}
             <div className={`absolute inset-0 backface-hidden rotate-y-180 p-6 flex flex-col justify-between transition-opacity duration-200 ${!isFlipped ? 'pointer-events-none opacity-0 invisible' : 'opacity-100 visible'}`}>
-              <div className="flex items-center justify-between text-[11px] font-semibold text-[#2B4EFF]">
-                <span className="uppercase tracking-wider px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950/40 text-[#2B4EFF]">
+              <div className="flex items-center justify-between text-[11px] font-semibold text-primary">
+                <span className="uppercase tracking-wider px-2 py-0.5 rounded bg-primary/10 dark:bg-primary/15 text-primary">
                   Model Answer & Explanation
                 </span>
                 <span className="flex items-center gap-1 text-muted-foreground">
@@ -294,28 +294,28 @@ export function FlashcardsModal({
                 <div className="grid grid-cols-4 gap-2">
                   <button
                     onClick={() => handleSrsRating(0, 'Again')}
-                    className="flex flex-col items-center py-2 px-1 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/20 text-xs font-bold transition-all apple-press"
+                    className="flex flex-col items-center py-2 px-1 rounded-xl bg-destructive/10 hover:bg-destructive/20 text-destructive dark:text-destructive border border-destructive/20 text-xs font-bold transition-all apple-press"
                   >
                     <span>Again</span>
                     <span className="text-[10px] opacity-75 font-normal">10m</span>
                   </button>
                   <button
                     onClick={() => handleSrsRating(3, 'Hard')}
-                    className="flex flex-col items-center py-2 px-1 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/20 text-xs font-bold transition-all apple-press"
+                    className="flex flex-col items-center py-2 px-1 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary dark:text-primary border border-primary/20 text-xs font-bold transition-all apple-press"
                   >
                     <span>Hard</span>
                     <span className="text-[10px] opacity-75 font-normal">1d</span>
                   </button>
                   <button
                     onClick={() => handleSrsRating(4, 'Good')}
-                    className="flex flex-col items-center py-2 px-1 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 dark:text-amber-500 border border-amber-500/20 text-xs font-bold transition-all apple-press"
+                    className="flex flex-col items-center py-2 px-1 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary dark:text-primary border border-primary/20 text-xs font-bold transition-all apple-press"
                   >
                     <span>Good</span>
                     <span className="text-[10px] opacity-75 font-normal">3d</span>
                   </button>
                   <button
                     onClick={() => handleSrsRating(5, 'Easy')}
-                    className="flex flex-col items-center py-2 px-1 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 dark:text-amber-500 border border-amber-500/20 text-xs font-bold transition-all apple-press"
+                    className="flex flex-col items-center py-2 px-1 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary dark:text-primary border border-primary/20 text-xs font-bold transition-all apple-press"
                   >
                     <span>Easy</span>
                     <span className="text-[10px] opacity-75 font-normal">6d</span>

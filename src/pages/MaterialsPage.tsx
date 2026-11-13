@@ -70,7 +70,7 @@ const SUBJECT_OVERVIEW_CARDS: SubjectOverviewCard[] = [
     id: "mat-remedial-oopj",
     code: "C2311C1 · JAVA",
     tag: "Remedial Special",
-    tagColor: "bg-amber-500 text-[#6366f1] font-bold shadow-xs",
+    tagColor: "bg-primary text-primary font-bold shadow-xs",
     title: "OOPJ Units 2 & 3 Remedial Special & Solved Question Bank",
     subtitle:
       "Complete Zero-to-Hero theory notes + all 38 solved questions (5 Output traces, 15 5-mark programs, 18 theory questions, & MCQs).",
@@ -114,7 +114,7 @@ const SUBJECT_OVERVIEW_CARDS: SubjectOverviewCard[] = [
     id: "mat-1",
     code: "C2310C5 · DSA",
     tag: "Core Notes",
-    tagColor: "bg-primary text-white shadow-xs",
+    tagColor: "bg-primary text-primary-foreground shadow-xs",
     title: "Data Structures: Queue & Stack Master Notes",
     subtitle:
       "Linear & Circular Queue implementations, dry runs, algorithms, and Railway Reservation practicals.",
@@ -159,7 +159,7 @@ const SUBJECT_OVERVIEW_CARDS: SubjectOverviewCard[] = [
     id: "mat-2",
     code: "C2311C4 · DBMS",
     tag: "Core Notes",
-    tagColor: "bg-amber-500 text-white shadow-xs",
+    tagColor: "bg-primary text-primary-foreground shadow-xs",
     title: "DBMS Complete Lecture Notes & SQL Guide",
     subtitle:
       "Relational Algebra, SQL triggers, ACID transaction states, and 1NF to BCNF normalization proofs.",
@@ -194,7 +194,7 @@ const SUBJECT_OVERVIEW_CARDS: SubjectOverviewCard[] = [
     id: "mat-3",
     code: "CET-2 / MST",
     tag: "Official Timetable",
-    tagColor: "bg-amber-500 text-white shadow-xs",
+    tagColor: "bg-primary text-primary-foreground shadow-xs",
     title: "Official Mid-Sem Timetable (CET-2 / MST)",
     subtitle:
       "Complete exam dates, paper timings, room allocations, and student instructions for 2026.",
@@ -229,7 +229,7 @@ const SUBJECT_OVERVIEW_CARDS: SubjectOverviewCard[] = [
     id: "mat-4",
     code: "C2310C2 · COA",
     tag: "Core Notes",
-    tagColor: "bg-purple-600 text-white shadow-xs",
+    tagColor: "bg-primary text-primary-foreground shadow-xs",
     title: "Computer Architecture & Organization MST Notes",
     subtitle:
       "Instruction sets, addressing modes, 5-stage RISC pipelines, cache mapping, and Booth's algorithm.",
@@ -264,7 +264,7 @@ const SUBJECT_OVERVIEW_CARDS: SubjectOverviewCard[] = [
     id: "mat-5",
     code: "S2320C1 · CONMP",
     tag: "Formula Sheet",
-    tagColor: "bg-primary text-white shadow-xs",
+    tagColor: "bg-primary text-primary-foreground shadow-xs",
     title: "Numerical Methods Formula & Cheatsheet (Python)",
     subtitle:
       "Newton-Raphson, Bisection, Gauss-Elimination, Runge-Kutta, and error bounds formulas.",
@@ -300,7 +300,7 @@ const SUBJECT_OVERVIEW_CARDS: SubjectOverviewCard[] = [
     id: "mat-6",
     code: "C2311C1 · JAVA",
     tag: "Lab Manual",
-    tagColor: "bg-rose-600 text-white shadow-xs",
+    tagColor: "bg-destructive text-white shadow-xs",
     title: "Java OOP Official Lab Manual & Experiments",
     subtitle:
       "Full practical code, classes, inheritance, custom exceptions, multithreading, and file I/O.",
@@ -364,27 +364,27 @@ function CategoryIcon({ category }: { category: string }) {
 // ─── Category badge colour helper ─────────────────────────────────────────
 function categoryBadgeClass(category: string): string {
   const map: Record<string, string> = {
-    Notes: "bg-amber-500/10 text-amber-500 border-amber-500/30",
-    "Lab Manual": "bg-orange-500/10 text-orange-600 border-orange-500/30",
-    "Question Paper": "bg-amber-500/10 text-amber-600 border-amber-500/30",
-    Assignment: "bg-amber-500/10 text-amber-500 border-amber-500/30",
-    Syllabus: "bg-amber-500/10 text-amber-500 border-amber-500/30",
-    Presentation: "bg-amber-500/10 text-amber-500 border-amber-500/30",
-    Timetable: "bg-rose-500/10 text-rose-600 border-rose-500/30",
+    Notes: "bg-primary/10 text-primary border-primary/30",
+    "Lab Manual": "bg-primary/10 text-primary border-primary/30",
+    "Question Paper": "bg-primary/10 text-primary border-primary/30",
+    Assignment: "bg-primary/10 text-primary border-primary/30",
+    Syllabus: "bg-primary/10 text-primary border-primary/30",
+    Presentation: "bg-primary/10 text-primary border-primary/30",
+    Timetable: "bg-destructive/10 text-destructive border-destructive/30",
   };
-  return map[category] ?? "bg-slate-500/10 text-slate-600 border-slate-500/30";
+  return map[category] ?? "bg-stone-500/10 text-stone-600 border-stone-500/30";
 }
 
 // ─── File type indicator colour ──────────────────────────────────────────
 function fileTypeClass(fileType: string): string {
   const map: Record<string, string> = {
-    PDF: "bg-red-500/10 text-red-500",
-    PPTX: "bg-orange-500/10 text-orange-500",
-    DOCX: "bg-amber-500/10 text-amber-500",
+    PDF: "bg-destructive/10 text-destructive",
+    PPTX: "bg-primary/10 text-primary",
+    DOCX: "bg-primary/10 text-primary",
     JPEG: "bg-primary/10 text-primary",
     PNG: "bg-primary/10 text-primary",
   };
-  return map[fileType] ?? "bg-slate-500/10 text-slate-500";
+  return map[fileType] ?? "bg-stone-500/10 text-muted-foreground";
 }
 
 // ─── Plain material card ───────────────────────────────────────────────────
@@ -469,7 +469,7 @@ function PlainMaterialCard({ mat }: { mat: StudyMaterial }) {
       {mat.badge && (
         <div>
           <span
-            className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${mat.badgeColor ?? "bg-slate-500/10 text-slate-600 border-slate-500/20"}`}
+            className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${mat.badgeColor ?? "bg-stone-500/10 text-stone-600 border-stone-500/20"}`}
           >
             {mat.badge}
           </span>
@@ -487,7 +487,7 @@ function PlainMaterialCard({ mat }: { mat: StudyMaterial }) {
         </button>
         <button
           onClick={handleDownload}
-          className="flex-1 h-7 rounded-lg bg-[#6366f1] hover:bg-[#122d26] text-white font-semibold text-[11px] flex items-center justify-center gap-1 transition-all active:scale-95"
+          className="flex-1 h-7 rounded-lg bg-primary hover:bg-primary text-primary-foreground font-semibold text-[11px] flex items-center justify-center gap-1 transition-all active:scale-95"
         >
           <Download className="h-3 w-3 text-[#FAFAFA]" />
           <span>Save</span>
@@ -537,7 +537,7 @@ function RichOverviewCard({
         <span>·</span>
         <span className="font-mono font-semibold">{item.fileSize}</span>
         <span>·</span>
-        <span className="text-[10px] px-1.5 py-0.5 rounded bg-primary/10 text-amber-500 font-semibold">
+        <span className="text-[10px] px-1.5 py-0.5 rounded bg-primary/10 text-primary font-semibold">
           Rich View
         </span>
       </div>
@@ -547,7 +547,7 @@ function RichOverviewCard({
         {item.id === "mat-remedial-oopj" && (
           <button
             onClick={() => navigate("/imp-questions/oopj")}
-            className="h-7 px-2.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-[11px] flex items-center justify-center gap-1 transition-colors cursor-pointer"
+            className="h-7 px-2.5 rounded-lg bg-primary hover:bg-primary text-stone-950 font-bold text-[11px] flex items-center justify-center gap-1 transition-colors cursor-pointer"
             title="Open Interactive Master Guide"
           >
             <Sparkles className="h-3 w-3" />
@@ -563,7 +563,7 @@ function RichOverviewCard({
         </button>
         <button
           onClick={() => onDownload(item)}
-          className="flex-1 h-7 rounded-lg bg-[#6366f1] hover:bg-[#122d26] text-white font-semibold text-[11px] flex items-center justify-center gap-1 transition-all active:scale-95 cursor-pointer"
+          className="flex-1 h-7 rounded-lg bg-primary hover:bg-primary text-primary-foreground font-semibold text-[11px] flex items-center justify-center gap-1 transition-all active:scale-95 cursor-pointer"
         >
           <Download className="h-3 w-3 text-[#FAFAFA]" />
           <span>PDF</span>
@@ -599,7 +599,7 @@ function SemesterSection({
             <ChevronRight className="h-4 w-4 text-muted-foreground" />
           )}
           <span className="font-bold text-sm text-foreground">{title}</span>
-          <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-[#6366f1]/10 text-[#6366f1] dark:text-amber-500 border border-[#6366f1]/20">
+          <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-primary/10 text-primary dark:text-primary border border-primary/20">
             {count} files
           </span>
         </div>
@@ -743,9 +743,9 @@ export default function MaterialsPage() {
       {/* ── PAGE HEADER ── */}
       <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 pb-2 border-b border-border/60">
         <div>
-          <h1 className="text-2xl font-black tracking-tight text-foreground flex items-center gap-2 flex-wrap">
+          <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2 flex-wrap">
             <span>CampusLoop · Study Materials</span>
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-primary/10 text-amber-500 dark:text-amber-500 border border-primary/20 font-bold">
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-primary/10 text-primary dark:text-primary border border-primary/20 font-bold">
               {stats.total} Files
             </span>
           </h1>
@@ -782,27 +782,27 @@ export default function MaterialsPage() {
       </div>
 
       {/* ── REMEDIAL SPECIAL HERO BANNER ── */}
-      <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#6366f1] via-[#1D4A3F] to-[#27272A] text-white border border-[#FAFAFA]/40 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-primary via-primary to-[#27272A] text-foreground border border-[#FAFAFA]/40 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#FAFAFA] text-[#6366f1]">
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#FAFAFA] text-primary">
               🔥 Remedial Special 2026
             </span>
             <span className="text-xs font-mono text-[#FAFAFA] font-bold">
               OOPJ (C2311C1) Units 2 & 3
             </span>
           </div>
-          <h2 className="text-base sm:text-lg font-bold text-white font-display">
+          <h2 className="text-base sm:text-lg font-bold text-foreground font-display">
             Zero-to-Hero Remedial Master Notes & 30-Page Solved Question Bank
           </h2>
-          <p className="text-xs text-[#A1A1AA] max-w-2xl leading-relaxed">
+          <p className="text-xs text-muted-foreground max-w-2xl leading-relaxed">
             Designed for students who need to pass: complete syllabus theory from scratch (classes, objects, inheritance, interfaces) combined with all 5 Predict the Output traces, 15 Long Answer 5M programs, 18 Theory 3M proofs, and rapid MCQ revision.
           </p>
         </div>
 
         <Link
           to="/imp-questions/oopj"
-          className="px-4 py-2.5 rounded-xl bg-[#FAFAFA] hover:bg-[#c4d64d] text-[#6366f1] font-bold text-xs shrink-0 flex items-center justify-center gap-2 shadow-md transition-all active:scale-95 cursor-pointer font-display"
+          className="px-4 py-2.5 rounded-xl bg-[#FAFAFA] hover:bg-[#c4d64d] text-primary font-bold text-xs shrink-0 flex items-center justify-center gap-2 shadow-md transition-all active:scale-95 cursor-pointer font-display"
         >
           <span>Open Remedial Master Guide →</span>
         </Link>
@@ -811,16 +811,16 @@ export default function MaterialsPage() {
       {/* ── STATS BAR ── */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { label: "Notes & Slides", value: stats.notes, color: "text-amber-500" },
-          { label: "Lab Manuals", value: stats.labs, color: "text-orange-500" },
-          { label: "Question Papers", value: stats.qps, color: "text-amber-500" },
-          { label: "Total Files", value: stats.total, color: "text-[#6366f1] dark:text-amber-500" },
+          { label: "Notes & Slides", value: stats.notes, color: "text-primary" },
+          { label: "Lab Manuals", value: stats.labs, color: "text-primary" },
+          { label: "Question Papers", value: stats.qps, color: "text-primary" },
+          { label: "Total Files", value: stats.total, color: "text-primary dark:text-primary" },
         ].map((s) => (
           <div
             key={s.label}
             className="bg-card border border-border rounded-2xl p-4 text-center shadow-sm"
           >
-            <span className={`text-2xl font-black font-mono ${s.color}`}>{s.value}</span>
+            <span className={`text-2xl font-bold font-mono ${s.color}`}>{s.value}</span>
             <p className="text-[11px] text-muted-foreground mt-0.5 font-medium uppercase tracking-wide">
               {s.label}
             </p>
@@ -843,7 +843,7 @@ export default function MaterialsPage() {
               onClick={() => setSemesterFilter(s)}
               className={`px-3 py-1 rounded-lg transition-all whitespace-nowrap ${
                 semesterFilter === s
-                  ? "bg-[#6366f1] text-[#FAFAFA] font-bold"
+                  ? "bg-primary text-[#FAFAFA] font-bold"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -860,7 +860,7 @@ export default function MaterialsPage() {
               onClick={() => setTypeFilter(cat)}
               className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all border whitespace-nowrap ${
                 typeFilter === cat
-                  ? "bg-[#6366f1] text-[#FAFAFA] border-[#6366f1]"
+                  ? "bg-primary text-[#FAFAFA] border-primary"
                   : "bg-secondary text-muted-foreground border-border hover:text-foreground"
               }`}
             >
@@ -958,7 +958,7 @@ export default function MaterialsPage() {
             <div>
               <h3 className="font-bold text-sm text-foreground flex items-center gap-2">
                 <span>Question Bank Trend</span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-500 dark:text-amber-500 font-bold">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-primary/10 text-primary dark:text-primary font-bold">
                   High Yield
                 </span>
               </h3>
@@ -977,9 +977,9 @@ export default function MaterialsPage() {
                   content={({ active, payload }) => {
                     if (active && payload && payload.length) {
                       return (
-                        <div className="rounded-lg bg-slate-900 text-white p-2 text-xs shadow-lg border border-slate-800">
+                        <div className="rounded-lg bg-card text-foreground p-2 text-xs shadow-lg border border-border">
                           <p className="font-bold">{payload[0].payload.date}</p>
-                          <p className="text-amber-500">{payload[0].value} Solved Questions</p>
+                          <p className="text-primary">{payload[0].value} Solved Questions</p>
                         </div>
                       );
                     }
@@ -1000,23 +1000,23 @@ export default function MaterialsPage() {
         </div>
 
         {/* Solved Questions promo */}
-        <div className="lg:col-span-4 bg-gradient-to-br from-slate-900 to-amber-500 text-white border border-slate-800 rounded-2xl p-5 shadow-lg flex flex-col justify-between">
+        <div className="lg:col-span-4 bg-gradient-to-br from-stone-900 to-primary text-foreground border border-border rounded-2xl p-5 shadow-lg flex flex-col justify-between">
           <div className="space-y-3">
             <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/30 text-amber-500 border border-amber-500/30">
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-primary/30 text-primary border border-primary/30">
                 MST Exclusive
               </span>
-              <span className="text-[11px] text-slate-400">Baroda University</span>
+              <span className="text-[11px] text-muted-foreground">Baroda University</span>
             </div>
-            <h3 className="font-bold text-base text-white">CampusLoop · Solved Mid-Sem Questions</h3>
-            <p className="text-xs text-slate-300 leading-relaxed">
+            <h3 className="font-bold text-base text-foreground">CampusLoop · Solved Mid-Sem Questions</h3>
+            <p className="text-xs text-foreground leading-relaxed">
               High-yield question banks, algorithm dry-runs, and step-by-step solutions compiled from past SLS university examination papers.
             </p>
             <div className="p-3 rounded-xl bg-white/5 border border-white/10 space-y-1.5 text-xs">
               {[
-                { color: "text-amber-500", text: "Railway Reservation Queue (C & Java)" },
-                { color: "text-amber-500", text: "DBMS 3NF & BCNF Normalization Proofs" },
-                { color: "text-amber-500", text: "Newton-Raphson & Runge-Kutta 4" },
+                { color: "text-primary", text: "Railway Reservation Queue (C & Java)" },
+                { color: "text-primary", text: "DBMS 3NF & BCNF Normalization Proofs" },
+                { color: "text-primary", text: "Newton-Raphson & Runge-Kutta 4" },
               ].map((item) => (
                 <div key={item.text} className={`flex items-center gap-2 ${item.color} font-semibold text-[11px]`}>
                   <CheckCircle2 className="h-3.5 w-3.5" />
@@ -1028,7 +1028,7 @@ export default function MaterialsPage() {
           <div className="pt-4 flex items-center justify-between">
             <button
               onClick={() => navigate("/imp-questions")}
-              className="px-4 py-2 rounded-xl bg-[#6366f1] hover:bg-[#122d26] text-white font-bold text-xs shadow-md transition-all active:scale-95"
+              className="px-4 py-2 rounded-xl bg-primary hover:bg-primary text-primary-foreground font-bold text-xs shadow-md transition-all active:scale-95"
             >
               Open Solved Bank &gt;
             </button>
@@ -1057,7 +1057,7 @@ export default function MaterialsPage() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => openTimetable(timetableTab, vivaClassFilter)}
-              className="h-8 px-3 rounded-xl bg-[#6366f1] text-[#FAFAFA] hover:bg-[#27272A] font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer shadow-xs font-display"
+              className="h-8 px-3 rounded-xl bg-primary text-[#FAFAFA] hover:bg-[#27272A] font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer shadow-xs font-display"
             >
               <Calendar className="h-3.5 w-3.5" />
               <span>Open Timetable Hub</span>
@@ -1071,32 +1071,32 @@ export default function MaterialsPage() {
             onClick={() => setTimetableTab("viva")}
             className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 flex items-center gap-1.5 cursor-pointer ${
               timetableTab === "viva"
-                ? "bg-[#6366f1] text-[#FAFAFA] font-black shadow-xs"
+                ? "bg-primary text-[#FAFAFA] font-bold shadow-xs"
                 : "bg-secondary text-muted-foreground hover:text-foreground"
             }`}
           >
             <CheckCircle2 className="h-3.5 w-3.5" />
             <span>Sem 3 Viva & Submissions</span>
-            <span className="px-1.5 py-0.2 rounded bg-black/20 text-[10px]">Oct 26 - Nov 3</span>
+            <span className="px-1.5 py-0.2 rounded bg-card text-[10px]">Oct 26 - Nov 3</span>
           </button>
 
           <button
             onClick={() => setTimetableTab("remedial")}
             className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 flex items-center gap-1.5 cursor-pointer ${
               timetableTab === "remedial"
-                ? "bg-[#6366f1] text-[#FAFAFA] font-black shadow-xs"
+                ? "bg-primary text-[#FAFAFA] font-bold shadow-xs"
                 : "bg-secondary text-muted-foreground hover:text-foreground"
             }`}
           >
             <span>Remedial Papers (Sem 3 & 5)</span>
-            <span className="px-1.5 py-0.2 rounded bg-black/20 text-[10px]">10:10 AM</span>
+            <span className="px-1.5 py-0.2 rounded bg-card text-[10px]">10:10 AM</span>
           </button>
 
           <button
             onClick={() => setTimetableTab("mst")}
             className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 flex items-center gap-1.5 cursor-pointer ${
               timetableTab === "mst"
-                ? "bg-[#6366f1] text-[#FAFAFA] font-black shadow-xs"
+                ? "bg-primary text-[#FAFAFA] font-bold shadow-xs"
                 : "bg-secondary text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -1120,7 +1120,7 @@ export default function MaterialsPage() {
                       onClick={() => setVivaClassFilter(cls)}
                       className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
                         isSel
-                          ? "bg-[#6366f1] text-[#FAFAFA] font-bold shadow-xs"
+                          ? "bg-primary text-[#FAFAFA] font-bold shadow-xs"
                           : "bg-background border border-border text-muted-foreground hover:text-foreground"
                       }`}
                     >
@@ -1132,7 +1132,7 @@ export default function MaterialsPage() {
               </div>
 
               <span className="text-[11px] text-muted-foreground flex items-center gap-1">
-                <MapPin className="h-3.5 w-3.5 text-amber-500" />
+                <MapPin className="h-3.5 w-3.5 text-primary" />
                 Venue: <strong className="text-foreground">{VIVA_CLASS_LOCATIONS[vivaClassFilter].room}</strong> ({VIVA_CLASS_LOCATIONS[vivaClassFilter].block})
               </span>
             </div>
@@ -1169,7 +1169,7 @@ export default function MaterialsPage() {
                         </span>
                       </td>
                       <td className="p-2.5 text-right">
-                        <span className="text-[10px] px-2 py-0.5 rounded bg-orange-500/10 text-orange-600 dark:text-orange-400 font-bold border border-orange-500/20">
+                        <span className="text-[10px] px-2 py-0.5 rounded bg-primary/10 text-primary dark:text-primary font-bold border border-primary/20">
                           Physical File Required
                         </span>
                       </td>
@@ -1197,7 +1197,7 @@ export default function MaterialsPage() {
                   onClick={() => setRemedialBranchFilter(b.id)}
                   className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                     remedialBranchFilter === b.id
-                      ? "bg-[#6366f1] text-[#FAFAFA] font-bold"
+                      ? "bg-primary text-[#FAFAFA] font-bold"
                       : "bg-background border border-border text-muted-foreground hover:text-foreground"
                   }`}
                 >
@@ -1210,21 +1210,21 @@ export default function MaterialsPage() {
             </div>
 
             {/* High-Yield OOPJ Remedial Question Bank Callout */}
-            <div className="p-3.5 rounded-2xl bg-[#6366f1] text-[#FAFAFA] flex flex-col sm:flex-row sm:items-center justify-between gap-3 border border-[#FAFAFA]/30 shadow-xs">
+            <div className="p-3.5 rounded-2xl bg-primary text-[#FAFAFA] flex flex-col sm:flex-row sm:items-center justify-between gap-3 border border-[#FAFAFA]/30 shadow-xs">
               <div>
-                <span className="text-[10px] font-bold font-mono px-2 py-0.5 rounded bg-[#FAFAFA] text-[#6366f1] uppercase">
+                <span className="text-[10px] font-bold font-mono px-2 py-0.5 rounded bg-[#FAFAFA] text-primary uppercase">
                   Remedial Paper 1 · Oct 26
                 </span>
-                <h4 className="font-bold text-xs sm:text-sm text-white font-display mt-1">
+                <h4 className="font-bold text-xs sm:text-sm text-foreground font-display mt-1">
                   OOPJ (C2311C1) Solved Master Question Bank
                 </h4>
-                <p className="text-[11px] text-[#A1A1AA]">
+                <p className="text-[11px] text-muted-foreground">
                   Line-by-line output traces, 15 5-mark code programs, 18 3-mark theory proofs & Q1 MCQs.
                 </p>
               </div>
               <button
                 onClick={() => navigate("/imp-questions/oopj")}
-                className="h-8 px-3.5 rounded-xl bg-[#FAFAFA] text-[#6366f1] hover:bg-[#E4E4E7] font-black text-xs flex items-center gap-1.5 transition-all cursor-pointer shrink-0 font-display shadow-xs self-start sm:self-auto"
+                className="h-8 px-3.5 rounded-xl bg-[#FAFAFA] text-primary hover:bg-muted font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer shrink-0 font-display shadow-xs self-start sm:self-auto"
               >
                 <BookOpen className="h-3.5 w-3.5" />
                 <span>Open Solved Bank</span>
@@ -1259,7 +1259,7 @@ export default function MaterialsPage() {
                           Sem {item.semester} · {item.branch}
                         </span>
                       </td>
-                      <td className="p-2.5 font-mono font-bold text-amber-500 dark:text-amber-500">
+                      <td className="p-2.5 font-mono font-bold text-primary dark:text-primary">
                         {item.courseCode}
                       </td>
                       <td className="p-2.5 font-medium text-foreground">{item.courseName}</td>
@@ -1284,7 +1284,7 @@ export default function MaterialsPage() {
                   onClick={() => setSelectedBatchId(batch.id)}
                   className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all ${
                     selectedBatchId === batch.id
-                      ? "bg-[#6366f1] text-[#FAFAFA] font-bold"
+                      ? "bg-primary text-[#FAFAFA] font-bold"
                       : "bg-secondary text-muted-foreground hover:text-foreground"
                   }`}
                 >
@@ -1318,7 +1318,7 @@ export default function MaterialsPage() {
                         <FileCheck className="h-4 w-4 text-primary shrink-0" />
                         <span className="font-mono">{exam.date}</span>
                       </td>
-                      <td className="py-3 font-mono text-[11px] font-bold text-amber-500 dark:text-amber-500">
+                      <td className="py-3 font-mono text-[11px] font-bold text-primary dark:text-primary">
                         {exam.courseCode}
                       </td>
                       <td className="py-3 font-medium text-foreground">{exam.courseName}</td>
@@ -1349,8 +1349,8 @@ export default function MaterialsPage() {
 
       {/* ── RICH DOCUMENT MODAL ── */}
       {activePreview && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md animate-fade-in">
-          <div className="bg-card border border-border rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-scale-in">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-card backdrop-blur-md animate-fade-in">
+          <div className="bg-card border border-border rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-lg overflow-hidden animate-scale-in">
 
             {/* Modal Header */}
             <div className="p-4 sm:p-5 border-b border-border bg-secondary/30 flex items-center justify-between gap-3">
@@ -1364,7 +1364,7 @@ export default function MaterialsPage() {
                     · {activePreview.pages} · {activePreview.fileSize}
                   </span>
                 </div>
-                <h3 className="font-extrabold text-base sm:text-lg text-foreground">{activePreview.title}</h3>
+                <h3 className="font-semibold text-base sm:text-lg text-foreground">{activePreview.title}</h3>
               </div>
               <div className="flex items-center gap-2 shrink-0">
                 <a
@@ -1429,7 +1429,7 @@ export default function MaterialsPage() {
                       <ExternalLink className="h-3 w-3" />
                     </a>
                   </div>
-                  <div className="w-full h-[480px] rounded-xl overflow-hidden border border-border bg-slate-950 shadow-inner">
+                  <div className="w-full h-[480px] rounded-xl overflow-hidden border border-border bg-card shadow-inner">
                     <iframe
                       src={`${activePreview.pdfUrl}#toolbar=1&navpanes=0`}
                       className="w-full h-full border-0"
@@ -1455,12 +1455,12 @@ export default function MaterialsPage() {
                     </h4>
                     <div className="grid grid-cols-1 gap-3">
                       {activePreview.formulas.map((f, i) => (
-                        <div key={i} className="p-3.5 rounded-xl bg-slate-950 text-slate-200 border border-slate-800 space-y-1.5 font-mono text-xs">
+                        <div key={i} className="p-3.5 rounded-xl bg-card text-foreground border border-border space-y-1.5 font-mono text-xs">
                           <div className="flex items-center justify-between">
                             <span className="text-[11px] font-bold text-primary font-sans">{f.title}</span>
-                            <span className="text-[10px] text-slate-400 font-sans">{f.note}</span>
+                            <span className="text-[10px] text-muted-foreground font-sans">{f.note}</span>
                           </div>
-                          <p className="p-2 rounded bg-slate-900 border border-slate-800 text-amber-500 select-all overflow-x-auto">
+                          <p className="p-2 rounded bg-card border border-border text-primary select-all overflow-x-auto">
                             {f.formula}
                           </p>
                         </div>
@@ -1502,7 +1502,7 @@ export default function MaterialsPage() {
                     <FileText className="h-7 w-7" />
                   </div>
                   <div>
-                    <h4 className="font-black text-lg text-foreground">{activePreview.title}</h4>
+                    <h4 className="font-bold text-lg text-foreground">{activePreview.title}</h4>
                     <p className="text-xs text-muted-foreground mt-1">
                       Official verified PDF ({activePreview.fileSize}, {activePreview.pages}).
                     </p>
@@ -1524,7 +1524,7 @@ export default function MaterialsPage() {
                   <div className="flex items-center justify-center gap-3 pt-2">
                     <button
                       onClick={() => handleDownloadRich(activePreview)}
-                      className="px-6 py-2.5 rounded-xl bg-[#6366f1] text-white font-bold text-xs shadow-md hover:opacity-90 flex items-center gap-2 active:scale-95 transition-all"
+                      className="px-6 py-2.5 rounded-xl bg-primary text-primary-foreground font-bold text-xs shadow-md hover:opacity-90 flex items-center gap-2 active:scale-95 transition-all"
                     >
                       <Download className="h-4 w-4 text-[#FAFAFA]" />
                       <span>Download PDF Now</span>
@@ -1555,7 +1555,7 @@ export default function MaterialsPage() {
                 </button>
                 <button
                   onClick={() => handleDownloadRich(activePreview)}
-                  className="px-4 py-1.5 rounded-xl bg-[#6366f1] text-white font-bold text-xs flex items-center gap-1.5 shadow-xs"
+                  className="px-4 py-1.5 rounded-xl bg-primary text-primary-foreground font-bold text-xs flex items-center gap-1.5 shadow-xs"
                 >
                   <Download className="h-3.5 w-3.5 text-[#FAFAFA]" />
                   <span>Download</span>

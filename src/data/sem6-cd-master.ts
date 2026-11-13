@@ -4,7 +4,7 @@ export const sem6CdMaster: Subject = {
   id: "sem6-cd",
   name: "Compiler Design & Language Translation",
   code: "CD601",
-  color: "bg-indigo-600",
+  color: "bg-primary",
   icon: "cpu",
   description: "Comprehensive University Syllabus for Compiler Design — Lexical Analysis (Flex/Lex, DFA Tokenization), Syntax Analysis (LL(1) First & Follow, LR(0), SLR, LALR, CLR), Syntax-Directed Translation (SDT, S-Attributed vs L-Attributed), Intermediate Code Generation (Three-Address Code, DAG, Quadruples), Runtime Storage Management, and Code Optimization (Common Subexpression Elimination, Loop Invariant Code Motion).",
   semester: 6,

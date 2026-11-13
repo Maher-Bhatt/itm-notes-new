@@ -20,7 +20,7 @@ export const CampusSectionHeader: React.FC<CampusSectionHeaderProps> = ({
 }) => {
   return (
     <div className={`flex items-center justify-between gap-2 mb-3.5 ${className}`}>
-      <h2 className="text-xl md:text-2xl font-bold tracking-tight text-[#111111] dark:text-white">
+      <h2 className="text-xl md:text-2xl font-bold tracking-tight text-foreground dark:text-white">
         {title}
       </h2>
 
@@ -29,7 +29,7 @@ export const CampusSectionHeader: React.FC<CampusSectionHeaderProps> = ({
       ) : seeAllLink ? (
         <Link
           to={seeAllLink}
-          className="text-sm font-semibold text-[#2B4EFF] hover:underline transition-all shrink-0 cursor-pointer"
+          className="text-sm font-semibold text-primary hover:underline transition-all shrink-0 cursor-pointer"
         >
           {seeAllText}
         </Link>
@@ -37,7 +37,7 @@ export const CampusSectionHeader: React.FC<CampusSectionHeaderProps> = ({
         <button
           type="button"
           onClick={onSeeAllClick}
-          className="text-sm font-semibold text-[#2B4EFF] hover:underline transition-all shrink-0 cursor-pointer bg-transparent border-0 p-0"
+          className="text-sm font-semibold text-primary hover:underline transition-all shrink-0 cursor-pointer bg-transparent border-0 p-0"
         >
           {seeAllText}
         </button>

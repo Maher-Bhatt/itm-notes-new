@@ -29,7 +29,7 @@ export const CampusPersonTile: React.FC<CampusPersonTileProps> = ({
     <div
       onClick={onClick}
       className={`flex flex-col items-center justify-center p-3 rounded-2xl min-w-[100px] max-w-[120px] shrink-0 transition-all select-none ${
-        onClick ? 'cursor-pointer hover:bg-neutral-100/60 dark:hover:bg-neutral-800/40' : ''
+        onClick ? 'cursor-pointer hover:bg-stone-100/60 dark:hover:bg-stone-800/40' : ''
       } ${className}`}
     >
       <div className="relative mb-2">
@@ -45,10 +45,10 @@ export const CampusPersonTile: React.FC<CampusPersonTileProps> = ({
         />
       </div>
 
-      <h4 className="font-bold text-sm text-[#111111] dark:text-white text-center leading-tight truncate w-full">
+      <h4 className="font-bold text-sm text-foreground dark:text-white text-center leading-tight truncate w-full">
         {name.split(' ')[0]}
       </h4>
-      <p className="text-xs text-[#6B7280] dark:text-neutral-400 font-medium text-center truncate w-full mt-0.5">
+      <p className="text-xs text-muted-foreground dark:text-stone-400 font-medium text-center truncate w-full mt-0.5">
         {department} · {year}
       </p>
     </div>

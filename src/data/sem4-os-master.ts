@@ -4,7 +4,7 @@ export const sem4OsMaster: Subject = {
   id: "sem4-os",
   name: "Operating Systems (OS)",
   code: "OS401",
-  color: "bg-blue-600",
+  color: "bg-primary",
   icon: "cpu",
   description: "Comprehensive University Syllabus for Operating Systems — Process Management, Dual-Mode Kernel Architecture, CPU Scheduling, Synchronization & Deadlocks, Paging, Virtual Memory, and File Systems.",
   semester: 4,

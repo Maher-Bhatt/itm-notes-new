@@ -34,7 +34,7 @@ import { useNavigate } from 'react-router-dom';
 const SUBJECT_COLORS: Record<string, string> = {
   oopj: '#10B981', // emerald
   dsa: '#3B82F6',  // blue
-  'ca-101': '#F59E0B', // amber
+  'ca-101': 'hsl(var(--primary))', // amber
   dbms: '#8B5CF6', // purple
   conmp: '#EC4899', // pink
 };
@@ -119,11 +119,11 @@ export default function LearningAnalyticsPage() {
             <span className="px-2.5 py-0.5 rounded-full bg-primary/10 text-primary font-bold text-xs uppercase tracking-wide">
               Personal Performance Intelligence
             </span>
-            <span className="px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-500 dark:text-amber-500 font-semibold text-xs">
+            <span className="px-2.5 py-0.5 rounded-full bg-primary/10 text-primary dark:text-primary font-semibold text-xs">
               Live Real-Time
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-semibold text-foreground tracking-tight">
             Learning Analytics & Study Diagnostics
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
@@ -142,26 +142,26 @@ export default function LearningAnalyticsPage() {
       {/* Top 4 KPI Metrics */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {/* Streak */}
-        <div className="bg-card border border-border/80 rounded-3xl p-5 shadow-sm space-y-2">
+        <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-2">
           <div className="flex items-center justify-between text-muted-foreground">
             <span className="text-xs font-bold uppercase tracking-wider">Study Streak</span>
-            <Flame className="h-4 w-4 text-amber-500" />
+            <Flame className="h-4 w-4 text-primary" />
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-foreground">
+          <div className="text-2xl sm:text-3xl font-bold text-foreground">
             {streak} <span className="text-xs text-muted-foreground font-normal">Days</span>
           </div>
-          <span className="text-[11px] text-amber-500 dark:text-amber-500 font-semibold block">
+          <span className="text-[11px] text-primary dark:text-primary font-semibold block">
             Consistent Study Habit
           </span>
         </div>
 
         {/* Focus Hours */}
-        <div className="bg-card border border-border/80 rounded-3xl p-5 shadow-sm space-y-2">
+        <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-2">
           <div className="flex items-center justify-between text-muted-foreground">
             <span className="text-xs font-bold uppercase tracking-wider">Total Focus</span>
             <Clock className="h-4 w-4 text-primary" />
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-foreground">
+          <div className="text-2xl sm:text-3xl font-bold text-foreground">
             {Math.max(14, Math.round(focusSummary.totalMinutes / 60))} <span className="text-xs text-muted-foreground font-normal">Hours</span>
           </div>
           <span className="text-[11px] text-muted-foreground font-medium block">
@@ -170,12 +170,12 @@ export default function LearningAnalyticsPage() {
         </div>
 
         {/* Quiz Accuracy */}
-        <div className="bg-card border border-border/80 rounded-3xl p-5 shadow-sm space-y-2">
+        <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-2">
           <div className="flex items-center justify-between text-muted-foreground">
             <span className="text-xs font-bold uppercase tracking-wider">Quiz Accuracy</span>
-            <Award className="h-4 w-4 text-purple-500" />
+            <Award className="h-4 w-4 text-primary" />
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-purple-600 dark:text-purple-400">
+          <div className="text-2xl sm:text-3xl font-bold text-primary dark:text-primary">
             {quizStats.averageAccuracy}%
           </div>
           <span className="text-[11px] text-muted-foreground font-medium block">
@@ -184,12 +184,12 @@ export default function LearningAnalyticsPage() {
         </div>
 
         {/* SuperMemo SRS Memory */}
-        <div className="bg-card border border-border/80 rounded-3xl p-5 shadow-sm space-y-2">
+        <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-2">
           <div className="flex items-center justify-between text-muted-foreground">
             <span className="text-xs font-bold uppercase tracking-wider">SRS Retention</span>
-            <Brain className="h-4 w-4 text-amber-500" />
+            <Brain className="h-4 w-4 text-primary" />
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-amber-500 dark:text-amber-500">
+          <div className="text-2xl sm:text-3xl font-bold text-primary dark:text-primary">
             {srsStats.retentionRate}%
           </div>
           <span className="text-[11px] text-muted-foreground font-medium block">
@@ -201,10 +201,10 @@ export default function LearningAnalyticsPage() {
       {/* Main Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Chart 1: Syllabus Completion by Subject (7 cols) */}
-        <div className="lg:col-span-7 bg-card border border-border/80 rounded-3xl p-6 shadow-sm space-y-4">
+        <div className="lg:col-span-7 bg-card border border-border/80 rounded-2xl p-6 shadow-sm space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-extrabold text-sm sm:text-base text-foreground flex items-center gap-2">
+              <h3 className="font-semibold text-sm sm:text-base text-foreground flex items-center gap-2">
                 <BarChart3 className="h-4 w-4 text-primary" /> Syllabus Mastery by Subject (%)
               </h3>
               <p className="text-xs text-muted-foreground mt-0.5">
@@ -233,10 +233,10 @@ export default function LearningAnalyticsPage() {
         </div>
 
         {/* Chart 2: Weekly Focus Minutes Trend (5 cols) */}
-        <div className="lg:col-span-5 bg-card border border-border/80 rounded-3xl p-6 shadow-sm space-y-4">
+        <div className="lg:col-span-5 bg-card border border-border/80 rounded-2xl p-6 shadow-sm space-y-4">
           <div>
-            <h3 className="font-extrabold text-sm sm:text-base text-foreground flex items-center gap-2">
-              <TrendingUp className="h-4 w-4 text-amber-500" /> Weekly Focus Study Minutes
+            <h3 className="font-semibold text-sm sm:text-base text-foreground flex items-center gap-2">
+              <TrendingUp className="h-4 w-4 text-primary" /> Weekly Focus Study Minutes
             </h3>
             <p className="text-xs text-muted-foreground mt-0.5">
               Daily Pomodoro session distribution
@@ -267,9 +267,9 @@ export default function LearningAnalyticsPage() {
       </div>
 
       {/* Recommended Immediate Actions */}
-      <div className="bg-card border border-border/80 rounded-3xl p-6 shadow-sm space-y-4">
+      <div className="bg-card border border-border/80 rounded-2xl p-6 shadow-sm space-y-4">
         <div className="flex items-center gap-2">
-          <span className="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center font-bold">
+          <span className="w-8 h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold">
             <AlertCircle className="h-4 w-4" />
           </span>
           <div>
@@ -284,7 +284,7 @@ export default function LearningAnalyticsPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
           <div className="p-4 rounded-2xl bg-secondary/40 border border-border/80 space-y-2">
-            <span className="text-[10px] font-bold text-rose-500 uppercase tracking-wider block">
+            <span className="text-[10px] font-bold text-destructive uppercase tracking-wider block">
               Urgent Revision Area
             </span>
             <h4 className="font-bold text-xs text-foreground">
@@ -303,7 +303,7 @@ export default function LearningAnalyticsPage() {
           </div>
 
           <div className="p-4 rounded-2xl bg-secondary/40 border border-border/80 space-y-2">
-            <span className="text-[10px] font-bold text-amber-500 uppercase tracking-wider block">
+            <span className="text-[10px] font-bold text-primary uppercase tracking-wider block">
               Spaced Repetition Due
             </span>
             <h4 className="font-bold text-xs text-foreground">
@@ -322,7 +322,7 @@ export default function LearningAnalyticsPage() {
           </div>
 
           <div className="p-4 rounded-2xl bg-secondary/40 border border-border/80 space-y-2">
-            <span className="text-[10px] font-bold text-amber-500 uppercase tracking-wider block">
+            <span className="text-[10px] font-bold text-primary uppercase tracking-wider block">
               Exam Drill Ready
             </span>
             <h4 className="font-bold text-xs text-foreground">

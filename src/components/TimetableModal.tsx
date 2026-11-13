@@ -156,25 +156,25 @@ export function TimetableModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 bg-black/80 backdrop-blur-md animate-fade-in">
-      <div className="bg-card text-foreground border border-border rounded-3xl w-full max-w-5xl max-h-[92vh] flex flex-col shadow-2xl overflow-hidden animate-scale-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 bg-card backdrop-blur-md animate-fade-in">
+      <div className="bg-card text-foreground border border-border rounded-2xl w-full max-w-5xl max-h-[92vh] flex flex-col shadow-lg overflow-hidden animate-scale-in">
         {/* ── MODAL TOP HEADER ── */}
-        <div className="p-4 sm:p-5 border-b border-border bg-zinc-950 text-white border-b border-zinc-800 shrink-0">
+        <div className="p-4 sm:p-5 border-b border-border bg-card text-foreground border-b border-border shrink-0">
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-white text-zinc-950 font-black shadow-xs flex items-center justify-center shadow-md shrink-0">
+              <div className="w-10 h-10 rounded-2xl bg-white text-stone-950 font-bold shadow-xs flex items-center justify-center shadow-md shrink-0">
                 <Calendar className="h-5 w-5" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h2 className="text-base sm:text-lg font-black tracking-tight text-white font-display">
+                  <h2 className="text-base sm:text-lg font-bold tracking-tight text-foreground font-display">
                     Exam & Viva Timetable Hub
                   </h2>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-white text-zinc-950 font-black shadow-xs">
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white text-stone-950 font-bold shadow-xs">
                     Odd Sem 2026-27
                   </span>
                 </div>
-                <p className="text-xs text-zinc-400 mt-0.5 font-medium">
+                <p className="text-xs text-muted-foreground mt-0.5 font-medium">
                   ITM (SLS) Baroda University · School of Computer Science Engineering & Technology
                 </p>
               </div>
@@ -184,7 +184,7 @@ export function TimetableModal({
               <button
                 type="button"
                 onClick={handlePrintSchedule}
-                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold transition-all cursor-pointer"
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-foreground text-xs font-semibold transition-all cursor-pointer"
                 title="Print Timetable"
               >
                 <Printer className="h-3.5 w-3.5" />
@@ -193,7 +193,7 @@ export function TimetableModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="p-2 rounded-xl text-zinc-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-white/10 transition-colors cursor-pointer"
                 title="Close modal"
               >
                 <X className="h-5 w-5" />
@@ -207,8 +207,8 @@ export function TimetableModal({
               onClick={() => setActiveTab("viva")}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 flex items-center gap-1.5 cursor-pointer ${
                 activeTab === "viva"
-                  ? "bg-white text-zinc-950 font-black shadow-xs shadow-sm shadow-[#FAFAFA]/20 font-black"
-                  : "bg-white/10 text-white/80 hover:bg-white/20 hover:text-white"
+                  ? "bg-white text-stone-950 font-bold shadow-xs shadow-sm shadow-[#FAFAFA]/20 font-bold"
+                  : "bg-white/10 text-white/80 hover:bg-white/20 hover:text-foreground"
               }`}
             >
               <CheckCircle2 className="h-3.5 w-3.5" />
@@ -220,8 +220,8 @@ export function TimetableModal({
               onClick={() => setActiveTab("remedial")}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 flex items-center gap-1.5 cursor-pointer ${
                 activeTab === "remedial"
-                  ? "bg-white text-zinc-950 font-black shadow-xs shadow-sm shadow-[#FAFAFA]/20 font-black"
-                  : "bg-white/10 text-white/80 hover:bg-white/20 hover:text-white"
+                  ? "bg-white text-stone-950 font-bold shadow-xs shadow-sm shadow-[#FAFAFA]/20 font-bold"
+                  : "bg-white/10 text-white/80 hover:bg-white/20 hover:text-foreground"
               }`}
             >
               <Clock className="h-3.5 w-3.5" />
@@ -233,8 +233,8 @@ export function TimetableModal({
               onClick={() => setActiveTab("faculty")}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 flex items-center gap-1.5 cursor-pointer ${
                 activeTab === "faculty"
-                  ? "bg-white text-zinc-950 font-black shadow-xs shadow-sm shadow-[#FAFAFA]/20 font-black"
-                  : "bg-white/10 text-white/80 hover:bg-white/20 hover:text-white"
+                  ? "bg-white text-stone-950 font-bold shadow-xs shadow-sm shadow-[#FAFAFA]/20 font-bold"
+                  : "bg-white/10 text-white/80 hover:bg-white/20 hover:text-foreground"
               }`}
             >
               <UserCheck className="h-3.5 w-3.5" />
@@ -246,8 +246,8 @@ export function TimetableModal({
               onClick={() => setActiveTab("mst")}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 flex items-center gap-1.5 cursor-pointer ${
                 activeTab === "mst"
-                  ? "bg-white text-zinc-950 font-black shadow-xs shadow-sm shadow-[#FAFAFA]/20 font-black"
-                  : "bg-white/10 text-white/80 hover:bg-white/20 hover:text-white"
+                  ? "bg-white text-stone-950 font-bold shadow-xs shadow-sm shadow-[#FAFAFA]/20 font-bold"
+                  : "bg-white/10 text-white/80 hover:bg-white/20 hover:text-foreground"
               }`}
             >
               <FileText className="h-3.5 w-3.5" />
@@ -305,7 +305,7 @@ export function TimetableModal({
                 Select Your B.Tech Cohort Class:
               </span>
               <span className="text-primary font-semibold flex items-center gap-1 text-[11px]">
-                <MapPin className="h-3.5 w-3.5 text-amber-500" />
+                <MapPin className="h-3.5 w-3.5 text-primary" />
                 Assigned Venue: <strong className="text-foreground">{activeLocation.room}</strong> ({activeLocation.block})
               </span>
             </div>
@@ -320,16 +320,16 @@ export function TimetableModal({
                     onClick={() => setSelectedClass(cls)}
                     className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer relative ${
                       isSelected
-                        ? "bg-zinc-900 text-white border-zinc-800 text-white border-[#18181B] shadow-md shadow-[#18181B]/25 font-bold"
+                        ? "bg-card text-foreground border-border text-foreground border-foreground shadow-md shadow-foreground/25 font-bold"
                         : "bg-card hover:bg-secondary/70 border-border text-foreground"
                     }`}
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-black">Class {cls}</span>
+                      <span className="text-xs font-bold">Class {cls}</span>
                       <span
                         className={`text-[10px] px-1.5 py-0.2 rounded-md font-mono font-bold ${
                           isSelected
-                            ? "bg-white text-zinc-950 font-black shadow-xs"
+                            ? "bg-white text-stone-950 font-bold shadow-xs"
                             : "bg-secondary border border-border text-muted-foreground"
                         }`}
                       >
@@ -338,7 +338,7 @@ export function TimetableModal({
                     </div>
                     <p
                       className={`text-[10px] mt-0.5 truncate ${
-                        isSelected ? "text-zinc-100 font-bold" : "text-muted-foreground"
+                        isSelected ? "text-foreground font-bold" : "text-muted-foreground"
                       }`}
                     >
                       {loc.block}
@@ -360,7 +360,7 @@ export function TimetableModal({
                   <h3 className="font-bold text-xs sm:text-sm text-foreground flex items-center gap-1.5 font-display">
                     <span>Class {selectedClass} Practical Viva & Submission Schedule</span>
                   </h3>
-                  <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-500 dark:text-amber-500 text-[10px] font-bold border border-amber-500/20 font-mono">
+                  <span className="px-2 py-0.5 rounded bg-primary/10 text-primary dark:text-primary text-[10px] font-bold border border-primary/20 font-mono">
                     {filteredViva.length} Subjects
                   </span>
                 </div>
@@ -381,20 +381,20 @@ export function TimetableModal({
                       <div
                         key={viva.id}
                         className={`p-3.5 sm:p-4 hover:bg-secondary/30 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
-                          isDay1 ? "bg-zinc-900 text-white border-zinc-800/[0.03] dark:bg-[#FAFAFA]/[0.02]" : ""
+                          isDay1 ? "bg-card text-foreground border-border/[0.03] dark:bg-[#FAFAFA]/[0.02]" : ""
                         }`}
                       >
                         <div className="flex items-start gap-3 min-w-0">
                           {/* Date badge */}
                           <div className={`w-16 sm:w-20 p-2 rounded-xl text-center shrink-0 border ${
                             isDay1 
-                              ? "bg-zinc-900 text-white border-zinc-800 text-zinc-100 font-bold border-[#18181B] shadow-xs" 
+                              ? "bg-card text-foreground border-border text-foreground font-bold border-foreground shadow-xs" 
                               : "bg-secondary text-foreground border-border"
                           }`}>
-                            <span className={`block text-[9px] uppercase font-bold ${isDay1 ? "text-zinc-100 font-bold" : "text-muted-foreground"}`}>
+                            <span className={`block text-[9px] uppercase font-bold ${isDay1 ? "text-foreground font-bold" : "text-muted-foreground"}`}>
                               {isDay1 ? "Day 1" : "Date"}
                             </span>
-                            <span className="block text-xs font-mono font-black">
+                            <span className="block text-xs font-mono font-bold">
                               {viva.date}
                             </span>
                           </div>
@@ -402,15 +402,15 @@ export function TimetableModal({
                           {/* Subject Details */}
                           <div className="space-y-1 min-w-0">
                             <div className="flex items-center gap-2 flex-wrap">
-                              <span className="px-2 py-0.5 rounded-md text-[10px] font-black bg-zinc-900 text-white border-zinc-800 text-zinc-100 font-bold dark:bg-[#FAFAFA] dark:text-[#18181B] font-mono">
+                              <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-card text-foreground border-border text-foreground font-bold dark:bg-[#FAFAFA] dark:text-foreground font-mono">
                                 {viva.subjectCode}
                               </span>
                               <h4 className="font-bold text-xs sm:text-sm text-foreground">
                                 {viva.subjectName}
                               </h4>
                               {isDay1 && (
-                                <span className="px-2 py-0.5 rounded-full text-[9px] font-black bg-amber-500/15 text-amber-500 dark:text-amber-500 border border-amber-500/30 flex items-center gap-1 font-mono">
-                                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+                                <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-primary/15 text-primary dark:text-primary border border-primary/30 flex items-center gap-1 font-mono">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                                   Starts Tomorrow
                                 </span>
                               )}
@@ -422,11 +422,11 @@ export function TimetableModal({
                                 {viva.facultyName}
                               </span>
                               <span className="flex items-center gap-1">
-                                <MapPin className="h-3.5 w-3.5 text-amber-500 shrink-0" />
+                                <MapPin className="h-3.5 w-3.5 text-primary shrink-0" />
                                 Venue: <strong className="text-foreground">{viva.location}</strong>
                               </span>
                               <span className="flex items-center gap-1">
-                                <Clock className="h-3.5 w-3.5 text-amber-500 shrink-0" />
+                                <Clock className="h-3.5 w-3.5 text-primary shrink-0" />
                                 {viva.timeSlot}
                               </span>
                             </div>
@@ -442,7 +442,7 @@ export function TimetableModal({
 
                         {/* Right Actions & Tag */}
                         <div className="flex items-center gap-2 shrink-0 sm:flex-col sm:items-end">
-                          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-orange-500/10 text-orange-600 dark:text-orange-400 text-[10px] font-bold border border-orange-500/20">
+                          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-primary/10 text-primary dark:text-primary text-[10px] font-bold border border-primary/20">
                             <FileText className="h-3 w-3" />
                             File Submission
                           </span>
@@ -457,7 +457,7 @@ export function TimetableModal({
                                     onClose();
                                     navigate(bankRoute);
                                   }}
-                                  className="px-2.5 py-1 rounded-lg bg-zinc-900 text-white border-zinc-800 hover:bg-[#27272A] text-zinc-100 font-bold font-black text-[10px] flex items-center gap-1 shadow-xs cursor-pointer transition-all active:scale-95 font-display"
+                                  className="px-2.5 py-1 rounded-lg bg-card text-foreground border-border hover:bg-[#27272A] text-foreground font-bold font-bold text-[10px] flex items-center gap-1 shadow-xs cursor-pointer transition-all active:scale-95 font-display"
                                   title={`Open 38 Master Solved Qs for ${viva.subjectCode}`}
                                 >
                                   <BookOpen className="h-3 w-3" />
@@ -488,14 +488,14 @@ export function TimetableModal({
             </div>
 
             {/* Mandatory Guidelines Box */}
-            <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-900 dark:text-amber-200 space-y-2">
+            <div className="p-4 rounded-2xl bg-primary/10 border border-primary/20 text-primary dark:text-primary space-y-2">
               <div className="flex items-center gap-2">
-                <AlertCircle className="h-4 w-4 text-amber-600 dark:text-amber-400 shrink-0" />
+                <AlertCircle className="h-4 w-4 text-primary dark:text-primary shrink-0" />
                 <h4 className="font-bold text-xs uppercase tracking-wider font-display">
                   Official Mandatory Submission Guidelines
                 </h4>
               </div>
-              <ul className="space-y-1.5 text-[11px] text-amber-800 dark:text-amber-300 list-disc list-inside">
+              <ul className="space-y-1.5 text-[11px] text-primary dark:text-primary list-disc list-inside">
                 {VIVA_INSTRUCTIONS.map((inst, idx) => (
                   <li key={idx} className="leading-relaxed">
                     {inst}
@@ -523,7 +523,7 @@ export function TimetableModal({
                   onClick={() => setSelectedBranch(pill.id)}
                   className={`px-3 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                     selectedBranch === pill.id
-                      ? "bg-zinc-900 text-white border-zinc-800 text-zinc-100 font-bold shadow-sm font-black"
+                      ? "bg-card text-foreground border-border text-foreground font-bold shadow-sm font-bold"
                       : "bg-secondary text-muted-foreground hover:text-foreground"
                   }`}
                 >
@@ -533,17 +533,17 @@ export function TimetableModal({
             </div>
 
             {/* Master Question Banks Quick Access Banner */}
-            <div className="p-3.5 rounded-2xl bg-gradient-to-r from-zinc-900 via-stone-900 to-zinc-950 text-white flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-md border border-zinc-700/60">
+            <div className="p-3.5 rounded-2xl bg-gradient-to-r from-stone-900 via-stone-900 to-stone-950 text-foreground flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-md border border-border">
               <div className="space-y-1">
                 <div className="flex items-center gap-1.5 flex-wrap">
-                  <span className="px-2 py-0.5 rounded bg-white text-zinc-950 font-black shadow-xs text-[10px] font-black uppercase font-mono">
+                  <span className="px-2 py-0.5 rounded bg-white text-stone-950 font-bold shadow-xs text-[10px] font-bold uppercase font-mono">
                     University Master Banks
                   </span>
-                  <span className="text-xs font-mono font-bold text-zinc-100 font-bold">
+                  <span className="text-xs font-mono font-bold text-foreground font-bold">
                     190 Solved Questions · All 5 Subjects
                   </span>
                 </div>
-                <h4 className="font-bold text-xs sm:text-sm text-white font-display">
+                <h4 className="font-bold text-xs sm:text-sm text-foreground font-display">
                   Full 38-Question Model Solutions with Step-by-Step Code & Single Studio AI Voice
                 </h4>
                 <div className="flex items-center gap-1.5 flex-wrap pt-0.5 text-[11px]">
@@ -561,7 +561,7 @@ export function TimetableModal({
                         onClose();
                         navigate(btn.path);
                       }}
-                      className="px-2 py-0.5 rounded-lg bg-white/10 hover:bg-[#FAFAFA] hover:text-[#18181B] text-white/90 font-bold transition-all text-[10px] cursor-pointer"
+                      className="px-2 py-0.5 rounded-lg bg-white/10 hover:bg-[#FAFAFA] hover:text-foreground text-white/90 font-bold transition-all text-[10px] cursor-pointer"
                     >
                       {btn.label}
                     </button>
@@ -574,7 +574,7 @@ export function TimetableModal({
                   onClose();
                   navigate("/imp-questions");
                 }}
-                className="h-8 px-3 rounded-xl bg-[#FAFAFA] hover:bg-zinc-100 text-[#18181B] font-bold text-xs flex items-center gap-1.5 transition-all shrink-0 cursor-pointer shadow-xs self-start md:self-auto font-display"
+                className="h-8 px-3 rounded-xl bg-[#FAFAFA] hover:bg-stone-100 text-foreground font-bold text-xs flex items-center gap-1.5 transition-all shrink-0 cursor-pointer shadow-xs self-start md:self-auto font-display"
               >
                 <BookOpen className="h-3.5 w-3.5" />
                 <span>All Question Banks</span>
@@ -592,7 +592,7 @@ export function TimetableModal({
                     Duration: 90 Minutes (10:10 AM to 11:40 AM) · ITM SLS Baroda University
                   </p>
                 </div>
-                <span className="px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-500 font-mono text-xs font-bold border border-amber-500/20">
+                <span className="px-2.5 py-1 rounded-lg bg-primary/10 text-primary font-mono text-xs font-bold border border-primary/20">
                   90 Mins
                 </span>
               </div>
@@ -622,7 +622,7 @@ export function TimetableModal({
                             Sem {exam.semester} · {exam.branch}
                           </span>
                         </td>
-                        <td className="p-3 font-mono text-[11px] font-bold text-amber-500 dark:text-amber-500">
+                        <td className="p-3 font-mono text-[11px] font-bold text-primary dark:text-primary">
                           {exam.courseCode}
                         </td>
                         <td className="p-3 font-medium text-foreground">
@@ -638,7 +638,7 @@ export function TimetableModal({
                                       onClose();
                                       navigate(bankRoute);
                                     }}
-                                    className="px-2 py-0.5 rounded-md bg-zinc-900 text-white border-zinc-800 text-zinc-100 font-bold hover:bg-[#27272A] text-[10px] font-black shrink-0 font-display transition-all cursor-pointer shadow-2xs"
+                                    className="px-2 py-0.5 rounded-md bg-card text-foreground border-border text-foreground font-bold hover:bg-[#27272A] text-[10px] font-bold shrink-0 font-display transition-all cursor-pointer shadow-2xs"
                                     title="Open 38 Master Solved Questions"
                                   >
                                     38 Solved Qs &gt;
@@ -681,7 +681,7 @@ export function TimetableModal({
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-9 h-9 rounded-xl bg-zinc-900 text-white border-zinc-800 text-zinc-100 font-bold flex items-center justify-center font-bold text-xs shrink-0">
+                      <div className="w-9 h-9 rounded-xl bg-card text-foreground border-border text-foreground font-bold flex items-center justify-center font-bold text-xs shrink-0">
                         {f.name.split(" ").map((n) => n[0]).slice(1, 3).join("")}
                       </div>
                       <div>
@@ -699,12 +699,12 @@ export function TimetableModal({
                       <span>{f.subjects.join(", ")}</span>
                     </div>
                     <div className="flex items-center gap-1.5 text-muted-foreground">
-                      <MapPin className="h-3 w-3 text-amber-500 shrink-0" />
+                      <MapPin className="h-3 w-3 text-primary shrink-0" />
                       <span>Venues: {f.vivaRooms.join(", ")}</span>
                     </div>
                     {f.officeLocation && (
                       <div className="flex items-center gap-1.5 text-muted-foreground">
-                        <Building2 className="h-3 w-3 text-amber-500 shrink-0" />
+                        <Building2 className="h-3 w-3 text-primary shrink-0" />
                         <span>{f.officeLocation}</span>
                       </div>
                     )}
@@ -744,7 +744,7 @@ export function TimetableModal({
                         {batch.exams.map((ex, i) => (
                           <tr key={i} className="hover:bg-secondary/20">
                             <td className="py-2 font-mono font-medium">{ex.date}</td>
-                            <td className="py-2 font-mono font-bold text-amber-500">{ex.courseCode}</td>
+                            <td className="py-2 font-mono font-bold text-primary">{ex.courseCode}</td>
                             <td className="py-2 text-foreground">
                               <div className="flex items-center justify-between gap-2">
                                 <span>{ex.courseName}</span>
@@ -758,7 +758,7 @@ export function TimetableModal({
                                           onClose();
                                           navigate(bankRoute);
                                         }}
-                                        className="px-2 py-0.5 rounded-md bg-zinc-900 text-white border-zinc-800 text-zinc-100 font-bold hover:bg-[#27272A] text-[10px] font-black shrink-0 font-display transition-all cursor-pointer shadow-2xs"
+                                        className="px-2 py-0.5 rounded-md bg-card text-foreground border-border text-foreground font-bold hover:bg-[#27272A] text-[10px] font-bold shrink-0 font-display transition-all cursor-pointer shadow-2xs"
                                         title="Open 38 Master Solved Questions"
                                       >
                                         Solved &gt;

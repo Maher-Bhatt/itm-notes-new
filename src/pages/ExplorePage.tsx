@@ -219,16 +219,16 @@ export default function ExplorePage() {
   }, [people, selectedFilter, searchQuery]);
 
   return (
-    <div className="min-h-screen bg-[#F6F3EC] dark:bg-[#0E0E10] text-[#111111] dark:text-neutral-100 pb-20">
+    <div className="min-h-screen bg-background dark:bg-background text-foreground dark:text-stone-100 pb-20">
       <div className="max-w-2xl mx-auto px-3 sm:px-4 pt-4 sm:pt-6 space-y-5">
         {/* 1. Header: "Explore" title + Campus location */}
         <div className="flex items-center justify-between gap-2">
-          <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-[#111111] dark:text-white">
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground dark:text-white">
             Explore
           </h1>
 
-          <div className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-[#6B7280] dark:text-neutral-400 bg-white/70 dark:bg-neutral-800/60 px-3 py-1.5 rounded-full border border-[#E8E4DA] dark:border-neutral-700 shadow-2xs">
-            <MapPin className="w-4 h-4 text-[#2B4EFF] shrink-0" />
+          <div className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-muted-foreground dark:text-stone-400 bg-white/70 dark:bg-stone-800/60 px-3 py-1.5 rounded-full border border-border dark:border-stone-700 shadow-2xs">
+            <MapPin className="w-4 h-4 text-primary shrink-0" />
             <span className="truncate max-w-[180px] sm:max-w-none">ITM SLS Baroda University</span>
           </div>
         </div>
@@ -262,7 +262,7 @@ export default function ExplorePage() {
 
         {/* 4. Trending Hashtags Row */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none -mx-3 px-3 sm:mx-0 sm:px-0">
-          <div className="flex items-center gap-1.5 text-xs font-bold text-[#2B4EFF] shrink-0 px-1">
+          <div className="flex items-center gap-1.5 text-xs font-bold text-primary shrink-0 px-1">
             <TrendingUp className="w-4 h-4" />
             <span>Trending</span>
           </div>
@@ -271,10 +271,10 @@ export default function ExplorePage() {
               key={item.tag}
               type="button"
               onClick={() => setSearchQuery(item.tag)}
-              className="h-8 px-3 rounded-full bg-white dark:bg-[#1C1C1E] border border-[#E8E4DA] dark:border-neutral-800 text-xs font-semibold text-[#111111] dark:text-neutral-200 hover:border-[#2B4EFF] transition-colors shrink-0 inline-flex items-center gap-1.5"
+              className="h-8 px-3 rounded-full bg-white dark:bg-card border border-border dark:border-stone-800 text-xs font-semibold text-foreground dark:text-stone-200 hover:border-primary transition-colors shrink-0 inline-flex items-center gap-1.5"
             >
               <span>{item.tag}</span>
-              <span className="text-[10px] text-neutral-400 font-bold">{item.count}</span>
+              <span className="text-[10px] text-stone-400 font-bold">{item.count}</span>
             </button>
           ))}
         </div>

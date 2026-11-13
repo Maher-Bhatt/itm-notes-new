@@ -96,11 +96,11 @@ export default function StudyPlannerPage() {
             <span className="px-2.5 py-0.5 rounded-full bg-primary/10 text-primary font-bold text-xs uppercase tracking-wide">
               Automated Academic Planner
             </span>
-            <span className="px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 font-semibold text-xs">
+            <span className="px-2.5 py-0.5 rounded-full bg-primary/10 text-primary dark:text-primary font-semibold text-xs">
               Weightage-Optimized
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-semibold text-foreground tracking-tight">
             Exam Countdown & Study Planner
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
@@ -121,7 +121,7 @@ export default function StudyPlannerPage() {
       </div>
 
       {/* Configuration Card */}
-      <div className="bg-card border border-border/80 rounded-3xl p-6 shadow-sm space-y-5">
+      <div className="bg-card border border-border/80 rounded-2xl p-6 shadow-sm space-y-5">
         <h3 className="font-bold text-sm text-foreground flex items-center gap-2">
           <Sliders className="h-4 w-4 text-primary" /> Setup Exam Target:
         </h3>
@@ -220,13 +220,13 @@ export default function StudyPlannerPage() {
       {plan && (
         <div className="space-y-6 animate-scale-in">
           {/* Progress Overview */}
-          <div className="bg-card border border-border/80 rounded-3xl p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="bg-card border border-border/80 rounded-2xl p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="space-y-1">
               <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 Overall Study Plan Progress
               </span>
               <div className="flex items-baseline gap-2">
-                <span className="text-3xl font-black text-foreground">
+                <span className="text-3xl font-bold text-foreground">
                   {progress.percent}%
                 </span>
                 <span className="text-xs text-muted-foreground font-medium">
@@ -250,7 +250,7 @@ export default function StudyPlannerPage() {
 
           {/* Days Schedule */}
           <div className="space-y-4">
-            <h3 className="font-extrabold text-base text-foreground flex items-center gap-2">
+            <h3 className="font-semibold text-base text-foreground flex items-center gap-2">
               <CalendarIcon className="h-4 w-4 text-primary" /> Day-by-Day Preparation Roadmap:
             </h3>
 
@@ -262,11 +262,11 @@ export default function StudyPlannerPage() {
                 return (
                   <div
                     key={day.dayNumber}
-                    className={`rounded-3xl border transition-all p-5 space-y-3 ${
+                    className={`rounded-2xl border transition-all p-5 space-y-3 ${
                       isToday
                         ? 'bg-primary/5 border-primary shadow-md ring-1 ring-primary/40'
                         : dayDone
-                        ? 'bg-amber-500/5 border-amber-500/30'
+                        ? 'bg-primary/5 border-primary/30'
                         : 'bg-card border-border/80'
                     }`}
                   >
@@ -284,7 +284,7 @@ export default function StudyPlannerPage() {
                           {new Date(day.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
                         </span>
                         {isToday && (
-                          <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-500 dark:text-amber-500 font-bold text-[10px] animate-pulse">
+                          <span className="px-2 py-0.5 rounded-full bg-primary/20 text-primary dark:text-primary font-bold text-[10px] animate-pulse">
                             TODAY'S TARGET
                           </span>
                         )}
@@ -303,7 +303,7 @@ export default function StudyPlannerPage() {
                           key={task.id}
                           className={`p-3 rounded-2xl border transition-all flex items-center justify-between gap-3 ${
                             task.completed
-                              ? 'bg-amber-500/10 border-amber-500/30 line-through opacity-75'
+                              ? 'bg-primary/10 border-primary/30 line-through opacity-75'
                               : 'bg-secondary/30 border-border/70 hover:bg-secondary/60'
                           }`}
                         >

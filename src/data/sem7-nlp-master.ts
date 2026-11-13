@@ -4,7 +4,7 @@ export const sem7NlpMaster: Subject = {
   id: "sem7-nlp",
   name: "Natural Language Processing & Generative AI",
   code: "NLP702",
-  color: "bg-fuchsia-600",
+  color: "bg-primary",
   icon: "sparkles",
   description: "Comprehensive University Syllabus for NLP & Generative AI — Text Preprocessing (Tokenization, Lemmatization, Byte-Pair Encoding BPE), Vector Embeddings (TF-IDF, Word2Vec, GloVe), Recurrent Models (RNN, LSTM, GRU, Seq2Seq), The Transformer Architecture (Self-Attention, Multi-Head Attention, RoPE), Large Language Models (BERT, GPT, LLaMA), Parameter-Efficient Fine-Tuning (LoRA, QLoRA), and Retrieval-Augmented Generation (RAG).",
   semester: 7,

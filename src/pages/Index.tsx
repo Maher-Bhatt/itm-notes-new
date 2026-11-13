@@ -128,12 +128,12 @@ export default function Index() {
           {user ? (
             /* Logged-In Student Experience */
             <>
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4 text-foreground leading-[1.15]">
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-semibold tracking-tight mb-4 text-foreground leading-[1.15]">
                 Welcome back, {studentName}.
               </h1>
               <p className="text-sm sm:text-base lg:text-lg text-muted-foreground mb-7 leading-relaxed max-w-2xl mx-auto">
                 Keep your momentum going. You are on a{' '}
-                <strong className="text-amber-500 font-bold">{game.streakDays} day study streak</strong> with{' '}
+                <strong className="text-primary font-bold">{game.streakDays} day study streak</strong> with{' '}
                 <strong className="text-foreground font-bold">{game.xp} XP</strong> (Level {levelInfo.level} • {levelInfo.title}).
               </p>
 
@@ -169,14 +169,14 @@ export default function Index() {
                     onClick={() => navigate('/calculator')}
                     className="p-2.5 rounded-xl bg-secondary/50 hover:bg-secondary text-center text-xs font-bold text-foreground transition-colors apple-press"
                   >
-                    <Calculator className="h-4 w-4 mx-auto mb-1 text-amber-500" />
+                    <Calculator className="h-4 w-4 mx-auto mb-1 text-primary" />
                     Attendance
                   </button>
                   <button
                     onClick={() => navigate('/community')}
                     className="p-2.5 rounded-xl bg-secondary/50 hover:bg-secondary text-center text-xs font-bold text-foreground transition-colors apple-press"
                   >
-                    <MessageSquare className="h-4 w-4 mx-auto mb-1 text-purple-500" />
+                    <MessageSquare className="h-4 w-4 mx-auto mb-1 text-primary" />
                     Campus Feed
                   </button>
                 </div>
@@ -198,7 +198,7 @@ export default function Index() {
                   onClick={() => navigate("/materials")}
                   className="px-6 py-3 rounded-xl bg-secondary text-foreground hover:bg-secondary/80 font-bold text-sm border border-border transition-colors flex items-center gap-2 apple-press"
                 >
-                  <FileText className="h-4 w-4 text-amber-500" />
+                  <FileText className="h-4 w-4 text-primary" />
                   <span>Exam Question Banks</span>
                 </button>
               </div>
@@ -206,7 +206,7 @@ export default function Index() {
           ) : (
             /* First-Time Guest Hero */
             <>
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4 text-foreground leading-[1.15]">
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-semibold tracking-tight mb-4 text-foreground leading-[1.15]">
                 Everything ITM students need, in one place.
               </h1>
               <p className="text-sm sm:text-base lg:text-lg text-muted-foreground mb-8 leading-relaxed max-w-2xl mx-auto">
@@ -257,7 +257,7 @@ export default function Index() {
                 </div>
 
                 <div className="p-4 rounded-2xl bg-card border border-border/80 shadow-xs">
-                  <div className="p-2 w-fit rounded-lg bg-amber-500/10 text-amber-500 dark:text-amber-500 mb-3">
+                  <div className="p-2 w-fit rounded-lg bg-primary/10 text-primary dark:text-primary mb-3">
                     <Calculator className="h-4 w-4" />
                   </div>
                   <h3 className="font-bold text-sm text-foreground">75% Attendance Predictor</h3>
@@ -277,10 +277,10 @@ export default function Index() {
         <div className="max-w-5xl mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
             <div>
-              <div className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-500 uppercase tracking-wider mb-1">
+              <div className="inline-flex items-center gap-1.5 text-xs font-bold text-primary uppercase tracking-wider mb-1">
                 <Flame className="h-3.5 w-3.5" /> High-Yield Exam Resources
               </div>
-              <h2 className="text-xl sm:text-2xl font-black text-foreground">
+              <h2 className="text-xl sm:text-2xl font-bold text-foreground">
                 Upcoming MST & CET-2 Exam Materials
               </h2>
               <p className="text-xs text-muted-foreground mt-0.5">
@@ -354,7 +354,7 @@ export default function Index() {
             <span className="text-xs font-bold text-primary uppercase tracking-wider block mb-2">
               Designed For Academic Success
             </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground">
+            <h2 className="text-2xl sm:text-3xl font-semibold text-foreground">
               How CampusLoop Works
             </h2>
             <p className="text-xs sm:text-sm text-muted-foreground mt-2">
@@ -363,8 +363,8 @@ export default function Index() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="p-6 rounded-3xl border border-border/80 bg-card shadow-xs relative">
-              <span className="text-3xl font-black text-primary/20 absolute top-6 right-6 font-mono">
+            <div className="p-6 rounded-2xl border border-border/80 bg-card shadow-xs relative">
+              <span className="text-3xl font-bold text-primary/20 absolute top-6 right-6 font-mono">
                 01
               </span>
               <div className="h-10 w-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold mb-4">
@@ -376,8 +376,8 @@ export default function Index() {
               </p>
             </div>
 
-            <div className="p-6 rounded-3xl border border-border/80 bg-card shadow-xs relative">
-              <span className="text-3xl font-black text-primary/20 absolute top-6 right-6 font-mono">
+            <div className="p-6 rounded-2xl border border-border/80 bg-card shadow-xs relative">
+              <span className="text-3xl font-bold text-primary/20 absolute top-6 right-6 font-mono">
                 02
               </span>
               <div className="h-10 w-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold mb-4">
@@ -389,11 +389,11 @@ export default function Index() {
               </p>
             </div>
 
-            <div className="p-6 rounded-3xl border border-border/80 bg-card shadow-xs relative">
-              <span className="text-3xl font-black text-amber-500/20 absolute top-6 right-6 font-mono">
+            <div className="p-6 rounded-2xl border border-border/80 bg-card shadow-xs relative">
+              <span className="text-3xl font-bold text-primary/20 absolute top-6 right-6 font-mono">
                 03
               </span>
-              <div className="h-10 w-10 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold mb-4">
+              <div className="h-10 w-10 rounded-xl bg-primary/10 text-primary dark:text-primary flex items-center justify-center font-bold mb-4">
                 <Calculator className="h-5 w-5" />
               </div>
               <h3 className="font-bold text-base text-foreground mb-1.5">Protect Your 75% Buffer</h3>
@@ -409,7 +409,7 @@ export default function Index() {
       <section id="subjects" className="max-w-5xl mx-auto px-4 sm:px-6 py-14 sm:py-20 flex-1 w-full">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
           <div>
-            <h2 className="text-2xl sm:text-3xl font-black text-foreground">Course Curricula</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold text-foreground">Course Curricula</h2>
             <p className="text-xs sm:text-sm text-muted-foreground mt-1">
               Select your semester to access subjects, unit notes, and question banks.
             </p>
@@ -502,7 +502,7 @@ export default function Index() {
               <Shield className="h-3.5 w-3.5" />
               <span>Campus Pulse & Student Community</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-foreground tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
               Connect with your classmates.
             </h2>
             <p className="text-xs sm:text-sm text-muted-foreground mt-2 leading-relaxed">

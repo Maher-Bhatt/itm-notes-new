@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import {
+  Library,
+  LayoutDashboard,
   Home,
   Compass,
   PlusCircle,
@@ -42,15 +44,13 @@ export const CampusSidebar: React.FC<CampusSidebarProps> = ({
   const location = useLocation();
   const navigate = useNavigate();
   const { user, profile, role, signOut } = useAuth();
-  const [academicToolsOpen, setAcademicToolsOpen] = useState(true);
+  const [academicToolsOpen, setAcademicToolsOpen] = useState(false);
 
   const currentPath = location.pathname;
 
   const isHomeActive =
-    currentPath === '/' ||
     currentPath === '/community' ||
-    currentPath === '/social' ||
-    currentPath === '/dashboard';
+    currentPath === '/social';
   const isExploreActive = currentPath.startsWith('/explore');
   const isInboxActive = currentPath.startsWith('/inbox') || currentPath.startsWith('/messages');
   const isProfileActive = currentPath.startsWith('/profile') || currentPath === '/auth';
@@ -58,13 +58,13 @@ export const CampusSidebar: React.FC<CampusSidebarProps> = ({
   // 5 Core Campus Destinations (Matches mobile nav exactly)
   const coreDestinations = [
     {
-      name: 'Home Feed',
+      name: 'Campus Feed',
       path: '/community',
       icon: Home,
       isActive: isHomeActive,
     },
     {
-      name: 'Explore Campus',
+      name: 'Explore',
       path: '/explore',
       icon: Compass,
       isActive: isExploreActive,
@@ -88,7 +88,7 @@ export const CampusSidebar: React.FC<CampusSidebarProps> = ({
       badge: unreadMessagesCount > 0 ? unreadMessagesCount : undefined,
     },
     {
-      name: 'My Profile',
+      name: 'Profile',
       path: '/profile',
       icon: User,
       isActive: isProfileActive,
@@ -97,35 +97,40 @@ export const CampusSidebar: React.FC<CampusSidebarProps> = ({
 
   const isVerifiedAdmin = role === 'admin' || user?.email?.toLowerCase() === 'maherbhatt01@gmail.com';
 
-  // Academic Suite Tools (Preserves all CampusLoop functionality)
-  const academicTools = [
-    { name: 'Subjects & Notes', path: '/subjects', icon: BookOpen },
-    { name: 'Coding Lab (IDE)', path: '/coding-lab', icon: Code2 },
-    { name: 'Exam Question Banks', path: '/imp-questions', icon: HelpCircle },
-    { name: 'Today’s Study Hub', path: '/today', icon: Calendar },
-    { name: 'Solved PYQ Papers', path: '/pyq-papers', icon: FileText },
-    { name: 'Timed Mock Exams', path: '/mock-exam', icon: Sparkles },
-    { name: 'Study Planner', path: '/study-planner', icon: Calendar },
+  // Study-first navigation (exam season)
+  const studyTools = [
+    { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+    { name: 'Library', path: '/library', icon: Library },
+    { name: 'Today', path: '/today', icon: Calendar },
+    { name: 'Subjects & Topics', path: '/subjects', icon: BookOpen },
+    { name: 'Question Banks', path: '/imp-questions', icon: HelpCircle },
+    { name: 'Past Papers', path: '/pyq-papers', icon: FileText },
+    { name: 'Mock Exams', path: '/mock-exam', icon: Sparkles },
     { name: 'Rapid Revision', path: '/rapid-revision', icon: Zap },
-    { name: 'Formula & Cheat Bank', path: '/formulas', icon: BookOpen },
+    { name: 'Formula Bank', path: '/formulas', icon: BookOpen },
+    { name: 'Coding Lab', path: '/coding-lab', icon: Code2 },
+  ];
+
+  const academicTools = [
+    { name: 'Study Planner', path: '/study-planner', icon: Calendar },
     { name: 'Attendance & SGPA', path: '/calculator', icon: Calculator },
     { name: 'Study Materials', path: '/materials', icon: FileText },
-    { name: 'Saved Bookmarks', path: '/bookmarks', icon: Bookmark },
-    ...(isVerifiedAdmin ? [{ name: 'Admin Portal', path: '/admin', icon: Shield }] : []),
+    { name: 'Bookmarks', path: '/bookmarks', icon: Bookmark },
+    ...(isVerifiedAdmin ? [{ name: 'Admin', path: '/admin', icon: Shield }] : []),
   ];
 
   const sidebarContent = (
-    <div className="flex flex-col h-full bg-white dark:bg-[#18181B] text-[#111111] dark:text-neutral-100 border-r border-[#E8E4DA] dark:border-neutral-800 select-none">
+    <div className="flex flex-col h-full sidebar-dark border-r border-sidebar-border select-none">
       {/* Top Brand Lockup */}
-      <div className="p-5 flex items-center justify-between border-b border-[#EFECE6] dark:border-neutral-800/80 shrink-0">
-        <Link to="/community" onClick={onClose} className="hover:opacity-95 transition-opacity">
+      <div className="p-5 flex items-center justify-between border-b border-border dark:border-stone-800/80 shrink-0">
+        <Link to="/dashboard" onClick={onClose} className="hover:opacity-95 transition-opacity">
           <CampusLoopLogo size="md" showSubtitle />
         </Link>
         {onClose && (
           <button
             type="button"
             onClick={onClose}
-            className="md:hidden p-1.5 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-500"
+            className="md:hidden p-1.5 rounded-full hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-500"
           >
             <X className="w-5 h-5" />
           </button>
@@ -133,18 +138,44 @@ export const CampusSidebar: React.FC<CampusSidebarProps> = ({
       </div>
 
       {/* Gujarat Campus Selector Bar */}
-      <div className="px-4 py-2.5 border-b border-[#EFECE6] dark:border-neutral-800/60 bg-[#F6F3EC]/50 dark:bg-neutral-900/40 shrink-0">
+      <div className="px-4 py-2.5 border-b border-border dark:border-stone-800/60 bg-background/50 dark:bg-stone-900/40 shrink-0">
         <UniversityDropdown variant="full" className="w-full justify-between" />
       </div>
 
       {/* Nav Content Scrollable */}
-      <div className="flex-1 overflow-y-auto px-3.5 py-4 space-y-6">
-        {/* Core 5 Destinations */}
+      <div className="flex-1 overflow-y-auto px-3 py-4 space-y-6">
         <div>
-          <div className="text-[11px] font-bold uppercase tracking-wider text-[#6B7280] dark:text-neutral-400 px-3 mb-2">
-            Main Campus
+          <div className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground px-3 mb-1.5">
+            Study
           </div>
-          <div className="space-y-1">
+          <div className="space-y-0.5">
+            {studyTools.map((tool) => {
+              const Icon = tool.icon;
+              const isActive = tool.path === '/dashboard' ? currentPath === '/dashboard' : currentPath.startsWith(tool.path);
+              return (
+                <Link
+                  key={tool.name}
+                  to={tool.path}
+                  onClick={onClose}
+                  className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
+                    isActive
+                      ? 'bg-sidebar-accent text-sidebar-accent-foreground font-semibold shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-secondary/60 font-medium'
+                  }`}
+                >
+                  <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-primary' : ''}`} />
+                  <span className="truncate">{tool.name}</span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+
+        <div>
+          <div className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground px-3 mb-1.5">
+            Campus
+          </div>
+          <div className="space-y-0.5">
             {coreDestinations.map((item) => {
               const Icon = item.icon;
               if (item.isAction) {
@@ -153,31 +184,26 @@ export const CampusSidebar: React.FC<CampusSidebarProps> = ({
                     key={item.name}
                     type="button"
                     onClick={item.onClick}
-                    className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-full text-sm font-semibold transition-all cursor-pointer bg-[#111111] dark:bg-white text-white dark:text-[#111111] hover:bg-[#222222] dark:hover:bg-neutral-200 mt-2 mb-2 shadow-xs"
+                    className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary/60 transition-colors cursor-pointer"
                   >
-                    <div className="flex items-center gap-3">
-                      <span className="w-5 h-5 rounded-full bg-[#D7F75B] text-[#111111] flex items-center justify-center font-black text-xs leading-none">
-                        +
-                      </span>
-                      <span>{item.name}</span>
-                    </div>
+                    <Icon className="w-4 h-4 shrink-0" />
+                    <span>{item.name}</span>
                   </button>
                 );
               }
-
               return (
                 <Link
                   key={item.name}
                   to={item.path}
                   onClick={onClose}
-                  className={`flex items-center justify-between px-3.5 py-2.5 rounded-full text-sm font-semibold transition-all duration-150 ${
+                  className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${
                     item.isActive
-                      ? 'bg-[#E6EAFD] text-[#2B4EFF] dark:bg-blue-950/60 dark:text-blue-300 font-bold shadow-2xs'
-                      : 'text-[#6B7280] dark:text-neutral-400 hover:text-[#111111] dark:hover:text-white hover:bg-[#F6F3EC] dark:hover:bg-neutral-800/60'
+                      ? 'bg-sidebar-accent text-sidebar-accent-foreground font-semibold shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-secondary/60 font-medium'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <Icon className="w-5 h-5 shrink-0" />
+                    <Icon className={`w-4 h-4 shrink-0 ${item.isActive ? 'text-primary' : ''}`} />
                     <span>{item.name}</span>
                   </div>
                   {item.badge && <CampusCountBadge count={item.badge} variant="blue" />}
@@ -187,19 +213,17 @@ export const CampusSidebar: React.FC<CampusSidebarProps> = ({
           </div>
         </div>
 
-        {/* Academic Tools Suite (Preserves all CampusLoop features) */}
         <div>
           <button
             type="button"
             onClick={() => setAcademicToolsOpen((prev) => !prev)}
-            className="w-full flex items-center justify-between px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-[#6B7280] dark:text-neutral-400 hover:text-[#111111] dark:hover:text-white transition-colors cursor-pointer"
+            className="w-full flex items-center justify-between px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
           >
-            <span>Academic Suite</span>
+            <span>More tools</span>
             {academicToolsOpen ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
           </button>
-
           {academicToolsOpen && (
-            <div className="mt-1 space-y-1">
+            <div className="mt-1 space-y-0.5">
               {academicTools.map((tool) => {
                 const Icon = tool.icon;
                 const isActive = currentPath.startsWith(tool.path);
@@ -208,13 +232,13 @@ export const CampusSidebar: React.FC<CampusSidebarProps> = ({
                     key={tool.name}
                     to={tool.path}
                     onClick={onClose}
-                    className={`flex items-center gap-3 px-3.5 py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${
+                    className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
                       isActive
-                        ? 'bg-[#E6EAFD] text-[#2B4EFF] dark:bg-blue-950/60 dark:text-blue-300 font-bold'
-                        : 'text-[#6B7280] dark:text-neutral-400 hover:text-[#111111] dark:hover:text-white hover:bg-[#F6F3EC] dark:hover:bg-neutral-800/60'
+                        ? 'bg-sidebar-accent text-sidebar-accent-foreground font-semibold shadow-sm'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-secondary/60 font-medium'
                     }`}
                   >
-                    <Icon className="w-4 h-4 shrink-0" />
+                    <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-primary' : ''}`} />
                     <span className="truncate">{tool.name}</span>
                   </Link>
                 );
@@ -225,9 +249,9 @@ export const CampusSidebar: React.FC<CampusSidebarProps> = ({
       </div>
 
       {/* User Quick Profile Footer */}
-      <div className="p-3.5 border-t border-[#EFECE6] dark:border-neutral-800/80 shrink-0">
+      <div className="p-3.5 border-t border-border dark:border-stone-800/80 shrink-0">
         {user ? (
-          <div className="flex items-center justify-between gap-2 p-2 rounded-2xl hover:bg-[#F6F3EC] dark:hover:bg-neutral-800/60 transition-colors">
+          <div className="flex items-center justify-between gap-2 p-2 rounded-2xl hover:bg-background dark:hover:bg-stone-800/60 transition-colors">
             <Link
               to="/profile"
               onClick={onClose}
@@ -239,10 +263,10 @@ export const CampusSidebar: React.FC<CampusSidebarProps> = ({
                 limeRing
               />
               <div className="min-w-0">
-                <p className="text-sm font-bold text-[#111111] dark:text-white truncate">
+                <p className="text-sm font-bold text-foreground dark:text-white truncate">
                   {profile?.display_name || 'Campus Student'}
                 </p>
-                <p className="text-xs text-[#6B7280] dark:text-neutral-400 truncate">
+                <p className="text-xs text-muted-foreground dark:text-stone-400 truncate">
                   {profile?.branch || 'ITM SLS Baroda'}
                 </p>
               </div>
@@ -251,7 +275,7 @@ export const CampusSidebar: React.FC<CampusSidebarProps> = ({
               type="button"
               onClick={() => signOut()}
               title="Sign Out"
-              className="p-1.5 rounded-full text-neutral-400 hover:text-rose-600 transition-colors"
+              className="p-1.5 rounded-full text-stone-400 hover:text-destructive transition-colors"
             >
               <LogOut className="w-4 h-4" />
             </button>
@@ -260,7 +284,7 @@ export const CampusSidebar: React.FC<CampusSidebarProps> = ({
           <Link
             to="/auth"
             onClick={onClose}
-            className="w-full flex items-center justify-center h-10 px-4 rounded-full bg-[#2B4EFF] text-white font-bold text-sm hover:bg-[#1E3EDB] transition-all"
+            className="w-full flex items-center justify-center h-10 px-4 rounded-full bg-primary text-white font-bold text-sm hover:bg-primary transition-all"
           >
             Sign In to Campus
           </Link>
@@ -283,7 +307,7 @@ export const CampusSidebar: React.FC<CampusSidebarProps> = ({
             className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity"
             onClick={onClose}
           />
-          <div className="relative w-72 max-w-[85vw] h-full shadow-2xl z-10 animate-in slide-in-from-left duration-200">
+          <div className="relative w-72 max-w-[85vw] h-full shadow-lg z-10 animate-in slide-in-from-left duration-200">
             {sidebarContent}
           </div>
         </div>

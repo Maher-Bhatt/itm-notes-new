@@ -100,7 +100,7 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
                 title={`${game.streakDays} Day Study Streak! Level ${levelInfo.level} ${levelInfo.title}`}
                 className="press inline-flex items-center gap-1 px-2 py-1 md:px-2.5 rounded-full text-xs font-bold bg-secondary text-foreground hover:bg-white/20 transition-all border border-border mr-0.5"
               >
-                <Flame className="h-3.5 w-3.5 text-amber-500" />
+                <Flame className="h-3.5 w-3.5 text-primary" />
                 <span>{game.streakDays}</span>
                 <span className="hidden md:inline text-[10px] text-foreground/60 font-medium">({game.xp} XP)</span>
               </button>
@@ -114,11 +114,11 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
               title={isRunning ? `Focus session active: ${Math.floor(timeLeft / 60)}m left` : "Start Pomodoro Study Focus"}
               className={`press items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold transition-all border mr-1 ${
                 isRunning
-                  ? "inline-flex bg-accent/20 text-amber-500 border-accent/30 animate-pulse"
+                  ? "inline-flex bg-accent/20 text-primary border-accent/30 animate-pulse"
                   : "hidden md:inline-flex bg-secondary text-foreground/60 border-border"
               }`}
             >
-              <Clock className={`h-3.5 w-3.5 ${isRunning ? "text-amber-500" : "text-primary"}`} />
+              <Clock className={`h-3.5 w-3.5 ${isRunning ? "text-primary" : "text-primary"}`} />
               <span className="font-mono text-[11px] font-bold">
                 {isRunning
                   ? `${String(Math.floor(timeLeft / 60)).padStart(2, '0')}:${String(timeLeft % 60).padStart(2, '0')}`
@@ -222,7 +222,7 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
                     )}
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-72 sm:w-80 p-2 max-w-[calc(100vw-2rem)] rounded-2xl shadow-xl border border-border glass-card">
+                <DropdownMenuContent align="end" className="w-72 sm:w-80 p-2 max-w-[calc(100vw-2rem)] rounded-2xl shadow-lg border border-border glass-card">
                   <div className="flex items-center justify-between pb-2 mb-2 border-b px-2">
                     <span className="text-xs font-bold uppercase tracking-wider text-foreground/50">Notifications</span>
                     {unreadCount > 0 && (
@@ -272,7 +272,7 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
                     )}
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 rounded-2xl shadow-xl border border-border glass-card">
+                <DropdownMenuContent align="end" className="w-56 rounded-2xl shadow-lg border border-border glass-card">
                   <div className="flex items-center justify-start gap-2 p-2">
                     <div className="flex flex-col space-y-1 leading-none">
                       {profile?.display_name && (
@@ -294,7 +294,7 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
                     </>
                   )}
                   <DropdownMenuItem onClick={() => navigate("/profile")} className="press hover:bg-white/5">
-                    <Trophy className="mr-2 h-4 w-4 text-amber-500" />
+                    <Trophy className="mr-2 h-4 w-4 text-primary" />
                     <span>My Profile & Rank</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate("/community")} className="press hover:bg-white/5">
@@ -302,7 +302,7 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
                     <span>Campus Social & Confessions</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate("/quiz")} className="lg:hidden press hover:bg-white/5">
-                    <HelpCircle className="mr-2 h-4 w-4 text-amber-500" />
+                    <HelpCircle className="mr-2 h-4 w-4 text-primary" />
                     <span>Practice Quiz</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate("/calculator")} className="press hover:bg-white/5">
@@ -342,7 +342,7 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
         <div className="fixed inset-0 bg-black/60 z-[60] md:hidden backdrop-blur-sm" onClick={() => setIsDrawerOpen(false)} />
       )}
 
-      <div className={`fixed inset-y-0 left-0 w-[280px] bg-background z-[70] transform transition-transform duration-300 md:hidden border-r border-border flex flex-col shadow-2xl ${isDrawerOpen ? "translate-x-0" : "-translate-x-full"}`}>
+      <div className={`fixed inset-y-0 left-0 w-[280px] bg-background z-[70] transform transition-transform duration-300 md:hidden border-r border-border flex flex-col shadow-lg ${isDrawerOpen ? "translate-x-0" : "-translate-x-full"}`}>
         <div className="flex items-center justify-between p-4 border-b border-border">
           <div className="flex items-center gap-2">
             <img src={logo} alt="CampusLoop" className="w-6 h-6 object-contain" />
@@ -382,7 +382,7 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
           </button>
 
           <button onClick={() => { navigate("/imp-questions"); setIsDrawerOpen(false); }} className="flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium hover:bg-secondary text-left transition-colors min-h-[44px] press">
-            <HelpCircle className="h-5 w-5 text-amber-500" />
+            <HelpCircle className="h-5 w-5 text-primary" />
             <span>IMP Questions</span>
           </button>
 
@@ -391,7 +391,7 @@ export function Header({ onSearchOpen, showBack, backTo }: HeaderProps) {
           </div>
 
           <button onClick={() => { navigate("/quiz"); setIsDrawerOpen(false); }} className="flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium hover:bg-secondary text-left transition-colors min-h-[44px] press">
-            <HelpCircle className="h-5 w-5 text-amber-500" />
+            <HelpCircle className="h-5 w-5 text-primary" />
             <span>Practice Quiz</span>
           </button>
 

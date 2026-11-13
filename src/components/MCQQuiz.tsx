@@ -107,8 +107,8 @@ export function MCQQuiz({ mcqs, topicId, onComplete }: MCQQuizProps) {
       <div className="py-6 animate-scale-in">
         <div className="text-center max-w-md mx-auto mb-6">
           <div
-            className={`text-5xl sm:text-6xl font-black mb-2 font-mono ${
-              pct >= 80 ? "text-amber-500" : pct >= 60 ? "text-amber-500" : "text-rose-500"
+            className={`text-5xl sm:text-6xl font-bold mb-2 font-mono ${
+              pct >= 80 ? "text-primary" : pct >= 60 ? "text-primary" : "text-destructive"
             }`}
           >
             {pct}%
@@ -136,7 +136,7 @@ export function MCQQuiz({ mcqs, topicId, onComplete }: MCQQuizProps) {
             {missedCount > 0 && (
               <button
                 onClick={handleRetryMissedOnly}
-                className="px-4 py-2 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-500/20 border border-rose-500/30 font-bold text-xs flex items-center gap-1.5 transition-colors apple-press"
+                className="px-4 py-2 rounded-xl bg-destructive/10 text-destructive dark:text-destructive hover:bg-destructive/20 border border-destructive/30 font-bold text-xs flex items-center gap-1.5 transition-colors apple-press"
               >
                 <AlertCircle className="h-3.5 w-3.5" />
                 <span>Retry {missedCount} Missed Only</span>
@@ -168,8 +168,8 @@ export function MCQQuiz({ mcqs, topicId, onComplete }: MCQQuizProps) {
                   key={idx}
                   className={`p-4 rounded-xl border text-xs space-y-2.5 ${
                     ans.isCorrect
-                      ? "bg-amber-500/5 border-amber-500/30"
-                      : "bg-rose-500/5 border-rose-500/30"
+                      ? "bg-primary/5 border-primary/30"
+                      : "bg-destructive/5 border-destructive/30"
                   }`}
                 >
                   <div className="flex items-start justify-between gap-3">
@@ -179,8 +179,8 @@ export function MCQQuiz({ mcqs, topicId, onComplete }: MCQQuizProps) {
                     <span
                       className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase shrink-0 ${
                         ans.isCorrect
-                          ? "bg-amber-500/20 text-amber-500 dark:text-amber-500"
-                          : "bg-rose-500/20 text-rose-600 dark:text-rose-400"
+                          ? "bg-primary/20 text-primary dark:text-primary"
+                          : "bg-destructive/20 text-destructive dark:text-destructive"
                       }`}
                     >
                       {ans.isCorrect ? "Correct" : "Incorrect"}
@@ -195,9 +195,9 @@ export function MCQQuiz({ mcqs, topicId, onComplete }: MCQQuizProps) {
                       let badgeCls = "p-2 rounded-lg flex items-center justify-between text-xs ";
 
                       if (isCorrect) {
-                        badgeCls += "bg-amber-500/20 text-amber-500 dark:text-amber-500 font-bold border border-amber-500/40";
+                        badgeCls += "bg-primary/20 text-primary dark:text-primary font-bold border border-primary/40";
                       } else if (isUserPick && !ans.isCorrect) {
-                        badgeCls += "bg-rose-500/20 text-rose-700 dark:text-rose-300 font-bold border border-rose-500/40";
+                        badgeCls += "bg-destructive/20 text-destructive dark:text-destructive font-bold border border-destructive/40";
                       } else {
                         badgeCls += "bg-secondary/40 text-muted-foreground";
                       }
@@ -210,8 +210,8 @@ export function MCQQuiz({ mcqs, topicId, onComplete }: MCQQuizProps) {
                             </span>
                             <span>{opt}</span>
                           </span>
-                          {isCorrect && <CheckCircle className="h-4 w-4 text-amber-500 dark:text-amber-500 shrink-0" />}
-                          {isUserPick && !ans.isCorrect && <XCircle className="h-4 w-4 text-rose-600 dark:text-rose-400 shrink-0" />}
+                          {isCorrect && <CheckCircle className="h-4 w-4 text-primary dark:text-primary shrink-0" />}
+                          {isUserPick && !ans.isCorrect && <XCircle className="h-4 w-4 text-destructive dark:text-destructive shrink-0" />}
                         </div>
                       );
                     })}
@@ -259,8 +259,8 @@ export function MCQQuiz({ mcqs, topicId, onComplete }: MCQQuizProps) {
         {(mcq?.options || []).map((opt, i) => {
           let cls = "apple-press w-full text-left py-3 px-4 rounded-xl border transition-all text-xs sm:text-sm font-medium ";
           if (showResult) {
-            if (i === mcq.correctIndex) cls += "border-amber-500/40 bg-amber-500/10 text-amber-500 dark:text-amber-500 font-bold ";
-            else if (i === selected) cls += "border-rose-500/40 bg-rose-500/10 text-rose-700 dark:text-rose-300 font-bold ";
+            if (i === mcq.correctIndex) cls += "border-primary/40 bg-primary/10 text-primary dark:text-primary font-bold ";
+            else if (i === selected) cls += "border-destructive/40 bg-destructive/10 text-destructive dark:text-destructive font-bold ";
             else cls += "border-border opacity-40 ";
           } else {
             cls += "border-border/80 hover:bg-secondary/60 hover:border-primary/40 cursor-pointer ";
@@ -273,8 +273,8 @@ export function MCQQuiz({ mcqs, topicId, onComplete }: MCQQuizProps) {
                   {String.fromCharCode(65 + i)}
                 </span>
                 <span className="flex-1">{opt}</span>
-                {showResult && i === mcq.correctIndex && <CheckCircle className="ml-auto h-4 w-4 text-amber-500 shrink-0" />}
-                {showResult && i === selected && i !== mcq.correctIndex && <XCircle className="ml-auto h-4 w-4 text-rose-500 shrink-0" />}
+                {showResult && i === mcq.correctIndex && <CheckCircle className="ml-auto h-4 w-4 text-primary shrink-0" />}
+                {showResult && i === selected && i !== mcq.correctIndex && <XCircle className="ml-auto h-4 w-4 text-destructive shrink-0" />}
               </div>
             </button>
           );

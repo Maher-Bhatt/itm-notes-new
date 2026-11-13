@@ -4,7 +4,7 @@ export const sem3DbmsMaster: Subject = {
   "id": "sem3-dbms",
   "name": "Database Management Systems (DBMS)",
   "code": "DBMS302",
-  "color": "bg-orange-600",
+  "color": "bg-primary",
   "icon": "server",
   "description": "Comprehensive University Syllabus for Database Management Systems — 3-Tier Architecture, ER Modeling, Relational Algebra, Advanced SQL, Normalization (1NF-5NF), Transactions & Concurrency (2PL, Deadlocks), and Storage Indexing (B+ Trees)",
   "semester": 3,

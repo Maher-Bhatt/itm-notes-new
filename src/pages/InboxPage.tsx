@@ -234,30 +234,30 @@ export default function InboxPage() {
   }, [friends, searchQuery]);
 
   return (
-    <div className="min-h-screen bg-[#F6F3EC] dark:bg-[#0E0E10] text-[#111111] dark:text-neutral-100 pb-20 select-none">
+    <div className="min-h-screen bg-background dark:bg-background text-foreground dark:text-stone-100 pb-20 select-none">
       <div className="max-w-2xl mx-auto px-3 sm:px-4 pt-4 sm:pt-6 space-y-5">
         
         {/* 1. Header: "Messages & Campus Connections" */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <div className="flex items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#2B4EFF]/10 text-[#2B4EFF] dark:bg-blue-950/40 dark:text-blue-300">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-primary/10 text-primary dark:bg-primary/15 dark:text-primary">
                 {currentUniversity.shortName} Network
               </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-[#111111] dark:text-white font-display mt-0.5">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground dark:text-white font-display mt-0.5">
               Messages & Connections
             </h1>
           </div>
 
           {/* Quick Tab Switcher */}
-          <div className="flex items-center bg-white dark:bg-neutral-800 p-1 rounded-full border border-[#E8E4DA] dark:border-neutral-700 shadow-2xs self-start sm:self-auto">
+          <div className="flex items-center bg-white dark:bg-stone-800 p-1 rounded-full border border-border dark:border-stone-700 shadow-2xs self-start sm:self-auto">
             <button
               onClick={() => setActiveTab('messages')}
               className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'messages'
-                  ? 'bg-[#111111] text-white dark:bg-white dark:text-[#111111] shadow-2xs'
-                  : 'text-[#6B7280] dark:text-neutral-400 hover:text-[#111111] dark:hover:text-white'
+                  ? 'bg-foreground text-white dark:bg-white dark:text-foreground shadow-2xs'
+                  : 'text-muted-foreground dark:text-stone-400 hover:text-foreground dark:hover:text-white'
               }`}
             >
               <MessageSquare className="h-3.5 w-3.5" />
@@ -273,14 +273,14 @@ export default function InboxPage() {
               onClick={() => setActiveTab('requests')}
               className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer relative ${
                 activeTab === 'requests'
-                  ? 'bg-[#111111] text-white dark:bg-white dark:text-[#111111] shadow-2xs'
-                  : 'text-[#6B7280] dark:text-neutral-400 hover:text-[#111111] dark:hover:text-white'
+                  ? 'bg-foreground text-white dark:bg-white dark:text-foreground shadow-2xs'
+                  : 'text-muted-foreground dark:text-stone-400 hover:text-foreground dark:hover:text-white'
               }`}
             >
               <UserCheck className="h-3.5 w-3.5" />
               <span>Requests</span>
               {receivedRequests.length > 0 && (
-                <span className="px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-rose-500 text-white font-bold animate-pulse">
+                <span className="px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-destructive text-white font-bold animate-pulse">
                   {receivedRequests.length}
                 </span>
               )}
@@ -290,8 +290,8 @@ export default function InboxPage() {
               onClick={() => setActiveTab('find')}
               className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'find'
-                  ? 'bg-[#2B4EFF] text-white shadow-2xs'
-                  : 'text-[#6B7280] dark:text-neutral-400 hover:text-[#111111] dark:hover:text-white'
+                  ? 'bg-primary text-white shadow-2xs'
+                  : 'text-muted-foreground dark:text-stone-400 hover:text-foreground dark:hover:text-white'
               }`}
             >
               <UserPlus className="h-3.5 w-3.5" />
@@ -317,29 +317,29 @@ export default function InboxPage() {
         {activeTab === 'messages' && (
           <div className="space-y-4 animate-fade-in">
             {filteredFriends.length === 0 ? (
-              <div className="p-8 sm:p-12 text-center rounded-[24px] bg-white dark:bg-[#18181B] border border-[#E8E4DA] dark:border-neutral-800 space-y-4 shadow-xs">
-                <div className="w-16 h-16 rounded-3xl bg-[#2B4EFF]/10 text-[#2B4EFF] flex items-center justify-center mx-auto shadow-inner">
+              <div className="p-8 sm:p-12 text-center rounded-2xl bg-white dark:bg-background border border-border dark:border-stone-800 space-y-4 shadow-xs">
+                <div className="w-16 h-16 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mx-auto shadow-inner">
                   <MessageSquare className="h-8 w-8 stroke-[1.5]" />
                 </div>
                 <div className="space-y-1.5 max-w-md mx-auto">
-                  <h3 className="text-base sm:text-lg font-bold text-[#111111] dark:text-white">
+                  <h3 className="text-base sm:text-lg font-bold text-foreground dark:text-white">
                     No Direct Conversations Yet
                   </h3>
-                  <p className="text-xs sm:text-sm text-[#6B7280] dark:text-neutral-400 leading-relaxed">
+                  <p className="text-xs sm:text-sm text-muted-foreground dark:text-stone-400 leading-relaxed">
                     Connect with fellow engineering students across Gujarat universities to exchange notes, discuss practical solutions, and form study groups.
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={() => setActiveTab('find')}
-                  className="px-5 py-2.5 rounded-full bg-[#2B4EFF] hover:bg-blue-600 text-white font-bold text-xs shadow-sm transition-all inline-flex items-center gap-2 cursor-pointer"
+                  className="px-5 py-2.5 rounded-full bg-primary hover:bg-primary text-white font-bold text-xs shadow-sm transition-all inline-flex items-center gap-2 cursor-pointer"
                 >
                   <UserPlus className="h-4 w-4" />
                   <span>Find & Add Classmates</span>
                 </button>
               </div>
             ) : (
-              <div className="rounded-[24px] bg-white dark:bg-[#18181B] border border-[#E8E4DA] dark:border-neutral-800 p-2 divide-y divide-[#EFECE6] dark:divide-neutral-800/80 shadow-xs">
+              <div className="rounded-2xl bg-white dark:bg-background border border-border dark:border-stone-800 p-2 divide-y divide-border dark:divide-stone-800/80 shadow-xs">
                 {filteredFriends.map((f) => (
                   <CampusConversationRow
                     key={f.userId}
@@ -364,13 +364,13 @@ export default function InboxPage() {
             {/* Received Requests */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <h3 className="text-xs font-black uppercase tracking-wider text-[#6B7280] dark:text-neutral-400">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground dark:text-stone-400">
                   Received Requests ({receivedRequests.length})
                 </h3>
               </div>
 
               {receivedRequests.length === 0 ? (
-                <div className="p-6 text-center rounded-[20px] bg-white dark:bg-[#18181B] border border-[#E8E4DA] dark:border-neutral-800 text-xs text-[#6B7280] dark:text-neutral-400">
+                <div className="p-6 text-center rounded-2xl bg-white dark:bg-background border border-border dark:border-stone-800 text-xs text-muted-foreground dark:text-stone-400">
                   No incoming friend requests. Classmates who add you will appear here.
                 </div>
               ) : (
@@ -378,7 +378,7 @@ export default function InboxPage() {
                   {receivedRequests.map((req) => (
                     <div
                       key={req.id}
-                      className="p-4 rounded-[20px] bg-white dark:bg-[#18181B] border border-[#E8E4DA] dark:border-neutral-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs"
+                      className="p-4 rounded-2xl bg-white dark:bg-background border border-border dark:border-stone-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs"
                     >
                       <div className="flex items-start gap-3">
                         <CampusAvatar
@@ -387,14 +387,14 @@ export default function InboxPage() {
                           size={44}
                         />
                         <div className="space-y-0.5">
-                          <h4 className="font-bold text-sm text-[#111111] dark:text-white">
+                          <h4 className="font-bold text-sm text-foreground dark:text-white">
                             {req.user.displayName}
                           </h4>
-                          <p className="text-xs text-[#6B7280] dark:text-neutral-400">
+                          <p className="text-xs text-muted-foreground dark:text-stone-400">
                             {req.user.branch} • <span className="uppercase font-semibold text-primary">{req.user.university}</span>
                           </p>
                           {req.message && (
-                            <p className="text-xs text-[#111111] dark:text-neutral-200 bg-[#F6F3EC] dark:bg-neutral-800/80 p-2 rounded-xl mt-1 leading-snug">
+                            <p className="text-xs text-foreground dark:text-stone-200 bg-background dark:bg-stone-800/80 p-2 rounded-xl mt-1 leading-snug">
                               "{req.message}"
                             </p>
                           )}
@@ -405,7 +405,7 @@ export default function InboxPage() {
                         <button
                           type="button"
                           onClick={() => handleAccept(req)}
-                          className="px-4 py-2 rounded-full bg-[#111111] dark:bg-white text-white dark:text-[#111111] text-xs font-bold shadow-2xs hover:opacity-90 transition-opacity flex items-center gap-1.5 cursor-pointer"
+                          className="px-4 py-2 rounded-full bg-foreground dark:bg-white text-white dark:text-foreground text-xs font-bold shadow-2xs hover:opacity-90 transition-opacity flex items-center gap-1.5 cursor-pointer"
                         >
                           <Check className="h-3.5 w-3.5" />
                           <span>Accept</span>
@@ -413,7 +413,7 @@ export default function InboxPage() {
                         <button
                           type="button"
                           onClick={() => handleDecline(req.id)}
-                          className="px-3 py-2 rounded-full border border-[#E8E4DA] dark:border-neutral-700 text-[#6B7280] dark:text-neutral-400 hover:text-rose-500 hover:border-rose-300 text-xs font-semibold transition-colors cursor-pointer"
+                          className="px-3 py-2 rounded-full border border-border dark:border-stone-700 text-muted-foreground dark:text-stone-400 hover:text-destructive hover:border-destructive/30 text-xs font-semibold transition-colors cursor-pointer"
                         >
                           Decline
                         </button>
@@ -426,12 +426,12 @@ export default function InboxPage() {
 
             {/* Sent Requests */}
             <div className="space-y-3 pt-2">
-              <h3 className="text-xs font-black uppercase tracking-wider text-[#6B7280] dark:text-neutral-400">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground dark:text-stone-400">
                 Pending Sent Requests ({sentRequests.length})
               </h3>
 
               {sentRequests.length === 0 ? (
-                <div className="p-4 text-center rounded-[18px] bg-white dark:bg-[#18181B] border border-[#E8E4DA] dark:border-neutral-800 text-xs text-[#6B7280] dark:text-neutral-400">
+                <div className="p-4 text-center rounded-2xl bg-white dark:bg-background border border-border dark:border-stone-800 text-xs text-muted-foreground dark:text-stone-400">
                   No pending sent requests.
                 </div>
               ) : (
@@ -439,15 +439,15 @@ export default function InboxPage() {
                   {sentRequests.map((req) => (
                     <div
                       key={req.id}
-                      className="p-3.5 rounded-[18px] bg-white dark:bg-[#18181B] border border-[#E8E4DA] dark:border-neutral-800 flex items-center justify-between gap-3 text-xs"
+                      className="p-3.5 rounded-2xl bg-white dark:bg-background border border-border dark:border-stone-800 flex items-center justify-between gap-3 text-xs"
                     >
                       <div className="flex items-center gap-2.5">
-                        <Clock className="h-4 w-4 text-amber-500 shrink-0" />
+                        <Clock className="h-4 w-4 text-primary shrink-0" />
                         <div>
-                          <p className="font-bold text-[#111111] dark:text-white">
+                          <p className="font-bold text-foreground dark:text-white">
                             Request sent to {req.user.displayName}
                           </p>
-                          <span className="text-[11px] text-[#6B7280] dark:text-neutral-400">
+                          <span className="text-[11px] text-muted-foreground dark:text-stone-400">
                             Awaiting response
                           </span>
                         </div>
@@ -456,7 +456,7 @@ export default function InboxPage() {
                       <button
                         type="button"
                         onClick={() => handleCancelSent(req.id)}
-                        className="px-3 py-1.5 rounded-full border border-border hover:bg-rose-500/10 hover:text-rose-600 text-[11px] font-semibold transition-colors cursor-pointer"
+                        className="px-3 py-1.5 rounded-full border border-border hover:bg-destructive/10 hover:text-destructive text-[11px] font-semibold transition-colors cursor-pointer"
                       >
                         Cancel Request
                       </button>
@@ -478,8 +478,8 @@ export default function InboxPage() {
                 onClick={() => setSelectedUnivFilter('all')}
                 className={`px-3 py-1 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer ${
                   selectedUnivFilter === 'all'
-                    ? 'bg-[#111111] text-white dark:bg-white dark:text-[#111111]'
-                    : 'bg-white dark:bg-neutral-800 border border-[#E8E4DA] dark:border-neutral-700 text-[#6B7280] dark:text-neutral-300'
+                    ? 'bg-foreground text-white dark:bg-white dark:text-foreground'
+                    : 'bg-white dark:bg-stone-800 border border-border dark:border-stone-700 text-muted-foreground dark:text-stone-300'
                 }`}
               >
                 All Gujarat
@@ -491,8 +491,8 @@ export default function InboxPage() {
                   onClick={() => setSelectedUnivFilter(u.id)}
                   className={`px-3 py-1 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer ${
                     selectedUnivFilter === u.id
-                      ? 'bg-[#2B4EFF] text-white shadow-2xs'
-                      : 'bg-white dark:bg-neutral-800 border border-[#E8E4DA] dark:border-neutral-700 text-[#6B7280] dark:text-neutral-300'
+                      ? 'bg-primary text-white shadow-2xs'
+                      : 'bg-white dark:bg-stone-800 border border-border dark:border-stone-700 text-muted-foreground dark:text-stone-300'
                   }`}
                 >
                   {u.shortName}
@@ -502,11 +502,11 @@ export default function InboxPage() {
 
             {/* Students List */}
             {isSearchingStudents ? (
-              <div className="p-8 text-center text-xs text-[#6B7280] dark:text-neutral-400">
+              <div className="p-8 text-center text-xs text-muted-foreground dark:text-stone-400">
                 Searching verified student directory...
               </div>
             ) : discoveredStudents.length === 0 ? (
-              <div className="p-8 text-center rounded-[20px] bg-white dark:bg-[#18181B] border border-[#E8E4DA] dark:border-neutral-800 text-xs text-[#6B7280] dark:text-neutral-400">
+              <div className="p-8 text-center rounded-2xl bg-white dark:bg-background border border-border dark:border-stone-800 text-xs text-muted-foreground dark:text-stone-400">
                 No students found matching your search.
               </div>
             ) : (
@@ -519,7 +519,7 @@ export default function InboxPage() {
                   return (
                     <div
                       key={st.id}
-                      className="p-3.5 sm:p-4 rounded-[20px] bg-white dark:bg-[#18181B] border border-[#E8E4DA] dark:border-neutral-800 flex items-center justify-between gap-3 shadow-2xs hover:border-[#2B4EFF]/40 transition-colors"
+                      className="p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-background border border-border dark:border-stone-800 flex items-center justify-between gap-3 shadow-2xs hover:border-primary/40 transition-colors"
                     >
                       <div className="flex items-center gap-3 min-w-0">
                         <CampusAvatar
@@ -528,13 +528,13 @@ export default function InboxPage() {
                           size={44}
                         />
                         <div className="space-y-0.5 min-w-0">
-                          <h4 className="font-bold text-sm text-[#111111] dark:text-white truncate">
+                          <h4 className="font-bold text-sm text-foreground dark:text-white truncate">
                             {st.displayName}
                           </h4>
-                          <p className="text-xs text-[#6B7280] dark:text-neutral-400 truncate">
+                          <p className="text-xs text-muted-foreground dark:text-stone-400 truncate">
                             {st.branch} {st.division ? `(${st.division})` : ''}
                           </p>
-                          <div className="flex items-center gap-2 text-[10px] text-[#6B7280] dark:text-neutral-400">
+                          <div className="flex items-center gap-2 text-[10px] text-muted-foreground dark:text-stone-400">
                             <span className="font-semibold text-primary uppercase">{st.university}</span>
                             {st.enrollmentNo && <span>• {st.enrollmentNo}</span>}
                           </div>
@@ -559,19 +559,19 @@ export default function InboxPage() {
                                 connectedAt: 'Connected',
                               });
                             }}
-                            className="px-3.5 py-1.5 rounded-full bg-[#E6EAFD] dark:bg-blue-950/40 text-[#2B4EFF] dark:text-blue-300 text-xs font-bold border border-blue-200 dark:border-blue-900/40 hover:bg-[#D8E0FC] transition-colors cursor-pointer"
+                            className="px-3.5 py-1.5 rounded-full bg-primary/10 dark:bg-primary/15 text-primary dark:text-primary text-xs font-bold border border-primary/30 dark:border-primary/40 hover:bg-primary/10 transition-colors cursor-pointer"
                           >
                             Message 💬
                           </button>
                         ) : isSent ? (
-                          <span className="px-3 py-1.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 text-xs font-semibold">
+                          <span className="px-3 py-1.5 rounded-full bg-primary/10 text-primary dark:text-primary border border-primary/20 text-xs font-semibold">
                             Request Sent
                           </span>
                         ) : isReceived ? (
                           <button
                             type="button"
                             onClick={() => setActiveTab('requests')}
-                            className="px-3.5 py-1.5 rounded-full bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-700 transition-colors cursor-pointer"
+                            className="px-3.5 py-1.5 rounded-full bg-success text-white text-xs font-bold hover:bg-success transition-colors cursor-pointer"
                           >
                             Respond to Req
                           </button>
@@ -579,7 +579,7 @@ export default function InboxPage() {
                           <button
                             type="button"
                             onClick={() => handleSendRequestToStudent(st)}
-                            className="px-3.5 py-1.5 rounded-full bg-[#111111] dark:bg-white text-white dark:text-[#111111] text-xs font-bold hover:opacity-90 shadow-2xs transition-opacity flex items-center gap-1.5 cursor-pointer"
+                            className="px-3.5 py-1.5 rounded-full bg-foreground dark:bg-white text-white dark:text-foreground text-xs font-bold hover:opacity-90 shadow-2xs transition-opacity flex items-center gap-1.5 cursor-pointer"
                           >
                             <UserPlus className="h-3.5 w-3.5" />
                             <span>Add Friend</span>
@@ -603,18 +603,18 @@ export default function InboxPage() {
           onClick={() => setActiveFriend(null)}
         >
           <div
-            className="w-full max-w-lg h-[85vh] bg-white dark:bg-[#18181B] rounded-[24px] border border-[#E8E4DA] dark:border-neutral-800 shadow-2xl flex flex-col overflow-hidden animate-scale-in"
+            className="w-full max-w-lg h-[85vh] bg-white dark:bg-background rounded-2xl border border-border dark:border-stone-800 shadow-lg flex flex-col overflow-hidden animate-scale-in"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="p-4 border-b border-[#EFECE6] dark:border-neutral-800 flex items-center justify-between shrink-0">
+            <div className="p-4 border-b border-border dark:border-stone-800 flex items-center justify-between shrink-0">
               <div className="flex items-center gap-3 min-w-0">
                 <button
                   type="button"
                   onClick={() => setActiveFriend(null)}
-                  className="p-1.5 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer"
+                  className="p-1.5 rounded-full hover:bg-stone-100 dark:hover:bg-stone-800 cursor-pointer"
                 >
-                  <ArrowLeft className="w-5 h-5 text-neutral-600 dark:text-neutral-300" />
+                  <ArrowLeft className="w-5 h-5 text-stone-600 dark:text-stone-300" />
                 </button>
                 <CampusAvatar
                   src={activeFriend.avatarUrl}
@@ -623,10 +623,10 @@ export default function InboxPage() {
                   status="online"
                 />
                 <div className="min-w-0">
-                  <h3 className="font-bold text-sm sm:text-base text-[#111111] dark:text-white truncate">
+                  <h3 className="font-bold text-sm sm:text-base text-foreground dark:text-white truncate">
                     {activeFriend.displayName}
                   </h3>
-                  <p className="text-[11px] text-[#6B7280] dark:text-neutral-400 font-medium truncate">
+                  <p className="text-[11px] text-muted-foreground dark:text-stone-400 font-medium truncate">
                     {activeFriend.branch} • <span className="uppercase text-primary font-bold">{activeFriend.university}</span>
                   </p>
                 </div>
@@ -635,18 +635,18 @@ export default function InboxPage() {
               <button
                 type="button"
                 onClick={() => setActiveFriend(null)}
-                className="p-1.5 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-400 cursor-pointer"
+                className="p-1.5 rounded-full hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-400 cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Message Body */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-[#F6F3EC]/50 dark:bg-neutral-900/40">
+            <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-background/50 dark:bg-stone-900/40">
               {activeThreadMessages.length === 0 ? (
-                <div className="text-center py-12 text-[#6B7280] dark:text-neutral-400 space-y-2">
-                  <Sparkles className="h-8 w-8 mx-auto text-[#2B4EFF]" />
-                  <p className="font-bold text-sm text-[#111111] dark:text-white">
+                <div className="text-center py-12 text-muted-foreground dark:text-stone-400 space-y-2">
+                  <Sparkles className="h-8 w-8 mx-auto text-primary" />
+                  <p className="font-bold text-sm text-foreground dark:text-white">
                     Start of your direct academic chat
                   </p>
                   <p className="text-xs max-w-xs mx-auto">
@@ -664,13 +664,13 @@ export default function InboxPage() {
                       <div
                         className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-xs sm:text-sm font-normal shadow-2xs leading-relaxed ${
                           isMe
-                            ? 'bg-[#2B4EFF] text-white rounded-br-xs'
-                            : 'bg-white dark:bg-[#27272A] text-[#111111] dark:text-white border border-[#E8E4DA] dark:border-neutral-700 rounded-bl-xs'
+                            ? 'bg-primary text-white rounded-br-xs'
+                            : 'bg-white dark:bg-[#27272A] text-foreground dark:text-white border border-border dark:border-stone-700 rounded-bl-xs'
                         }`}
                       >
                         {msg.content}
                       </div>
-                      <span className="text-[10px] text-neutral-400 px-1 mt-1 font-mono">
+                      <span className="text-[10px] text-stone-400 px-1 mt-1 font-mono">
                         {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </span>
                     </div>
@@ -682,19 +682,19 @@ export default function InboxPage() {
             {/* Input Bar */}
             <form
               onSubmit={handleSendMessage}
-              className="p-3 border-t border-[#EFECE6] dark:border-neutral-800 flex items-center gap-2 bg-white dark:bg-[#18181B]"
+              className="p-3 border-t border-border dark:border-stone-800 flex items-center gap-2 bg-white dark:bg-background"
             >
               <input
                 type="text"
                 value={newMessageText}
                 onChange={(e) => setNewMessageText(e.target.value)}
                 placeholder={`Message ${activeFriend.displayName}...`}
-                className="flex-1 h-11 px-4 rounded-full bg-[#F6F3EC] dark:bg-neutral-800 border border-[#E8E4DA] dark:border-neutral-700 text-xs sm:text-sm outline-none focus:ring-2 focus:ring-[#2B4EFF] text-[#111111] dark:text-white placeholder:text-neutral-400"
+                className="flex-1 h-11 px-4 rounded-full bg-background dark:bg-stone-800 border border-border dark:border-stone-700 text-xs sm:text-sm outline-none focus:ring-2 focus:ring-primary text-foreground dark:text-white placeholder:text-stone-400"
               />
               <button
                 type="submit"
                 disabled={!newMessageText.trim() || isSendingMessage}
-                className="w-11 h-11 rounded-full bg-[#2B4EFF] text-white flex items-center justify-center hover:bg-blue-600 disabled:opacity-40 transition-all shadow-xs cursor-pointer shrink-0"
+                className="w-11 h-11 rounded-full bg-primary text-white flex items-center justify-center hover:bg-primary disabled:opacity-40 transition-all shadow-xs cursor-pointer shrink-0"
               >
                 <Send className="w-4 h-4" />
               </button>

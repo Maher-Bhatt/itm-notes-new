@@ -36,10 +36,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "CS101L",
     "semester": 1,
     "icon": "💻",
-    "badgeClass": "bg-blue-500/15 text-blue-500 border-blue-500/30",
-    "borderClass": "border-blue-500/40",
-    "textClass": "text-blue-500",
-    "bgClass": "bg-blue-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "Quadratic roots, loops, matrices, strings, pointers, DMA & structures in C99"
   },
   {
@@ -48,10 +48,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "AI101L",
     "semester": 1,
     "icon": "🐍",
-    "badgeClass": "bg-emerald-500/15 text-emerald-500 border-emerald-500/30",
-    "borderClass": "border-emerald-500/40",
-    "textClass": "text-emerald-500",
-    "bgClass": "bg-emerald-500/10",
+    "badgeClass": "bg-success/15 text-success border-success/30",
+    "borderClass": "border-success/40",
+    "textClass": "text-success",
+    "bgClass": "bg-success/10",
     "description": "NumPy tensors, vectorization, Pandas DataFrames & statistical hypothesis testing"
   },
   {
@@ -60,10 +60,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "BCA101L",
     "semester": 1,
     "icon": "🖥️",
-    "badgeClass": "bg-cyan-500/15 text-cyan-500 border-cyan-500/30",
-    "borderClass": "border-cyan-500/40",
-    "textClass": "text-cyan-500",
-    "bgClass": "bg-cyan-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "Basics, loops, menu calculators, pointers, file I/O & structures"
   },
   {
@@ -72,10 +72,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "PY101",
     "semester": 1,
     "icon": "🐍",
-    "badgeClass": "bg-emerald-500/15 text-emerald-500 border-emerald-500/30",
-    "borderClass": "border-emerald-500/40",
-    "textClass": "text-emerald-500",
-    "bgClass": "bg-emerald-500/10",
+    "badgeClass": "bg-success/15 text-success border-success/30",
+    "borderClass": "border-success/40",
+    "textClass": "text-success",
+    "bgClass": "bg-success/10",
     "description": "Syntax, Control Flow, Lists, Tuples, Dictionaries & Functions in Python"
   },
   {
@@ -84,10 +84,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "WT102",
     "semester": 1,
     "icon": "🌐",
-    "badgeClass": "bg-rose-500/15 text-rose-400 border-rose-500/30",
-    "borderClass": "border-rose-500/40",
-    "textClass": "text-rose-400",
-    "bgClass": "bg-rose-500/10",
+    "badgeClass": "bg-destructive/15 text-destructive border-destructive/30",
+    "borderClass": "border-destructive/40",
+    "textClass": "text-destructive",
+    "bgClass": "bg-destructive/10",
     "description": "DOM Manipulation, HTML5 Forms, CSS Selectors & Modern JavaScript"
   },
   {
@@ -96,10 +96,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "EC201L",
     "semester": 2,
     "icon": "⚡",
-    "badgeClass": "bg-amber-500/15 text-amber-500 border-amber-500/30",
-    "borderClass": "border-amber-500/40",
-    "textClass": "text-amber-500",
-    "bgClass": "bg-amber-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "Logic gates, adders, decoders, multiplexers, flip-flops, counters & shift registers"
   },
   {
@@ -108,10 +108,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "CS201L",
     "semester": 2,
     "icon": "🌳",
-    "badgeClass": "bg-blue-500/15 text-blue-500 border-blue-500/30",
-    "borderClass": "border-blue-500/40",
-    "textClass": "text-blue-500",
-    "bgClass": "bg-blue-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "Linked lists, stacks, queues, BST, AVL trees, heaps & graph BFS/DFS"
   },
   {
@@ -120,10 +120,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "BCA201L",
     "semester": 2,
     "icon": "⚙️",
-    "badgeClass": "bg-indigo-500/15 text-indigo-400 border-indigo-500/30",
-    "borderClass": "border-indigo-500/40",
-    "textClass": "text-indigo-400",
-    "bgClass": "bg-indigo-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "Templates, dynamic vectors, linked lists, stacks, queues & binary search trees"
   },
   {
@@ -132,10 +132,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "DSA301",
     "semester": 3,
     "icon": "⚡",
-    "badgeClass": "bg-blue-500/15 text-blue-500 border-blue-500/30",
-    "borderClass": "border-blue-500/40",
-    "textClass": "text-blue-500",
-    "bgClass": "bg-blue-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "Queues, Stacks, Linked Lists, Trees, Graphs & Dynamic Programming in C/Java"
   },
   {
@@ -144,10 +144,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "DBMS302",
     "semester": 3,
     "icon": "🗄️",
-    "badgeClass": "bg-amber-500/15 text-amber-500 border-amber-500/30",
-    "borderClass": "border-amber-500/40",
-    "textClass": "text-amber-500",
-    "bgClass": "bg-amber-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "Relational Schema, DDL/DML, Joins, Aggregations & Subqueries in SQL"
   },
   {
@@ -156,10 +156,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "CS302L",
     "semester": 3,
     "icon": "🗄️",
-    "badgeClass": "bg-amber-500/15 text-amber-500 border-amber-500/30",
-    "borderClass": "border-amber-500/40",
-    "textClass": "text-amber-500",
-    "bgClass": "bg-amber-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "DDL, DML, Joins, Subqueries, PL/SQL Cursors, Stored Procedures & Triggers"
   },
   {
@@ -168,10 +168,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "JAVA303",
     "semester": 3,
     "icon": "☕",
-    "badgeClass": "bg-orange-500/15 text-orange-400 border-orange-500/30",
-    "borderClass": "border-orange-500/40",
-    "textClass": "text-orange-400",
-    "bgClass": "bg-orange-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "Classes, Inheritance, Polymorphism, Concurrency & Stream API in Java"
   },
   {
@@ -180,10 +180,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "CS301L",
     "semester": 3,
     "icon": "☕",
-    "badgeClass": "bg-orange-500/15 text-orange-400 border-orange-500/30",
-    "borderClass": "border-orange-500/40",
-    "textClass": "text-orange-400",
-    "bgClass": "bg-orange-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "Polymorphism, Interfaces, Packages, Multithreading, Exceptions & Streams"
   },
   {
@@ -192,10 +192,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "BCA301L",
     "semester": 3,
     "icon": "🗃️",
-    "badgeClass": "bg-amber-500/15 text-amber-500 border-amber-500/30",
-    "borderClass": "border-amber-500/40",
-    "textClass": "text-amber-500",
-    "bgClass": "bg-amber-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "Schema constraints, joins, PL/SQL blocks, cursors & row triggers"
   },
   {
@@ -204,10 +204,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "BCA302L",
     "semester": 3,
     "icon": "☕",
-    "badgeClass": "bg-orange-500/15 text-orange-400 border-orange-500/30",
-    "borderClass": "border-orange-500/40",
-    "textClass": "text-orange-400",
-    "bgClass": "bg-orange-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "Inheritance, interfaces, JDBC connectivity, servlets & JSP"
   },
   {
@@ -216,10 +216,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "BCA303L",
     "semester": 3,
     "icon": "🐍",
-    "badgeClass": "bg-emerald-500/15 text-emerald-500 border-emerald-500/30",
-    "borderClass": "border-emerald-500/40",
-    "textClass": "text-emerald-500",
-    "bgClass": "bg-emerald-500/10",
+    "badgeClass": "bg-success/15 text-success border-success/30",
+    "borderClass": "border-success/40",
+    "textClass": "text-success",
+    "bgClass": "bg-success/10",
     "description": "Lists, comprehensions, decorators, generators, web scraping & Tkinter GUI"
   },
   {
@@ -228,10 +228,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "COA304L",
     "semester": 3,
     "icon": "🔬",
-    "badgeClass": "bg-purple-500/15 text-purple-400 border-purple-500/30",
-    "borderClass": "border-purple-500/40",
-    "textClass": "text-purple-400",
-    "bgClass": "bg-purple-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "Booth's algorithm, restoring division, ALU, cache mapping & 8085 assembly"
   },
   {
@@ -240,10 +240,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "COANMP",
     "semester": 3,
     "icon": "🔢",
-    "badgeClass": "bg-purple-500/15 text-purple-400 border-purple-500/30",
-    "borderClass": "border-purple-500/40",
-    "textClass": "text-purple-400",
-    "bgClass": "bg-purple-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "Newton-Raphson, RK-4, Simplex, Romberg & Interpolation in Python"
   },
   {
@@ -252,10 +252,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "ME301L",
     "semester": 3,
     "icon": "🔧",
-    "badgeClass": "bg-zinc-500/15 text-zinc-400 border-zinc-500/30",
-    "borderClass": "border-zinc-500/40",
-    "textClass": "text-zinc-400",
-    "bgClass": "bg-zinc-500/10",
+    "badgeClass": "bg-stone-500/15 text-stone-400 border-stone-500/30",
+    "borderClass": "border-stone-500/40",
+    "textClass": "text-stone-400",
+    "bgClass": "bg-stone-500/10",
     "description": "1D FEA truss, beam deflection, heat conduction, Otto cycle & vibration modes"
   },
   {
@@ -264,10 +264,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "CE301L",
     "semester": 3,
     "icon": "🏗️",
-    "badgeClass": "bg-yellow-500/15 text-yellow-500 border-yellow-500/30",
-    "borderClass": "border-yellow-500/40",
-    "textClass": "text-yellow-500",
-    "bgClass": "bg-yellow-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "Stiffness method, continuous beams, RCC sections, Bowditch rule & GIS distance"
   },
   {
@@ -276,10 +276,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "OS401L",
     "semester": 4,
     "icon": "💻",
-    "badgeClass": "bg-teal-500/15 text-teal-400 border-teal-500/30",
-    "borderClass": "border-teal-500/40",
-    "textClass": "text-teal-400",
-    "bgClass": "bg-teal-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "CPU scheduling, fork/exec, IPC pipes, semaphores, Banker algorithm & page replacement"
   },
   {
@@ -288,10 +288,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "CN402L",
     "semester": 4,
     "icon": "🌐",
-    "badgeClass": "bg-sky-500/15 text-sky-400 border-sky-500/30",
-    "borderClass": "border-sky-500/40",
-    "textClass": "text-sky-400",
-    "bgClass": "bg-sky-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "Bit stuffing, CRC, Hamming, Go-Back-N, subnetting, Dijkstra & TCP socket echo"
   },
   {
@@ -300,10 +300,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "DAA403L",
     "semester": 4,
     "icon": "⚡",
-    "badgeClass": "bg-violet-500/15 text-violet-400 border-violet-500/30",
-    "borderClass": "border-violet-500/40",
-    "textClass": "text-violet-400",
-    "bgClass": "bg-violet-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "Divide & conquer, 0/1 knapsack, LCS, Floyd-Warshall, Kruskal, Prim & N-Queens"
   },
   {
@@ -312,10 +312,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "CS404L",
     "semester": 4,
     "icon": "🌐",
-    "badgeClass": "bg-rose-500/15 text-rose-400 border-rose-500/30",
-    "borderClass": "border-rose-500/40",
-    "textClass": "text-rose-400",
-    "bgClass": "bg-rose-500/10",
+    "badgeClass": "bg-destructive/15 text-destructive border-destructive/30",
+    "borderClass": "border-destructive/40",
+    "textClass": "text-destructive",
+    "bgClass": "bg-destructive/10",
     "description": "CSS Grid, DOM, Fetch API, HTML5 Canvas, Web Workers, SPA Router & PWA"
   },
   {
@@ -324,10 +324,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "EC401L",
     "semester": 4,
     "icon": "📟",
-    "badgeClass": "bg-amber-500/15 text-amber-500 border-amber-500/30",
-    "borderClass": "border-amber-500/40",
-    "textClass": "text-amber-500",
-    "bgClass": "bg-amber-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "8085 arithmetic/sorting, 8086 string handling & 8051 timer square waves"
   },
   {
@@ -336,10 +336,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "EC402L",
     "semester": 4,
     "icon": "📊",
-    "badgeClass": "bg-blue-500/15 text-blue-400 border-blue-500/30",
-    "borderClass": "border-blue-500/40",
-    "textClass": "text-blue-400",
-    "bgClass": "bg-blue-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "Convolution, Fourier Series, FFT Radix-2, Laplace, Z-Transform & digital filters"
   },
   {
@@ -348,10 +348,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "BCA401L",
     "semester": 4,
     "icon": "📱",
-    "badgeClass": "bg-green-500/15 text-green-400 border-green-500/30",
-    "borderClass": "border-green-500/40",
-    "textClass": "text-green-400",
-    "bgClass": "bg-green-500/10",
+    "badgeClass": "bg-success/15 text-success border-success/30",
+    "borderClass": "border-success/40",
+    "textClass": "text-success",
+    "bgClass": "bg-success/10",
     "description": "Android activity lifecycle, intents, forms, RecyclerView, SQLite & Retrofit"
   },
   {
@@ -360,10 +360,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "MBA401L",
     "semester": 4,
     "icon": "📈",
-    "badgeClass": "bg-indigo-500/15 text-indigo-400 border-indigo-500/30",
-    "borderClass": "border-indigo-500/40",
-    "textClass": "text-indigo-400",
-    "bgClass": "bg-indigo-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "Pandas wrangling, EDA, t-test, ANOVA, RFM segmentation & linear programming"
   },
   {
@@ -372,10 +372,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "MBA402L",
     "semester": 4,
     "icon": "💰",
-    "badgeClass": "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
-    "borderClass": "border-emerald-500/40",
-    "textClass": "text-emerald-400",
-    "bgClass": "bg-emerald-500/10",
+    "badgeClass": "bg-success/15 text-success border-success/30",
+    "borderClass": "border-success/40",
+    "textClass": "text-success",
+    "bgClass": "bg-success/10",
     "description": "DCF valuation, NPV/IRR, Markowitz frontier, Black-Scholes & Value at Risk"
   },
   {
@@ -384,10 +384,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "MBA403L",
     "semester": 4,
     "icon": "🎯",
-    "badgeClass": "bg-pink-500/15 text-pink-400 border-pink-500/30",
-    "borderClass": "border-pink-500/40",
-    "textClass": "text-pink-400",
-    "bgClass": "bg-pink-500/10",
+    "badgeClass": "bg-destructive/15 text-destructive border-destructive/30",
+    "borderClass": "border-destructive/40",
+    "textClass": "text-destructive",
+    "bgClass": "bg-destructive/10",
     "description": "CLV, Apriori market basket, price elasticity, A/B testing & churn prediction"
   },
   {
@@ -396,10 +396,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "MBA404L",
     "semester": 4,
     "icon": "🎲",
-    "badgeClass": "bg-purple-500/15 text-purple-400 border-purple-500/30",
-    "borderClass": "border-purple-500/40",
-    "textClass": "text-purple-400",
-    "bgClass": "bg-purple-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "Linear programming, Hungarian assignment, Markov brand switching & queuing"
   },
   {
@@ -408,10 +408,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "MBA405L",
     "semester": 4,
     "icon": "📦",
-    "badgeClass": "bg-amber-500/15 text-amber-400 border-amber-500/30",
-    "borderClass": "border-amber-500/40",
-    "textClass": "text-amber-400",
-    "bgClass": "bg-amber-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "Bullwhip effect, safety stocks, vehicle routing, Holt-Winters & Six Sigma"
   },
   {
@@ -420,10 +420,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "ME401L",
     "semester": 4,
     "icon": "📐",
-    "badgeClass": "bg-zinc-500/15 text-zinc-400 border-zinc-500/30",
-    "borderClass": "border-zinc-500/40",
-    "textClass": "text-zinc-400",
-    "bgClass": "bg-zinc-500/10",
+    "badgeClass": "bg-stone-500/15 text-stone-400 border-stone-500/30",
+    "borderClass": "border-stone-500/40",
+    "textClass": "text-stone-400",
+    "bgClass": "bg-stone-500/10",
     "description": "Bezier curves, Delaunay triangulation, CST stiffness, CFD cavity & NACA airfoil"
   },
   {
@@ -432,10 +432,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "CE401L",
     "semester": 4,
     "icon": "🛣️",
-    "badgeClass": "bg-yellow-500/15 text-yellow-500 border-yellow-500/30",
-    "borderClass": "border-yellow-500/40",
-    "textClass": "text-yellow-500",
-    "bgClass": "bg-yellow-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "AASHTO pavement, traffic flow, EPANET water pipe, Streeter-Phelps & IS 1893"
   },
   {
@@ -444,10 +444,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "AIML501L",
     "semester": 5,
     "icon": "🤖",
-    "badgeClass": "bg-indigo-500/15 text-indigo-400 border-indigo-500/30",
-    "borderClass": "border-indigo-500/40",
-    "textClass": "text-indigo-400",
-    "bgClass": "bg-indigo-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "A* search, alpha-beta pruning, regression, decision trees, SVM, K-Means & MLP"
   },
   {
@@ -456,10 +456,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "SE502L",
     "semester": 5,
     "icon": "📋",
-    "badgeClass": "bg-cyan-500/15 text-cyan-400 border-cyan-500/30",
-    "borderClass": "border-cyan-500/40",
-    "textClass": "text-cyan-400",
-    "bgClass": "bg-cyan-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "SRS, RTM, UML, Design patterns, BVA, ECP, Cyclomatic complexity & COCOMO"
   },
   {
@@ -468,10 +468,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "TOC503L",
     "semester": 5,
     "icon": "🔄",
-    "badgeClass": "bg-orange-500/15 text-orange-400 border-orange-500/30",
-    "borderClass": "border-orange-500/40",
-    "textClass": "text-orange-400",
-    "bgClass": "bg-orange-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "DFA, NFA conversion, Myhill-Nerode, CFG, CNF, CYK parsing & Turing Machines"
   },
   {
@@ -480,10 +480,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "CS504L",
     "semester": 5,
     "icon": "🏆",
-    "badgeClass": "bg-yellow-500/15 text-yellow-400 border-yellow-500/30",
-    "borderClass": "border-yellow-500/40",
-    "textClass": "text-yellow-400",
-    "bgClass": "bg-yellow-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "Segment trees, Fenwick, LCA binary lifting, Aho-Corasick, Dinic max flow & 2-SAT"
   },
   {
@@ -492,10 +492,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "CS505L",
     "semester": 5,
     "icon": "🐧",
-    "badgeClass": "bg-slate-500/15 text-slate-300 border-slate-500/30",
-    "borderClass": "border-slate-500/40",
-    "textClass": "text-slate-300",
-    "bgClass": "bg-slate-500/10",
+    "badgeClass": "bg-stone-500/15 text-stone-300 border-stone-500/30",
+    "borderClass": "border-stone-500/40",
+    "textClass": "text-stone-300",
+    "bgClass": "bg-stone-500/10",
     "description": "Custom malloc, ptrace debugger, signals, epoll, namespaces & packet sniffer"
   },
   {
@@ -504,10 +504,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "BCA501L",
     "semester": 5,
     "icon": "🚀",
-    "badgeClass": "bg-rose-500/15 text-rose-400 border-rose-500/30",
-    "borderClass": "border-rose-500/40",
-    "textClass": "text-rose-400",
-    "bgClass": "bg-rose-500/10",
+    "badgeClass": "bg-destructive/15 text-destructive border-destructive/30",
+    "borderClass": "border-destructive/40",
+    "textClass": "text-destructive",
+    "bgClass": "bg-destructive/10",
     "description": "Node.js, Express, MongoDB, JWT auth, WebSockets, Redis cache & Jest tests"
   },
   {
@@ -516,10 +516,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "BCA502L",
     "semester": 5,
     "icon": "🐚",
-    "badgeClass": "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
-    "borderClass": "border-emerald-500/40",
-    "textClass": "text-emerald-400",
-    "bgClass": "bg-emerald-500/10",
+    "badgeClass": "bg-success/15 text-success border-success/30",
+    "borderClass": "border-success/40",
+    "textClass": "text-success",
+    "bgClass": "bg-success/10",
     "description": "Grep, sed, awk, cron backups, system monitor, user admin & networking"
   },
   {
@@ -528,10 +528,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "MCA501L",
     "semester": 5,
     "icon": "☁️",
-    "badgeClass": "bg-sky-500/15 text-sky-400 border-sky-500/30",
-    "borderClass": "border-sky-500/40",
-    "textClass": "text-sky-400",
-    "bgClass": "bg-sky-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "Lambda simulators, SQS, Redis distributed locks, OpenTelemetry & Kafka"
   },
   {
@@ -540,10 +540,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "EC501L",
     "semester": 5,
     "icon": "📡",
-    "badgeClass": "bg-blue-500/15 text-blue-400 border-blue-500/30",
-    "borderClass": "border-blue-500/40",
-    "textClass": "text-blue-400",
-    "bgClass": "bg-blue-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "AM/FM modulation, PCM quantizer, ASK/FSK/BPSK, QPSK BER & Eye diagram"
   },
   {
@@ -552,10 +552,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "CD601L",
     "semester": 6,
     "icon": "⚙️",
-    "badgeClass": "bg-purple-500/15 text-purple-400 border-purple-500/30",
-    "borderClass": "border-purple-500/40",
-    "textClass": "text-purple-400",
-    "bgClass": "bg-purple-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "Lex/Yacc, First & Follow, LL(1), SLR(1), TAC generation & DAG optimization"
   },
   {
@@ -564,10 +564,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "CLOUD602L",
     "semester": 6,
     "icon": "☁️",
-    "badgeClass": "bg-sky-500/15 text-sky-400 border-sky-500/30",
-    "borderClass": "border-sky-500/40",
-    "textClass": "text-sky-400",
-    "bgClass": "bg-sky-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "Docker, Raft consensus, MapReduce, circuit breaker, Saga pattern & KMS envelope"
   },
   {
@@ -576,10 +576,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "AI601L",
     "semester": 6,
     "icon": "🔥",
-    "badgeClass": "bg-orange-500/15 text-orange-400 border-orange-500/30",
-    "borderClass": "border-orange-500/40",
-    "textClass": "text-orange-400",
-    "bgClass": "bg-orange-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "PySpark RDD, DataFrames, Window functions, MLlib pipelines & Structured Streaming"
   },
   {
@@ -588,10 +588,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "AI602L",
     "semester": 6,
     "icon": "🧠",
-    "badgeClass": "bg-violet-500/15 text-violet-400 border-violet-500/30",
-    "borderClass": "border-violet-500/40",
-    "textClass": "text-violet-400",
-    "bgClass": "bg-violet-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "PyTorch autograd, CNN, ResNet transfer learning, LSTM, Autoencoders & GANs"
   },
   {
@@ -600,10 +600,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "EC601L",
     "semester": 6,
     "icon": "🔬",
-    "badgeClass": "bg-amber-500/15 text-amber-500 border-amber-500/30",
-    "borderClass": "border-amber-500/40",
-    "textClass": "text-amber-500",
-    "bgClass": "bg-amber-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "Verilog gate/dataflow/behavioral modeling, ALU, FSM sequences & testbenches"
   },
   {
@@ -612,10 +612,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "BCA601L",
     "semester": 6,
     "icon": "🧪",
-    "badgeClass": "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
-    "borderClass": "border-emerald-500/40",
-    "textClass": "text-emerald-400",
-    "bgClass": "bg-emerald-500/10",
+    "badgeClass": "bg-success/15 text-success border-success/30",
+    "borderClass": "border-success/40",
+    "textClass": "text-success",
+    "bgClass": "bg-success/10",
     "description": "JUnit 5, Mockito mocking, Selenium WebDriver automation & Jacoco code coverage"
   },
   {
@@ -624,10 +624,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "BCA602L",
     "semester": 6,
     "icon": "🛡️",
-    "badgeClass": "bg-red-500/15 text-red-400 border-red-500/30",
-    "borderClass": "border-red-500/40",
-    "textClass": "text-red-400",
-    "bgClass": "bg-red-500/10",
+    "badgeClass": "bg-destructive/15 text-destructive border-destructive/30",
+    "borderClass": "border-destructive/40",
+    "textClass": "text-destructive",
+    "bgClass": "bg-destructive/10",
     "description": "Port scanning, ARP spoofing, SQL injection, XSS, reverse shells & buffer overflows"
   },
   {
@@ -636,10 +636,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "CYBER701L",
     "semester": 7,
     "icon": "🔒",
-    "badgeClass": "bg-red-500/15 text-red-400 border-red-500/30",
-    "borderClass": "border-red-500/40",
-    "textClass": "text-red-400",
-    "bgClass": "bg-red-500/10",
+    "badgeClass": "bg-destructive/15 text-destructive border-destructive/30",
+    "borderClass": "border-destructive/40",
+    "textClass": "text-destructive",
+    "bgClass": "bg-destructive/10",
     "description": "AES-128, RSA, Diffie-Hellman, SHA-256, HMAC, RSA-PSS signatures & Snort IDS"
   },
   {
@@ -648,10 +648,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "NLP702L",
     "semester": 7,
     "icon": "💬",
-    "badgeClass": "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
-    "borderClass": "border-emerald-500/40",
-    "textClass": "text-emerald-400",
-    "bgClass": "bg-emerald-500/10",
+    "badgeClass": "bg-success/15 text-success border-success/30",
+    "borderClass": "border-success/40",
+    "textClass": "text-success",
+    "bgClass": "bg-success/10",
     "description": "BPE tokenization, TF-IDF, Word2Vec, LSTM, Attention, Transformers & LoRA fine-tuning"
   },
   {
@@ -660,10 +660,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "CS703L",
     "semester": 7,
     "icon": "🕸️",
-    "badgeClass": "bg-sky-500/15 text-sky-400 border-sky-500/30",
-    "borderClass": "border-sky-500/40",
-    "textClass": "text-sky-400",
-    "bgClass": "bg-sky-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "gRPC Protobuf, Vector clocks, Bully election, 2PC, Paxos & Gossip protocol"
   },
   {
@@ -672,10 +672,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "AI703L",
     "semester": 7,
     "icon": "🎯",
-    "badgeClass": "bg-indigo-500/15 text-indigo-400 border-indigo-500/30",
-    "borderClass": "border-indigo-500/40",
-    "textClass": "text-indigo-400",
-    "bgClass": "bg-indigo-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "Multi-armed bandits, Q-learning, DQN, PPO, SAC & multi-agent cooperative AI"
   },
   {
@@ -684,10 +684,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "AI701L",
     "semester": 7,
     "icon": "👁️",
-    "badgeClass": "bg-teal-500/15 text-teal-400 border-teal-500/30",
-    "borderClass": "border-teal-500/40",
-    "textClass": "text-teal-400",
-    "bgClass": "bg-teal-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "Spatial filtering, Canny edges, contours, Haar cascades, optical flow & perspective transform"
   },
   {
@@ -696,10 +696,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "AI704L",
     "semester": 7,
     "icon": "🎨",
-    "badgeClass": "bg-pink-500/15 text-pink-400 border-pink-500/30",
-    "borderClass": "border-pink-500/40",
-    "textClass": "text-pink-400",
-    "bgClass": "bg-pink-500/10",
+    "badgeClass": "bg-destructive/15 text-destructive border-destructive/30",
+    "borderClass": "border-destructive/40",
+    "textClass": "text-destructive",
+    "bgClass": "bg-destructive/10",
     "description": "Vision Transformers, DDPM diffusion models, NeRF ray marching & SuperGlue"
   },
   {
@@ -708,10 +708,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "CS705L",
     "semester": 7,
     "icon": "🎮",
-    "badgeClass": "bg-purple-500/15 text-purple-400 border-purple-500/30",
-    "borderClass": "border-purple-500/40",
-    "textClass": "text-purple-400",
-    "bgClass": "bg-purple-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "2D rigid body physics, quadtrees, ECS architecture, NavMesh & Phong shading"
   },
   {
@@ -720,10 +720,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "EC701L",
     "semester": 7,
     "icon": "📡",
-    "badgeClass": "bg-green-500/15 text-green-400 border-green-500/30",
-    "borderClass": "border-green-500/40",
-    "textClass": "text-green-400",
-    "bgClass": "bg-green-500/10",
+    "badgeClass": "bg-success/15 text-success border-success/30",
+    "borderClass": "border-success/40",
+    "textClass": "text-success",
+    "bgClass": "bg-success/10",
     "description": "GPIO, ADC, PWM, UART, I2C, FreeRTOS tasks, MQTT telemetry & ESP32 WiFi"
   },
   {
@@ -732,10 +732,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "DEVOPS801L",
     "semester": 8,
     "icon": "🛠️",
-    "badgeClass": "bg-slate-500/15 text-slate-300 border-slate-500/30",
-    "borderClass": "border-slate-500/40",
-    "textClass": "text-slate-300",
-    "bgClass": "bg-slate-500/10",
+    "badgeClass": "bg-stone-500/15 text-stone-300 border-stone-500/30",
+    "borderClass": "border-stone-500/40",
+    "textClass": "text-stone-300",
+    "bgClass": "bg-stone-500/10",
     "description": "CI/CD pipelines, Terraform IaC, Kubernetes deployments, Canary router & Prometheus"
   },
   {
@@ -744,10 +744,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "CS802L",
     "semester": 8,
     "icon": "⛓️",
-    "badgeClass": "bg-amber-500/15 text-amber-500 border-amber-500/30",
-    "borderClass": "border-amber-500/40",
-    "textClass": "text-amber-500",
-    "bgClass": "bg-amber-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "Proof of Work, Merkle tree, Solidity ERC-20, DAO voting & Reentrancy fix"
   },
   {
@@ -756,10 +756,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "AI801L",
     "semester": 8,
     "icon": "✨",
-    "badgeClass": "bg-violet-500/15 text-violet-400 border-violet-500/30",
-    "borderClass": "border-violet-500/40",
-    "textClass": "text-violet-400",
-    "bgClass": "bg-violet-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "Prompt templates, RAG vector retrieval, Agentic tool-use loops & semantic caching"
   },
   {
@@ -768,10 +768,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "AI802L",
     "semester": 8,
     "icon": "📊",
-    "badgeClass": "bg-teal-500/15 text-teal-400 border-teal-500/30",
-    "borderClass": "border-teal-500/40",
-    "textClass": "text-teal-400",
-    "bgClass": "bg-teal-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "MLflow tracking, ONNX model serving, KS drift detection, Canary & SHAP explainability"
   },
   {
@@ -780,10 +780,10 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
     "code": "CS803L",
     "semester": 8,
     "icon": "⚛️",
-    "badgeClass": "bg-cyan-500/15 text-cyan-400 border-cyan-500/30",
-    "borderClass": "border-cyan-500/40",
-    "textClass": "text-cyan-400",
-    "bgClass": "bg-cyan-500/10",
+    "badgeClass": "bg-primary/15 text-primary border-primary/30",
+    "borderClass": "border-primary/40",
+    "textClass": "text-primary",
+    "bgClass": "bg-primary/10",
     "description": "Bell states, quantum teleportation, Deutsch-Jozsa, Grover search & Shor algorithm"
   }
 ];
@@ -1285,38 +1285,38 @@ export default function CodingLabPage() {
   }, [currentProblem]);
 
   return (
-    <div className="flex-1 flex flex-col bg-[#F6F3EC] dark:bg-[#121214] min-h-[calc(100vh-64px)] selection:bg-[#2B4EFF]/20">
+    <div className="flex-1 flex flex-col bg-background dark:bg-[#121214] min-h-[calc(100vh-64px)] selection:bg-primary/20">
       
       {/* =========================================================================
           LEETCODE-GRADE TOP BAR
       ========================================================================= */}
-      <header className="h-13 bg-white dark:bg-[#1C1C1E] border-b border-[#E8E4DA] dark:border-neutral-800 px-4 sm:px-6 flex items-center justify-between shrink-0 z-20">
+      <header className="h-13 bg-white dark:bg-card border-b border-border dark:border-stone-800 px-4 sm:px-6 flex items-center justify-between shrink-0 z-20">
         
         {/* Left: Problem Quick Switcher */}
         <div className="flex items-center gap-2 sm:gap-3">
           <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-lg bg-[#2B4EFF] text-white">
+            <div className="p-1.5 rounded-lg bg-primary text-white">
               <Code className="h-4 w-4" />
             </div>
-            <span className="font-bold text-xs sm:text-sm text-[#111111] dark:text-white hidden md:inline">
+            <span className="font-bold text-xs sm:text-sm text-foreground dark:text-white hidden md:inline">
               Coding Lab
             </span>
           </div>
 
-          <div className="h-4 w-px bg-neutral-300 dark:bg-neutral-700 hidden sm:block" />
+          <div className="h-4 w-px bg-stone-300 dark:bg-stone-700 hidden sm:block" />
 
           {/* Problem Selector Trigger Button */}
           <button
             onClick={() => setIsProblemPickerOpen(true)}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#F6F3EC] dark:bg-neutral-800 hover:bg-[#E6EAFD] dark:hover:bg-neutral-700 border border-[#E8E4DA] dark:border-neutral-700 transition-all cursor-pointer text-xs font-semibold text-[#111111] dark:text-white max-w-[220px] sm:max-w-[340px] truncate"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-background dark:bg-stone-800 hover:bg-primary/10 dark:hover:bg-stone-700 border border-border dark:border-stone-700 transition-all cursor-pointer text-xs font-semibold text-foreground dark:text-white max-w-[220px] sm:max-w-[340px] truncate"
           >
-            <span className="font-mono text-[#2B4EFF] font-bold">
+            <span className="font-mono text-primary font-bold">
               #{currentIndex + 1}
             </span>
             <span className="truncate">{currentProblem?.title}</span>
             <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold uppercase shrink-0 ${
-              currentProblem?.difficulty === 'Easy' ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400' :
-              currentProblem?.difficulty === 'Medium' ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400' : 'bg-rose-500/15 text-rose-600 dark:text-rose-400'
+              currentProblem?.difficulty === 'Easy' ? 'bg-success/15 text-success dark:text-success' :
+              currentProblem?.difficulty === 'Medium' ? 'bg-primary/15 text-primary dark:text-primary' : 'bg-destructive/15 text-destructive dark:text-destructive'
             }`}>
               {currentProblem?.difficulty}
             </span>
@@ -1327,7 +1327,7 @@ export default function CodingLabPage() {
             <button
               onClick={goToPrevProblem}
               disabled={currentIndex <= 0}
-              className="p-1 rounded-md text-neutral-500 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+              className="p-1 rounded-md text-stone-500 hover:text-stone-900 dark:hover:text-white hover:bg-stone-100 dark:hover:bg-stone-800 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
               title="Previous Problem"
             >
               <ChevronLeft className="h-4 w-4" />
@@ -1335,7 +1335,7 @@ export default function CodingLabPage() {
             <button
               onClick={goToNextProblem}
               disabled={currentIndex >= filteredProblems.length - 1}
-              className="p-1 rounded-md text-neutral-500 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+              className="p-1 rounded-md text-stone-500 hover:text-stone-900 dark:hover:text-white hover:bg-stone-100 dark:hover:bg-stone-800 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
               title="Next Problem"
             >
               <ChevronRight className="h-4 w-4" />
@@ -1349,7 +1349,7 @@ export default function CodingLabPage() {
           <button
             onClick={handleRun}
             disabled={status === 'compiling' || status === 'running'}
-            className="h-8 px-3.5 rounded-full bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 text-[#111111] dark:text-white text-xs font-bold border border-neutral-300 dark:border-neutral-700 flex items-center gap-1.5 transition-all cursor-pointer shadow-xs disabled:opacity-50"
+            className="h-8 px-3.5 rounded-full bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-foreground dark:text-white text-xs font-bold border border-stone-300 dark:border-stone-700 flex items-center gap-1.5 transition-all cursor-pointer shadow-xs disabled:opacity-50"
             title="Run Code (Ctrl + Enter)"
           >
             <Play className="h-3.5 w-3.5 fill-current" />
@@ -1360,7 +1360,7 @@ export default function CodingLabPage() {
           <button
             onClick={handleSubmit}
             disabled={status === 'compiling' || status === 'running'}
-            className="h-8 px-4 rounded-full bg-[#2B4EFF] hover:bg-[#1E3ECC] text-white text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm disabled:opacity-50"
+            className="h-8 px-4 rounded-full bg-primary hover:bg-primary text-white text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm disabled:opacity-50"
             title="Submit Solution (Ctrl + Shift + Enter)"
           >
             {status === 'compiling' || status === 'running' ? (
@@ -1378,8 +1378,8 @@ export default function CodingLabPage() {
             onClick={() => setIsTimerRunning(!isTimerRunning)}
             className={`h-8 px-2.5 rounded-full text-xs font-mono font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
               isTimerRunning 
-                ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30' 
-                : 'text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800'
+                ? 'bg-primary/10 text-primary dark:text-primary border border-primary/30' 
+                : 'text-stone-500 hover:bg-stone-100 dark:hover:bg-stone-800'
             }`}
             title="Practice Stopwatch Timer"
           >
@@ -1392,7 +1392,7 @@ export default function CodingLabPage() {
         <div className="flex items-center gap-1.5">
           <button
             onClick={handleCopyFacultySubmission}
-            className="h-8 px-2.5 rounded-lg text-xs font-semibold text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 hidden md:flex items-center gap-1 transition-all cursor-pointer"
+            className="h-8 px-2.5 rounded-lg text-xs font-semibold text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 hidden md:flex items-center gap-1 transition-all cursor-pointer"
             title="Export Verified College Practical Record"
           >
             <FileText className="h-3.5 w-3.5" />
@@ -1401,7 +1401,7 @@ export default function CodingLabPage() {
 
           <button
             onClick={() => setIsLabManualOpen(true)}
-            className="h-8 px-2.5 rounded-lg text-xs font-semibold text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 hidden lg:flex items-center gap-1 transition-all cursor-pointer"
+            className="h-8 px-2.5 rounded-lg text-xs font-semibold text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 hidden lg:flex items-center gap-1 transition-all cursor-pointer"
             title="Print University Lab Manual"
           >
             <Printer className="h-3.5 w-3.5" />
@@ -1410,7 +1410,7 @@ export default function CodingLabPage() {
 
           <button
             onClick={handleResetCode}
-            className="h-8 w-8 rounded-lg text-neutral-500 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 flex items-center justify-center transition-all cursor-pointer"
+            className="h-8 w-8 rounded-lg text-stone-500 hover:text-stone-900 dark:hover:text-white hover:bg-stone-100 dark:hover:bg-stone-800 flex items-center justify-center transition-all cursor-pointer"
             title="Reset code to starter template"
           >
             <RotateCcw className="h-3.5 w-3.5" />
@@ -1419,7 +1419,7 @@ export default function CodingLabPage() {
           <button
             onClick={toggleFocusMode}
             className={`h-8 w-8 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
-              focusMode ? 'bg-[#2B4EFF] text-white' : 'text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800'
+              focusMode ? 'bg-primary text-white' : 'text-stone-500 hover:bg-stone-100 dark:hover:bg-stone-800'
             }`}
             title="Toggle Focus Mode (Full Screen)"
           >
@@ -1434,11 +1434,11 @@ export default function CodingLabPage() {
       <div className="flex-1 flex flex-col lg:flex-row overflow-hidden h-[calc(100vh-115px)]">
         
         {/* Mobile View Toggle Pills */}
-        <div className="lg:hidden flex border-b border-[#E8E4DA] dark:border-neutral-800 bg-white dark:bg-[#1C1C1E]">
+        <div className="lg:hidden flex border-b border-border dark:border-stone-800 bg-white dark:bg-card">
           <button
             onClick={() => setMobileView('specs')}
             className={`flex-1 py-2 text-xs font-bold border-b-2 transition-all ${
-              mobileView === 'specs' ? 'border-[#2B4EFF] text-[#2B4EFF] bg-[#2B4EFF]/5' : 'border-transparent text-neutral-500'
+              mobileView === 'specs' ? 'border-primary text-primary bg-primary/5' : 'border-transparent text-stone-500'
             }`}
           >
             Problem Specs
@@ -1446,7 +1446,7 @@ export default function CodingLabPage() {
           <button
             onClick={() => setMobileView('editor')}
             className={`flex-1 py-2 text-xs font-bold border-b-2 transition-all ${
-              mobileView === 'editor' ? 'border-[#2B4EFF] text-[#2B4EFF] bg-[#2B4EFF]/5' : 'border-transparent text-neutral-500'
+              mobileView === 'editor' ? 'border-primary text-primary bg-primary/5' : 'border-transparent text-stone-500'
             }`}
           >
             Code Editor
@@ -1454,7 +1454,7 @@ export default function CodingLabPage() {
           <button
             onClick={() => setMobileView('console')}
             className={`flex-1 py-2 text-xs font-bold border-b-2 transition-all ${
-              mobileView === 'console' ? 'border-[#2B4EFF] text-[#2B4EFF] bg-[#2B4EFF]/5' : 'border-transparent text-neutral-500'
+              mobileView === 'console' ? 'border-primary text-primary bg-primary/5' : 'border-transparent text-stone-500'
             }`}
           >
             Test Harness
@@ -1464,12 +1464,12 @@ export default function CodingLabPage() {
         {/* -------------------------------------------------------------------------
             LEFT PANE: PROBLEM STATEMENT & SUPPORTING TABS (45% Width)
         ------------------------------------------------------------------------- */}
-        <div className={`w-full lg:w-[46%] xl:w-[44%] flex flex-col border-r border-[#E8E4DA] dark:border-neutral-800 bg-white dark:bg-[#1C1C1E] overflow-hidden ${
+        <div className={`w-full lg:w-[46%] xl:w-[44%] flex flex-col border-r border-border dark:border-stone-800 bg-white dark:bg-card overflow-hidden ${
           mobileView === 'specs' ? 'flex' : 'hidden lg:flex'
         }`}>
           
           {/* Sub-Tabs Navigation */}
-          <div className="flex items-center overflow-x-auto border-b border-[#E8E4DA] dark:border-neutral-800 bg-[#F6F3EC]/80 dark:bg-neutral-900/80 px-3 scrollbar-none shrink-0">
+          <div className="flex items-center overflow-x-auto border-b border-border dark:border-stone-800 bg-background/80 dark:bg-stone-900/80 px-3 scrollbar-none shrink-0">
             {[
               { id: 'specs', icon: BookOpen, label: 'Description' },
               { id: 'hints', icon: Lightbulb, label: 'Hints' },
@@ -1482,11 +1482,11 @@ export default function CodingLabPage() {
                 onClick={() => setLeftTab(tab.id as any)}
                 className={`flex items-center gap-1.5 px-3.5 py-2.5 text-xs font-semibold whitespace-nowrap border-b-2 transition-all cursor-pointer ${
                   leftTab === tab.id 
-                    ? 'border-[#2B4EFF] text-[#2B4EFF] font-bold bg-white dark:bg-[#1C1C1E]' 
-                    : 'border-transparent text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200'
+                    ? 'border-primary text-primary font-bold bg-white dark:bg-card' 
+                    : 'border-transparent text-stone-500 hover:text-stone-800 dark:hover:text-stone-200'
                 }`}
               >
-                <tab.icon className={`h-3.5 w-3.5 ${tab.id === 'agent' ? 'text-amber-500' : ''}`} /> 
+                <tab.icon className={`h-3.5 w-3.5 ${tab.id === 'agent' ? 'text-primary' : ''}`} /> 
                 <span>{tab.label}</span>
               </button>
             ))}
@@ -1502,35 +1502,35 @@ export default function CodingLabPage() {
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${
-                      currentProblem.difficulty === 'Easy' ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400' :
-                      currentProblem.difficulty === 'Medium' ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400' : 'bg-rose-500/15 text-rose-600 dark:text-rose-400'
+                      currentProblem.difficulty === 'Easy' ? 'bg-success/15 text-success dark:text-success' :
+                      currentProblem.difficulty === 'Medium' ? 'bg-primary/15 text-primary dark:text-primary' : 'bg-destructive/15 text-destructive dark:text-destructive'
                     }`}>
                       {currentProblem.difficulty}
                     </span>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 font-mono">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 font-mono">
                       {currentProblem.marks}
                     </span>
-                    <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#E6EAFD] text-[#2B4EFF] dark:bg-blue-950/40 dark:text-blue-300">
+                    <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-primary/10 text-primary dark:bg-primary/15 dark:text-primary">
                       {currentProblem.subjectName}
                     </span>
                     {solvedProblems.includes(currentProblem.id) && (
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 flex items-center gap-1">
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-success/15 text-success flex items-center gap-1">
                         <Check className="h-3 w-3 stroke-[3]" /> Solved
                       </span>
                     )}
                   </div>
 
-                  <h1 className="text-xl sm:text-2xl font-black text-[#111111] dark:text-white leading-tight">
+                  <h1 className="text-xl sm:text-2xl font-bold text-foreground dark:text-white leading-tight">
                     {currentProblem.title}
                   </h1>
                 </div>
 
                 {/* Problem Description */}
                 <div className="space-y-2">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-500">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-stone-500">
                     Objective & Requirements
                   </h3>
-                  <div className="text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed whitespace-pre-line bg-[#F6F3EC] dark:bg-neutral-800/40 p-4 rounded-2xl border border-[#E8E4DA] dark:border-neutral-800">
+                  <div className="text-sm text-stone-700 dark:text-stone-300 leading-relaxed whitespace-pre-line bg-background dark:bg-stone-800/40 p-4 rounded-2xl border border-border dark:border-stone-800">
                     {currentProblem.description}
                   </div>
                 </div>
@@ -1538,13 +1538,13 @@ export default function CodingLabPage() {
                 {/* Constraints */}
                 {currentProblem.constraints && currentProblem.constraints.length > 0 && (
                   <div className="space-y-2">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-500">
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-stone-500">
                       Constraints & Bounds
                     </h3>
                     <div className="grid grid-cols-1 gap-2">
                       {currentProblem.constraints.map((c, i) => (
-                        <div key={i} className="flex items-center gap-2 p-2.5 rounded-xl bg-neutral-50 dark:bg-neutral-800/60 border border-[#E8E4DA] dark:border-neutral-700 text-xs font-mono text-neutral-800 dark:text-neutral-200">
-                          <span className="h-1.5 w-1.5 rounded-full bg-[#2B4EFF]" />
+                        <div key={i} className="flex items-center gap-2 p-2.5 rounded-xl bg-stone-50 dark:bg-stone-800/60 border border-border dark:border-stone-700 text-xs font-mono text-stone-800 dark:text-stone-200">
+                          <span className="h-1.5 w-1.5 rounded-full bg-primary" />
                           <span>{c}</span>
                         </div>
                       ))}
@@ -1554,10 +1554,10 @@ export default function CodingLabPage() {
 
                 {/* Expected Output Demonstration */}
                 <div className="space-y-2">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-500">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-stone-500">
                     Target Output Specification
                   </h3>
-                  <pre className="p-4 rounded-2xl bg-neutral-900 text-neutral-100 font-mono text-xs overflow-x-auto leading-relaxed border border-neutral-800">
+                  <pre className="p-4 rounded-2xl bg-stone-900 text-stone-100 font-mono text-xs overflow-x-auto leading-relaxed border border-stone-800">
                     <code>{currentProblem.expectedOutput}</code>
                   </pre>
                 </div>
@@ -1567,19 +1567,19 @@ export default function CodingLabPage() {
             {/* TAB 2: HINTS */}
             {leftTab === 'hints' && (
               <div className="space-y-4 animate-fade-in">
-                <div className="flex items-center gap-2 text-xs font-bold text-amber-600 dark:text-amber-400">
+                <div className="flex items-center gap-2 text-xs font-bold text-primary dark:text-primary">
                   <Lightbulb className="h-4 w-4" />
                   <span>Step-by-Step Problem Hints</span>
                 </div>
                 {currentProblem.hints && currentProblem.hints.length > 0 ? (
                   currentProblem.hints.map((hint, idx) => (
-                    <div key={idx} className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-900 dark:text-amber-200 leading-relaxed">
+                    <div key={idx} className="p-4 rounded-2xl bg-primary/10 border border-primary/20 text-xs text-primary dark:text-primary leading-relaxed">
                       <strong className="block font-bold mb-1">Hint {idx + 1}:</strong>
                       {hint}
                     </div>
                   ))
                 ) : (
-                  <div className="p-4 rounded-xl text-xs text-neutral-500 italic bg-neutral-50 dark:bg-neutral-800">
+                  <div className="p-4 rounded-xl text-xs text-stone-500 italic bg-stone-50 dark:bg-stone-800">
                     No additional hints provided for this practical.
                   </div>
                 )}
@@ -1589,23 +1589,23 @@ export default function CodingLabPage() {
             {/* TAB 3: FACULTY AI TUTOR & VIVA QUESTIONS */}
             {leftTab === 'agent' && (
               <div className="space-y-5 animate-fade-in">
-                <div className="p-4 rounded-2xl bg-[#E6EAFD]/50 dark:bg-blue-950/30 border border-[#2B4EFF]/20 space-y-2">
-                  <div className="flex items-center gap-2 text-xs font-bold text-[#2B4EFF] dark:text-blue-300">
+                <div className="p-4 rounded-2xl bg-primary/10 dark:bg-primary/15 border border-primary/20 space-y-2">
+                  <div className="flex items-center gap-2 text-xs font-bold text-primary dark:text-primary">
                     <Bot className="h-4 w-4" />
                     <span>Faculty Architectural Concept</span>
                   </div>
-                  <div className="text-xs text-neutral-700 dark:text-neutral-300 leading-relaxed whitespace-pre-line">
+                  <div className="text-xs text-stone-700 dark:text-stone-300 leading-relaxed whitespace-pre-line">
                     {currentFacultyAI.concept}
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-500">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-stone-500">
                     Implementation Blueprint
                   </h4>
                   <div className="space-y-1.5">
                     {currentFacultyAI.blueprint.map((step, idx) => (
-                      <div key={idx} className="p-2.5 rounded-xl bg-[#F6F3EC] dark:bg-neutral-800 border border-[#E8E4DA] dark:border-neutral-700 text-xs text-neutral-800 dark:text-neutral-200">
+                      <div key={idx} className="p-2.5 rounded-xl bg-background dark:bg-stone-800 border border-border dark:border-stone-700 text-xs text-stone-800 dark:text-stone-200">
                         {step}
                       </div>
                     ))}
@@ -1614,16 +1614,16 @@ export default function CodingLabPage() {
 
                 {currentFacultyAI.vivaQuestions && currentFacultyAI.vivaQuestions.length > 0 && (
                   <div className="space-y-2 pt-2">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-primary dark:text-primary">
                       College Viva Exam Questions
                     </h4>
                     <div className="space-y-2">
                       {currentFacultyAI.vivaQuestions.map((viva, idx) => (
-                        <div key={idx} className="p-3.5 rounded-2xl border border-amber-500/20 bg-amber-500/5 space-y-1.5">
-                          <p className="text-xs font-bold text-amber-900 dark:text-amber-300">
+                        <div key={idx} className="p-3.5 rounded-2xl border border-primary/20 bg-primary/5 space-y-1.5">
+                          <p className="text-xs font-bold text-primary dark:text-primary">
                             Q{idx + 1}: {viva.q}
                           </p>
-                          <p className="text-xs text-neutral-700 dark:text-neutral-300 leading-relaxed">
+                          <p className="text-xs text-stone-700 dark:text-stone-300 leading-relaxed">
                             {viva.a}
                           </p>
                         </div>
@@ -1637,33 +1637,33 @@ export default function CodingLabPage() {
             {/* TAB 4: SUBMISSIONS HISTORY */}
             {leftTab === 'history' && (
               <div className="space-y-4 animate-fade-in">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-neutral-500">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-stone-500">
                   Your Past Practical Submissions
                 </h3>
                 {submissionHistory.filter(s => s.problemId === currentProblem.id).length > 0 ? (
                   submissionHistory
                     .filter(s => s.problemId === currentProblem.id)
                     .map((sub, idx) => (
-                      <div key={idx} className="p-3.5 rounded-2xl border border-[#E8E4DA] dark:border-neutral-800 bg-[#F6F3EC] dark:bg-neutral-800/40 flex items-center justify-between">
+                      <div key={idx} className="p-3.5 rounded-2xl border border-border dark:border-stone-800 bg-background dark:bg-stone-800/40 flex items-center justify-between">
                         <div className="flex items-center gap-2.5">
-                          <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                          <CheckCircle2 className="h-4 w-4 text-success" />
                           <div>
-                            <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                            <span className="text-xs font-bold text-success dark:text-success">
                               Accepted
                             </span>
-                            <span className="text-[10px] text-neutral-400 block font-mono">
+                            <span className="text-[10px] text-stone-400 block font-mono">
                               {new Date(sub.timestamp).toLocaleDateString()} · {new Date(sub.timestamp).toLocaleTimeString()}
                             </span>
                           </div>
                         </div>
 
-                        <div className="text-right text-xs font-mono text-neutral-500">
+                        <div className="text-right text-xs font-mono text-stone-500">
                           <span>{sub.runtimeMs || 3} ms</span> · <span>{sub.memoryMb || 14.1} MB</span>
                         </div>
                       </div>
                     ))
                 ) : (
-                  <div className="p-6 rounded-2xl border border-dashed border-[#E8E4DA] dark:border-neutral-800 text-center text-xs text-neutral-500 space-y-1">
+                  <div className="p-6 rounded-2xl border border-dashed border-border dark:border-stone-800 text-center text-xs text-stone-500 space-y-1">
                     <p className="font-semibold">No submissions recorded for this practical yet.</p>
                     <p className="text-[11px]">Click "Run" or "Submit" to test your code against university harness.</p>
                   </div>
@@ -1675,7 +1675,7 @@ export default function CodingLabPage() {
             {leftTab === 'solution' && (
               <div className="space-y-4 animate-fade-in">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-neutral-500 uppercase tracking-wider">
+                  <span className="text-xs font-bold text-stone-500 uppercase tracking-wider">
                     Official Reference Solution
                   </span>
                   <button
@@ -1683,13 +1683,13 @@ export default function CodingLabPage() {
                       navigator.clipboard.writeText(currentProblem.modelSolution);
                       toast.success('Model solution copied to clipboard!');
                     }}
-                    className="text-xs font-semibold text-[#2B4EFF] hover:underline flex items-center gap-1 cursor-pointer"
+                    className="text-xs font-semibold text-primary hover:underline flex items-center gap-1 cursor-pointer"
                   >
                     <Copy className="h-3 w-3" />
                     <span>Copy Solution</span>
                   </button>
                 </div>
-                <pre className="p-4 rounded-2xl bg-neutral-900 text-neutral-100 font-mono text-xs overflow-x-auto leading-relaxed border border-neutral-800">
+                <pre className="p-4 rounded-2xl bg-stone-900 text-stone-100 font-mono text-xs overflow-x-auto leading-relaxed border border-stone-800">
                   <code>{currentProblem.modelSolution}</code>
                 </pre>
               </div>
@@ -1701,25 +1701,25 @@ export default function CodingLabPage() {
         {/* -------------------------------------------------------------------------
             RIGHT PANE: MONOSPACE IDE & TEST RUNNER CONSOLE (55% Width)
         ------------------------------------------------------------------------- */}
-        <div className={`flex-1 flex flex-col bg-[#18181B] overflow-hidden ${
+        <div className={`flex-1 flex flex-col bg-foreground overflow-hidden ${
           mobileView === 'editor' || mobileView === 'console' ? 'flex' : 'hidden lg:flex'
         }`}>
           
           {/* Editor Header Bar */}
-          <div className="h-10 bg-[#27272A] border-b border-neutral-800 px-4 flex items-center justify-between shrink-0 select-none">
+          <div className="h-10 bg-[#27272A] border-b border-stone-800 px-4 flex items-center justify-between shrink-0 select-none">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-mono font-semibold text-neutral-200 bg-neutral-800 px-2.5 py-0.5 rounded border border-neutral-700">
+              <span className="text-xs font-mono font-semibold text-stone-200 bg-stone-800 px-2.5 py-0.5 rounded border border-stone-700">
                 {currentProblem?.fileName || 'solution.c'}
               </span>
 
               {/* Font Size Pills */}
-              <div className="hidden sm:flex items-center bg-neutral-800 rounded p-0.5 text-[10px] font-mono text-neutral-400">
+              <div className="hidden sm:flex items-center bg-stone-800 rounded p-0.5 text-[10px] font-mono text-stone-400">
                 {(['12px', '13px', '14px', '16px'] as const).map(sz => (
                   <button
                     key={sz}
                     onClick={() => setEditorFontSize(sz)}
                     className={`px-1.5 py-0.5 rounded cursor-pointer ${
-                      editorFontSize === sz ? 'bg-neutral-700 text-white font-bold' : 'hover:text-neutral-200'
+                      editorFontSize === sz ? 'bg-stone-700 text-white font-bold' : 'hover:text-stone-200'
                     }`}
                   >
                     {sz.replace('px', '')}
@@ -1731,7 +1731,7 @@ export default function CodingLabPage() {
             <div className="flex items-center gap-2">
               <button
                 onClick={handleFormatCode}
-                className="text-xs text-neutral-400 hover:text-white px-2 py-0.5 rounded hover:bg-neutral-800 transition-colors cursor-pointer"
+                className="text-xs text-stone-400 hover:text-white px-2 py-0.5 rounded hover:bg-stone-800 transition-colors cursor-pointer"
                 title="Format indentation"
               >
                 Format
@@ -1741,7 +1741,7 @@ export default function CodingLabPage() {
                   navigator.clipboard.writeText(code);
                   toast.success('Code copied to clipboard.');
                 }}
-                className="text-xs text-neutral-400 hover:text-white px-2 py-0.5 rounded hover:bg-neutral-800 transition-colors flex items-center gap-1 cursor-pointer"
+                className="text-xs text-stone-400 hover:text-white px-2 py-0.5 rounded hover:bg-stone-800 transition-colors flex items-center gap-1 cursor-pointer"
               >
                 <Copy className="h-3 w-3" />
                 <span>Copy</span>
@@ -1752,7 +1752,7 @@ export default function CodingLabPage() {
           {/* Code Editor Body */}
           <div className="flex-1 flex overflow-hidden relative">
             {/* Line Numbers */}
-            <div className="w-10 bg-[#1F1F23] border-r border-neutral-800/80 text-neutral-600 font-mono text-[11px] py-4 flex flex-col items-center select-none shrink-0 overflow-hidden">
+            <div className="w-10 bg-[#1F1F23] border-r border-stone-800/80 text-stone-600 font-mono text-[11px] py-4 flex flex-col items-center select-none shrink-0 overflow-hidden">
               {Array.from({ length: Math.max(1, code.split('\n').length) }).map((_, i) => (
                 <div key={i} className="leading-relaxed">{i + 1}</div>
               ))}
@@ -1765,22 +1765,22 @@ export default function CodingLabPage() {
               onKeyDown={handleKeyDown}
               spellCheck={false}
               style={{ fontSize: editorFontSize }}
-              className="flex-1 w-full h-full p-4 font-mono bg-transparent border-0 text-neutral-100 resize-none focus-visible:ring-0 leading-relaxed selection:bg-neutral-800 rounded-none shadow-none"
+              className="flex-1 w-full h-full p-4 font-mono bg-transparent border-0 text-stone-100 resize-none focus-visible:ring-0 leading-relaxed selection:bg-stone-800 rounded-none shadow-none"
             />
           </div>
 
           {/* =========================================================================
               LEETCODE / HACKERRANK BOTTOM CONSOLE & TEST HARNESS
           ========================================================================= */}
-          <div className={`${isConsoleExpanded ? 'h-80 sm:h-96' : 'h-56 sm:h-64'} flex flex-col bg-[#141416] border-t border-neutral-800 shrink-0 transition-all duration-200`}>
+          <div className={`${isConsoleExpanded ? 'h-80 sm:h-96' : 'h-56 sm:h-64'} flex flex-col bg-[#141416] border-t border-stone-800 shrink-0 transition-all duration-200`}>
             
             {/* Console Tabs & Runner Bar */}
-            <div className="h-10 px-4 bg-[#1F1F23] border-b border-neutral-800 flex items-center justify-between shrink-0 select-none">
+            <div className="h-10 px-4 bg-[#1F1F23] border-b border-stone-800 flex items-center justify-between shrink-0 select-none">
               <div className="flex items-center gap-1.5">
                 <button
                   onClick={() => setActiveConsoleTab('result')}
                   className={`px-3 py-1 text-xs font-mono rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
-                    activeConsoleTab === 'result' ? 'bg-[#27272A] text-white font-bold' : 'text-neutral-400 hover:text-neutral-200'
+                    activeConsoleTab === 'result' ? 'bg-[#27272A] text-white font-bold' : 'text-stone-400 hover:text-stone-200'
                   }`}
                 >
                   <Award className="h-3.5 w-3.5" />
@@ -1790,7 +1790,7 @@ export default function CodingLabPage() {
                 <button
                   onClick={() => setActiveConsoleTab('testcase')}
                   className={`px-3 py-1 text-xs font-mono rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
-                    activeConsoleTab === 'testcase' ? 'bg-[#27272A] text-white font-bold' : 'text-neutral-400 hover:text-neutral-200'
+                    activeConsoleTab === 'testcase' ? 'bg-[#27272A] text-white font-bold' : 'text-stone-400 hover:text-stone-200'
                   }`}
                 >
                   <CheckCircle2 className="h-3.5 w-3.5" />
@@ -1800,7 +1800,7 @@ export default function CodingLabPage() {
                 <button
                   onClick={() => setActiveConsoleTab('terminal')}
                   className={`px-3 py-1 text-xs font-mono rounded-lg transition-all cursor-pointer flex items-center gap-1.5 ${
-                    activeConsoleTab === 'terminal' ? 'bg-[#27272A] text-white font-bold' : 'text-neutral-400 hover:text-neutral-200'
+                    activeConsoleTab === 'terminal' ? 'bg-[#27272A] text-white font-bold' : 'text-stone-400 hover:text-stone-200'
                   }`}
                 >
                   <Terminal className="h-3.5 w-3.5" />
@@ -1811,7 +1811,7 @@ export default function CodingLabPage() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setIsConsoleExpanded(!isConsoleExpanded)}
-                  className="text-neutral-400 hover:text-white p-1 rounded hover:bg-neutral-800 transition-colors cursor-pointer"
+                  className="text-stone-400 hover:text-white p-1 rounded hover:bg-stone-800 transition-colors cursor-pointer"
                   title="Expand / Collapse Console"
                 >
                   {isConsoleExpanded ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
@@ -1820,7 +1820,7 @@ export default function CodingLabPage() {
             </div>
 
             {/* Console Content Area */}
-            <div className="flex-1 overflow-y-auto p-4 font-mono text-xs text-neutral-300 scrollbar-thin">
+            <div className="flex-1 overflow-y-auto p-4 font-mono text-xs text-stone-300 scrollbar-thin">
               
               {/* TAB 1: TEST RESULT */}
               {activeConsoleTab === 'result' && (
@@ -1828,21 +1828,21 @@ export default function CodingLabPage() {
                   {lastSubmissionStats ? (
                     <div className="space-y-4 animate-fade-in">
                       {lastSubmissionStats.status === 'accepted' ? (
-                        <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 space-y-2">
+                        <div className="p-4 rounded-xl bg-success/10 border border-success/30 text-success space-y-2">
                           <div className="flex items-center justify-between">
                             <span className="text-base font-bold flex items-center gap-2">
-                              <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                              <CheckCircle2 className="h-5 w-5 text-success" />
                               Accepted
                             </span>
-                            <span className="text-xs bg-emerald-500/20 px-2 py-0.5 rounded font-mono">
+                            <span className="text-xs bg-success/20 px-2 py-0.5 rounded font-mono">
                               +75 XP Earned
                             </span>
                           </div>
 
-                          <div className="flex items-center gap-4 text-xs font-mono text-neutral-300 pt-1">
+                          <div className="flex items-center gap-4 text-xs font-mono text-stone-300 pt-1">
                             <div>
                               Runtime: <strong className="text-white">{lastSubmissionStats.runtimeMs} ms</strong>
-                              <span className="text-emerald-400 text-[10px] ml-1">({lastSubmissionStats.runtimePercentile}% faster)</span>
+                              <span className="text-success text-[10px] ml-1">({lastSubmissionStats.runtimePercentile}% faster)</span>
                             </div>
                             <div>
                               Memory: <strong className="text-white">{lastSubmissionStats.memoryMb} MB</strong>
@@ -1850,12 +1850,12 @@ export default function CodingLabPage() {
                           </div>
                         </div>
                       ) : (
-                        <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 space-y-2">
+                        <div className="p-4 rounded-xl bg-destructive/10 border border-destructive/30 text-destructive space-y-2">
                           <div className="text-base font-bold flex items-center gap-2">
-                            <XCircle className="h-5 w-5 text-rose-500" />
+                            <XCircle className="h-5 w-5 text-destructive" />
                             Wrong Answer
                           </div>
-                          <p className="text-xs text-neutral-300">
+                          <p className="text-xs text-stone-300">
                             Assertion failed on Case {lastSubmissionStats.failedCaseIndex || 1}. Inspect output below.
                           </p>
                         </div>
@@ -1863,17 +1863,17 @@ export default function CodingLabPage() {
 
                       {/* Output Details */}
                       <div className="space-y-1">
-                        <span className="text-[10px] text-neutral-400 uppercase tracking-wider block">
+                        <span className="text-[10px] text-stone-400 uppercase tracking-wider block">
                           Standard Sandbox Output
                         </span>
-                        <pre className="p-3 rounded-lg bg-neutral-900 border border-neutral-800 text-neutral-200 overflow-x-auto whitespace-pre-wrap">
+                        <pre className="p-3 rounded-lg bg-stone-900 border border-stone-800 text-stone-200 overflow-x-auto whitespace-pre-wrap">
                           {output || 'Execution completed with 0 errors.'}
                         </pre>
                       </div>
                     </div>
                   ) : (
-                    <div className="h-full flex flex-col items-center justify-center text-center text-neutral-500 py-8 space-y-2">
-                      <Terminal className="h-8 w-8 text-neutral-600" />
+                    <div className="h-full flex flex-col items-center justify-center text-center text-stone-500 py-8 space-y-2">
+                      <Terminal className="h-8 w-8 text-stone-600" />
                       <p>Run your code or submit to view test results and runtime benchmarks.</p>
                     </div>
                   )}
@@ -1890,8 +1890,8 @@ export default function CodingLabPage() {
                         onClick={() => setActiveTestcaseIndex(idx === 2 ? 'custom' : idx)}
                         className={`px-3 py-1 rounded-lg text-xs font-mono transition-all cursor-pointer ${
                           activeTestcaseIndex === (idx === 2 ? 'custom' : idx)
-                            ? 'bg-neutral-800 text-white font-bold'
-                            : 'text-neutral-500 hover:text-neutral-300'
+                            ? 'bg-stone-800 text-white font-bold'
+                            : 'text-stone-500 hover:text-stone-300'
                         }`}
                       >
                         {tc}
@@ -1901,27 +1901,27 @@ export default function CodingLabPage() {
 
                   {activeTestcaseIndex === 'custom' ? (
                     <div className="space-y-2">
-                      <label className="text-[10px] text-neutral-400 uppercase tracking-wider">
+                      <label className="text-[10px] text-stone-400 uppercase tracking-wider">
                         Custom Stdin Input Harness
                       </label>
                       <textarea
                         value={customTestInput}
                         onChange={(e) => setCustomTestInput(e.target.value)}
-                        className="w-full h-24 p-3 rounded-lg bg-neutral-900 border border-neutral-800 text-xs font-mono text-neutral-100 outline-none focus:ring-1 focus:ring-[#2B4EFF]"
+                        className="w-full h-24 p-3 rounded-lg bg-stone-900 border border-stone-800 text-xs font-mono text-stone-100 outline-none focus:ring-1 focus:ring-primary"
                         placeholder="Enter custom input parameters..."
                       />
                     </div>
                   ) : (
-                    <div className="p-3 rounded-lg bg-neutral-900 border border-neutral-800 space-y-2 text-xs">
+                    <div className="p-3 rounded-lg bg-stone-900 border border-stone-800 space-y-2 text-xs">
                       <div>
-                        <span className="text-neutral-500 block text-[10px] uppercase">Input:</span>
-                        <span className="text-neutral-200 font-mono">
+                        <span className="text-stone-500 block text-[10px] uppercase">Input:</span>
+                        <span className="text-stone-200 font-mono">
                           {activeTestcaseIndex === 0 ? 'arr = [1, 2, 3, 4, 5], n = 5' : 'arr = [10, 20, 30, 40], n = 4'}
                         </span>
                       </div>
                       <div>
-                        <span className="text-neutral-500 block text-[10px] uppercase">Expected:</span>
-                        <span className="text-emerald-400 font-mono">
+                        <span className="text-stone-500 block text-[10px] uppercase">Expected:</span>
+                        <span className="text-success font-mono">
                           {activeTestcaseIndex === 0 ? '[5, 4, 3, 2, 1]' : '[40, 30, 20, 10]'}
                         </span>
                       </div>
@@ -1935,21 +1935,21 @@ export default function CodingLabPage() {
                 <div className="flex flex-col h-full space-y-2">
                   <div className="flex-1 space-y-1">
                     {terminalLogs.map((log, i) => (
-                      <div key={i} className="leading-relaxed whitespace-pre-wrap text-neutral-300">
+                      <div key={i} className="leading-relaxed whitespace-pre-wrap text-stone-300">
                         {log}
                       </div>
                     ))}
                     <div ref={terminalBottomRef} />
                   </div>
 
-                  <form onSubmit={handleTerminalSubmit} className="flex items-center gap-2 pt-2 border-t border-neutral-800">
-                    <span className="text-emerald-400 font-bold">$</span>
+                  <form onSubmit={handleTerminalSubmit} className="flex items-center gap-2 pt-2 border-t border-stone-800">
+                    <span className="text-success font-bold">$</span>
                     <input
                       type="text"
                       value={terminalInput}
                       onChange={(e) => setTerminalInput(e.target.value)}
                       placeholder="Type command (run, test, clear, help)..."
-                      className="flex-1 bg-transparent text-xs font-mono text-white outline-none placeholder:text-neutral-600"
+                      className="flex-1 bg-transparent text-xs font-mono text-white outline-none placeholder:text-stone-600"
                     />
                   </form>
                 </div>
@@ -1967,42 +1967,42 @@ export default function CodingLabPage() {
       ========================================================================= */}
       {isProblemPickerOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
-          <div className="w-full max-w-2xl bg-white dark:bg-[#1C1C1E] border border-[#E8E4DA] dark:border-neutral-800 rounded-[24px] shadow-2xl flex flex-col max-h-[85vh] overflow-hidden">
+          <div className="w-full max-w-2xl bg-white dark:bg-card border border-border dark:border-stone-800 rounded-2xl shadow-lg flex flex-col max-h-[85vh] overflow-hidden">
             
             {/* Modal Header */}
-            <div className="p-5 border-b border-[#E8E4DA] dark:border-neutral-800 flex items-center justify-between">
+            <div className="p-5 border-b border-border dark:border-stone-800 flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-bold text-[#111111] dark:text-white">
+                <h3 className="text-lg font-bold text-foreground dark:text-white">
                   Problem Directory ({filteredProblems.length})
                 </h3>
-                <p className="text-xs text-neutral-500">
+                <p className="text-xs text-stone-500">
                   Browse 1,180+ University Laboratory Experiments across all departments, subjects, semesters, and technologies.
                 </p>
               </div>
               <button
                 onClick={() => setIsProblemPickerOpen(false)}
-                className="p-1.5 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-500 cursor-pointer"
+                className="p-1.5 rounded-full hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-500 cursor-pointer"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
             {/* Modal Search & Filter Chips */}
-            <div className="p-4 border-b border-[#E8E4DA] dark:border-neutral-800 space-y-3 bg-[#F6F3EC]/50 dark:bg-neutral-900/50">
+            <div className="p-4 border-b border-border dark:border-stone-800 space-y-3 bg-background/50 dark:bg-stone-900/50">
               <div className="relative">
-                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" />
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
                 <input
                   type="text"
                   value={searchProblemQuery}
                   onChange={(e) => setSearchProblemQuery(e.target.value)}
                   placeholder="Search by problem title, topic, or language..."
-                  className="w-full h-10 pl-10 pr-4 rounded-xl border border-[#E8E4DA] dark:border-neutral-700 bg-white dark:bg-[#1C1C1E] text-xs font-semibold outline-none focus:ring-2 focus:ring-[#2B4EFF]/20"
+                  className="w-full h-10 pl-10 pr-4 rounded-xl border border-border dark:border-stone-700 bg-white dark:bg-card text-xs font-semibold outline-none focus:ring-2 focus:ring-primary/20"
                 />
               </div>
 
               {/* Row 1: Department Filter Pills */}
               <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-0.5">
-                <span className="text-[10px] font-bold uppercase text-neutral-400 shrink-0 mr-1">Dept:</span>
+                <span className="text-[10px] font-bold uppercase text-stone-400 shrink-0 mr-1">Dept:</span>
                 {['all', 'CSE', 'AI&DS', 'ECE', 'BCA', 'MCA', 'MECH', 'CIVIL', 'MBA'].map(dep => (
                   <button
                     key={dep}
@@ -2012,8 +2012,8 @@ export default function CodingLabPage() {
                     }}
                     className={`px-2.5 py-1 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                       selectedDepartment.toLowerCase() === dep.toLowerCase()
-                        ? 'bg-[#2B4EFF] text-white shadow-xs'
-                        : 'bg-white dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700'
+                        ? 'bg-primary text-white shadow-xs'
+                        : 'bg-white dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700'
                     }`}
                   >
                     {dep === 'all' ? 'All Depts' : dep}
@@ -2023,7 +2023,7 @@ export default function CodingLabPage() {
 
               {/* Row 2: Semester Filter Pills */}
               <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-0.5">
-                <span className="text-[10px] font-bold uppercase text-neutral-400 shrink-0 mr-1">Sem:</span>
+                <span className="text-[10px] font-bold uppercase text-stone-400 shrink-0 mr-1">Sem:</span>
                 {(['all', 1, 2, 3, 4, 5, 6, 7, 8] as const).map(sem => (
                   <button
                     key={String(sem)}
@@ -2033,8 +2033,8 @@ export default function CodingLabPage() {
                     }}
                     className={`px-2.5 py-1 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                       selectedSemester === sem
-                        ? 'bg-emerald-600 text-white shadow-xs'
-                        : 'bg-white dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700'
+                        ? 'bg-success text-white shadow-xs'
+                        : 'bg-white dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700'
                     }`}
                   >
                     {sem === 'all' ? 'All Sems' : `Sem ${sem}`}
@@ -2044,11 +2044,11 @@ export default function CodingLabPage() {
 
               {/* Row 3: Subject Category Pills */}
               <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-1">
-                <span className="text-[10px] font-bold uppercase text-neutral-400 shrink-0 mr-1">Subject:</span>
+                <span className="text-[10px] font-bold uppercase text-stone-400 shrink-0 mr-1">Subject:</span>
                 <button
                   onClick={() => setSelectedSubject('all')}
                   className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
-                    selectedSubject === 'all' ? 'bg-[#2B4EFF] text-white' : 'bg-white dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300'
+                    selectedSubject === 'all' ? 'bg-primary text-white' : 'bg-white dark:bg-stone-800 text-stone-600 dark:text-stone-300'
                   }`}
                 >
                   All Subjects
@@ -2061,7 +2061,7 @@ export default function CodingLabPage() {
                     key={meta.name}
                     onClick={() => setSelectedSubject(meta.name)}
                     className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
-                      selectedSubject === meta.name ? 'bg-[#2B4EFF] text-white' : 'bg-white dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300'
+                      selectedSubject === meta.name ? 'bg-primary text-white' : 'bg-white dark:bg-stone-800 text-stone-600 dark:text-stone-300'
                     }`}
                   >
                     {meta.shortName}
@@ -2082,24 +2082,24 @@ export default function CodingLabPage() {
                     onClick={() => handleSelectProblem(prob)}
                     className={`p-3.5 rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${
                       isSelected 
-                        ? 'border-[#2B4EFF] bg-[#E6EAFD]/40 dark:bg-blue-950/30 ring-1 ring-[#2B4EFF]'
-                        : 'border-[#E8E4DA] dark:border-neutral-800 hover:border-neutral-400 bg-white dark:bg-neutral-900/60'
+                        ? 'border-primary bg-primary/10 dark:bg-primary/15 ring-1 ring-primary'
+                        : 'border-border dark:border-stone-800 hover:border-stone-400 bg-white dark:bg-stone-900/60'
                     }`}
                   >
                     <div className="flex items-center gap-3 min-w-0">
                       <div className={`h-8 w-8 rounded-lg flex items-center justify-center font-mono font-bold text-xs shrink-0 ${
-                        isSolved ? 'bg-emerald-500/15 text-emerald-600' : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400'
+                        isSolved ? 'bg-success/15 text-success' : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400'
                       }`}>
                         {isSolved ? <Check className="h-4 w-4 stroke-[3]" /> : idx + 1}
                       </div>
 
                       <div className="min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className="font-bold text-xs sm:text-sm text-[#111111] dark:text-white truncate">
+                          <span className="font-bold text-xs sm:text-sm text-foreground dark:text-white truncate">
                             {prob.title}
                           </span>
                         </div>
-                        <p className="text-[11px] text-neutral-500 truncate">
+                        <p className="text-[11px] text-stone-500 truncate">
                           {prob.subjectName} · {prob.fileName}
                         </p>
                       </div>
@@ -2107,8 +2107,8 @@ export default function CodingLabPage() {
 
                     <div className="flex items-center gap-2 shrink-0">
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                        prob.difficulty === 'Easy' ? 'bg-emerald-500/15 text-emerald-600' :
-                        prob.difficulty === 'Medium' ? 'bg-amber-500/15 text-amber-600' : 'bg-rose-500/15 text-rose-600'
+                        prob.difficulty === 'Easy' ? 'bg-success/15 text-success' :
+                        prob.difficulty === 'Medium' ? 'bg-primary/15 text-primary' : 'bg-destructive/15 text-destructive'
                       }`}>
                         {prob.difficulty}
                       </span>

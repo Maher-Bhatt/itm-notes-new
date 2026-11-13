@@ -131,14 +131,14 @@ export function AdminAnnouncementsTab({
             <Megaphone className="h-5 w-5 text-[#FAFAFA]" />
             Announcement Scheduling & Targeting
           </h2>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-stone-400 mt-0.5">
             Broadcast targeted semester updates, exam alerts, and timetables.
           </p>
         </div>
 
         <button
           onClick={() => setShowCreate(!showCreate)}
-          className="px-4 py-2 rounded-xl bg-[#FAFAFA] hover:bg-[#E4E4E7] text-[#18181B] text-xs font-black flex items-center gap-1.5 transition-all active:scale-95 self-start sm:self-auto cursor-pointer"
+          className="px-4 py-2 rounded-xl bg-[#FAFAFA] hover:bg-muted text-foreground text-xs font-bold flex items-center gap-1.5 transition-all active:scale-95 self-start sm:self-auto cursor-pointer"
         >
           <Plus className="h-4 w-4" />
           <span>New Announcement</span>
@@ -149,35 +149,35 @@ export function AdminAnnouncementsTab({
       {showCreate && (
         <form
           onSubmit={handleSubmit}
-          className="bg-slate-800 border border-slate-700 rounded-3xl p-5 sm:p-6 space-y-4 shadow-xl animate-fade-in"
+          className="bg-stone-800 border border-stone-700 rounded-2xl p-5 sm:p-6 space-y-4 shadow-lg animate-fade-in"
         >
-          <div className="flex items-center justify-between pb-2 border-b border-slate-700">
+          <div className="flex items-center justify-between pb-2 border-b border-stone-700">
             <h3 className="font-bold text-white text-sm">Composer: Target & Schedule</h3>
-            <span className="text-[11px] text-slate-400">Broadcast banner alert</span>
+            <span className="text-[11px] text-stone-400">Broadcast banner alert</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+              <label className="text-[11px] font-bold uppercase tracking-wider text-stone-400 block mb-1">
                 Headline Title
               </label>
               <input
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g. Remedial Exam Hall Tickets Released"
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#FAFAFA]"
+                className="w-full bg-stone-900 border border-stone-700 rounded-xl px-3 py-2 text-xs text-white placeholder-stone-500 focus:outline-none focus:border-[#FAFAFA]"
                 required
               />
             </div>
 
             <div>
-              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+              <label className="text-[11px] font-bold uppercase tracking-wider text-stone-400 block mb-1">
                 Alert Banner Tone
               </label>
               <select
                 value={type}
                 onChange={(e) => setType(e.target.value as any)}
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FAFAFA]"
+                className="w-full bg-stone-900 border border-stone-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FAFAFA]"
               >
                 <option value="info">Info (Blue Notice)</option>
                 <option value="warning">Warning (Amber Urgent)</option>
@@ -188,7 +188,7 @@ export function AdminAnnouncementsTab({
           </div>
 
           <div>
-            <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+            <label className="text-[11px] font-bold uppercase tracking-wider text-stone-400 block mb-1">
               Detailed Notice Message
             </label>
             <textarea
@@ -196,7 +196,7 @@ export function AdminAnnouncementsTab({
               onChange={(e) => setMessage(e.target.value)}
               rows={3}
               placeholder="Full announcement text, schedule dates, or instructions for students..."
-              className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#FAFAFA]"
+              className="w-full bg-stone-900 border border-stone-700 rounded-xl p-3 text-xs text-white placeholder-stone-500 focus:outline-none focus:border-[#FAFAFA]"
               required
             />
           </div>
@@ -204,13 +204,13 @@ export function AdminAnnouncementsTab({
           {/* Targeting row */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
             <div>
-              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+              <label className="text-[11px] font-bold uppercase tracking-wider text-stone-400 block mb-1">
                 Target Semester
               </label>
               <select
                 value={targetSemester}
                 onChange={(e) => setTargetSemester(e.target.value)}
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FAFAFA]"
+                className="w-full bg-stone-900 border border-stone-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FAFAFA]"
               >
                 <option value="all">All Semesters (1 to 4)</option>
                 <option value="1">Semester 1</option>
@@ -221,13 +221,13 @@ export function AdminAnnouncementsTab({
             </div>
 
             <div>
-              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+              <label className="text-[11px] font-bold uppercase tracking-wider text-stone-400 block mb-1">
                 Target Branch
               </label>
               <select
                 value={targetBranch}
                 onChange={(e) => setTargetBranch(e.target.value)}
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FAFAFA]"
+                className="w-full bg-stone-900 border border-stone-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FAFAFA]"
               >
                 <option value="all">All Engineering Branches</option>
                 <option value="CSE">Computer Science (CSE)</option>
@@ -238,13 +238,13 @@ export function AdminAnnouncementsTab({
             </div>
 
             <div>
-              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+              <label className="text-[11px] font-bold uppercase tracking-wider text-stone-400 block mb-1">
                 Audience Group
               </label>
               <select
                 value={audience}
                 onChange={(e) => setAudience(e.target.value as any)}
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FAFAFA]"
+                className="w-full bg-stone-900 border border-stone-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FAFAFA]"
               >
                 <option value="all">All Users (Students + Guests)</option>
                 <option value="students">Enrolled Students Only</option>
@@ -256,36 +256,36 @@ export function AdminAnnouncementsTab({
           {/* Scheduling dates row */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
             <div>
-              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+              <label className="text-[11px] font-bold uppercase tracking-wider text-stone-400 block mb-1">
                 Scheduled Start (Optional)
               </label>
               <input
                 type="datetime-local"
                 value={scheduledStart}
                 onChange={(e) => setScheduledStart(e.target.value)}
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FAFAFA]"
+                className="w-full bg-stone-900 border border-stone-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FAFAFA]"
               />
             </div>
             <div>
-              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+              <label className="text-[11px] font-bold uppercase tracking-wider text-stone-400 block mb-1">
                 Expiration / Auto-hide Date (Optional)
               </label>
               <input
                 type="datetime-local"
                 value={scheduledEnd}
                 onChange={(e) => setScheduledEnd(e.target.value)}
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FAFAFA]"
+                className="w-full bg-stone-900 border border-stone-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FAFAFA]"
               />
             </div>
           </div>
 
-          <div className="flex items-center justify-between pt-3 border-t border-slate-700">
-            <label className="flex items-center gap-2 cursor-pointer text-xs text-slate-300">
+          <div className="flex items-center justify-between pt-3 border-t border-stone-700">
+            <label className="flex items-center gap-2 cursor-pointer text-xs text-stone-300">
               <input
                 type="checkbox"
                 checked={isDraft}
                 onChange={(e) => setIsDraft(e.target.checked)}
-                className="rounded border-slate-600 text-[#FAFAFA] focus:ring-0"
+                className="rounded border-stone-600 text-[#FAFAFA] focus:ring-0"
               />
               <span>Save as Draft (Do not publish immediately)</span>
             </label>
@@ -294,14 +294,14 @@ export function AdminAnnouncementsTab({
               <button
                 type="button"
                 onClick={() => setShowCreate(false)}
-                className="px-3.5 py-2 rounded-xl bg-slate-700 text-slate-300 text-xs font-semibold hover:bg-slate-600"
+                className="px-3.5 py-2 rounded-xl bg-stone-700 text-stone-300 text-xs font-semibold hover:bg-stone-600"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={submitting}
-                className="px-4 py-2 rounded-xl bg-[#FAFAFA] hover:bg-[#E4E4E7] text-[#18181B] text-xs font-black shadow-md"
+                className="px-4 py-2 rounded-xl bg-[#FAFAFA] hover:bg-muted text-foreground text-xs font-bold shadow-md"
               >
                 {isDraft ? "Save Draft" : "Publish Announcement"}
               </button>
@@ -311,13 +311,13 @@ export function AdminAnnouncementsTab({
       )}
 
       {/* 3. Filter tabs: Active / Drafts / History */}
-      <div className="flex items-center gap-2 border-b border-slate-700 pb-2">
+      <div className="flex items-center gap-2 border-b border-stone-700 pb-2">
         <button
           onClick={() => setViewFilter("active")}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
             viewFilter === "active"
               ? "bg-[#FAFAFA]/15 text-[#FAFAFA] border border-[#FAFAFA]/30"
-              : "text-slate-400 hover:text-white"
+              : "text-stone-400 hover:text-white"
           }`}
         >
           <Radio className="h-3.5 w-3.5" />
@@ -328,8 +328,8 @@ export function AdminAnnouncementsTab({
           onClick={() => setViewFilter("drafts")}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
             viewFilter === "drafts"
-              ? "bg-amber-500/15 text-amber-400 border border-amber-500/30"
-              : "text-slate-400 hover:text-white"
+              ? "bg-primary/15 text-primary border border-primary/30"
+              : "text-stone-400 hover:text-white"
           }`}
         >
           <FileEdit className="h-3.5 w-3.5" />
@@ -340,8 +340,8 @@ export function AdminAnnouncementsTab({
           onClick={() => setViewFilter("history")}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
             viewFilter === "history"
-              ? "bg-slate-700 text-white"
-              : "text-slate-400 hover:text-white"
+              ? "bg-stone-700 text-white"
+              : "text-stone-400 hover:text-white"
           }`}
         >
           <Archive className="h-3.5 w-3.5" />
@@ -352,10 +352,10 @@ export function AdminAnnouncementsTab({
       {/* 4. Render Announcement Items */}
       <div className="space-y-3">
         {currentList.length === 0 ? (
-          <div className="py-12 text-center text-slate-400 text-sm bg-slate-800 border border-slate-700 rounded-2xl">
-            <Megaphone className="h-8 w-8 text-slate-500 mx-auto mb-2 opacity-60" />
+          <div className="py-12 text-center text-stone-400 text-sm bg-stone-800 border border-stone-700 rounded-2xl">
+            <Megaphone className="h-8 w-8 text-stone-500 mx-auto mb-2 opacity-60" />
             <p className="font-bold text-white">No Announcements Found</p>
-            <p className="text-xs text-slate-400 mt-1">There are no {viewFilter} announcements.</p>
+            <p className="text-xs text-stone-400 mt-1">There are no {viewFilter} announcements.</p>
           </div>
         ) : (
           currentList.map((ann) => {
@@ -366,53 +366,53 @@ export function AdminAnnouncementsTab({
             return (
               <div
                 key={ann.id}
-                className="bg-slate-800 border border-slate-700 rounded-2xl p-4 sm:p-5 space-y-3 shadow-sm"
+                className="bg-stone-800 border border-stone-700 rounded-2xl p-4 sm:p-5 space-y-3 shadow-sm"
               >
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
                   <div className="space-y-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span
-                        className={`px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                        className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                           isErr
-                            ? "bg-red-500/20 text-red-400 border border-red-500/30"
+                            ? "bg-destructive/20 text-destructive border border-destructive/30"
                             : isWarn
-                            ? "bg-amber-500/20 text-amber-400 border border-amber-500/30"
-                            : "bg-amber-500/20 text-amber-500 border border-amber-500/30"
+                            ? "bg-primary/20 text-primary border border-primary/30"
+                            : "bg-primary/20 text-primary border border-primary/30"
                         }`}
                       >
                         {ann.type}
                       </span>
 
                       {ann.draft ? (
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-700 text-slate-300">
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-stone-700 text-stone-300">
                           Draft
                         </span>
                       ) : ann.active ? (
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-500 border border-amber-500/30 flex items-center gap-1">
-                          <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" />
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary/15 text-primary border border-primary/30 flex items-center gap-1">
+                          <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
                           Broadcasting
                         </span>
                       ) : (
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-700 text-slate-400">
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-stone-700 text-stone-400">
                           Inactive
                         </span>
                       )}
 
                       {ann.target_semester && (
-                        <span className="px-2 py-0.5 rounded-md text-[10px] font-mono bg-slate-900 border border-slate-700 text-[#FAFAFA]">
+                        <span className="px-2 py-0.5 rounded-md text-[10px] font-mono bg-stone-900 border border-stone-700 text-[#FAFAFA]">
                           Sem {ann.target_semester}
                         </span>
                       )}
 
                       {ann.target_branch && (
-                        <span className="px-2 py-0.5 rounded-md text-[10px] font-mono bg-slate-900 border border-slate-700 text-sky-400">
+                        <span className="px-2 py-0.5 rounded-md text-[10px] font-mono bg-stone-900 border border-stone-700 text-primary">
                           {ann.target_branch}
                         </span>
                       )}
                     </div>
 
                     <h4 className="text-sm font-bold text-white pt-1">{ann.title}</h4>
-                    <p className="text-xs text-slate-300 leading-relaxed whitespace-pre-wrap">
+                    <p className="text-xs text-stone-300 leading-relaxed whitespace-pre-wrap">
                       {ann.message}
                     </p>
                   </div>
@@ -422,8 +422,8 @@ export function AdminAnnouncementsTab({
                       onClick={() => onToggleActive(ann.id, !ann.active)}
                       className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-colors ${
                         ann.active
-                          ? "bg-amber-500/10 text-amber-400 border-amber-500/30 hover:bg-amber-500/20"
-                          : "bg-amber-500/10 text-amber-500 border-amber-500/30 hover:bg-amber-500/20"
+                          ? "bg-primary/10 text-primary border-primary/30 hover:bg-primary/20"
+                          : "bg-primary/10 text-primary border-primary/30 hover:bg-primary/20"
                       }`}
                     >
                       {ann.active ? "Pause" : "Activate"}
@@ -431,7 +431,7 @@ export function AdminAnnouncementsTab({
 
                     <button
                       onClick={() => onDelete(ann.id)}
-                      className="p-1.5 rounded-xl bg-slate-700/60 hover:bg-red-500/20 text-slate-400 hover:text-red-400 transition-colors"
+                      className="p-1.5 rounded-xl bg-stone-700/60 hover:bg-destructive/20 text-stone-400 hover:text-destructive transition-colors"
                       title="Delete announcement"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -440,16 +440,16 @@ export function AdminAnnouncementsTab({
                 </div>
 
                 {(ann.scheduled_start || ann.scheduled_end) && (
-                  <div className="pt-2 border-t border-slate-700/60 flex items-center gap-4 text-[11px] text-slate-400 flex-wrap font-mono">
+                  <div className="pt-2 border-t border-stone-700/60 flex items-center gap-4 text-[11px] text-stone-400 flex-wrap font-mono">
                     {ann.scheduled_start && (
                       <span className="flex items-center gap-1">
-                        <Clock className="h-3 w-3 text-slate-500" />
+                        <Clock className="h-3 w-3 text-stone-500" />
                         Start: {new Date(ann.scheduled_start).toLocaleString()}
                       </span>
                     )}
                     {ann.scheduled_end && (
                       <span className="flex items-center gap-1">
-                        <Archive className="h-3 w-3 text-slate-500" />
+                        <Archive className="h-3 w-3 text-stone-500" />
                         Expires: {new Date(ann.scheduled_end).toLocaleString()}
                       </span>
                     )}

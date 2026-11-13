@@ -438,27 +438,27 @@ export default function QuizPage() {
   const timePercent = targetTotalTime > 0 ? Math.min(100, Math.round((totalTimerSeconds / targetTotalTime) * 100)) : 24;
 
   return (
-    <div className="p-3 sm:p-5 lg:p-7 max-w-[1600px] mx-auto space-y-5 animate-fade-in text-slate-100">
+    <div className="p-3 sm:p-5 lg:p-7 max-w-[1600px] mx-auto space-y-5 animate-fade-in text-foreground">
       {/* ── TOP HEADER & BREADCRUMBS matching Screenshot 4 ── */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-3 border-b border-slate-800/80">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-3 border-b border-border">
         <div>
-          <div className="flex items-center gap-2 text-xs text-slate-400 font-medium mb-1">
+          <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium mb-1">
             <Link to="/" className="hover:text-primary transition-colors">Dashboard</Link>
             <span>/</span>
-            <span className="text-slate-300">CampusLoop</span>
+            <span className="text-foreground">CampusLoop</span>
             <span>/</span>
-            <span className="text-slate-100 font-bold">Subject Quiz</span>
+            <span className="text-foreground font-bold">Subject Quiz</span>
           </div>
 
           <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white flex items-center gap-2.5">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground flex items-center gap-2.5">
               <span>Subject Quiz</span>
             </h1>
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-500/10 text-amber-500 border border-amber-500/30 shadow-xs">
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-primary/10 text-primary border border-primary/30 shadow-xs">
               Active
             </span>
             {quizStarted && !quizFinished && (
-              <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-[#18181B]/40 text-[#FAFAFA] border border-[#18181B]">
+              <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-foreground/40 text-[#FAFAFA] border border-foreground">
                 <Clock className="w-3 h-3 animate-spin text-[#FAFAFA]" />
                 {formatTime(totalTimerSeconds)}
               </span>
@@ -469,13 +469,13 @@ export default function QuizPage() {
         <div className="flex items-center gap-3">
           {/* Topic search / switcher */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
             <input
               type="text"
               placeholder="Change topic..."
               value={searchTopicInput}
               onChange={(e) => setSearchTopicInput(e.target.value)}
-              className="h-9 pl-8 pr-3 w-40 sm:w-56 rounded-xl border border-slate-700/80 bg-slate-900/90 text-xs text-slate-100 placeholder:text-slate-500 focus:ring-1 focus:ring-primary outline-none transition-all shadow-inner"
+              className="h-9 pl-8 pr-3 w-40 sm:w-56 rounded-xl border border-border bg-card text-xs text-foreground placeholder:text-stone-500 focus:ring-1 focus:ring-primary outline-none transition-all shadow-inner"
             />
           </div>
 
@@ -488,7 +488,7 @@ export default function QuizPage() {
                 toast.info("Answer questions first to generate diagnostic report.");
               }
             }}
-            className="h-9 px-4 rounded-xl bg-[#18181B] hover:bg-[#27272A] text-white font-bold text-xs shadow-md shadow-[#18181B]/30 border border-[#FAFAFA]/20 flex items-center gap-2 transition-all active:scale-95 shrink-0 cursor-pointer"
+            className="h-9 px-4 rounded-xl bg-foreground hover:bg-[#27272A] text-white font-bold text-xs shadow-md shadow-foreground/30 border border-[#FAFAFA]/20 flex items-center gap-2 transition-all active:scale-95 shrink-0 cursor-pointer"
           >
             <BarChart3 className="h-3.5 w-3.5 text-[#FAFAFA]" />
             <span>Get Report</span>
@@ -499,18 +499,18 @@ export default function QuizPage() {
       {/* ── 1. SETUP VIEW (Before launching test) ── */}
       {!quizStarted && (
         <div className="max-w-4xl mx-auto space-y-6 pt-2">
-          <div className="bg-slate-900/70 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-xl backdrop-blur-sm space-y-6">
+          <div className="bg-card border border-border rounded-2xl p-6 sm:p-8 shadow-lg backdrop-blur-sm space-y-6">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                  <BookOpen className="h-5 w-5 text-amber-500" />
+                <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
+                  <BookOpen className="h-5 w-5 text-primary" />
                   <span>University Subject Examination & Recall Drill</span>
                 </h2>
-                <p className="text-xs text-slate-400 mt-1">
+                <p className="text-xs text-muted-foreground mt-1">
                   Practice 2,500+ syllabus-aligned university & GATE multiple-choice questions across all semesters, chapters, and topics with instant rationales.
                 </p>
               </div>
-              <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20 text-xs font-mono font-bold shrink-0">
+              <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-primary/10 text-primary border border-primary/20 text-xs font-mono font-bold shrink-0">
                 <Zap className="h-3.5 w-3.5" />
                 <span>+15 XP / correct</span>
               </div>
@@ -519,16 +519,16 @@ export default function QuizPage() {
             {/* Semester Filter Tabs & Subject Selector */}
             <div className="space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                <label className="text-xs font-bold text-slate-300 uppercase tracking-wider block">
+                <label className="text-xs font-bold text-foreground uppercase tracking-wider block">
                   1. Filter by Semester
                 </label>
-                <span className="text-[11px] font-mono text-emerald-400 font-bold">
+                <span className="text-[11px] font-mono text-success font-bold">
                   {allUniversalMcqs.length}+ Verified University & GATE MCQs
                 </span>
               </div>
 
               {/* Semester Tabs */}
-              <div className="flex flex-wrap gap-1.5 p-1 bg-slate-950/60 rounded-xl border border-slate-800">
+              <div className="flex flex-wrap gap-1.5 p-1 bg-card rounded-xl border border-border">
                 <button
                   type="button"
                   onClick={() => {
@@ -538,8 +538,8 @@ export default function QuizPage() {
                   }}
                   className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                     selectedSemesterFilter === "all"
-                      ? "bg-white text-slate-950 shadow-sm font-black"
-                      : "text-slate-400 hover:text-white hover:bg-slate-850"
+                      ? "bg-white text-stone-950 shadow-sm font-bold"
+                      : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                   }`}
                 >
                   All Semesters ({allUniversalMcqs.length})
@@ -558,8 +558,8 @@ export default function QuizPage() {
                     }}
                     className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                       selectedSemesterFilter === sem
-                        ? "bg-white text-slate-950 shadow-sm font-black"
-                        : "text-slate-400 hover:text-white hover:bg-slate-850"
+                        ? "bg-white text-stone-950 shadow-sm font-bold"
+                        : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                     }`}
                   >
                     Sem {sem}
@@ -567,7 +567,7 @@ export default function QuizPage() {
                 ))}
               </div>
 
-              <label className="text-xs font-bold text-slate-300 uppercase tracking-wider block pt-1">
+              <label className="text-xs font-bold text-foreground uppercase tracking-wider block pt-1">
                 2. Select Course / Question Pool
               </label>
 
@@ -580,18 +580,18 @@ export default function QuizPage() {
                   }}
                   className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer ${
                     selectedSubject === "all"
-                      ? "border-emerald-500 bg-emerald-950/40 text-white font-bold shadow-md ring-2 ring-emerald-500/50"
-                      : "border-slate-700 bg-slate-800/80 text-slate-200 hover:bg-slate-750 hover:border-slate-600"
+                      ? "border-success bg-success/10 text-foreground font-bold shadow-md ring-2 ring-success/50"
+                      : "border-border bg-secondary text-foreground hover:bg-secondary hover:border-primary/40"
                   }`}
                 >
-                  <div className="text-sm font-bold text-white flex items-center justify-between">
+                  <div className="text-sm font-bold text-foreground flex items-center justify-between">
                     <span>Grand Universal Pool</span>
-                    <span className="px-1.5 py-0.5 text-[10px] rounded bg-emerald-500/20 text-emerald-300 font-mono">ALL</span>
+                    <span className="px-1.5 py-0.5 text-[10px] rounded bg-success/20 text-success font-mono">ALL</span>
                   </div>
                   <div className={`text-[11px] mt-1 font-mono flex items-center gap-1.5 ${
-                    selectedSubject === "all" ? "text-emerald-300 font-bold" : "text-slate-300"
+                    selectedSubject === "all" ? "text-success font-bold" : "text-foreground"
                   }`}>
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
+                    <span className="w-2 h-2 rounded-full bg-success shrink-0" />
                     <span>{allUniversalMcqs.length} Total Curated MCQs</span>
                   </div>
                 </button>
@@ -610,18 +610,18 @@ export default function QuizPage() {
                         }}
                         className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer ${
                           isSelected
-                            ? "border-blue-500 bg-blue-950/40 text-white font-bold shadow-md ring-2 ring-blue-500/50"
-                            : "border-slate-700 bg-slate-800/80 text-slate-200 hover:bg-slate-750 hover:border-slate-600"
+                            ? "border-primary/60 bg-primary/40 text-foreground font-bold shadow-md ring-2 ring-primary/50"
+                            : "border-border bg-secondary text-foreground hover:bg-secondary hover:border-primary/40"
                         }`}
                       >
-                        <div className="text-sm font-bold text-white truncate flex items-center justify-between">
+                        <div className="text-sm font-bold text-foreground truncate flex items-center justify-between">
                           <span className="truncate">{s.name}</span>
-                          <span className="text-[10px] text-slate-400 font-mono shrink-0 ml-1">Sem {s.semester}</span>
+                          <span className="text-[10px] text-muted-foreground font-mono shrink-0 ml-1">Sem {s.semester}</span>
                         </div>
                         <div className={`text-[11px] mt-1 font-mono flex items-center gap-1.5 ${
-                          isSelected ? "text-blue-300 font-bold" : "text-slate-300"
+                          isSelected ? "text-primary font-bold" : "text-foreground"
                         }`}>
-                          <span className="w-2 h-2 rounded-full bg-blue-400 shrink-0" />
+                          <span className="w-2 h-2 rounded-full bg-primary shrink-0" />
                           <span>{s.totalMcqs} Practice MCQs</span>
                         </div>
                       </button>
@@ -631,12 +631,12 @@ export default function QuizPage() {
 
               {/* Unit / Chapter Filter for Selected Subject */}
               {selectedSubject !== "all" && selectedSubject !== "all-sem3" && (
-                <div className="space-y-2 pt-2 border-t border-slate-800">
+                <div className="space-y-2 pt-2 border-t border-border">
                   <div className="flex items-center justify-between">
-                    <label className="text-xs font-bold text-slate-300 uppercase tracking-wider block">
+                    <label className="text-xs font-bold text-foreground uppercase tracking-wider block">
                       3. Filter by Chapter / Unit
                     </label>
-                    <span className="text-[11px] text-slate-400 font-mono">Optional</span>
+                    <span className="text-[11px] text-muted-foreground font-mono">Optional</span>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <button
@@ -644,8 +644,8 @@ export default function QuizPage() {
                       onClick={() => setSelectedUnitFilter("all")}
                       className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
                         selectedUnitFilter === "all"
-                          ? "bg-white text-slate-950 border-white shadow-sm font-black"
-                          : "bg-slate-850 text-slate-300 border-slate-700 hover:bg-slate-800"
+                          ? "bg-white text-stone-950 border-white shadow-sm font-bold"
+                          : "bg-card text-foreground border-border hover:bg-secondary"
                       }`}
                     >
                       All Chapters (Full Syllabus)
@@ -657,8 +657,8 @@ export default function QuizPage() {
                         onClick={() => setSelectedUnitFilter(u.id)}
                         className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
                           selectedUnitFilter === u.id
-                            ? "bg-white text-slate-950 border-white shadow-sm font-black"
-                            : "bg-slate-850 text-slate-300 border-slate-700 hover:bg-slate-800"
+                            ? "bg-white text-stone-950 border-white shadow-sm font-bold"
+                            : "bg-card text-foreground border-border hover:bg-secondary"
                         }`}
                       >
                         Unit {uIdx + 1}
@@ -671,7 +671,7 @@ export default function QuizPage() {
 
             {/* Question Count Selector */}
             <div className="space-y-2.5">
-              <label className="text-xs font-bold text-slate-300 uppercase tracking-wider block">
+              <label className="text-xs font-bold text-foreground uppercase tracking-wider block">
                 Session Question Count
               </label>
               <div className="flex flex-wrap gap-2.5">
@@ -682,8 +682,8 @@ export default function QuizPage() {
                     onClick={() => setQuestionCount(num)}
                     className={`px-4 py-2 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
                       questionCount === num
-                        ? "bg-[#18181B] text-white border-[#18181B] font-bold shadow-sm ring-1 ring-[#FAFAFA]/40"
-                        : "bg-slate-800/50 text-slate-300 border-slate-700/80 hover:bg-slate-800"
+                        ? "bg-foreground text-white border-foreground font-bold shadow-sm ring-1 ring-[#FAFAFA]/40"
+                        : "bg-secondary text-foreground border-border hover:bg-secondary"
                     }`}
                   >
                     {num} Questions
@@ -697,7 +697,7 @@ export default function QuizPage() {
               <button
                 type="button"
                 onClick={() => setIsCustomBuilderOpen(true)}
-                className="px-4 py-2.5 rounded-xl border border-[#FAFAFA]/40 bg-[#18181B]/20 hover:bg-[#18181B]/40 text-[#FAFAFA] font-bold text-xs transition-all flex items-center gap-2 cursor-pointer"
+                className="px-4 py-2.5 rounded-xl border border-[#FAFAFA]/40 bg-foreground/20 hover:bg-foreground/40 text-[#FAFAFA] font-bold text-xs transition-all flex items-center gap-2 cursor-pointer"
               >
                 <Sparkles className="h-4 w-4" />
                 <span>Custom Quiz Builder (Mixed Units)</span>
@@ -705,7 +705,7 @@ export default function QuizPage() {
               <button
                 type="button"
                 onClick={handleStartQuiz}
-                className="px-6 py-3 rounded-xl bg-[#18181B] hover:bg-[#27272A] text-white font-bold text-xs shadow-lg shadow-[#18181B]/30 border border-[#FAFAFA]/30 transition-all flex items-center gap-2 active:scale-95 cursor-pointer"
+                className="px-6 py-3 rounded-xl bg-foreground hover:bg-[#27272A] text-white font-bold text-xs shadow-lg shadow-foreground/30 border border-[#FAFAFA]/30 transition-all flex items-center gap-2 active:scale-95 cursor-pointer"
               >
                 <span>Launch Quiz Session</span>
                 <ArrowRight className="h-4 w-4 text-[#FAFAFA]" />
@@ -715,23 +715,23 @@ export default function QuizPage() {
 
           {/* Recent Quiz Attempts */}
           {recentScores.length > 0 && (
-            <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 shadow-sm space-y-3">
-              <h3 className="font-bold text-sm text-slate-200 flex items-center gap-2">
-                <Trophy className="h-4 w-4 text-amber-400" />
+            <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-3">
+              <h3 className="font-bold text-sm text-foreground flex items-center gap-2">
+                <Trophy className="h-4 w-4 text-primary" />
                 <span>Recent Exam Drill History</span>
               </h3>
-              <div className="divide-y divide-slate-800/80">
+              <div className="divide-y divide-border">
                 {recentScores.map((attempt, idx) => (
                   <div key={idx} className="py-2.5 flex items-center justify-between text-xs">
                     <div>
-                      <p className="font-bold text-white">{attempt.subject}</p>
-                      <p className="text-[10px] text-slate-400 font-mono">
+                      <p className="font-bold text-foreground">{attempt.subject}</p>
+                      <p className="text-[10px] text-muted-foreground font-mono">
                         {new Date(attempt.timestamp).toLocaleDateString()} • Time: {attempt.timeSpent || "N/A"}
                       </p>
                     </div>
                     <div className="text-right">
-                      <span className={`font-mono font-black text-sm ${
-                        attempt.percentage >= 80 ? "text-amber-500" : attempt.percentage >= 50 ? "text-amber-500" : "text-rose-400"
+                      <span className={`font-mono font-bold text-sm ${
+                        attempt.percentage >= 80 ? "text-primary" : attempt.percentage >= 50 ? "text-primary" : "text-destructive"
                       }`}>
                         {attempt.score}/{attempt.total} ({attempt.percentage}%)
                       </span>
@@ -749,10 +749,10 @@ export default function QuizPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
           {/* ── LEFT QUESTION NAVIGATOR PALETTE ── */}
           <div className="lg:col-span-3 xl:col-span-2 space-y-4">
-            <div className="bg-slate-900/70 border border-slate-800 rounded-2xl p-4 shadow-sm space-y-3">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-                <h3 className="text-xs font-bold text-slate-200 uppercase tracking-wider">Question List</h3>
-                <span className="text-[11px] font-mono text-slate-400 font-bold">
+            <div className="bg-card border border-border rounded-2xl p-4 shadow-sm space-y-3">
+              <div className="flex items-center justify-between border-b border-border pb-2">
+                <h3 className="text-xs font-bold text-foreground uppercase tracking-wider">Question List</h3>
+                <span className="text-[11px] font-mono text-muted-foreground font-bold">
                   {answeredCount}/{activeQuizPool.length}
                 </span>
               </div>
@@ -768,13 +768,13 @@ export default function QuizPage() {
 
                   let btnCls = "h-8 rounded-lg text-xs font-mono font-bold transition-all relative flex items-center justify-center cursor-pointer ";
                   if (isCurrent) {
-                    btnCls += "ring-2 ring-amber-500 bg-amber-500/20 text-white font-black ";
+                    btnCls += "ring-2 ring-primary/60 bg-primary/20 text-foreground font-bold ";
                   } else if (isAnswered) {
                     btnCls += isCorrect
-                      ? "bg-amber-500/20 text-amber-500 border border-amber-500/30 "
-                      : "bg-rose-500/20 text-rose-400 border border-rose-500/30 ";
+                      ? "bg-primary/20 text-primary border border-primary/30 "
+                      : "bg-destructive/20 text-destructive border border-destructive/30 ";
                   } else {
-                    btnCls += "bg-slate-800/60 text-slate-400 hover:bg-slate-800 hover:text-slate-200 border border-slate-700/50 ";
+                    btnCls += "bg-secondary text-muted-foreground hover:bg-secondary hover:text-stone-200 border border-border ";
                   }
 
                   return (
@@ -786,24 +786,24 @@ export default function QuizPage() {
                     >
                       <span>{idx + 1}</span>
                       {isFlagged && (
-                        <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-amber-400 ring-2 ring-slate-900" />
+                        <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-primary ring-2 ring-stone-900" />
                       )}
                     </button>
                   );
                 })}
               </div>
 
-              <div className="pt-2 border-t border-slate-800 text-[10px] space-y-1 text-slate-400">
+              <div className="pt-2 border-t border-border text-[10px] space-y-1 text-muted-foreground">
                 <div className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-amber-500" />
+                  <span className="w-2 h-2 rounded-full bg-primary" />
                   <span>Answered</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-amber-400" />
+                  <span className="w-2 h-2 rounded-full bg-primary" />
                   <span>Flagged for review</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-amber-500" />
+                  <span className="w-2 h-2 rounded-full bg-primary" />
                   <span>Active selection</span>
                 </div>
               </div>
@@ -812,19 +812,19 @@ export default function QuizPage() {
 
           {/* ── CENTRAL QUESTION CANVAS matching Screenshot 4 ── */}
           <div className="lg:col-span-9 xl:col-span-6 space-y-5">
-            <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 sm:p-7 shadow-lg space-y-5 relative">
+            <div className="bg-card border border-border rounded-2xl p-5 sm:p-7 shadow-lg space-y-5 relative">
               {/* Question Header & Semi-Circular Gauges matching Screenshot 4 */}
-              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-4 border-b border-slate-800/80">
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-4 border-b border-border">
                 <div className="space-y-1 max-w-md">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-mono font-bold text-amber-500 uppercase tracking-wider">
+                    <span className="text-xs font-mono font-bold text-primary uppercase tracking-wider">
                       Question ({currentIdx + 1})
                     </span>
-                    <span className="text-[10px] font-semibold text-slate-400 px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700">
+                    <span className="text-[10px] font-semibold text-muted-foreground px-2 py-0.5 rounded-full bg-secondary border border-border">
                       {currentQuestion.subjectName}
                     </span>
                   </div>
-                  <h2 className="text-base sm:text-lg font-bold text-white leading-snug pt-1">
+                  <h2 className="text-base sm:text-lg font-bold text-foreground leading-snug pt-1">
                     {currentQuestion.question}
                   </h2>
                 </div>
@@ -836,13 +836,13 @@ export default function QuizPage() {
                     <div className="relative w-16 h-9 overflow-hidden flex items-end justify-center">
                       <svg className="w-16 h-16 absolute top-0" viewBox="0 0 36 36">
                         <path
-                          className="text-slate-800 stroke-current"
+                          className="text-stone-800 stroke-current"
                           strokeWidth="3.5"
                           fill="none"
                           d="M4 18 a 14 14 0 0 1 28 0"
                         />
                         <path
-                          className="text-amber-500 stroke-current transition-all duration-500"
+                          className="text-primary stroke-current transition-all duration-500"
                           strokeDasharray={`${(currentAccuracyPercent / 100) * 44}, 100`}
                           strokeWidth="3.5"
                           strokeLinecap="round"
@@ -850,11 +850,11 @@ export default function QuizPage() {
                           d="M4 18 a 14 14 0 0 1 28 0"
                         />
                       </svg>
-                      <span className="font-black font-mono text-xs text-white z-10">
+                      <span className="font-bold font-mono text-xs text-foreground z-10">
                         {currentAccuracyPercent}%
                       </span>
                     </div>
-                    <span className="text-[9px] text-slate-400 mt-1 uppercase font-bold tracking-tight">
+                    <span className="text-[9px] text-muted-foreground mt-1 uppercase font-bold tracking-tight">
                       Topic Acc
                     </span>
                   </div>
@@ -864,13 +864,13 @@ export default function QuizPage() {
                     <div className="relative w-16 h-9 overflow-hidden flex items-end justify-center">
                       <svg className="w-16 h-16 absolute top-0" viewBox="0 0 36 36">
                         <path
-                          className="text-slate-800 stroke-current"
+                          className="text-stone-800 stroke-current"
                           strokeWidth="3.5"
                           fill="none"
                           d="M4 18 a 14 14 0 0 1 28 0"
                         />
                         <path
-                          className="text-sky-400 stroke-current transition-all duration-500"
+                          className="text-primary stroke-current transition-all duration-500"
                           strokeDasharray={`${(timePercent / 100) * 44}, 100`}
                           strokeWidth="3.5"
                           strokeLinecap="round"
@@ -878,11 +878,11 @@ export default function QuizPage() {
                           d="M4 18 a 14 14 0 0 1 28 0"
                         />
                       </svg>
-                      <span className="font-black font-mono text-xs text-white z-10">
+                      <span className="font-bold font-mono text-xs text-foreground z-10">
                         {timePercent}%
                       </span>
                     </div>
-                    <span className="text-[9px] text-slate-400 mt-1 uppercase font-bold tracking-tight">
+                    <span className="text-[9px] text-muted-foreground mt-1 uppercase font-bold tracking-tight">
                       Est Time
                     </span>
                   </div>
@@ -891,7 +891,7 @@ export default function QuizPage() {
 
               {/* Numbered Answer Choices matching Screenshot 4 (1), (2), (3), (4) */}
               <div className="space-y-3">
-                <span className="text-xs font-bold text-slate-300 block">
+                <span className="text-xs font-bold text-foreground block">
                   Answer choices
                 </span>
 
@@ -899,19 +899,19 @@ export default function QuizPage() {
                   const isSelected = selectedChoice === idx;
                   const isCorrectChoice = currentQuestion.correctIndex === idx;
 
-                  let cardStyle = "border-slate-800 bg-slate-900/60 hover:border-slate-700 hover:bg-slate-850 text-slate-200";
-                  let circleStyle = "border-slate-700 text-slate-400 bg-slate-800/80";
+                  let cardStyle = "border-border bg-card hover:border-primary/40 hover:bg-secondary text-foreground";
+                  let circleStyle = "border-border text-muted-foreground bg-secondary";
 
                   if (isSelected && !isAnswerSubmitted) {
-                    cardStyle = "border-[#18181B] bg-[#18181B]/25 text-white shadow-sm ring-1 ring-[#FAFAFA]";
-                    circleStyle = "bg-[#18181B] text-[#FAFAFA] border-[#18181B] font-bold";
+                    cardStyle = "border-foreground bg-foreground/25 text-foreground shadow-sm ring-1 ring-[#FAFAFA]";
+                    circleStyle = "bg-foreground text-[#FAFAFA] border-foreground font-bold";
                   } else if (isAnswerSubmitted) {
                     if (isCorrectChoice) {
-                      cardStyle = "border-amber-500 bg-amber-500/15 text-amber-500 ring-1 ring-amber-500";
-                      circleStyle = "bg-amber-500 text-white border-amber-500 font-bold";
+                      cardStyle = "border-primary/60 bg-primary/15 text-primary ring-1 ring-primary/60";
+                      circleStyle = "bg-primary text-primary-foreground border-primary/60 font-bold";
                     } else if (isSelected && !isCorrectChoice) {
-                      cardStyle = "border-rose-500 bg-rose-500/15 text-rose-200 ring-1 ring-rose-500";
-                      circleStyle = "bg-rose-500 text-white border-rose-500 font-bold";
+                      cardStyle = "border-destructive/30 bg-destructive/15 text-destructive ring-1 ring-destructive/30";
+                      circleStyle = "bg-destructive text-white border-destructive/30 font-bold";
                     }
                   }
 
@@ -934,23 +934,23 @@ export default function QuizPage() {
 
               {/* Official Syllabus Rationale Box when Answered */}
               {isAnswerSubmitted && (
-                <div className="p-4 rounded-xl bg-slate-850/80 border border-slate-750 text-xs space-y-1.5 animate-fade-in">
+                <div className="p-4 rounded-xl bg-card border border-border text-xs space-y-1.5 animate-fade-in">
                   <div className="flex items-center gap-2 text-primary font-bold">
                     <Sparkles className="w-3.5 h-3.5" />
                     <span>Syllabus Rationale & University Concept:</span>
                   </div>
-                  <p className="text-slate-300 leading-relaxed font-sans">
+                  <p className="text-foreground leading-relaxed font-sans">
                     {currentQuestion.explanation || "Official reference from ITM SLS Baroda University Course Pack."}
                   </p>
                 </div>
               )}
 
               {/* Action Buttons matching Screenshot 4 (Cancel, Flag, Submit) */}
-              <div className="pt-4 border-t border-slate-800/80 flex items-center justify-between gap-3">
+              <div className="pt-4 border-t border-border flex items-center justify-between gap-3">
                 <button
                   type="button"
                   onClick={handleCancelQuiz}
-                  className="px-4 py-2.5 rounded-xl border border-slate-700 bg-slate-850 hover:bg-slate-800 text-slate-300 text-xs font-semibold transition-colors cursor-pointer"
+                  className="px-4 py-2.5 rounded-xl border border-border bg-card hover:bg-secondary text-foreground text-xs font-semibold transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -961,8 +961,8 @@ export default function QuizPage() {
                     onClick={() => toggleFlagQuestion(currentIdx)}
                     className={`px-3 py-2.5 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer ${
                       flaggedIndices.has(currentIdx)
-                        ? "border-amber-500/50 bg-amber-500/20 text-amber-300"
-                        : "border-slate-700 bg-slate-850 hover:bg-slate-800 text-slate-300"
+                        ? "border-primary/50 bg-primary/20 text-primary"
+                        : "border-border bg-card hover:bg-secondary text-foreground"
                     }`}
                   >
                     <Flag className="h-3.5 w-3.5" />
@@ -972,7 +972,7 @@ export default function QuizPage() {
                   <button
                     type="button"
                     onClick={handleSubmitChoice}
-                    className="px-6 py-2.5 rounded-xl bg-[#18181B] hover:bg-[#27272A] text-white font-bold text-xs shadow-md shadow-[#18181B]/30 border border-[#FAFAFA]/30 transition-all flex items-center gap-2 active:scale-95 cursor-pointer"
+                    className="px-6 py-2.5 rounded-xl bg-foreground hover:bg-[#27272A] text-white font-bold text-xs shadow-md shadow-foreground/30 border border-[#FAFAFA]/30 transition-all flex items-center gap-2 active:scale-95 cursor-pointer"
                   >
                     <span>
                       {isAnswerSubmitted
@@ -991,13 +991,13 @@ export default function QuizPage() {
           {/* ── RIGHT PERFORMANCE SIDEBAR matching Screenshot 4 ── */}
           <div className="lg:col-span-12 xl:col-span-4 space-y-5">
             {/* 1. Subject Questions Donut Chart matching Screenshot 4 */}
-            <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
+            <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="font-bold text-sm text-white">Subject Questions</h3>
-                <div className="flex rounded-lg bg-slate-800/80 p-0.5 border border-slate-700/60 text-[10px] font-semibold">
+                <h3 className="font-bold text-sm text-foreground">Subject Questions</h3>
+                <div className="flex rounded-lg bg-secondary p-0.5 border border-border text-[10px] font-semibold">
                   <button
                     onClick={() => jumpToQuestion(currentIdx)}
-                    className="px-2 py-0.5 rounded bg-[#18181B] text-[#FAFAFA] font-bold shadow-xs cursor-pointer hover:bg-[#1f4e43] transition-colors"
+                    className="px-2 py-0.5 rounded bg-foreground text-[#FAFAFA] font-bold shadow-xs cursor-pointer hover:bg-[#1f4e43] transition-colors"
                     title="Return to current active question"
                   >
                     Current
@@ -1007,7 +1007,7 @@ export default function QuizPage() {
                       const unansIdx = activeQuizPool.findIndex((q) => !quizAnswers.some((a) => a.question === q));
                       if (unansIdx !== -1) jumpToQuestion(unansIdx);
                     }}
-                    className="px-2 py-0.5 text-slate-400 hover:text-white cursor-pointer"
+                    className="px-2 py-0.5 text-muted-foreground hover:text-foreground cursor-pointer"
                   >
                     Skipped
                   </button>
@@ -1019,7 +1019,7 @@ export default function QuizPage() {
                 <div className="relative w-36 h-36 flex items-center justify-center">
                   <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
                     <path
-                      className="text-slate-800 stroke-current"
+                      className="text-stone-800 stroke-current"
                       strokeWidth="3.5"
                       fill="none"
                       d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
@@ -1034,26 +1034,26 @@ export default function QuizPage() {
                     />
                   </svg>
                   <div className="absolute text-center">
-                    <span className="text-3xl font-black text-white font-mono">
+                    <span className="text-3xl font-bold text-foreground font-mono">
                       {completionPercent}%
                     </span>
-                    <span className="text-[10px] text-slate-400 block font-semibold uppercase tracking-wider">
+                    <span className="text-[10px] text-muted-foreground block font-semibold uppercase tracking-wider">
                       Completed
                     </span>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-center gap-4 text-[11px] font-semibold text-slate-400 mt-3">
+                <div className="flex items-center justify-center gap-4 text-[11px] font-semibold text-muted-foreground mt-3">
                   <span className="flex items-center gap-1">
                     <span className="w-2 h-2 rounded-full bg-[#FAFAFA]" />
                     50% Solved
                   </span>
                   <span className="flex items-center gap-1">
-                    <span className="w-2 h-2 rounded-full bg-amber-500" />
+                    <span className="w-2 h-2 rounded-full bg-primary" />
                     66% Departs
                   </span>
                   <span className="flex items-center gap-1">
-                    <span className="w-2 h-2 rounded-full bg-amber-400" />
+                    <span className="w-2 h-2 rounded-full bg-primary" />
                     3% Current
                   </span>
                 </div>
@@ -1061,10 +1061,10 @@ export default function QuizPage() {
             </div>
 
             {/* 2. Answer Statistics Breakdown matching Screenshot 4 */}
-            <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 shadow-sm space-y-3">
+            <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-3">
               <div className="flex items-center justify-between text-xs">
-                <span className="font-bold text-white">Answer Detail</span>
-                <span className="font-mono text-slate-400 font-bold">
+                <span className="font-bold text-foreground">Answer Detail</span>
+                <span className="font-mono text-muted-foreground font-bold">
                   {((score / Math.max(1, answeredCount)) * 100).toFixed(0)}% / 100%
                 </span>
               </div>
@@ -1072,14 +1072,14 @@ export default function QuizPage() {
               <div className="space-y-2.5">
                 <div>
                   <div className="flex justify-between text-[11px] font-semibold mb-1">
-                    <span className="text-slate-400">Accuracy</span>
-                    <span className="font-mono text-amber-500 font-bold">
+                    <span className="text-muted-foreground">Accuracy</span>
+                    <span className="font-mono text-primary font-bold">
                       {currentAccuracyPercent}%
                     </span>
                   </div>
-                  <div className="h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                  <div className="h-1.5 rounded-full bg-secondary overflow-hidden">
                     <div
-                      className="h-full bg-amber-500 rounded-full transition-all duration-500"
+                      className="h-full bg-primary rounded-full transition-all duration-500"
                       style={{ width: `${currentAccuracyPercent}%` }}
                     />
                   </div>
@@ -1087,12 +1087,12 @@ export default function QuizPage() {
 
                 <div>
                   <div className="flex justify-between text-[11px] font-semibold mb-1">
-                    <span className="text-slate-400">Fast Pace Score</span>
-                    <span className="font-mono text-sky-400 font-bold">27%</span>
+                    <span className="text-muted-foreground">Fast Pace Score</span>
+                    <span className="font-mono text-primary font-bold">27%</span>
                   </div>
-                  <div className="h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                  <div className="h-1.5 rounded-full bg-secondary overflow-hidden">
                     <div
-                      className="h-full bg-sky-500 rounded-full transition-all duration-500"
+                      className="h-full bg-primary rounded-full transition-all duration-500"
                       style={{ width: "27%" }}
                     />
                   </div>
@@ -1101,10 +1101,10 @@ export default function QuizPage() {
             </div>
 
             {/* 3. Download Resources Card matching Screenshot 4 */}
-            <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 shadow-sm space-y-3">
+            <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-3">
               <div className="flex items-center justify-between">
-                <h3 className="font-bold text-sm text-white">Download Resources</h3>
-                <Link to="/materials" className="text-xs text-amber-500 hover:underline">
+                <h3 className="font-bold text-sm text-foreground">Download Resources</h3>
+                <Link to="/materials" className="text-xs text-primary hover:underline">
                   All Materials &gt;
                 </Link>
               </div>
@@ -1112,24 +1112,24 @@ export default function QuizPage() {
               <div className="space-y-2 text-xs">
                 <div 
                   onClick={() => navigate("/materials")}
-                  className="p-2.5 rounded-xl bg-slate-800/60 border border-slate-700 hover:bg-slate-800 transition-colors cursor-pointer flex items-center justify-between"
+                  className="p-2.5 rounded-xl bg-secondary border border-border hover:bg-secondary transition-colors cursor-pointer flex items-center justify-between"
                 >
                   <div className="flex items-center gap-2">
-                    <FileText className="h-4 w-4 text-amber-500" />
-                    <span className="text-slate-200 font-medium">DSA Unit 2 & 3 Cheat Sheet</span>
+                    <FileText className="h-4 w-4 text-primary" />
+                    <span className="text-foreground font-medium">DSA Unit 2 & 3 Cheat Sheet</span>
                   </div>
-                  <Download className="h-3.5 w-3.5 text-slate-400" />
+                  <Download className="h-3.5 w-3.5 text-muted-foreground" />
                 </div>
 
                 <div 
                   onClick={() => navigate("/materials")}
-                  className="p-2.5 rounded-xl bg-slate-800/60 border border-slate-700 hover:bg-slate-800 transition-colors cursor-pointer flex items-center justify-between"
+                  className="p-2.5 rounded-xl bg-secondary border border-border hover:bg-secondary transition-colors cursor-pointer flex items-center justify-between"
                 >
                   <div className="flex items-center gap-2">
-                    <FileText className="h-4 w-4 text-amber-500" />
-                    <span className="text-slate-200 font-medium">DBMS SQL & Normalization Pack</span>
+                    <FileText className="h-4 w-4 text-primary" />
+                    <span className="text-foreground font-medium">DBMS SQL & Normalization Pack</span>
                   </div>
-                  <Download className="h-3.5 w-3.5 text-slate-400" />
+                  <Download className="h-3.5 w-3.5 text-muted-foreground" />
                 </div>
               </div>
             </div>
@@ -1140,60 +1140,60 @@ export default function QuizPage() {
       {/* ── 3. FINISHED QUIZ SUMMARY / REVIEW MODE ── */}
       {quizFinished && (
         <div className="max-w-3xl mx-auto space-y-6 pt-4 animate-fade-in">
-          <div className="bg-slate-900/80 border border-slate-800 rounded-3xl p-8 shadow-2xl text-center space-y-5">
-            <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-500 mx-auto flex items-center justify-center">
+          <div className="bg-card border border-border rounded-2xl p-8 shadow-lg text-center space-y-5">
+            <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 text-primary mx-auto flex items-center justify-center">
               <Trophy className="h-8 w-8" />
             </div>
 
             <div className="space-y-1">
-              <h2 className="text-2xl font-black text-white">Quiz Session Completed!</h2>
-              <p className="text-xs text-slate-400">
-                You tested on <span className="text-slate-200 font-semibold">{selectedSubject === "all-sem3" ? "Semester 3 Core" : selectedSubject}</span>
+              <h2 className="text-2xl font-bold text-foreground">Quiz Session Completed!</h2>
+              <p className="text-xs text-muted-foreground">
+                You tested on <span className="text-foreground font-semibold">{selectedSubject === "all-sem3" ? "Semester 3 Core" : selectedSubject}</span>
               </p>
             </div>
 
             <div className="grid grid-cols-3 gap-3 max-w-md mx-auto py-2">
-              <div className="p-3.5 rounded-2xl bg-slate-800/60 border border-slate-700/80">
-                <span className="text-2xl font-black font-mono text-white">{score}/{activeQuizPool.length}</span>
-                <span className="text-[10px] text-slate-400 block uppercase font-bold mt-0.5">Score</span>
+              <div className="p-3.5 rounded-2xl bg-secondary border border-border">
+                <span className="text-2xl font-bold font-mono text-foreground">{score}/{activeQuizPool.length}</span>
+                <span className="text-[10px] text-muted-foreground block uppercase font-bold mt-0.5">Score</span>
               </div>
-              <div className="p-3.5 rounded-2xl bg-slate-800/60 border border-slate-700/80">
-                <span className="text-2xl font-black font-mono text-amber-500">
+              <div className="p-3.5 rounded-2xl bg-secondary border border-border">
+                <span className="text-2xl font-bold font-mono text-primary">
                   {Math.round((score / Math.max(1, activeQuizPool.length)) * 100)}%
                 </span>
-                <span className="text-[10px] text-slate-400 block uppercase font-bold mt-0.5">Accuracy</span>
+                <span className="text-[10px] text-muted-foreground block uppercase font-bold mt-0.5">Accuracy</span>
               </div>
-              <div className="p-3.5 rounded-2xl bg-slate-800/60 border border-slate-700/80">
-                <span className="text-2xl font-black font-mono text-sky-400">{formatTime(totalTimerSeconds)}</span>
-                <span className="text-[10px] text-slate-400 block uppercase font-bold mt-0.5">Time Taken</span>
+              <div className="p-3.5 rounded-2xl bg-secondary border border-border">
+                <span className="text-2xl font-bold font-mono text-primary">{formatTime(totalTimerSeconds)}</span>
+                <span className="text-[10px] text-muted-foreground block uppercase font-bold mt-0.5">Time Taken</span>
               </div>
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
               <button
                 onClick={handleStartQuiz}
-                className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-500 text-white font-bold text-xs shadow-md shadow-blue-600/30 flex items-center gap-2 cursor-pointer"
+                className="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary text-primary-foreground font-bold text-xs shadow-md shadow-primary/30 flex items-center gap-2 cursor-pointer"
               >
                 <RotateCcw className="h-3.5 w-3.5" />
                 <span>Retry Quiz Drill</span>
               </button>
               <button
                 onClick={() => setIsReviewMode(!isReviewMode)}
-                className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs border border-slate-700 flex items-center gap-2 cursor-pointer"
+                className="px-5 py-2.5 rounded-xl bg-secondary hover:bg-secondary text-foreground font-semibold text-xs border border-border flex items-center gap-2 cursor-pointer"
               >
                 <Eye className="h-3.5 w-3.5" />
                 <span>{isReviewMode ? "Hide Questions Review" : "Review All Questions"}</span>
               </button>
               <button
                 onClick={() => setIsReviewModalOpen(true)}
-                className="px-5 py-2.5 rounded-xl bg-[#18181B] hover:bg-[#27272A] text-[#FAFAFA] border border-[#FAFAFA]/40 font-bold text-xs shadow-md flex items-center gap-2 cursor-pointer"
+                className="px-5 py-2.5 rounded-xl bg-foreground hover:bg-[#27272A] text-[#FAFAFA] border border-[#FAFAFA]/40 font-bold text-xs shadow-md flex items-center gap-2 cursor-pointer"
               >
                 <Award className="h-3.5 w-3.5" />
                 <span>Detailed Review & Retry Mistakes</span>
               </button>
               <button
                 onClick={() => setQuizStarted(false)}
-                className="px-5 py-2.5 rounded-xl bg-slate-800/50 hover:bg-slate-800 text-slate-400 hover:text-white font-semibold text-xs border border-slate-700/60 cursor-pointer"
+                className="px-5 py-2.5 rounded-xl bg-secondary hover:bg-secondary text-muted-foreground hover:text-foreground font-semibold text-xs border border-border cursor-pointer"
               >
                 Back to Subjects
               </button>
@@ -1203,7 +1203,7 @@ export default function QuizPage() {
           {/* Question-by-question Review Cards */}
           {isReviewMode && (
             <div className="space-y-4 pt-2">
-              <h3 className="font-bold text-base text-white flex items-center gap-2">
+              <h3 className="font-bold text-base text-foreground flex items-center gap-2">
                 <BookOpen className="h-4 w-4 text-primary" />
                 <span>Detailed Syllabus Solutions & Rationale</span>
               </h3>
@@ -1214,34 +1214,34 @@ export default function QuizPage() {
                     key={idx}
                     className={`p-5 rounded-2xl border text-xs space-y-3 ${
                       rec.isCorrect
-                        ? "bg-slate-900/60 border-amber-500/30"
-                        : "bg-slate-900/60 border-rose-500/30"
+                        ? "bg-card border-primary/30"
+                        : "bg-card border-destructive/30"
                     }`}
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="space-y-1">
-                        <span className="text-[10px] font-mono font-bold text-slate-400">
+                        <span className="text-[10px] font-mono font-bold text-muted-foreground">
                           Question {idx + 1} · {rec.question.subjectName}
                         </span>
-                        <p className="text-sm font-bold text-white">{rec.question.question}</p>
+                        <p className="text-sm font-bold text-foreground">{rec.question.question}</p>
                       </div>
                       <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold ${
-                        rec.isCorrect ? "bg-amber-500/10 text-amber-500" : "bg-rose-500/10 text-rose-400"
+                        rec.isCorrect ? "bg-primary/10 text-primary" : "bg-destructive/10 text-destructive"
                       }`}>
                         {rec.isCorrect ? "Correct ✓" : "Missed ✗"}
                       </span>
                     </div>
 
-                    <div className="p-3 rounded-xl bg-slate-950/50 border border-slate-800 text-slate-300 space-y-1">
-                      <p className="text-[11px] text-amber-500 font-bold">
+                    <div className="p-3 rounded-xl bg-card border border-border text-foreground space-y-1">
+                      <p className="text-[11px] text-primary font-bold">
                         Correct Answer: {rec.question.options[rec.question.correctIndex]}
                       </p>
                       {!rec.isCorrect && (
-                        <p className="text-[11px] text-rose-400 font-medium">
+                        <p className="text-[11px] text-destructive font-medium">
                           Your Answer: {rec.question.options[rec.selectedChoice]}
                         </p>
                       )}
-                      <p className="text-[11px] text-slate-400 pt-1 leading-relaxed border-t border-slate-850 mt-1">
+                      <p className="text-[11px] text-muted-foreground pt-1 leading-relaxed border-t border-border mt-1">
                         Rationale: {rec.question.explanation}
                       </p>
                     </div>
@@ -1255,45 +1255,45 @@ export default function QuizPage() {
 
       {/* ── 4. DIAGNOSTIC REPORT MODAL ── */}
       {showReportModal && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 max-w-lg w-full space-y-5 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div className="fixed inset-0 z-50 bg-card backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-card border border-border rounded-2xl p-6 sm:p-8 max-w-lg w-full space-y-5 shadow-lg">
+            <div className="flex items-center justify-between border-b border-border pb-3">
               <div className="flex items-center gap-2">
-                <BarChart3 className="h-5 w-5 text-amber-500" />
-                <h3 className="font-bold text-base text-white">Diagnostic Exam Report</h3>
+                <BarChart3 className="h-5 w-5 text-primary" />
+                <h3 className="font-bold text-base text-foreground">Diagnostic Exam Report</h3>
               </div>
               <button
                 onClick={() => setShowReportModal(false)}
-                className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 flex items-center justify-center cursor-pointer"
+                className="w-8 h-8 rounded-full bg-secondary hover:bg-secondary text-muted-foreground flex items-center justify-center cursor-pointer"
               >
                 <X className="h-4 w-4" />
               </button>
             </div>
 
             <div className="space-y-3 text-xs">
-              <div className="flex justify-between p-3 rounded-xl bg-slate-800/50 border border-slate-700">
-                <span className="text-slate-400">Total Questions Attempted:</span>
-                <span className="font-bold text-white font-mono">{quizAnswers.length}</span>
+              <div className="flex justify-between p-3 rounded-xl bg-secondary border border-border">
+                <span className="text-muted-foreground">Total Questions Attempted:</span>
+                <span className="font-bold text-foreground font-mono">{quizAnswers.length}</span>
               </div>
-              <div className="flex justify-between p-3 rounded-xl bg-slate-800/50 border border-slate-700">
-                <span className="text-slate-400">Correctly Solved:</span>
-                <span className="font-bold text-amber-500 font-mono">{score}</span>
+              <div className="flex justify-between p-3 rounded-xl bg-secondary border border-border">
+                <span className="text-muted-foreground">Correctly Solved:</span>
+                <span className="font-bold text-primary font-mono">{score}</span>
               </div>
-              <div className="flex justify-between p-3 rounded-xl bg-slate-800/50 border border-slate-700">
-                <span className="text-slate-400">Live Accuracy Rate:</span>
-                <span className="font-bold text-white font-mono">
+              <div className="flex justify-between p-3 rounded-xl bg-secondary border border-border">
+                <span className="text-muted-foreground">Live Accuracy Rate:</span>
+                <span className="font-bold text-foreground font-mono">
                   {quizAnswers.length > 0 ? Math.round((score / quizAnswers.length) * 100) : 0}%
                 </span>
               </div>
-              <div className="flex justify-between p-3 rounded-xl bg-slate-800/50 border border-slate-700">
-                <span className="text-slate-400">Questions Flagged for Review:</span>
-                <span className="font-bold text-amber-400 font-mono">{flaggedIndices.size}</span>
+              <div className="flex justify-between p-3 rounded-xl bg-secondary border border-border">
+                <span className="text-muted-foreground">Questions Flagged for Review:</span>
+                <span className="font-bold text-primary font-mono">{flaggedIndices.size}</span>
               </div>
             </div>
 
             <button
               onClick={() => setShowReportModal(false)}
-              className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-500 text-white font-bold text-xs shadow-md transition-all cursor-pointer"
+              className="w-full py-2.5 rounded-xl bg-primary hover:bg-primary text-primary-foreground font-bold text-xs shadow-md transition-all cursor-pointer"
             >
               Close Diagnostic Report
             </button>

@@ -49,34 +49,34 @@ export const CampusEventRow: React.FC<CampusEventRowProps> = ({
   return (
     <div
       onClick={onClick}
-      className={`rounded-[22px] bg-white dark:bg-[#1C1C1E] border border-[#E8E4DA] dark:border-neutral-800 p-3 sm:p-4 flex items-center justify-between gap-3 transition-all select-none ${
-        onClick ? 'cursor-pointer hover:border-[#2B4EFF]/40' : ''
+      className={`rounded-2xl bg-white dark:bg-card border border-border dark:border-stone-800 p-3 sm:p-4 flex items-center justify-between gap-3 transition-all select-none ${
+        onClick ? 'cursor-pointer hover:border-primary/40' : ''
       } ${className}`}
     >
       <div className="flex items-center gap-3.5 min-w-0">
         {/* Lime Date Block */}
-        <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-[#EAF6B0] text-[#111111] flex flex-col items-center justify-center shrink-0 shadow-2xs">
-          <span className="text-[10px] font-black uppercase tracking-wider text-neutral-800">
+        <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-accent text-foreground flex flex-col items-center justify-center shrink-0 shadow-2xs">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-stone-800">
             {month}
           </span>
-          <span className="text-xl sm:text-2xl font-black leading-tight text-[#111111]">
+          <span className="text-xl sm:text-2xl font-bold leading-tight text-foreground">
             {day}
           </span>
         </div>
 
         {/* Content */}
         <div className="min-w-0">
-          <h3 className="font-bold text-sm sm:text-base text-[#111111] dark:text-white leading-snug truncate">
+          <h3 className="font-bold text-sm sm:text-base text-foreground dark:text-white leading-snug truncate">
             {title}
           </h3>
-          <p className="text-xs text-[#6B7280] dark:text-neutral-400 font-medium flex items-center gap-1.5 mt-0.5 truncate">
+          <p className="text-xs text-muted-foreground dark:text-stone-400 font-medium flex items-center gap-1.5 mt-0.5 truncate">
             <span className="inline-flex items-center gap-1">
-              <MapPin className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
+              <MapPin className="w-3.5 h-3.5 text-stone-400 shrink-0" />
               {locationText}
             </span>
             <span>·</span>
             <span className="inline-flex items-center gap-1">
-              <Clock className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
+              <Clock className="w-3.5 h-3.5 text-stone-400 shrink-0" />
               {timeText}
             </span>
           </p>
@@ -92,8 +92,8 @@ export const CampusEventRow: React.FC<CampusEventRowProps> = ({
         }}
         className={`px-4 sm:px-5 py-2 rounded-full font-bold text-xs sm:text-sm shrink-0 transition-all cursor-pointer ${
           hasRsvp
-            ? 'bg-[#111111] text-white dark:bg-white dark:text-[#111111]'
-            : 'bg-[#E6EAFD] text-[#2B4EFF] hover:bg-[#2B4EFF] hover:text-white dark:bg-blue-950/40 dark:text-blue-300'
+            ? 'bg-foreground text-white dark:bg-white dark:text-foreground'
+            : 'bg-primary/10 text-primary hover:bg-primary hover:text-white dark:bg-primary/15 dark:text-primary'
         }`}
       >
         {hasRsvp ? (

@@ -91,7 +91,7 @@ export function AdminPracticalsTab() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border">
         <div>
-          <h2 className="text-xl sm:text-2xl font-black text-foreground flex items-center gap-2">
+          <h2 className="text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2">
             <Code className="h-6 w-6 text-primary" />
             <span>Universal Practicals Laboratory Bank (1,180+ Experiments)</span>
           </h2>
@@ -117,10 +117,10 @@ export function AdminPracticalsTab() {
           <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
             Total Laboratory Experiments
           </span>
-          <span className="text-2xl font-black text-foreground mt-1 block">
+          <span className="text-2xl font-bold text-foreground mt-1 block">
             {ALL_CODING_PROBLEMS.length}+
           </span>
-          <span className="text-[11px] text-emerald-600 font-semibold mt-0.5 flex items-center gap-1">
+          <span className="text-[11px] text-success font-semibold mt-0.5 flex items-center gap-1">
             <CheckCircle2 className="h-3 w-3" /> 100% Executable Code
           </span>
         </div>
@@ -129,7 +129,7 @@ export function AdminPracticalsTab() {
           <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
             Lab Courses
           </span>
-          <span className="text-2xl font-black text-foreground mt-1 block">
+          <span className="text-2xl font-bold text-foreground mt-1 block">
             43 Labs
           </span>
           <span className="text-[11px] text-primary font-semibold mt-0.5">
@@ -141,7 +141,7 @@ export function AdminPracticalsTab() {
           <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
             Oral Viva Voce Questions
           </span>
-          <span className="text-2xl font-black text-foreground mt-1 block">
+          <span className="text-2xl font-bold text-foreground mt-1 block">
             3,500+ Q&As
           </span>
           <span className="text-[11px] text-muted-foreground font-semibold mt-0.5">
@@ -153,7 +153,7 @@ export function AdminPracticalsTab() {
           <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
             Filter Matches
           </span>
-          <span className="text-2xl font-black text-primary mt-1 block">
+          <span className="text-2xl font-bold text-primary mt-1 block">
             {filteredPracticals.length}
           </span>
           <span className="text-[11px] text-muted-foreground font-semibold mt-0.5">
@@ -203,7 +203,7 @@ export function AdminPracticalsTab() {
               onClick={() => setSelectedLanguage(lng)}
               className={`px-2.5 py-1 rounded-full text-xs font-mono font-bold uppercase transition-all cursor-pointer whitespace-nowrap ${
                 selectedLanguage === lng
-                  ? "bg-emerald-600 text-white shadow-xs"
+                  ? "bg-success text-white shadow-xs"
                   : "bg-muted text-muted-foreground hover:bg-accent"
               }`}
             >
@@ -240,8 +240,8 @@ export function AdminPracticalsTab() {
 
             <div className="pt-3 mt-3 border-t border-border flex items-center justify-between">
               <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                prob.difficulty === "Easy" ? "bg-emerald-500/15 text-emerald-600" :
-                prob.difficulty === "Medium" ? "bg-amber-500/15 text-amber-600" : "bg-rose-500/15 text-rose-600"
+                prob.difficulty === "Easy" ? "bg-success/15 text-success" :
+                prob.difficulty === "Medium" ? "bg-primary/15 text-primary" : "bg-destructive/15 text-destructive"
               }`}>
                 {prob.difficulty}
               </span>
@@ -271,7 +271,7 @@ export function AdminPracticalsTab() {
       {/* Practical Inspector Modal */}
       {inspectingPractical && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
-          <div className="w-full max-w-3xl bg-card border border-border rounded-[24px] p-6 shadow-2xl space-y-4 max-h-[90vh] flex flex-col">
+          <div className="w-full max-w-3xl bg-card border border-border rounded-2xl p-6 shadow-lg space-y-4 max-h-[90vh] flex flex-col">
             
             {/* Modal Header */}
             <div className="flex items-center justify-between pb-3 border-b border-border">
@@ -337,7 +337,7 @@ export function AdminPracticalsTab() {
                     <span className="font-bold text-foreground uppercase tracking-wider text-[11px] block">
                       Expected Output Verification
                     </span>
-                    <pre className="p-3 rounded-lg bg-neutral-900 text-neutral-100 font-mono text-[11px] overflow-x-auto whitespace-pre-wrap border border-neutral-800">
+                    <pre className="p-3 rounded-lg bg-stone-900 text-stone-100 font-mono text-[11px] overflow-x-auto whitespace-pre-wrap border border-stone-800">
                       {inspectingPractical.expectedOutput}
                     </pre>
                   </div>
@@ -360,7 +360,7 @@ export function AdminPracticalsTab() {
                       <Copy className="h-3 w-3" /> Copy Code
                     </button>
                   </div>
-                  <pre className="p-4 rounded-xl bg-neutral-900 text-neutral-100 font-mono text-xs overflow-x-auto leading-relaxed border border-neutral-800">
+                  <pre className="p-4 rounded-xl bg-stone-900 text-stone-100 font-mono text-xs overflow-x-auto leading-relaxed border border-stone-800">
                     <code>{inspectingPractical.modelSolution}</code>
                   </pre>
                 </div>
@@ -371,7 +371,7 @@ export function AdminPracticalsTab() {
                   <span className="font-bold text-foreground text-[11px] uppercase">
                     Scaffold Starter Code with // TODO Markers
                   </span>
-                  <pre className="p-4 rounded-xl bg-neutral-900 text-neutral-100 font-mono text-xs overflow-x-auto leading-relaxed border border-neutral-800">
+                  <pre className="p-4 rounded-xl bg-stone-900 text-stone-100 font-mono text-xs overflow-x-auto leading-relaxed border border-stone-800">
                     <code>{inspectingPractical.starterCode}</code>
                   </pre>
                 </div>
@@ -415,14 +415,14 @@ export function AdminPracticalsTab() {
                   {testResult && (
                     <div className={`p-4 rounded-xl border space-y-2 animate-fade-in ${
                       testResult.passed
-                        ? "bg-emerald-500/10 border-emerald-500/40 text-emerald-800 dark:text-emerald-300"
-                        : "bg-rose-500/10 border-rose-500/40 text-rose-800 dark:text-rose-300"
+                        ? "bg-success/10 border-success/40 text-success dark:text-success"
+                        : "bg-destructive/10 border-destructive/40 text-destructive dark:text-destructive"
                     }`}>
                       <div className="flex items-center gap-2 font-bold text-xs">
                         {testResult.passed ? <CheckCircle2 className="h-4 w-4" /> : <XCircle className="h-4 w-4" />}
                         <span>Status: {testResult.passed ? "PASSED (Model Solution Verified)" : "FAILED"}</span>
                       </div>
-                      <pre className="p-3 rounded-lg bg-neutral-900 text-neutral-100 font-mono text-[11px] overflow-x-auto whitespace-pre-wrap border border-neutral-800">
+                      <pre className="p-3 rounded-lg bg-stone-900 text-stone-100 font-mono text-[11px] overflow-x-auto whitespace-pre-wrap border border-stone-800">
                         {testResult.output}
                       </pre>
                     </div>

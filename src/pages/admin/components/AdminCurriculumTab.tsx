@@ -111,7 +111,7 @@ export function AdminCurriculumTab() {
       {/* Header & Metrics */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border">
         <div>
-          <h2 className="text-xl sm:text-2xl font-black text-foreground flex items-center gap-2">
+          <h2 className="text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2">
             <BookOpen className="h-6 w-6 text-primary" />
             <span>Universal Curriculum & Syllabus Director</span>
           </h2>
@@ -144,10 +144,10 @@ export function AdminCurriculumTab() {
           <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
             Accredited Courses
           </span>
-          <span className="text-2xl font-black text-foreground mt-1 block">
+          <span className="text-2xl font-bold text-foreground mt-1 block">
             {ALL_SUBJECTS_METADATA.length}
           </span>
-          <span className="text-[11px] text-emerald-600 font-semibold mt-0.5 flex items-center gap-1">
+          <span className="text-[11px] text-success font-semibold mt-0.5 flex items-center gap-1">
             <CheckCircle2 className="h-3 w-3" /> 100% Syllabus Covered
           </span>
         </div>
@@ -156,7 +156,7 @@ export function AdminCurriculumTab() {
           <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
             Academic Semesters
           </span>
-          <span className="text-2xl font-black text-foreground mt-1 block">
+          <span className="text-2xl font-bold text-foreground mt-1 block">
             8 Semesters
           </span>
           <span className="text-[11px] text-primary font-semibold mt-0.5">
@@ -168,7 +168,7 @@ export function AdminCurriculumTab() {
           <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
             Curriculum Units
           </span>
-          <span className="text-2xl font-black text-foreground mt-1 block">
+          <span className="text-2xl font-bold text-foreground mt-1 block">
             215+ Units
           </span>
           <span className="text-[11px] text-muted-foreground font-semibold mt-0.5">
@@ -180,7 +180,7 @@ export function AdminCurriculumTab() {
           <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
             Departments
           </span>
-          <span className="text-2xl font-black text-foreground mt-1 block">
+          <span className="text-2xl font-bold text-foreground mt-1 block">
             8 Disciplines
           </span>
           <span className="text-[11px] text-muted-foreground font-semibold mt-0.5">
@@ -230,7 +230,7 @@ export function AdminCurriculumTab() {
               onClick={() => setSelectedSemester(sem)}
               className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                 selectedSemester === sem
-                  ? "bg-emerald-600 text-white shadow-xs"
+                  ? "bg-success text-white shadow-xs"
                   : "bg-muted text-muted-foreground hover:bg-accent"
               }`}
             >
@@ -282,7 +282,7 @@ export function AdminCurriculumTab() {
       {/* Inspect Syllabus Modal */}
       {activeSubject && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
-          <div className="w-full max-w-xl bg-card border border-border rounded-[24px] p-6 shadow-2xl space-y-4">
+          <div className="w-full max-w-xl bg-card border border-border rounded-2xl p-6 shadow-lg space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-border">
               <div className="flex items-center gap-2.5">
                 <span className="text-2xl">{activeSubject.icon}</span>
@@ -321,7 +321,7 @@ export function AdminCurriculumTab() {
                       </span>
                     </div>
                   </div>
-                  <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
+                  <CheckCircle2 className="h-4 w-4 text-success shrink-0" />
                 </div>
               ))}
             </div>
@@ -341,7 +341,7 @@ export function AdminCurriculumTab() {
       {/* Add New Course Modal */}
       {isAddModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
-          <div className="w-full max-w-lg bg-card border border-border rounded-[24px] p-6 shadow-2xl space-y-4">
+          <div className="w-full max-w-lg bg-card border border-border rounded-2xl p-6 shadow-lg space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-border">
               <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
                 <Plus className="h-5 w-5 text-primary" />

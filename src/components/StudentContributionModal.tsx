@@ -68,18 +68,18 @@ export function StudentContributionModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in">
-      <div className="w-full max-w-lg bg-card border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col">
+      <div className="w-full max-w-lg bg-card border border-border rounded-2xl shadow-lg overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="p-4 sm:p-5 bg-gradient-to-r from-[#18181B] via-[#1D4A3F] to-[#27272A] text-white flex items-center justify-between border-b border-[#FAFAFA]/30 shrink-0">
+        <div className="p-4 sm:p-5 bg-gradient-to-r from-foreground via-primary to-[#27272A] text-white flex items-center justify-between border-b border-[#FAFAFA]/30 shrink-0">
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-xl bg-[#FAFAFA] text-[#18181B]">
+            <div className="p-2 rounded-xl bg-[#FAFAFA] text-foreground">
               <Sparkles className="h-5 w-5" />
             </div>
             <div>
               <h3 className="font-bold text-sm sm:text-base text-white font-display">
                 Contribute Notes or Code
               </h3>
-              <p className="text-[11px] text-[#A1A1AA]">
+              <p className="text-[11px] text-muted-foreground">
                 Earn up to +250 XP and get recognized as a Campus Topper
               </p>
             </div>
@@ -150,7 +150,7 @@ export function StudentContributionModal({
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full h-10 rounded-xl bg-[#18181B] hover:bg-[#27272A] text-[#FAFAFA] font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md shadow-[#18181B]/20 cursor-pointer font-display"
+            className="w-full h-10 rounded-xl bg-foreground hover:bg-[#27272A] text-[#FAFAFA] font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md shadow-foreground/20 cursor-pointer font-display"
           >
             <Send className="h-4 w-4" />
             <span>{isSubmitting ? "Submitting..." : "Submit for Faculty Approval (+50 XP)"}</span>

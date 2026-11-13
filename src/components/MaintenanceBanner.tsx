@@ -291,15 +291,15 @@ export function MaintenanceBanner() {
   // Admin Floating Ribbon (When Maintenance is ON and Founder/Admin is reviewing the portal)
   if (config.active && isAdmin && !isPreviewingAsStudent) {
     return (
-      <aside aria-label="System Maintenance Notification" className="fixed top-0 left-0 right-0 z-[100] bg-zinc-900 text-zinc-100 px-4 py-2.5 shadow-xl flex flex-wrap items-center justify-between gap-3 text-xs font-mono border-b border-zinc-800">
+      <aside aria-label="System Maintenance Notification" className="fixed top-0 left-0 right-0 z-[100] bg-stone-900 text-stone-100 px-4 py-2.5 shadow-lg flex flex-wrap items-center justify-between gap-3 text-xs font-mono border-b border-stone-800">
         <div className="flex items-center gap-2.5">
           <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
           </span>
-          <span className="font-semibold text-zinc-200">MAINTENANCE_LOCK: Active for Students</span>
+          <span className="font-semibold text-stone-200">MAINTENANCE_LOCK: Active for Students</span>
           {timeLeft && (
-            <span className="bg-zinc-800 border border-zinc-700/80 px-2 py-0.5 rounded text-[11px] text-zinc-300">
+            <span className="bg-stone-800 border border-stone-700/80 px-2 py-0.5 rounded text-[11px] text-stone-300">
               ETA: {String(timeLeft.hours).padStart(2, '0')}:{String(timeLeft.minutes).padStart(2, '0')}:{String(timeLeft.seconds).padStart(2, '0')}
             </span>
           )}
@@ -311,13 +311,13 @@ export function MaintenanceBanner() {
               setIsPreviewingAsStudent(true);
               sessionStorage.setItem('itm_preview_maintenance', 'true');
             }}
-            className="px-3 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer border border-zinc-700 text-xs font-sans font-medium"
+            className="px-3 py-1 bg-stone-800 hover:bg-stone-700 text-stone-200 rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer border border-stone-700 text-xs font-sans font-medium"
           >
             <Eye className="h-3.5 w-3.5" /> Preview Lockout Screen
           </button>
           <button
             onClick={handleDeactivate}
-            className="px-3 py-1 bg-white text-zinc-950 hover:bg-zinc-200 rounded-lg transition-colors cursor-pointer text-xs font-sans font-bold"
+            className="px-3 py-1 bg-white text-stone-950 hover:bg-stone-200 rounded-lg transition-colors cursor-pointer text-xs font-sans font-bold"
           >
             Turn OFF Globally
           </button>
@@ -329,8 +329,8 @@ export function MaintenanceBanner() {
   // Visitor Preview Active Ribbon (When visitor entered a valid dynamic key)
   if (config.active && !isAdmin && isKeyValid) {
     return (
-      <div className="fixed bottom-4 right-4 z-[9999] bg-zinc-900/95 border border-zinc-700 text-zinc-100 px-4 py-2.5 rounded-2xl shadow-2xl flex items-center gap-3 text-xs font-medium backdrop-blur-md animate-fade-in font-sans">
-        <KeyRound className="h-4 w-4 text-amber-400" />
+      <div className="fixed bottom-4 right-4 z-[9999] bg-stone-900/95 border border-stone-700 text-stone-100 px-4 py-2.5 rounded-2xl shadow-lg flex items-center gap-3 text-xs font-medium backdrop-blur-md animate-fade-in font-sans">
+        <KeyRound className="h-4 w-4 text-primary" />
         <span>Tester Preview Session Active</span>
         <button
           onClick={() => {
@@ -338,7 +338,7 @@ export function MaintenanceBanner() {
             setVisitorAccessKey('');
             toast.info('Session ended. Locked back to maintenance screen.');
           }}
-          className="ml-2 text-[10px] font-bold px-2.5 py-1 rounded-lg bg-zinc-100 text-zinc-900 hover:bg-white transition-colors cursor-pointer"
+          className="ml-2 text-[10px] font-bold px-2.5 py-1 rounded-lg bg-stone-100 text-stone-900 hover:bg-white transition-colors cursor-pointer"
         >
           Relock Screen
         </button>
@@ -350,7 +350,7 @@ export function MaintenanceBanner() {
 
   // ── ARCHITECTURAL HIGH-TECH STATUS LOCKOUT SCREEN ──
   return (
-    <div className="fixed inset-0 z-[99999] bg-zinc-950 text-zinc-100 flex flex-col overflow-hidden font-sans select-none antialiased">
+    <div className="fixed inset-0 z-[99999] bg-stone-950 text-stone-100 flex flex-col overflow-hidden font-sans select-none antialiased">
       {/* Background Subtle Architectural Grid */}
       <div 
         className="absolute inset-0 opacity-[0.03] pointer-events-none"
@@ -361,15 +361,15 @@ export function MaintenanceBanner() {
       />
 
       {/* Top Status Navigation */}
-      <nav className="relative z-20 h-16 border-b border-zinc-800/80 flex items-center justify-between px-6 sm:px-10 shrink-0 bg-zinc-950/90 backdrop-blur-md">
+      <nav className="relative z-20 h-16 border-b border-stone-800/80 flex items-center justify-between px-6 sm:px-10 shrink-0 bg-stone-950/90 backdrop-blur-md">
         <div className="flex items-center gap-3">
-          <div className="h-8 w-8 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-300">
+          <div className="h-8 w-8 rounded-xl bg-stone-900 border border-stone-800 flex items-center justify-center text-stone-300">
             <Lock className="h-4 w-4" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-sm font-bold tracking-tight text-zinc-100">CampusLoop Infrastructure</span>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-zinc-900 text-zinc-400 border border-zinc-800">
+              <span className="text-sm font-bold tracking-tight text-stone-100">CampusLoop Infrastructure</span>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-stone-900 text-stone-400 border border-stone-800">
                 STATUS: UPGRADE_ACTIVE
               </span>
             </div>
@@ -380,16 +380,16 @@ export function MaintenanceBanner() {
           {isPreviewingAsStudent ? (
             <button
               onClick={exitPreview}
-              className="px-3 py-1.5 bg-white text-zinc-950 hover:bg-zinc-200 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="px-3 py-1.5 bg-white text-stone-950 hover:bg-stone-200 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
             >
               <EyeOff className="h-3.5 w-3.5" />
               <span>Exit Live Preview</span>
             </button>
           ) : (
-            <div className="flex items-center gap-2 text-xs font-mono text-zinc-400">
+            <div className="flex items-center gap-2 text-xs font-mono text-stone-400">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
               </span>
               <span>All Data Protected</span>
             </div>
@@ -403,52 +403,52 @@ export function MaintenanceBanner() {
           
           {/* Left Column: Mission Description & Countdown */}
           <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-300 text-xs font-mono">
-              <Activity className="h-3.5 w-3.5 text-zinc-400 animate-pulse" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-stone-900 border border-stone-800 text-stone-300 text-xs font-mono">
+              <Activity className="h-3.5 w-3.5 text-stone-400 animate-pulse" />
               <span>Release Deployment v2.4 • Multi-University Engine</span>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-zinc-100 leading-[1.15]">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-stone-100 leading-[1.15]">
               System Upgrade In Progress.
             </h1>
 
-            <p className="text-sm sm:text-base text-zinc-400 leading-relaxed max-w-xl">
+            <p className="text-sm sm:text-base text-stone-400 leading-relaxed max-w-xl">
               {config.message || DEFAULT_CONFIG.message}
             </p>
 
             {/* Countdown / Status Box */}
             {timeLeft ? (
-              <div className="p-5 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 max-w-md mx-auto lg:mx-0 backdrop-blur-md">
-                <div className="flex items-center justify-between text-xs text-zinc-400 font-mono mb-3">
+              <div className="p-5 rounded-2xl bg-stone-900/60 border border-stone-800/80 max-w-md mx-auto lg:mx-0 backdrop-blur-md">
+                <div className="flex items-center justify-between text-xs text-stone-400 font-mono mb-3">
                   <span className="flex items-center gap-1.5">
-                    <Clock className="h-3.5 w-3.5 text-zinc-400" /> Estimated Resumption
+                    <Clock className="h-3.5 w-3.5 text-stone-400" /> Estimated Resumption
                   </span>
-                  <span className="text-[11px] text-zinc-500">Auto-refreshing</span>
+                  <span className="text-[11px] text-stone-500">Auto-refreshing</span>
                 </div>
                 <div className="grid grid-cols-3 gap-3 text-center">
-                  <div className="p-3 rounded-xl bg-zinc-950 border border-zinc-800">
-                    <span className="font-mono text-2xl font-black text-zinc-100">
+                  <div className="p-3 rounded-xl bg-stone-950 border border-stone-800">
+                    <span className="font-mono text-2xl font-bold text-stone-100">
                       {String(timeLeft.hours).padStart(2, '0')}
                     </span>
-                    <span className="text-[10px] text-zinc-500 block uppercase font-bold mt-0.5">Hours</span>
+                    <span className="text-[10px] text-stone-500 block uppercase font-bold mt-0.5">Hours</span>
                   </div>
-                  <div className="p-3 rounded-xl bg-zinc-950 border border-zinc-800">
-                    <span className="font-mono text-2xl font-black text-zinc-100">
+                  <div className="p-3 rounded-xl bg-stone-950 border border-stone-800">
+                    <span className="font-mono text-2xl font-bold text-stone-100">
                       {String(timeLeft.minutes).padStart(2, '0')}
                     </span>
-                    <span className="text-[10px] text-zinc-500 block uppercase font-bold mt-0.5">Minutes</span>
+                    <span className="text-[10px] text-stone-500 block uppercase font-bold mt-0.5">Minutes</span>
                   </div>
-                  <div className="p-3 rounded-xl bg-zinc-950 border border-zinc-800">
-                    <span className="font-mono text-2xl font-black text-amber-400">
+                  <div className="p-3 rounded-xl bg-stone-950 border border-stone-800">
+                    <span className="font-mono text-2xl font-bold text-primary">
                       {String(timeLeft.seconds).padStart(2, '0')}
                     </span>
-                    <span className="text-[10px] text-zinc-500 block uppercase font-bold mt-0.5">Seconds</span>
+                    <span className="text-[10px] text-stone-500 block uppercase font-bold mt-0.5">Seconds</span>
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 max-w-md mx-auto lg:mx-0 text-xs text-zinc-400 flex items-center gap-3">
-                <RefreshCw className="h-4 w-4 text-zinc-400 animate-spin shrink-0" />
+              <div className="p-4 rounded-xl bg-stone-900/60 border border-stone-800 max-w-md mx-auto lg:mx-0 text-xs text-stone-400 flex items-center gap-3">
+                <RefreshCw className="h-4 w-4 text-stone-400 animate-spin shrink-0" />
                 <span>Engineers are finishing deployment calibrations. The portal will automatically become accessible once verification checks pass.</span>
               </div>
             )}
@@ -459,7 +459,7 @@ export function MaintenanceBanner() {
                 <button
                   type="button"
                   onClick={() => setShowKeyPrompt(true)}
-                  className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors flex items-center gap-1.5 mx-auto lg:mx-0 font-medium cursor-pointer"
+                  className="text-xs text-stone-500 hover:text-stone-300 transition-colors flex items-center gap-1.5 mx-auto lg:mx-0 font-medium cursor-pointer"
                 >
                   <KeyRound className="h-3.5 w-3.5" />
                   <span>Faculty or Tester Access Key? Unlock preview</span>
@@ -467,17 +467,17 @@ export function MaintenanceBanner() {
               ) : (
                 <form
                   onSubmit={handleUnlockWithKey}
-                  className="p-4 rounded-2xl bg-zinc-900 border border-zinc-800 space-y-2.5 animate-fade-in text-left shadow-2xl"
+                  className="p-4 rounded-2xl bg-stone-900 border border-stone-800 space-y-2.5 animate-fade-in text-left shadow-lg"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-mono font-semibold text-zinc-300 flex items-center gap-1.5">
-                      <KeyRound className="h-3.5 w-3.5 text-zinc-400" />
+                    <span className="text-xs font-mono font-semibold text-stone-300 flex items-center gap-1.5">
+                      <KeyRound className="h-3.5 w-3.5 text-stone-400" />
                       Enter Emergency Access Key
                     </span>
                     <button
                       type="button"
                       onClick={() => setShowKeyPrompt(false)}
-                      className="text-zinc-500 hover:text-zinc-300 p-0.5 cursor-pointer"
+                      className="text-stone-500 hover:text-stone-300 p-0.5 cursor-pointer"
                     >
                       <X className="h-4 w-4" />
                     </button>
@@ -491,19 +491,19 @@ export function MaintenanceBanner() {
                         setKeyError(false);
                       }}
                       placeholder="e.g. ITM-XXXX-123"
-                      className={`flex-1 h-9 px-3 rounded-lg bg-zinc-950 border text-xs font-mono text-zinc-100 placeholder:text-zinc-600 focus:outline-none ${
-                        keyError ? "border-rose-500 focus:border-rose-500" : "border-zinc-700 focus:border-zinc-500"
+                      className={`flex-1 h-9 px-3 rounded-lg bg-stone-950 border text-xs font-mono text-stone-100 placeholder:text-stone-600 focus:outline-none ${
+                        keyError ? "border-destructive/30 focus:border-destructive/30" : "border-stone-700 focus:border-stone-500"
                       }`}
                     />
                     <button
                       type="submit"
-                      className="h-9 px-4 rounded-lg bg-white text-zinc-950 font-bold text-xs hover:bg-zinc-200 transition-colors cursor-pointer"
+                      className="h-9 px-4 rounded-lg bg-white text-stone-950 font-bold text-xs hover:bg-stone-200 transition-colors cursor-pointer"
                     >
                       Unlock
                     </button>
                   </div>
                   {keyError && (
-                    <p className="text-[11px] text-rose-400 font-medium">
+                    <p className="text-[11px] text-destructive font-medium">
                       Invalid or expired access key. Check with administrator.
                     </p>
                   )}
@@ -514,49 +514,49 @@ export function MaintenanceBanner() {
 
           {/* Right Column: Live Infrastructure Cluster Diagnostics */}
           <div className="lg:col-span-5 space-y-4">
-            <div className="rounded-2xl bg-zinc-900/80 border border-zinc-800 p-5 space-y-4 shadow-xl">
-              <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
-                <span className="text-xs font-mono font-bold text-zinc-300 flex items-center gap-2">
-                  <Terminal className="h-4 w-4 text-zinc-400" /> Subsystem Diagnostics
+            <div className="rounded-2xl bg-stone-900/80 border border-stone-800 p-5 space-y-4 shadow-lg">
+              <div className="flex items-center justify-between border-b border-stone-800/80 pb-3">
+                <span className="text-xs font-mono font-bold text-stone-300 flex items-center gap-2">
+                  <Terminal className="h-4 w-4 text-stone-400" /> Subsystem Diagnostics
                 </span>
-                <span className="text-[10px] font-mono text-zinc-400">All Nodes Secure</span>
+                <span className="text-[10px] font-mono text-stone-400">All Nodes Secure</span>
               </div>
 
               <div className="space-y-2 text-xs">
-                <div className="p-3 rounded-xl bg-zinc-950 border border-zinc-800/60 flex items-center justify-between">
+                <div className="p-3 rounded-xl bg-stone-950 border border-stone-800/60 flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
-                    <Database className="h-4 w-4 text-zinc-400" />
-                    <span className="font-medium text-zinc-200">PostgreSQL Shards</span>
+                    <Database className="h-4 w-4 text-stone-400" />
+                    <span className="font-medium text-stone-200">PostgreSQL Shards</span>
                   </div>
-                  <span className="font-mono text-[10px] text-zinc-400 font-semibold">100% HEALTHY</span>
+                  <span className="font-mono text-[10px] text-stone-400 font-semibold">100% HEALTHY</span>
                 </div>
 
-                <div className="p-3 rounded-xl bg-zinc-950 border border-zinc-800/60 flex items-center justify-between">
+                <div className="p-3 rounded-xl bg-stone-950 border border-stone-800/60 flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
-                    <Layers className="h-4 w-4 text-zinc-400" />
-                    <span className="font-medium text-zinc-200">Multi-University Engine</span>
+                    <Layers className="h-4 w-4 text-stone-400" />
+                    <span className="font-medium text-stone-200">Multi-University Engine</span>
                   </div>
-                  <span className="font-mono text-[10px] text-amber-400 font-semibold animate-pulse">DEPLOYING v2.4</span>
+                  <span className="font-mono text-[10px] text-primary font-semibold animate-pulse">DEPLOYING v2.4</span>
                 </div>
 
-                <div className="p-3 rounded-xl bg-zinc-950 border border-zinc-800/60 flex items-center justify-between">
+                <div className="p-3 rounded-xl bg-stone-950 border border-stone-800/60 flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
-                    <Cpu className="h-4 w-4 text-zinc-400" />
-                    <span className="font-medium text-zinc-200">Coding Lab Sandboxes</span>
+                    <Cpu className="h-4 w-4 text-stone-400" />
+                    <span className="font-medium text-stone-200">Coding Lab Sandboxes</span>
                   </div>
-                  <span className="font-mono text-[10px] text-zinc-400 font-semibold">CALIBRATED</span>
+                  <span className="font-mono text-[10px] text-stone-400 font-semibold">CALIBRATED</span>
                 </div>
 
-                <div className="p-3 rounded-xl bg-zinc-950 border border-zinc-800/60 flex items-center justify-between">
+                <div className="p-3 rounded-xl bg-stone-950 border border-stone-800/60 flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
-                    <ShieldCheck className="h-4 w-4 text-zinc-400" />
-                    <span className="font-medium text-zinc-200">Row Level Security</span>
+                    <ShieldCheck className="h-4 w-4 text-stone-400" />
+                    <span className="font-medium text-stone-200">Row Level Security</span>
                   </div>
-                  <span className="font-mono text-[10px] text-zinc-400 font-semibold">ZERO-TRUST ACTIVE</span>
+                  <span className="font-mono text-[10px] text-stone-400 font-semibold">ZERO-TRUST ACTIVE</span>
                 </div>
               </div>
 
-              <div className="pt-2 border-t border-zinc-800/60 text-[11px] text-zinc-500 font-mono flex items-center justify-between">
+              <div className="pt-2 border-t border-stone-800/60 text-[11px] text-stone-500 font-mono flex items-center justify-between">
                 <span>Cluster Node: bom-blr-01</span>
                 <span>Region: Asia-South1</span>
               </div>

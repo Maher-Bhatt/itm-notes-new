@@ -4,7 +4,7 @@ export const sem8DevopsMaster: Subject = {
   id: "sem8-devops",
   name: "DevOps & Site Reliability Engineering (SRE)",
   code: "DO801",
-  color: "bg-teal-600",
+  color: "bg-primary",
   icon: "terminal",
   description: "Comprehensive University Syllabus for DevOps & Site Reliability Engineering — Continuous Integration and Continuous Deployment (CI/CD Pipelines, GitHub Actions, Jenkins), Infrastructure as Code (Terraform, Ansible), Container Orchestration (Kubernetes Pods, Services, Ingress, Deployments, StatefulSets), Observability (Prometheus, Grafana, OpenTelemetry), and SRE Reliability Principles (SLI, SLO, SLA, Error Budgets).",
   semester: 8,

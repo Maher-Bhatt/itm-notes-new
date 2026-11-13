@@ -59,7 +59,7 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ subject }) => 
   }, [unitStats]);
 
   return (
-    <div className="bg-card border border-border/80 rounded-3xl p-6 shadow-sm space-y-6">
+    <div className="bg-card border border-border/80 rounded-2xl p-6 shadow-sm space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/70 pb-4">
         <div>
@@ -67,7 +67,7 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ subject }) => 
             <span className="w-8 h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-xs">
               <BookOpen className="h-4 w-4" />
             </span>
-            <h3 className="font-extrabold text-base text-foreground">
+            <h3 className="font-semibold text-base text-foreground">
               Syllabus Coverage & Mark Weightages
             </h3>
           </div>
@@ -77,7 +77,7 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ subject }) => 
         </div>
 
         <div className="flex items-center gap-2 self-start sm:self-auto">
-          <span className="text-2xl font-black text-foreground">
+          <span className="text-2xl font-bold text-foreground">
             {overallPercent}%
           </span>
           <span className="text-xs text-muted-foreground font-medium">Completed</span>
@@ -102,7 +102,7 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ subject }) => 
               key={unit.id}
               className={`p-4 rounded-2xl border transition-all ${
                 isFinished 
-                  ? 'bg-amber-500/5 border-amber-500/30' 
+                  ? 'bg-primary/5 border-primary/30' 
                   : 'bg-secondary/30 border-border/70'
               }`}
             >
@@ -122,7 +122,7 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ subject }) => 
                 </div>
 
                 <div className="text-right shrink-0">
-                  <span className="text-xs font-bold text-amber-500 dark:text-amber-500 block">
+                  <span className="text-xs font-bold text-primary dark:text-primary block">
                     ~{expectedMarks} Marks
                   </span>
                   <span className="text-[10px] text-muted-foreground font-mono">
@@ -134,7 +134,7 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ subject }) => 
               {/* Progress bar per unit */}
               <div className="w-full h-1.5 rounded-full bg-secondary/80 overflow-hidden mb-3">
                 <div 
-                  className={`h-full transition-all duration-300 ${isFinished ? 'bg-amber-500' : 'bg-primary'}`}
+                  className={`h-full transition-all duration-300 ${isFinished ? 'bg-primary' : 'bg-primary'}`}
                   style={{ width: `${percent}%` }}
                 />
               </div>
@@ -149,12 +149,12 @@ export const SyllabusTracker: React.FC<SyllabusTrackerProps> = ({ subject }) => 
                       to={`/subject/${subject.id}/topic/${t.id}`}
                       className={`text-[11px] px-2.5 py-1 rounded-xl border transition-all flex items-center gap-1.5 apple-press ${
                         done
-                          ? 'bg-amber-500/10 border-amber-500/30 text-amber-500 dark:text-amber-500 font-semibold'
+                          ? 'bg-primary/10 border-primary/30 text-primary dark:text-primary font-semibold'
                           : 'bg-card border-border/80 text-muted-foreground hover:text-foreground hover:border-primary/40'
                       }`}
                     >
                       {done ? (
-                        <CheckCircle2 className="h-3 w-3 text-amber-500 shrink-0" />
+                        <CheckCircle2 className="h-3 w-3 text-primary shrink-0" />
                       ) : (
                         <Circle className="h-3 w-3 text-muted-foreground/60 shrink-0" />
                       )}

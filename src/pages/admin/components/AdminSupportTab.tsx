@@ -103,33 +103,33 @@ export function AdminSupportTab() {
       {/* 1. Header controls */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-2.5">
         <div className="relative flex-1 min-w-0">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-500" />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search student support tickets by query, name, or email…"
-            className="w-full pl-9 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#FAFAFA]/60"
+            className="w-full pl-9 pr-4 py-2 bg-stone-800 border border-stone-700 rounded-xl text-xs sm:text-sm text-white placeholder-stone-500 focus:outline-none focus:border-[#FAFAFA]/60"
           />
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 bg-slate-800 border border-slate-700 px-2.5 py-1.5 rounded-xl text-xs text-slate-300">
-            <Filter className="h-3 w-3 text-slate-400" />
+          <div className="flex items-center gap-1.5 bg-stone-800 border border-stone-700 px-2.5 py-1.5 rounded-xl text-xs text-stone-300">
+            <Filter className="h-3 w-3 text-stone-400" />
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value as any)}
               className="bg-transparent text-white focus:outline-none cursor-pointer"
             >
-              <option value="all" className="bg-slate-800">All Status</option>
-              <option value="open" className="bg-slate-800">Open ({openTicketsCount})</option>
-              <option value="in_progress" className="bg-slate-800">In Progress</option>
-              <option value="resolved" className="bg-slate-800">Resolved</option>
+              <option value="all" className="bg-stone-800">All Status</option>
+              <option value="open" className="bg-stone-800">Open ({openTicketsCount})</option>
+              <option value="in_progress" className="bg-stone-800">In Progress</option>
+              <option value="resolved" className="bg-stone-800">Resolved</option>
             </select>
           </div>
 
           <button
             onClick={loadData}
-            className="flex items-center gap-1.5 px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs font-semibold text-slate-300 hover:bg-slate-700 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-2 bg-stone-800 border border-stone-700 rounded-xl text-xs font-semibold text-stone-300 hover:bg-stone-700 transition-colors"
           >
             <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />
             <span>Refresh</span>
@@ -140,12 +140,12 @@ export function AdminSupportTab() {
       {/* 2. Tickets List */}
       <div className="space-y-3">
         {loading ? (
-          <div className="py-12 text-center text-slate-500 text-sm">Loading support tickets…</div>
+          <div className="py-12 text-center text-stone-500 text-sm">Loading support tickets…</div>
         ) : filteredTickets.length === 0 ? (
-          <div className="py-12 text-center text-slate-400 text-sm bg-slate-800 border border-slate-700 rounded-2xl">
+          <div className="py-12 text-center text-stone-400 text-sm bg-stone-800 border border-stone-700 rounded-2xl">
             <CheckCircle2 className="h-8 w-8 text-[#FAFAFA] mx-auto mb-2 opacity-80" />
             <p className="font-bold text-white">No Tickets Found</p>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-stone-400 mt-1">
               {statusFilter === "open" ? "Inbox is completely clear! Great work." : "No support inquiries match this filter."}
             </p>
           </div>
@@ -157,24 +157,24 @@ export function AdminSupportTab() {
             return (
               <div
                 key={t.id}
-                className={`bg-slate-800 border rounded-2xl p-4 sm:p-5 space-y-3 transition-all ${
+                className={`bg-stone-800 border rounded-2xl p-4 sm:p-5 space-y-3 transition-all ${
                   isOpen
-                    ? "border-amber-500/30 bg-slate-800"
+                    ? "border-primary/30 bg-stone-800"
                     : isInProgress
-                    ? "border-sky-500/30 bg-slate-800"
-                    : "border-slate-700/60 opacity-80"
+                    ? "border-primary/30 bg-stone-800"
+                    : "border-stone-700/60 opacity-80"
                 }`}
               >
-                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 border-b border-slate-700/60 pb-3">
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 border-b border-stone-700/60 pb-3">
                   <div className="space-y-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span
-                        className={`px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                        className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                           isOpen
-                            ? "bg-amber-500/15 text-amber-400 border border-amber-500/30"
+                            ? "bg-primary/15 text-primary border border-primary/30"
                             : isInProgress
-                            ? "bg-sky-500/15 text-sky-400 border border-sky-500/30"
-                            : "bg-amber-500/15 text-amber-500 border border-amber-500/30"
+                            ? "bg-primary/15 text-primary border border-primary/30"
+                            : "bg-primary/15 text-primary border border-primary/30"
                         }`}
                       >
                         {t.status.replace("_", " ")}
@@ -182,18 +182,18 @@ export function AdminSupportTab() {
                       <h4 className="text-sm font-bold text-white truncate">{t.subject}</h4>
                     </div>
 
-                    <div className="flex items-center gap-3 text-xs text-slate-400 pt-0.5">
-                      <span className="flex items-center gap-1 text-slate-300">
-                        <User className="h-3 w-3 text-slate-500" />
+                    <div className="flex items-center gap-3 text-xs text-stone-400 pt-0.5">
+                      <span className="flex items-center gap-1 text-stone-300">
+                        <User className="h-3 w-3 text-stone-500" />
                         {t.user_name || "Student"}
                       </span>
                       {t.user_email && (
                         <span className="flex items-center gap-1 font-mono text-[11px]">
-                          <Mail className="h-3 w-3 text-slate-500" />
+                          <Mail className="h-3 w-3 text-stone-500" />
                           {t.user_email}
                         </span>
                       )}
-                      <span className="flex items-center gap-1 font-mono text-[11px] text-slate-500">
+                      <span className="flex items-center gap-1 font-mono text-[11px] text-stone-500">
                         <Clock className="h-3 w-3" />
                         {new Date(t.created_at).toLocaleString()}
                       </span>
@@ -205,22 +205,22 @@ export function AdminSupportTab() {
                       setReplyingTicket(t);
                       setReplyMessage(t.admin_reply || "");
                     }}
-                    className="px-3.5 py-1.5 rounded-xl bg-slate-700/80 hover:bg-[#FAFAFA] hover:text-[#18181B] text-white text-xs font-bold flex items-center gap-1.5 self-start sm:self-auto shrink-0 transition-colors"
+                    className="px-3.5 py-1.5 rounded-xl bg-stone-700/80 hover:bg-[#FAFAFA] hover:text-foreground text-white text-xs font-bold flex items-center gap-1.5 self-start sm:self-auto shrink-0 transition-colors"
                   >
                     <Reply className="h-3.5 w-3.5" />
                     <span>{t.admin_reply ? "Edit Reply" : "Reply & Resolve"}</span>
                   </button>
                 </div>
 
-                <div className="bg-slate-900/60 p-3 rounded-xl border border-slate-700/40 text-xs text-slate-200">
+                <div className="bg-stone-900/60 p-3 rounded-xl border border-stone-700/40 text-xs text-stone-200">
                   <p className="whitespace-pre-wrap leading-relaxed">{t.message}</p>
 
                   {t.admin_reply && (
-                    <div className="mt-2.5 pt-2 border-t border-slate-800">
+                    <div className="mt-2.5 pt-2 border-t border-stone-800">
                       <span className="text-[10px] font-bold uppercase tracking-wider text-[#FAFAFA] block mb-0.5">
                         Admin Resolution:
                       </span>
-                      <p className="text-slate-300 text-xs italic">{t.admin_reply}</p>
+                      <p className="text-stone-300 text-xs italic">{t.admin_reply}</p>
                     </div>
                   )}
                 </div>
@@ -235,34 +235,34 @@ export function AdminSupportTab() {
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
           <form
             onSubmit={handleSendReply}
-            className="bg-slate-800 border border-slate-700 rounded-3xl w-full max-w-lg p-6 space-y-4 shadow-2xl relative animate-scale-in"
+            className="bg-stone-800 border border-stone-700 rounded-2xl w-full max-w-lg p-6 space-y-4 shadow-lg relative animate-scale-in"
           >
             <button
               type="button"
               onClick={() => setReplyingTicket(null)}
-              className="absolute right-4 top-4 p-1.5 rounded-xl bg-slate-700/60 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
+              className="absolute right-4 top-4 p-1.5 rounded-xl bg-stone-700/60 hover:bg-stone-700 text-stone-400 hover:text-white transition-colors"
             >
               <X className="h-4 w-4" />
             </button>
 
             <div>
-              <span className="text-[10px] uppercase font-bold text-slate-400">
+              <span className="text-[10px] uppercase font-bold text-stone-400">
                 Support Ticket Resolution
               </span>
               <h3 className="text-base font-bold text-white mt-0.5">
                 Reply to {replyingTicket.user_name || "Student"}
               </h3>
-              <p className="text-xs text-slate-400 mt-0.5 font-mono">
+              <p className="text-xs text-stone-400 mt-0.5 font-mono">
                 Subject: {replyingTicket.subject}
               </p>
             </div>
 
-            <div className="bg-slate-900/80 p-3 rounded-xl border border-slate-700 text-xs text-slate-300 max-h-32 overflow-y-auto">
+            <div className="bg-stone-900/80 p-3 rounded-xl border border-stone-700 text-xs text-stone-300 max-h-32 overflow-y-auto">
               {replyingTicket.message}
             </div>
 
             <div>
-              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+              <label className="text-[11px] font-bold uppercase tracking-wider text-stone-400 block mb-1">
                 Official Admin Response
               </label>
               <textarea
@@ -270,18 +270,18 @@ export function AdminSupportTab() {
                 onChange={(e) => setReplyMessage(e.target.value)}
                 rows={4}
                 placeholder="Write clear instructions, solved link, or syllabus clarification..."
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#FAFAFA]"
+                className="w-full bg-stone-900 border border-stone-700 rounded-xl p-3 text-xs text-white placeholder-stone-500 focus:outline-none focus:border-[#FAFAFA]"
                 required
               />
             </div>
 
             <div className="flex items-center justify-between pt-1">
               <div className="flex items-center gap-2">
-                <span className="text-xs text-slate-400">Set Ticket Status:</span>
+                <span className="text-xs text-stone-400">Set Ticket Status:</span>
                 <select
                   value={nextStatus}
                   onChange={(e) => setNextStatus(e.target.value as any)}
-                  className="bg-slate-900 border border-slate-700 rounded-lg text-xs text-white px-2 py-1"
+                  className="bg-stone-900 border border-stone-700 rounded-lg text-xs text-white px-2 py-1"
                 >
                   <option value="resolved">Resolved</option>
                   <option value="in_progress">In Progress</option>
@@ -292,14 +292,14 @@ export function AdminSupportTab() {
                 <button
                   type="button"
                   onClick={() => setReplyingTicket(null)}
-                  className="px-3 py-1.5 rounded-xl bg-slate-700 text-slate-300 text-xs font-semibold"
+                  className="px-3 py-1.5 rounded-xl bg-stone-700 text-stone-300 text-xs font-semibold"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={sending}
-                  className="px-4 py-1.5 rounded-xl bg-[#FAFAFA] hover:bg-[#E4E4E7] text-[#18181B] text-xs font-black shadow-md flex items-center gap-1.5"
+                  className="px-4 py-1.5 rounded-xl bg-[#FAFAFA] hover:bg-muted text-foreground text-xs font-bold shadow-md flex items-center gap-1.5"
                 >
                   <Send className="h-3.5 w-3.5" />
                   <span>{sending ? "Sending..." : "Dispatch Reply"}</span>

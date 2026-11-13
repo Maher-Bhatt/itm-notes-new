@@ -148,24 +148,24 @@ export function AdminMaintenanceTab({
   return (
     <div className="space-y-6 animate-fade-in max-w-4xl">
       {/* 1. Emergency Killswitch Card */}
-      <div className="bg-slate-800 border border-slate-700 rounded-3xl p-5 sm:p-6 space-y-4 shadow-xl">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-700">
+      <div className="bg-stone-800 border border-stone-700 rounded-2xl p-5 sm:p-6 space-y-4 shadow-lg">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-stone-700">
           <div>
             <h2 className="text-base font-bold text-white flex items-center gap-2">
-              <Power className={`h-5 w-5 ${maintenanceOn ? "text-amber-400" : "text-amber-500"}`} />
+              <Power className={`h-5 w-5 ${maintenanceOn ? "text-primary" : "text-primary"}`} />
               Emergency Site Maintenance Killswitch
             </h2>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className="text-xs text-stone-400 mt-0.5">
               Instantly lock student views behind a maintenance screen with admin bypass.
             </p>
           </div>
 
           <button
             onClick={handleManualToggle}
-            className={`px-5 py-2.5 rounded-xl text-xs font-black transition-all shadow-md active:scale-95 ${
+            className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-md active:scale-95 ${
               maintenanceOn
-                ? "bg-amber-500 hover:bg-amber-500 text-slate-950"
-                : "bg-amber-500 hover:bg-amber-400 text-slate-950"
+                ? "bg-primary hover:bg-primary text-stone-950"
+                : "bg-primary hover:bg-primary text-stone-950"
             }`}
           >
             {maintenanceOn ? "Deactivate Maintenance" : "Activate Maintenance Mode"}
@@ -174,29 +174,29 @@ export function AdminMaintenanceTab({
 
         <div className="space-y-3">
           <div>
-            <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+            <label className="text-[11px] font-bold uppercase tracking-wider text-stone-400 block mb-1">
               Student Public Banner Message
             </label>
             <input
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               placeholder="e.g. System upgrading for Mid-term results release. Back online at 6 PM."
-              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FAFAFA]"
+              className="w-full bg-stone-900 border border-stone-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FAFAFA]"
             />
           </div>
 
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-900/60 p-3.5 rounded-2xl border border-slate-700/60 text-xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-stone-900/60 p-3.5 rounded-2xl border border-stone-700/60 text-xs">
             <div className="space-y-0.5">
-              <span className="text-[10px] uppercase font-bold text-slate-400">
+              <span className="text-[10px] uppercase font-bold text-stone-400">
                 Admin Bypass Access Key
               </span>
-              <p className="font-mono text-amber-400 font-bold text-xs">{maintenanceKey}</p>
+              <p className="font-mono text-primary font-bold text-xs">{maintenanceKey}</p>
             </div>
             <button
               onClick={copyKey}
-              className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs flex items-center gap-1.5 self-start sm:self-auto"
+              className="px-3 py-1.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-200 font-semibold text-xs flex items-center gap-1.5 self-start sm:self-auto"
             >
-              {copiedKey ? <Check className="h-3.5 w-3.5 text-amber-500" /> : <Copy className="h-3.5 w-3.5" />}
+              {copiedKey ? <Check className="h-3.5 w-3.5 text-primary" /> : <Copy className="h-3.5 w-3.5" />}
               <span>{copiedKey ? "Copied" : "Copy Bypass Key"}</span>
             </button>
           </div>
@@ -204,39 +204,39 @@ export function AdminMaintenanceTab({
       </div>
 
       {/* 2. Scheduled Maintenance Windows */}
-      <div className="bg-slate-800 border border-slate-700 rounded-3xl p-5 sm:p-6 space-y-5 shadow-xl">
-        <div className="flex items-center gap-2 pb-2 border-b border-slate-700">
+      <div className="bg-stone-800 border border-stone-700 rounded-2xl p-5 sm:p-6 space-y-5 shadow-lg">
+        <div className="flex items-center gap-2 pb-2 border-b border-stone-700">
           <Calendar className="h-5 w-5 text-[#FAFAFA]" />
           <div>
             <h3 className="text-sm font-bold text-white">Scheduled Maintenance Windows</h3>
-            <p className="text-[11px] text-slate-400">Pre-schedule planned downtime with affected subsystem targeting</p>
+            <p className="text-[11px] text-stone-400">Pre-schedule planned downtime with affected subsystem targeting</p>
           </div>
         </div>
 
-        <form onSubmit={handleAddWindow} className="space-y-3 bg-slate-900/60 p-4 rounded-2xl border border-slate-700/60">
+        <form onSubmit={handleAddWindow} className="space-y-3 bg-stone-900/60 p-4 rounded-2xl border border-stone-700/60">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+              <label className="text-[11px] font-bold uppercase tracking-wider text-stone-400 block mb-1">
                 Start Time
               </label>
               <input
                 type="datetime-local"
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FAFAFA]"
+                className="w-full bg-stone-800 border border-stone-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FAFAFA]"
                 required
               />
             </div>
 
             <div>
-              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+              <label className="text-[11px] font-bold uppercase tracking-wider text-stone-400 block mb-1">
                 Estimated End Time
               </label>
               <input
                 type="datetime-local"
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FAFAFA]"
+                className="w-full bg-stone-800 border border-stone-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FAFAFA]"
                 required
               />
             </div>
@@ -244,26 +244,26 @@ export function AdminMaintenanceTab({
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div className="sm:col-span-2">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+              <label className="text-[11px] font-bold uppercase tracking-wider text-stone-400 block mb-1">
                 Maintenance Reason / Description
               </label>
               <input
                 value={scheduleReason}
                 onChange={(e) => setScheduleReason(e.target.value)}
                 placeholder="e.g. Database schema migration for question bank indexing"
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#FAFAFA]"
+                className="w-full bg-stone-800 border border-stone-700 rounded-xl px-3 py-2 text-xs text-white placeholder-stone-500 focus:outline-none focus:border-[#FAFAFA]"
                 required
               />
             </div>
 
             <div>
-              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+              <label className="text-[11px] font-bold uppercase tracking-wider text-stone-400 block mb-1">
                 Target Subsystem
               </label>
               <select
                 value={affectedArea}
                 onChange={(e) => setAffectedArea(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FAFAFA]"
+                className="w-full bg-stone-800 border border-stone-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#FAFAFA]"
               >
                 <option value="all">Entire Platform (All Pages)</option>
                 <option value="coding_lab">Coding Lab Only</option>
@@ -276,7 +276,7 @@ export function AdminMaintenanceTab({
           <div className="flex justify-end pt-2">
             <button
               type="submit"
-              className="px-4 py-2 rounded-xl bg-[#FAFAFA] hover:bg-[#E4E4E7] text-[#18181B] text-xs font-black shadow-md cursor-pointer"
+              className="px-4 py-2 rounded-xl bg-[#FAFAFA] hover:bg-muted text-foreground text-xs font-bold shadow-md cursor-pointer"
             >
               Add Scheduled Window
             </button>
@@ -285,13 +285,13 @@ export function AdminMaintenanceTab({
 
         {/* Existing Windows List */}
         <div className="space-y-3 pt-2">
-          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-            <History className="h-3.5 w-3.5 text-slate-500" />
+          <h4 className="text-xs font-bold uppercase tracking-wider text-stone-400 flex items-center gap-1.5">
+            <History className="h-3.5 w-3.5 text-stone-500" />
             Scheduled & Past Windows
           </h4>
 
           {windows.length === 0 ? (
-            <p className="text-xs text-slate-500 py-4 text-center">No maintenance windows scheduled.</p>
+            <p className="text-xs text-stone-500 py-4 text-center">No maintenance windows scheduled.</p>
           ) : (
             windows.map((win) => {
               const now = new Date();
@@ -301,21 +301,21 @@ export function AdminMaintenanceTab({
               return (
                 <div
                   key={win.id}
-                  className="bg-slate-900/60 border border-slate-700/60 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
+                  className="bg-stone-900/60 border border-stone-700/60 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
                 >
                   <div className="space-y-1">
                     <div className="flex items-center gap-2 flex-wrap">
                       {isLive ? (
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center gap-1">
-                          <span className="h-1.5 w-1.5 rounded-full bg-amber-400 animate-ping" />
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-primary/20 text-primary border border-primary/30 flex items-center gap-1">
+                          <span className="h-1.5 w-1.5 rounded-full bg-primary animate-ping" />
                           Live Downtime Now
                         </span>
                       ) : isPast ? (
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-800 text-slate-400">
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-stone-800 text-stone-400">
                           Completed
                         </span>
                       ) : (
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-500/15 text-sky-400 border border-sky-500/30">
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary/15 text-primary border border-primary/30">
                           Upcoming Scheduled
                         </span>
                       )}
@@ -323,15 +323,15 @@ export function AdminMaintenanceTab({
                       <span className="font-bold text-white">{win.reason}</span>
                     </div>
 
-                    <div className="text-[11px] text-slate-400 font-mono flex items-center gap-3">
+                    <div className="text-[11px] text-stone-400 font-mono flex items-center gap-3">
                       <span>{new Date(win.start_time).toLocaleString()} → {new Date(win.end_time).toLocaleString()}</span>
-                      <span className="text-slate-500">[{win.affected_areas.join(", ")}]</span>
+                      <span className="text-stone-500">[{win.affected_areas.join(", ")}]</span>
                     </div>
                   </div>
 
                   <button
                     onClick={() => handleDeleteWindow(win.id)}
-                    className="p-1.5 rounded-lg bg-slate-800 hover:bg-red-500/20 text-slate-400 hover:text-red-400 self-end sm:self-auto transition-colors"
+                    className="p-1.5 rounded-lg bg-stone-800 hover:bg-destructive/20 text-stone-400 hover:text-destructive self-end sm:self-auto transition-colors"
                     title="Remove window"
                   >
                     <Trash2 className="h-4 w-4" />

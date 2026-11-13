@@ -16,10 +16,10 @@ export const CampusCountBadge: React.FC<CampusCountBadgeProps> = ({
   }
 
   const variantMap = {
-    blue: 'bg-[#2B4EFF] text-white',
-    lime: 'bg-[#D7F75B] text-[#111111]',
+    blue: 'bg-primary text-white',
+    lime: 'bg-accent text-foreground',
     red: 'bg-[#EF4444] text-white',
-    dark: 'bg-[#111111] text-white dark:bg-white dark:text-[#111111]',
+    dark: 'bg-foreground text-white dark:bg-white dark:text-foreground',
   };
 
   return (

@@ -4,7 +4,7 @@ export const sem4CnMaster: Subject = {
   id: "sem4-cn",
   name: "Computer Networks (CN)",
   code: "CN402",
-  color: "bg-cyan-600",
+  color: "bg-primary",
   icon: "network",
   description: "Comprehensive University Syllabus for Computer Networks — OSI 7-Layer Reference Model, TCP/IP Suite, Data Link Protocols (CRC, CSMA/CD), Network Layer (IPv4/IPv6, CIDR, Subnetting, Dijkstra Routing), Transport Protocols (TCP 3-Way Handshake, Sliding Window, Congestion Control), and Application Services (DNS, HTTP/2/3, SSL/TLS).",
   semester: 4,

@@ -80,15 +80,15 @@ export const ExamCountdown = () => {
   }, [targetExamDate]);
 
   return (
-    <div className="w-full relative overflow-hidden rounded-2xl bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 shadow-lg text-white mb-6 md:mb-8 border border-red-400/30">
+    <div className="w-full relative overflow-hidden rounded-2xl bg-gradient-to-r from-destructive via-primary to-primary shadow-lg text-white mb-6 md:mb-8 border border-destructive/30">
       {/* Decorative background circles */}
       <div className="absolute -right-10 -top-10 w-44 h-44 bg-white/10 rounded-full blur-2xl pointer-events-none" />
-      <div className="absolute -left-10 -bottom-10 w-36 h-36 bg-yellow-400/20 rounded-full blur-2xl pointer-events-none" />
+      <div className="absolute -left-10 -bottom-10 w-36 h-36 bg-primary/20 rounded-full blur-2xl pointer-events-none" />
 
       <div className="relative p-5 md:p-6 flex flex-col lg:flex-row items-center justify-between gap-5 z-10">
         <div className="flex items-center gap-4 text-center md:text-left flex-col md:flex-row w-full lg:w-auto">
           <div className="p-3 bg-white/20 backdrop-blur-sm rounded-xl shrink-0 mx-auto">
-            {isExamDay ? <AlertTriangle className="h-8 w-8 text-yellow-100" /> : <CalendarDays className="h-8 w-8 text-white" />}
+            {isExamDay ? <AlertTriangle className="h-8 w-8 text-primary" /> : <CalendarDays className="h-8 w-8 text-white" />}
           </div>
           <div>
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 mb-1">
@@ -103,7 +103,7 @@ export const ExamCountdown = () => {
                   className="bg-black/30 hover:bg-black/40 text-white text-xs font-semibold rounded-lg px-2.5 py-1 border border-white/20 outline-none cursor-pointer pr-6 appearance-none transition-colors"
                 >
                   {TIMETABLE_DATA.map((batch) => (
-                    <option key={batch.id} value={batch.id} className="bg-zinc-900 text-white">
+                    <option key={batch.id} value={batch.id} className="bg-stone-900 text-white">
                       {batch.name}
                     </option>
                   ))}
@@ -112,10 +112,10 @@ export const ExamCountdown = () => {
               </div>
             </div>
 
-            <h3 className="font-extrabold text-lg md:text-xl leading-tight">
+            <h3 className="font-semibold text-lg md:text-xl leading-tight">
               {isExamDay ? "Exam Season is In Session!" : examLabel}
             </h3>
-            <p className="text-red-100 text-xs md:text-sm mt-1 max-w-xl">
+            <p className="text-destructive text-xs md:text-sm mt-1 max-w-xl">
               {isExamDay
                 ? "Good luck on your papers! Remember to carry your Hall Ticket and University ID."
                 : "Make sure you complete your revisions. High-weightage IMP question banks are available!"}
@@ -125,27 +125,27 @@ export const ExamCountdown = () => {
 
         {!isExamDay && (
           <div className="flex items-center gap-3 bg-black/30 backdrop-blur-md rounded-2xl p-3 md:p-4 shrink-0 border border-white/15 shadow-inner">
-            <Clock className="h-5 w-5 text-amber-200 opacity-90 shrink-0" />
+            <Clock className="h-5 w-5 text-primary opacity-90 shrink-0" />
             
             <div className="flex items-baseline gap-2">
               <div className="text-center min-w-[36px]">
-                <span className="text-2xl md:text-3xl font-black font-mono tracking-tight">{String(timeLeft.days).padStart(2, "0")}</span>
-                <span className="text-[9px] uppercase font-bold text-red-200 block -mt-1 tracking-wider">Days</span>
+                <span className="text-2xl md:text-3xl font-bold font-mono tracking-tight">{String(timeLeft.days).padStart(2, "0")}</span>
+                <span className="text-[9px] uppercase font-bold text-destructive block -mt-1 tracking-wider">Days</span>
               </div>
               <span className="text-xl font-bold opacity-50 -mt-2">:</span>
               <div className="text-center min-w-[36px]">
-                <span className="text-2xl md:text-3xl font-black font-mono tracking-tight">{String(timeLeft.hours).padStart(2, "0")}</span>
-                <span className="text-[9px] uppercase font-bold text-red-200 block -mt-1 tracking-wider">Hrs</span>
+                <span className="text-2xl md:text-3xl font-bold font-mono tracking-tight">{String(timeLeft.hours).padStart(2, "0")}</span>
+                <span className="text-[9px] uppercase font-bold text-destructive block -mt-1 tracking-wider">Hrs</span>
               </div>
               <span className="text-xl font-bold opacity-50 -mt-2">:</span>
               <div className="text-center min-w-[36px]">
-                <span className="text-2xl md:text-3xl font-black font-mono tracking-tight">{String(timeLeft.minutes).padStart(2, "0")}</span>
-                <span className="text-[9px] uppercase font-bold text-red-200 block -mt-1 tracking-wider">Min</span>
+                <span className="text-2xl md:text-3xl font-bold font-mono tracking-tight">{String(timeLeft.minutes).padStart(2, "0")}</span>
+                <span className="text-[9px] uppercase font-bold text-destructive block -mt-1 tracking-wider">Min</span>
               </div>
               <span className="text-xl font-bold opacity-50 -mt-2">:</span>
               <div className="text-center min-w-[36px]">
-                <span className="text-2xl md:text-3xl font-black font-mono tracking-tight">{String(timeLeft.seconds).padStart(2, "0")}</span>
-                <span className="text-[9px] uppercase font-bold text-red-200 block -mt-1 tracking-wider">Sec</span>
+                <span className="text-2xl md:text-3xl font-bold font-mono tracking-tight">{String(timeLeft.seconds).padStart(2, "0")}</span>
+                <span className="text-[9px] uppercase font-bold text-destructive block -mt-1 tracking-wider">Sec</span>
               </div>
             </div>
           </div>

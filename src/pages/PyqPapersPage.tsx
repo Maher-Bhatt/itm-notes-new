@@ -101,11 +101,11 @@ export default function PyqPapersPage() {
             <span className="px-2.5 py-0.5 rounded-full bg-primary/10 text-primary font-bold text-xs uppercase tracking-wide">
               Official University PYQ Bank
             </span>
-            <span className="px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-500 dark:text-amber-500 font-semibold text-xs">
+            <span className="px-2.5 py-0.5 rounded-full bg-primary/10 text-primary dark:text-primary font-semibold text-xs">
               100% Solved
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-semibold text-foreground tracking-tight">
             Previous Year Question Papers
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
@@ -225,10 +225,10 @@ export default function PyqPapersPage() {
                   <div className="flex items-start justify-between gap-2 mb-1.5">
                     <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${
                       paper.examType === 'End-Semester'
-                        ? 'bg-purple-500/15 text-purple-600 dark:text-purple-400'
+                        ? 'bg-primary/15 text-primary dark:text-primary'
                         : paper.examType === 'Remedial'
-                        ? 'bg-rose-500/15 text-rose-600 dark:text-rose-400'
-                        : 'bg-amber-500/15 text-amber-600 dark:text-amber-400'
+                        ? 'bg-destructive/15 text-destructive dark:text-destructive'
+                        : 'bg-primary/15 text-primary dark:text-primary'
                     }`}>
                       {paper.examType} • {paper.year}
                     </span>
@@ -269,7 +269,7 @@ export default function PyqPapersPage() {
         {/* Right Side: Active Paper Viewer */}
         <div className="lg:col-span-8">
           {activePaper ? (
-            <div className="bg-card border border-border/80 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+            <div className="bg-card border border-border/80 rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
               {/* Paper Header Info */}
               <div className="border-b border-border/70 pb-6 space-y-3">
                 <div className="flex flex-wrap items-center justify-between gap-2">
@@ -282,13 +282,13 @@ export default function PyqPapersPage() {
                         Semester {activePaper.semester}
                       </span>
                     </div>
-                    <h2 className="text-xl sm:text-2xl font-black text-foreground">
+                    <h2 className="text-xl sm:text-2xl font-bold text-foreground">
                       {activePaper.subjectName}
                     </h2>
                   </div>
 
                   <div className="text-right">
-                    <span className="text-lg sm:text-xl font-extrabold text-foreground block">
+                    <span className="text-lg sm:text-xl font-semibold text-foreground block">
                       Max Marks: {activePaper.totalMarks}
                     </span>
                     <span className="text-xs text-muted-foreground">
@@ -404,14 +404,14 @@ export default function PyqPapersPage() {
 
                                 {isSubOpen && (
                                   <div className="bg-secondary/30 rounded-xl p-3.5 border border-border/70 space-y-2 text-xs animate-scale-in">
-                                    <div className="font-mono text-[10px] text-amber-500 dark:text-amber-500 font-bold uppercase">
+                                    <div className="font-mono text-[10px] text-primary dark:text-primary font-bold uppercase">
                                       Marking Scheme: {sub.markingScheme}
                                     </div>
                                     <div className="text-foreground/90 whitespace-pre-line leading-relaxed">
                                       {sub.modelSolution}
                                     </div>
                                     {sub.codeSnippet && (
-                                      <pre className="p-2.5 rounded-lg bg-black/80 text-amber-500 font-mono text-[11px] overflow-x-auto">
+                                      <pre className="p-2.5 rounded-lg bg-black/80 text-primary font-mono text-[11px] overflow-x-auto">
                                         <code>{sub.codeSnippet}</code>
                                       </pre>
                                     )}
@@ -437,7 +437,7 @@ export default function PyqPapersPage() {
                                 </>
                               ) : (
                                 <>
-                                  <Sparkles className="h-3.5 w-3.5 text-amber-500" /> View Step-by-Step Model Solution
+                                  <Sparkles className="h-3.5 w-3.5 text-primary" /> View Step-by-Step Model Solution
                                 </>
                               )}
                             </button>
@@ -455,7 +455,7 @@ export default function PyqPapersPage() {
                           {isSolutionOpen && (
                             <div className="mt-3 bg-secondary/40 rounded-2xl p-4 border border-border/80 space-y-3 text-xs animate-scale-in">
                               <div className="flex items-center justify-between text-[11px] font-bold">
-                                <span className="text-amber-500 dark:text-amber-500 flex items-center gap-1">
+                                <span className="text-primary dark:text-primary flex items-center gap-1">
                                   <CheckCircle2 className="h-3.5 w-3.5" /> ITM Examiner Marking Criteria:
                                 </span>
                                 <span className="text-muted-foreground font-mono">
@@ -472,7 +472,7 @@ export default function PyqPapersPage() {
                                   <span className="text-[10px] font-bold text-muted-foreground uppercase block mb-1">
                                     Executable Code / Syntax:
                                   </span>
-                                  <pre className="p-3 rounded-xl bg-black/90 text-amber-500 font-mono text-xs overflow-x-auto">
+                                  <pre className="p-3 rounded-xl bg-black/90 text-primary font-mono text-xs overflow-x-auto">
                                     <code>{q.codeSnippet}</code>
                                   </pre>
                                 </div>
@@ -487,7 +487,7 @@ export default function PyqPapersPage() {
               </div>
             </div>
           ) : (
-            <div className="p-12 text-center bg-card border border-border rounded-3xl">
+            <div className="p-12 text-center bg-card border border-border rounded-2xl">
               <p className="text-sm font-semibold text-muted-foreground">Select a paper to view its questions and solutions</p>
             </div>
           )}

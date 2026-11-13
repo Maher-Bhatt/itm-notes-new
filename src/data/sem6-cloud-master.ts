@@ -4,7 +4,7 @@ export const sem6CloudMaster: Subject = {
   id: "sem6-cloud",
   name: "Cloud Computing & Distributed Systems",
   code: "CC602",
-  color: "bg-sky-600",
+  color: "bg-primary",
   icon: "cloud",
   description: "Comprehensive University Syllabus for Cloud Computing — Cloud Service Models (IaaS, PaaS, SaaS), Virtualization (Type-1/Type-2 Hypervisors, KVM, Docker Containers), Distributed Consensus (CAP Theorem, PACELC, Raft, Paxos), Cloud Storage Architectures (S3 Object Storage, Block vs File), and Serverless Microservices.",
   semester: 6,

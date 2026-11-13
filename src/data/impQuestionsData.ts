@@ -37,7 +37,7 @@ export const SUBJECT_IMP_DATA: Record<string, SubjectImpData> = {
     code: 'CS401',
     semester: 3,
     badge: 'MST Exam · 46 Qs',
-    badgeColor: 'bg-amber-500/10 text-amber-500 dark:text-amber-500',
+    badgeColor: 'bg-primary/10 text-primary dark:text-primary',
     summary: 'Complete model answers for all 46 questions from the official MST question bank (218 marks total), categorized into 3-mark, 5-mark, and 7-mark sections with complete diagrams and 2-page last-night cheat sheet.',
     totalMarks: 218,
     cheatSheet: [
@@ -806,7 +806,7 @@ POP  X              ; M[X] <- TOS
     code: 'DSA301',
     semester: 3,
     badge: 'Exam Bank · All 6 Units',
-    badgeColor: 'bg-amber-500/10 text-amber-500 dark:text-amber-500',
+    badgeColor: 'bg-primary/10 text-primary dark:text-primary',
     summary: 'Comprehensive exam question bank covering Complexity Analysis, Linked Lists, Stacks, Queues, Binary Search Trees, AVL rotations, Graphs (Dijkstra, Kruskal, Prim), and Hashing with complete C implementations.',
     cheatSheet: [
       {
@@ -958,7 +958,7 @@ With negative weights, a longer path with a large negative edge downstream could
     code: 'DBMS302',
     semester: 3,
     badge: 'Exam Bank · All 5 Units',
-    badgeColor: 'bg-orange-500/10 text-orange-600 dark:text-orange-400',
+    badgeColor: 'bg-primary/10 text-primary dark:text-primary',
     summary: 'Essential university questions covering 3-Tier Architecture, ER Diagrams, Relational Algebra, SQL Joins & Subqueries, Functional Dependencies & Normalization (1NF to BCNF), and ACID Transactions.',
     cheatSheet: [
       {
@@ -1135,7 +1135,7 @@ public class TestPolymorphism {
     code: 'COANMP',
     semester: 3,
     badge: 'Exam Bank · All 6 Units',
-    badgeColor: 'bg-amber-500/10 text-amber-500 dark:text-amber-500',
+    badgeColor: 'bg-primary/10 text-primary dark:text-primary',
     summary: 'Comprehensive numerical exam questions covering Root Finding (Bisection, Newton-Raphson), Interpolation, Numerical Integration (Trapezoidal, Simpson 1/3 & 3/8), Linear Systems (Gauss, Seidel), and ODEs (Euler, RK4) with Python code.',
     cheatSheet: [
       {

@@ -20,12 +20,26 @@ import { REAL_STUDY_MATERIALS } from "@/data/materialsData";
 import { searchFullTextContent, ContentSearchResult } from "@/utils/contentSearchEngine";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { LIBRARY } from "@/data/libraryIndex";
 
 interface SearchDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onOpenAiDoubt?: (initialQ?: string) => void;
 }
+
+const LIBRARY_SEARCH_ITEMS = [
+  { title: "Library: Semester 3 course notes", category: "Library", route: "/library", icon: BookOpen, desc: "Study guides, lecture notes, slides and handwritten notes in a focused reader" },
+  ...LIBRARY.flatMap((s) =>
+    s.docs.map((d) => ({
+      title: `${s.short}: ${d.title}`,
+      category: "Library",
+      route: `/library/${s.slug}/${d.slug}`,
+      icon: BookOpen,
+      desc: `${d.kind}${d.unit != null ? ` · Unit ${d.unit}` : ""} · ${s.name}`,
+    }))
+  ),
+];
 
 const TOOLS_SEARCH_ITEMS = [
   { title: "Previous Year Question Papers (PYQs)", category: "Exam", route: "/pyq-papers", icon: FileText, desc: "MST-1, MST-2, and End-Sem papers with step-by-step solutions" },
@@ -67,9 +81,10 @@ export function SearchDialog({ open, onOpenChange, onOpenAiDoubt }: SearchDialog
     if (!q) return null;
 
     // 1. Matched Tools
-    const matchedTools = TOOLS_SEARCH_ITEMS.filter(
-      (t) => t.title.toLowerCase().includes(q) || t.desc.toLowerCase().includes(q)
-    );
+    const matchedTools = [
+      ...LIBRARY_SEARCH_ITEMS.filter((t) => `${t.title} ${t.desc}`.toLowerCase().includes(q)).slice(0, 6),
+      ...TOOLS_SEARCH_ITEMS.filter((t) => t.title.toLowerCase().includes(q) || t.desc.toLowerCase().includes(q)),
+    ];
 
     // 2. Matched Subjects
     const matchedSubjects = subjects.filter(
@@ -137,7 +152,7 @@ export function SearchDialog({ open, onOpenChange, onOpenAiDoubt }: SearchDialog
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-xl p-0 overflow-hidden bg-card border-border shadow-2xl">
+      <DialogContent className="sm:max-w-xl p-0 overflow-hidden bg-card border-border shadow-lg">
         <DialogHeader className="p-4 pb-2 border-b border-border/80">
           <div className="flex items-center justify-between">
             <DialogTitle className="text-sm font-bold text-foreground">Global Resource & Content Search</DialogTitle>
@@ -221,7 +236,7 @@ export function SearchDialog({ open, onOpenChange, onOpenAiDoubt }: SearchDialog
               {/* In-Content Deep Note Search Results */}
               {searchResults.inContent.length > 0 && (
                 <div>
-                  <span className="text-[10px] font-bold text-amber-500 dark:text-amber-500 uppercase tracking-wider block mb-1.5 px-1 flex items-center gap-1.5">
+                  <span className="text-[10px] font-bold text-primary dark:text-primary uppercase tracking-wider block mb-1.5 px-1 flex items-center gap-1.5">
                     <FileCode className="h-3.5 w-3.5" /> Inside Note Body ({searchResults.inContent.length})
                   </span>
                   <div className="space-y-1.5">
@@ -229,7 +244,7 @@ export function SearchDialog({ open, onOpenChange, onOpenAiDoubt }: SearchDialog
                       <button
                         key={idx}
                         onClick={() => handleNavigate(item.routeUrl)}
-                        className="w-full p-2.5 rounded-xl border border-amber-500/20 hover:border-amber-500/50 bg-amber-500/5 hover:bg-amber-500/10 text-left transition-colors flex items-center justify-between group"
+                        className="w-full p-2.5 rounded-xl border border-primary/20 hover:border-primary/50 bg-primary/5 hover:bg-primary/10 text-left transition-colors flex items-center justify-between group"
                       >
                         <div className="min-w-0 pr-2">
                           <div className="flex items-center gap-2">
@@ -307,7 +322,7 @@ export function SearchDialog({ open, onOpenChange, onOpenAiDoubt }: SearchDialog
               {/* Study Materials & Question Banks */}
               {searchResults.materials.length > 0 && (
                 <div>
-                  <span className="text-[10px] font-bold text-amber-500 uppercase tracking-wider block mb-1.5 px-1">
+                  <span className="text-[10px] font-bold text-primary uppercase tracking-wider block mb-1.5 px-1">
                     Study Materials & Papers ({searchResults.materials.length})
                   </span>
                   <div className="space-y-1.5">
@@ -315,10 +330,10 @@ export function SearchDialog({ open, onOpenChange, onOpenAiDoubt }: SearchDialog
                       <button
                         key={mat.id}
                         onClick={() => handleNavigate('/materials')}
-                        className="w-full p-2.5 rounded-xl border border-border/60 hover:border-amber-500/40 bg-card hover:bg-secondary/40 text-left transition-colors flex items-center justify-between group"
+                        className="w-full p-2.5 rounded-xl border border-border/60 hover:border-primary/40 bg-card hover:bg-secondary/40 text-left transition-colors flex items-center justify-between group"
                       >
                         <div className="flex items-center gap-2.5 min-w-0">
-                          <FileText className="h-4 w-4 text-amber-500 shrink-0" />
+                          <FileText className="h-4 w-4 text-primary shrink-0" />
                           <div className="truncate">
                             <h4 className="text-xs font-bold text-foreground truncate">{mat.title}</h4>
                             <p className="text-[10px] text-muted-foreground">
@@ -338,21 +353,21 @@ export function SearchDialog({ open, onOpenChange, onOpenAiDoubt }: SearchDialog
               {/* Academic Tools */}
               {searchResults.tools.length > 0 && (
                 <div>
-                  <span className="text-[10px] font-bold text-purple-500 uppercase tracking-wider block mb-1.5 px-1">
-                    Tools & Calculators ({searchResults.tools.length})
+                  <span className="text-[10px] font-bold text-primary uppercase tracking-wider block mb-1.5 px-1">
+                    Library & tools ({searchResults.tools.length})
                   </span>
                   <div className="space-y-1.5">
                     {searchResults.tools.map((tl) => (
                       <button
                         key={tl.title}
                         onClick={() => handleNavigate(tl.route)}
-                        className="w-full p-2.5 rounded-xl border border-border/60 hover:border-purple-500/40 bg-card hover:bg-secondary/40 text-left transition-colors flex items-center justify-between group"
+                        className="w-full p-2.5 rounded-xl border border-border/60 hover:border-primary/40 bg-card hover:bg-secondary/40 text-left transition-colors flex items-center justify-between group"
                       >
                         <div className="min-w-0">
                           <h4 className="text-xs font-bold text-foreground truncate">{tl.title}</h4>
                           <p className="text-[10px] text-muted-foreground">{tl.desc}</p>
                         </div>
-                        <ChevronRight className="h-3.5 w-3.5 text-muted-foreground group-hover:text-purple-500 shrink-0 ml-2" />
+                        <ChevronRight className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary shrink-0 ml-2" />
                       </button>
                     ))}
                   </div>

@@ -26,7 +26,7 @@ const MCQ_DATA = [
 const IMP_QUESTIONS = [
   {
     unit: "Unit 4 – Pointer & Array",
-    color: "bg-amber-500/10 text-amber-500 dark:text-amber-500",
+    color: "bg-primary/10 text-primary dark:text-primary",
     questions: [
       {
         title: "Meaning of 'int *ptr' | Use of & and * operators",
@@ -81,7 +81,7 @@ const IMP_QUESTIONS = [
   },
   {
     unit: "Unit 5 – Structure & Union",
-    color: "bg-purple-500/10 text-purple-600 dark:text-purple-400",
+    color: "bg-primary/10 text-primary dark:text-primary",
     questions: [
       {
         title: "Structure – Definition, Syntax, and Example",
@@ -127,7 +127,7 @@ const IMP_QUESTIONS = [
   },
   {
     unit: "Unit 6 – Input & Output",
-    color: "bg-amber-500/10 text-amber-500 dark:text-amber-500",
+    color: "bg-primary/10 text-primary dark:text-primary",
     questions: [
       {
         title: "Standard I/O – Formatted vs Unformatted",
@@ -149,7 +149,7 @@ const IMP_QUESTIONS = [
   },
   {
     unit: "Unit 7 – UNIX System Interface",
-    color: "bg-orange-500/10 text-orange-600 dark:text-orange-400",
+    color: "bg-primary/10 text-primary dark:text-primary",
     questions: [
       {
         title: "File Descriptor",
@@ -180,7 +180,7 @@ const IMP_QUESTIONS = [
   },
   {
     unit: "Unit 8 – Standard Library",
-    color: "bg-rose-500/10 text-rose-600 dark:text-rose-400",
+    color: "bg-destructive/10 text-destructive dark:text-destructive",
     questions: [
       {
         title: "string.h Library Functions",
@@ -360,8 +360,8 @@ function MCQCard({ mcq, idx }: { mcq: (typeof MCQ_DATA)[0]; idx: number }) {
           const isCorrect = i === mcq.ans;
           let cls = "rounded p-2.5 text-xs text-left transition-colors border ";
           if (!showResult) cls += "border-border hover:border-primary/40 hover:bg-secondary cursor-pointer";
-          else if (isCorrect) cls += "border-amber-500/50 bg-amber-500/10 text-amber-500 dark:text-amber-500";
-          else if (isSelected) cls += "border-red-500/50 bg-red-500/10 text-red-700 dark:text-red-400";
+          else if (isCorrect) cls += "border-primary/50 bg-primary/10 text-primary dark:text-primary";
+          else if (isSelected) cls += "border-destructive/50 bg-destructive/10 text-destructive dark:text-destructive";
           else cls += "border-border opacity-50";
 
           return (

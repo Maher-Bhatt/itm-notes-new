@@ -6,6 +6,7 @@ import { useAcademic } from "@/contexts/AcademicContext";
 import { useUniversity } from "@/contexts/UniversityContext";
 import { subjects, getAllTopicIds } from "@/data/subjects";
 import { useProgress } from "@/hooks/useProgress";
+import { LibraryHighlights } from "@/components/LibraryHighlights";
 import {
   BookOpen,
   Calendar,
@@ -86,79 +87,29 @@ export default function DashboardPage() {
   }, [subjectSemFilter, selectedCourseFilter]);
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-[1500px] mx-auto space-y-6 fade-in select-none">
-      {/* ── TOP STREAMLINED APP BAR ── */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-border">
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-              {user ? `Semester ${activeSemester} Active Term` : "Guest Preview"}
-            </span>
-            <span className="text-xs text-muted-foreground/40">·</span>
-            <span className="text-xs text-muted-foreground font-medium">{currentUniversity.name}</span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-foreground font-display">
-            {user ? `Welcome back, ${studentDisplayName || "Student"}` : `${currentUniversity.shortName} Student Hub`}
-          </h1>
-        </div>
-
-        <div className="flex items-center gap-2.5 shrink-0">
-          {/* Global Search Shortcut Pill */}
-          <button
-            type="button"
-            onClick={() => {
-              const event = new KeyboardEvent("keydown", { key: "k", ctrlKey: true });
-              window.dispatchEvent(event);
-            }}
-            className="h-10 px-3.5 rounded-xl border border-border bg-secondary/60 hover:bg-secondary text-muted-foreground hover:text-foreground text-xs flex items-center gap-2 transition-all press cursor-pointer"
-          >
-            <Search className="h-3.5 w-3.5 text-muted-foreground" />
-            <span>Search topics & codes...</span>
-            <kbd className="hidden sm:inline-block px-1.5 py-0.5 rounded bg-background text-[10px] font-mono text-muted-foreground border border-border">
-              ⌘K
-            </kbd>
-          </button>
-
-          {!user ? (
-            <button
-              onClick={() => navigate("/auth")}
-              className="h-10 px-4 rounded-xl bg-primary text-primary-foreground font-bold text-xs shadow-sm press flex items-center gap-2 cursor-pointer"
-            >
-              <LogIn className="h-4 w-4" />
-              <span>Sign In</span>
-            </button>
-          ) : (
-            <button
-              onClick={() => setIsContributionModalOpen(true)}
-              className="h-10 px-4 rounded-xl bg-secondary/80 hover:bg-secondary border border-border text-foreground font-bold text-xs transition-all press flex items-center gap-2 cursor-pointer"
-              title="Contribute student note or cheat sheet (+50 XP)"
-            >
-              <Plus className="h-4 w-4 text-amber-500" />
-              <span>Contribute Sheet</span>
-            </button>
-          )}
-        </div>
-      </div>
+    <div className="p-4 sm:p-6 lg:p-10 max-w-[1400px] mx-auto space-y-8 fade-in">
+      {/* ── HERO: continue learning, search, exam stats, subjects ── */}
+      <LibraryHighlights name={user ? studentDisplayName || undefined : undefined} streakDays={user ? game.streakDays : 0} />
 
       {/* ── ONBOARDING BANNER (If incomplete) ── */}
       {user && profile && !profile.onboarding_completed && (
-        <div className="relative overflow-hidden rounded-[22px] border border-[#2B4EFF]/30 bg-gradient-to-r from-[#2B4EFF]/10 via-[#D7F75B]/15 to-transparent p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="relative overflow-hidden rounded-2xl border border-primary/30 bg-gradient-to-r from-primary/10 via-accent/15 to-transparent p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-[#2B4EFF] text-white flex items-center justify-center shrink-0">
+            <div className="h-10 w-10 rounded-xl bg-primary text-white flex items-center justify-center shrink-0">
               <Sparkles className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-[#111111] dark:text-white">
+              <h3 className="text-sm font-bold text-foreground dark:text-white">
                 Complete your CampusLoop student onboarding
               </h3>
-              <p className="text-xs text-neutral-500">
+              <p className="text-xs text-stone-500">
                 Select your Indian university, engineering branch, and section to get personalized timetables and notes.
               </p>
             </div>
           </div>
           <button
             onClick={() => navigate("/onboarding")}
-            className="px-5 py-2.5 rounded-full bg-[#2B4EFF] hover:bg-[#1E3ECC] text-white text-xs font-bold shrink-0 flex items-center gap-1.5 cursor-pointer shadow-xs"
+            className="px-5 py-2.5 rounded-full bg-primary hover:bg-primary text-white text-xs font-bold shrink-0 flex items-center gap-1.5 cursor-pointer shadow-xs"
           >
             <span>Complete Setup</span>
             <ArrowRight className="h-4 w-4" />
@@ -167,26 +118,26 @@ export default function DashboardPage() {
       )}
 
       {/* ── STREAMLINED LIVE EXAM & VIVA NOTICE (CAMPUSLOOP) ── */}
-      <div className="relative overflow-hidden rounded-[22px] border border-[#2B4EFF]/20 bg-[#E6EAFD]/35 dark:bg-blue-950/20 p-5 sm:p-6 shadow-xs">
+      <div className="relative overflow-hidden rounded-2xl border border-primary/20 bg-primary/10 dark:bg-primary/20 p-5 sm:p-6 shadow-xs">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div className="space-y-1.5 max-w-3xl">
             <div className="flex items-center gap-2.5 flex-wrap">
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#D7F75B] text-[#111111] flex items-center gap-1.5 shadow-2xs">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-ping" />
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-accent text-foreground flex items-center gap-1.5 shadow-2xs">
+                <span className="w-1.5 h-1.5 rounded-full bg-success animate-ping" />
                 Live Notice
               </span>
-              <span className="text-xs text-[#2B4EFF] dark:text-blue-300 font-mono font-bold">
+              <span className="text-xs text-primary dark:text-primary font-mono font-bold">
                 Odd Sem 2026-2027 · Oct 26 – Nov 03
               </span>
               <span className="text-xs text-muted-foreground/50 hidden sm:inline">·</span>
-              <span className="text-xs text-[#6B7280] dark:text-neutral-400 hidden sm:inline">
+              <span className="text-xs text-muted-foreground dark:text-stone-400 hidden sm:inline">
                 Venues: NL-2, JAVA LAB, NL-6, EB-39, EB-25
               </span>
             </div>
-            <h2 className="text-base sm:text-lg font-bold text-[#111111] dark:text-white font-display">
+            <h2 className="text-base sm:text-lg font-bold text-foreground dark:text-white font-display">
               B.Tech Sem 3 Submission Viva & Remedial Exam Schedules
             </h2>
-            <p className="text-xs text-[#6B7280] dark:text-neutral-400 leading-relaxed">
+            <p className="text-xs text-muted-foreground dark:text-stone-400 leading-relaxed">
               Submissions begin at <strong className="text-foreground">10:00 AM daily</strong>. Check your assigned laboratory venue, faculty evaluator, and prepare the 38 OOPJ remedial solved questions.
             </p>
           </div>
@@ -194,25 +145,25 @@ export default function DashboardPage() {
           <div className="flex items-center gap-2.5 shrink-0">
             <button
               onClick={() => openTimetable("viva")}
-              className="px-4 py-2.5 rounded-full bg-[#2B4EFF] hover:bg-[#1E3EDB] text-white font-bold text-xs shadow-xs press flex items-center gap-2 cursor-pointer font-display"
+              className="px-4 py-2.5 rounded-full bg-primary hover:bg-primary text-white font-bold text-xs shadow-xs press flex items-center gap-2 cursor-pointer font-display"
             >
               <Calendar className="h-4 w-4" />
               <span>View Timetables & Venues</span>
             </button>
             <button
               onClick={() => navigate("/imp-questions/oopj")}
-              className="px-3.5 py-2.5 rounded-full bg-white dark:bg-[#1C1C1E] hover:bg-neutral-100 text-[#111111] dark:text-white font-bold text-xs border border-[#E8E4DA] dark:border-neutral-800 press flex items-center gap-1.5 cursor-pointer"
+              className="px-3.5 py-2.5 rounded-full bg-white dark:bg-card hover:bg-stone-100 text-foreground dark:text-white font-bold text-xs border border-border dark:border-stone-800 press flex items-center gap-1.5 cursor-pointer"
               title="Open OOPJ Solved Master Question Bank"
             >
-              <BookOpen className="h-3.5 w-3.5 text-[#2B4EFF]" />
+              <BookOpen className="h-3.5 w-3.5 text-primary" />
               <span>OOPJ Solved Bank</span>
             </button>
           </div>
         </div>
 
         {/* Minimal Class Quick Venue Jump Pills */}
-        <div className="mt-4 pt-3 border-t border-[#2B4EFF]/15 flex items-center gap-2 overflow-x-auto no-scrollbar">
-          <span className="text-[10px] font-bold text-[#6B7280] dark:text-neutral-400 uppercase tracking-wider shrink-0">
+        <div className="mt-4 pt-3 border-t border-primary/15 flex items-center gap-2 overflow-x-auto no-scrollbar">
+          <span className="text-[10px] font-bold text-muted-foreground dark:text-stone-400 uppercase tracking-wider shrink-0">
             Class Venues:
           </span>
           {[
@@ -225,17 +176,17 @@ export default function DashboardPage() {
             <button
               key={item.cls}
               onClick={() => openTimetable("viva", item.cls)}
-              className="px-3 py-1 rounded-full bg-white dark:bg-[#1C1C1E] hover:bg-[#F6F3EC] text-[#111111] dark:text-white font-semibold text-xs border border-[#E8E4DA] dark:border-neutral-800 transition-all shrink-0 flex items-center gap-1.5 cursor-pointer"
+              className="px-3 py-1 rounded-full bg-white dark:bg-card hover:bg-background text-foreground dark:text-white font-semibold text-xs border border-border dark:border-stone-800 transition-all shrink-0 flex items-center gap-1.5 cursor-pointer"
             >
               <span>Class {item.cls}</span>
-              <span className="text-[10px] font-mono text-neutral-500 bg-neutral-100 dark:bg-neutral-800 px-1 rounded">
+              <span className="text-[10px] font-mono text-stone-500 bg-stone-100 dark:bg-stone-800 px-1 rounded">
                 {item.room}
               </span>
             </button>
           ))}
           <button
             onClick={() => openTimetable("faculty")}
-            className="px-3 py-1 rounded-full text-[#2B4EFF] dark:text-blue-300 hover:underline text-xs font-bold transition-colors ml-auto shrink-0 flex items-center gap-1 cursor-pointer"
+            className="px-3 py-1 rounded-full text-primary dark:text-primary hover:underline text-xs font-bold transition-colors ml-auto shrink-0 flex items-center gap-1 cursor-pointer"
           >
             <Users className="h-3 w-3" />
             <span>Faculty Directory</span>
@@ -251,7 +202,7 @@ export default function DashboardPage() {
           <div className="relative overflow-hidden rounded-2xl glass-card border border-border p-6 sm:p-7 shadow-xs">
             <div className="relative z-10 max-w-xl space-y-3">
               <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 inline-flex items-center gap-1">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-primary/10 text-primary dark:text-primary border border-primary/20 inline-flex items-center gap-1">
                   <Sparkles className="h-3 w-3" />
                   Academic Mission
                 </span>
@@ -259,7 +210,7 @@ export default function DashboardPage() {
                   Complete your semester syllabus with verified notes
                 </span>
               </div>
-              <h2 className="text-xl sm:text-2xl font-black tracking-tight text-foreground font-display">
+              <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground font-display">
                 Master B.Tech Semester {activeSemester} Curriculum
               </h2>
               <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
@@ -279,7 +230,7 @@ export default function DashboardPage() {
                   onClick={() => navigate("/imp-questions")}
                   className="px-4 py-2.5 rounded-xl bg-secondary hover:bg-secondary/80 text-foreground font-bold text-xs border border-border press flex items-center gap-2 cursor-pointer"
                 >
-                  <Zap className="h-3.5 w-3.5 text-amber-500" />
+                  <Zap className="h-3.5 w-3.5 text-primary" />
                   <span>Exam Question Banks</span>
                 </button>
               </div>
@@ -294,7 +245,7 @@ export default function DashboardPage() {
                 desc: "Solved 2024–2026",
                 icon: FileText,
                 onClick: () => navigate("/pyq-papers"),
-                accent: "text-amber-500 bg-amber-500/10 border-amber-500/20",
+                accent: "text-primary bg-primary/10 border-primary/20",
               },
               {
                 label: "Mock Exams",
@@ -308,7 +259,7 @@ export default function DashboardPage() {
                 desc: "75% Attendance Guard",
                 icon: Calculator,
                 onClick: () => navigate("/calculator"),
-                accent: "text-amber-500 bg-amber-500/10 border-amber-500/20",
+                accent: "text-primary bg-primary/10 border-primary/20",
               },
               {
                 label: "AI Doubt Solver",
@@ -330,7 +281,7 @@ export default function DashboardPage() {
                   <ChevronRight className="h-3.5 w-3.5 text-muted-foreground group-hover:text-foreground transition-colors" />
                 </div>
                 <div>
-                  <h4 className="text-xs font-bold text-foreground group-hover:text-amber-500 transition-colors">
+                  <h4 className="text-xs font-bold text-foreground group-hover:text-primary transition-colors">
                     {tool.label}
                   </h4>
                   <p className="text-[10px] text-muted-foreground mt-0.5">{tool.desc}</p>
@@ -410,13 +361,13 @@ export default function DashboardPage() {
                   <div
                     key={sub.id}
                     onClick={() => navigate(`/subject/${sub.id}`)}
-                    className="group rounded-xl border border-border bg-card hover:bg-secondary/40 hover:border-amber-500/40 transition-all p-5 flex flex-col justify-between gap-4 card-lift press cursor-pointer shadow-xs"
+                    className="group rounded-xl border border-border bg-card hover:bg-secondary/40 hover:border-primary/40 transition-all p-5 flex flex-col justify-between gap-4 card-lift press cursor-pointer shadow-xs"
                   >
                     <div>
                       {/* Top Row: Code & Counts */}
                       <div className="flex items-center justify-between gap-2 mb-2.5">
                         <div className="flex items-center gap-1.5">
-                          <span className="px-2 py-0.5 rounded-md font-mono text-[10px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                          <span className="px-2 py-0.5 rounded-md font-mono text-[10px] font-bold bg-primary/10 text-primary dark:text-primary border border-primary/20">
                             {sub.code || "SUB"}
                           </span>
                           <span className="text-[10px] font-semibold text-muted-foreground">
@@ -429,7 +380,7 @@ export default function DashboardPage() {
                         </span>
                       </div>
 
-                      <h4 className="font-bold text-sm text-foreground group-hover:text-amber-500 transition-colors leading-snug">
+                      <h4 className="font-bold text-sm text-foreground group-hover:text-primary transition-colors leading-snug">
                         {sub.name}
                       </h4>
                       <p className="text-[11px] text-muted-foreground mt-1 line-clamp-2 leading-relaxed">
@@ -460,14 +411,14 @@ export default function DashboardPage() {
                       <div className="flex items-center gap-2 flex-1 max-w-[140px]">
                         <div className="h-1.5 flex-1 rounded-full bg-secondary overflow-hidden">
                           <div
-                            className="h-full bg-amber-500 rounded-full"
+                            className="h-full bg-primary rounded-full"
                             style={{ width: `${progressPct}%` }}
                           />
                         </div>
                         <span className="text-[10px] font-mono text-muted-foreground">{progressPct}%</span>
                       </div>
 
-                      <span className="text-xs font-bold text-foreground group-hover:text-amber-500 group-hover:translate-x-1 transition-all flex items-center gap-1 font-display">
+                      <span className="text-xs font-bold text-foreground group-hover:text-primary group-hover:translate-x-1 transition-all flex items-center gap-1 font-display">
                         <span>Open Course</span>
                         <ArrowRight className="h-3 w-3" />
                       </span>
@@ -486,7 +437,7 @@ export default function DashboardPage() {
                 <span className="text-[11px] text-muted-foreground">Weekly study activity across topics & quizzes</span>
               </div>
               <div className="text-right">
-                <span className="text-base font-black font-mono text-amber-500">
+                <span className="text-base font-bold font-mono text-primary">
                   {user ? `${game.xp} XP` : "0 XP"}
                 </span>
                 <span className="text-[10px] text-muted-foreground block">
@@ -500,8 +451,8 @@ export default function DashboardPage() {
                 <AreaChart data={STUDY_ACTIVITY_DATA}>
                   <defs>
                     <linearGradient id="amberGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.3} />
-                      <stop offset="95%" stopColor="#f59e0b" stopOpacity={0.0} />
+                      <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.0} />
                     </linearGradient>
                   </defs>
                   <XAxis dataKey="time" stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} />
@@ -518,7 +469,7 @@ export default function DashboardPage() {
                   <Area
                     type="monotone"
                     dataKey="hours"
-                    stroke="#f59e0b"
+                    stroke="hsl(var(--primary))"
                     strokeWidth={2.5}
                     fillOpacity={1}
                     fill="url(#amberGradient)"
@@ -535,7 +486,7 @@ export default function DashboardPage() {
           <div className="glass-card border border-border rounded-2xl p-6 space-y-3.5 shadow-xs">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-amber-500" />
+                <Clock className="h-4 w-4 text-primary" />
                 <h3 className="font-bold text-sm text-foreground font-display">Today's Class Schedule</h3>
               </div>
               <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-secondary text-foreground border border-border">
@@ -554,11 +505,11 @@ export default function DashboardPage() {
               return (
                 <div className="p-3.5 rounded-xl bg-secondary/50 border border-border flex items-start gap-3">
                   <div className="p-2.5 rounded-lg bg-card text-foreground border border-border shrink-0 mt-0.5 shadow-xs">
-                    <MapPin className="h-4 w-4 text-amber-500" />
+                    <MapPin className="h-4 w-4 text-primary" />
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between gap-1">
-                      <span className="text-[10px] font-mono font-bold text-amber-600 dark:text-amber-400">{nextClass.timeSlot}</span>
+                      <span className="text-[10px] font-mono font-bold text-primary dark:text-primary">{nextClass.timeSlot}</span>
                       <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-card text-foreground font-semibold border border-border">
                         {nextClass.location}
                       </span>
@@ -577,7 +528,7 @@ export default function DashboardPage() {
             <div className="flex items-center justify-between pt-1">
               <Link
                 to="/today"
-                className="text-xs text-amber-600 dark:text-amber-400 font-bold hover:underline flex items-center gap-1 press"
+                className="text-xs text-primary dark:text-primary font-bold hover:underline flex items-center gap-1 press"
               >
                 <span>Full Daily Mission</span>
                 <ArrowRight className="h-3 w-3" />
@@ -596,7 +547,7 @@ export default function DashboardPage() {
           <div className="glass-card border border-border rounded-2xl p-6 space-y-3.5 shadow-xs">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Target className="h-4 w-4 text-amber-500" />
+                <Target className="h-4 w-4 text-primary" />
                 <h3 className="font-bold text-sm text-foreground font-display">Weekly Study Target</h3>
               </div>
               <span className="text-[10px] font-mono font-bold text-muted-foreground">
@@ -617,12 +568,12 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-between text-xs">
+            <div className="p-2.5 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-between text-xs">
               <div className="flex items-center gap-2">
-                <Shield className="h-3.5 w-3.5 text-amber-500" />
+                <Shield className="h-3.5 w-3.5 text-primary" />
                 <span className="font-semibold text-foreground">Streak Freezes</span>
               </div>
-              <span className="font-mono font-bold text-amber-600 dark:text-amber-400">
+              <span className="font-mono font-bold text-primary dark:text-primary">
                 {streakFreezeCount} Available
               </span>
             </div>
@@ -632,7 +583,7 @@ export default function DashboardPage() {
           <div className="glass-card border border-border rounded-2xl p-6 space-y-4 shadow-xs">
             <div className="flex items-center justify-between">
               <h3 className="font-bold text-sm text-foreground font-display">Academic Safeguards</h3>
-              <Link to="/calculator" className="text-xs text-amber-600 dark:text-amber-400 font-semibold hover:underline press">
+              <Link to="/calculator" className="text-xs text-primary dark:text-primary font-semibold hover:underline press">
                 Calculator &gt;
               </Link>
             </div>
@@ -658,7 +609,7 @@ export default function DashboardPage() {
                     />
                   </svg>
                   <div className="absolute text-center">
-                    <span className="text-base font-black text-foreground font-mono">30%</span>
+                    <span className="text-base font-bold text-foreground font-mono">30%</span>
                   </div>
                 </div>
                 <span className="text-xs font-bold text-foreground mt-2">Syllabus Covered</span>
@@ -676,7 +627,7 @@ export default function DashboardPage() {
                       d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                     />
                     <path
-                      className="text-amber-500 stroke-current transition-all duration-1000"
+                      className="text-primary stroke-current transition-all duration-1000"
                       strokeDasharray="91, 100"
                       strokeWidth="3.5"
                       strokeLinecap="round"
@@ -685,11 +636,11 @@ export default function DashboardPage() {
                     />
                   </svg>
                   <div className="absolute text-center">
-                    <span className="text-base font-black text-foreground font-mono">91%</span>
+                    <span className="text-base font-bold text-foreground font-mono">91%</span>
                   </div>
                 </div>
                 <span className="text-xs font-bold text-foreground mt-2">Attendance</span>
-                <span className="text-[10px] text-amber-600 dark:text-amber-400 font-semibold">Above 75% cutoff</span>
+                <span className="text-[10px] text-primary dark:text-primary font-semibold">Above 75% cutoff</span>
               </div>
             </div>
           </div>
@@ -718,7 +669,7 @@ export default function DashboardPage() {
                       {f.name.split(" ").slice(1).map((n) => n[0]).join("")}
                     </div>
                     <div className="min-w-0">
-                      <h4 className="font-bold text-xs text-foreground group-hover:text-amber-500 transition-colors truncate">
+                      <h4 className="font-bold text-xs text-foreground group-hover:text-primary transition-colors truncate">
                         {f.name}
                       </h4>
                       <p className="text-[10px] text-muted-foreground truncate">

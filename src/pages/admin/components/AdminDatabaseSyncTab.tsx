@@ -127,7 +127,7 @@ export function AdminDatabaseSyncTab() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border">
         <div>
-          <h2 className="text-xl sm:text-2xl font-black text-foreground flex items-center gap-2">
+          <h2 className="text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2">
             <Database className="h-6 w-6 text-primary" />
             <span>Database Health, Telemetry & Master Sync</span>
           </h2>
@@ -158,11 +158,11 @@ export function AdminDatabaseSyncTab() {
       {/* Database Status Banner */}
       <div className={`p-4 sm:p-5 rounded-2xl border flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
         dbStatus === "healthy"
-          ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-950 dark:text-emerald-200"
-          : "bg-amber-500/10 border-amber-500/30 text-amber-950 dark:text-amber-200"
+          ? "bg-success/10 border-success/30 text-success dark:text-success"
+          : "bg-primary/10 border-primary/30 text-primary dark:text-primary"
       }`}>
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+          <div className="h-10 w-10 rounded-xl bg-success/20 text-success dark:text-success flex items-center justify-center shrink-0">
             <Server className="h-5 w-5" />
           </div>
           <div>
@@ -170,7 +170,7 @@ export function AdminDatabaseSyncTab() {
               <span className="font-bold text-sm text-foreground">
                 Supabase PostgreSQL Database: {dbStatus === "healthy" ? "Operational" : "Degraded"}
               </span>
-              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="h-2 w-2 rounded-full bg-success animate-pulse" />
             </div>
             <p className="text-xs text-muted-foreground mt-0.5">
               Region: ap-south-1 (Mumbai) · Pooler Active · Multi-Tenant RLS Enforced
@@ -186,7 +186,7 @@ export function AdminDatabaseSyncTab() {
           <div className="h-6 w-px bg-border" />
           <div>
             <span className="text-muted-foreground block text-[10px] uppercase">TLS Security</span>
-            <span className="font-bold text-emerald-600 dark:text-emerald-400">TLS 1.3 Active</span>
+            <span className="font-bold text-success dark:text-success">TLS 1.3 Active</span>
           </div>
         </div>
       </div>
@@ -197,7 +197,7 @@ export function AdminDatabaseSyncTab() {
           <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
             Practicals Dataset
           </span>
-          <span className="text-2xl font-black text-foreground mt-1 block">
+          <span className="text-2xl font-bold text-foreground mt-1 block">
             {ALL_CODING_PROBLEMS.length}
           </span>
           <span className="text-[11px] text-muted-foreground font-semibold mt-0.5">
@@ -209,7 +209,7 @@ export function AdminDatabaseSyncTab() {
           <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
             Universal MCQs
           </span>
-          <span className="text-2xl font-black text-foreground mt-1 block">
+          <span className="text-2xl font-bold text-foreground mt-1 block">
             {totalQuestionsCount}
           </span>
           <span className="text-[11px] text-muted-foreground font-semibold mt-0.5">
@@ -221,7 +221,7 @@ export function AdminDatabaseSyncTab() {
           <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
             Accredited Courses
           </span>
-          <span className="text-2xl font-black text-foreground mt-1 block">
+          <span className="text-2xl font-bold text-foreground mt-1 block">
             {ALL_SUBJECTS_METADATA.length}
           </span>
           <span className="text-[11px] text-muted-foreground font-semibold mt-0.5">
@@ -233,7 +233,7 @@ export function AdminDatabaseSyncTab() {
           <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
             Departments Seeded
           </span>
-          <span className="text-2xl font-black text-primary mt-1 block">
+          <span className="text-2xl font-bold text-primary mt-1 block">
             8 Disciplines
           </span>
           <span className="text-[11px] text-muted-foreground font-semibold mt-0.5">
@@ -282,7 +282,7 @@ export function AdminDatabaseSyncTab() {
           <div className="p-4 rounded-xl border border-border bg-muted/40 flex flex-col justify-between space-y-3">
             <div>
               <h4 className="font-bold text-sm text-foreground flex items-center gap-1.5">
-                <HardDrive className="h-4 w-4 text-amber-500" />
+                <HardDrive className="h-4 w-4 text-primary" />
                 <span>Purge Local Storage Drafts & Caches</span>
               </h4>
               <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
@@ -294,7 +294,7 @@ export function AdminDatabaseSyncTab() {
               onClick={handleClearLocalCaches}
               className="w-full py-2.5 px-4 rounded-xl border border-border bg-card hover:bg-accent text-foreground font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs"
             >
-              <Trash2 className="h-3.5 w-3.5 text-rose-500" />
+              <Trash2 className="h-3.5 w-3.5 text-destructive" />
               <span>Clear Temporary Caches</span>
             </button>
           </div>

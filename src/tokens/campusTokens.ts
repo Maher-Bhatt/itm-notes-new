@@ -13,11 +13,11 @@ export const CAMPUS_TOKENS = {
     borderLight: '#EFECE6',
 
     // Core Brand Accents
-    primaryBlue: '#2B4EFF',
+    primaryBlue: 'hsl(var(--primary))',
     primaryBlueHover: '#1E3EDB',
     dark: '#111111',
     darkHover: '#222222',
-    lime: '#D7F75B',
+    lime: 'hsl(var(--accent))',
     limeHover: '#C6E84A',
 
     // Secondary Pastel Tints

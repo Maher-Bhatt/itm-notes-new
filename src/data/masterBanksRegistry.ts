@@ -111,7 +111,7 @@ export const MASTER_BANKS: Record<string, MasterSubjectBank> = {
     summary: 'Complete model answers: 5 Output Predicts with call stack traces, 15 5-mark programs, 18 3-mark theory proofs, and Q1 MCQ master revision.',
     audioLectureSummary: 'Welcome to the Object Oriented Programming with Java master audio lecture. In Java, remember that method overriding resolves dynamically at runtime based on the actual object type on the heap. Constructors chain from parent to child, and super must always be the very first statement. In abstract classes, default methods in interfaces provide flexibility, while multiple inheritance is achieved purely through interfaces.',
     theme: {
-      primaryBg: 'from-[#18181B] via-[#1D4A3F] to-[#27272A]',
+      primaryBg: 'from-foreground via-primary to-[#27272A]',
       accentColor: '#FAFAFA',
       borderGlow: 'border-[#FAFAFA]/40',
       iconColor: 'text-[#FAFAFA]',
@@ -142,8 +142,8 @@ export const MASTER_BANKS: Record<string, MasterSubjectBank> = {
     theme: {
       primaryBg: 'from-[#063323] via-[#0E4733] to-[#042419]',
       accentColor: '#4ADE80',
-      borderGlow: 'border-amber-500/40',
-      iconColor: 'text-amber-500',
+      borderGlow: 'border-primary/40',
+      iconColor: 'text-primary',
     },
     predictOutput: DSA_PREDICT_OUTPUT,
     longAnswers: DSA_LONG_QUESTIONS,
@@ -166,8 +166,8 @@ export const MASTER_BANKS: Record<string, MasterSubjectBank> = {
     theme: {
       primaryBg: 'from-[#142347] via-[#1A2E5C] to-[#0E1933]',
       accentColor: '#60A5FA',
-      borderGlow: 'border-amber-500/40',
-      iconColor: 'text-amber-500',
+      borderGlow: 'border-primary/40',
+      iconColor: 'text-primary',
     },
     predictOutput: CA_PREDICT_OUTPUT,
     longAnswers: CA_LONG_QUESTIONS,
@@ -190,8 +190,8 @@ export const MASTER_BANKS: Record<string, MasterSubjectBank> = {
     theme: {
       primaryBg: 'from-[#3D1A10] via-[#522518] to-[#29110B]',
       accentColor: '#FB923C',
-      borderGlow: 'border-orange-500/40',
-      iconColor: 'text-orange-400',
+      borderGlow: 'border-primary/40',
+      iconColor: 'text-primary',
     },
     predictOutput: DBMS_PREDICT_OUTPUT,
     longAnswers: DBMS_LONG_QUESTIONS,
@@ -214,8 +214,8 @@ export const MASTER_BANKS: Record<string, MasterSubjectBank> = {
     theme: {
       primaryBg: 'from-[#2B174D] via-[#381F63] to-[#1D0F33]',
       accentColor: '#C084FC',
-      borderGlow: 'border-purple-500/40',
-      iconColor: 'text-purple-400',
+      borderGlow: 'border-primary/40',
+      iconColor: 'text-primary',
     },
     predictOutput: CONMP_PREDICT_OUTPUT,
     longAnswers: CONMP_LONG_QUESTIONS,

@@ -30,7 +30,7 @@ export const CampusLoopLogo: React.FC<CampusLoopLogoProps> = ({
     <div className={`inline-flex items-center gap-2.5 select-none ${className}`}>
       {/* Blue Rounded Square with Loop Mark */}
       <div
-        className={`${iconSizes[size]} bg-[#2B4EFF] flex items-center justify-center text-white font-black shadow-xs shrink-0`}
+        className={`${iconSizes[size]} bg-primary flex items-center justify-center text-white font-bold shadow-xs shrink-0`}
       >
         <svg
           viewBox="0 0 24 24"
@@ -47,12 +47,12 @@ export const CampusLoopLogo: React.FC<CampusLoopLogoProps> = ({
       </div>
 
       <div className="flex flex-col leading-none">
-        <div className={`font-black tracking-tight ${textSizes[size]} flex items-baseline gap-0.5`}>
-          <span className="text-[#111111] dark:text-white">Campus</span>
-          <span className="text-[#2B4EFF]">Loop</span>
+        <div className={`font-bold tracking-tight ${textSizes[size]} flex items-baseline gap-0.5`}>
+          <span className="text-foreground dark:text-white">Campus</span>
+          <span className="text-primary">Loop</span>
         </div>
         {showSubtitle && (
-          <span className="text-[10px] font-semibold text-[#6B7280] dark:text-neutral-400 tracking-wider uppercase mt-0.5">
+          <span className="text-[10px] font-semibold text-muted-foreground dark:text-stone-400 tracking-wider uppercase mt-0.5">
             ITM SLS Baroda
           </span>
         )}

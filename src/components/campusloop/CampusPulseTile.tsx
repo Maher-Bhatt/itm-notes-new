@@ -25,32 +25,32 @@ export const CampusPulseTile: React.FC<CampusPulseTileProps> = ({
 }) => {
   const toneClasses: Record<CampusPulseTone, { container: string; tag: string; title: string; sub: string; iconBg: string }> = {
     black: {
-      container: 'bg-[#111111] text-white border border-neutral-800',
-      tag: 'bg-[#D7F75B] text-[#111111]',
+      container: 'bg-foreground text-white border border-stone-800',
+      tag: 'bg-accent text-foreground',
       title: 'text-white',
-      sub: 'text-neutral-300',
-      iconBg: 'bg-neutral-800 text-[#D7F75B]',
+      sub: 'text-stone-300',
+      iconBg: 'bg-stone-800 text-primary',
     },
     lime: {
-      container: 'bg-[#D7F75B] text-[#111111] border border-[#C6E84A]',
-      tag: 'bg-[#111111] text-white',
-      title: 'text-[#111111]',
-      sub: 'text-neutral-800',
-      iconBg: 'bg-[#C6E84A] text-[#111111]',
+      container: 'bg-accent text-foreground border border-primary',
+      tag: 'bg-foreground text-white',
+      title: 'text-foreground',
+      sub: 'text-stone-800',
+      iconBg: 'bg-accent text-foreground',
     },
     blue: {
-      container: 'bg-[#2B4EFF] text-white border border-[#1E3EDB]',
-      tag: 'bg-white text-[#2B4EFF]',
+      container: 'bg-primary text-white border border-primary',
+      tag: 'bg-white text-primary',
       title: 'text-white',
-      sub: 'text-blue-100',
-      iconBg: 'bg-[#1E3EDB] text-white',
+      sub: 'text-primary',
+      iconBg: 'bg-primary text-white',
     },
     white: {
-      container: 'bg-white dark:bg-[#1C1C1E] text-[#111111] dark:text-white border border-[#E8E4DA] dark:border-neutral-800',
-      tag: 'bg-[#E6EAFD] text-[#2B4EFF] dark:bg-blue-950/40 dark:text-blue-300',
-      title: 'text-[#111111] dark:text-white',
-      sub: 'text-[#6B7280] dark:text-neutral-400',
-      iconBg: 'bg-neutral-100 dark:bg-neutral-800 text-[#2B4EFF]',
+      container: 'bg-white dark:bg-card text-foreground dark:text-white border border-border dark:border-stone-800',
+      tag: 'bg-primary/10 text-primary dark:bg-primary/15 dark:text-primary',
+      title: 'text-foreground dark:text-white',
+      sub: 'text-muted-foreground dark:text-stone-400',
+      iconBg: 'bg-stone-100 dark:bg-stone-800 text-primary',
     },
   };
 
@@ -73,7 +73,7 @@ export const CampusPulseTile: React.FC<CampusPulseTileProps> = ({
   return (
     <div
       onClick={onClick}
-      className={`min-w-[270px] max-w-[320px] sm:min-w-[300px] rounded-[20px] p-4 flex flex-col justify-between shrink-0 transition-all select-none ${
+      className={`min-w-[270px] max-w-[320px] sm:min-w-[300px] rounded-2xl p-4 flex flex-col justify-between shrink-0 transition-all select-none ${
         onClick ? 'cursor-pointer hover:scale-[1.02] active:scale-[0.98]' : ''
       } ${currentTone.container} ${className}`}
     >
@@ -81,7 +81,7 @@ export const CampusPulseTile: React.FC<CampusPulseTileProps> = ({
         <div className="flex items-center justify-between gap-2 mb-2.5">
           {tag && (
             <span
-              className={`text-[11px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full inline-flex items-center gap-1 ${currentTone.tag}`}
+              className={`text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full inline-flex items-center gap-1 ${currentTone.tag}`}
             >
               {renderIcon()}
               {tag}

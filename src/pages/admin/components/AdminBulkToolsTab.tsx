@@ -128,12 +128,12 @@ export function AdminBulkToolsTab() {
   return (
     <div className="space-y-6 animate-fade-in">
       {/* ── SECTION 1: BATCH MATERIALS UPLOADER ── */}
-      <div className="bg-slate-800 border border-slate-700 rounded-3xl p-5 sm:p-6 space-y-4 shadow-xl">
-        <div className="flex items-center gap-2 pb-2 border-b border-slate-700">
+      <div className="bg-stone-800 border border-stone-700 rounded-2xl p-5 sm:p-6 space-y-4 shadow-lg">
+        <div className="flex items-center gap-2 pb-2 border-b border-stone-700">
           <UploadCloud className="h-5 w-5 text-[#FAFAFA]" />
           <div>
             <h3 className="text-sm font-bold text-white">Batch Academic Materials Uploader</h3>
-            <p className="text-[11px] text-slate-400">
+            <p className="text-[11px] text-stone-400">
               Bulk ingest lecture slides, PDFs, lab manuals, and previous year solutions.
             </p>
           </div>
@@ -141,13 +141,13 @@ export function AdminBulkToolsTab() {
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
           <div>
-            <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+            <label className="text-[11px] font-bold uppercase tracking-wider text-stone-400 block mb-1">
               Semester
             </label>
             <select
               value={selectedSemester}
               onChange={(e) => setSelectedSemester(Number(e.target.value))}
-              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FAFAFA]"
+              className="w-full bg-stone-900 border border-stone-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FAFAFA]"
             >
               <option value={1}>Semester 1</option>
               <option value={2}>Semester 2</option>
@@ -157,13 +157,13 @@ export function AdminBulkToolsTab() {
           </div>
 
           <div>
-            <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+            <label className="text-[11px] font-bold uppercase tracking-wider text-stone-400 block mb-1">
               Subject
             </label>
             <select
               value={selectedSubjectId}
               onChange={(e) => setSelectedSubjectId(e.target.value)}
-              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FAFAFA]"
+              className="w-full bg-stone-900 border border-stone-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FAFAFA]"
             >
               {subjects.map((s) => (
                 <option key={s.id} value={s.id}>
@@ -174,13 +174,13 @@ export function AdminBulkToolsTab() {
           </div>
 
           <div>
-            <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+            <label className="text-[11px] font-bold uppercase tracking-wider text-stone-400 block mb-1">
               Category
             </label>
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FAFAFA]"
+              className="w-full bg-stone-900 border border-stone-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#FAFAFA]"
             >
               <option value="Notes">Faculty Lecture Notes</option>
               <option value="PYQ">Previous Year Exam Paper</option>
@@ -190,7 +190,7 @@ export function AdminBulkToolsTab() {
           </div>
         </div>
 
-        <div className="border-2 border-dashed border-slate-700 hover:border-[#FAFAFA]/60 rounded-2xl p-6 text-center space-y-2 transition-colors bg-slate-900/40">
+        <div className="border-2 border-dashed border-stone-700 hover:border-[#FAFAFA]/60 rounded-2xl p-6 text-center space-y-2 transition-colors bg-stone-900/40">
           <input
             type="file"
             multiple
@@ -202,18 +202,18 @@ export function AdminBulkToolsTab() {
           <label htmlFor="bulk-file-input" className="cursor-pointer block">
             <UploadCloud className="h-8 w-8 text-[#FAFAFA] mx-auto opacity-80" />
             <p className="text-sm font-bold text-white mt-2">Click to select multiple PDF/PPT files</p>
-            <p className="text-xs text-slate-400">PDF, PPTX, DOCX up to 50MB per file</p>
+            <p className="text-xs text-stone-400">PDF, PPTX, DOCX up to 50MB per file</p>
           </label>
         </div>
 
         {uploadFiles.length > 0 && (
           <div className="space-y-2 pt-2">
-            <div className="flex items-center justify-between text-xs text-slate-400">
+            <div className="flex items-center justify-between text-xs text-stone-400">
               <span>{uploadFiles.length} files queued for upload</span>
               <button
                 onClick={startBatchUpload}
                 disabled={isUploading}
-                className="px-4 py-1.5 rounded-xl bg-[#FAFAFA] hover:bg-[#E4E4E7] text-[#18181B] text-xs font-black shadow-md"
+                className="px-4 py-1.5 rounded-xl bg-[#FAFAFA] hover:bg-muted text-foreground text-xs font-bold shadow-md"
               >
                 {isUploading ? "Uploading..." : "Start Batch Upload"}
               </button>
@@ -221,12 +221,12 @@ export function AdminBulkToolsTab() {
 
             <div className="space-y-2">
               {uploadFiles.map((file, idx) => (
-                <div key={idx} className="bg-slate-900/60 p-3 rounded-xl border border-slate-700/60 text-xs space-y-1.5">
-                  <div className="flex items-center justify-between text-slate-200">
+                <div key={idx} className="bg-stone-900/60 p-3 rounded-xl border border-stone-700/60 text-xs space-y-1.5">
+                  <div className="flex items-center justify-between text-stone-200">
                     <span className="font-medium truncate max-w-sm">{file.name}</span>
-                    <span className="font-mono text-slate-400">{(file.size / 1024 / 1024).toFixed(1)} MB</span>
+                    <span className="font-mono text-stone-400">{(file.size / 1024 / 1024).toFixed(1)} MB</span>
                   </div>
-                  <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                  <div className="w-full bg-stone-800 rounded-full h-1.5 overflow-hidden">
                     <div
                       className="bg-[#FAFAFA] h-1.5 transition-all duration-300"
                       style={{ width: `${file.progress}%` }}
@@ -240,13 +240,13 @@ export function AdminBulkToolsTab() {
       </div>
 
       {/* ── SECTION 2: CSV QUESTION BANK IMPORT ── */}
-      <div className="bg-slate-800 border border-slate-700 rounded-3xl p-5 sm:p-6 space-y-4 shadow-xl">
-        <div className="flex items-center justify-between pb-2 border-b border-slate-700">
+      <div className="bg-stone-800 border border-stone-700 rounded-2xl p-5 sm:p-6 space-y-4 shadow-lg">
+        <div className="flex items-center justify-between pb-2 border-b border-stone-700">
           <div className="flex items-center gap-2">
             <FileSpreadsheet className="h-5 w-5 text-[#FAFAFA]" />
             <div>
               <h3 className="text-sm font-bold text-white">CSV Question-Bank Validator & Importer</h3>
-              <p className="text-[11px] text-slate-400">
+              <p className="text-[11px] text-stone-400">
                 Bulk import MCQs with pre-flight row validation preview.
               </p>
             </div>
@@ -261,7 +261,7 @@ export function AdminBulkToolsTab() {
         </div>
 
         <div>
-          <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+          <label className="text-[11px] font-bold uppercase tracking-wider text-stone-400 block mb-1">
             CSV Content (Header: question, option_a, option_b, option_c, option_d, correct_answer, explanation)
           </label>
           <textarea
@@ -269,14 +269,14 @@ export function AdminBulkToolsTab() {
             onChange={(e) => setCsvContent(e.target.value)}
             rows={5}
             placeholder="Paste raw CSV lines here..."
-            className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white font-mono placeholder-slate-500 focus:outline-none focus:border-[#FAFAFA]"
+            className="w-full bg-stone-900 border border-stone-700 rounded-xl p-3 text-xs text-white font-mono placeholder-stone-500 focus:outline-none focus:border-[#FAFAFA]"
           />
         </div>
 
         <div className="flex items-center justify-between">
           <button
             onClick={handleValidateCsv}
-            className="px-4 py-2 rounded-xl bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold transition-colors"
+            className="px-4 py-2 rounded-xl bg-stone-700 hover:bg-stone-600 text-white text-xs font-bold transition-colors"
           >
             Validate CSV Rows
           </button>
@@ -284,7 +284,7 @@ export function AdminBulkToolsTab() {
           {parsedData && parsedData.validRows.length > 0 && (
             <button
               onClick={handleImportValidQuestions}
-              className="px-4 py-2 rounded-xl bg-[#FAFAFA] hover:bg-[#E4E4E7] text-[#18181B] text-xs font-black shadow-md transition-all cursor-pointer"
+              className="px-4 py-2 rounded-xl bg-[#FAFAFA] hover:bg-muted text-foreground text-xs font-bold shadow-md transition-all cursor-pointer"
             >
               Import {parsedData.validRows.length} Valid Questions
             </button>
@@ -295,13 +295,13 @@ export function AdminBulkToolsTab() {
         {parsedData && (
           <div className="space-y-3 pt-2">
             <div className="flex items-center gap-4 text-xs">
-              <span className="text-slate-400">Total Rows: {parsedData.totalRows}</span>
-              <span className="text-amber-500 font-bold flex items-center gap-1">
+              <span className="text-stone-400">Total Rows: {parsedData.totalRows}</span>
+              <span className="text-primary font-bold flex items-center gap-1">
                 <CheckCircle className="h-3.5 w-3.5" />
                 {parsedData.validRows.length} Valid
               </span>
               {parsedData.invalidRows.length > 0 && (
-                <span className="text-red-400 font-bold flex items-center gap-1">
+                <span className="text-destructive font-bold flex items-center gap-1">
                   <AlertCircle className="h-3.5 w-3.5" />
                   {parsedData.invalidRows.length} Invalid
                 </span>
@@ -310,24 +310,24 @@ export function AdminBulkToolsTab() {
 
             <div className="max-h-60 overflow-y-auto space-y-2 pr-1">
               {parsedData.invalidRows.map((r) => (
-                <div key={r.rowNumber} className="bg-red-950/20 border border-red-500/40 rounded-xl p-3 text-xs space-y-1">
-                  <div className="flex items-center justify-between text-red-400 font-bold">
+                <div key={r.rowNumber} className="bg-destructive/10 border border-destructive/40 rounded-xl p-3 text-xs space-y-1">
+                  <div className="flex items-center justify-between text-destructive font-bold">
                     <span>Row {r.rowNumber}: Validation Failed</span>
                     <span>{r.errors.join(", ")}</span>
                   </div>
-                  <p className="text-slate-300 font-mono text-[11px] truncate">{r.question || "(empty question)"}</p>
+                  <p className="text-stone-300 font-mono text-[11px] truncate">{r.question || "(empty question)"}</p>
                 </div>
               ))}
 
               {parsedData.validRows.map((r) => (
-                <div key={r.rowNumber} className="bg-slate-900/60 border border-slate-700/60 rounded-xl p-3 text-xs space-y-1">
+                <div key={r.rowNumber} className="bg-stone-900/60 border border-stone-700/60 rounded-xl p-3 text-xs space-y-1">
                   <div className="flex items-center justify-between">
                     <span className="text-white font-medium truncate max-w-md">{r.question}</span>
-                    <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-500 font-mono font-bold text-[10px]">
+                    <span className="px-2 py-0.5 rounded bg-primary/10 text-primary font-mono font-bold text-[10px]">
                       Correct: {r.correctAnswer}
                     </span>
                   </div>
-                  <div className="text-[11px] text-slate-400 grid grid-cols-2 gap-2 pt-1">
+                  <div className="text-[11px] text-stone-400 grid grid-cols-2 gap-2 pt-1">
                     <span>A: {r.optionA}</span>
                     <span>B: {r.optionB}</span>
                     <span>C: {r.optionC}</span>

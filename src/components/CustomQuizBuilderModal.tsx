@@ -76,7 +76,7 @@ export const CustomQuizBuilderModal: React.FC<CustomQuizBuilderModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in">
-      <div className="bg-card border border-border rounded-3xl max-w-xl w-full p-6 shadow-2xl relative max-h-[90vh] flex flex-col animate-scale-in">
+      <div className="bg-card border border-border rounded-2xl max-w-xl w-full p-6 shadow-lg relative max-h-[90vh] flex flex-col animate-scale-in">
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-border/70">
           <div className="flex items-center gap-3">

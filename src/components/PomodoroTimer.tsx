@@ -42,7 +42,7 @@ export function PomodoroTimer() {
             onClick={() => setMode('break')}
             className={`text-[10px] font-bold px-2 py-0.5 rounded-full transition-all ${
               mode === 'break'
-                ? 'bg-amber-500 text-white'
+                ? 'bg-primary text-white'
                 : 'bg-secondary text-muted-foreground hover:text-foreground'
             }`}
           >
@@ -52,7 +52,7 @@ export function PomodoroTimer() {
       </div>
 
       <div className="flex flex-col items-center justify-center py-4">
-        <div className="text-4xl sm:text-5xl font-black font-mono tracking-tight text-foreground mb-3">
+        <div className="text-4xl sm:text-5xl font-bold font-mono tracking-tight text-foreground mb-3">
           {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
         </div>
 
@@ -60,7 +60,7 @@ export function PomodoroTimer() {
         <div className="w-full h-2 rounded-full bg-secondary overflow-hidden mb-5">
           <div
             className={`h-full transition-all duration-1000 ${
-              mode === 'study' ? 'bg-primary' : 'bg-amber-500'
+              mode === 'study' ? 'bg-primary' : 'bg-primary'
             }`}
             style={{ width: `${progressPercent}%` }}
           />
@@ -72,7 +72,7 @@ export function PomodoroTimer() {
             onClick={toggleTimer}
             className={`px-5 py-2.5 rounded-xl font-bold text-sm inline-flex items-center gap-2 shadow-sm transition-all apple-press ${
               isRunning
-                ? 'bg-amber-500 hover:bg-amber-600 text-white'
+                ? 'bg-primary hover:bg-primary text-white'
                 : 'bg-primary hover:opacity-90 text-primary-foreground'
             }`}
           >
@@ -97,7 +97,7 @@ export function PomodoroTimer() {
       </div>
 
       <div className="pt-3 border-t border-border/60 flex items-center justify-between text-xs text-muted-foreground">
-        <span className="flex items-center gap-1 text-amber-600 dark:text-amber-400 font-medium">
+        <span className="flex items-center gap-1 text-primary dark:text-primary font-medium">
           <Sparkles className="h-3.5 w-3.5" /> +50 XP reward upon completion
         </span>
         <span>

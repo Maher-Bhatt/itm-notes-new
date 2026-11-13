@@ -74,7 +74,7 @@ export function AppStartupSplashScreen({ onComplete }: AppStartupSplashScreenPro
   return (
     <div
       onClick={handleSkip}
-      className={`fixed inset-0 z-50 flex flex-col items-center justify-between p-6 sm:p-8 bg-gradient-to-br from-[#0c221c] via-[#27272A] to-[#071713] text-[#F5F1E8] select-none cursor-pointer transition-opacity duration-500 cubic-bezier(0.25, 0.46, 0.45, 0.94) ${
+      className={`fixed inset-0 z-50 flex flex-col items-center justify-between p-6 sm:p-8 bg-gradient-to-br from-[#0c221c] via-[#27272A] to-[#071713] text-secondary select-none cursor-pointer transition-opacity duration-500 cubic-bezier(0.25, 0.46, 0.45, 0.94) ${
         isFading ? "opacity-0 pointer-events-none scale-105 transition-transform" : "opacity-100"
       }`}
     >
@@ -109,7 +109,7 @@ export function AppStartupSplashScreen({ onComplete }: AppStartupSplashScreenPro
           <div className="absolute w-32 h-32 rounded-full border-2 border-[#FAFAFA]/30 animate-spin" style={{ animationDuration: '8s' }} />
 
           {/* Logo Mark Container */}
-          <div className="relative w-24 h-24 sm:w-28 sm:h-28 p-4 sm:p-5 rounded-3xl bg-[#18181B] border border-[#255b4e] shadow-2xl flex items-center justify-center transform hover:scale-105 transition-transform">
+          <div className="relative w-24 h-24 sm:w-28 sm:h-28 p-4 sm:p-5 rounded-2xl bg-foreground border border-primary shadow-lg flex items-center justify-center transform hover:scale-105 transition-transform">
             <img
               src={markTransparent}
               alt="CampusLoop Logo"
@@ -121,11 +121,11 @@ export function AppStartupSplashScreen({ onComplete }: AppStartupSplashScreenPro
         {/* Brand Title */}
         <div className="space-y-1">
           <div className="flex items-center justify-center gap-2">
-            <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-[#F5F1E8] font-heading">
+            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-secondary font-heading">
               ITM <span className="text-[#FAFAFA]">Notes</span>
             </h1>
           </div>
-          <p className="text-xs font-bold tracking-[0.2em] uppercase text-[#A1A1AA] font-display">
+          <p className="text-xs font-bold tracking-[0.2em] uppercase text-muted-foreground font-display">
             Your Academic Companion
           </p>
         </div>
@@ -135,14 +135,14 @@ export function AppStartupSplashScreen({ onComplete }: AppStartupSplashScreenPro
       <div className="w-full max-w-xs space-y-6 pb-12 sm:pb-8 flex flex-col items-center">
         <div className="w-full space-y-3">
           {/* Progress Bar Container */}
-          <div className="w-full h-1.5 rounded-full bg-[#1A4238] overflow-hidden border border-[#255b4e]/50 p-0.5 shadow-inner">
+          <div className="w-full h-1.5 rounded-full bg-[#1A4238] overflow-hidden border border-primary/50 p-0.5 shadow-inner">
             <div
               className="h-full bg-gradient-to-r from-[#C8DC47] to-[#FAFAFA] rounded-full transition-all duration-300 ease-out shadow-[0_0_12px_rgba(214,232,93,0.8)]"
               style={{ width: `${Math.min(100, progress)}%` }}
             />
           </div>
 
-          <div className="flex items-center justify-between w-full text-[10px] text-[#A1A1AA] font-mono">
+          <div className="flex items-center justify-between w-full text-[10px] text-muted-foreground font-mono">
             <span className="flex items-center gap-1">
               <Sparkles className="h-3 w-3 text-[#FAFAFA] animate-spin" />
               Loading Course Packs...
@@ -152,7 +152,7 @@ export function AppStartupSplashScreen({ onComplete }: AppStartupSplashScreenPro
         </div>
 
         {/* Made by attribution */}
-        <div className="text-[12px] text-[#A1A1AA]/90 font-medium tracking-wide bg-[#18181B]/50 px-4 py-1.5 rounded-full border border-[#FAFAFA]/20 shadow-md">
+        <div className="text-[12px] text-muted-foreground/90 font-medium tracking-wide bg-foreground/50 px-4 py-1.5 rounded-full border border-[#FAFAFA]/20 shadow-md">
           Designed & Built by <span className="font-bold text-[#FAFAFA]">Maher Bhatt</span>
         </div>
       </div>

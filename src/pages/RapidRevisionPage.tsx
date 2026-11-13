@@ -256,14 +256,14 @@ export default function RapidRevisionPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/80 pb-6">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold text-xs uppercase tracking-wide flex items-center gap-1">
+            <span className="px-2.5 py-0.5 rounded-full bg-primary/10 text-primary dark:text-primary font-bold text-xs uppercase tracking-wide flex items-center gap-1">
               <Zap className="h-3.5 w-3.5" /> High-Yield Revision
             </span>
             <span className="px-2.5 py-0.5 rounded-full bg-primary/10 text-primary font-semibold text-xs">
               30-Minute Cram Mode
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-semibold text-foreground tracking-tight">
             Rapid Revision Packs
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
@@ -302,12 +302,12 @@ export default function RapidRevisionPage() {
       {/* Active Pack Content */}
       <div className="space-y-6">
         {/* Pack Title Card */}
-        <div className="bg-card border border-border/80 rounded-3xl p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="bg-card border border-border/80 rounded-2xl p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <span className="text-xs font-mono font-bold text-primary px-2 py-0.5 rounded bg-primary/10">
               {activePack.code}
             </span>
-            <h2 className="text-xl sm:text-2xl font-black text-foreground mt-1">
+            <h2 className="text-xl sm:text-2xl font-bold text-foreground mt-1">
               {activePack.name}
             </h2>
             <p className="text-xs text-muted-foreground mt-0.5">
@@ -325,9 +325,9 @@ export default function RapidRevisionPage() {
         </div>
 
         {/* Section 1: 5 Golden Concepts */}
-        <div className="bg-card border border-border/80 rounded-3xl p-6 shadow-sm space-y-4">
-          <h3 className="font-extrabold text-sm sm:text-base text-foreground flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-amber-500" />
+        <div className="bg-card border border-border/80 rounded-2xl p-6 shadow-sm space-y-4">
+          <h3 className="font-semibold text-sm sm:text-base text-foreground flex items-center gap-2">
+            <Sparkles className="h-4 w-4 text-primary" />
             5 Golden Exam Concepts (100% Asked in End-Sem / MST):
           </h3>
 
@@ -362,9 +362,9 @@ export default function RapidRevisionPage() {
         </div>
 
         {/* Section 2: Examiner Traps */}
-        <div className="bg-card border border-border/80 rounded-3xl p-6 shadow-sm space-y-4">
-          <h3 className="font-extrabold text-sm sm:text-base text-foreground flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4 text-rose-500" />
+        <div className="bg-card border border-border/80 rounded-2xl p-6 shadow-sm space-y-4">
+          <h3 className="font-semibold text-sm sm:text-base text-foreground flex items-center gap-2">
+            <AlertTriangle className="h-4 w-4 text-destructive" />
             Top Examiner Traps & Misconceptions:
           </h3>
 
@@ -372,14 +372,14 @@ export default function RapidRevisionPage() {
             {activePack.examinerTraps.map((trap, idx) => (
               <div 
                 key={idx}
-                className="p-4 rounded-2xl bg-rose-500/5 border border-rose-500/20 space-y-2"
+                className="p-4 rounded-2xl bg-destructive/5 border border-destructive/20 space-y-2"
               >
-                <div className="text-xs font-bold text-rose-700 dark:text-rose-400 flex items-start gap-1.5">
-                  <span className="shrink-0 text-rose-500">❌ Trap:</span>
+                <div className="text-xs font-bold text-destructive dark:text-destructive flex items-start gap-1.5">
+                  <span className="shrink-0 text-destructive">❌ Trap:</span>
                   <span>{trap.trap}</span>
                 </div>
-                <div className="text-xs font-medium text-amber-500 dark:text-amber-500 flex items-start gap-1.5 pt-1 border-t border-rose-500/10">
-                  <span className="shrink-0 text-amber-500">✓ Truth:</span>
+                <div className="text-xs font-medium text-primary dark:text-primary flex items-start gap-1.5 pt-1 border-t border-destructive/10">
+                  <span className="shrink-0 text-primary">✓ Truth:</span>
                   <span>{trap.truth}</span>
                 </div>
               </div>
@@ -388,8 +388,8 @@ export default function RapidRevisionPage() {
         </div>
 
         {/* Section 3: 10-Minute Viva Quick Fire */}
-        <div className="bg-card border border-border/80 rounded-3xl p-6 shadow-sm space-y-4">
-          <h3 className="font-extrabold text-sm sm:text-base text-foreground flex items-center gap-2">
+        <div className="bg-card border border-border/80 rounded-2xl p-6 shadow-sm space-y-4">
+          <h3 className="font-semibold text-sm sm:text-base text-foreground flex items-center gap-2">
             <Clock className="h-4 w-4 text-primary" />
             10-Minute Viva Quick-Fire Round:
           </h3>
@@ -410,9 +410,9 @@ export default function RapidRevisionPage() {
 
         {/* Section 4: Key Syntax & Boilerplates */}
         {activePack.keyFormulasOrSyntax.length > 0 && (
-          <div className="bg-card border border-border/80 rounded-3xl p-6 shadow-sm space-y-4">
-            <h3 className="font-extrabold text-sm sm:text-base text-foreground flex items-center gap-2">
-              <Code className="h-4 w-4 text-purple-500" />
+          <div className="bg-card border border-border/80 rounded-2xl p-6 shadow-sm space-y-4">
+            <h3 className="font-semibold text-sm sm:text-base text-foreground flex items-center gap-2">
+              <Code className="h-4 w-4 text-primary" />
               Must-Memorize Syntax & Boilerplates:
             </h3>
 
@@ -420,7 +420,7 @@ export default function RapidRevisionPage() {
               {activePack.keyFormulasOrSyntax.map((item, idx) => (
                 <div key={idx} className="space-y-1.5">
                   <span className="text-xs font-bold text-foreground">{item.label}</span>
-                  <pre className="p-3.5 rounded-2xl bg-black/90 text-amber-500 font-mono text-xs overflow-x-auto">
+                  <pre className="p-3.5 rounded-2xl bg-black/90 text-primary font-mono text-xs overflow-x-auto">
                     <code>{item.code}</code>
                   </pre>
                 </div>

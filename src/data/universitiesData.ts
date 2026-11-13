@@ -116,7 +116,7 @@ export const GUJARAT_UNIVERSITIES: UniversityData[] = [
     establishedYear: 2019,
     affiliationType: 'Private State University',
     badge: 'Official Campus Hub',
-    accentColor: '#2B4EFF',
+    accentColor: 'hsl(var(--primary))',
     portalUrl: 'https://itmuniversity.ac.in',
     gradingScale: {
       maxGpa: 10.0,
@@ -149,7 +149,7 @@ export const GUJARAT_UNIVERSITIES: UniversityData[] = [
         teachingScheme: { lectureHours: 3, tutorialHours: 0, practicalHours: 2 },
         examScheme: { theoryMax: 50, theoryMin: 20, practicalMax: 50, practicalMin: 25, midSemMax: 30, internalContinuousMax: 20 },
         category: 'Core',
-        color: 'from-blue-600 to-indigo-700',
+        color: 'from-primary to-primary',
         description: 'Linear & non-linear structures, complexity analysis, trees, AVL, graphs, sorting & hashing in C.',
         units: [
           { unitNumber: 1, title: 'Introduction & Linear Arrays', hours: 8, weightagePercent: 18, keyTopics: ['Asymptotic Notations O/Omega/Theta', '2D Array Row/Col Major', 'Dynamic Allocation malloc/free'] },
@@ -169,7 +169,7 @@ export const GUJARAT_UNIVERSITIES: UniversityData[] = [
         teachingScheme: { lectureHours: 3, tutorialHours: 0, practicalHours: 2 },
         examScheme: { theoryMax: 50, theoryMin: 20, practicalMax: 50, practicalMin: 25, midSemMax: 30, internalContinuousMax: 20 },
         category: 'Core',
-        color: 'from-amber-500 to-orange-600',
+        color: 'from-primary to-primary',
         description: 'Relational model, SQL DDL/DML, normalization (1NF-BCNF), transactions, ACID properties & indexing.',
         units: [
           { unitNumber: 1, title: 'Introduction & Database Architecture', hours: 7, weightagePercent: 15, keyTopics: ['Three-Schema ANSI/SPARC', 'Data Independence', 'DBMS vs File System'] },
@@ -209,7 +209,7 @@ export const GUJARAT_UNIVERSITIES: UniversityData[] = [
         teachingScheme: { lectureHours: 3, tutorialHours: 0, practicalHours: 0 },
         examScheme: { theoryMax: 50, theoryMin: 20, practicalMax: 0, practicalMin: 0, midSemMax: 30, internalContinuousMax: 20 },
         category: 'Core',
-        color: 'from-purple-600 to-indigo-800',
+        color: 'from-primary to-primary',
         description: 'RISC instruction formats, addressing modes, 5-stage pipelining, cache memory mapping & Booth algorithm.',
         units: [
           { unitNumber: 1, title: 'Basic Computer Architecture & RTL', hours: 8, weightagePercent: 20, keyTopics: ['Von Neumann vs Harvard', 'Bus Architecture', 'Register Transfer Language (RTL)'] },
@@ -229,7 +229,7 @@ export const GUJARAT_UNIVERSITIES: UniversityData[] = [
         teachingScheme: { lectureHours: 2, tutorialHours: 0, practicalHours: 2 },
         examScheme: { theoryMax: 50, theoryMin: 20, practicalMax: 50, practicalMin: 25, midSemMax: 30, internalContinuousMax: 20 },
         category: 'Core',
-        color: 'from-emerald-500 to-teal-700',
+        color: 'from-emerald-500 to-primary',
         description: 'Non-linear root finding, Gauss elimination, numerical integration (Simpson), Runge-Kutta ODE solvers in Python.',
         units: [
           { unitNumber: 1, title: 'Error Analysis & Root Finding', hours: 7, weightagePercent: 20, keyTopics: ['Absolute vs Relative Error', 'Bisection Method', 'Newton-Raphson Iteration', 'Secant Method'] },
@@ -319,7 +319,7 @@ export const GUJARAT_UNIVERSITIES: UniversityData[] = [
         teachingScheme: { lectureHours: 4, tutorialHours: 0, practicalHours: 2 },
         examScheme: { theoryMax: 70, theoryMin: 23, practicalMax: 30, practicalMin: 15, midSemMax: 30, internalContinuousMax: 20 },
         category: 'Core',
-        color: 'from-cyan-600 to-blue-700',
+        color: 'from-primary to-primary',
         description: 'Official GTU syllabus: Linear data structures, generalized linked lists, binary search trees, threaded trees, graphs and internal sorting.',
         units: [
           { unitNumber: 1, title: 'Introduction to Data Structures & Analysis', hours: 7, weightagePercent: 12, keyTopics: ['Data types, Abstract Data Types (ADT)', 'Time and Space Complexity Analysis', 'Big-O, Omega, Theta'] },
@@ -339,7 +339,7 @@ export const GUJARAT_UNIVERSITIES: UniversityData[] = [
         teachingScheme: { lectureHours: 4, tutorialHours: 0, practicalHours: 2 },
         examScheme: { theoryMax: 70, theoryMin: 23, practicalMax: 30, practicalMin: 15, midSemMax: 30, internalContinuousMax: 20 },
         category: 'Core',
-        color: 'from-amber-600 to-yellow-600',
+        color: 'from-primary to-primary',
         description: 'Relational data model, relational algebra, SQL DDL/DML/DCL, functional dependencies and decomposition, transactions and recovery.',
         units: [
           { unitNumber: 1, title: 'Introductory Concepts of DBMS', hours: 6, weightagePercent: 12, keyTopics: ['Database System vs File System', 'View of Data, Data Abstraction', 'Instances and Schemas, Architecture'] },
@@ -379,7 +379,7 @@ export const GUJARAT_UNIVERSITIES: UniversityData[] = [
         teachingScheme: { lectureHours: 3, tutorialHours: 1, practicalHours: 0 },
         examScheme: { theoryMax: 70, theoryMin: 23, practicalMax: 0, practicalMin: 0, midSemMax: 30, internalContinuousMax: 20 },
         category: 'Core',
-        color: 'from-violet-600 to-purple-700',
+        color: 'from-primary to-primary',
         description: 'Random variables, probability distributions (Binomial, Poisson, Normal), correlation, regression & hypothesis testing.',
         units: [
           { unitNumber: 1, title: 'Basic Probability & Random Variables', hours: 8, weightagePercent: 20, keyTopics: ['Conditional Probability & Bayes Theorem', 'Discrete & Continuous Random Variables', 'Probability Mass & Density Functions'] },
@@ -464,7 +464,7 @@ export const GUJARAT_UNIVERSITIES: UniversityData[] = [
         teachingScheme: { lectureHours: 3, tutorialHours: 0, practicalHours: 2 },
         examScheme: { theoryMax: 60, theoryMin: 24, practicalMax: 40, practicalMin: 20, midSemMax: 30, internalContinuousMax: 20 },
         category: 'Core',
-        color: 'from-purple-600 to-indigo-700',
+        color: 'from-primary to-primary',
         description: 'Parul University curriculum: C++ STL vectors, stacks, queues, balanced trees, graph connectivity and greedy algorithms.',
         units: [
           { unitNumber: 1, title: 'C++ Modern OOP & STL Fundamentals', hours: 7, weightagePercent: 15, keyTopics: ['Templates, Vector, Iterator pattern', 'Pointers and Dynamic memory in C++', 'Time & Space complexity analysis'] },
@@ -504,7 +504,7 @@ export const GUJARAT_UNIVERSITIES: UniversityData[] = [
         teachingScheme: { lectureHours: 3, tutorialHours: 0, practicalHours: 2 },
         examScheme: { theoryMax: 60, theoryMin: 24, practicalMax: 40, practicalMin: 20, midSemMax: 30, internalContinuousMax: 20 },
         category: 'Core',
-        color: 'from-amber-500 to-orange-600',
+        color: 'from-primary to-primary',
         description: 'Core Java, class hierarchies, interfaces, exceptions, multithreading, collections, lambda expressions & JavaFX UI.',
         units: [
           { unitNumber: 1, title: 'Java Architecture & Syntax', hours: 7, weightagePercent: 15, keyTopics: ['Java Virtual Machine (JVM) internals', 'Primitive types, Wrapper classes, Operators', 'Static vs Instance members'] },
@@ -524,7 +524,7 @@ export const GUJARAT_UNIVERSITIES: UniversityData[] = [
         teachingScheme: { lectureHours: 3, tutorialHours: 0, practicalHours: 0 },
         examScheme: { theoryMax: 60, theoryMin: 24, practicalMax: 0, practicalMin: 0, midSemMax: 30, internalContinuousMax: 20 },
         category: 'Core',
-        color: 'from-blue-600 to-cyan-700',
+        color: 'from-primary to-primary',
         description: 'Instruction sets, CPU control unit, 8086 microprocessor architecture, memory hierarchy and cache mapping.',
         units: [
           { unitNumber: 1, title: 'Instruction Set Architecture & RTL', hours: 8, weightagePercent: 20, keyTopics: ['Computer Registers & Bus System', 'Instruction cycle and execution steps', 'Register transfer micro-operations'] },
@@ -608,7 +608,7 @@ export const GUJARAT_UNIVERSITIES: UniversityData[] = [
         teachingScheme: { lectureHours: 3, tutorialHours: 0, practicalHours: 2 },
         examScheme: { theoryMax: 60, theoryMin: 24, practicalMax: 40, practicalMin: 20, midSemMax: 30, internalContinuousMax: 20 },
         category: 'Core',
-        color: 'from-emerald-600 to-teal-700',
+        color: 'from-emerald-600 to-primary',
         description: 'CHARUSAT syllabus: Abstract data types, recursion, linear lists, binary trees, red-black trees, graph algorithms and dynamic programming.',
         units: [
           { unitNumber: 1, title: 'Introduction & Algorithm Analysis', hours: 7, weightagePercent: 15, keyTopics: ['ADT concept, Pseudo-code conventions', 'Worst, Best, Average Case complexity', 'Big-O notation, Space complexity'] },
@@ -628,7 +628,7 @@ export const GUJARAT_UNIVERSITIES: UniversityData[] = [
         teachingScheme: { lectureHours: 3, tutorialHours: 0, practicalHours: 2 },
         examScheme: { theoryMax: 60, theoryMin: 24, practicalMax: 40, practicalMin: 20, midSemMax: 30, internalContinuousMax: 20 },
         category: 'Core',
-        color: 'from-teal-600 to-cyan-700',
+        color: 'from-primary to-primary',
         description: 'Relational data model, relational algebra, SQL DDL/DML, functional dependencies and decomposition, transactions and recovery.',
         units: [
           { unitNumber: 1, title: 'Data Modeling & ER Diagrams', hours: 8, weightagePercent: 20, keyTopics: ['Three-level schema architecture', 'ER diagram constructs, Enhanced ER (EER)', 'Mapping ER to Relational schema'] },
@@ -648,7 +648,7 @@ export const GUJARAT_UNIVERSITIES: UniversityData[] = [
         teachingScheme: { lectureHours: 3, tutorialHours: 0, practicalHours: 2 },
         examScheme: { theoryMax: 60, theoryMin: 24, practicalMax: 40, practicalMin: 20, midSemMax: 30, internalContinuousMax: 20 },
         category: 'Core',
-        color: 'from-amber-600 to-orange-700',
+        color: 'from-primary to-primary',
         description: 'Java language constructs, OOP principles, inheritance, abstract classes, interfaces, multithreading, generic collections & lambdas.',
         units: [
           { unitNumber: 1, title: 'Java Fundamentals & Object Thinking', hours: 7, weightagePercent: 15, keyTopics: ['Bytecode, JVM architecture, Class loading', 'Class structure, Objects, Constructors', 'Memory allocation in Heap and Stack'] },
@@ -749,7 +749,7 @@ export const GUJARAT_UNIVERSITIES: UniversityData[] = [
         teachingScheme: { lectureHours: 3, tutorialHours: 0, practicalHours: 2 },
         examScheme: { theoryMax: 60, theoryMin: 24, practicalMax: 40, practicalMin: 20, midSemMax: 30, internalContinuousMax: 20 },
         category: 'Core',
-        color: 'from-amber-600 to-orange-700',
+        color: 'from-primary to-primary',
         description: 'Relational algebra, SQL DDL/DML, functional dependencies, 1NF-BCNF, transactions and ACID recovery.',
         units: [
           { unitNumber: 1, title: 'Database Concepts & ER Modeling', hours: 8, weightagePercent: 20, keyTopics: ['Database architecture, Schemas', 'Entity-Relationship modeling', 'Mapping ER to Relational schema'] },
@@ -828,7 +828,7 @@ export const GUJARAT_UNIVERSITIES: UniversityData[] = [
         teachingScheme: { lectureHours: 3, tutorialHours: 0, practicalHours: 2 },
         examScheme: { theoryMax: 70, theoryMin: 28, practicalMax: 30, practicalMin: 15, midSemMax: 30, internalContinuousMax: 20 },
         category: 'Core',
-        color: 'from-amber-600 to-yellow-700',
+        color: 'from-primary to-primary',
         description: 'MSU Faculty of Technology syllabus: Concrete and abstract data representations, stacks, queues, trees, hashing and graph algorithms.',
         units: [
           { unitNumber: 1, title: 'Data Abstraction & Array Mappings', hours: 7, weightagePercent: 15, keyTopics: ['ADT specification, asymptotic growth', 'Matrix representations in memory'] },
@@ -848,7 +848,7 @@ export const GUJARAT_UNIVERSITIES: UniversityData[] = [
         teachingScheme: { lectureHours: 3, tutorialHours: 0, practicalHours: 2 },
         examScheme: { theoryMax: 70, theoryMin: 28, practicalMax: 30, practicalMin: 15, midSemMax: 30, internalContinuousMax: 20 },
         category: 'Core',
-        color: 'from-amber-700 to-red-800',
+        color: 'from-primary to-red-800',
         description: 'Relational data model, formal relational query languages, normalization, transaction processing and concurrency control.',
         units: [
           { unitNumber: 1, title: 'Introduction & ER Modeling', hours: 8, weightagePercent: 20, keyTopics: ['DBMS architecture, Data independence', 'ER modeling and constraints'] },

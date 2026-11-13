@@ -4,7 +4,7 @@ export function PageFallback() {
   return (
     <div className="min-h-screen bg-background flex flex-col p-6 space-y-6 animate-pulse max-w-6xl mx-auto w-full">
       <div className="h-16 w-full rounded-2xl bg-secondary/40" />
-      <div className="h-44 w-full rounded-3xl bg-secondary/30" />
+      <div className="h-44 w-full rounded-2xl bg-secondary/30" />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="h-64 rounded-2xl bg-secondary/20" />
         <div className="h-64 rounded-2xl bg-secondary/20" />
@@ -20,7 +20,7 @@ export function DashboardSkeleton() {
       <div className="h-16 border-b border-border/40 bg-card/50" />
       <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-8 space-y-6">
         {/* Banner Skeleton */}
-        <div className="p-6 sm:p-8 rounded-3xl border border-border/60 bg-secondary/20 space-y-3">
+        <div className="p-6 sm:p-8 rounded-2xl border border-border/60 bg-secondary/20 space-y-3">
           <Skeleton className="h-6 w-32 rounded-full" />
           <Skeleton className="h-10 w-3/4 rounded-xl" />
           <Skeleton className="h-4 w-1/2 rounded-lg" />
@@ -57,7 +57,7 @@ export function SubjectDashboardSkeleton() {
       <div className="h-16 border-b border-border/40 bg-card/50" />
       <main className="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 py-8 space-y-6">
         <Skeleton className="h-4 w-48 rounded-md" />
-        <div className="p-6 sm:p-8 rounded-3xl border border-border/60 bg-secondary/20 space-y-4">
+        <div className="p-6 sm:p-8 rounded-2xl border border-border/60 bg-secondary/20 space-y-4">
           <Skeleton className="h-8 w-64 rounded-xl" />
           <Skeleton className="h-4 w-3/4 rounded-lg" />
           <Skeleton className="h-3 w-full rounded-full" />

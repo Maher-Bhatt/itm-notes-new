@@ -1,0 +1,49 @@
+DATA STRUCTURES AND ALGORITHMS QUESTION BANK FOR CET II Batch 2025-29
+
+Topics Covered: Linear Queue • Circular Queue • Double Ended Queue • Priority Queue • Singly Linked List • Doubly Linked List • Circular Linked List
+
+Note: The question bank is for facilitating better preps for upcoming CET II exams.
+
+SECTION A: MULTIPLE CHOICE QUESTIONS
+
+Answer all questions. Each question carries 1 Mark. Choose the correct option.
+
+Q1. In a linear queue, insertion of a new element is done at the: [1 Mark] (A) Front (B) Rear (C) Middle (D) Both ends Q2. The operation used to remove an element from a queue is called: [1 Mark] (A) Push (B) Pop (C) Dequeue (D) Peek Q3. Which condition indicates queue overflow in an array-based linear queue of size n (0-indexed)? [1 Mark] (A) front == -1 (B) rear == n-1 (C) front == rear (D) rear == 0 Q4. A queue data structure follows which principle? [1 Mark] (A) LIFO (B) FIFO (C) LILO (D) Random access Q5. What is the time complexity of the enqueue operation in a simple linear queue? [1 Mark] (A) O(n) (B) O(log n) (C) O(1) (D) O(n^2)
+
+Q6. A circular queue overcomes which major limitation of a linear queue? [1 Mark] (A) Overflow even when queue is not actually full (B) Underflow (C) Memory leak (D) Slow traversal Q7. In a circular queue implemented with an array of size n, the position after rear is computed as: [1 Mark] (A) rear + 1 (B) (rear + 1) % n (C) rear - 1 (D) (rear - 1) % n Q8. A circular queue is considered full when: [1 Mark] (A) front == rear (B) (rear + 1) % n == front (C) rear == n (D) front == 0 Q9. Which technique makes array-based circular queue implementation efficient? [1 Mark] (A) Recursion (B) Modulo (%) operation (C) Hashing (D) Binary search Q10. A circular queue is also commonly known as a: [1 Mark] (A) Ring buffer (B) Stack buffer (C) Linear buffer (D) Tree buffer Q11. In a Deque (Double Ended Queue), insertion and deletion can be performed at: [1 Mark] (A) Only the front (B) Only the rear (C) Both ends (D) Only the middle Q12. A deque in which insertion is allowed only at one end but deletion is allowed at both ends is called: [1 Mark] (A) Input-restricted deque (B) Output-restricted deque (C) Circular deque (D) Priority deque Q13. A Deque can be used to efficiently implement: [1 Mark] (A) Only a Stack (B) Only a Queue (C) Both a Stack and a Queue (D) Neither Stack nor Queue
+
+Prof. Madonna Lamin
+
+Q14. An output-restricted deque allows deletion at: [1 Mark] (A) Both ends (B) Only one end (C) Neither end (D) The middle Q15. The term "Deque" stands for: [1 Mark] (A) Double Ended Queue (B) Double End Quantity (C) Data Ended Queue (D) Dual Element Queue Q16. In a priority queue, elements are removed on the basis of their: [1 Mark] (A) Insertion order (B) Priority (C) Random order (D) Size of the queue Q17. Which data structure is most commonly used to implement a priority queue efficiently? [1 Mark] (A) Array (B) Linked List (C) Heap (D) Stack Q18. In a max priority queue, which element is served first? [1 Mark] (A) The smallest element (B) The largest element (C) The first inserted element (D) The last inserted element Q19. The time complexity of insertion in a priority queue implemented using a binary heap is: [1 Mark] (A) O(1) (B) O(n) (C) O(log n) (D) O(n^2)
+
+Q20. Priority queues are commonly used in which of the following algorithms? [1 Mark] (A) Dijkstra's shortest path algorithm (B) Bubble sort (C) Linear search (D) Binary search Q21. Each node in a singly linked list typically contains: [1 Mark] (A) Data and one pointer (B) Data and two pointers (C) Only data (D) Only a pointer Q22. The last node of a singly linked list points to: [1 Mark] (A) The first node (B) NULL (C) Itself (D) The second node Q23. The time complexity to access the nth element of a singly linked list is: [1 Mark] (A) O(1) (B) O(log n) (C) O(n) (D) O(n log n)
+
+Q24. Which pointer is used to keep track of the beginning of a linked list? [1 Mark] (A) Tail (B) Head (C) Next (D) Current Q25. Insertion of a new node at the beginning of a singly linked list takes: [1 Mark] (A) O(n) (B) O(1) (C) O(log n) (D) O(n^2)
+
+Q26. Each node in a doubly linked list contains: [1 Mark] (A) Only one pointer (B) Data and two pointers (C) Only data (D) Three pointers Q27. A doubly linked list allows traversal: [1 Mark] (A) Only in the forward direction (B) Only in the backward direction (C) In both forward and backward directions (D) No traversal is possible Q28. Compared to a singly linked list, a doubly linked list requires: [1 Mark] (A) Less memory per node (B) More memory per node (C) The same memory per node (D) No memory Q29. In a circular linked list, the last node's next pointer points to: [1 Mark] (A) NULL (B) The first node (C) Itself (D) The previous node Q30. A circular linked list is particularly useful for implementing: [1 Mark] (A) Round robin CPU scheduling (B) Binary search (C) Quick sort (D) Hashing
+
+Prof. Madonna Lamin
+
+SECTION B: VERY SHORT ANSWER QUESTIONS
+
+Answer all questions. Each question carries 3 Marks.
+
+Q1. Define a queue and state its two basic operations along with the principle it follows. [3 Marks] Q2. What is a circular queue? Why is it preferred over a simple linear queue? [3 Marks] Q3. Differentiate between an input-restricted deque and an output-restricted deque. [3 Marks] Q4. What is a priority queue? Give one real-life example where it is used. [3 Marks] Q5. What is a singly linked list? List two advantages of a linked list over an array. [3 Marks] Q6. Define a doubly linked list and mention one advantage it has over a singly linked list. [3 Marks] Q7. What is a circular linked list? Give one practical application of it. [3 Marks] Q8. State the conditions for queue overflow and queue underflow in an array-based linear queue. [3 Marks] Q9. Write the node structure of a singly linked list in C, defining data and pointer fields. [3 Marks] Q10. Differentiate between a linear queue and a circular queue on the basis of memory utilization. [3 Marks]
+
+SECTION C: SHORT ANSWER QUESTIONS
+
+Answer all questions. Each question carries 5 Marks.
+
+Q1. Explain the array-based implementation of a linear queue. Write the algorithms for the enqueue and dequeue operations. [5 Marks] Q2. Explain the concept of a circular queue with a neat diagram. Write the algorithm for insertion of an element into it. [5 Marks] Q3. Explain the concept of a Deque along with its two types (input-restricted and output-restricted), with suitable diagrams. [5 Marks] Q4. Explain how a priority queue can be implemented using a simple array. What are the limitations of this approach? [5 Marks] Q5. Write an algorithm to insert a new node at the beginning of a singly linked list, along with a suitable diagram. [5 Marks] Q6. Write an algorithm to delete the last node from a doubly linked list. [5 Marks] Q7. Explain the traversal process of a circular linked list and write the corresponding algorithm. [5 Marks] Q8. Compare singly linked list, doubly linked list, and circular linked list on the basis of structure, memory, and traversal. [5 Marks] Q9. Explain how a stack (LIFO) and a queue (FIFO) can both be implemented using a single Deque. [5 Marks] Q10. Explain a min-heap based priority queue. Describe how insertion and deletion (extract-min) operations are performed on it. [5 Marks]
+
+Prof. Madonna Lamin
+
+SECTION D: LONG ANSWER QUESTIONS
+
+Answer any suitable number of questions as instructed. Each question carries 7 Marks.
+
+Q1. Write an algorithm/program to implement a linear queue using an array, including enqueue, dequeue, and display operations, and trace it with a suitable example. [7 Marks] Q2. Explain circular queue in detail with a neat diagram. Write complete algorithms for insertion and deletion operations, handling the full and empty conditions. [7 Marks] Q3. Explain the implementation of a Deque using an array. Write algorithms for insertion and deletion operations at both the front and the rear ends. [7 Marks] Q4. Explain the concept of a priority queue in detail. Write algorithms for insertion and deletion operations using a max-heap, and trace them with an example. [7 Marks] Q5. Write algorithms for insertion of a new node into a singly linked list (a) at the beginning, (b) at the end, and
+
+(c) at a specified position. [7 Marks] Q6. Write algorithms for insertion and deletion of a node at a given position in a doubly linked list. Illustrate each with a diagram. [7 Marks] Q7. Write an algorithm to convert a singly linked list into a circular linked list. Also explain two real-world applications of circular linked lists. [7 Marks] Q8. Explain the applications of a queue in real life and in computer science, giving at least five suitable examples with brief explanations. [7 Marks] Q9. Write an algorithm to reverse a singly linked list in place (without using extra space), and trace the algorithm with a suitable example. [7 Marks] Q10. Explain, with algorithm and diagram, how a circular queue can be implemented using a singly linked list instead of an array. [7 Marks] Q11. Differentiate between an array and a linked list as data structures. Discuss the situations in which each should be preferred, with justification. [7 Marks] Q12. Write an algorithm to detect the presence of a loop in a singly linked list and to remove it if found. Explain the logic used. [7 Marks] Q13. Explain the implementation of a priority queue using a linked list. Compare its time complexity with a heap-based implementation for insertion and deletion. [7 Marks] Q14. Write an algorithm to merge two sorted singly linked lists into a single sorted linked list, and trace it with a suitable example. [7 Marks] Q15. Explain insertion, deletion, and traversal (both forward and backward) operations on a doubly linked list with algorithms, and state one practical application of it. [7 Marks]
+
+Prof. Madonna Lamin

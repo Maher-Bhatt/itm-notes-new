@@ -94,16 +94,16 @@ export function AnnouncementBanner() {
   if (isMaintenanceActive || !announcement || !announcement.active) return null;
 
   return (
-    <div className="relative z-40 border-b border-[#111111] bg-[#111111] text-white px-4 py-2 transition-all text-xs">
+    <div className="relative z-40 border-b border-foreground bg-foreground text-white px-4 py-2 transition-all text-xs">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
         <div className="flex items-center gap-2.5 min-w-0">
-          <span className="w-2 h-2 rounded-full bg-[#D7F75B] shrink-0 animate-pulse" />
+          <span className="w-2 h-2 rounded-full bg-accent shrink-0 animate-pulse" />
           <div className="flex flex-wrap items-center gap-2 min-w-0">
-            <span className="font-bold uppercase tracking-wider text-[10px] px-2.5 py-0.5 rounded-full bg-[#D7F75B] text-[#111111]">
+            <span className="font-bold uppercase tracking-wider text-[10px] px-2.5 py-0.5 rounded-full bg-accent text-foreground">
               {announcement.severity === 'critical' ? 'Alert' : 'Campus Update'}
             </span>
             <span className="font-bold text-white text-[11px] sm:text-xs">{announcement.title}:</span>
-            <span className="text-[#EFECE6] font-normal text-[11px] sm:text-xs line-clamp-2 sm:line-clamp-1">
+            <span className="text-muted-foreground font-normal text-[11px] sm:text-xs line-clamp-2 sm:line-clamp-1">
               {announcement.body}
             </span>
             <button

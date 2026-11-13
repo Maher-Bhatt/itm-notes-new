@@ -1,0 +1,708 @@
+[
+ {
+  "slug": "dsa",
+  "code": "C2310C5",
+  "name": "Data Structures & Algorithms",
+  "short": "DSA",
+  "docs": [
+   {
+    "slug": "study-guide",
+    "title": "DSA — Complete Study Guide",
+    "kind": "Study guide",
+    "unit": null,
+    "words": 21250,
+    "scanned": false,
+    "featured": true,
+    "summary": "Learn-from-zero guide covering every unit: Introduction: Data Structures, ADTs and Algorithm Efficiency, Recursion, Linear Lists, Part A: Arrays and Stacks, Linear Lists, Part B: Queues, Linear Lists, Part C: Linked Lists, Non-Linear Lists: Trees"
+   },
+   {
+    "slug": "00-syllabus-dsa-c2310c5",
+    "title": "Syllabus DSA C2310C5",
+    "kind": "Syllabus",
+    "unit": null,
+    "words": 902,
+    "scanned": false,
+    "featured": false,
+    "pages": 3,
+    "summary": ""
+   },
+   {
+    "slug": "u1-03-abstract-data-types-adt",
+    "title": "Abstract Data Types ADT",
+    "kind": "Lecture notes",
+    "unit": 1,
+    "words": 3926,
+    "scanned": false,
+    "featured": false,
+    "pages": 10,
+    "summary": ""
+   },
+   {
+    "slug": "u1-04-algorithm-analysis",
+    "title": "Algorithm Analysis",
+    "kind": "Lecture notes",
+    "unit": 1,
+    "words": 2185,
+    "scanned": false,
+    "featured": false,
+    "pages": 29,
+    "summary": ""
+   },
+   {
+    "slug": "u1-06-asymptotic-notation-notes",
+    "title": "Asymptotic Notation Notes",
+    "kind": "Lecture notes",
+    "unit": 1,
+    "words": 3813,
+    "scanned": false,
+    "featured": false,
+    "pages": 11,
+    "summary": ""
+   },
+   {
+    "slug": "u1-05-asymptotic-notation-slides",
+    "title": "Asymptotic Notation Slides",
+    "kind": "Slides",
+    "unit": 1,
+    "words": 2190,
+    "scanned": false,
+    "featured": false,
+    "pages": 55,
+    "summary": ""
+   },
+   {
+    "slug": "u1-02-basic-terminology-and-data-organization",
+    "title": "Basic Terminology and Data Organization",
+    "kind": "Lecture notes",
+    "unit": 1,
+    "words": 5318,
+    "scanned": false,
+    "featured": false,
+    "pages": 162,
+    "summary": ""
+   },
+   {
+    "slug": "u1-01-intro-to-data-structures-and-algorithms",
+    "title": "Intro to Data Structures and Algorithms",
+    "kind": "Lecture notes",
+    "unit": 1,
+    "words": 7156,
+    "scanned": false,
+    "featured": false,
+    "pages": 116,
+    "summary": ""
+   },
+   {
+    "slug": "u2-01-recursion",
+    "title": "Recursion",
+    "kind": "Lecture notes",
+    "unit": 2,
+    "words": 4606,
+    "scanned": false,
+    "featured": false,
+    "pages": 119,
+    "summary": ""
+   },
+   {
+    "slug": "u2-02-tower-of-hanoi",
+    "title": "Tower of Hanoi",
+    "kind": "Lecture notes",
+    "unit": 2,
+    "words": 1927,
+    "scanned": false,
+    "featured": false,
+    "pages": 7,
+    "summary": ""
+   },
+   {
+    "slug": "u3-01-linear-list-array-stack-queue-linkedlist",
+    "title": "Linear List Array Stack Queue LinkedList",
+    "kind": "Lecture notes",
+    "unit": 3,
+    "words": 6911,
+    "scanned": false,
+    "featured": false,
+    "pages": 108,
+    "summary": ""
+   },
+   {
+    "slug": "u3-02-stack-tutorial",
+    "title": "Stack Tutorial",
+    "kind": "Tutorial",
+    "unit": 3,
+    "words": 3089,
+    "scanned": false,
+    "featured": false,
+    "pages": 15,
+    "summary": ""
+   },
+   {
+    "slug": "u3-03-cet2-question-bank-queue-linkedlist",
+    "title": "CET-2 Question Bank Queue LinkedList",
+    "kind": "Question paper",
+    "unit": 3,
+    "words": 1749,
+    "scanned": false,
+    "featured": false,
+    "pages": 4,
+    "summary": ""
+   },
+   {
+    "slug": "u4-01-trees-and-binary-trees",
+    "title": "Trees and Binary Trees",
+    "kind": "Lecture notes",
+    "unit": 4,
+    "words": 2081,
+    "scanned": false,
+    "featured": false,
+    "pages": 11,
+    "summary": ""
+   },
+   {
+    "slug": "u5-01-graphs",
+    "title": "Graphs",
+    "kind": "Lecture notes",
+    "unit": 5,
+    "words": 1666,
+    "scanned": false,
+    "featured": false,
+    "pages": 9,
+    "summary": ""
+   },
+   {
+    "slug": "u6-01-searching-and-sorting",
+    "title": "Searching and Sorting",
+    "kind": "Lecture notes",
+    "unit": 6,
+    "words": 2560,
+    "scanned": false,
+    "featured": false,
+    "pages": 12,
+    "summary": ""
+   },
+   {
+    "slug": "lab-manual-dsa",
+    "title": "Lab Manual DSA",
+    "kind": "Lab manual",
+    "unit": null,
+    "words": 748,
+    "scanned": false,
+    "featured": false,
+    "pages": 0,
+    "summary": ""
+   }
+  ]
+ },
+ {
+  "slug": "dbms",
+  "code": "C2311C4",
+  "name": "Database Management Systems",
+  "short": "DBMS",
+  "docs": [
+   {
+    "slug": "study-guide",
+    "title": "DBMS — Complete Study Guide",
+    "kind": "Study guide",
+    "unit": null,
+    "words": 17155,
+    "scanned": false,
+    "featured": true,
+    "summary": "Learn-from-zero guide covering every unit: Database System Architecture, Data Models, Relational Query Languages, Relational Database Design, Query Processing and Query Optimisation, Transaction Processing, Concurrency, Recovery, Security"
+   },
+   {
+    "slug": "00-syllabus-dbms-c2311c4",
+    "title": "Syllabus DBMS C2311C4",
+    "kind": "Syllabus",
+    "unit": null,
+    "words": 766,
+    "scanned": false,
+    "featured": false,
+    "pages": 3,
+    "summary": ""
+   },
+   {
+    "slug": "u1-database-system-architecture",
+    "title": "Database System Architecture",
+    "kind": "Lecture notes",
+    "unit": 1,
+    "words": 2215,
+    "scanned": false,
+    "featured": false,
+    "pages": 39,
+    "summary": ""
+   },
+   {
+    "slug": "u2-data-models-er",
+    "title": "Data Models ER",
+    "kind": "Lecture notes",
+    "unit": 2,
+    "words": 3897,
+    "scanned": false,
+    "featured": false,
+    "pages": 79,
+    "summary": ""
+   },
+   {
+    "slug": "u3-relational-query-language",
+    "title": "Relational Query Language",
+    "kind": "Lecture notes",
+    "unit": 3,
+    "words": 5870,
+    "scanned": false,
+    "featured": false,
+    "pages": 85,
+    "summary": ""
+   },
+   {
+    "slug": "u4-relational-database-design",
+    "title": "Relational Database Design",
+    "kind": "Lecture notes",
+    "unit": 4,
+    "words": 6323,
+    "scanned": false,
+    "featured": false,
+    "pages": 87,
+    "summary": ""
+   },
+   {
+    "slug": "u5-query-processing-and-optimization",
+    "title": "Query Processing and Optimization",
+    "kind": "Lecture notes",
+    "unit": 5,
+    "words": 2335,
+    "scanned": false,
+    "featured": false,
+    "pages": 41,
+    "summary": ""
+   },
+   {
+    "slug": "u6-transaction-processing",
+    "title": "Transaction Processing",
+    "kind": "Lecture notes",
+    "unit": 6,
+    "words": 5589,
+    "scanned": false,
+    "featured": false,
+    "pages": 81,
+    "summary": ""
+   },
+   {
+    "slug": "u7-plsql-concepts",
+    "title": "PL/SQL Concepts",
+    "kind": "Lecture notes",
+    "unit": 7,
+    "words": 2337,
+    "scanned": false,
+    "featured": false,
+    "pages": 39,
+    "summary": ""
+   }
+  ]
+ },
+ {
+  "slug": "conmp",
+  "code": "S2320C1",
+  "name": "Computer Oriented Numerical Methods with Python",
+  "short": "CONMP",
+  "docs": [
+   {
+    "slug": "study-guide",
+    "title": "CONMP — Complete Study Guide",
+    "kind": "Study guide",
+    "unit": null,
+    "words": 15244,
+    "scanned": false,
+    "featured": true,
+    "summary": "Learn-from-zero guide covering every unit: Errors and Computation, Solution of Algebraic and Transcendental Equations, Curve Fitting (Method of Least Squares), Interpolation Techniques (24 marks — the biggest unit), Solution of Systems of Linear Equations: Iterative Methods, Numerical Integration"
+   },
+   {
+    "slug": "00-cet1-syllabus",
+    "title": "CET-1 Syllabus",
+    "kind": "Syllabus",
+    "unit": null,
+    "words": 119,
+    "scanned": false,
+    "featured": false,
+    "pages": 1,
+    "summary": ""
+   },
+   {
+    "slug": "00-syllabus-conmp-s2320c1",
+    "title": "Syllabus CONMP S2320C1",
+    "kind": "Syllabus",
+    "unit": null,
+    "words": 606,
+    "scanned": false,
+    "featured": false,
+    "pages": 2,
+    "summary": ""
+   },
+   {
+    "slug": "u1-02-approximations-and-errors-summary",
+    "title": "Approximations and Errors Summary",
+    "kind": "Lecture notes",
+    "unit": 1,
+    "words": 0,
+    "scanned": true,
+    "featured": false,
+    "pages": 1,
+    "summary": ""
+   },
+   {
+    "slug": "u1-01-exact-approx-numbers-significant-digits",
+    "title": "Exact Approx Numbers Significant Digits",
+    "kind": "Lecture notes",
+    "unit": 1,
+    "words": 0,
+    "scanned": true,
+    "featured": false,
+    "pages": 2,
+    "summary": ""
+   },
+   {
+    "slug": "u1-u2-handwritten-errors-and-roots",
+    "title": "Handwritten Errors and Roots",
+    "kind": "Handwritten notes",
+    "unit": 1,
+    "words": 0,
+    "scanned": true,
+    "featured": false,
+    "pages": 36,
+    "summary": ""
+   },
+   {
+    "slug": "u1-03-tutorial-errors",
+    "title": "Tutorial Errors",
+    "kind": "Tutorial",
+    "unit": 1,
+    "words": 0,
+    "scanned": true,
+    "featured": false,
+    "pages": 2,
+    "summary": ""
+   },
+   {
+    "slug": "u2-tutorial-roots-of-equations",
+    "title": "Tutorial Roots of Equations",
+    "kind": "Tutorial",
+    "unit": 2,
+    "words": 0,
+    "scanned": true,
+    "featured": false,
+    "pages": 4,
+    "summary": ""
+   },
+   {
+    "slug": "u4-01-handwritten-interpolation",
+    "title": "Handwritten Interpolation",
+    "kind": "Handwritten notes",
+    "unit": 4,
+    "words": 0,
+    "scanned": true,
+    "featured": false,
+    "pages": 30,
+    "summary": ""
+   },
+   {
+    "slug": "u4-02-tutorial-interpolation",
+    "title": "Tutorial Interpolation",
+    "kind": "Tutorial",
+    "unit": 4,
+    "words": 0,
+    "scanned": true,
+    "featured": false,
+    "pages": 6,
+    "summary": ""
+   },
+   {
+    "slug": "u5-01-handwritten-gauss-jacobi",
+    "title": "Handwritten Gauss Jacobi",
+    "kind": "Handwritten notes",
+    "unit": 5,
+    "words": 0,
+    "scanned": true,
+    "featured": false,
+    "pages": 5,
+    "summary": ""
+   },
+   {
+    "slug": "u5-02-tutorial-linear-systems",
+    "title": "Tutorial Linear Systems",
+    "kind": "Tutorial",
+    "unit": 5,
+    "words": 0,
+    "scanned": true,
+    "featured": false,
+    "pages": 2,
+    "summary": ""
+   },
+   {
+    "slug": "paper-cet1-31-08-2026",
+    "title": "Paper CET-1 31-08-2026",
+    "kind": "Question paper",
+    "unit": null,
+    "words": 0,
+    "scanned": true,
+    "featured": false,
+    "pages": 1,
+    "summary": ""
+   },
+   {
+    "slug": "paper-cet2-05-10-2026-page1",
+    "title": "Paper CET-2 05-10-2026 page1",
+    "kind": "Question paper",
+    "unit": null,
+    "words": 0,
+    "scanned": true,
+    "featured": false,
+    "pages": 1,
+    "summary": ""
+   },
+   {
+    "slug": "paper-cet2-05-10-2026-page2",
+    "title": "Paper CET-2 05-10-2026 page2",
+    "kind": "Question paper",
+    "unit": null,
+    "words": 0,
+    "scanned": true,
+    "featured": false,
+    "pages": 1,
+    "summary": ""
+   }
+  ]
+ },
+ {
+  "slug": "coa",
+  "code": "",
+  "name": "Computer Organization & Architecture",
+  "short": "COA",
+  "docs": [
+   {
+    "slug": "study-guide",
+    "title": "COA — Complete Study Guide",
+    "kind": "Study guide",
+    "unit": null,
+    "words": 20260,
+    "scanned": false,
+    "featured": true,
+    "summary": "Learn-from-zero guide covering every unit: Fundamentals: Architecture, Functional Units, Buses, Registers, Data Representation, Register Transfer and Micro-operations, Computer Arithmetic: Adders, Multiplication, Division, Floating Point, Basic Computer Organization and Design (Mano’s Basic Computer), Programming the Basic Computer, Microprogrammed Control"
+   },
+   {
+    "slug": "u1-data-representation-register-transfer",
+    "title": "Data Representation Register Transfer",
+    "kind": "Lecture notes",
+    "unit": 1,
+    "words": 3341,
+    "scanned": false,
+    "featured": false,
+    "pages": 52,
+    "summary": ""
+   },
+   {
+    "slug": "u2-basic-computer-organization-design",
+    "title": "Basic Computer Organization Design",
+    "kind": "Lecture notes",
+    "unit": 2,
+    "words": 3527,
+    "scanned": false,
+    "featured": false,
+    "pages": 50,
+    "summary": ""
+   },
+   {
+    "slug": "u3-programming-basic-computer",
+    "title": "Programming Basic Computer",
+    "kind": "Lecture notes",
+    "unit": 3,
+    "words": 1261,
+    "scanned": false,
+    "featured": false,
+    "pages": 22,
+    "summary": ""
+   },
+   {
+    "slug": "u4-microprogrammed-control",
+    "title": "Microprogrammed Control",
+    "kind": "Lecture notes",
+    "unit": 4,
+    "words": 499,
+    "scanned": false,
+    "featured": false,
+    "pages": 12,
+    "summary": ""
+   },
+   {
+    "slug": "u5-central-processing-unit",
+    "title": "Central Processing Unit",
+    "kind": "Lecture notes",
+    "unit": 5,
+    "words": 3341,
+    "scanned": false,
+    "featured": false,
+    "pages": 44,
+    "summary": ""
+   },
+   {
+    "slug": "u6-pipeline-vector-processing",
+    "title": "Pipeline Vector Processing",
+    "kind": "Lecture notes",
+    "unit": 6,
+    "words": 1561,
+    "scanned": false,
+    "featured": false,
+    "pages": 38,
+    "summary": ""
+   },
+   {
+    "slug": "u7-computer-arithmetic",
+    "title": "Computer Arithmetic",
+    "kind": "Lecture notes",
+    "unit": 7,
+    "words": 737,
+    "scanned": false,
+    "featured": false,
+    "pages": 14,
+    "summary": ""
+   },
+   {
+    "slug": "u8-input-output-organization",
+    "title": "Input Output Organization",
+    "kind": "Lecture notes",
+    "unit": 8,
+    "words": 923,
+    "scanned": false,
+    "featured": false,
+    "pages": 20,
+    "summary": ""
+   },
+   {
+    "slug": "u9-memory-organization",
+    "title": "Memory Organization",
+    "kind": "Lecture notes",
+    "unit": 9,
+    "words": 1391,
+    "scanned": false,
+    "featured": false,
+    "pages": 25,
+    "summary": ""
+   },
+   {
+    "slug": "handwritten-coa-unit1-notes",
+    "title": "Handwritten COA Unit1 Notes",
+    "kind": "Handwritten notes",
+    "unit": null,
+    "words": 0,
+    "scanned": true,
+    "featured": false,
+    "pages": 35,
+    "summary": ""
+   },
+   {
+    "slug": "handwritten-coa-unit2-notes",
+    "title": "Handwritten COA Unit2 Notes",
+    "kind": "Handwritten notes",
+    "unit": null,
+    "words": 0,
+    "scanned": true,
+    "featured": false,
+    "pages": 38,
+    "summary": ""
+   },
+   {
+    "slug": "handwritten-coa-unit3-notes",
+    "title": "Handwritten COA Unit3 Notes",
+    "kind": "Handwritten notes",
+    "unit": null,
+    "words": 0,
+    "scanned": true,
+    "featured": false,
+    "pages": 66,
+    "summary": ""
+   },
+   {
+    "slug": "assignment-1-computer-architecture",
+    "title": "Assignment 1 Computer Architecture",
+    "kind": "Assignment",
+    "unit": null,
+    "words": 634,
+    "scanned": false,
+    "featured": false,
+    "pages": 2,
+    "summary": ""
+   }
+  ]
+ },
+ {
+  "slug": "java",
+  "code": "",
+  "name": "Object-Oriented Programming with Java",
+  "short": "Java",
+  "docs": [
+   {
+    "slug": "study-guide",
+    "title": "Java — Complete Study Guide",
+    "kind": "Study guide",
+    "unit": null,
+    "words": 16951,
+    "scanned": false,
+    "featured": true,
+    "summary": "Learn-from-zero guide covering every unit: Basics of Java, Arrays and Strings, Classes, Objects and Methods, Inheritance and Interfaces, JavaFX: GUI and Event-Driven Programming, Class Modeling (UML), Java I/O, Exceptions and Multithreading, Last-Night Revision Sheet (Java)"
+   },
+   {
+    "slug": "u1-basics-of-java-arrays-strings",
+    "title": "Basics of Java Arrays Strings",
+    "kind": "Lecture notes",
+    "unit": 1,
+    "words": 12033,
+    "scanned": false,
+    "featured": false,
+    "pages": 172,
+    "summary": ""
+   },
+   {
+    "slug": "u2-classes-objects-methods",
+    "title": "Classes Objects Methods",
+    "kind": "Lecture notes",
+    "unit": 2,
+    "words": 3638,
+    "scanned": false,
+    "featured": false,
+    "pages": 50,
+    "summary": ""
+   },
+   {
+    "slug": "u3-inheritance-and-interface",
+    "title": "Inheritance and Interface",
+    "kind": "Lecture notes",
+    "unit": 3,
+    "words": 1471,
+    "scanned": false,
+    "featured": false,
+    "pages": 7,
+    "summary": ""
+   },
+   {
+    "slug": "u4-javafx-gui-event-handling",
+    "title": "JavaFX GUI Event Handling",
+    "kind": "Lecture notes",
+    "unit": 4,
+    "words": 1738,
+    "scanned": false,
+    "featured": false,
+    "pages": 9,
+    "summary": ""
+   },
+   {
+    "slug": "u5-class-modeling-io-exceptions-threads",
+    "title": "Class Modeling IO Exceptions Threads",
+    "kind": "Lecture notes",
+    "unit": 5,
+    "words": 4652,
+    "scanned": false,
+    "featured": false,
+    "pages": 18,
+    "summary": ""
+   }
+  ]
+ }
+]

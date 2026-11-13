@@ -33,7 +33,7 @@ interface StatCardProps {
 
 function StatCard({ icon: Icon, label, value, accent }: StatCardProps) {
   return (
-    <div className="bg-slate-800 border border-slate-700 rounded-2xl p-4 sm:p-5 flex items-center gap-4 shadow-sm">
+    <div className="bg-stone-800 border border-stone-700 rounded-2xl p-4 sm:p-5 flex items-center gap-4 shadow-sm">
       <div
         className="h-11 w-11 rounded-xl flex items-center justify-center shrink-0"
         style={{ background: accent ? `${accent}22` : "#FAFAFA22" }}
@@ -41,8 +41,8 @@ function StatCard({ icon: Icon, label, value, accent }: StatCardProps) {
         <Icon className="h-5 w-5" style={{ color: accent ?? "#FAFAFA" }} />
       </div>
       <div>
-        <p className="text-xs text-slate-400 font-medium uppercase tracking-wide">{label}</p>
-        <p className="text-xl sm:text-2xl font-extrabold text-white leading-tight">{value}</p>
+        <p className="text-xs text-stone-400 font-medium uppercase tracking-wide">{label}</p>
+        <p className="text-xl sm:text-2xl font-semibold text-white leading-tight">{value}</p>
       </div>
     </div>
   );
@@ -174,21 +174,21 @@ export function AdminPlatformTab() {
       </div>
 
       {/* 2. Database table row counts & storage breakdown */}
-      <div className="bg-slate-800 border border-slate-700 rounded-3xl p-5 sm:p-6 space-y-4 shadow-xl">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-700">
+      <div className="bg-stone-800 border border-stone-700 rounded-2xl p-5 sm:p-6 space-y-4 shadow-lg">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-stone-700">
           <div>
             <h3 className="font-bold text-sm text-white flex items-center gap-2">
               <Database className="h-4 w-4 text-[#FAFAFA]" />
               Database Row Volumes & Storage Usage
             </h3>
-            <p className="text-[11px] text-slate-400 mt-0.5">
+            <p className="text-[11px] text-stone-400 mt-0.5">
               Live Postgres table telemetry and storage consumption across tables.
             </p>
           </div>
 
           <div className="flex items-center gap-2 text-xs">
-            <span className="text-slate-400">Total Storage:</span>
-            <span className="px-2.5 py-0.5 rounded-md bg-slate-900 border border-slate-700 text-[#FAFAFA] font-mono font-bold">
+            <span className="text-stone-400">Total Storage:</span>
+            <span className="px-2.5 py-0.5 rounded-md bg-stone-900 border border-stone-700 text-[#FAFAFA] font-mono font-bold">
               48.2 MB / 500 MB (9.6%)
             </span>
           </div>
@@ -198,11 +198,11 @@ export function AdminPlatformTab() {
           {Object.entries(tableCounts).map(([table, count]) => (
             <div
               key={table}
-              className="bg-slate-900/60 border border-slate-700/60 rounded-xl p-3 space-y-1 text-xs"
+              className="bg-stone-900/60 border border-stone-700/60 rounded-xl p-3 space-y-1 text-xs"
             >
               <div className="flex items-center justify-between">
-                <span className="font-mono text-slate-400 text-[11px]">{table}</span>
-                <Table className="h-3 w-3 text-slate-500" />
+                <span className="font-mono text-stone-400 text-[11px]">{table}</span>
+                <Table className="h-3 w-3 text-stone-500" />
               </div>
               <p className="text-lg font-bold text-white font-mono">{count.toLocaleString()} rows</p>
             </div>
@@ -210,12 +210,12 @@ export function AdminPlatformTab() {
         </div>
 
         {/* CSV Export Actions */}
-        <div className="pt-3 border-t border-slate-700/80 flex flex-wrap items-center gap-2">
-          <span className="text-xs text-slate-400 font-medium mr-2">Secure Table Exports:</span>
+        <div className="pt-3 border-t border-stone-700/80 flex flex-wrap items-center gap-2">
+          <span className="text-xs text-stone-400 font-medium mr-2">Secure Table Exports:</span>
           <button
             onClick={() => handleExportTable("profiles")}
             disabled={exporting}
-            className="px-3 py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition-colors"
+            className="px-3 py-1.5 rounded-lg bg-stone-700 hover:bg-stone-600 text-stone-200 text-xs font-semibold flex items-center gap-1.5 transition-colors"
           >
             <Download className="h-3 w-3" />
             <span>Profiles CSV</span>
@@ -223,7 +223,7 @@ export function AdminPlatformTab() {
           <button
             onClick={() => handleExportTable("progress")}
             disabled={exporting}
-            className="px-3 py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition-colors"
+            className="px-3 py-1.5 rounded-lg bg-stone-700 hover:bg-stone-600 text-stone-200 text-xs font-semibold flex items-center gap-1.5 transition-colors"
           >
             <Download className="h-3 w-3" />
             <span>Progress CSV</span>
@@ -231,7 +231,7 @@ export function AdminPlatformTab() {
           <button
             onClick={() => handleExportTable("client_errors")}
             disabled={exporting}
-            className="px-3 py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition-colors"
+            className="px-3 py-1.5 rounded-lg bg-stone-700 hover:bg-stone-600 text-stone-200 text-xs font-semibold flex items-center gap-1.5 transition-colors"
           >
             <Download className="h-3 w-3" />
             <span>Errors Log CSV</span>
@@ -239,7 +239,7 @@ export function AdminPlatformTab() {
           <button
             onClick={() => handleExportTable("support_tickets")}
             disabled={exporting}
-            className="px-3 py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition-colors"
+            className="px-3 py-1.5 rounded-lg bg-stone-700 hover:bg-stone-600 text-stone-200 text-xs font-semibold flex items-center gap-1.5 transition-colors"
           >
             <Download className="h-3 w-3" />
             <span>Support Tickets CSV</span>
@@ -248,7 +248,7 @@ export function AdminPlatformTab() {
       </div>
 
       {/* 3. Bar chart */}
-      <div className="bg-slate-800 border border-slate-700 rounded-3xl p-5 sm:p-6 space-y-4 shadow-xl">
+      <div className="bg-stone-800 border border-stone-700 rounded-2xl p-5 sm:p-6 space-y-4 shadow-lg">
         <h3 className="font-bold text-sm text-white flex items-center gap-2">
           <BarChart3 className="h-4 w-4 text-[#FAFAFA]" />
           MCQ Count per Subject
@@ -278,13 +278,13 @@ export function AdminPlatformTab() {
       </div>
 
       {/* 4. Subject breakdown table with styled scrollbar */}
-      <div className="bg-slate-800 border border-slate-700 rounded-3xl overflow-hidden shadow-xl">
-        <div className="p-4 sm:p-5 border-b border-slate-700">
+      <div className="bg-stone-800 border border-stone-700 rounded-2xl overflow-hidden shadow-lg">
+        <div className="p-4 sm:p-5 border-b border-stone-700">
           <h3 className="font-bold text-sm text-white">Subject Breakdown</h3>
         </div>
         <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
           <table className="w-full text-left text-sm">
-            <thead className="bg-slate-700/60 text-slate-400 uppercase text-[11px] font-bold border-b border-slate-700">
+            <thead className="bg-stone-700/60 text-stone-400 uppercase text-[11px] font-bold border-b border-stone-700">
               <tr>
                 <th className="px-4 py-3">Subject</th>
                 <th className="px-4 py-3">Code</th>
@@ -294,7 +294,7 @@ export function AdminPlatformTab() {
                 <th className="px-4 py-3">MCQs</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-700/50">
+            <tbody className="divide-y divide-stone-700/50">
               {subjects.map((s) => {
                 const sTopics = s.units?.reduce((a, u) => a + (u.topics?.length ?? 0), 0) ?? 0;
                 const sMcqs = s.units?.reduce(
@@ -302,12 +302,12 @@ export function AdminPlatformTab() {
                   0
                 ) ?? 0;
                 return (
-                  <tr key={s.id} className="hover:bg-slate-700/30 transition-colors">
+                  <tr key={s.id} className="hover:bg-stone-700/30 transition-colors">
                     <td className="px-4 py-3 font-semibold text-white">{s.name}</td>
-                    <td className="px-4 py-3 text-slate-400 font-mono text-xs">{s.code}</td>
-                    <td className="px-4 py-3 text-slate-400">Sem {s.semester}</td>
-                    <td className="px-4 py-3 text-slate-300">{s.units?.length ?? 0}</td>
-                    <td className="px-4 py-3 text-slate-300">{sTopics}</td>
+                    <td className="px-4 py-3 text-stone-400 font-mono text-xs">{s.code}</td>
+                    <td className="px-4 py-3 text-stone-400">Sem {s.semester}</td>
+                    <td className="px-4 py-3 text-stone-300">{s.units?.length ?? 0}</td>
+                    <td className="px-4 py-3 text-stone-300">{sTopics}</td>
                     <td className="px-4 py-3">
                       <span className="text-[#FAFAFA] font-bold">{sMcqs}</span>
                     </td>

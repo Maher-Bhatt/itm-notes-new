@@ -184,7 +184,7 @@ export function AdminUsersTab({
       <div className="space-y-3">
         <div className="flex flex-col sm:flex-row sm:items-center gap-2.5">
           <div className="relative flex-1 min-w-0">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-500" />
             <input
               value={search}
               onChange={(e) => {
@@ -192,14 +192,14 @@ export function AdminUsersTab({
                 setPage(1);
               }}
               placeholder="Search by student name or email…"
-              className="w-full pl-9 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#FAFAFA]/60"
+              className="w-full pl-9 pr-4 py-2 bg-stone-800 border border-stone-700 rounded-xl text-xs sm:text-sm text-white placeholder-stone-500 focus:outline-none focus:border-[#FAFAFA]/60"
             />
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={onRefresh}
-              className="flex items-center gap-1.5 px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs font-semibold text-slate-300 hover:bg-slate-700 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-2 bg-stone-800 border border-stone-700 rounded-xl text-xs font-semibold text-stone-300 hover:bg-stone-700 transition-colors"
             >
               <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />
               <span className="hidden xs:inline">Refresh</span>
@@ -215,10 +215,10 @@ export function AdminUsersTab({
         </div>
 
         {/* 2. Filters & Sort toolbar */}
-        <div className="flex flex-wrap items-center gap-2 pt-1 text-xs text-slate-400">
-          <div className="flex items-center gap-1.5 bg-slate-800/80 border border-slate-700/80 px-2.5 py-1.5 rounded-lg">
-            <Filter className="h-3 w-3 text-slate-400" />
-            <span className="font-medium text-[11px] text-slate-400">Role:</span>
+        <div className="flex flex-wrap items-center gap-2 pt-1 text-xs text-stone-400">
+          <div className="flex items-center gap-1.5 bg-stone-800/80 border border-stone-700/80 px-2.5 py-1.5 rounded-lg">
+            <Filter className="h-3 w-3 text-stone-400" />
+            <span className="font-medium text-[11px] text-stone-400">Role:</span>
             <select
               value={roleFilter}
               onChange={(e) => {
@@ -227,16 +227,16 @@ export function AdminUsersTab({
               }}
               className="bg-transparent text-white font-medium focus:outline-none cursor-pointer"
             >
-              <option value="all" className="bg-slate-800">All Roles</option>
-              <option value="student" className="bg-slate-800">Student</option>
-              <option value="admin" className="bg-slate-800">Admin</option>
-              <option value="guest" className="bg-slate-800">Guest</option>
+              <option value="all" className="bg-stone-800">All Roles</option>
+              <option value="student" className="bg-stone-800">Student</option>
+              <option value="admin" className="bg-stone-800">Admin</option>
+              <option value="guest" className="bg-stone-800">Guest</option>
             </select>
           </div>
 
-          <div className="flex items-center gap-1.5 bg-slate-800/80 border border-slate-700/80 px-2.5 py-1.5 rounded-lg">
-            <Shield className="h-3 w-3 text-slate-400" />
-            <span className="font-medium text-[11px] text-slate-400">Status:</span>
+          <div className="flex items-center gap-1.5 bg-stone-800/80 border border-stone-700/80 px-2.5 py-1.5 rounded-lg">
+            <Shield className="h-3 w-3 text-stone-400" />
+            <span className="font-medium text-[11px] text-stone-400">Status:</span>
             <select
               value={statusFilter}
               onChange={(e) => {
@@ -245,23 +245,23 @@ export function AdminUsersTab({
               }}
               className="bg-transparent text-white font-medium focus:outline-none cursor-pointer"
             >
-              <option value="all" className="bg-slate-800">All Status</option>
-              <option value="active" className="bg-slate-800">Active</option>
-              <option value="suspended" className="bg-slate-800">Suspended</option>
+              <option value="all" className="bg-stone-800">All Status</option>
+              <option value="active" className="bg-stone-800">Active</option>
+              <option value="suspended" className="bg-stone-800">Suspended</option>
             </select>
           </div>
 
-          <div className="flex items-center gap-1.5 bg-slate-800/80 border border-slate-700/80 px-2.5 py-1.5 rounded-lg">
-            <ArrowUpDown className="h-3 w-3 text-slate-400" />
-            <span className="font-medium text-[11px] text-slate-400">Sort:</span>
+          <div className="flex items-center gap-1.5 bg-stone-800/80 border border-stone-700/80 px-2.5 py-1.5 rounded-lg">
+            <ArrowUpDown className="h-3 w-3 text-stone-400" />
+            <span className="font-medium text-[11px] text-stone-400">Sort:</span>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
               className="bg-transparent text-white font-medium focus:outline-none cursor-pointer"
             >
-              <option value="xp_desc" className="bg-slate-800">Highest XP</option>
-              <option value="joined_desc" className="bg-slate-800">Recently Joined</option>
-              <option value="name_asc" className="bg-slate-800">Name (A-Z)</option>
+              <option value="xp_desc" className="bg-stone-800">Highest XP</option>
+              <option value="joined_desc" className="bg-stone-800">Recently Joined</option>
+              <option value="name_asc" className="bg-stone-800">Name (A-Z)</option>
             </select>
           </div>
 
@@ -274,7 +274,7 @@ export function AdminUsersTab({
               <select
                 value={bulkRole}
                 onChange={(e) => setBulkRole(e.target.value)}
-                className="bg-slate-800 border border-slate-700 text-white rounded px-2 py-0.5 text-[11px]"
+                className="bg-stone-800 border border-stone-700 text-white rounded px-2 py-0.5 text-[11px]"
               >
                 <option value="student">Set to Student</option>
                 <option value="admin">Set to Admin</option>
@@ -283,7 +283,7 @@ export function AdminUsersTab({
               <button
                 onClick={handleBulkRoleApply}
                 disabled={isBulkProcessing}
-                className="px-2.5 py-0.5 bg-[#FAFAFA] hover:bg-[#E4E4E7] text-[#18181B] rounded font-bold text-[11px] transition-colors"
+                className="px-2.5 py-0.5 bg-[#FAFAFA] hover:bg-muted text-foreground rounded font-bold text-[11px] transition-colors"
               >
                 Apply
               </button>
@@ -295,9 +295,9 @@ export function AdminUsersTab({
       {/* 3. Main User List: Mobile Stacked Cards (block lg:hidden) */}
       <div className="block lg:hidden space-y-3">
         {loading ? (
-          <div className="py-12 text-center text-slate-500 text-sm">Loading user directory…</div>
+          <div className="py-12 text-center text-stone-500 text-sm">Loading user directory…</div>
         ) : pagedUsers.length === 0 ? (
-          <div className="py-12 text-center text-slate-500 text-sm bg-slate-800 border border-slate-700 rounded-2xl">
+          <div className="py-12 text-center text-stone-500 text-sm bg-stone-800 border border-stone-700 rounded-2xl">
             No users match your criteria.
           </div>
         ) : (
@@ -306,12 +306,12 @@ export function AdminUsersTab({
             return (
               <div
                 key={u.id}
-                className={`bg-slate-800 border rounded-2xl p-4 transition-all shadow-sm ${
+                className={`bg-stone-800 border rounded-2xl p-4 transition-all shadow-sm ${
                   u.is_suspended
-                    ? "border-red-500/40 bg-red-950/10"
+                    ? "border-destructive/40 bg-destructive/10"
                     : isSelected
-                    ? "border-[#FAFAFA]/60 bg-slate-800/90"
-                    : "border-slate-700"
+                    ? "border-[#FAFAFA]/60 bg-stone-800/90"
+                    : "border-stone-700"
                 }`}
               >
                 <div className="flex items-start justify-between gap-3">
@@ -320,7 +320,7 @@ export function AdminUsersTab({
                       type="checkbox"
                       checked={isSelected}
                       onChange={() => toggleSelectUser(u.userId)}
-                      className="rounded border-slate-600 text-[#FAFAFA] focus:ring-0 shrink-0"
+                      className="rounded border-stone-600 text-[#FAFAFA] focus:ring-0 shrink-0"
                     />
                     <UserAvatar
                       avatarUrl={u.avatarUrl}
@@ -332,31 +332,31 @@ export function AdminUsersTab({
                       <div className="flex items-center gap-1.5">
                         <p className="font-bold text-white text-sm truncate">{u.name}</p>
                         {u.is_suspended && (
-                          <span className="px-1.5 py-0.2 rounded text-[9px] font-black uppercase tracking-wider bg-red-500/20 text-red-400 border border-red-500/30">
+                          <span className="px-1.5 py-0.2 rounded text-[9px] font-bold uppercase tracking-wider bg-destructive/20 text-destructive border border-destructive/30">
                             Suspended
                           </span>
                         )}
                       </div>
-                      <p className="text-[11px] text-slate-400 font-mono truncate">{u.email}</p>
+                      <p className="text-[11px] text-stone-400 font-mono truncate">{u.email}</p>
                     </div>
                   </div>
 
                   <button
                     onClick={() => setSelectedUser(u)}
-                    className="p-1.5 rounded-lg bg-slate-700/60 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors shrink-0"
+                    className="p-1.5 rounded-lg bg-stone-700/60 hover:bg-stone-700 text-stone-300 hover:text-white transition-colors shrink-0"
                     title="View user details"
                   >
                     <Eye className="h-4 w-4" />
                   </button>
                 </div>
 
-                <div className="mt-3 pt-3 border-t border-slate-700/60 grid grid-cols-2 gap-2 text-xs">
+                <div className="mt-3 pt-3 border-t border-stone-700/60 grid grid-cols-2 gap-2 text-xs">
                   <div>
-                    <span className="text-[10px] text-slate-400 block uppercase font-medium">Role</span>
+                    <span className="text-[10px] text-stone-400 block uppercase font-medium">Role</span>
                     <select
                       value={u.role}
                       onChange={(e) => onRoleChange(u.id, u.userId, e.target.value)}
-                      className="mt-0.5 w-full bg-slate-700 border border-slate-600 rounded-lg text-xs text-slate-200 px-2 py-1 focus:outline-none focus:border-[#FAFAFA]/60"
+                      className="mt-0.5 w-full bg-stone-700 border border-stone-600 rounded-lg text-xs text-stone-200 px-2 py-1 focus:outline-none focus:border-[#FAFAFA]/60"
                     >
                       <option value="student">Student</option>
                       <option value="admin">Admin</option>
@@ -365,21 +365,21 @@ export function AdminUsersTab({
                   </div>
 
                   <div>
-                    <span className="text-[10px] text-slate-400 block uppercase font-medium">Total XP</span>
-                    <span className="mt-0.5 inline-block font-mono font-bold text-amber-400">
+                    <span className="text-[10px] text-stone-400 block uppercase font-medium">Total XP</span>
+                    <span className="mt-0.5 inline-block font-mono font-bold text-primary">
                       ⚡ {u.xp.toLocaleString()} XP
                     </span>
                   </div>
                 </div>
 
-                <div className="mt-3 flex items-center justify-between text-xs pt-2 border-t border-slate-700/40">
-                  <span className="text-[11px] text-slate-500">Joined: {u.joined}</span>
+                <div className="mt-3 flex items-center justify-between text-xs pt-2 border-t border-stone-700/40">
+                  <span className="text-[11px] text-stone-500">Joined: {u.joined}</span>
                   <button
                     onClick={() => handleToggleSuspend(u)}
                     className={`text-[11px] font-bold px-2.5 py-1 rounded-lg border transition-colors ${
                       u.is_suspended
-                        ? "bg-amber-500/10 text-amber-500 border-amber-500/30 hover:bg-amber-500/20"
-                        : "bg-red-500/10 text-red-400 border-red-500/30 hover:bg-red-500/20"
+                        ? "bg-primary/10 text-primary border-primary/30 hover:bg-primary/20"
+                        : "bg-destructive/10 text-destructive border-destructive/30 hover:bg-destructive/20"
                     }`}
                   >
                     {u.is_suspended ? "Unsuspend" : "Suspend Account"}
@@ -392,20 +392,20 @@ export function AdminUsersTab({
       </div>
 
       {/* 4. Desktop Table View (hidden lg:block) with styled scrollbar */}
-      <div className="hidden lg:block bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden shadow-sm">
+      <div className="hidden lg:block bg-stone-800 border border-stone-700 rounded-2xl overflow-hidden shadow-sm">
         {loading ? (
-          <div className="flex items-center justify-center py-16 text-slate-500">Loading users…</div>
+          <div className="flex items-center justify-center py-16 text-stone-500">Loading users…</div>
         ) : (
           <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
             <table className="w-full text-left text-sm">
-              <thead className="bg-slate-700/60 text-slate-400 uppercase text-[11px] font-bold border-b border-slate-700">
+              <thead className="bg-stone-700/60 text-stone-400 uppercase text-[11px] font-bold border-b border-stone-700">
                 <tr>
                   <th className="px-4 py-3 w-10">
                     <input
                       type="checkbox"
                       checked={pagedUsers.length > 0 && selectedUserIds.size === pagedUsers.length}
                       onChange={toggleSelectAll}
-                      className="rounded border-slate-600 text-[#FAFAFA] focus:ring-0"
+                      className="rounded border-stone-600 text-[#FAFAFA] focus:ring-0"
                     />
                   </th>
                   <th className="px-4 py-3">User</th>
@@ -417,10 +417,10 @@ export function AdminUsersTab({
                   <th className="px-4 py-3 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-700/50">
+              <tbody className="divide-y divide-stone-700/50">
                 {pagedUsers.length === 0 ? (
                   <tr>
-                    <td colSpan={8} className="py-12 text-center text-slate-500">
+                    <td colSpan={8} className="py-12 text-center text-stone-500">
                       No users match your criteria.
                     </td>
                   </tr>
@@ -430,8 +430,8 @@ export function AdminUsersTab({
                     return (
                       <tr
                         key={u.id}
-                        className={`hover:bg-slate-700/30 transition-colors ${
-                          isSelected ? "bg-slate-700/20" : ""
+                        className={`hover:bg-stone-700/30 transition-colors ${
+                          isSelected ? "bg-stone-700/20" : ""
                         }`}
                       >
                         <td className="px-4 py-3">
@@ -439,7 +439,7 @@ export function AdminUsersTab({
                             type="checkbox"
                             checked={isSelected}
                             onChange={() => toggleSelectUser(u.userId)}
-                            className="rounded border-slate-600 text-[#FAFAFA] focus:ring-0"
+                            className="rounded border-stone-600 text-[#FAFAFA] focus:ring-0"
                           />
                         </td>
                         <td className="px-4 py-3">
@@ -455,12 +455,12 @@ export function AdminUsersTab({
                             </div>
                           </div>
                         </td>
-                        <td className="px-4 py-3 text-slate-400 font-mono text-xs">{u.email}</td>
+                        <td className="px-4 py-3 text-stone-400 font-mono text-xs">{u.email}</td>
                         <td className="px-4 py-3">
                           <select
                             value={u.role}
                             onChange={(e) => onRoleChange(u.id, u.userId, e.target.value)}
-                            className="bg-slate-700 border border-slate-600 rounded-lg text-xs text-slate-200 px-2 py-1 focus:outline-none focus:border-[#FAFAFA]/60 cursor-pointer"
+                            className="bg-stone-700 border border-stone-600 rounded-lg text-xs text-stone-200 px-2 py-1 focus:outline-none focus:border-[#FAFAFA]/60 cursor-pointer"
                           >
                             <option value="student">Student</option>
                             <option value="admin">Admin</option>
@@ -469,24 +469,24 @@ export function AdminUsersTab({
                         </td>
                         <td className="px-4 py-3">
                           {u.is_suspended ? (
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-red-500/20 text-red-400 border border-red-500/30">
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-destructive/20 text-destructive border border-destructive/30">
                               Suspended
                             </span>
                           ) : (
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-500 border border-amber-500/30">
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary/10 text-primary border border-primary/30">
                               Active
                             </span>
                           )}
                         </td>
-                        <td className="px-4 py-3 text-amber-400 font-mono text-xs font-bold">
+                        <td className="px-4 py-3 text-primary font-mono text-xs font-bold">
                           ⚡ {u.xp.toLocaleString()}
                         </td>
-                        <td className="px-4 py-3 text-slate-400 text-xs">{u.joined}</td>
+                        <td className="px-4 py-3 text-stone-400 text-xs">{u.joined}</td>
                         <td className="px-4 py-3 text-right">
                           <div className="flex items-center justify-end gap-2">
                             <button
                               onClick={() => setSelectedUser(u)}
-                              className="p-1.5 rounded-lg bg-slate-700/50 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors"
+                              className="p-1.5 rounded-lg bg-stone-700/50 hover:bg-stone-700 text-stone-300 hover:text-white transition-colors"
                               title="View details"
                             >
                               <Eye className="h-3.5 w-3.5" />
@@ -495,8 +495,8 @@ export function AdminUsersTab({
                               onClick={() => handleToggleSuspend(u)}
                               className={`p-1.5 rounded-lg border transition-colors ${
                                 u.is_suspended
-                                  ? "bg-amber-500/10 text-amber-500 border-amber-500/30 hover:bg-amber-500/20"
-                                  : "bg-red-500/10 text-red-400 border-red-500/30 hover:bg-red-500/20"
+                                  ? "bg-primary/10 text-primary border-primary/30 hover:bg-primary/20"
+                                  : "bg-destructive/10 text-destructive border-destructive/30 hover:bg-destructive/20"
                               }`}
                               title={u.is_suspended ? "Unsuspend account" : "Suspend account"}
                             >
@@ -520,7 +520,7 @@ export function AdminUsersTab({
 
       {/* 5. Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between text-xs text-slate-400 pt-2">
+        <div className="flex items-center justify-between text-xs text-stone-400 pt-2">
           <p>
             {filteredUsers.length} users &middot; Page {page} of {totalPages}
           </p>
@@ -528,14 +528,14 @@ export function AdminUsersTab({
             <button
               disabled={page === 1}
               onClick={() => setPage((p) => p - 1)}
-              className="p-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-700 disabled:opacity-40 transition-colors"
+              className="p-2 rounded-lg bg-stone-800 border border-stone-700 text-stone-300 hover:bg-stone-700 disabled:opacity-40 transition-colors"
             >
               <ChevronLeft className="h-4 w-4" />
             </button>
             <button
               disabled={page === totalPages}
               onClick={() => setPage((p) => p + 1)}
-              className="p-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-700 disabled:opacity-40 transition-colors"
+              className="p-2 rounded-lg bg-stone-800 border border-stone-700 text-stone-300 hover:bg-stone-700 disabled:opacity-40 transition-colors"
             >
               <ChevronRight className="h-4 w-4" />
             </button>
@@ -546,10 +546,10 @@ export function AdminUsersTab({
       {/* 6. User Detail Drawer Modal */}
       {selectedUser && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-slate-800 border border-slate-700 rounded-3xl w-full max-w-md p-6 space-y-5 shadow-2xl relative animate-scale-in">
+          <div className="bg-stone-800 border border-stone-700 rounded-2xl w-full max-w-md p-6 space-y-5 shadow-lg relative animate-scale-in">
             <button
               onClick={() => setSelectedUser(null)}
-              className="absolute right-4 top-4 p-1.5 rounded-xl bg-slate-700/60 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
+              className="absolute right-4 top-4 p-1.5 rounded-xl bg-stone-700/60 hover:bg-stone-700 text-stone-400 hover:text-white transition-colors"
             >
               <X className="h-4 w-4" />
             </button>
@@ -563,13 +563,13 @@ export function AdminUsersTab({
               />
               <div className="min-w-0">
                 <h3 className="text-base font-bold text-white truncate">{selectedUser.name}</h3>
-                <p className="text-xs text-slate-400 font-mono truncate">{selectedUser.email}</p>
+                <p className="text-xs text-stone-400 font-mono truncate">{selectedUser.email}</p>
                 <div className="flex items-center gap-2 mt-1">
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#FAFAFA]/10 text-[#FAFAFA] border border-[#FAFAFA]/30 uppercase">
                     {selectedUser.role}
                   </span>
                   {selectedUser.is_suspended && (
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-500/20 text-red-400 border border-red-500/30 uppercase">
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-destructive/20 text-destructive border border-destructive/30 uppercase">
                       Suspended
                     </span>
                   )}
@@ -577,35 +577,35 @@ export function AdminUsersTab({
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 text-xs bg-slate-900/60 p-4 rounded-2xl border border-slate-700/60">
+            <div className="grid grid-cols-2 gap-3 text-xs bg-stone-900/60 p-4 rounded-2xl border border-stone-700/60">
               <div>
-                <span className="text-slate-400 text-[10px] block uppercase font-medium">Semester</span>
+                <span className="text-stone-400 text-[10px] block uppercase font-medium">Semester</span>
                 <span className="text-white font-bold text-sm">
                   {selectedUser.semester ? `Semester ${selectedUser.semester}` : "Sem 3 (Default)"}
                 </span>
               </div>
               <div>
-                <span className="text-slate-400 text-[10px] block uppercase font-medium">Branch</span>
+                <span className="text-stone-400 text-[10px] block uppercase font-medium">Branch</span>
                 <span className="text-white font-bold text-sm truncate block">
                   {selectedUser.branch || "Computer Science (CSE)"}
                 </span>
               </div>
               <div>
-                <span className="text-slate-400 text-[10px] block uppercase font-medium">Experience XP</span>
-                <span className="text-amber-400 font-mono font-bold text-sm">
+                <span className="text-stone-400 text-[10px] block uppercase font-medium">Experience XP</span>
+                <span className="text-primary font-mono font-bold text-sm">
                   ⚡ {selectedUser.xp.toLocaleString()} XP
                 </span>
               </div>
               <div>
-                <span className="text-slate-400 text-[10px] block uppercase font-medium">Study Streak</span>
-                <span className="text-orange-400 font-mono font-bold text-sm">
+                <span className="text-stone-400 text-[10px] block uppercase font-medium">Study Streak</span>
+                <span className="text-primary font-mono font-bold text-sm">
                   🔥 {selectedUser.streak || 1} Days
                 </span>
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+              <label className="text-[11px] font-bold uppercase tracking-wider text-stone-400 block">
                 Manage Access
               </label>
               <div className="flex items-center gap-3">
@@ -613,8 +613,8 @@ export function AdminUsersTab({
                   onClick={() => handleToggleSuspend(selectedUser)}
                   className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold border transition-colors flex items-center justify-center gap-1.5 ${
                     selectedUser.is_suspended
-                      ? "bg-amber-500/10 text-amber-500 border-amber-500/30 hover:bg-amber-500/20"
-                      : "bg-red-500/10 text-red-400 border-red-500/30 hover:bg-red-500/20"
+                      ? "bg-primary/10 text-primary border-primary/30 hover:bg-primary/20"
+                      : "bg-destructive/10 text-destructive border-destructive/30 hover:bg-destructive/20"
                   }`}
                 >
                   {selectedUser.is_suspended ? (

@@ -94,13 +94,13 @@ export function AdminPulseTab() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-5 rounded-[22px] bg-white dark:bg-[#18181B] border border-[#E8E4DA] dark:border-neutral-800 shadow-xs">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-5 rounded-2xl bg-white dark:bg-background border border-border dark:border-stone-800 shadow-xs">
         <div>
-          <h2 className="text-xl font-bold text-[#111111] dark:text-white flex items-center gap-2">
-            <Zap className="w-5 h-5 text-[#2B4EFF]" />
+          <h2 className="text-xl font-bold text-foreground dark:text-white flex items-center gap-2">
+            <Zap className="w-5 h-5 text-primary" />
             Campus Pulse Live Controller
           </h2>
-          <p className="text-xs text-[#6B7280] dark:text-neutral-400 mt-1">
+          <p className="text-xs text-muted-foreground dark:text-stone-400 mt-1">
             Real-time feed cards for library occupancy, placement talks, and semester deadlines.
           </p>
         </div>
@@ -108,7 +108,7 @@ export function AdminPulseTab() {
         <button
           type="button"
           onClick={loadTiles}
-          className="h-9 px-3.5 rounded-full bg-[#F6F3EC] dark:bg-neutral-800 text-xs font-semibold flex items-center gap-1.5 hover:bg-neutral-200"
+          className="h-9 px-3.5 rounded-full bg-background dark:bg-stone-800 text-xs font-semibold flex items-center gap-1.5 hover:bg-stone-200"
         >
           <RefreshCw className="w-3.5 h-3.5" />
           <span>Refresh</span>
@@ -118,9 +118,9 @@ export function AdminPulseTab() {
       {/* Live Preview & Form Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Creator / Editor Form (6 cols) */}
-        <div className="lg:col-span-6 rounded-[22px] bg-white dark:bg-[#18181B] border border-[#E8E4DA] dark:border-neutral-800 p-5 sm:p-6 shadow-xs space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-[#EFECE6] dark:border-neutral-800">
-            <h3 className="font-bold text-sm text-[#111111] dark:text-white">
+        <div className="lg:col-span-6 rounded-2xl bg-white dark:bg-background border border-border dark:border-stone-800 p-5 sm:p-6 shadow-xs space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-border dark:border-stone-800">
+            <h3 className="font-bold text-sm text-foreground dark:text-white">
               {editingTile ? 'Edit Pulse Tile' : 'Create New Pulse Tile'}
             </h3>
             {editingTile && (
@@ -131,7 +131,7 @@ export function AdminPulseTab() {
                   setTitle('');
                   setSubtitle('');
                 }}
-                className="text-xs text-rose-500 font-semibold"
+                className="text-xs text-destructive font-semibold"
               >
                 Cancel Edit
               </button>
@@ -141,7 +141,7 @@ export function AdminPulseTab() {
           <form onSubmit={handleSave} className="space-y-3.5">
             {/* Tone Selector */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-neutral-500 mb-1.5">
+              <label className="block text-xs font-bold uppercase tracking-wider text-stone-500 mb-1.5">
                 Tile Tone
               </label>
               <div className="grid grid-cols-4 gap-2">
@@ -152,16 +152,16 @@ export function AdminPulseTab() {
                     onClick={() => setTone(t)}
                     className={`h-9 rounded-xl text-xs font-bold capitalize border transition-all cursor-pointer ${
                       tone === t
-                        ? 'border-[#2B4EFF] ring-2 ring-[#2B4EFF]/20 font-black'
-                        : 'border-[#E8E4DA]'
+                        ? 'border-primary ring-2 ring-primary/20 font-bold'
+                        : 'border-border'
                     } ${
                       t === 'black'
-                        ? 'bg-[#111111] text-white'
+                        ? 'bg-foreground text-white'
                         : t === 'lime'
-                        ? 'bg-[#D7F75B] text-[#111111]'
+                        ? 'bg-accent text-foreground'
                         : t === 'blue'
-                        ? 'bg-[#2B4EFF] text-white'
-                        : 'bg-white text-[#111111]'
+                        ? 'bg-primary text-white'
+                        : 'bg-white text-foreground'
                     }`}
                   >
                     {t}
@@ -173,7 +173,7 @@ export function AdminPulseTab() {
             {/* Tag & Icon */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-neutral-500 mb-1">
+                <label className="block text-xs font-bold uppercase tracking-wider text-stone-500 mb-1">
                   Tag Text
                 </label>
                 <input
@@ -181,18 +181,18 @@ export function AdminPulseTab() {
                   value={tag}
                   onChange={(e) => setTag(e.target.value)}
                   placeholder="e.g. LIVE, TODAY 4 PM, DEADLINE"
-                  className="w-full h-10 px-3.5 rounded-xl bg-[#F6F3EC] dark:bg-neutral-800 text-xs font-medium border border-[#E8E4DA]"
+                  className="w-full h-10 px-3.5 rounded-xl bg-background dark:bg-stone-800 text-xs font-medium border border-border"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-neutral-500 mb-1">
+                <label className="block text-xs font-bold uppercase tracking-wider text-stone-500 mb-1">
                   Icon
                 </label>
                 <select
                   value={icon}
                   onChange={(e) => setIcon(e.target.value as any)}
-                  className="w-full h-10 px-3.5 rounded-xl bg-[#F6F3EC] dark:bg-neutral-800 text-xs font-medium border border-[#E8E4DA]"
+                  className="w-full h-10 px-3.5 rounded-xl bg-background dark:bg-stone-800 text-xs font-medium border border-border"
                 >
                   <option value="zap">⚡ Lightning (Zap)</option>
                   <option value="calendar">📅 Calendar</option>
@@ -204,7 +204,7 @@ export function AdminPulseTab() {
 
             {/* Title */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-neutral-500 mb-1">
+              <label className="block text-xs font-bold uppercase tracking-wider text-stone-500 mb-1">
                 Headline / Status
               </label>
               <input
@@ -212,14 +212,14 @@ export function AdminPulseTab() {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g. Central Library is open with 14 seats on 2nd floor"
-                className="w-full h-10 px-3.5 rounded-xl bg-[#F6F3EC] dark:bg-neutral-800 text-xs font-medium border border-[#E8E4DA]"
+                className="w-full h-10 px-3.5 rounded-xl bg-background dark:bg-stone-800 text-xs font-medium border border-border"
                 required
               />
             </div>
 
             {/* Subtitle */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-neutral-500 mb-1">
+              <label className="block text-xs font-bold uppercase tracking-wider text-stone-500 mb-1">
                 Subtext / Details (Optional)
               </label>
               <input
@@ -227,13 +227,13 @@ export function AdminPulseTab() {
                 value={subtitle}
                 onChange={(e) => setSubtitle(e.target.value)}
                 placeholder="e.g. Wi-Fi verified active. Power plugs available."
-                className="w-full h-10 px-3.5 rounded-xl bg-[#F6F3EC] dark:bg-neutral-800 text-xs font-medium border border-[#E8E4DA]"
+                className="w-full h-10 px-3.5 rounded-xl bg-background dark:bg-stone-800 text-xs font-medium border border-border"
               />
             </div>
 
             <button
               type="submit"
-              className="w-full h-11 rounded-full bg-[#2B4EFF] hover:bg-[#1E3EDB] text-white font-bold text-xs shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
+              className="w-full h-11 rounded-full bg-primary hover:bg-primary text-white font-bold text-xs shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
             >
               <Check className="w-4 h-4" />
               <span>{editingTile ? 'Update Pulse Tile' : 'Publish Live Pulse Tile'}</span>
@@ -242,8 +242,8 @@ export function AdminPulseTab() {
         </div>
 
         {/* Live Preview (6 cols) */}
-        <div className="lg:col-span-6 rounded-[22px] bg-white dark:bg-[#18181B] border border-[#E8E4DA] dark:border-neutral-800 p-5 sm:p-6 shadow-xs space-y-4">
-          <h3 className="font-bold text-sm text-[#111111] dark:text-white pb-3 border-b border-[#EFECE6] dark:border-neutral-800">
+        <div className="lg:col-span-6 rounded-2xl bg-white dark:bg-background border border-border dark:border-stone-800 p-5 sm:p-6 shadow-xs space-y-4">
+          <h3 className="font-bold text-sm text-foreground dark:text-white pb-3 border-b border-border dark:border-stone-800">
             Preview of Current Card
           </h3>
 
@@ -260,8 +260,8 @@ export function AdminPulseTab() {
       </div>
 
       {/* Active Tiles Table */}
-      <div className="rounded-[22px] bg-white dark:bg-[#18181B] border border-[#E8E4DA] dark:border-neutral-800 p-5 shadow-xs">
-        <h3 className="font-bold text-sm text-[#111111] dark:text-white mb-3">
+      <div className="rounded-2xl bg-white dark:bg-background border border-border dark:border-stone-800 p-5 shadow-xs">
+        <h3 className="font-bold text-sm text-foreground dark:text-white mb-3">
           Currently Live Pulse Tiles ({tiles.length})
         </h3>
 
@@ -269,22 +269,22 @@ export function AdminPulseTab() {
           {tiles.map((tile) => (
             <div
               key={tile.id}
-              className="p-3.5 rounded-2xl bg-[#F6F3EC] dark:bg-neutral-900 border border-[#E8E4DA] flex items-center justify-between gap-3"
+              className="p-3.5 rounded-2xl bg-background dark:bg-stone-900 border border-border flex items-center justify-between gap-3"
             >
               <div className="min-w-0">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-neutral-200 dark:bg-neutral-800">
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-stone-200 dark:bg-stone-800">
                     {tile.tag}
                   </span>
-                  <span className="text-[10px] font-bold uppercase text-neutral-400">
+                  <span className="text-[10px] font-bold uppercase text-stone-400">
                     Tone: {tile.tone}
                   </span>
                 </div>
-                <h4 className="font-bold text-sm text-[#111111] dark:text-white truncate">
+                <h4 className="font-bold text-sm text-foreground dark:text-white truncate">
                   {tile.title}
                 </h4>
                 {tile.subtitle && (
-                  <p className="text-xs text-[#6B7280] dark:text-neutral-400 truncate">
+                  <p className="text-xs text-muted-foreground dark:text-stone-400 truncate">
                     {tile.subtitle}
                   </p>
                 )}
@@ -294,7 +294,7 @@ export function AdminPulseTab() {
                 <button
                   type="button"
                   onClick={() => handleStartEdit(tile)}
-                  className="p-2 rounded-xl bg-white dark:bg-neutral-800 hover:text-[#2B4EFF]"
+                  className="p-2 rounded-xl bg-white dark:bg-stone-800 hover:text-primary"
                   title="Edit"
                 >
                   <Edit2 className="w-4 h-4" />
@@ -302,7 +302,7 @@ export function AdminPulseTab() {
                 <button
                   type="button"
                   onClick={() => handleDelete(tile.id)}
-                  className="p-2 rounded-xl bg-white dark:bg-neutral-800 hover:text-rose-600"
+                  className="p-2 rounded-xl bg-white dark:bg-stone-800 hover:text-destructive"
                   title="Delete"
                 >
                   <Trash2 className="w-4 h-4" />

@@ -35,15 +35,15 @@ export const CampusButton = React.forwardRef<HTMLButtonElement, CampusButtonProp
     // Variant classes
     const variantClasses: Record<CampusButtonVariant, string> = {
       primary:
-        'bg-[#2B4EFF] hover:bg-[#1E3EDB] text-white shadow-sm hover:shadow-md active:scale-[0.98]',
+        'bg-primary hover:bg-primary text-white shadow-sm hover:shadow-md active:scale-[0.98]',
       dark:
-        'bg-[#111111] hover:bg-[#222222] text-white active:scale-[0.98] dark:bg-white dark:text-[#111111] dark:hover:bg-neutral-200',
+        'bg-foreground hover:bg-[#222222] text-white active:scale-[0.98] dark:bg-white dark:text-foreground dark:hover:bg-stone-200',
       outline:
-        'bg-white dark:bg-[#1C1C1E] text-[#111111] dark:text-white border border-[#E8E4DA] dark:border-neutral-700 hover:bg-[#F6F3EC] dark:hover:bg-neutral-800 active:scale-[0.98]',
+        'bg-white dark:bg-card text-foreground dark:text-white border border-border dark:border-stone-700 hover:bg-background dark:hover:bg-stone-800 active:scale-[0.98]',
       lime:
-        'bg-[#D7F75B] hover:bg-[#C6E84A] text-[#111111] shadow-sm active:scale-[0.98]',
+        'bg-accent hover:bg-accent text-foreground shadow-sm active:scale-[0.98]',
       lightBlue:
-        'bg-[#E6EAFD] hover:bg-[#D8E0FC] text-[#2B4EFF] active:scale-[0.98]',
+        'bg-primary/10 hover:bg-primary/10 text-primary active:scale-[0.98]',
     };
 
     return (

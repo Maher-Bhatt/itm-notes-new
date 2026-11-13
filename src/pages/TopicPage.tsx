@@ -60,16 +60,16 @@ const XcodeBlock = memo(function XcodeBlock({ code, label, variant }: { code: st
   }, [code]);
 
   return (
-    <div className="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-[#F6F3EC] dark:bg-neutral-900 overflow-hidden my-3">
-      <div className="flex items-center justify-between px-3.5 py-2 bg-neutral-200/60 dark:bg-neutral-800/60 border-b border-neutral-200 dark:border-neutral-800">
-        <span className="text-[11px] font-mono font-bold text-[#111111] dark:text-neutral-300">
+    <div className="rounded-xl border border-stone-200 dark:border-stone-800 bg-background dark:bg-stone-900 overflow-hidden my-3">
+      <div className="flex items-center justify-between px-3.5 py-2 bg-stone-200/60 dark:bg-stone-800/60 border-b border-stone-200 dark:border-stone-800">
+        <span className="text-[11px] font-mono font-bold text-foreground dark:text-stone-300">
           {label || (variant === "output" ? "Output" : "Code")}
         </span>
-        <button onClick={handleCopy} className="text-neutral-500 hover:text-[#111111] dark:hover:text-white transition-colors p-1 rounded">
-          {copied ? <Check className="h-3.5 w-3.5 text-[#2B4EFF]" /> : <Copy className="h-3.5 w-3.5" />}
+        <button onClick={handleCopy} className="text-stone-500 hover:text-foreground dark:hover:text-white transition-colors p-1 rounded">
+          {copied ? <Check className="h-3.5 w-3.5 text-primary" /> : <Copy className="h-3.5 w-3.5" />}
         </button>
       </div>
-      <div className="p-3.5 overflow-x-auto text-[#111111] dark:text-neutral-100">
+      <div className="p-3.5 overflow-x-auto text-foreground dark:text-stone-100">
         <pre><code className="text-[13px] font-mono leading-relaxed">{code}</code></pre>
       </div>
     </div>
@@ -139,7 +139,7 @@ const ContentTOC = memo(function ContentTOC({ markdown }: { markdown: string }) 
 
   return (
     <div className="space-y-0.5">
-      <p className="text-[10px] font-semibold text-[#6B7280] dark:text-neutral-400 uppercase tracking-wider mb-2 px-2">On This Page</p>
+      <p className="text-[10px] font-semibold text-muted-foreground dark:text-stone-400 uppercase tracking-wider mb-2 px-2">On This Page</p>
       {toc.map((item) => (
         <a
           key={item.id}
@@ -396,21 +396,21 @@ export default function TopicPage() {
 
       <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
 
-      <header className={`sticky top-0 z-50 bg-white/95 dark:bg-[#18181B]/95 backdrop-blur-md border-b border-[#E8E4DA] dark:border-neutral-800 transition-all duration-300 ${focusMode ? "opacity-0 pointer-events-none -translate-y-full" : ""}`}>
+      <header className={`sticky top-0 z-50 bg-white/95 dark:bg-background/95 backdrop-blur-md border-b border-border dark:border-stone-800 transition-all duration-300 ${focusMode ? "opacity-0 pointer-events-none -translate-y-full" : ""}`}>
         <div className="max-w-[1400px] mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <button onClick={() => setSidebarOpen(!sidebarOpen)} className="lg:hidden p-2 -ml-2 rounded-lg hover:bg-[#F6F3EC] dark:hover:bg-neutral-800 text-[#111111] dark:text-white press">
+            <button onClick={() => setSidebarOpen(!sidebarOpen)} className="lg:hidden p-2 -ml-2 rounded-lg hover:bg-background dark:hover:bg-stone-800 text-foreground dark:text-white press">
               {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
-            <button onClick={() => navigate(`/subject/${subjectId}`)} className="p-1.5 -ml-1.5 rounded-lg hover:bg-[#F6F3EC] dark:hover:bg-neutral-800 text-[#6B7280] dark:text-neutral-400 hover:text-[#111111] dark:hover:text-white transition-colors press">
+            <button onClick={() => navigate(`/subject/${subjectId}`)} className="p-1.5 -ml-1.5 rounded-lg hover:bg-background dark:hover:bg-stone-800 text-muted-foreground dark:text-stone-400 hover:text-foreground dark:hover:text-white transition-colors press">
               <ChevronLeft className="h-5 w-5" />
             </button>
-            <nav className="hidden sm:flex items-center gap-2 text-[14px] text-[#6B7280] dark:text-neutral-400 font-medium">
-              <Link to="/community" className="hover:text-[#2B4EFF] dark:hover:text-blue-400 transition-colors press">Campus</Link>
+            <nav className="hidden sm:flex items-center gap-2 text-[14px] text-muted-foreground dark:text-stone-400 font-medium">
+              <Link to="/community" className="hover:text-primary dark:hover:text-primary transition-colors press">Campus</Link>
               <ChevronRight className="h-4 w-4 opacity-40" />
-              <Link to={`/subject/${subjectId}`} className="hover:text-[#2B4EFF] dark:hover:text-blue-400 transition-colors press">{subject?.name}</Link>
+              <Link to={`/subject/${subjectId}`} className="hover:text-primary dark:hover:text-primary transition-colors press">{subject?.name}</Link>
               <ChevronRight className="h-4 w-4 opacity-40" />
-              <span className="text-[#111111] dark:text-white font-semibold truncate max-w-[250px]">{topic.title}</span>
+              <span className="text-foreground dark:text-white font-semibold truncate max-w-[250px]">{topic.title}</span>
             </nav>
           </div>
           <div className="flex items-center gap-1 sm:gap-2">
@@ -418,8 +418,8 @@ export default function TopicPage() {
               onClick={handleComplete}
               className={`h-8 sm:h-9 px-2.5 sm:px-4 rounded-full text-[12px] sm:text-[13px] font-semibold inline-flex items-center gap-1.5 sm:gap-2 transition-all press cursor-pointer ${
                 completed
-                  ? "bg-[#D7F75B] text-[#111111] font-bold shadow-2xs"
-                  : "bg-[#111111] dark:bg-white text-white dark:text-[#111111] hover:bg-[#222222] dark:hover:bg-neutral-200"
+                  ? "bg-accent text-foreground font-bold shadow-2xs"
+                  : "bg-foreground dark:bg-white text-white dark:text-foreground hover:bg-[#222222] dark:hover:bg-stone-200"
               }`}
             >
               <CheckCircle className="h-4 w-4" />
@@ -436,13 +436,13 @@ export default function TopicPage() {
                 }
               }}
               title={isPomodoroRunning ? `Focus session active: ${Math.floor(pomodoroTimeLeft / 60)}m left` : "Start 25m Focus Sprint directly"}
-              className={`hidden sm:inline-flex h-8 sm:h-9 px-2.5 sm:px-3 rounded-full text-[12px] sm:text-[13px] font-semibold items-center gap-1.5 transition-all press cursor-pointer border border-[#E8E4DA] dark:border-neutral-800 ${
+              className={`hidden sm:inline-flex h-8 sm:h-9 px-2.5 sm:px-3 rounded-full text-[12px] sm:text-[13px] font-semibold items-center gap-1.5 transition-all press cursor-pointer border border-border dark:border-stone-800 ${
                 isPomodoroRunning
-                  ? "bg-[#E6EAFD] text-[#2B4EFF] dark:bg-blue-950/60 dark:text-blue-300 font-bold animate-pulse"
-                  : "bg-white dark:bg-[#18181B] text-[#111111] dark:text-white hover:bg-[#F6F3EC] dark:hover:bg-neutral-800"
+                  ? "bg-primary/10 text-primary dark:bg-primary/15 dark:text-primary font-bold animate-pulse"
+                  : "bg-white dark:bg-background text-foreground dark:text-white hover:bg-background dark:hover:bg-stone-800"
               }`}
             >
-              <Clock className={`h-4 w-4 ${isPomodoroRunning ? "text-[#2B4EFF]" : "text-[#6B7280]"}`} />
+              <Clock className={`h-4 w-4 ${isPomodoroRunning ? "text-primary" : "text-muted-foreground"}`} />
               <span className="hidden md:inline font-mono">
                 {isPomodoroRunning
                   ? `${String(Math.floor(pomodoroTimeLeft / 60)).padStart(2, '0')}:${String(pomodoroTimeLeft % 60).padStart(2, '0')}`
@@ -453,16 +453,16 @@ export default function TopicPage() {
             <button
               onClick={() => setFlashcardsOpen(true)}
               title="Active Recall Flashcards"
-              className="hidden md:inline-flex h-8 sm:h-9 px-2.5 sm:px-3 rounded-full text-[12px] sm:text-[13px] font-semibold items-center gap-1.5 border border-[#E8E4DA] dark:border-neutral-800 bg-white dark:bg-[#18181B] text-[#111111] dark:text-white hover:bg-[#F6F3EC] dark:hover:bg-neutral-800 transition-all press cursor-pointer"
+              className="hidden md:inline-flex h-8 sm:h-9 px-2.5 sm:px-3 rounded-full text-[12px] sm:text-[13px] font-semibold items-center gap-1.5 border border-border dark:border-stone-800 bg-white dark:bg-background text-foreground dark:text-white hover:bg-background dark:hover:bg-stone-800 transition-all press cursor-pointer"
             >
-              <Layers className="h-4 w-4 text-[#2B4EFF]" />
+              <Layers className="h-4 w-4 text-primary" />
               <span className="hidden lg:inline">Flashcards</span>
             </button>
 
             <button
               onClick={handleShare}
               title="Share Topic Link with Classmates"
-              className="hidden sm:inline-flex p-1.5 sm:p-2 rounded-full hover:bg-[#F6F3EC] dark:hover:bg-neutral-800 text-[#6B7280] dark:text-neutral-400 hover:text-[#111111] dark:hover:text-white transition-colors press cursor-pointer"
+              className="hidden sm:inline-flex p-1.5 sm:p-2 rounded-full hover:bg-background dark:hover:bg-stone-800 text-muted-foreground dark:text-stone-400 hover:text-foreground dark:hover:text-white transition-colors press cursor-pointer"
             >
               <Share2 className="h-4 w-4 sm:h-5 sm:w-5" />
             </button>
@@ -470,11 +470,11 @@ export default function TopicPage() {
             <button
               onClick={() => setAnnotationsDrawerOpen(true)}
               title={`Personal Notes & Highlights (${annotations.length})`}
-              className="relative p-1.5 sm:p-2 rounded-full hover:bg-[#F6F3EC] dark:hover:bg-neutral-800 text-[#6B7280] dark:text-neutral-400 hover:text-[#111111] dark:hover:text-white transition-colors press cursor-pointer"
+              className="relative p-1.5 sm:p-2 rounded-full hover:bg-background dark:hover:bg-stone-800 text-muted-foreground dark:text-stone-400 hover:text-foreground dark:hover:text-white transition-colors press cursor-pointer"
             >
-              <Highlighter className="h-4 w-4 sm:h-5 sm:w-5 text-[#2B4EFF]" />
+              <Highlighter className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
               {annotations.length > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#2B4EFF] text-white font-bold text-[9px] flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary text-white font-bold text-[9px] flex items-center justify-center">
                   {annotations.length}
                 </span>
               )}
@@ -483,7 +483,7 @@ export default function TopicPage() {
             <button
               onClick={() => window.print()}
               title="Save Topic as PDF / Print Exam Guide"
-              className="hidden sm:inline-flex p-1.5 sm:p-2 rounded-full hover:bg-[#F6F3EC] dark:hover:bg-neutral-800 text-[#6B7280] dark:text-neutral-400 hover:text-[#111111] dark:hover:text-white transition-colors press cursor-pointer"
+              className="hidden sm:inline-flex p-1.5 sm:p-2 rounded-full hover:bg-background dark:hover:bg-stone-800 text-muted-foreground dark:text-stone-400 hover:text-foreground dark:hover:text-white transition-colors press cursor-pointer"
             >
               <Printer className="h-4 w-4 sm:h-5 sm:w-5" />
             </button>
@@ -491,47 +491,47 @@ export default function TopicPage() {
             <button
               onClick={() => setFocusMode(!focusMode)}
               title={focusMode ? "Exit Focus Mode (F)" : "Focus Mode (F)"}
-              className="hidden sm:inline-flex p-1.5 sm:p-2 rounded-full hover:bg-[#F6F3EC] dark:hover:bg-neutral-800 text-[#6B7280] dark:text-neutral-400 hover:text-[#111111] dark:hover:text-white transition-colors press cursor-pointer"
+              className="hidden sm:inline-flex p-1.5 sm:p-2 rounded-full hover:bg-background dark:hover:bg-stone-800 text-muted-foreground dark:text-stone-400 hover:text-foreground dark:hover:text-white transition-colors press cursor-pointer"
             >
               {focusMode ? <Minimize2 className="h-4 w-4 sm:h-5 sm:w-5" /> : <Maximize2 className="h-4 w-4 sm:h-5 sm:w-5" />}
             </button>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="sm:hidden p-1.5 rounded-full hover:bg-[#F6F3EC] dark:hover:bg-neutral-800 text-[#6B7280] dark:text-neutral-400 hover:text-[#111111] dark:hover:text-white transition-colors press cursor-pointer">
+                <button className="sm:hidden p-1.5 rounded-full hover:bg-background dark:hover:bg-stone-800 text-muted-foreground dark:text-stone-400 hover:text-foreground dark:hover:text-white transition-colors press cursor-pointer">
                   <MoreVertical className="h-4 w-4" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 sm:hidden rounded-2xl shadow-xl border border-[#E8E4DA] dark:border-neutral-800 bg-white dark:bg-[#1C1C1E]">
-                <DropdownMenuItem onClick={() => setFlashcardsOpen(true)} className="press hover:bg-[#F6F3EC] dark:hover:bg-neutral-800">
-                  <Layers className="mr-2 h-4 w-4 text-[#2B4EFF]" />
+              <DropdownMenuContent align="end" className="w-48 sm:hidden rounded-2xl shadow-lg border border-border dark:border-stone-800 bg-white dark:bg-card">
+                <DropdownMenuItem onClick={() => setFlashcardsOpen(true)} className="press hover:bg-background dark:hover:bg-stone-800">
+                  <Layers className="mr-2 h-4 w-4 text-primary" />
                   <span>Flashcards</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleShare} className="press hover:bg-[#F6F3EC] dark:hover:bg-neutral-800">
-                  <Share2 className="mr-2 h-4 w-4 text-[#2B4EFF]" />
+                <DropdownMenuItem onClick={handleShare} className="press hover:bg-background dark:hover:bg-stone-800">
+                  <Share2 className="mr-2 h-4 w-4 text-primary" />
                   <span>Share Topic</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setAnnotationsDrawerOpen(true)} className="press hover:bg-[#F6F3EC] dark:hover:bg-neutral-800">
-                  <Highlighter className="mr-2 h-4 w-4 text-[#2B4EFF]" />
+                <DropdownMenuItem onClick={() => setAnnotationsDrawerOpen(true)} className="press hover:bg-background dark:hover:bg-stone-800">
+                  <Highlighter className="mr-2 h-4 w-4 text-primary" />
                   <span>My Notes ({annotations.length})</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setVivaModalOpen(true)} className="press hover:bg-[#F6F3EC] dark:hover:bg-neutral-800">
-                  <HelpCircle className="mr-2 h-4 w-4 text-[#2B4EFF]" />
+                <DropdownMenuItem onClick={() => setVivaModalOpen(true)} className="press hover:bg-background dark:hover:bg-stone-800">
+                  <HelpCircle className="mr-2 h-4 w-4 text-primary" />
                   <span>Oral / Viva Prep</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setErrataModalOpen(true)} className="press hover:bg-[#F6F3EC] dark:hover:bg-neutral-800">
-                  <Flag className="mr-2 h-4 w-4 text-rose-500" />
+                <DropdownMenuItem onClick={() => setErrataModalOpen(true)} className="press hover:bg-background dark:hover:bg-stone-800">
+                  <Flag className="mr-2 h-4 w-4 text-destructive" />
                   <span>Report Error (+25 XP)</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => window.print()} className="press hover:bg-[#F6F3EC] dark:hover:bg-neutral-800">
-                  <Printer className="mr-2 h-4 w-4 text-[#6B7280]" />
+                <DropdownMenuItem onClick={() => window.print()} className="press hover:bg-background dark:hover:bg-stone-800">
+                  <Printer className="mr-2 h-4 w-4 text-muted-foreground" />
                   <span>Save / Print PDF</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <button onClick={() => toggleBookmark(topic.id)} className="p-1.5 sm:p-2 rounded-full hover:bg-[#F6F3EC] dark:hover:bg-neutral-800 transition-colors press cursor-pointer">
-              <Bookmark className={`h-4 w-4 sm:h-5 sm:w-5 ${bookmarked ? "fill-[#2B4EFF] text-[#2B4EFF]" : "text-[#6B7280] dark:text-neutral-400 hover:text-[#111111] dark:hover:text-white"}`} />
+            <button onClick={() => toggleBookmark(topic.id)} className="p-1.5 sm:p-2 rounded-full hover:bg-background dark:hover:bg-stone-800 transition-colors press cursor-pointer">
+              <Bookmark className={`h-4 w-4 sm:h-5 sm:w-5 ${bookmarked ? "fill-primary text-primary" : "text-muted-foreground dark:text-stone-400 hover:text-foreground dark:hover:text-white"}`} />
             </button>
           </div>
         </div>
@@ -540,14 +540,14 @@ export default function TopicPage() {
       <div className="flex flex-1 max-w-[1400px] mx-auto w-full">
         <aside className={`${focusMode ? "hidden" : ""} ${sidebarOpen ? "fixed inset-0 z-40 lg:relative" : "hidden lg:block"} lg:w-72 lg:shrink-0`}>
           {sidebarOpen && <div className="fixed inset-0 bg-black/60 backdrop-blur-sm lg:hidden z-40" onClick={() => setSidebarOpen(false)} />}
-          <div className={`${sidebarOpen ? "fixed left-0 top-14 bottom-0 w-72 z-50 bg-background shadow-xl" : ""} lg:sticky lg:top-14 lg:h-[calc(100vh-3.5rem)] overflow-y-auto border-r border-white/10 p-4 scrollbar-thin`}>
+          <div className={`${sidebarOpen ? "fixed left-0 top-14 bottom-0 w-72 z-50 bg-background shadow-lg" : ""} lg:sticky lg:top-14 lg:h-[calc(100vh-3.5rem)] overflow-y-auto border-r border-white/10 p-4 scrollbar-thin`}>
             <div className="mb-4 pb-3 border-b border-white/10">
-              <h3 className="font-bold text-sm text-[#111111] dark:text-white truncate">{subject?.name}</h3>
-              <p className="text-[11px] text-[#6B7280] dark:text-neutral-400">{subject?.code} • Semester {subject?.semester}</p>
+              <h3 className="font-bold text-sm text-foreground dark:text-white truncate">{subject?.name}</h3>
+              <p className="text-[11px] text-muted-foreground dark:text-stone-400">{subject?.code} • Semester {subject?.semester}</p>
             </div>
             {allUnits.map((unit, uIdx) => (
               <div key={unit.id} className="mb-4">
-                <p className="text-[11px] font-bold text-[#6B7280] dark:text-neutral-400 uppercase tracking-wider mb-1.5 px-2">
+                <p className="text-[11px] font-bold text-muted-foreground dark:text-stone-400 uppercase tracking-wider mb-1.5 px-2">
                   Unit {uIdx + 1}: {unit.title}
                 </p>
                 <div className="space-y-0.5">
@@ -561,8 +561,8 @@ export default function TopicPage() {
                         onClick={() => setSidebarOpen(false)}
                         className={`flex items-center justify-between text-xs py-1.5 px-2.5 rounded-lg transition-colors press ${
                           isActive
-                            ? "bg-[#E6EAFD] text-[#2B4EFF] dark:bg-blue-950/60 dark:text-blue-300 font-bold shadow-2xs"
-                            : "text-[#6B7280] dark:text-neutral-400 hover:text-[#111111] dark:hover:text-white hover:bg-[#F6F3EC] dark:hover:bg-neutral-800"
+                            ? "bg-primary/10 text-primary dark:bg-primary/15 dark:text-primary font-bold shadow-2xs"
+                            : "text-muted-foreground dark:text-stone-400 hover:text-foreground dark:hover:text-white hover:bg-background dark:hover:bg-stone-800"
                         }`}
                       >
                         <span className="truncate pr-2">{t.title}</span>
@@ -578,7 +578,7 @@ export default function TopicPage() {
 
         <main className="flex-1 min-w-0 pb-20">
           {focusMode && (
-            <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 bg-black/40 backdrop-blur-md border border-white/10 rounded-full px-5 py-2.5 shadow-xl animate-fade-in">
+            <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 bg-black/40 backdrop-blur-md border border-white/10 rounded-full px-5 py-2.5 shadow-lg animate-fade-in">
               <Minimize2 className="h-4 w-4 text-white/60" />
               <span className="text-[13px] font-medium text-white">Focus Mode</span>
               <span className="text-[12px] text-white/40 mx-1">·</span>
@@ -605,23 +605,23 @@ export default function TopicPage() {
                   </button>
                   <button
                     onClick={() => setErrataModalOpen(true)}
-                    className="px-2.5 py-1 rounded-full bg-white dark:bg-neutral-800 border border-[#E8E4DA] dark:border-neutral-700 hover:border-rose-300 text-[#6B7280] dark:text-neutral-300 hover:text-rose-500 text-[11px] font-semibold inline-flex items-center gap-1 transition-all press cursor-pointer"
+                    className="px-2.5 py-1 rounded-full bg-white dark:bg-stone-800 border border-border dark:border-stone-700 hover:border-destructive/30 text-muted-foreground dark:text-stone-300 hover:text-destructive text-[11px] font-semibold inline-flex items-center gap-1 transition-all press cursor-pointer"
                   >
                     <Flag className="h-3 w-3 text-destructive" /> Report Typo
                   </button>
                 </div>
               </div>
 
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold mb-3 sm:mb-4 leading-tight text-[#111111] dark:text-white tracking-tight">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold mb-3 sm:mb-4 leading-tight text-foreground dark:text-white tracking-tight">
                 {topic.title}
               </h1>
 
               <div className="hidden print-header mb-6">
                 <div className="flex justify-between items-center mb-1">
-                  <span className="font-extrabold text-lg text-white">ITM SLS BARODA UNIVERSITY</span>
+                  <span className="font-semibold text-lg text-white">ITM SLS BARODA UNIVERSITY</span>
                   <span className="text-xs text-white/60 font-semibold">B.Tech CSE · Semester 3</span>
                 </div>
-                <h1 className="text-2xl font-black text-white">{topic.title}</h1>
+                <h1 className="text-2xl font-bold text-white">{topic.title}</h1>
                 <p className="text-xs text-white/70">{subject?.name} ({subject?.code}) · {unitTitle}</p>
               </div>
 
@@ -663,13 +663,13 @@ export default function TopicPage() {
                         </button>
                       )}
                     </div>
-                    <div className="mb-6 sm:mb-10 bg-[#E6EAFD]/40 dark:bg-neutral-800/60 rounded-[20px] p-5 sm:p-6 border border-[#2B4EFF]/20 shadow-2xs">
-                      <p className="text-[11px] sm:text-[12px] font-bold text-[#2B4EFF] dark:text-blue-400 uppercase tracking-widest mb-2 sm:mb-3 flex items-center gap-2">
+                    <div className="mb-6 sm:mb-10 bg-primary/10 dark:bg-stone-800/60 rounded-2xl p-5 sm:p-6 border border-primary/20 shadow-2xs">
+                      <p className="text-[11px] sm:text-[12px] font-bold text-primary dark:text-primary uppercase tracking-widest mb-2 sm:mb-3 flex items-center gap-2">
                         <BookOpen className="h-4 w-4" /> Quick Summary
                       </p>
-                      <p className="text-[14px] sm:text-[16px] leading-[1.7] sm:leading-[1.8] text-[#111111] dark:text-neutral-100 font-medium">{topic.simpleExplanation}</p>
+                      <p className="font-reading text-[16px] sm:text-[18px] leading-[1.75] text-foreground">{topic.simpleExplanation}</p>
                     </div>
-                    <div className="rich-content prose-lg max-w-none">
+                    <div className="rich-content topic-reading max-w-[70ch]">
                       <MarkdownRenderer content={topic.richContent || topic.detailedExplanation} />
                     </div>
                   </TabsContent>
@@ -703,17 +703,17 @@ export default function TopicPage() {
 
                 {topic.theoryQuestions && topic.theoryQuestions.length > 0 && (
                   <div className="mt-12 sm:mt-16">
-                    <h2 className="text-xl sm:text-2xl font-extrabold mb-4 sm:mb-6 pb-2 sm:pb-3 border-b border-[#E8E4DA] dark:border-neutral-800 text-[#111111] dark:text-white">Important Exam Questions</h2>
+                    <h2 className="text-xl sm:text-2xl font-semibold mb-4 sm:mb-6 pb-2 sm:pb-3 border-b border-border dark:border-stone-800 text-foreground dark:text-white">Important Exam Questions</h2>
                     <Accordion type="single" collapsible className="w-full space-y-2 sm:space-y-3">
                       {topic.theoryQuestions.map((q, idx) => (
-                        <AccordionItem key={idx} value={`item-${idx}`} className="border border-[#E8E4DA] dark:border-neutral-800 rounded-2xl bg-white dark:bg-[#18181B]">
+                        <AccordionItem key={idx} value={`item-${idx}`} className="border border-border dark:border-stone-800 rounded-2xl bg-white dark:bg-background">
                           <AccordionTrigger className="text-left font-bold text-[13px] sm:text-[15px] hover:no-underline py-3 sm:py-4 press">
                             <span className="flex items-center gap-2">
                               <span className="text-xs px-2 py-0.5 rounded bg-primary/10 text-primary font-mono">{q.marks}</span>
                               {q.question}
                             </span>
                           </AccordionTrigger>
-                          <AccordionContent className="pt-2 pb-4 text-[#6B7280] dark:text-neutral-300 text-xs sm:text-sm leading-relaxed border-t border-[#E8E4DA] dark:border-neutral-800">
+                          <AccordionContent className="pt-2 pb-4 text-muted-foreground dark:text-stone-300 text-xs sm:text-sm leading-relaxed border-t border-border dark:border-stone-800">
                             <MarkdownRenderer content={q.answer} />
                           </AccordionContent>
                         </AccordionItem>
@@ -724,7 +724,7 @@ export default function TopicPage() {
 
                 {topic.mcqs && topic.mcqs.length > 0 && (
                   <div className="mt-16 mb-8">
-                    <h2 className="text-2xl font-extrabold mb-6 pb-3 border-b border-[#E8E4DA] dark:border-neutral-800 text-[#111111] dark:text-white">Practice Quiz ({topic.mcqs.length} MCQs)</h2>
+                    <h2 className="text-2xl font-semibold mb-6 pb-3 border-b border-border dark:border-stone-800 text-foreground dark:text-white">Practice Quiz ({topic.mcqs.length} MCQs)</h2>
                     <MCQQuiz
                       mcqs={topic.mcqs}
                       topicId={topic.id}
@@ -737,7 +737,7 @@ export default function TopicPage() {
                 )}
               </div>
 
-              <div className="flex items-center justify-between mt-12 pt-8 border-t border-[#E8E4DA] dark:border-neutral-800">
+              <div className="flex items-center justify-between mt-12 pt-8 border-t border-border dark:border-stone-800">
                 {adjacent.prev ? (
                   <button onClick={() => navigate(`/subject/${subjectId}/topic/${adjacent.prev!.id}`)} className="press inline-flex items-center gap-1.5 text-[14px] text-white/60 hover:text-white transition-colors">
                     <ChevronLeft className="h-4 w-4" /> Previous
@@ -759,15 +759,15 @@ export default function TopicPage() {
           </div>
 
           {!focusMode && (
-            <footer className="mt-16 pt-8 pb-12 border-t border-[#E8E4DA] dark:border-neutral-800 text-xs text-[#6B7280] dark:text-neutral-400">
+            <footer className="mt-16 pt-8 pb-12 border-t border-border dark:border-stone-800 text-xs text-muted-foreground dark:text-stone-400">
               <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-[#2B4EFF]" />
-                  <span className="font-semibold text-[#111111] dark:text-white">ITM SLS Baroda University</span>
+                  <span className="w-2 h-2 rounded-full bg-primary" />
+                  <span className="font-semibold text-foreground dark:text-white">ITM SLS Baroda University</span>
                   <span>·</span>
                   <span>{subject?.name} ({subject?.code})</span>
                 </div>
-                <div className="text-[11px] text-[#6B7280]">
+                <div className="text-[11px] text-muted-foreground">
                   Academic Suite · Verified Syllabus Notes
                 </div>
               </div>
@@ -800,7 +800,7 @@ export default function TopicPage() {
 
       {annotationsDrawerOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-end p-0 bg-black/60 backdrop-blur-sm animate-fade-in">
-          <div className="bg-black/40 border-l border-white/10 h-full max-w-md w-full p-6 shadow-2xl flex flex-col slide-in">
+          <div className="bg-black/40 border-l border-white/10 h-full max-w-md w-full p-6 shadow-lg flex flex-col slide-in">
             <div className="flex items-center justify-between pb-4 border-b border-white/10">
               <div className="flex items-center gap-2.5">
                 <span className="w-8 h-8 rounded-lg bg-accent/10 text-accent-foreground flex items-center justify-center font-bold">
@@ -858,7 +858,7 @@ export default function TopicPage() {
                       </span>
                       <button
                         onClick={() => removeAnnotation(ann.id)}
-                        className="p-1 rounded hover:bg-red-500/10 text-white/60 hover:text-red-400 transition-colors press"
+                        className="p-1 rounded hover:bg-destructive/10 text-white/60 hover:text-destructive transition-colors press"
                         title="Delete Note"
                       >
                         <Trash2 className="h-3.5 w-3.5" />

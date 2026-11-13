@@ -4,7 +4,7 @@ export const sem4DaaMaster: Subject = {
   id: "sem4-daa",
   name: "Design & Analysis of Algorithms (DAA)",
   code: "DAA403",
-  color: "bg-purple-600",
+  color: "bg-primary",
   icon: "code",
   description: "Comprehensive University Syllabus for Design and Analysis of Algorithms — Asymptotic Bounds (Big-O, Omega, Theta), Master Theorem, Divide & Conquer, Greedy Strategy (Huffman, MST), Dynamic Programming (LCS, 0/1 Knapsack, MCM), Backtracking (N-Queens), and NP-Completeness Proofs.",
   semester: 4,

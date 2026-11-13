@@ -81,13 +81,13 @@ const MASTER_SUBJECTS: SubjectCardConfig[] = [
     name: "Object-Oriented Programming with Java",
     shortName: "Java (OOPJ)",
     badge: "🔥 Remedial Special · Zero-to-Hero Notes + 38 Solved Qs",
-    badgeColor: "bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30",
+    badgeColor: "bg-primary/15 text-primary dark:text-primary border-primary/30",
     path: "/imp-questions/oopj",
     icon: Coffee,
     colorScheme: {
-      iconBg: "bg-[#18181B] text-[#FAFAFA]",
+      iconBg: "bg-foreground text-[#FAFAFA]",
       iconColor: "text-[#FAFAFA]",
-      borderHover: "hover:border-[#18181B] dark:hover:border-[#FAFAFA]/60",
+      borderHover: "hover:border-foreground dark:hover:border-[#FAFAFA]/60",
       cardBorder: "border-primary/40",
     },
     description: "Zero-to-Hero passing guide: Complete Units 2 & 3 syllabus theory, dynamic method dispatch, constructor chaining, interfaces, 38 solved exam questions with traces & viral sharing.",
@@ -104,13 +104,13 @@ const MASTER_SUBJECTS: SubjectCardConfig[] = [
     name: "Data Structures and Algorithms",
     shortName: "Data Structures (DSA)",
     badge: "Core CS · 38 Solved Qs",
-    badgeColor: "bg-amber-500/15 text-amber-500 dark:text-amber-500 border-amber-500/30",
+    badgeColor: "bg-primary/15 text-primary dark:text-primary border-primary/30",
     path: "/imp-questions/dsa",
     icon: Database,
     colorScheme: {
-      iconBg: "bg-amber-500/10 text-amber-500 dark:text-amber-500",
-      iconColor: "text-amber-500",
-      borderHover: "hover:border-amber-500/60",
+      iconBg: "bg-primary/10 text-primary dark:text-primary",
+      iconColor: "text-primary",
+      borderHover: "hover:border-primary/60",
     },
     description: "Circular Queue modulo arithmetic, BST recursion traces, AVL LL/RR/LR/RL rotations, Dijkstra, Prim & Kruskal DSU.",
     parts: {
@@ -126,13 +126,13 @@ const MASTER_SUBJECTS: SubjectCardConfig[] = [
     name: "Computer Architecture & Organization",
     shortName: "Architecture (CA)",
     badge: "Hardware & RTL · 38 Solved Qs",
-    badgeColor: "bg-amber-500/15 text-amber-500 dark:text-amber-500 border-amber-500/30",
+    badgeColor: "bg-primary/15 text-primary dark:text-primary border-primary/30",
     path: "/imp-questions/ca",
     icon: Cpu,
     colorScheme: {
-      iconBg: "bg-amber-500/10 text-amber-500 dark:text-amber-500",
-      iconColor: "text-amber-500",
-      borderHover: "hover:border-amber-500/60",
+      iconBg: "bg-primary/10 text-primary dark:text-primary",
+      iconColor: "text-primary",
+      borderHover: "hover:border-primary/60",
     },
     description: "16-bit Common Bus RTL, Booth signed multiplication, 4-stage pipeline hazards, AMAT cache mapping & DMA cycle stealing.",
     parts: {
@@ -148,13 +148,13 @@ const MASTER_SUBJECTS: SubjectCardConfig[] = [
     name: "Database Management Systems",
     shortName: "Database (DBMS)",
     badge: "Relational & SQL · 38 Solved Qs",
-    badgeColor: "bg-orange-500/15 text-orange-600 dark:text-orange-400 border-orange-500/30",
+    badgeColor: "bg-primary/15 text-primary dark:text-primary border-primary/30",
     path: "/imp-questions/dbms",
     icon: Layers,
     colorScheme: {
-      iconBg: "bg-orange-500/10 text-orange-600 dark:text-orange-400",
-      iconColor: "text-orange-500",
-      borderHover: "hover:border-orange-500/60",
+      iconBg: "bg-primary/10 text-primary dark:text-primary",
+      iconColor: "text-primary",
+      borderHover: "hover:border-primary/60",
     },
     description: "NULL 3-valued logic, BCNF lossless decomposition, Window functions, ACID WAL recovery, PL/SQL Triggers & B+ Trees.",
     parts: {
@@ -170,13 +170,13 @@ const MASTER_SUBJECTS: SubjectCardConfig[] = [
     name: "Computer Oriented Numerical Methods with Python",
     shortName: "Numerical Python (CONMP)",
     badge: "Applied Math · 38 Solved Qs",
-    badgeColor: "bg-purple-500/15 text-purple-600 dark:text-purple-400 border-purple-500/30",
+    badgeColor: "bg-primary/15 text-primary dark:text-primary border-primary/30",
     path: "/imp-questions/conmp",
     icon: Calculator,
     colorScheme: {
-      iconBg: "bg-purple-500/10 text-purple-600 dark:text-purple-400",
-      iconColor: "text-purple-500",
-      borderHover: "hover:border-purple-500/60",
+      iconBg: "bg-primary/10 text-primary dark:text-primary",
+      iconColor: "text-primary",
+      borderHover: "hover:border-primary/60",
     },
     description: "Newton-Raphson quadratic trace, RK4 4th-order ODE, Simpson 1/3rd & 3/8th quadrature, Gauss-Seidel diagonal dominance.",
     parts: {
@@ -216,9 +216,9 @@ export default function ImpQuestionsSubjectsPage() {
       {/* ── TOP HEADER SECTION ── */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-border/60">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-foreground font-display flex items-center gap-2">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground font-display flex items-center gap-2">
             <span>Important Exam Questions & Solved Banks</span>
-            <Sparkles className="h-5 w-5 text-amber-500" />
+            <Sparkles className="h-5 w-5 text-primary" />
           </h1>
           <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5 font-medium flex-wrap">
             <span>Academic Resources</span>
@@ -229,7 +229,7 @@ export default function ImpQuestionsSubjectsPage() {
             <span>·</span>
             <span className="text-foreground font-semibold">Semester 3 (B.Tech CSE)</span>
             <span>·</span>
-            <span className="text-amber-500 dark:text-amber-500 font-bold">190 Master Solved Qs</span>
+            <span className="text-primary dark:text-primary font-bold">190 Master Solved Qs</span>
           </div>
         </div>
 
@@ -250,7 +250,7 @@ export default function ImpQuestionsSubjectsPage() {
                 activeTab === "exam" ? "bg-background text-foreground shadow-xs font-bold" : "text-muted-foreground"
               }`}
             >
-              <Flame className="h-3.5 w-3.5 text-amber-500" />
+              <Flame className="h-3.5 w-3.5 text-primary" />
               <span>Remedial Banks</span>
             </button>
             <button
@@ -279,7 +279,7 @@ export default function ImpQuestionsSubjectsPage() {
               navigate("/quiz");
               toast.info("Navigating to Active Recall Quiz");
             }}
-            className="h-9 px-4 rounded-xl bg-amber-500 hover:bg-amber-500 text-white font-bold text-xs shadow-md shadow-indigo-600/20 flex items-center gap-1.5 transition-all active:scale-95 shrink-0 cursor-pointer"
+            className="h-9 px-4 rounded-xl bg-primary hover:bg-primary text-white font-bold text-xs shadow-md shadow-primary/20 flex items-center gap-1.5 transition-all active:scale-95 shrink-0 cursor-pointer"
           >
             <Plus className="h-3.5 w-3.5" />
             <span>Practice Quiz</span>
@@ -288,14 +288,14 @@ export default function ImpQuestionsSubjectsPage() {
       </div>
 
       {/* ── FEATURED HERO: 5-SUBJECT MASTER UNIVERSITY SOLVED BANKS ── */}
-      <div className="p-5 sm:p-7 rounded-3xl bg-gradient-to-r from-[#18181B] via-[#1D4A3F] to-[#27272A] text-white shadow-xl border border-[#FAFAFA]/40 relative overflow-hidden">
+      <div className="p-5 sm:p-7 rounded-2xl bg-gradient-to-r from-foreground via-primary to-[#27272A] text-white shadow-lg border border-[#FAFAFA]/40 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#FAFAFA]/20 via-transparent to-transparent pointer-events-none" />
 
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
           <div className="space-y-3 max-w-3xl">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#FAFAFA] text-[#18181B] shadow-xs flex items-center gap-1.5 font-display">
-                <Flame className="h-3 w-3 fill-[#18181B]" />
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#FAFAFA] text-foreground shadow-xs flex items-center gap-1.5 font-display">
+                <Flame className="h-3 w-3 fill-foreground" />
                 University Model Solved Banks
               </span>
               <span className="text-xs font-mono font-bold text-[#FAFAFA]">
@@ -307,10 +307,10 @@ export default function ImpQuestionsSubjectsPage() {
               </span>
             </div>
 
-            <h2 className="text-xl sm:text-2xl font-black text-white font-display tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-bold text-white font-display tracking-tight">
               Complete Model Solutions for All 5 Semester 3 Subjects
             </h2>
-            <p className="text-xs sm:text-sm text-[#A1A1AA] leading-relaxed">
+            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
               Every subject includes: <strong>Part A</strong> (5 Predict Output dry runs with line-by-line trace tables), <strong>Part B</strong> (15 5-mark complete code implementations with exact execution outputs & viva traps), <strong>Part C</strong> (18 3-mark comparative theory matrices), and <strong>Part D</strong> (University exam strategy, fatal mistakes & MCQs).
             </p>
 
@@ -318,32 +318,32 @@ export default function ImpQuestionsSubjectsPage() {
             <div className="flex flex-wrap items-center gap-2 pt-1 text-xs">
               <button
                 onClick={() => navigate("/imp-questions/oopj")}
-                className="px-3 py-1 rounded-xl bg-white/15 hover:bg-[#FAFAFA] hover:text-[#18181B] text-white font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+                className="px-3 py-1 rounded-xl bg-white/15 hover:bg-[#FAFAFA] hover:text-foreground text-white font-bold transition-all flex items-center gap-1.5 cursor-pointer"
               >
                 <span>Java (OOPJ)</span>
-                <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-500/30 text-amber-200">Oct 26</span>
+                <span className="text-[10px] px-1.5 py-0.2 rounded bg-primary/30 text-primary">Oct 26</span>
               </button>
               <button
                 onClick={() => navigate("/imp-questions/dsa")}
-                className="px-3 py-1 rounded-xl bg-white/15 hover:bg-[#FAFAFA] hover:text-[#18181B] text-white font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+                className="px-3 py-1 rounded-xl bg-white/15 hover:bg-[#FAFAFA] hover:text-foreground text-white font-bold transition-all flex items-center gap-1.5 cursor-pointer"
               >
                 <span>DSA (C2310C5)</span>
               </button>
               <button
                 onClick={() => navigate("/imp-questions/ca")}
-                className="px-3 py-1 rounded-xl bg-white/15 hover:bg-[#FAFAFA] hover:text-[#18181B] text-white font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+                className="px-3 py-1 rounded-xl bg-white/15 hover:bg-[#FAFAFA] hover:text-foreground text-white font-bold transition-all flex items-center gap-1.5 cursor-pointer"
               >
                 <span>Architecture (CA)</span>
               </button>
               <button
                 onClick={() => navigate("/imp-questions/dbms")}
-                className="px-3 py-1 rounded-xl bg-white/15 hover:bg-[#FAFAFA] hover:text-[#18181B] text-white font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+                className="px-3 py-1 rounded-xl bg-white/15 hover:bg-[#FAFAFA] hover:text-foreground text-white font-bold transition-all flex items-center gap-1.5 cursor-pointer"
               >
                 <span>DBMS (C2311C4)</span>
               </button>
               <button
                 onClick={() => navigate("/imp-questions/conmp")}
-                className="px-3 py-1 rounded-xl bg-white/15 hover:bg-[#FAFAFA] hover:text-[#18181B] text-white font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+                className="px-3 py-1 rounded-xl bg-white/15 hover:bg-[#FAFAFA] hover:text-foreground text-white font-bold transition-all flex items-center gap-1.5 cursor-pointer"
               >
                 <span>Numerical Python (CONMP)</span>
               </button>
@@ -353,12 +353,12 @@ export default function ImpQuestionsSubjectsPage() {
           <div className="flex flex-col sm:flex-row lg:flex-col items-start lg:items-end gap-3 shrink-0">
             <button
               onClick={() => navigate("/imp-questions/oopj")}
-              className="h-11 px-5 rounded-2xl bg-[#FAFAFA] hover:bg-[#E4E4E7] text-[#18181B] font-black text-xs shadow-lg shadow-[#FAFAFA]/20 flex items-center gap-2 transition-all active:scale-95 cursor-pointer font-display"
+              className="h-11 px-5 rounded-2xl bg-[#FAFAFA] hover:bg-muted text-foreground font-bold text-xs shadow-lg shadow-[#FAFAFA]/20 flex items-center gap-2 transition-all active:scale-95 cursor-pointer font-display"
             >
               <BookOpen className="h-4 w-4" />
               <span>Open Remedial Bank (OOPJ)</span>
             </button>
-            <span className="text-[11px] text-[#A1A1AA] font-medium">
+            <span className="text-[11px] text-muted-foreground font-medium">
               Next paper: Oct 26, 2026 · 10:10 AM
             </span>
           </div>
@@ -407,7 +407,7 @@ export default function ImpQuestionsSubjectsPage() {
                 <div>
                   <h3 className="font-bold text-sm text-foreground group-hover:text-primary transition-colors flex items-center justify-between">
                     <span>{sub.shortName}</span>
-                    <Sparkles className="h-3 w-3 text-amber-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <Sparkles className="h-3 w-3 text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
                   </h3>
                   <span className="text-[10px] text-muted-foreground font-mono block mt-0.5">
                     38 Solved Questions · All 6 Units
@@ -424,7 +424,7 @@ export default function ImpQuestionsSubjectsPage() {
                     className="p-2 rounded-xl border border-border/70 bg-secondary/20 hover:bg-secondary/60 flex items-center justify-between transition-colors cursor-pointer"
                   >
                     <span className="font-medium text-foreground text-[11px]">{sub.parts.partA}</span>
-                    <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-500 dark:text-amber-500 font-bold font-mono">
+                    <span className="text-[9px] px-1.5 py-0.2 rounded bg-primary/20 text-primary dark:text-primary font-bold font-mono">
                       Traces
                     </span>
                   </Link>
@@ -434,7 +434,7 @@ export default function ImpQuestionsSubjectsPage() {
                     className="p-2 rounded-xl border border-border/70 bg-secondary/20 hover:bg-secondary/60 flex items-center justify-between transition-colors cursor-pointer"
                   >
                     <span className="font-medium text-foreground text-[11px]">{sub.parts.partB}</span>
-                    <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-500 dark:text-amber-500 font-bold font-mono">
+                    <span className="text-[9px] px-1.5 py-0.2 rounded bg-primary/20 text-primary dark:text-primary font-bold font-mono">
                       5 Marks
                     </span>
                   </Link>
@@ -444,7 +444,7 @@ export default function ImpQuestionsSubjectsPage() {
                     className="p-2 rounded-xl border border-border/70 bg-secondary/20 hover:bg-secondary/60 flex items-center justify-between transition-colors cursor-pointer"
                   >
                     <span className="font-medium text-foreground text-[11px]">{sub.parts.partC}</span>
-                    <span className="text-[9px] px-1.5 py-0.2 rounded bg-orange-500/20 text-orange-600 dark:text-orange-400 font-bold font-mono">
+                    <span className="text-[9px] px-1.5 py-0.2 rounded bg-primary/20 text-primary dark:text-primary font-bold font-mono">
                       3 Marks
                     </span>
                   </Link>
@@ -479,7 +479,7 @@ export default function ImpQuestionsSubjectsPage() {
           <div className="space-y-1.5 text-xs font-semibold">
             <button
               onClick={() => navigate("/materials")}
-              className="w-full p-2.5 rounded-xl bg-[#18181B] text-[#FAFAFA] font-bold flex items-center justify-between text-left shadow-xs cursor-pointer hover:bg-[#27272A] transition-all"
+              className="w-full p-2.5 rounded-xl bg-foreground text-[#FAFAFA] font-bold flex items-center justify-between text-left shadow-xs cursor-pointer hover:bg-[#27272A] transition-all"
             >
               <span className="flex items-center gap-2">
                 <CheckCircle className="h-4 w-4" />
@@ -493,7 +493,7 @@ export default function ImpQuestionsSubjectsPage() {
               className="w-full p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary/60 flex items-center justify-between text-left transition-colors cursor-pointer"
             >
               <span className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-amber-500" />
+                <Calendar className="h-4 w-4 text-primary" />
                 <span>Remedial Timetable (Oct 26)</span>
               </span>
               <ChevronRight className="h-3.5 w-3.5 opacity-50" />
@@ -504,7 +504,7 @@ export default function ImpQuestionsSubjectsPage() {
               className="w-full p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary/60 flex items-center justify-between text-left transition-colors cursor-pointer"
             >
               <span className="flex items-center gap-2">
-                <FileCheck className="h-4 w-4 text-amber-500" />
+                <FileCheck className="h-4 w-4 text-primary" />
                 <span>Practical Viva Timetable</span>
               </span>
               <ChevronRight className="h-3.5 w-3.5 opacity-50" />
@@ -515,7 +515,7 @@ export default function ImpQuestionsSubjectsPage() {
               className="w-full p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary/60 flex items-center justify-between text-left transition-colors cursor-pointer"
             >
               <span className="flex items-center gap-2">
-                <FileText className="h-4 w-4 text-amber-500" />
+                <FileText className="h-4 w-4 text-primary" />
                 <span>MST Mid-Semester Archive</span>
               </span>
               <ChevronRight className="h-3.5 w-3.5 opacity-50" />
@@ -526,7 +526,7 @@ export default function ImpQuestionsSubjectsPage() {
               className="w-full p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary/60 flex items-center justify-between text-left transition-colors cursor-pointer"
             >
               <span className="flex items-center gap-2">
-                <Calculator className="h-4 w-4 text-purple-500" />
+                <Calculator className="h-4 w-4 text-primary" />
                 <span>CGPA / Attendance Tracker</span>
               </span>
               <ChevronRight className="h-3.5 w-3.5 opacity-50" />
@@ -593,7 +593,7 @@ export default function ImpQuestionsSubjectsPage() {
           <div>
             <div className="flex items-center justify-between mb-1">
               <h3 className="font-bold text-sm text-foreground">University Solved Pack</h3>
-              <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-500 dark:text-amber-500 font-bold text-[10px] font-mono">
+              <span className="px-2 py-0.5 rounded bg-primary/10 text-primary dark:text-primary font-bold text-[10px] font-mono">
                 Sem 3 Verified
               </span>
             </div>
@@ -604,23 +604,23 @@ export default function ImpQuestionsSubjectsPage() {
             {/* 10 Critical Data Metrics Matrix */}
             <div className="grid grid-cols-5 gap-2 text-center p-3 rounded-xl bg-secondary/30 border border-border/60 mb-4">
               <div>
-                <span className="text-base font-black font-mono text-foreground block">190</span>
+                <span className="text-base font-bold font-mono text-foreground block">190</span>
                 <span className="text-[10px] text-muted-foreground uppercase font-semibold">Total Qs</span>
               </div>
               <div>
-                <span className="text-base font-black font-mono text-[#18181B] dark:text-[#FAFAFA] block">25</span>
+                <span className="text-base font-bold font-mono text-foreground dark:text-[#FAFAFA] block">25</span>
                 <span className="text-[10px] text-muted-foreground uppercase font-semibold">Traces</span>
               </div>
               <div>
-                <span className="text-base font-black font-mono text-foreground block">75</span>
+                <span className="text-base font-bold font-mono text-foreground block">75</span>
                 <span className="text-[10px] text-muted-foreground uppercase font-semibold">5-Mark</span>
               </div>
               <div>
-                <span className="text-base font-black font-mono text-[#18181B] dark:text-[#FAFAFA] block">90</span>
+                <span className="text-base font-bold font-mono text-foreground dark:text-[#FAFAFA] block">90</span>
                 <span className="text-[10px] text-muted-foreground uppercase font-semibold">Theory</span>
               </div>
               <div>
-                <span className="text-base font-black font-mono text-amber-500 dark:text-amber-500 block">100%</span>
+                <span className="text-base font-bold font-mono text-primary dark:text-primary block">100%</span>
                 <span className="text-[10px] text-muted-foreground uppercase font-semibold">Solved</span>
               </div>
 
@@ -653,7 +653,7 @@ export default function ImpQuestionsSubjectsPage() {
               navigate("/rapid-revision");
               toast.success("Opening Rapid Revision & Exam Blueprint Hub!");
             }}
-            className="w-full h-10 rounded-xl bg-[#18181B] hover:bg-[#27272A] text-white font-bold text-xs flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md shadow-[#18181B]/20 cursor-pointer font-display"
+            className="w-full h-10 rounded-xl bg-foreground hover:bg-[#27272A] text-white font-bold text-xs flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md shadow-foreground/20 cursor-pointer font-display"
             title="Launch High-Yield Rapid Revision with 190 Master Exam Questions"
           >
             <FolderDown className="h-4 w-4 text-[#FAFAFA]" />

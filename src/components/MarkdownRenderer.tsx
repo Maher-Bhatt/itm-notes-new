@@ -170,34 +170,34 @@ const markdownComponents: import("react-markdown").Components = {
       const type = alertMatch[1].toUpperCase();
       const cleanText = raw.replace(/^\[!(NOTE|TIP|WARNING|IMPORTANT|CAUTION)\]\s*/i, "");
 
-      let icon = <Info className="h-4 w-4 text-[#2B4EFF] shrink-0 mt-0.5" />;
-      let border = "border-[#2B4EFF]/30";
-      let bg = "bg-[#E6EAFD]/40 dark:bg-blue-950/20";
+      let icon = <Info className="h-4 w-4 text-primary shrink-0 mt-0.5" />;
+      let border = "border-primary/30";
+      let bg = "bg-primary/10 dark:bg-primary/20";
       let title = "Note";
-      let textCol = "text-[#2B4EFF] dark:text-blue-400";
+      let textCol = "text-primary dark:text-primary";
 
       if (type === "TIP") {
-        icon = <Sparkles className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />;
-        border = "border-emerald-500/30";
-        bg = "bg-emerald-50 dark:bg-emerald-950/20";
+        icon = <Sparkles className="h-4 w-4 text-success dark:text-success shrink-0 mt-0.5" />;
+        border = "border-success/30";
+        bg = "bg-success/10 dark:bg-success/10";
         title = "Exam Tip";
-        textCol = "text-emerald-700 dark:text-emerald-300";
+        textCol = "text-success dark:text-success";
       } else if (type === "WARNING") {
-        icon = <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />;
-        border = "border-amber-500/30";
-        bg = "bg-amber-50 dark:bg-amber-950/20";
+        icon = <AlertTriangle className="h-4 w-4 text-primary dark:text-primary shrink-0 mt-0.5" />;
+        border = "border-primary/30";
+        bg = "bg-primary/10 dark:bg-primary/20";
         title = "Warning";
-        textCol = "text-amber-700 dark:text-amber-300";
+        textCol = "text-primary dark:text-primary";
       } else if (type === "IMPORTANT" || type === "CAUTION") {
-        icon = <AlertCircle className="h-4 w-4 text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" />;
-        border = "border-rose-500/30";
-        bg = "bg-rose-50 dark:bg-rose-950/20";
+        icon = <AlertCircle className="h-4 w-4 text-destructive dark:text-destructive shrink-0 mt-0.5" />;
+        border = "border-destructive/30";
+        bg = "bg-destructive/10 dark:bg-destructive/10";
         title = "Important";
-        textCol = "text-rose-700 dark:text-rose-300";
+        textCol = "text-destructive dark:text-destructive";
       }
 
       return (
-        <div className={`my-4 p-4 rounded-[18px] border ${border} ${bg} flex items-start gap-3 text-xs leading-relaxed`}>
+        <div className={`my-4 p-4 rounded-2xl border ${border} ${bg} flex items-start gap-3 text-xs leading-relaxed`}>
           {icon}
           <div className="flex-1">
             <span className={`font-bold uppercase tracking-wider text-[10px] block mb-1 ${textCol}`}>

@@ -506,7 +506,7 @@ function QCard({ q, idx, showPattern }: { q: any; idx: number; showPattern?: boo
           {q.output && (
             <div>
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Output</p>
-              <pre className="bg-amber-500/5 border border-amber-500/20 rounded p-3 text-xs overflow-x-auto text-amber-500 dark:text-amber-500 font-mono leading-relaxed">
+              <pre className="bg-primary/5 border border-primary/20 rounded p-3 text-xs overflow-x-auto text-primary dark:text-primary font-mono leading-relaxed">
                 {q.output}
               </pre>
             </div>
@@ -544,7 +544,7 @@ export default function PythonImpQuestionsPage() {
         <div className="flex items-start justify-between gap-4 mb-6">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-[11px] font-semibold bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 px-2 py-0.5 rounded-full">Assignment</span>
+              <span className="text-[11px] font-semibold bg-primary/20 text-primary dark:text-primary px-2 py-0.5 rounded-full">Assignment</span>
               <span className="text-[11px] text-muted-foreground">Due: 21/4/2026</span>
             </div>
             <h1 className="text-xl font-bold">Python Programming</h1>
@@ -605,7 +605,7 @@ export default function PythonImpQuestionsPage() {
         {activeTab === "threading" && (
           <div className="space-y-3">
             <div className="flex items-center gap-2 mb-3">
-              <span className="text-xs font-semibold bg-amber-500/10 text-amber-500 dark:text-amber-500 px-2.5 py-1 rounded-full">
+              <span className="text-xs font-semibold bg-primary/10 text-primary dark:text-primary px-2.5 py-1 rounded-full">
                 Assignment 2 — 11 Questions
               </span>
             </div>
@@ -619,7 +619,7 @@ export default function PythonImpQuestionsPage() {
         {activeTab === "regex" && (
           <div className="space-y-3">
             <div className="flex items-center gap-2 mb-3">
-              <span className="text-xs font-semibold bg-purple-500/10 text-purple-600 dark:text-purple-400 px-2.5 py-1 rounded-full">
+              <span className="text-xs font-semibold bg-primary/10 text-primary dark:text-primary px-2.5 py-1 rounded-full">
                 Assignment 3 — 14 Questions
               </span>
             </div>

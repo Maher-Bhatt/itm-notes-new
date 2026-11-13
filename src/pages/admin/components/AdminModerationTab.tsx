@@ -159,46 +159,46 @@ export function AdminModerationTab() {
       {/* 1. Header controls */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-2.5">
         <div className="relative flex-1 min-w-0">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-500" />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search reports by content, author, or subject…"
-            className="w-full pl-9 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-[#FAFAFA]/60"
+            className="w-full pl-9 pr-4 py-2 bg-stone-800 border border-stone-700 rounded-xl text-xs sm:text-sm text-white placeholder-stone-500 focus:outline-none focus:border-[#FAFAFA]/60"
           />
         </div>
 
         <div className="flex items-center gap-2 flex-wrap">
-          <div className="flex items-center gap-1.5 bg-slate-800 border border-slate-700 px-2.5 py-1.5 rounded-xl text-xs text-slate-300">
-            <Filter className="h-3 w-3 text-slate-400" />
+          <div className="flex items-center gap-1.5 bg-stone-800 border border-stone-700 px-2.5 py-1.5 rounded-xl text-xs text-stone-300">
+            <Filter className="h-3 w-3 text-stone-400" />
             <select
               value={typeFilter}
               onChange={(e) => setTypeFilter(e.target.value)}
               className="bg-transparent text-white focus:outline-none cursor-pointer"
             >
-              <option value="all" className="bg-slate-800">All Queue Types</option>
-              <option value="errata" className="bg-slate-800">Errata Reports</option>
-              <option value="student_contribution" className="bg-slate-800">Student Contributions</option>
-              <option value="community_post" className="bg-slate-800">Community Posts</option>
+              <option value="all" className="bg-stone-800">All Queue Types</option>
+              <option value="errata" className="bg-stone-800">Errata Reports</option>
+              <option value="student_contribution" className="bg-stone-800">Student Contributions</option>
+              <option value="community_post" className="bg-stone-800">Community Posts</option>
             </select>
           </div>
 
-          <div className="flex items-center gap-1.5 bg-slate-800 border border-slate-700 px-2.5 py-1.5 rounded-xl text-xs text-slate-300">
+          <div className="flex items-center gap-1.5 bg-stone-800 border border-stone-700 px-2.5 py-1.5 rounded-xl text-xs text-stone-300">
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
               className="bg-transparent text-white focus:outline-none cursor-pointer"
             >
-              <option value="all" className="bg-slate-800">All Status</option>
-              <option value="pending" className="bg-slate-800">Pending Review</option>
-              <option value="approved" className="bg-slate-800">Approved</option>
-              <option value="rejected" className="bg-slate-800">Rejected</option>
+              <option value="all" className="bg-stone-800">All Status</option>
+              <option value="pending" className="bg-stone-800">Pending Review</option>
+              <option value="approved" className="bg-stone-800">Approved</option>
+              <option value="rejected" className="bg-stone-800">Rejected</option>
             </select>
           </div>
 
           <button
             onClick={loadData}
-            className="flex items-center gap-1.5 px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-xs font-semibold text-slate-300 hover:bg-slate-700 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-2 bg-stone-800 border border-stone-700 rounded-xl text-xs font-semibold text-stone-300 hover:bg-stone-700 transition-colors"
           >
             <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />
             <span>Refresh</span>
@@ -209,12 +209,12 @@ export function AdminModerationTab() {
       {/* 2. Moderation Items List */}
       <div className="space-y-3">
         {loading ? (
-          <div className="py-12 text-center text-slate-500 text-sm">Loading queue items…</div>
+          <div className="py-12 text-center text-stone-500 text-sm">Loading queue items…</div>
         ) : filteredItems.length === 0 ? (
-          <div className="py-12 text-center text-slate-400 text-sm bg-slate-800 border border-slate-700 rounded-2xl">
+          <div className="py-12 text-center text-stone-400 text-sm bg-stone-800 border border-stone-700 rounded-2xl">
             <CheckCircle className="h-8 w-8 text-[#FAFAFA] mx-auto mb-2 opacity-80" />
             <p className="font-bold text-white">Queue Empty</p>
-            <p className="text-xs text-slate-400 mt-1">No moderation reports match this filter.</p>
+            <p className="text-xs text-stone-400 mt-1">No moderation reports match this filter.</p>
           </div>
         ) : (
           filteredItems.map((item) => {
@@ -223,26 +223,26 @@ export function AdminModerationTab() {
             return (
               <div
                 key={item.id}
-                className={`bg-slate-800 border rounded-2xl p-4 sm:p-5 space-y-3 transition-all ${
-                  isPending ? "border-amber-500/30 shadow-sm" : "border-slate-700/60 opacity-80"
+                className={`bg-stone-800 border rounded-2xl p-4 sm:p-5 space-y-3 transition-all ${
+                  isPending ? "border-primary/30 shadow-sm" : "border-stone-700/60 opacity-80"
                 }`}
               >
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-700/60 pb-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-stone-700/60 pb-3">
                   <div className="flex items-center gap-2 flex-wrap">
                     {item.type === "errata" && (
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-500/15 text-rose-400 border border-rose-500/30 flex items-center gap-1">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-destructive/15 text-destructive border border-destructive/30 flex items-center gap-1">
                         <Flag className="h-3 w-3" />
                         Errata Report
                       </span>
                     )}
                     {item.type === "student_contribution" && (
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-purple-500/15 text-purple-400 border border-purple-500/30 flex items-center gap-1">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-primary/15 text-primary border border-primary/30 flex items-center gap-1">
                         <Sparkles className="h-3 w-3" />
                         Student Contribution
                       </span>
                     )}
                     {item.type === "community_post" && (
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-500/15 text-amber-500 border border-amber-500/30 flex items-center gap-1">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-primary/15 text-primary border border-primary/30 flex items-center gap-1">
                         <MessageSquare className="h-3 w-3" />
                         Post Report
                       </span>
@@ -253,39 +253,39 @@ export function AdminModerationTab() {
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-3 text-xs text-slate-400">
+                  <div className="flex items-center gap-3 text-xs text-stone-400">
                     <span className="flex items-center gap-1">
-                      <User className="h-3 w-3 text-slate-500" />
+                      <User className="h-3 w-3 text-stone-500" />
                       {item.reporter_name}
                     </span>
                     <span className="flex items-center gap-1 font-mono text-[11px]">
-                      <Clock className="h-3 w-3 text-slate-500" />
+                      <Clock className="h-3 w-3 text-stone-500" />
                       {new Date(item.created_at).toLocaleDateString()}
                     </span>
                   </div>
                 </div>
 
                 {/* Content body */}
-                <div className="bg-slate-900/60 rounded-xl p-3 text-xs text-slate-200 border border-slate-700/40 space-y-2">
+                <div className="bg-stone-900/60 rounded-xl p-3 text-xs text-stone-200 border border-stone-700/40 space-y-2">
                   <p className="whitespace-pre-wrap leading-relaxed">{item.content}</p>
 
                   {item.suggested_fix && (
-                    <div className="pt-2 border-t border-slate-800">
-                      <span className="text-[10px] uppercase font-bold text-amber-500 block mb-0.5">
+                    <div className="pt-2 border-t border-stone-800">
+                      <span className="text-[10px] uppercase font-bold text-primary block mb-0.5">
                         Suggested Correction:
                       </span>
-                      <p className="text-amber-500/90 font-mono text-[11px]">
+                      <p className="text-primary/90 font-mono text-[11px]">
                         {item.suggested_fix}
                       </p>
                     </div>
                   )}
 
                   {item.rejection_reason && (
-                    <div className="pt-2 border-t border-slate-800">
-                      <span className="text-[10px] uppercase font-bold text-red-400 block mb-0.5">
+                    <div className="pt-2 border-t border-stone-800">
+                      <span className="text-[10px] uppercase font-bold text-destructive block mb-0.5">
                         Rejection Reason:
                       </span>
-                      <p className="text-red-300 text-[11px]">{item.rejection_reason}</p>
+                      <p className="text-destructive text-[11px]">{item.rejection_reason}</p>
                     </div>
                   )}
                 </div>
@@ -294,10 +294,10 @@ export function AdminModerationTab() {
                 <div className="flex items-center justify-between pt-1">
                   <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                     item.status === "approved"
-                      ? "bg-amber-500/10 text-amber-500 border border-amber-500/30"
+                      ? "bg-primary/10 text-primary border border-primary/30"
                       : item.status === "rejected"
-                      ? "bg-red-500/10 text-red-400 border border-red-500/30"
-                      : "bg-amber-500/10 text-amber-400 border border-amber-500/30"
+                      ? "bg-destructive/10 text-destructive border border-destructive/30"
+                      : "bg-primary/10 text-primary border border-primary/30"
                   }`}>
                     {item.status}
                   </span>
@@ -309,7 +309,7 @@ export function AdminModerationTab() {
                           setEditingItem(item);
                           setEditedContent(item.suggested_fix || item.content);
                         }}
-                        className="px-3 py-1.5 rounded-xl bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                        className="px-3 py-1.5 rounded-xl bg-stone-700 hover:bg-stone-600 text-stone-200 text-xs font-semibold flex items-center gap-1.5 transition-colors"
                       >
                         <Edit3 className="h-3 w-3" />
                         <span>Edit & Approve</span>
@@ -320,7 +320,7 @@ export function AdminModerationTab() {
                           setRejectingItem(item);
                           setRejectionReason("");
                         }}
-                        className="px-3 py-1.5 rounded-xl bg-red-500/15 hover:bg-red-500/25 border border-red-500/30 text-red-400 text-xs font-bold flex items-center gap-1.5 transition-colors"
+                        className="px-3 py-1.5 rounded-xl bg-destructive/15 hover:bg-destructive/25 border border-destructive/30 text-destructive text-xs font-bold flex items-center gap-1.5 transition-colors"
                       >
                         <XCircle className="h-3 w-3" />
                         <span>Reject</span>
@@ -328,7 +328,7 @@ export function AdminModerationTab() {
 
                       <button
                         onClick={() => handleApprove(item)}
-                        className="px-3.5 py-1.5 rounded-xl bg-[#FAFAFA] hover:bg-[#E4E4E7] text-[#18181B] text-xs font-black flex items-center gap-1.5 transition-colors"
+                        className="px-3.5 py-1.5 rounded-xl bg-[#FAFAFA] hover:bg-muted text-foreground text-xs font-bold flex items-center gap-1.5 transition-colors"
                       >
                         <CheckCircle className="h-3.5 w-3.5" />
                         <span>Approve (+XP)</span>
@@ -345,20 +345,20 @@ export function AdminModerationTab() {
       {/* 3. Reject Reason Modal */}
       {rejectingItem && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-slate-800 border border-slate-700 rounded-3xl w-full max-w-md p-6 space-y-4 shadow-2xl relative animate-scale-in">
+          <div className="bg-stone-800 border border-stone-700 rounded-2xl w-full max-w-md p-6 space-y-4 shadow-lg relative animate-scale-in">
             <button
               onClick={() => setRejectingItem(null)}
-              className="absolute right-4 top-4 p-1.5 rounded-xl bg-slate-700/60 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
+              className="absolute right-4 top-4 p-1.5 rounded-xl bg-stone-700/60 hover:bg-stone-700 text-stone-400 hover:text-white transition-colors"
             >
               <X className="h-4 w-4" />
             </button>
 
             <div className="space-y-1">
               <h3 className="text-base font-bold text-white flex items-center gap-2">
-                <AlertCircle className="h-4 w-4 text-red-400" />
+                <AlertCircle className="h-4 w-4 text-destructive" />
                 Reject Submission
               </h3>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-stone-400">
                 Provide a helpful note explaining why this submission does not meet syllabus guidelines.
               </p>
             </div>
@@ -368,19 +368,19 @@ export function AdminModerationTab() {
               onChange={(e) => setRejectionReason(e.target.value)}
               placeholder="e.g. Duplicate question, incorrect formula derivation, or off-syllabus topic..."
               rows={3}
-              className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-red-400"
+              className="w-full bg-stone-900 border border-stone-700 rounded-xl p-3 text-xs text-white placeholder-stone-500 focus:outline-none focus:border-destructive/30"
             />
 
             <div className="flex justify-end gap-2 pt-2">
               <button
                 onClick={() => setRejectingItem(null)}
-                className="px-3 py-1.5 rounded-xl bg-slate-700 text-slate-200 text-xs font-semibold"
+                className="px-3 py-1.5 rounded-xl bg-stone-700 text-stone-200 text-xs font-semibold"
               >
                 Cancel
               </button>
               <button
                 onClick={handleConfirmReject}
-                className="px-4 py-1.5 rounded-xl bg-red-500 text-white font-bold text-xs hover:bg-red-600 transition-colors"
+                className="px-4 py-1.5 rounded-xl bg-destructive text-white font-bold text-xs hover:bg-destructive transition-colors"
               >
                 Confirm Rejection
               </button>
@@ -392,10 +392,10 @@ export function AdminModerationTab() {
       {/* 4. Edit & Approve Modal */}
       {editingItem && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-slate-800 border border-slate-700 rounded-3xl w-full max-w-lg p-6 space-y-4 shadow-2xl relative animate-scale-in">
+          <div className="bg-stone-800 border border-stone-700 rounded-2xl w-full max-w-lg p-6 space-y-4 shadow-lg relative animate-scale-in">
             <button
               onClick={() => setEditingItem(null)}
-              className="absolute right-4 top-4 p-1.5 rounded-xl bg-slate-700/60 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
+              className="absolute right-4 top-4 p-1.5 rounded-xl bg-stone-700/60 hover:bg-stone-700 text-stone-400 hover:text-white transition-colors"
             >
               <X className="h-4 w-4" />
             </button>
@@ -405,7 +405,7 @@ export function AdminModerationTab() {
                 <Edit3 className="h-4 w-4 text-[#FAFAFA]" />
                 Edit then Approve
               </h3>
-              <p className="text-xs text-slate-400 mt-0.5">
+              <p className="text-xs text-stone-400 mt-0.5">
                 Polish typos, fix formatting, or enrich content before publishing.
               </p>
             </div>
@@ -414,19 +414,19 @@ export function AdminModerationTab() {
               value={editedContent}
               onChange={(e) => setEditedContent(e.target.value)}
               rows={6}
-              className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white font-mono placeholder-slate-500 focus:outline-none focus:border-[#FAFAFA]"
+              className="w-full bg-stone-900 border border-stone-700 rounded-xl p-3 text-xs text-white font-mono placeholder-stone-500 focus:outline-none focus:border-[#FAFAFA]"
             />
 
             <div className="flex justify-end gap-2 pt-2">
               <button
                 onClick={() => setEditingItem(null)}
-                className="px-3 py-1.5 rounded-xl bg-slate-700 text-slate-200 text-xs font-semibold"
+                className="px-3 py-1.5 rounded-xl bg-stone-700 text-stone-200 text-xs font-semibold"
               >
                 Cancel
               </button>
               <button
                 onClick={handleConfirmEditAndApprove}
-                className="px-4 py-1.5 rounded-xl bg-[#FAFAFA] text-[#18181B] font-black text-xs hover:bg-[#E4E4E7] transition-colors"
+                className="px-4 py-1.5 rounded-xl bg-[#FAFAFA] text-foreground font-bold text-xs hover:bg-muted transition-colors"
               >
                 Save & Approve (+XP)
               </button>

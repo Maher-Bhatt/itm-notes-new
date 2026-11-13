@@ -121,7 +121,7 @@ export const AiDoubtSolverModal: React.FC<AiDoubtSolverModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in">
-      <div className="bg-card border border-border rounded-3xl max-w-2xl w-full p-6 shadow-2xl relative max-h-[90vh] flex flex-col animate-scale-in">
+      <div className="bg-card border border-border rounded-2xl max-w-2xl w-full p-6 shadow-lg relative max-h-[90vh] flex flex-col animate-scale-in">
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-border/60">
           <div className="flex items-center gap-3">
@@ -133,7 +133,7 @@ export const AiDoubtSolverModal: React.FC<AiDoubtSolverModalProps> = ({
                 <h3 className="font-bold text-base text-foreground">
                   AI Syllabus Doubt Solver
                 </h3>
-                <span className="px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-500 dark:text-amber-500 text-[10px] font-bold">
+                <span className="px-2 py-0.5 rounded-full bg-primary/15 text-primary dark:text-primary text-[10px] font-bold">
                   Grounded in CampusLoop
                 </span>
               </div>
@@ -159,7 +159,7 @@ export const AiDoubtSolverModal: React.FC<AiDoubtSolverModalProps> = ({
           {/* Quick Query Chips */}
           <div>
             <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground mb-2">
-              <Lightbulb className="h-3.5 w-3.5 text-amber-500" />
+              <Lightbulb className="h-3.5 w-3.5 text-primary" />
               <span>Suggested Exam Doubts:</span>
             </div>
             <div className="flex flex-wrap gap-1.5">
@@ -218,7 +218,7 @@ export const AiDoubtSolverModal: React.FC<AiDoubtSolverModalProps> = ({
             <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4 sm:p-5 space-y-4 animate-scale-in">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="w-6 h-6 rounded-lg bg-amber-500/20 text-amber-500 dark:text-amber-500 flex items-center justify-center">
+                  <span className="w-6 h-6 rounded-lg bg-primary/20 text-primary dark:text-primary flex items-center justify-center">
                     <CheckCircle2 className="h-3.5 w-3.5" />
                   </span>
                   <span className="text-xs font-bold text-foreground">

@@ -30,7 +30,7 @@ export const CampusConversationRow: React.FC<CampusConversationRowProps> = ({
   return (
     <div
       onClick={onClick}
-      className={`flex items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl hover:bg-neutral-100/70 dark:hover:bg-neutral-800/50 transition-colors select-none cursor-pointer ${className}`}
+      className={`flex items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl hover:bg-stone-100/70 dark:hover:bg-stone-800/50 transition-colors select-none cursor-pointer ${className}`}
     >
       <div className="flex items-center gap-3.5 min-w-0">
         <CampusAvatar
@@ -41,17 +41,17 @@ export const CampusConversationRow: React.FC<CampusConversationRowProps> = ({
         />
 
         <div className="min-w-0">
-          <h4 className="font-bold text-sm sm:text-base text-[#111111] dark:text-white truncate">
+          <h4 className="font-bold text-sm sm:text-base text-foreground dark:text-white truncate">
             {name}
           </h4>
-          <p className="text-xs sm:text-sm text-[#6B7280] dark:text-neutral-400 font-medium truncate mt-0.5">
+          <p className="text-xs sm:text-sm text-muted-foreground dark:text-stone-400 font-medium truncate mt-0.5">
             {lastMessage}
           </p>
         </div>
       </div>
 
       <div className="flex flex-col items-end gap-1.5 shrink-0 pl-2">
-        <span className="text-[11px] sm:text-xs font-semibold text-[#6B7280] dark:text-neutral-400">
+        <span className="text-[11px] sm:text-xs font-semibold text-muted-foreground dark:text-stone-400">
           {timestamp}
         </span>
         {unreadCount > 0 && <CampusCountBadge count={unreadCount} variant="blue" />}

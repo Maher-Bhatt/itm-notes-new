@@ -123,7 +123,7 @@ function StatCard({
       </div>
       <div>
         <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">{label}</p>
-        <p className="text-xl sm:text-2xl font-extrabold text-foreground leading-tight">{value}</p>
+        <p className="text-xl sm:text-2xl font-semibold text-foreground leading-tight">{value}</p>
       </div>
     </div>
   );
@@ -489,7 +489,7 @@ export default function AdminDashboard() {
               <Shield className="h-5 w-5 text-primary" />
             </div>
             <div className="min-w-0">
-              <h1 className="text-base sm:text-lg font-extrabold text-foreground leading-none truncate">
+              <h1 className="text-base sm:text-lg font-semibold text-foreground leading-none truncate">
                 CampusLoop Admin
               </h1>
               <p className="text-[11px] text-muted-foreground font-medium mt-0.5 truncate max-w-[200px] sm:max-w-none">
@@ -537,7 +537,7 @@ export default function AdminDashboard() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold rounded-full transition-all whitespace-nowrap cursor-pointer shrink-0 ${
                   active
-                    ? "bg-[#2B4EFF] text-white shadow-xs"
+                    ? "bg-primary text-white shadow-xs"
                     : "bg-secondary/60 text-muted-foreground hover:text-foreground hover:bg-secondary border border-border/50"
                 }`}
               >
@@ -586,7 +586,7 @@ export default function AdminDashboard() {
             <div className="p-4 sm:p-5 rounded-2xl border border-border bg-card/60 shadow-xs space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="font-extrabold text-sm text-foreground flex items-center gap-2">
+                  <h3 className="font-semibold text-sm text-foreground flex items-center gap-2">
                     <Zap className="h-4 w-4 text-primary" />
                     <span>Quick Administration Actions</span>
                   </h3>
@@ -610,7 +610,7 @@ export default function AdminDashboard() {
                   onClick={() => setActiveTab("questions")}
                   className="p-3 rounded-xl border border-border hover:border-primary/40 bg-background hover:bg-accent text-left transition-all cursor-pointer group shadow-2xs"
                 >
-                  <HelpCircle className="h-4 w-4 text-pink-500 group-hover:scale-110 transition-transform" />
+                  <HelpCircle className="h-4 w-4 text-destructive group-hover:scale-110 transition-transform" />
                   <span className="font-bold text-xs text-foreground block mt-1.5">Universal MCQs</span>
                   <span className="text-[11px] text-muted-foreground block truncate">3,027+ Exam Questions</span>
                 </button>
@@ -619,7 +619,7 @@ export default function AdminDashboard() {
                   onClick={() => setActiveTab("practicals")}
                   className="p-3 rounded-xl border border-border hover:border-primary/40 bg-background hover:bg-accent text-left transition-all cursor-pointer group shadow-2xs"
                 >
-                  <Code className="h-4 w-4 text-emerald-500 group-hover:scale-110 transition-transform" />
+                  <Code className="h-4 w-4 text-success group-hover:scale-110 transition-transform" />
                   <span className="font-bold text-xs text-foreground block mt-1.5">Practicals Laboratory</span>
                   <span className="text-[11px] text-muted-foreground block truncate">1,180+ Experiments & Viva</span>
                 </button>
@@ -628,7 +628,7 @@ export default function AdminDashboard() {
                   onClick={() => setActiveTab("database_sync")}
                   className="p-3 rounded-xl border border-border hover:border-primary/40 bg-background hover:bg-accent text-left transition-all cursor-pointer group shadow-2xs"
                 >
-                  <Database className="h-4 w-4 text-sky-500 group-hover:scale-110 transition-transform" />
+                  <Database className="h-4 w-4 text-primary group-hover:scale-110 transition-transform" />
                   <span className="font-bold text-xs text-foreground block mt-1.5">Database & Sync</span>
                   <span className="text-[11px] text-muted-foreground block truncate">PostgreSQL Health & Sync</span>
                 </button>

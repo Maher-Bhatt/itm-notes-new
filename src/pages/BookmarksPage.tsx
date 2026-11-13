@@ -278,11 +278,11 @@ export default function BookmarksPage() {
         {/* Header Title & Counter */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center shrink-0">
-              <Bookmark className="h-5 w-5 fill-amber-500" />
+            <div className="w-10 h-10 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+              <Bookmark className="h-5 w-5 fill-primary" />
             </div>
             <div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground">Saved Bookmarks & Collections</h1>
+              <h1 className="text-2xl sm:text-3xl font-semibold text-foreground">Saved Bookmarks & Collections</h1>
               <p className="text-xs text-muted-foreground mt-0.5">
                 Organize your study bookmarks into custom folders for MST and End-Sem revision
               </p>
@@ -422,7 +422,7 @@ export default function BookmarksPage() {
 
         {/* Empty State */}
         {processedItems.length === 0 ? (
-          <div className="text-center py-20 bg-card border border-dashed border-border rounded-3xl p-8">
+          <div className="text-center py-20 bg-card border border-dashed border-border rounded-2xl p-8">
             <Bookmark className="h-12 w-12 mx-auto mb-4 text-muted-foreground/30" />
             <h3 className="text-base font-bold text-foreground mb-1">
               {bookmarkedItems.length === 0 ? "You haven't bookmarked any topics yet" : `No bookmarks found in "${selectedFolder}"`}
@@ -527,7 +527,7 @@ export default function BookmarksPage() {
 
                             <button
                               onClick={() => toggleBookmark(item.topicId)}
-                              className="p-1.5 rounded-lg text-muted-foreground hover:text-rose-500 hover:bg-rose-500/10 transition-colors"
+                              className="p-1.5 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
                               title="Remove Bookmark"
                             >
                               <Trash2 className="h-4 w-4" />
@@ -580,7 +580,7 @@ export default function BookmarksPage() {
 
                   <button
                     onClick={() => toggleBookmark(item.topicId)}
-                    className="p-1.5 rounded-lg text-muted-foreground hover:text-rose-500 hover:bg-rose-500/10 transition-colors"
+                    className="p-1.5 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>

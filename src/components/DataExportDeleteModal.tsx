@@ -81,7 +81,7 @@ export function DataExportDeleteModal({ isOpen, onClose }: DataExportDeleteModal
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in">
-      <div className="w-full max-w-md bg-card border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col">
+      <div className="w-full max-w-md bg-card border border-border rounded-2xl shadow-lg overflow-hidden flex flex-col">
         {/* Header */}
         <div className="p-4 sm:p-5 bg-secondary/60 border-b border-border flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
@@ -126,8 +126,8 @@ export function DataExportDeleteModal({ isOpen, onClose }: DataExportDeleteModal
           </div>
 
           {/* Delete Danger Zone */}
-          <div className="p-4 rounded-2xl border border-rose-500/30 bg-rose-500/5 space-y-3">
-            <h4 className="font-bold text-sm text-rose-600 dark:text-rose-400 flex items-center gap-1.5">
+          <div className="p-4 rounded-2xl border border-destructive/30 bg-destructive/5 space-y-3">
+            <h4 className="font-bold text-sm text-destructive dark:text-destructive flex items-center gap-1.5">
               <AlertTriangle className="h-4 w-4" />
               <span>Delete Student Account</span>
             </h4>
@@ -137,14 +137,14 @@ export function DataExportDeleteModal({ isOpen, onClose }: DataExportDeleteModal
 
             <div>
               <label className="text-[10px] text-muted-foreground uppercase font-bold block mb-1">
-                Type <strong className="text-rose-500">DELETE</strong> to confirm:
+                Type <strong className="text-destructive">DELETE</strong> to confirm:
               </label>
               <input
                 type="text"
                 value={confirmDeleteText}
                 onChange={(e) => setConfirmDeleteText(e.target.value)}
                 placeholder="DELETE"
-                className="w-full h-9 px-3 rounded-xl border border-rose-500/40 bg-background text-xs font-mono focus:ring-1 focus:ring-rose-500 outline-none"
+                className="w-full h-9 px-3 rounded-xl border border-destructive/40 bg-background text-xs font-mono focus:ring-1 focus:ring-destructive/30 outline-none"
               />
             </div>
 
@@ -153,7 +153,7 @@ export function DataExportDeleteModal({ isOpen, onClose }: DataExportDeleteModal
               disabled={confirmDeleteText !== "DELETE" || isDeleting}
               className={`w-full h-9 rounded-xl font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                 confirmDeleteText === "DELETE" && !isDeleting
-                  ? "bg-rose-600 hover:bg-rose-500 text-white shadow-md shadow-rose-600/20"
+                  ? "bg-destructive hover:bg-destructive text-white shadow-md shadow-rose-600/20"
                   : "bg-secondary text-muted-foreground opacity-50 cursor-not-allowed"
               }`}
             >

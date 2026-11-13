@@ -4,7 +4,7 @@ export const sem5TocMaster: Subject = {
   id: "sem5-toc",
   name: "Theory of Computation & Automata (TOC)",
   code: "TOC503",
-  color: "bg-amber-600",
+  color: "bg-primary",
   icon: "book",
   description: "Comprehensive University Syllabus for Theory of Computation — Deterministic and Non-Deterministic Finite Automata (DFA/NFA), Regular Expressions, Pumping Lemma, Context-Free Grammars (CFG), Pushdown Automata (PDA), Turing Machines, Chomsky Hierarchy, and the Halting Problem.",
   semester: 5,

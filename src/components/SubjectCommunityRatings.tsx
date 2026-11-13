@@ -124,15 +124,15 @@ export const SubjectCommunityRatings: React.FC<SubjectCommunityRatingsProps> = (
   };
 
   return (
-    <div className="bg-card border border-border/80 rounded-3xl p-6 shadow-sm space-y-5">
+    <div className="bg-card border border-border/80 rounded-2xl p-6 shadow-sm space-y-5">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/70 pb-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center">
+            <span className="w-8 h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
               <Users className="h-4 w-4" />
             </span>
-            <h3 className="font-extrabold text-base text-foreground">
+            <h3 className="font-semibold text-base text-foreground">
               Peer Community Difficulty & Topper Advice
             </h3>
           </div>
@@ -154,14 +154,14 @@ export const SubjectCommunityRatings: React.FC<SubjectCommunityRatingsProps> = (
             Subject Difficulty
           </span>
           <div className="flex items-center gap-2">
-            <span className="text-xl font-black text-foreground">
+            <span className="text-xl font-bold text-foreground">
               {data.difficultyScore} <span className="text-xs text-muted-foreground font-normal">/ 5</span>
             </span>
-            <div className="flex text-amber-500">
+            <div className="flex text-primary">
               {[1, 2, 3, 4, 5].map(star => (
                 <Star
                   key={star}
-                  className={`h-3.5 w-3.5 ${star <= Math.round(data.difficultyScore) ? 'fill-amber-500' : 'text-muted-foreground/30'}`}
+                  className={`h-3.5 w-3.5 ${star <= Math.round(data.difficultyScore) ? 'fill-primary' : 'text-muted-foreground/30'}`}
                 />
               ))}
             </div>
@@ -176,7 +176,7 @@ export const SubjectCommunityRatings: React.FC<SubjectCommunityRatingsProps> = (
           <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">
             Recommended Prep
           </span>
-          <span className="text-xl font-black text-foreground block">
+          <span className="text-xl font-bold text-foreground block">
             ~{data.averageWeeklyHours} <span className="text-xs text-muted-foreground font-normal">hrs/week</span>
           </span>
           <span className="text-[10px] text-muted-foreground block">
@@ -189,7 +189,7 @@ export const SubjectCommunityRatings: React.FC<SubjectCommunityRatingsProps> = (
           <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">
             Historical Pass Rate
           </span>
-          <span className="text-xl font-black text-amber-500 dark:text-amber-500 block">
+          <span className="text-xl font-bold text-primary dark:text-primary block">
             {data.passRatePercentage}%
           </span>
           <span className="text-[10px] text-muted-foreground block">
@@ -201,7 +201,7 @@ export const SubjectCommunityRatings: React.FC<SubjectCommunityRatingsProps> = (
       {/* Senior Topper Advice List */}
       <div className="space-y-2.5">
         <span className="text-xs font-bold text-foreground flex items-center gap-1.5">
-          <Sparkles className="h-3.5 w-3.5 text-amber-500" />
+          <Sparkles className="h-3.5 w-3.5 text-primary" />
           Senior Topper Advice & Exam Strategy:
         </span>
         <div className="space-y-2">
@@ -235,15 +235,15 @@ export const SubjectCommunityRatings: React.FC<SubjectCommunityRatingsProps> = (
               disabled={hasVoted}
               onClick={() => handleRate(star)}
               className={`p-1 rounded-lg transition-transform hover:scale-125 apple-press ${
-                userRating >= star ? 'text-amber-500' : 'text-muted-foreground hover:text-amber-400'
+                userRating >= star ? 'text-primary' : 'text-muted-foreground hover:text-primary'
               }`}
               title={`Rate ${star} Stars`}
             >
-              <Star className={`h-5 w-5 ${userRating >= star ? 'fill-amber-500' : ''}`} />
+              <Star className={`h-5 w-5 ${userRating >= star ? 'fill-primary' : ''}`} />
             </button>
           ))}
           {hasVoted && (
-            <span className="text-xs font-bold text-amber-500 dark:text-amber-500 ml-2">
+            <span className="text-xs font-bold text-primary dark:text-primary ml-2">
               Voted!
             </span>
           )}

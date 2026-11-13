@@ -4,7 +4,7 @@ export const sem5AimlMaster: Subject = {
   id: "sem5-aiml",
   name: "Artificial Intelligence & Machine Learning (AI & ML)",
   code: "AIML502",
-  color: "bg-violet-600",
+  color: "bg-primary",
   icon: "sparkles",
   description: "Comprehensive University Syllabus for AI & ML — State Space Search (A*, Heuristics), Adversarial Minimax with Alpha-Beta Pruning, Supervised Learning (Regression, Decision Trees, SVM), Unsupervised Clustering (K-Means, PCA), Neural Networks & Backpropagation, and Modern Deep Learning (CNNs, Transformers).",
   semester: 5,

@@ -122,7 +122,7 @@ export function AdminQuestionBankTab() {
       {/* Header & Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border">
         <div>
-          <h2 className="text-xl sm:text-2xl font-black text-foreground flex items-center gap-2">
+          <h2 className="text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2">
             <HelpCircle className="h-6 w-6 text-primary" />
             <span>Universal Master Question Bank (3,027+ MCQs)</span>
           </h2>
@@ -155,10 +155,10 @@ export function AdminQuestionBankTab() {
           <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
             Platform Master MCQs
           </span>
-          <span className="text-2xl font-black text-foreground mt-1 block">
+          <span className="text-2xl font-bold text-foreground mt-1 block">
             3,027+
           </span>
-          <span className="text-[11px] text-emerald-600 font-semibold mt-0.5 flex items-center gap-1">
+          <span className="text-[11px] text-success font-semibold mt-0.5 flex items-center gap-1">
             <CheckCircle2 className="h-3 w-3" /> 100% Verified Explanations
           </span>
         </div>
@@ -167,7 +167,7 @@ export function AdminQuestionBankTab() {
           <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
             Subject Banks
           </span>
-          <span className="text-2xl font-black text-foreground mt-1 block">
+          <span className="text-2xl font-bold text-foreground mt-1 block">
             {availableSubjects.length} Courses
           </span>
           <span className="text-[11px] text-primary font-semibold mt-0.5">
@@ -179,7 +179,7 @@ export function AdminQuestionBankTab() {
           <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
             Unit Distribution
           </span>
-          <span className="text-2xl font-black text-foreground mt-1 block">
+          <span className="text-2xl font-bold text-foreground mt-1 block">
             26 MCQs / Unit
           </span>
           <span className="text-[11px] text-muted-foreground font-semibold mt-0.5">
@@ -191,7 +191,7 @@ export function AdminQuestionBankTab() {
           <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
             Active Filter Matches
           </span>
-          <span className="text-2xl font-black text-primary mt-1 block">
+          <span className="text-2xl font-bold text-primary mt-1 block">
             {filteredQuestions.length}
           </span>
           <span className="text-[11px] text-muted-foreground font-semibold mt-0.5">
@@ -285,12 +285,12 @@ export function AdminQuestionBankTab() {
                       <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-muted text-muted-foreground border border-border">
                         {item.subjectTitle}
                       </span>
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-500 border border-blue-500/20">
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
                         Unit {item.unit}
                       </span>
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                        item.difficulty === "Easy" ? "bg-emerald-500/15 text-emerald-600" :
-                        item.difficulty === "Medium" ? "bg-amber-500/15 text-amber-600" : "bg-rose-500/15 text-rose-600"
+                        item.difficulty === "Easy" ? "bg-success/15 text-success" :
+                        item.difficulty === "Medium" ? "bg-primary/15 text-primary" : "bg-destructive/15 text-destructive"
                       }`}>
                         {item.difficulty}
                       </span>
@@ -320,12 +320,12 @@ export function AdminQuestionBankTab() {
                       key={optIdx}
                       className={`p-2.5 rounded-xl border text-xs flex items-center gap-2 ${
                         isCorrect
-                          ? "bg-emerald-500/10 border-emerald-500/40 text-emerald-700 dark:text-emerald-300 font-bold"
+                          ? "bg-success/10 border-success/40 text-success dark:text-success font-bold"
                           : "bg-muted/40 border-border text-foreground"
                       }`}
                     >
                       <span className={`h-5 w-5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 ${
-                        isCorrect ? "bg-emerald-500 text-white" : "bg-muted text-muted-foreground"
+                        isCorrect ? "bg-success text-white" : "bg-muted text-muted-foreground"
                       }`}>
                         {String.fromCharCode(65 + optIdx)}
                       </span>
@@ -361,7 +361,7 @@ export function AdminQuestionBankTab() {
       {/* Add Custom Question Modal */}
       {isAddModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
-          <div className="w-full max-w-lg bg-card border border-border rounded-[24px] p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+          <div className="w-full max-w-lg bg-card border border-border rounded-2xl p-6 shadow-lg space-y-4 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between pb-3 border-b border-border">
               <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
                 <Plus className="h-5 w-5 text-primary" />

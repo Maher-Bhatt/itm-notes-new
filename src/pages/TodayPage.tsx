@@ -191,20 +191,20 @@ export default function TodayPage() {
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto w-full space-y-6 route-transition-enter pb-24 text-foreground">
       {/* ── HEADER: TODAY MISSION CONTROL ── */}
-      <div className="bg-gradient-to-r from-[#060709] via-[#1D4A3F] to-[#12332C] text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-[#f59e0b]/20 relative overflow-hidden">
-        <div className="absolute top-0 right-0 -mt-10 -mr-10 w-56 h-56 bg-[#f59e0b]/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="bg-gradient-to-r from-[#060709] via-primary to-[#12332C] text-white rounded-2xl p-6 sm:p-8 shadow-lg border border-primary/20 relative overflow-hidden">
+        <div className="absolute top-0 right-0 -mt-10 -mr-10 w-56 h-56 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <span className="px-3 py-1 rounded-full bg-[#f59e0b] text-[#060709] text-[10px] font-black uppercase tracking-wider font-mono">
+              <span className="px-3 py-1 rounded-full bg-primary text-[#060709] text-[10px] font-bold uppercase tracking-wider font-mono">
                 {currentUniversity.shortName} Daily Focus
               </span>
               <span className="text-xs text-white/80 font-medium">
                 {todayDateFormatted}
               </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-black font-display tracking-tight text-white">
+            <h1 className="text-2xl sm:text-3xl font-bold font-display tracking-tight text-white">
               Today's Academic Mission
             </h1>
             <p className="text-xs text-white/70 max-w-xl mt-1 leading-relaxed">
@@ -214,17 +214,17 @@ export default function TodayPage() {
 
           <div className="flex items-center gap-3">
             <div className="p-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-center min-w-20">
-              <div className="flex items-center justify-center gap-1 text-[#f59e0b]">
+              <div className="flex items-center justify-center gap-1 text-primary">
                 <Flame className="h-4 w-4 fill-current flame-pulse-anim" />
-                <span className="text-lg font-black font-mono">{streak}d</span>
+                <span className="text-lg font-bold font-mono">{streak}d</span>
               </div>
               <span className="text-[10px] text-white/75 block uppercase font-bold">Streak</span>
             </div>
 
             <div className="p-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-center min-w-20">
-              <div className="flex items-center justify-center gap-1 text-[#f59e0b]">
+              <div className="flex items-center justify-center gap-1 text-primary">
                 <Zap className="h-4 w-4 fill-current" />
-                <span className="text-lg font-black font-mono">{xp}</span>
+                <span className="text-lg font-bold font-mono">{xp}</span>
               </div>
               <span className="text-[10px] text-white/75 block uppercase font-bold">XP</span>
             </div>
@@ -235,12 +235,12 @@ export default function TodayPage() {
         <div className="mt-6 pt-5 border-t border-white/15 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-2">
             <span className="text-white/80 font-medium">Weekly Goal:</span>
-            <strong className="text-[#f59e0b]">{weeklyStudyDaysCount} / {weeklyGoalDays} Study Days</strong>
+            <strong className="text-primary">{weeklyStudyDaysCount} / {weeklyGoalDays} Study Days</strong>
             <span className="text-white/60">({weeklyGoalPercent}%)</span>
           </div>
           <div className="w-full sm:w-48 h-2 rounded-full bg-white/20 overflow-hidden">
             <div 
-              className="h-full bg-[#f59e0b] rounded-full transition-all duration-500"
+              className="h-full bg-primary rounded-full transition-all duration-500"
               style={{ width: `${weeklyGoalPercent}%` }}
             />
           </div>
@@ -250,12 +250,12 @@ export default function TodayPage() {
       {/* ── SECTION 1: EXAM COUNTDOWN TICKER & MILESTONE ── */}
       <div className="p-4 sm:p-5 rounded-2xl bg-card border border-border shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4 card-hover-lift">
         <div className="flex items-center gap-3.5">
-          <div className="w-12 h-12 rounded-2xl bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 flex items-center justify-center shrink-0">
+          <div className="w-12 h-12 rounded-2xl bg-primary/15 text-primary dark:text-primary border border-primary/30 flex items-center justify-center shrink-0">
             <Clock className="h-6 w-6 stroke-[2]" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-700 dark:text-amber-300 font-mono">
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-primary/20 text-primary dark:text-primary font-mono">
                 {examCountdown.milestoneText}
               </span>
               <span className="text-xs text-muted-foreground font-medium">
@@ -273,7 +273,7 @@ export default function TodayPage() {
 
         <div className="flex items-center gap-3 self-end sm:self-auto shrink-0">
           <div className="text-right">
-            <span className="text-2xl font-black font-mono text-foreground">{examCountdown.daysLeft}</span>
+            <span className="text-2xl font-bold font-mono text-foreground">{examCountdown.daysLeft}</span>
             <span className="text-[10px] text-muted-foreground block uppercase font-bold">Days Left</span>
           </div>
           <Link
@@ -287,7 +287,7 @@ export default function TodayPage() {
       </div>
 
       {/* ── SECTION 2: PERSONAL CLASS TIMETABLE (A6) ── */}
-      <div className="bg-card border border-border rounded-3xl p-5 sm:p-6 shadow-sm space-y-4">
+      <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-sm space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-border">
           <div className="flex items-center gap-2.5">
             <div className="p-2 rounded-xl bg-primary/10 text-primary">
@@ -388,10 +388,10 @@ export default function TodayPage() {
       </div>
 
       {/* ── SECTION 3: SRS FLASHCARDS DUE TODAY (A5) ── */}
-      <div className="bg-card border border-border rounded-3xl p-5 sm:p-6 shadow-sm space-y-4">
+      <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-sm space-y-4">
         <div className="flex items-center justify-between pb-3 border-b border-border">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-amber-500/10 text-amber-500">
+            <div className="p-2 rounded-xl bg-primary/10 text-primary">
               <Layers className="h-5 w-5" />
             </div>
             <div>
@@ -404,16 +404,16 @@ export default function TodayPage() {
             </div>
           </div>
 
-          <span className="px-2.5 py-1 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 text-xs font-bold font-mono">
+          <span className="px-2.5 py-1 rounded-full bg-primary/15 text-primary dark:text-primary text-xs font-bold font-mono">
             {srsStats.dueTodayCount} Cards Due
           </span>
         </div>
 
         {srsStats.dueTodayCount > 0 ? (
-          <div className="p-4 rounded-2xl bg-amber-500/5 border border-amber-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="p-4 rounded-2xl bg-primary/5 border border-primary/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="space-y-1">
               <h4 className="font-bold text-sm text-foreground flex items-center gap-1.5">
-                <Sparkles className="h-4 w-4 text-amber-500" />
+                <Sparkles className="h-4 w-4 text-primary" />
                 <span>Optimal Memory Window Active</span>
               </h4>
               <p className="text-xs text-muted-foreground">
@@ -423,7 +423,7 @@ export default function TodayPage() {
 
             <button
               onClick={() => setIsFlashcardsOpen(true)}
-              className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs shadow-md transition-all apple-press self-start sm:self-auto cursor-pointer"
+              className="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary text-stone-950 font-bold text-xs shadow-md transition-all apple-press self-start sm:self-auto cursor-pointer"
             >
               Start SRS Review Deck →
             </button>
@@ -438,7 +438,7 @@ export default function TodayPage() {
       </div>
 
       {/* ── SECTION 4: TODAY'S STUDY PLAN TASKS CHECKLIST (A5) ── */}
-      <div className="bg-card border border-border rounded-3xl p-5 sm:p-6 shadow-sm space-y-4">
+      <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-sm space-y-4">
         <div className="flex items-center justify-between pb-3 border-b border-border">
           <div className="flex items-center gap-2.5">
             <div className="p-2 rounded-xl bg-primary/10 text-primary">
@@ -474,7 +474,7 @@ export default function TodayPage() {
                   onClick={() => handleToggleTask(task.id)}
                   className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${
                     completed
-                      ? "bg-primary/10 border-amber-500/30 text-foreground"
+                      ? "bg-primary/10 border-primary/30 text-foreground"
                       : "bg-secondary/30 border-border hover:border-primary/40 text-foreground"
                   }`}
                 >

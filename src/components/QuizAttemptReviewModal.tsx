@@ -48,16 +48,16 @@ export function QuizAttemptReviewModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in">
-      <div className="w-full max-w-2xl bg-card border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="w-full max-w-2xl bg-card border border-border rounded-2xl shadow-lg overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="p-4 sm:p-5 bg-gradient-to-r from-[#18181B] via-[#1D4A3F] to-[#27272A] text-white flex items-center justify-between border-b border-[#FAFAFA]/30 shrink-0">
+        <div className="p-4 sm:p-5 bg-gradient-to-r from-foreground via-primary to-[#27272A] text-white flex items-center justify-between border-b border-[#FAFAFA]/30 shrink-0">
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-xl bg-[#FAFAFA] text-[#18181B]">
+            <div className="p-2 rounded-xl bg-[#FAFAFA] text-foreground">
               <Award className="h-5 w-5" />
             </div>
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="text-[10px] font-mono font-black uppercase px-2 py-0.2 rounded bg-[#FAFAFA] text-[#18181B]">
+                <span className="text-[10px] font-mono font-bold uppercase px-2 py-0.2 rounded bg-[#FAFAFA] text-foreground">
                   Quiz Review
                 </span>
                 <span className="text-xs text-[#FAFAFA] font-bold font-mono">
@@ -91,7 +91,7 @@ export function QuizAttemptReviewModal({
             <button
               onClick={() => setFilterMode("incorrect")}
               className={`px-2.5 py-1 rounded-md transition-all flex items-center gap-1 ${
-                filterMode === "incorrect" ? "bg-rose-500/15 text-rose-600 dark:text-rose-400 font-bold shadow-2xs" : "text-muted-foreground"
+                filterMode === "incorrect" ? "bg-destructive/15 text-destructive dark:text-destructive font-bold shadow-2xs" : "text-muted-foreground"
               }`}
             >
               Mistakes ({incorrectList.length})
@@ -99,7 +99,7 @@ export function QuizAttemptReviewModal({
             <button
               onClick={() => setFilterMode("correct")}
               className={`px-2.5 py-1 rounded-md transition-all flex items-center gap-1 ${
-                filterMode === "correct" ? "bg-amber-500/15 text-amber-500 dark:text-amber-500 font-bold shadow-2xs" : "text-muted-foreground"
+                filterMode === "correct" ? "bg-primary/15 text-primary dark:text-primary font-bold shadow-2xs" : "text-muted-foreground"
               }`}
             >
               Correct ({data.score})
@@ -129,16 +129,16 @@ export function QuizAttemptReviewModal({
                 key={idx}
                 className={`p-4 rounded-2xl border space-y-3 ${
                   isCorrect
-                    ? "border-amber-500/30 bg-amber-500/5"
-                    : "border-rose-500/30 bg-rose-500/5"
+                    ? "border-primary/30 bg-primary/5"
+                    : "border-destructive/30 bg-destructive/5"
                 }`}
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-center gap-2">
                     {isCorrect ? (
-                      <CheckCircle2 className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
+                      <CheckCircle2 className="h-4 w-4 text-primary shrink-0 mt-0.5" />
                     ) : (
-                      <XCircle className="h-4 w-4 text-rose-500 shrink-0 mt-0.5" />
+                      <XCircle className="h-4 w-4 text-destructive shrink-0 mt-0.5" />
                     )}
                     <h4 className="font-bold text-xs sm:text-sm text-foreground">
                       Q{q.questionNumber}: {q.questionText}
@@ -147,8 +147,8 @@ export function QuizAttemptReviewModal({
                   <span
                     className={`px-2 py-0.5 rounded-md text-[10px] font-mono font-bold shrink-0 ${
                       isCorrect
-                        ? "bg-amber-500/20 text-amber-500 dark:text-amber-500"
-                        : "bg-rose-500/20 text-rose-600 dark:text-rose-400"
+                        ? "bg-primary/20 text-primary dark:text-primary"
+                        : "bg-destructive/20 text-destructive dark:text-destructive"
                     }`}
                   >
                     {isCorrect ? "+1 Mark" : "0 Marks"}
@@ -163,16 +163,16 @@ export function QuizAttemptReviewModal({
 
                     let optClass = "border-border/60 bg-secondary/30 text-muted-foreground";
                     if (isAnswer) {
-                      optClass = "border-amber-500/60 bg-amber-500/15 text-amber-500 dark:text-amber-500 font-bold";
+                      optClass = "border-primary/60 bg-primary/15 text-primary dark:text-primary font-bold";
                     } else if (isUserPick && !isCorrect) {
-                      optClass = "border-rose-500/60 bg-rose-500/15 text-rose-700 dark:text-rose-300 line-through font-medium";
+                      optClass = "border-destructive/60 bg-destructive/15 text-destructive dark:text-destructive line-through font-medium";
                     }
 
                     return (
                       <div key={optIdx} className={`p-2 rounded-xl border flex items-center justify-between text-[11px] ${optClass}`}>
                         <span>{opt}</span>
-                        {isAnswer && <span className="text-[9px] font-mono uppercase bg-amber-500 text-white px-1.5 py-0.2 rounded font-black">Correct</span>}
-                        {isUserPick && !isCorrect && <span className="text-[9px] font-mono uppercase bg-rose-500 text-white px-1.5 py-0.2 rounded font-black">Your Choice</span>}
+                        {isAnswer && <span className="text-[9px] font-mono uppercase bg-primary text-white px-1.5 py-0.2 rounded font-bold">Correct</span>}
+                        {isUserPick && !isCorrect && <span className="text-[9px] font-mono uppercase bg-destructive text-white px-1.5 py-0.2 rounded font-bold">Your Choice</span>}
                       </div>
                     );
                   })}

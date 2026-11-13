@@ -78,7 +78,7 @@ export function UserAvatar({
         src={effectiveUrl}
         alt={alt || resolvedName}
         onError={() => setImageError(true)}
-        className={`${className} rounded-full object-cover border border-slate-700/60 shadow-xs shrink-0 bg-slate-800`}
+        className={`${className} rounded-full object-cover border border-stone-700/60 shadow-xs shrink-0 bg-stone-800`}
       />
     );
   }
@@ -86,17 +86,17 @@ export function UserAvatar({
   // 2. Preset Gradient
   if (rawUrl && rawUrl.startsWith("grad-")) {
     const gradients = [
-      "from-amber-600 via-purple-600 to-pink-500",
-      "from-amber-600 to-amber-400",
-      "from-amber-500 via-orange-600 to-red-600",
-      "from-zinc-700 to-zinc-900",
+      "from-primary via-primary to-destructive",
+      "from-primary to-primary",
+      "from-primary via-primary to-destructive",
+      "from-stone-700 to-stone-900",
     ];
     const idx = Math.abs((resolvedName.charCodeAt(0) || 0) % gradients.length);
     const grad = gradients[idx];
 
     return (
       <div
-        className={`${className} rounded-full bg-gradient-to-tr ${grad} text-white font-bold flex items-center justify-center shrink-0 border border-slate-700/60 shadow-xs`}
+        className={`${className} rounded-full bg-gradient-to-tr ${grad} text-white font-bold flex items-center justify-center shrink-0 border border-stone-700/60 shadow-xs`}
       >
         {resolvedName.charAt(0).toUpperCase()}
       </div>
@@ -108,7 +108,7 @@ export function UserAvatar({
 
   return (
     <div
-      className={`${className} rounded-full bg-gradient-to-tr from-amber-600 to-amber-400 text-white font-bold flex items-center justify-center shrink-0 border border-slate-700/60 shadow-xs`}
+      className={`${className} rounded-full bg-gradient-to-tr from-primary to-primary text-white font-bold flex items-center justify-center shrink-0 border border-stone-700/60 shadow-xs`}
     >
       {initial}
     </div>

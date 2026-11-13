@@ -57,11 +57,11 @@ export default function FormulaBankPage() {
             <span className="px-2.5 py-0.5 rounded-full bg-primary/10 text-primary font-bold text-xs uppercase tracking-wide">
               Official Mathematical Reference
             </span>
-            <span className="px-2.5 py-0.5 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 font-semibold text-xs">
+            <span className="px-2.5 py-0.5 rounded-full bg-primary/10 text-primary dark:text-primary font-semibold text-xs">
               KaTeX Rendered
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-semibold text-foreground tracking-tight">
             Formula & Definition Bank
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
@@ -126,7 +126,7 @@ export default function FormulaBankPage() {
           return (
             <div
               key={f.id}
-              className="bg-card border border-border/80 rounded-3xl p-6 shadow-sm space-y-4 hover:border-primary/40 transition-all"
+              className="bg-card border border-border/80 rounded-2xl p-6 shadow-sm space-y-4 hover:border-primary/40 transition-all"
             >
               {/* Card Header */}
               <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border/60 pb-3">
@@ -139,7 +139,7 @@ export default function FormulaBankPage() {
                       {f.category}
                     </span>
                   </div>
-                  <h3 className="font-extrabold text-sm sm:text-base text-foreground">
+                  <h3 className="font-semibold text-sm sm:text-base text-foreground">
                     {f.title}
                   </h3>
                 </div>
@@ -151,8 +151,8 @@ export default function FormulaBankPage() {
                 >
                   {isCopied ? (
                     <>
-                      <Check className="h-3.5 w-3.5 text-amber-500" />
-                      <span className="text-amber-500 dark:text-amber-500">Copied</span>
+                      <Check className="h-3.5 w-3.5 text-primary" />
+                      <span className="text-primary dark:text-primary">Copied</span>
                     </>
                   ) : (
                     <>
@@ -201,8 +201,8 @@ export default function FormulaBankPage() {
 
               {/* Exam Tip */}
               {f.examSignificance && (
-                <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs flex items-center gap-2 text-amber-700 dark:text-amber-400 font-medium">
-                  <Sparkles className="h-4 w-4 shrink-0 text-amber-500" />
+                <div className="p-3 rounded-xl bg-primary/10 border border-primary/20 text-xs flex items-center gap-2 text-primary dark:text-primary font-medium">
+                  <Sparkles className="h-4 w-4 shrink-0 text-primary" />
                   <span>Exam Tip: {f.examSignificance}</span>
                 </div>
               )}
@@ -211,7 +211,7 @@ export default function FormulaBankPage() {
         })}
 
         {filteredFormulas.length === 0 && (
-          <div className="p-12 text-center bg-card border border-border rounded-3xl">
+          <div className="p-12 text-center bg-card border border-border rounded-2xl">
             <BookOpen className="h-8 w-8 text-muted-foreground/40 mx-auto mb-2" />
             <p className="text-sm font-bold text-foreground">No formulas found for "{searchQuery}"</p>
             <p className="text-xs text-muted-foreground mt-1">

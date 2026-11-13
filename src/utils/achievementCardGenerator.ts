@@ -36,12 +36,12 @@ const TIER_COLORS = {
     medalGrad: ['#94A3B8', '#F1F5F9', '#64748B']
   },
   gold: { 
-    primary: '#F59E0B', 
-    secondary: '#F59E0B', 
+    primary: 'hsl(var(--primary))', 
+    secondary: 'hsl(var(--primary))', 
     glow: 'rgba(245, 158, 11, 0.55)', 
     label: '★ 24K GOLD MASTER ★', 
     ring: '#EAB308',
-    medalGrad: ['#F59E0B', '#FEF08A', '#D97706']
+    medalGrad: ['hsl(var(--primary))', '#FEF08A', '#D97706']
   },
   legendary: { 
     primary: '#C084FC', 
@@ -52,12 +52,12 @@ const TIER_COLORS = {
     medalGrad: ['#7C3AED', '#E879F9', '#4C1D95']
   },
   mythic: { 
-    primary: '#F59E0B', 
-    secondary: '#F59E0B', 
+    primary: 'hsl(var(--primary))', 
+    secondary: 'hsl(var(--primary))', 
     glow: 'rgba(245, 158, 11, 0.75)', 
     label: '★ MYTHIC ARCHITECT ★', 
-    ring: '#F59E0B',
-    medalGrad: ['#F59E0B', '#FBBF24', '#18181B']
+    ring: 'hsl(var(--primary))',
+    medalGrad: ['hsl(var(--primary))', '#FBBF24', '#18181B']
   },
 };
 
@@ -137,7 +137,7 @@ export async function generateAchievementStoryCard(data: AchievementCardData): P
 
   // 4. University Header
   ctx.textAlign = 'center';
-  ctx.fillStyle = '#F59E0B';
+  ctx.fillStyle = 'hsl(var(--primary))';
   ctx.font = '800 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
   ctx.fillText('ITM SLS BARODA UNIVERSITY', width / 2, 125);
 
@@ -200,7 +200,7 @@ export async function generateAchievementStoryCard(data: AchievementCardData): P
     ctx.arc(width / 2, avatarY, avatarRadius, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillStyle = '#F59E0B';
+    ctx.fillStyle = 'hsl(var(--primary))';
     ctx.font = '900 68px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -229,7 +229,7 @@ export async function generateAchievementStoryCard(data: AchievementCardData): P
   ctx.font = '800 46px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
   ctx.fillText(data.studentName || 'Student Scholar', width / 2, 445);
 
-  ctx.fillStyle = '#F59E0B';
+  ctx.fillStyle = 'hsl(var(--primary))';
   ctx.font = '700 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
   ctx.fillText(`Level ${data.level} · ${data.levelTitle}`, width / 2, 485);
 
@@ -329,7 +329,7 @@ export async function generateAchievementStoryCard(data: AchievementCardData): P
   roundRect(ctx, xpPillX, xpPillY, xpPillW, xpPillH, 32);
   ctx.stroke();
 
-  ctx.fillStyle = '#F59E0B';
+  ctx.fillStyle = 'hsl(var(--primary))';
   ctx.font = '900 28px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
   ctx.fillText(`✨ +${data.xpReward} XP AWARDED`, width / 2, xpPillY + 42);
 
@@ -367,7 +367,7 @@ export async function generateAchievementStoryCard(data: AchievementCardData): P
   });
 
   // 9. Call to action & App Watermark
-  ctx.fillStyle = '#F59E0B';
+  ctx.fillStyle = 'hsl(var(--primary))';
   ctx.font = '700 23px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
   ctx.fillText('🎓 CampusLoop • Your Academic Companion', width / 2, 1590);
 
@@ -387,7 +387,7 @@ export async function generateAchievementStoryCard(data: AchievementCardData): P
   ctx.arc(width / 2, 1750, 56, 0, Math.PI * 2);
   ctx.stroke();
 
-  ctx.fillStyle = '#F59E0B';
+  ctx.fillStyle = 'hsl(var(--primary))';
   ctx.font = '900 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
   ctx.fillText('VERIFIED', width / 2, 1745);
   ctx.fillText('HONORS', width / 2, 1763);

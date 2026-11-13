@@ -55,10 +55,10 @@ export default function SubjectCheatSheetPage() {
         </div>
 
         {/* Banner Section */}
-        <div className="bg-gradient-to-r from-amber-500/10 via-primary/10 to-background border border-amber-500/30 rounded-3xl p-6 sm:p-10 mb-8 shadow-sm">
+        <div className="bg-gradient-to-r from-primary/10 via-primary/10 to-background border border-primary/30 rounded-2xl p-6 sm:p-10 mb-8 shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-3">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-amber-500/20 text-amber-700 dark:text-amber-400 border border-amber-500/30">
+              <span className="text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-primary/20 text-primary dark:text-primary border border-primary/30">
                 ⚡ Rapid Cramming Guide
               </span>
               <span className="text-xs font-semibold px-3 py-1 rounded-full bg-secondary text-foreground">
@@ -76,7 +76,7 @@ export default function SubjectCheatSheetPage() {
             </div>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl font-black text-foreground mb-3 tracking-tight">
+          <h1 className="text-3xl sm:text-5xl font-bold text-foreground mb-3 tracking-tight">
             {subject.name} — Master Cheat Sheet
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-3xl mb-6">
@@ -86,21 +86,21 @@ export default function SubjectCheatSheetPage() {
           {/* Quick Metrics */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-border/60 text-xs">
             <div>
-              <p className="text-2xl font-black text-foreground">{subject.units.length}</p>
+              <p className="text-2xl font-bold text-foreground">{subject.units.length}</p>
               <p className="text-muted-foreground font-medium">Syllabus Units</p>
             </div>
             <div>
-              <p className="text-2xl font-black text-amber-600 dark:text-amber-400">{allTopics.length}</p>
+              <p className="text-2xl font-bold text-primary dark:text-primary">{allTopics.length}</p>
               <p className="text-muted-foreground font-medium">Core Topics Covered</p>
             </div>
             <div>
-              <p className="text-2xl font-black text-amber-500 dark:text-amber-500">
+              <p className="text-2xl font-bold text-primary dark:text-primary">
                 {allTopics.reduce((acc, t) => acc + (t.keyPoints?.length || 0), 0)}
               </p>
               <p className="text-muted-foreground font-medium">High-Yield Key Points</p>
             </div>
             <div>
-              <p className="text-2xl font-black text-primary">100%</p>
+              <p className="text-2xl font-bold text-primary">100%</p>
               <p className="text-muted-foreground font-medium">Exam Coverage</p>
             </div>
           </div>
@@ -109,10 +109,10 @@ export default function SubjectCheatSheetPage() {
         {/* ── Official Print Header ── */}
         <div className="hidden print-header mb-6">
           <div className="flex justify-between items-center mb-1">
-            <span className="font-extrabold text-xl text-black">ITM SLS BARODA UNIVERSITY</span>
-            <span className="text-xs text-gray-600 font-bold">B.Tech CSE · Semester 3</span>
+            <span className="font-semibold text-xl text-black">ITM SLS BARODA UNIVERSITY</span>
+            <span className="text-xs text-stone-600 font-bold">B.Tech CSE · Semester 3</span>
           </div>
-          <h2 className="text-xl font-black text-black">{subject.name} ({subject.code}) — Master Exam Cheat Sheet</h2>
+          <h2 className="text-xl font-bold text-black">{subject.name} ({subject.code}) — Master Exam Cheat Sheet</h2>
         </div>
 
         {/* ── Unit Filter Pills ── */}
@@ -177,13 +177,13 @@ export default function SubjectCheatSheetPage() {
 
                         {/* High-Yield Memorization Bullet Points */}
                         <div className="space-y-1.5 mb-4">
-                          <p className="text-[11px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                          <p className="text-[11px] font-bold uppercase tracking-wider text-primary dark:text-primary">
                             Must-Know Exam Points:
                           </p>
                           <ul className="space-y-1">
                             {t.keyPoints.map((kp, kIdx) => (
                               <li key={kIdx} className="text-xs text-foreground/90 flex items-start gap-2">
-                                <span className="text-amber-500 font-bold shrink-0">•</span>
+                                <span className="text-primary font-bold shrink-0">•</span>
                                 <span className="leading-snug">{kp}</span>
                               </li>
                             ))}

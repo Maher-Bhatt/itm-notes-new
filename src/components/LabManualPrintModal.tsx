@@ -37,7 +37,7 @@ export function LabManualPrintModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in print:p-0 print:bg-white print:fixed print:inset-0">
-      <div className="w-full max-w-4xl bg-card border border-border rounded-3xl shadow-2xl flex flex-col max-h-[92vh] overflow-hidden print:border-none print:shadow-none print:max-h-none print:rounded-none">
+      <div className="w-full max-w-4xl bg-card border border-border rounded-2xl shadow-lg flex flex-col max-h-[92vh] overflow-hidden print:border-none print:shadow-none print:max-h-none print:rounded-none">
         {/* Modal Controls (Hidden in Print) */}
         <div className="p-4 bg-secondary/60 border-b border-border flex items-center justify-between shrink-0 print:hidden">
           <div className="flex items-center gap-2">
@@ -72,7 +72,7 @@ export function LabManualPrintModal({
         <div className="p-6 sm:p-10 overflow-y-auto space-y-6 text-foreground print:p-0 print:text-black">
           {/* University Header */}
           <div className="text-center pb-4 border-b-2 border-black/80 space-y-1">
-            <h1 className="text-xl sm:text-2xl font-black uppercase tracking-wider font-display">
+            <h1 className="text-xl sm:text-2xl font-bold uppercase tracking-wider font-display">
               ITM (SLS) Baroda University
             </h1>
             <h2 className="text-sm font-bold text-muted-foreground print:text-black uppercase tracking-wide">
@@ -99,7 +99,7 @@ export function LabManualPrintModal({
             </div>
             <div>
               <span className="text-[10px] text-muted-foreground print:text-black uppercase block">Practical No:</span>
-              <strong className="text-primary print:text-black font-black">Practical {data.practicalNumber}</strong>
+              <strong className="text-primary print:text-black font-bold">Practical {data.practicalNumber}</strong>
             </div>
           </div>
 
@@ -142,7 +142,7 @@ export function LabManualPrintModal({
             <h3 className="font-bold text-sm uppercase tracking-wide border-b border-border/80 pb-1 text-primary print:text-black">
               4. Verified Source Code Implementation
             </h3>
-            <pre className="p-4 rounded-xl bg-zinc-950 text-zinc-100 font-mono text-[11px] leading-relaxed overflow-x-auto border border-zinc-800 print:bg-white print:text-black print:border-black">
+            <pre className="p-4 rounded-xl bg-stone-950 text-stone-100 font-mono text-[11px] leading-relaxed overflow-x-auto border border-stone-800 print:bg-white print:text-black print:border-black">
               <code>{data.code}</code>
             </pre>
           </div>
@@ -152,7 +152,7 @@ export function LabManualPrintModal({
             <h3 className="font-bold text-sm uppercase tracking-wide border-b border-border/80 pb-1 text-primary print:text-black">
               5. Standard Console Execution Output
             </h3>
-            <pre className="p-3.5 rounded-xl bg-zinc-900 text-amber-500 font-mono text-[11px] leading-relaxed border border-zinc-800 print:bg-white print:text-black print:border-black">
+            <pre className="p-3.5 rounded-xl bg-stone-900 text-primary font-mono text-[11px] leading-relaxed border border-stone-800 print:bg-white print:text-black print:border-black">
               {data.sampleOutput}
             </pre>
           </div>

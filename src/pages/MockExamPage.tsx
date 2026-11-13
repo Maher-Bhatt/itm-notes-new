@@ -394,7 +394,7 @@ export default function MockExamPage() {
               GTU & ITM Exam Simulation
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-semibold text-foreground tracking-tight">
             Full Timed Mock Examinations
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
@@ -406,19 +406,19 @@ export default function MockExamPage() {
           {SAMPLE_MOCK_EXAMS.map(exam => (
             <div 
               key={exam.id}
-              className="bg-card border border-border/80 hover:border-primary/50 rounded-3xl p-6 shadow-sm space-y-4 transition-all apple-press flex flex-col justify-between"
+              className="bg-card border border-border/80 hover:border-primary/50 rounded-2xl p-6 shadow-sm space-y-4 transition-all apple-press flex flex-col justify-between"
             >
               <div>
                 <div className="flex items-center justify-between gap-2 mb-2">
                   <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-secondary text-primary">
                     {exam.subjectCode}
                   </span>
-                  <span className="text-xs font-bold text-amber-500 dark:text-amber-500">
+                  <span className="text-xs font-bold text-primary dark:text-primary">
                     {exam.totalMarks} Marks
                   </span>
                 </div>
 
-                <h3 className="font-extrabold text-base text-foreground mb-1">
+                <h3 className="font-semibold text-base text-foreground mb-1">
                   {exam.title}
                 </h3>
                 <p className="text-xs text-muted-foreground">
@@ -460,14 +460,14 @@ export default function MockExamPage() {
   if (examSubmitted && results) {
     return (
       <div className="container max-w-4xl mx-auto px-4 py-8 space-y-6">
-        <div className="bg-card border border-border/80 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6 animate-scale-in">
+        <div className="bg-card border border-border/80 rounded-2xl p-6 sm:p-8 shadow-sm space-y-6 animate-scale-in">
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/70 pb-6">
             <div>
-              <span className="text-xs font-bold text-amber-500 dark:text-amber-500 uppercase tracking-wide flex items-center gap-1.5">
+              <span className="text-xs font-bold text-primary dark:text-primary uppercase tracking-wide flex items-center gap-1.5">
                 <CheckCircle2 className="h-4 w-4" /> Mock Exam Complete
               </span>
-              <h1 className="text-2xl font-black text-foreground mt-1">
+              <h1 className="text-2xl font-bold text-foreground mt-1">
                 {selectedMock?.title}
               </h1>
               <p className="text-xs text-muted-foreground mt-0.5">
@@ -489,21 +489,21 @@ export default function MockExamPage() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div className="p-4 rounded-2xl bg-primary/10 border border-primary/20 text-center">
               <span className="text-[11px] font-bold text-muted-foreground block">Your Score</span>
-              <span className="text-2xl sm:text-3xl font-black text-primary">
+              <span className="text-2xl sm:text-3xl font-bold text-primary">
                 {results.score} <span className="text-xs text-muted-foreground font-normal">/ {results.totalMarks}</span>
               </span>
             </div>
 
-            <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-center">
+            <div className="p-4 rounded-2xl bg-primary/10 border border-primary/20 text-center">
               <span className="text-[11px] font-bold text-muted-foreground block">Accuracy</span>
-              <span className="text-2xl sm:text-3xl font-black text-amber-500 dark:text-amber-500">
+              <span className="text-2xl sm:text-3xl font-bold text-primary dark:text-primary">
                 {results.percentage}%
               </span>
             </div>
 
-            <div className="p-4 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-center">
+            <div className="p-4 rounded-2xl bg-primary/10 border border-primary/20 text-center">
               <span className="text-[11px] font-bold text-muted-foreground block">Est. Percentile</span>
-              <span className="text-2xl sm:text-3xl font-black text-purple-600 dark:text-purple-400">
+              <span className="text-2xl sm:text-3xl font-bold text-primary dark:text-primary">
                 {results.percentile}th
               </span>
             </div>
@@ -511,16 +511,16 @@ export default function MockExamPage() {
             <div className="p-4 rounded-2xl bg-secondary border border-border/80 text-center">
               <span className="text-[11px] font-bold text-muted-foreground block">Breakdown</span>
               <span className="text-xs font-bold text-foreground block mt-1">
-                <span className="text-amber-500">{results.correctCount} Correct</span> •{' '}
-                <span className="text-rose-600">{results.wrongCount} Wrong</span>
+                <span className="text-primary">{results.correctCount} Correct</span> •{' '}
+                <span className="text-destructive">{results.wrongCount} Wrong</span>
               </span>
             </div>
           </div>
 
           {/* Weak Units Alert */}
           {results.weakUnits.length > 0 && (
-            <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 space-y-2">
-              <div className="flex items-center gap-2 text-xs font-bold text-amber-700 dark:text-amber-400">
+            <div className="p-4 rounded-2xl bg-primary/10 border border-primary/30 space-y-2">
+              <div className="flex items-center gap-2 text-xs font-bold text-primary dark:text-primary">
                 <AlertCircle className="h-4 w-4" /> Recommended Revision Areas:
               </div>
               <p className="text-xs text-muted-foreground">
@@ -530,10 +530,10 @@ export default function MockExamPage() {
                 {results.weakUnits.map((u, i) => (
                   <span 
                     key={i} 
-                    className="px-3 py-1 rounded-xl bg-card border border-amber-500/40 text-xs font-semibold text-foreground flex items-center gap-1.5"
+                    className="px-3 py-1 rounded-xl bg-card border border-primary/40 text-xs font-semibold text-foreground flex items-center gap-1.5"
                   >
                     <span>{u.name}</span>
-                    <span className="text-rose-500 font-bold">({u.accuracy}% acc)</span>
+                    <span className="text-destructive font-bold">({u.accuracy}% acc)</span>
                   </span>
                 ))}
               </div>
@@ -557,10 +557,10 @@ export default function MockExamPage() {
                     key={q.id}
                     className={`p-4 rounded-2xl border transition-all ${
                       isCorrect
-                        ? 'border-amber-500/30 bg-amber-500/5'
+                        ? 'border-primary/30 bg-primary/5'
                         : isSkipped
                         ? 'border-border bg-secondary/20'
-                        : 'border-rose-500/30 bg-rose-500/5'
+                        : 'border-destructive/30 bg-destructive/5'
                     }`}
                   >
                     <div className="flex items-start justify-between gap-2 mb-2">
@@ -569,10 +569,10 @@ export default function MockExamPage() {
                       </span>
                       <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
                         isCorrect
-                          ? 'bg-amber-500/20 text-amber-500 dark:text-amber-500'
+                          ? 'bg-primary/20 text-primary dark:text-primary'
                           : isSkipped
                           ? 'bg-secondary text-muted-foreground'
-                          : 'bg-rose-500/20 text-rose-600 dark:text-rose-400'
+                          : 'bg-destructive/20 text-destructive dark:text-destructive'
                       }`}>
                         {isCorrect ? `+${q.marks} Marks` : isSkipped ? 'Skipped (0M)' : '-0.25 Marks'}
                       </span>
@@ -583,7 +583,7 @@ export default function MockExamPage() {
                     </p>
 
                     {q.codeSnippet && (
-                      <pre className="p-3 rounded-xl bg-black/90 text-amber-500 font-mono text-xs overflow-x-auto mb-3">
+                      <pre className="p-3 rounded-xl bg-black/90 text-primary font-mono text-xs overflow-x-auto mb-3">
                         <code>{q.codeSnippet}</code>
                       </pre>
                     )}
@@ -598,15 +598,15 @@ export default function MockExamPage() {
                             key={optIdx}
                             className={`p-2.5 rounded-xl border text-xs flex items-center justify-between ${
                               isTheCorrect
-                                ? 'bg-amber-500/20 border-amber-500/60 font-bold text-amber-500 dark:text-amber-500'
+                                ? 'bg-primary/20 border-primary/60 font-bold text-primary dark:text-primary'
                                 : isChosen
-                                ? 'bg-rose-500/20 border-rose-500/60 text-rose-700 dark:text-rose-300 font-medium'
+                                ? 'bg-destructive/20 border-destructive/60 text-destructive dark:text-destructive font-medium'
                                 : 'bg-card border-border/60 text-muted-foreground'
                             }`}
                           >
                             <span>{opt}</span>
-                            {isTheCorrect && <span className="text-[10px] text-amber-500 font-bold">✓ Correct Answer</span>}
-                            {isChosen && !isTheCorrect && <span className="text-[10px] text-rose-600 font-bold">✗ Your Choice</span>}
+                            {isTheCorrect && <span className="text-[10px] text-primary font-bold">✓ Correct Answer</span>}
+                            {isChosen && !isTheCorrect && <span className="text-[10px] text-destructive font-bold">✗ Your Choice</span>}
                           </div>
                         );
                       })}
@@ -647,9 +647,9 @@ export default function MockExamPage() {
 
         {/* Timer Bar */}
         <div className="flex items-center gap-3">
-          <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-mono text-xs font-black border ${
+          <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-mono text-xs font-bold border ${
             secondsLeft < 300
-              ? 'bg-rose-500/20 border-rose-500 text-rose-600 animate-pulse'
+              ? 'bg-destructive/20 border-destructive/30 text-destructive animate-pulse'
               : 'bg-secondary border-border text-foreground'
           }`}>
             <Clock className="h-3.5 w-3.5 text-primary" />
@@ -658,7 +658,7 @@ export default function MockExamPage() {
 
           <button
             onClick={() => setShowConfirmSubmit(true)}
-            className="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-500 text-white font-bold text-xs shadow-sm transition-all apple-press"
+            className="px-3.5 py-1.5 rounded-xl bg-primary hover:bg-primary text-white font-bold text-xs shadow-sm transition-all apple-press"
           >
             Submit Exam
           </button>
@@ -668,7 +668,7 @@ export default function MockExamPage() {
       {/* Main Exam Body */}
       <div className="container max-w-6xl mx-auto p-4 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left Side: Question Pane (8 cols) */}
-        <div className="lg:col-span-8 bg-card border border-border/80 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+        <div className="lg:col-span-8 bg-card border border-border/80 rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
           {currentQuestion && (
             <>
               {/* Question Meta */}
@@ -687,7 +687,7 @@ export default function MockExamPage() {
                     +{currentQuestion.marks} Marks
                   </span>
                   {selectedMock?.negativeMarking && (
-                    <span className="text-[10px] text-rose-500 font-medium">(-0.25)</span>
+                    <span className="text-[10px] text-destructive font-medium">(-0.25)</span>
                   )}
                 </div>
               </div>
@@ -699,7 +699,7 @@ export default function MockExamPage() {
                 </p>
 
                 {currentQuestion.codeSnippet && (
-                  <pre className="p-3.5 rounded-2xl bg-black/90 text-amber-500 font-mono text-xs overflow-x-auto">
+                  <pre className="p-3.5 rounded-2xl bg-black/90 text-primary font-mono text-xs overflow-x-auto">
                     <code>{currentQuestion.codeSnippet}</code>
                   </pre>
                 )}
@@ -740,7 +740,7 @@ export default function MockExamPage() {
                     onClick={() => toggleMarkForReview(currentQuestion.id)}
                     className={`px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
                       markedForReview.has(currentQuestion.id)
-                        ? 'bg-purple-500/20 text-purple-600 dark:text-purple-400 border border-purple-500/40'
+                        ? 'bg-primary/20 text-primary dark:text-primary border border-primary/40'
                         : 'bg-secondary text-muted-foreground hover:text-foreground'
                     }`}
                   >
@@ -751,7 +751,7 @@ export default function MockExamPage() {
                   {answers[currentQuestion.id] !== undefined && (
                     <button
                       onClick={() => handleClearResponse(currentQuestion.id)}
-                      className="px-3 py-2 rounded-xl bg-secondary text-muted-foreground hover:text-rose-500 text-xs font-semibold flex items-center gap-1 transition-colors"
+                      className="px-3 py-2 rounded-xl bg-secondary text-muted-foreground hover:text-destructive text-xs font-semibold flex items-center gap-1 transition-colors"
                     >
                       <RotateCcw className="h-3 w-3" /> Clear
                     </button>
@@ -792,7 +792,7 @@ export default function MockExamPage() {
         </div>
 
         {/* Right Side: Question Palette (4 cols) */}
-        <div className="lg:col-span-4 bg-card border border-border/80 rounded-3xl p-5 shadow-sm space-y-4">
+        <div className="lg:col-span-4 bg-card border border-border/80 rounded-2xl p-5 shadow-sm space-y-4">
           <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider block">
             Question Palette
           </span>
@@ -800,16 +800,16 @@ export default function MockExamPage() {
           {/* Legend */}
           <div className="grid grid-cols-2 gap-2 text-[10px] text-muted-foreground pb-2 border-b border-border/60">
             <span className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-full bg-amber-500" /> Answered
+              <span className="w-3 h-3 rounded-full bg-primary" /> Answered
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-full bg-purple-500" /> Marked for Review
+              <span className="w-3 h-3 rounded-full bg-primary" /> Marked for Review
             </span>
             <span className="flex items-center gap-1.5">
               <span className="w-3 h-3 rounded-full bg-secondary border border-border" /> Not Visited
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-full bg-rose-500" /> Skipped
+              <span className="w-3 h-3 rounded-full bg-destructive" /> Skipped
             </span>
           </div>
 
@@ -822,9 +822,9 @@ export default function MockExamPage() {
 
               let badgeClass = 'bg-secondary text-muted-foreground border-border';
               if (isMarked) {
-                badgeClass = 'bg-purple-500 text-white border-purple-600 font-bold';
+                badgeClass = 'bg-primary text-white border-primary/60 font-bold';
               } else if (isAnswered) {
-                badgeClass = 'bg-amber-500 text-white border-amber-500 font-bold';
+                badgeClass = 'bg-primary text-white border-primary/60 font-bold';
               }
 
               return (
@@ -844,7 +844,7 @@ export default function MockExamPage() {
           <div className="pt-3 border-t border-border/60 text-center">
             <button
               onClick={() => setShowConfirmSubmit(true)}
-              className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-500 text-white font-bold text-xs shadow-sm transition-all apple-press"
+              className="w-full py-2.5 rounded-xl bg-primary hover:bg-primary text-white font-bold text-xs shadow-sm transition-all apple-press"
             >
               Submit Examination
             </button>
@@ -855,9 +855,9 @@ export default function MockExamPage() {
       {/* Confirmation Modal */}
       {showConfirmSubmit && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in">
-          <div className="bg-card border border-border rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 animate-scale-in">
+          <div className="bg-card border border-border rounded-2xl max-w-md w-full p-6 shadow-lg space-y-4 animate-scale-in">
             <div className="flex items-center gap-3">
-              <span className="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center">
+              <span className="w-10 h-10 rounded-2xl bg-primary/10 text-primary flex items-center justify-center">
                 <AlertCircle className="h-5 w-5" />
               </span>
               <div>
@@ -867,15 +867,15 @@ export default function MockExamPage() {
             </div>
 
             <div className="grid grid-cols-3 gap-2 text-center py-2">
-              <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20">
+              <div className="p-2.5 rounded-xl bg-primary/10 border border-primary/20">
                 <span className="text-[10px] text-muted-foreground block">Answered</span>
-                <span className="text-base font-bold text-amber-500">
+                <span className="text-base font-bold text-primary">
                   {Object.keys(answers).length}
                 </span>
               </div>
-              <div className="p-2.5 rounded-xl bg-purple-500/10 border border-purple-500/20">
+              <div className="p-2.5 rounded-xl bg-primary/10 border border-primary/20">
                 <span className="text-[10px] text-muted-foreground block">Marked</span>
-                <span className="text-base font-bold text-purple-600">
+                <span className="text-base font-bold text-primary">
                   {markedForReview.size}
                 </span>
               </div>
@@ -896,7 +896,7 @@ export default function MockExamPage() {
               </button>
               <button
                 onClick={() => handleSubmitExam(false)}
-                className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-500 text-white text-xs font-bold shadow-md"
+                className="px-4 py-2 rounded-xl bg-primary hover:bg-primary text-white text-xs font-bold shadow-md"
               >
                 Yes, Submit Now
               </button>

@@ -134,8 +134,8 @@ export const MermaidDiagram = memo(function MermaidDiagram({ chart }: { chart: s
   // Loading state: Subtle dark skeleton (only shown on cold render without cache)
   if (isLoading && !svg) {
     return (
-      <div className="my-6 rounded-2xl border border-[#E8E4DA] dark:border-neutral-800 bg-[#F6F3EC]/50 dark:bg-neutral-900/40 p-6 flex items-center justify-center min-h-[120px]">
-        <div className="w-5 h-5 rounded-full border-2 border-[#2B4EFF]/30 border-t-[#2B4EFF] animate-spin" />
+      <div className="my-6 rounded-2xl border border-border dark:border-stone-800 bg-background/50 dark:bg-stone-900/40 p-6 flex items-center justify-center min-h-[120px]">
+        <div className="w-5 h-5 rounded-full border-2 border-primary/30 border-t-primary animate-spin" />
       </div>
     );
   }

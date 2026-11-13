@@ -107,21 +107,21 @@ export function AdminFlagsTab() {
 
   return (
     <div className="space-y-6 animate-fade-in max-w-4xl">
-      <div className="bg-slate-800 border border-slate-700 rounded-3xl p-5 sm:p-6 space-y-4 shadow-xl">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-700">
+      <div className="bg-stone-800 border border-stone-700 rounded-2xl p-5 sm:p-6 space-y-4 shadow-lg">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-stone-700">
           <div>
             <h2 className="text-base font-bold text-white flex items-center gap-2">
               <Zap className="h-5 w-5 text-[#FAFAFA]" />
               Dynamic Feature Flags & Killswitches
             </h2>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className="text-xs text-stone-400 mt-0.5">
               Instantly toggle application modules in real-time without redeploying code.
             </p>
           </div>
 
           <button
             onClick={loadData}
-            className="px-3 py-1.5 rounded-xl bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-semibold flex items-center gap-1.5 self-start sm:self-auto transition-colors"
+            className="px-3 py-1.5 rounded-xl bg-stone-700 hover:bg-stone-600 text-stone-200 text-xs font-semibold flex items-center gap-1.5 self-start sm:self-auto transition-colors"
           >
             <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />
             <span>Refresh Flags</span>
@@ -129,7 +129,7 @@ export function AdminFlagsTab() {
         </div>
 
         {loading ? (
-          <div className="py-12 text-center text-slate-500 text-sm">Loading feature flags…</div>
+          <div className="py-12 text-center text-stone-500 text-sm">Loading feature flags…</div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {flags.map((flag) => {
@@ -143,10 +143,10 @@ export function AdminFlagsTab() {
               return (
                 <div
                   key={flag.id || flag.key}
-                  className={`bg-slate-900/70 border rounded-2xl p-4 sm:p-5 flex items-start justify-between gap-4 transition-all ${
+                  className={`bg-stone-900/70 border rounded-2xl p-4 sm:p-5 flex items-start justify-between gap-4 transition-all ${
                     flag.enabled
-                      ? "border-slate-700/80 shadow-xs"
-                      : "border-slate-800 opacity-60 bg-slate-950/40"
+                      ? "border-stone-700/80 shadow-xs"
+                      : "border-stone-800 opacity-60 bg-stone-950/40"
                   }`}
                 >
                   <div className="flex items-start gap-3 min-w-0">
@@ -154,7 +154,7 @@ export function AdminFlagsTab() {
                       className={`h-10 w-10 rounded-xl flex items-center justify-center shrink-0 ${
                         flag.enabled
                           ? "bg-[#FAFAFA]/15 text-[#FAFAFA]"
-                          : "bg-slate-800 text-slate-500"
+                          : "bg-stone-800 text-stone-500"
                       }`}
                     >
                       <Icon className="h-5 w-5" />
@@ -164,7 +164,7 @@ export function AdminFlagsTab() {
                       <div className="flex items-center gap-2">
                         <h4 className="text-sm font-bold text-white truncate">{meta.label}</h4>
                       </div>
-                      <p className="text-xs text-slate-400 leading-relaxed mt-1">
+                      <p className="text-xs text-stone-400 leading-relaxed mt-1">
                         {meta.description}
                       </p>
                     </div>
@@ -174,15 +174,15 @@ export function AdminFlagsTab() {
                   <button
                     onClick={() => handleToggle(flag.key, flag.enabled)}
                     className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                      flag.enabled ? "bg-[#FAFAFA]" : "bg-slate-700"
+                      flag.enabled ? "bg-[#FAFAFA]" : "bg-stone-700"
                     }`}
                     role="switch"
                     aria-checked={flag.enabled}
                   >
                     <span
                       aria-hidden="true"
-                      className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-[#18181B] shadow-sm ring-0 transition duration-200 ease-in-out ${
-                        flag.enabled ? "translate-x-5 bg-[#18181B]" : "translate-x-0 bg-slate-400"
+                      className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-foreground shadow-sm ring-0 transition duration-200 ease-in-out ${
+                        flag.enabled ? "translate-x-5 bg-foreground" : "translate-x-0 bg-stone-400"
                       }`}
                     />
                   </button>

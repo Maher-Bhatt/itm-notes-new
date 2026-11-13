@@ -75,7 +75,7 @@ export function FriendComparisonModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
       <div
-        className="relative w-full max-w-2xl bg-card border border-border rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]"
+        className="relative w-full max-w-2xl bg-card border border-border rounded-2xl sm:rounded-2xl shadow-lg overflow-hidden flex flex-col max-h-[92vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header Banner */}
@@ -94,7 +94,7 @@ export function FriendComparisonModal({
           </div>
           <div className="flex flex-wrap items-center justify-between gap-3 mt-1">
             <div>
-              <h2 className="text-xl sm:text-2xl font-black text-foreground">Classmate Rivalry & Stats</h2>
+              <h2 className="text-xl sm:text-2xl font-bold text-foreground">Classmate Rivalry & Stats</h2>
               <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
                 Compare your curriculum progress, attendance buffer, and XP rank side-by-side.
               </p>
@@ -185,7 +185,7 @@ export function FriendComparisonModal({
                 <div>
                   <div className="w-full bg-secondary h-2.5 rounded-full overflow-hidden">
                     <div
-                      className="bg-purple-500 h-full rounded-full transition-all"
+                      className="bg-primary h-full rounded-full transition-all"
                       style={{ width: `${Math.min(100, (friend.xp / Math.max(userStats.xp, friend.xp, 1)) * 100)}%` }}
                     />
                   </div>
@@ -197,18 +197,18 @@ export function FriendComparisonModal({
             {/* Metric 2: Attendance % (Crucial 75% rule!) */}
             <div className="p-3.5 rounded-xl bg-secondary/20 border border-border/70 space-y-2">
               <div className="flex items-center justify-between text-xs font-bold text-foreground">
-                <span className="flex items-center gap-1.5 text-amber-500 dark:text-amber-500">
+                <span className="flex items-center gap-1.5 text-primary dark:text-primary">
                   <Shield className="h-4 w-4" /> 75% Attendance Requirement Buffer
                 </span>
                 <span className="font-mono">{userStats.attendancePercent}% vs {friend.attendancePercent}%</span>
               </div>
               <div className="grid grid-cols-2 gap-3 text-xs">
-                <div className={`p-2.5 rounded-lg border text-center ${userStats.attendancePercent >= 75 ? 'bg-amber-500/10 border-amber-500/30 text-amber-500 dark:text-amber-500' : 'bg-red-500/10 border-red-500/30 text-red-600'}`}>
-                  <p className="text-base sm:text-lg font-black">{userStats.attendancePercent}%</p>
+                <div className={`p-2.5 rounded-lg border text-center ${userStats.attendancePercent >= 75 ? 'bg-primary/10 border-primary/30 text-primary dark:text-primary' : 'bg-destructive/10 border-destructive/30 text-destructive'}`}>
+                  <p className="text-base sm:text-lg font-bold">{userStats.attendancePercent}%</p>
                   <p className="text-[10px] font-medium">{userStats.attendancePercent >= 75 ? '✅ Safe from Detain' : '⚠️ Below 75% Threshold'}</p>
                 </div>
-                <div className={`p-2.5 rounded-lg border text-center ${friend.attendancePercent >= 75 ? 'bg-amber-500/10 border-amber-500/30 text-amber-500 dark:text-amber-500' : 'bg-red-500/10 border-red-500/30 text-red-600'}`}>
-                  <p className="text-base sm:text-lg font-black">{friend.attendancePercent}%</p>
+                <div className={`p-2.5 rounded-lg border text-center ${friend.attendancePercent >= 75 ? 'bg-primary/10 border-primary/30 text-primary dark:text-primary' : 'bg-destructive/10 border-destructive/30 text-destructive'}`}>
+                  <p className="text-base sm:text-lg font-bold">{friend.attendancePercent}%</p>
                   <p className="text-[10px] font-medium">{friend.attendancePercent >= 75 ? '✅ Safe from Detain' : '⚠️ Below 75% Threshold'}</p>
                 </div>
               </div>
@@ -217,8 +217,8 @@ export function FriendComparisonModal({
             {/* Metric 3: Study Streak */}
             <div className="p-3.5 rounded-xl bg-secondary/20 border border-border/70 space-y-2">
               <div className="flex items-center justify-between text-xs font-bold text-foreground">
-                <span className="flex items-center gap-1.5 text-amber-500">
-                  <Flame className="h-4 w-4 fill-amber-500" /> Daily Study Consistency Streak
+                <span className="flex items-center gap-1.5 text-primary">
+                  <Flame className="h-4 w-4 fill-primary" /> Daily Study Consistency Streak
                 </span>
                 <span className="font-mono">{userStats.streakDays}d vs {friend.streakDays}d</span>
               </div>
@@ -240,7 +240,7 @@ export function FriendComparisonModal({
                 <p className="text-base font-bold text-foreground mt-0.5">{userStats.badgesCount} vs {friend.badgesCount}</p>
               </div>
               <div className="p-3 rounded-xl bg-secondary/30 border border-border/70 text-center">
-                <CheckCircle2 className="h-4 w-4 text-amber-500 mx-auto mb-1" />
+                <CheckCircle2 className="h-4 w-4 text-primary mx-auto mb-1" />
                 <p className="text-[10px] text-muted-foreground uppercase font-bold">Topics Finished</p>
                 <p className="text-base font-bold text-foreground mt-0.5">{userStats.topicsCompleted} vs {friend.topicsCompleted}</p>
               </div>

@@ -84,6 +84,8 @@ function lazyWithRetry<T extends React.ComponentType<any>>(
 
 // React.lazy + Suspense code splitting with deployment-resilient retry
 const CodingLabPage = lazyWithRetry(() => import("./pages/CodingLabPage"));
+const LibraryPage = lazyWithRetry(() => import("./pages/LibraryPage"));
+const ReaderPage = lazyWithRetry(() => import("./pages/ReaderPage"));
 const CommunityPage = lazyWithRetry(() => import("./pages/CommunityPage"));
 const AdminDashboard = lazyWithRetry(() => import("./pages/admin/AdminDashboard"));
 const PyqPapersPage = lazyWithRetry(() => import("./pages/PyqPapersPage"));
@@ -169,6 +171,7 @@ const App = () => (
                         <Route path="/onboarding" element={<ProtectedRoute><OnboardingPage /></ProtectedRoute>} />
 
                         {/* Distraction-Free Topic Reader */}
+                        <Route path="/library/:subjectSlug/:docSlug" element={<ProtectedRoute><ReaderPage /></ProtectedRoute>} />
                         <Route path="/subject/:subjectId/topic/:topicId" element={<ProtectedRoute><TopicPage /></ProtectedRoute>} />
 
                         {/* Redirects for legacy and intuitive routes */}
@@ -178,6 +181,8 @@ const App = () => (
                         {/* Unified Modern Portal Layout */}
                         <Route element={<PortalLayout />}>
                           <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+                          <Route path="/library" element={<ProtectedRoute><LibraryPage /></ProtectedRoute>} />
+                          <Route path="/library/:subjectSlug" element={<ProtectedRoute><LibraryPage /></ProtectedRoute>} />
                           <Route path="/materials" element={<ProtectedRoute><MaterialsPage /></ProtectedRoute>} />
                           <Route path="/quiz" element={<ProtectedRoute><QuizPage /></ProtectedRoute>} />
                           <Route path="/coding-lab" element={<ProtectedRoute><ErrorBoundary><CodingLabPage /></ErrorBoundary></ProtectedRoute>} />

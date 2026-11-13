@@ -89,16 +89,16 @@ export default function SubjectDashboard() {
 
   if (!subject) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F6F3EC] dark:bg-[#0E0E10] px-4">
-        <div className="text-center max-w-md p-8 rounded-[24px] bg-white dark:bg-[#1C1C1E] border border-[#E8E4DA] dark:border-neutral-800 shadow-sm space-y-4">
-          <GraduationCap className="w-12 h-12 text-[#2B4EFF] mx-auto opacity-80" />
-          <h2 className="text-xl font-extrabold text-[#111111] dark:text-white">Subject notes not found</h2>
-          <p className="text-sm text-[#6B7280] dark:text-neutral-400">
+      <div className="min-h-screen flex items-center justify-center bg-background dark:bg-background px-4">
+        <div className="text-center max-w-md p-8 rounded-2xl bg-white dark:bg-card border border-border dark:border-stone-800 shadow-sm space-y-4">
+          <GraduationCap className="w-12 h-12 text-primary mx-auto opacity-80" />
+          <h2 className="text-xl font-semibold text-foreground dark:text-white">Subject notes not found</h2>
+          <p className="text-sm text-muted-foreground dark:text-stone-400">
             We couldn't locate the requested course syllabus in our academic registry.
           </p>
           <Link
             to="/subjects"
-            className="inline-flex items-center justify-center px-6 py-2.5 rounded-full bg-[#2B4EFF] text-white text-xs font-bold hover:bg-[#1E3EDB] transition-colors"
+            className="inline-flex items-center justify-center px-6 py-2.5 rounded-full bg-primary text-white text-xs font-bold hover:bg-primary transition-colors"
           >
             ← Browse All Subjects
           </Link>
@@ -121,38 +121,38 @@ export default function SubjectDashboard() {
   const hasImpQuestions = Boolean(SUBJECT_IMP_DATA[subject.id]);
 
   return (
-    <div className="min-h-screen bg-[#F6F3EC] dark:bg-[#0E0E10] text-[#111111] dark:text-white pb-24">
+    <div className="min-h-screen bg-background dark:bg-background text-foreground dark:text-white pb-24">
       <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-5 space-y-6">
         
         {/* ── 1. CLEAN BREADCRUMB & SWITCHER HEADER ───────────────────────── */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E8E4DA] dark:border-neutral-800">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-border dark:border-stone-800">
           <div className="flex items-center gap-2 flex-wrap text-xs font-medium">
             <Link
               to="/subjects"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white dark:bg-[#1C1C1E] border border-[#E8E4DA] dark:border-neutral-800 text-xs font-bold text-[#111111] dark:text-white hover:border-[#2B4EFF] transition-colors shadow-2xs"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white dark:bg-card border border-border dark:border-stone-800 text-xs font-bold text-foreground dark:text-white hover:border-primary transition-colors shadow-2xs"
             >
-              <ArrowLeft className="h-3.5 w-3.5 text-[#2B4EFF]" />
+              <ArrowLeft className="h-3.5 w-3.5 text-primary" />
               <span>All Subjects</span>
             </Link>
-            <span className="text-[#6B7280]">/</span>
-            <span className="px-2.5 py-0.5 rounded-full bg-[#E6EAFD] text-[#2B4EFF] font-bold text-[11px]">
+            <span className="text-muted-foreground">/</span>
+            <span className="px-2.5 py-0.5 rounded-full bg-primary/10 text-primary font-bold text-[11px]">
               Semester {subject.semester}
             </span>
-            <span className="text-[#6B7280]">/</span>
-            <span className="font-bold text-[#111111] dark:text-white">
+            <span className="text-muted-foreground">/</span>
+            <span className="font-bold text-foreground dark:text-white">
               {subject.code || subject.name.split("—")[0].trim()}
             </span>
           </div>
 
           {/* Quick Subject Select Dropdown */}
           <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold text-[#6B7280] hidden sm:inline">Switch Course:</span>
+            <span className="text-xs font-semibold text-muted-foreground hidden sm:inline">Switch Course:</span>
             <select
               value={subject.id}
               onChange={(e) => navigate(`/subject/${e.target.value}`)}
-              className="h-8 px-3 rounded-full border border-[#E8E4DA] dark:border-neutral-800 bg-white dark:bg-[#1C1C1E] text-xs font-bold text-[#111111] dark:text-white outline-none cursor-pointer hover:border-[#2B4EFF] transition-all"
+              className="h-8 px-3 rounded-full border border-border dark:border-stone-800 bg-white dark:bg-card text-xs font-bold text-foreground dark:text-white outline-none cursor-pointer hover:border-primary transition-all"
             >
               <optgroup label="Semester 5">
                 {subjects
@@ -204,62 +204,62 @@ export default function SubjectDashboard() {
         </div>
 
         {/* ── 2. ELEGANT SUBJECT HERO CARD ─────────────────────────────────── */}
-        <div className="rounded-[24px] bg-white dark:bg-[#1C1C1E] border border-[#E8E4DA] dark:border-neutral-800 p-6 sm:p-8 shadow-xs space-y-5">
+        <div className="rounded-2xl bg-white dark:bg-card border border-border dark:border-stone-800 p-6 sm:p-8 shadow-xs space-y-5">
           <div className="flex flex-col md:flex-row md:items-start justify-between gap-5">
             <div className="space-y-2 flex-1">
               <div className="flex items-center gap-2 flex-wrap">
                 {subject.code && (
-                  <span className="px-3 py-1 rounded-full font-mono text-xs font-bold bg-[#E6EAFD] text-[#2B4EFF] dark:bg-blue-950/40 dark:text-blue-300">
+                  <span className="px-3 py-1 rounded-full font-mono text-xs font-bold bg-primary/10 text-primary dark:bg-primary/15 dark:text-primary">
                     {subject.code}
                   </span>
                 )}
-                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#F6F3EC] dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300">
+                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-background dark:bg-stone-800 text-stone-700 dark:text-stone-300">
                   Semester {subject.semester} Curriculum
                 </span>
-                <span className="text-xs text-[#6B7280] flex items-center gap-1 font-medium">
+                <span className="text-xs text-muted-foreground flex items-center gap-1 font-medium">
                   <Layers className="w-3.5 h-3.5" />
                   {subject.units?.length || 0} Units · {totalTopics} Topics
                 </span>
               </div>
 
-              <h1 className="text-2xl sm:text-3xl font-black text-[#111111] dark:text-white tracking-tight leading-tight">
+              <h1 className="text-2xl sm:text-3xl font-bold text-foreground dark:text-white tracking-tight leading-tight">
                 {subject.name}
               </h1>
 
-              <p className="text-xs sm:text-sm text-[#6B7280] dark:text-neutral-400 leading-relaxed max-w-3xl">
+              <p className="text-xs sm:text-sm text-muted-foreground dark:text-stone-400 leading-relaxed max-w-3xl">
                 {subject.description || "Master core concepts with step-by-step lecture notes, code implementations, diagrams, and verified university exam questions."}
               </p>
             </div>
 
             {/* Progress Card */}
-            <div className="flex items-center sm:flex-col justify-between sm:justify-center p-4 rounded-2xl bg-[#F6F3EC] dark:bg-neutral-800/60 border border-[#E8E4DA] dark:border-neutral-800 min-w-[160px] text-center gap-2">
+            <div className="flex items-center sm:flex-col justify-between sm:justify-center p-4 rounded-2xl bg-background dark:bg-stone-800/60 border border-border dark:border-stone-800 min-w-[160px] text-center gap-2">
               <div className="text-left sm:text-center">
-                <div className="text-2xl sm:text-3xl font-black text-[#111111] dark:text-white font-mono">
+                <div className="text-2xl sm:text-3xl font-bold text-foreground dark:text-white font-mono">
                   {progress}%
                 </div>
-                <div className="text-[10px] uppercase font-bold text-[#6B7280] dark:text-neutral-400 tracking-wider">
+                <div className="text-[10px] uppercase font-bold text-muted-foreground dark:text-stone-400 tracking-wider">
                   Syllabus Mastered
                 </div>
               </div>
-              <div className="w-24 sm:w-full h-2 rounded-full bg-white dark:bg-neutral-700 overflow-hidden">
+              <div className="w-24 sm:w-full h-2 rounded-full bg-white dark:bg-stone-700 overflow-hidden">
                 <div
-                  className="h-full bg-[#2B4EFF] rounded-full transition-all duration-500"
+                  className="h-full bg-primary rounded-full transition-all duration-500"
                   style={{ width: `${progress}%` }}
                 />
               </div>
-              <span className="text-[10px] font-semibold text-[#6B7280]">
+              <span className="text-[10px] font-semibold text-muted-foreground">
                 {completedTopicsCount} of {totalTopics} topics read
               </span>
             </div>
           </div>
 
           {/* Quick Action Pills Strip (Pure CampusLoop tokens) */}
-          <div className="pt-2 border-t border-[#EFECE6] dark:border-neutral-800 flex flex-wrap items-center gap-2.5">
+          <div className="pt-2 border-t border-border dark:border-stone-800 flex flex-wrap items-center gap-2.5">
             {hasImpQuestions && (
               <button
                 type="button"
                 onClick={() => navigate(`/imp-questions/${subject.id}`)}
-                className="px-4 py-2 rounded-full bg-[#2B4EFF] text-white hover:bg-[#1E3EDB] text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
+                className="px-4 py-2 rounded-full bg-primary text-white hover:bg-primary text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
               >
                 <HelpCircle className="w-3.5 h-3.5" />
                 <span>Exam IMP Questions (3, 5, 7 Marks)</span>
@@ -269,27 +269,27 @@ export default function SubjectDashboard() {
             <button
               type="button"
               onClick={() => navigate(`/materials?subject=${subject.id}`)}
-              className="px-4 py-2 rounded-full bg-[#F6F3EC] dark:bg-neutral-800 hover:bg-[#EFECE6] text-neutral-800 dark:text-neutral-200 border border-[#E8E4DA] dark:border-neutral-700 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+              className="px-4 py-2 rounded-full bg-background dark:bg-stone-800 hover:bg-muted text-stone-800 dark:text-stone-200 border border-border dark:border-stone-700 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
             >
-              <FolderDown className="w-3.5 h-3.5 text-[#2B4EFF]" />
+              <FolderDown className="w-3.5 h-3.5 text-primary" />
               <span>College PDFs & Manuals</span>
             </button>
 
             <button
               type="button"
               onClick={() => navigate(`/subject/${subject.id}/cheat-sheet`)}
-              className="px-4 py-2 rounded-full bg-[#F6F3EC] dark:bg-neutral-800 hover:bg-[#EFECE6] text-neutral-800 dark:text-neutral-200 border border-[#E8E4DA] dark:border-neutral-700 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+              className="px-4 py-2 rounded-full bg-background dark:bg-stone-800 hover:bg-muted text-stone-800 dark:text-stone-200 border border-border dark:border-stone-700 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
             >
-              <Zap className="w-3.5 h-3.5 text-amber-500" />
+              <Zap className="w-3.5 h-3.5 text-primary" />
               <span>Last-Night Cheat Sheet</span>
             </button>
 
             <button
               type="button"
               onClick={() => navigate(`/mock-exam`)}
-              className="px-4 py-2 rounded-full bg-[#D7F75B] hover:bg-[#C6E84A] text-[#111111] text-xs font-extrabold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer ml-auto"
+              className="px-4 py-2 rounded-full bg-accent hover:bg-accent text-foreground text-xs font-semibold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer ml-auto"
             >
-              <Sparkles className="w-3.5 h-3.5 text-[#111111]" />
+              <Sparkles className="w-3.5 h-3.5 text-foreground" />
               <span>Practice MCQs</span>
             </button>
           </div>
@@ -298,7 +298,7 @@ export default function SubjectDashboard() {
         {/* ── 3. HORIZONTAL SIBLING SUBJECTS STRIP ─────────────────────────── */}
         {siblingSubjects.length > 1 && (
           <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-            <span className="text-xs font-bold text-[#6B7280] whitespace-nowrap pl-1">
+            <span className="text-xs font-bold text-muted-foreground whitespace-nowrap pl-1">
               Semester {subject.semester}:
             </span>
             {siblingSubjects.map((sib) => {
@@ -311,8 +311,8 @@ export default function SubjectDashboard() {
                   onClick={() => navigate(`/subject/${sib.id}`)}
                   className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer flex items-center gap-1.5 border ${
                     isCurrent
-                      ? "bg-[#111111] text-white dark:bg-white dark:text-[#111111] border-transparent shadow-xs"
-                      : "bg-white dark:bg-[#1C1C1E] text-[#6B7280] dark:text-neutral-400 hover:text-[#111111] dark:hover:text-white border-[#E8E4DA] dark:border-neutral-800"
+                      ? "bg-foreground text-white dark:bg-white dark:text-foreground border-transparent shadow-xs"
+                      : "bg-white dark:bg-card text-muted-foreground dark:text-stone-400 hover:text-foreground dark:hover:text-white border-border dark:border-stone-800"
                   }`}
                 >
                   {sib.code && <span className="opacity-70 font-mono text-[10px]">{sib.code}</span>}
@@ -326,10 +326,10 @@ export default function SubjectDashboard() {
         {/* ── 4. BEAUTIFUL, UNCLUTTERED UNIT ACCORDION CARDS ──────────────── */}
         <div className="space-y-4">
           <div className="flex items-center justify-between px-1">
-            <h2 className="text-base font-bold text-[#111111] dark:text-white">
+            <h2 className="text-base font-bold text-foreground dark:text-white">
               Course Units & Detailed Topics
             </h2>
-            <span className="text-xs font-medium text-[#6B7280]">
+            <span className="text-xs font-medium text-muted-foreground">
               Click any topic to read full notes & solutions
             </span>
           </div>
@@ -343,26 +343,26 @@ export default function SubjectDashboard() {
             return (
               <div
                 key={unit.id}
-                className="rounded-[22px] bg-white dark:bg-[#1C1C1E] border border-[#E8E4DA] dark:border-neutral-800 overflow-hidden shadow-xs transition-all"
+                className="rounded-2xl bg-white dark:bg-card border border-border dark:border-stone-800 overflow-hidden shadow-xs transition-all"
               >
                 {/* Unit Card Header */}
                 <button
                   type="button"
                   onClick={() => toggleUnit(unit.id)}
-                  className="w-full p-4 sm:p-5 flex items-center justify-between gap-4 text-left hover:bg-[#F6F3EC]/40 dark:hover:bg-neutral-800/30 transition-colors cursor-pointer select-none"
+                  className="w-full p-4 sm:p-5 flex items-center justify-between gap-4 text-left hover:bg-background/40 dark:hover:bg-stone-800/30 transition-colors cursor-pointer select-none"
                 >
                   <div className="flex items-start sm:items-center gap-3.5 flex-1 min-w-0">
-                    <div className="w-9 h-9 rounded-full bg-[#E6EAFD] text-[#2B4EFF] dark:bg-blue-950/60 dark:text-blue-300 font-extrabold text-xs flex items-center justify-center shrink-0">
+                    <div className="w-9 h-9 rounded-full bg-primary/10 text-primary dark:bg-primary/15 dark:text-primary font-semibold text-xs flex items-center justify-center shrink-0">
                       U{unitIdx + 1}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <h3 className="font-bold text-sm sm:text-base text-[#111111] dark:text-white leading-snug">
+                        <h3 className="font-bold text-sm sm:text-base text-foreground dark:text-white leading-snug">
                           {unit.title}
                         </h3>
                       </div>
                       {unit.description && (
-                        <p className="text-xs text-[#6B7280] dark:text-neutral-400 line-clamp-1 mt-0.5">
+                        <p className="text-xs text-muted-foreground dark:text-stone-400 line-clamp-1 mt-0.5">
                           {unit.description}
                         </p>
                       )}
@@ -370,10 +370,10 @@ export default function SubjectDashboard() {
                   </div>
 
                   <div className="flex items-center gap-3 shrink-0">
-                    <span className="hidden sm:inline-flex px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#F6F3EC] dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300">
+                    <span className="hidden sm:inline-flex px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-background dark:bg-stone-800 text-stone-600 dark:text-stone-300">
                       {completedInUnit} / {unitTopics.length} done
                     </span>
-                    <div className="w-7 h-7 rounded-full flex items-center justify-center text-[#6B7280] hover:bg-[#F6F3EC] dark:hover:bg-neutral-800 transition-colors">
+                    <div className="w-7 h-7 rounded-full flex items-center justify-center text-muted-foreground hover:bg-background dark:hover:bg-stone-800 transition-colors">
                       <ChevronDown
                         className={`w-4 h-4 transition-transform duration-200 ${
                           isCollapsed ? "-rotate-90" : "rotate-0"
@@ -385,7 +385,7 @@ export default function SubjectDashboard() {
 
                 {/* Topics List Inside Unit */}
                 {!isCollapsed && (
-                  <div className="border-t border-[#EFECE6] dark:border-neutral-800/80 divide-y divide-[#EFECE6] dark:divide-neutral-800/60 bg-white dark:bg-[#1C1C1E]">
+                  <div className="border-t border-border dark:border-stone-800/80 divide-y divide-border dark:divide-stone-800/60 bg-white dark:bg-card">
                     {unitTopics.map((topic, topicIdx) => {
                       const completed = isCompleted(topic.id);
                       const bookmarked = isBookmarked(topic.id);
@@ -395,14 +395,14 @@ export default function SubjectDashboard() {
                         <div
                           key={topic.id}
                           onClick={() => navigate(`/subject/${subject.id}/topic/${topic.id}`)}
-                          className="p-3.5 sm:p-4 px-4 sm:px-6 hover:bg-[#F6F3EC]/70 dark:hover:bg-neutral-800/50 transition-all flex items-center justify-between gap-4 cursor-pointer group"
+                          className="p-3.5 sm:p-4 px-4 sm:px-6 hover:bg-background/70 dark:hover:bg-stone-800/50 transition-all flex items-center justify-between gap-4 cursor-pointer group"
                         >
                           <div className="flex items-center gap-3.5 flex-1 min-w-0">
                             <div
                               className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-xs font-bold transition-colors ${
                                 completed
-                                  ? "bg-emerald-100 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400"
-                                  : "bg-[#F6F3EC] text-[#6B7280] dark:bg-neutral-800 dark:text-neutral-400 group-hover:bg-[#E6EAFD] group-hover:text-[#2B4EFF]"
+                                  ? "bg-success/10 text-success dark:bg-success/10 dark:text-success"
+                                  : "bg-background text-muted-foreground dark:bg-stone-800 dark:text-stone-400 group-hover:bg-primary/10 group-hover:text-primary"
                               }`}
                             >
                               {completed ? (
@@ -413,22 +413,22 @@ export default function SubjectDashboard() {
                             </div>
 
                             <div className="flex-1 min-w-0">
-                              <h4 className="font-semibold text-xs sm:text-sm text-[#111111] dark:text-neutral-100 group-hover:text-[#2B4EFF] dark:group-hover:text-[#3D5EFF] transition-colors leading-snug">
+                              <h4 className="font-semibold text-xs sm:text-sm text-foreground dark:text-stone-100 group-hover:text-primary dark:group-hover:text-primary transition-colors leading-snug">
                                 {topic.title}
                               </h4>
                               <div className="flex items-center gap-2 mt-1 flex-wrap">
                                 {mcqCount > 0 && (
-                                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#E6EAFD] text-[#2B4EFF] dark:bg-blue-950/40 dark:text-blue-300">
+                                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary/10 text-primary dark:bg-primary/15 dark:text-primary">
                                     {mcqCount} Practice MCQs
                                   </span>
                                 )}
                                 {topic.examples && topic.examples.length > 0 && (
-                                  <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#F6F3EC] dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400">
+                                  <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-background dark:bg-stone-800 text-stone-600 dark:text-stone-400">
                                     Solved Examples
                                   </span>
                                 )}
                                 {topic.theoryQuestions && topic.theoryQuestions.length > 0 && (
-                                  <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#F6F3EC] dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400">
+                                  <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-background dark:bg-stone-800 text-stone-600 dark:text-stone-400">
                                     {topic.theoryQuestions.length} Exam Q&A
                                   </span>
                                 )}
@@ -438,12 +438,12 @@ export default function SubjectDashboard() {
 
                           <div className="flex items-center gap-3 shrink-0">
                             {bookmarked && (
-                              <Bookmark className="w-4 h-4 text-amber-500 fill-amber-500" />
+                              <Bookmark className="w-4 h-4 text-primary fill-primary" />
                             )}
-                            <span className="hidden md:inline-flex text-xs font-bold text-[#2B4EFF] group-hover:underline">
+                            <span className="hidden md:inline-flex text-xs font-bold text-primary group-hover:underline">
                               Read Notes
                             </span>
-                            <ChevronRight className="w-4 h-4 text-[#6B7280] group-hover:text-[#2B4EFF] group-hover:translate-x-1 transition-all" />
+                            <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
                           </div>
                         </div>
                       );

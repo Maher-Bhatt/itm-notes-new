@@ -14,11 +14,11 @@ export interface CampusAvatarProps {
 }
 
 const PASTEL_PALETTE = [
-  { bg: 'bg-[#E6EAFD]', text: 'text-[#2B4EFF]' }, // Blue
-  { bg: 'bg-[#FDE8E0]', text: 'text-[#B91C1C]' }, // Pink
-  { bg: 'bg-[#EAF6B0]', text: 'text-[#3E5200]' }, // Lime
+  { bg: 'bg-primary/10', text: 'text-primary' }, // Blue
+  { bg: 'bg-accent', text: 'text-[#B91C1C]' }, // Pink
+  { bg: 'bg-accent', text: 'text-[#3E5200]' }, // Lime
   { bg: 'bg-[#FEF9C3]', text: 'text-[#713F12]' }, // Yellow
-  { bg: 'bg-[#EDE9FE]', text: 'text-[#5B21B6]' }, // Purple
+  { bg: 'bg-muted', text: 'text-primary' }, // Purple
   { bg: 'bg-[#E2E8F0]', text: 'text-[#1E293B]' }, // Slate
 ];
 
@@ -62,7 +62,7 @@ export const CampusAvatar: React.FC<CampusAvatarProps> = ({
     44: { box: 'w-11 h-11', text: 'text-sm font-bold', badge: 'w-3.5 h-3.5' },
     48: { box: 'w-12 h-12', text: 'text-base font-bold', badge: 'w-4 h-4' },
     56: { box: 'w-14 h-14', text: 'text-lg font-bold', badge: 'w-4 h-4' },
-    88: { box: 'w-[88px] h-[88px]', text: 'text-2xl font-black', badge: 'w-5 h-5' },
+    88: { box: 'w-[88px] h-[88px]', text: 'text-2xl font-bold', badge: 'w-5 h-5' },
   };
 
   const { box, text: textStyle, badge: badgeSize } = sizeMap[size] || sizeMap[40];
@@ -76,8 +76,8 @@ export const CampusAvatar: React.FC<CampusAvatarProps> = ({
     >
       <div
         className={`${box} rounded-full overflow-hidden flex items-center justify-center ${
-          limeRing ? 'border-[3px] md:border-4 border-[#D7F75B] p-[2px] bg-white dark:bg-[#111111]' : ''
-        } ${src && !imageError ? 'bg-neutral-100' : `${pastel.bg} ${pastel.text}`}`}
+          limeRing ? 'border-[3px] md:border-4 border-primary p-[2px] bg-white dark:bg-background' : ''
+        } ${src && !imageError ? 'bg-stone-100' : `${pastel.bg} ${pastel.text}`}`}
       >
         {src && !imageError ? (
           <img
@@ -95,18 +95,18 @@ export const CampusAvatar: React.FC<CampusAvatarProps> = ({
       {/* Status Badges */}
       {status === 'online' && (
         <span
-          className={`absolute bottom-0 right-0 ${badgeSize} rounded-full bg-emerald-500 border-2 border-white dark:border-[#1C1C1E]`}
+          className={`absolute bottom-0 right-0 ${badgeSize} rounded-full bg-success border-2 border-white dark:border-border`}
         />
       )}
 
       {status === 'add' && (
-        <span className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-[#2B4EFF] text-white flex items-center justify-center border-2 border-white dark:border-[#1C1C1E] shadow-xs">
+        <span className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center border-2 border-white dark:border-border shadow-xs">
           <Plus className="w-3 h-3 stroke-[3]" />
         </span>
       )}
 
       {status === 'verified' && (
-        <span className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-[#2B4EFF] text-white flex items-center justify-center border-2 border-white dark:border-[#1C1C1E] shadow-xs">
+        <span className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center border-2 border-white dark:border-border shadow-xs">
           <Check className="w-3 h-3 stroke-[3]" />
         </span>
       )}

@@ -287,23 +287,23 @@ export default function CommunityPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F6F3EC] dark:bg-[#0E0E10] text-[#111111] dark:text-neutral-100 pb-20">
+    <div className="min-h-screen bg-background dark:bg-background text-foreground dark:text-stone-100 pb-20">
       <div className="max-w-2xl mx-auto px-3 sm:px-4 pt-4 sm:pt-6 space-y-4 sm:space-y-5">
         {/* 1. Feed Navigation Tabs: For You / Following / My Clubs */}
-        <div className="flex items-center justify-between border-b border-[#E8E4DA] dark:border-neutral-800 pb-1">
+        <div className="flex items-center justify-between border-b border-border dark:border-stone-800 pb-1">
           <div className="flex items-center gap-6 sm:gap-8 font-display">
             <button
               type="button"
               onClick={() => setActiveTab('for_you')}
               className={`pb-2.5 text-base sm:text-lg font-bold transition-all relative cursor-pointer ${
                 activeTab === 'for_you'
-                  ? 'text-[#2B4EFF] dark:text-[#3D5EFF]'
-                  : 'text-[#6B7280] dark:text-neutral-400 hover:text-[#111111] dark:hover:text-white'
+                  ? 'text-primary dark:text-primary'
+                  : 'text-muted-foreground dark:text-stone-400 hover:text-foreground dark:hover:text-white'
               }`}
             >
               All Campuses
               {activeTab === 'for_you' && (
-                <span className="absolute bottom-0 inset-x-0 h-[3px] bg-[#2B4EFF] dark:bg-[#3D5EFF] rounded-full" />
+                <span className="absolute bottom-0 inset-x-0 h-[3px] bg-primary dark:bg-primary rounded-full" />
               )}
             </button>
 
@@ -312,13 +312,13 @@ export default function CommunityPage() {
               onClick={() => setActiveTab('my_campus')}
               className={`pb-2.5 text-base sm:text-lg font-bold transition-all relative cursor-pointer ${
                 activeTab === 'my_campus'
-                  ? 'text-[#2B4EFF] dark:text-[#3D5EFF]'
-                  : 'text-[#6B7280] dark:text-neutral-400 hover:text-[#111111] dark:hover:text-white'
+                  ? 'text-primary dark:text-primary'
+                  : 'text-muted-foreground dark:text-stone-400 hover:text-foreground dark:hover:text-white'
               }`}
             >
               {currentUniversity.shortName}
               {activeTab === 'my_campus' && (
-                <span className="absolute bottom-0 inset-x-0 h-[3px] bg-[#2B4EFF] dark:bg-[#3D5EFF] rounded-full" />
+                <span className="absolute bottom-0 inset-x-0 h-[3px] bg-primary dark:bg-primary rounded-full" />
               )}
             </button>
 
@@ -327,13 +327,13 @@ export default function CommunityPage() {
               onClick={() => setActiveTab('following')}
               className={`pb-2.5 text-base sm:text-lg font-bold transition-all relative cursor-pointer ${
                 activeTab === 'following'
-                  ? 'text-[#2B4EFF] dark:text-[#3D5EFF]'
-                  : 'text-[#6B7280] dark:text-neutral-400 hover:text-[#111111] dark:hover:text-white'
+                  ? 'text-primary dark:text-primary'
+                  : 'text-muted-foreground dark:text-stone-400 hover:text-foreground dark:hover:text-white'
               }`}
             >
               Following
               {activeTab === 'following' && (
-                <span className="absolute bottom-0 inset-x-0 h-[3px] bg-[#2B4EFF] dark:bg-[#3D5EFF] rounded-full" />
+                <span className="absolute bottom-0 inset-x-0 h-[3px] bg-primary dark:bg-primary rounded-full" />
               )}
             </button>
 
@@ -342,13 +342,13 @@ export default function CommunityPage() {
               onClick={() => setActiveTab('my_clubs')}
               className={`pb-2.5 text-base sm:text-lg font-bold transition-all relative cursor-pointer ${
                 activeTab === 'my_clubs'
-                  ? 'text-[#2B4EFF] dark:text-[#3D5EFF]'
-                  : 'text-[#6B7280] dark:text-neutral-400 hover:text-[#111111] dark:hover:text-white'
+                  ? 'text-primary dark:text-primary'
+                  : 'text-muted-foreground dark:text-stone-400 hover:text-foreground dark:hover:text-white'
               }`}
             >
               My Clubs
               {activeTab === 'my_clubs' && (
-                <span className="absolute bottom-0 inset-x-0 h-[3px] bg-[#2B4EFF] dark:bg-[#3D5EFF] rounded-full" />
+                <span className="absolute bottom-0 inset-x-0 h-[3px] bg-primary dark:bg-primary rounded-full" />
               )}
             </button>
           </div>
@@ -357,8 +357,8 @@ export default function CommunityPage() {
             type="button"
             onClick={loadData}
             title="Refresh Feed"
-            className={`p-2 rounded-full text-neutral-400 hover:text-[#2B4EFF] transition-colors cursor-pointer ${
-              isRefreshing ? 'animate-spin text-[#2B4EFF]' : ''
+            className={`p-2 rounded-full text-stone-400 hover:text-primary transition-colors cursor-pointer ${
+              isRefreshing ? 'animate-spin text-primary' : ''
             }`}
           >
             <RefreshCw className="w-4 h-4" />
@@ -368,11 +368,11 @@ export default function CommunityPage() {
         {/* 2. Campus Pulse LIVE Carousel (Horizontal Scrollable) */}
         <div>
           <div className="flex items-center gap-2 mb-2.5">
-            <span className="text-[11px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#D7F75B] text-[#111111] inline-flex items-center gap-1 shadow-2xs">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
+            <span className="text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-accent text-foreground inline-flex items-center gap-1 shadow-2xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
               LIVE
             </span>
-            <span className="text-xs font-bold text-[#6B7280] dark:text-neutral-400 uppercase tracking-wider">
+            <span className="text-xs font-bold text-muted-foreground dark:text-stone-400 uppercase tracking-wider">
               Campus Pulse · ITM SLS Baroda
             </span>
           </div>
@@ -394,16 +394,16 @@ export default function CommunityPage() {
 
         {/* 3. Integrated Dismissible Announcement Banner */}
         {showAnnouncement && (
-          <div className="rounded-[22px] bg-white dark:bg-[#1C1C1E] border border-[#E8E4DA] dark:border-neutral-800 p-3.5 sm:p-4 flex items-start justify-between gap-3 shadow-xs">
+          <div className="rounded-2xl bg-white dark:bg-card border border-border dark:border-stone-800 p-3.5 sm:p-4 flex items-start justify-between gap-3 shadow-xs">
             <div className="flex items-start gap-3">
-              <div className="w-9 h-9 rounded-2xl bg-[#E6EAFD] text-[#2B4EFF] flex items-center justify-center shrink-0 mt-0.5">
+              <div className="w-9 h-9 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0 mt-0.5">
                 <Bell className="w-4 h-4" />
               </div>
               <div>
-                <h4 className="font-bold text-sm text-[#111111] dark:text-white leading-tight">
+                <h4 className="font-bold text-sm text-foreground dark:text-white leading-tight">
                   Welcome to CampusLoop at ITM SLS Baroda
                 </h4>
-                <p className="text-xs text-[#6B7280] dark:text-neutral-400 font-medium mt-0.5 leading-relaxed">
+                <p className="text-xs text-muted-foreground dark:text-stone-400 font-medium mt-0.5 leading-relaxed">
                   Connect with classmates, join university clubs, RSVP for tech sprints, and study together.
                 </p>
               </div>
@@ -411,7 +411,7 @@ export default function CommunityPage() {
             <button
               type="button"
               onClick={dismissAnnouncement}
-              className="p-1 rounded-full text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 transition-colors"
+              className="p-1 rounded-full text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
@@ -421,7 +421,7 @@ export default function CommunityPage() {
         {/* 4. "Share with your campus" Composer Bar */}
         <div
           onClick={() => setIsCreateModalOpen(true)}
-          className="rounded-full bg-white dark:bg-[#1C1C1E] border border-[#E8E4DA] dark:border-neutral-800 p-2 pl-3 sm:pl-3.5 flex items-center justify-between gap-3 shadow-xs hover:border-[#2B4EFF]/50 transition-all cursor-pointer select-none"
+          className="rounded-full bg-white dark:bg-card border border-border dark:border-stone-800 p-2 pl-3 sm:pl-3.5 flex items-center justify-between gap-3 shadow-xs hover:border-primary/50 transition-all cursor-pointer select-none"
         >
           <div className="flex items-center gap-3 min-w-0 flex-1">
             <CampusAvatar
@@ -429,14 +429,14 @@ export default function CommunityPage() {
               name={profile?.display_name || user?.email || 'Student'}
               size={36}
             />
-            <span className="text-sm font-medium text-neutral-400 truncate">
+            <span className="text-sm font-medium text-stone-400 truncate">
               Share with your campus...
             </span>
           </div>
 
           <button
             type="button"
-            className="w-9 h-9 rounded-full bg-[#E6EAFD] text-[#2B4EFF] hover:bg-[#D8E0FC] flex items-center justify-center transition-colors shrink-0"
+            className="w-9 h-9 rounded-full bg-primary/10 text-primary hover:bg-primary/10 flex items-center justify-center transition-colors shrink-0"
             title="Add photo or flyer"
           >
             <ImageIcon className="w-4 h-4" />
@@ -453,24 +453,24 @@ export default function CommunityPage() {
         {/* 6. Posts Feed */}
         {isLoading ? (
           <div className="py-16 flex flex-col items-center justify-center space-y-3">
-            <div className="w-8 h-8 rounded-full border-3 border-[#2B4EFF] border-t-transparent animate-spin" />
-            <p className="text-xs font-semibold text-[#6B7280] dark:text-neutral-400">
+            <div className="w-8 h-8 rounded-full border-3 border-primary border-t-transparent animate-spin" />
+            <p className="text-xs font-semibold text-muted-foreground dark:text-stone-400">
               Loading campus feed...
             </p>
           </div>
         ) : filteredPosts.length === 0 ? (
-          <div className="rounded-[24px] bg-white dark:bg-[#1C1C1E] border border-[#E8E4DA] dark:border-neutral-800 p-8 sm:p-12 text-center space-y-3 shadow-xs">
-            <div className="w-14 h-14 rounded-full bg-[#E6EAFD] text-[#2B4EFF] flex items-center justify-center mx-auto">
+          <div className="rounded-2xl bg-white dark:bg-card border border-border dark:border-stone-800 p-8 sm:p-12 text-center space-y-3 shadow-xs">
+            <div className="w-14 h-14 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto">
               <Sparkles className="w-7 h-7" />
             </div>
-            <h3 className="font-bold text-lg text-[#111111] dark:text-white">
+            <h3 className="font-bold text-lg text-foreground dark:text-white">
               {activeTab === 'following'
                 ? 'No posts from people you follow yet'
                 : activeTab === 'my_clubs'
                 ? 'No posts from your clubs yet'
                 : 'No campus posts found'}
             </h3>
-            <p className="text-xs sm:text-sm text-[#6B7280] dark:text-neutral-400 max-w-sm mx-auto">
+            <p className="text-xs sm:text-sm text-muted-foreground dark:text-stone-400 max-w-sm mx-auto">
               {activeTab === 'following'
                 ? 'Follow peers from Explore to see their updates right here in your feed.'
                 : activeTab === 'my_clubs'
@@ -480,7 +480,7 @@ export default function CommunityPage() {
             <button
               type="button"
               onClick={() => setIsCreateModalOpen(true)}
-              className="mt-2 h-10 px-5 rounded-full bg-[#2B4EFF] text-white font-bold text-xs hover:bg-[#1E3EDB] transition-all cursor-pointer"
+              className="mt-2 h-10 px-5 rounded-full bg-primary text-white font-bold text-xs hover:bg-primary transition-all cursor-pointer"
             >
               Start the first discussion
             </button>

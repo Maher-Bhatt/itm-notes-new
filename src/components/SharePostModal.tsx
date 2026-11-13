@@ -63,7 +63,7 @@ export function SharePostModal({ isOpen, onClose, post }: SharePostModalProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-background/80 backdrop-blur-sm animate-fade-in">
       <div
-        className="w-full max-w-md bg-card border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col animate-scale-in"
+        className="w-full max-w-md bg-card border border-border rounded-2xl shadow-lg overflow-hidden flex flex-col animate-scale-in"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -132,7 +132,7 @@ export function SharePostModal({ isOpen, onClose, post }: SharePostModalProps) {
             <div className="grid grid-cols-2 gap-2">
               <button
                 onClick={handleWhatsAppShare}
-                className="p-2.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 dark:text-amber-500 border border-amber-500/20 font-bold text-xs flex items-center justify-center gap-2 transition-colors apple-press"
+                className="p-2.5 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary dark:text-primary border border-primary/20 font-bold text-xs flex items-center justify-center gap-2 transition-colors apple-press"
               >
                 <span>💬 WhatsApp</span>
               </button>
@@ -146,7 +146,7 @@ export function SharePostModal({ isOpen, onClose, post }: SharePostModalProps) {
 
               <button
                 onClick={handleTelegramShare}
-                className="p-2.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 dark:text-amber-500 border border-amber-500/20 font-bold text-xs flex items-center justify-center gap-2 transition-colors apple-press"
+                className="p-2.5 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary dark:text-primary border border-primary/20 font-bold text-xs flex items-center justify-center gap-2 transition-colors apple-press"
               >
                 <span>✈️ Telegram</span>
               </button>

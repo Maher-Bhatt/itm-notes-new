@@ -70,11 +70,11 @@ export function ReportErrataModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in">
-      <div className="w-full max-w-md bg-card border border-border rounded-3xl shadow-2xl overflow-hidden flex flex-col">
+      <div className="w-full max-w-md bg-card border border-border rounded-2xl shadow-lg overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="p-4 bg-amber-500/10 border-b border-amber-500/20 text-foreground flex items-center justify-between shrink-0">
+        <div className="p-4 bg-primary/10 border-b border-primary/20 text-foreground flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-xl bg-amber-500 text-white">
+            <div className="p-2 rounded-xl bg-primary text-white">
               <AlertCircle className="h-4 w-4" />
             </div>
             <div>
@@ -151,7 +151,7 @@ export function ReportErrataModal({
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full h-9 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-md shadow-amber-500/20 cursor-pointer"
+            className="w-full h-9 rounded-xl bg-primary hover:bg-primary text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-md shadow-primary/20 cursor-pointer"
           >
             <Send className="h-3.5 w-3.5" />
             <span>{isSubmitting ? "Submitting..." : "Send Error Report"}</span>

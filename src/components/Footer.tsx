@@ -22,7 +22,7 @@ export function Footer() {
             <Link to="/" className="flex items-center gap-2.5">
               <img src={logo} alt="CampusLoop" className="w-8 h-8 object-contain dark:invert" />
               <div>
-                <span className="font-extrabold text-base text-foreground tracking-tight block">CampusLoop</span>
+                <span className="font-semibold text-base text-foreground tracking-tight block">CampusLoop</span>
                 <span className="text-[10px] text-muted-foreground font-semibold">ITM (SLS) Baroda University</span>
               </div>
             </Link>
@@ -51,7 +51,7 @@ export function Footer() {
             <ul className="space-y-2.5 text-xs text-muted-foreground">
               <li>
                 <Link to="/materials" className="hover:text-primary transition-colors flex items-center gap-1.5">
-                  <FileText className="h-3.5 w-3.5 text-amber-500" />
+                  <FileText className="h-3.5 w-3.5 text-primary" />
                   <span>MST Question Banks & Papers</span>
                 </Link>
               </li>
@@ -63,7 +63,7 @@ export function Footer() {
               </li>
               <li>
                 <Link to="/calculator" className="hover:text-primary transition-colors flex items-center gap-1.5">
-                  <Calculator className="h-3.5 w-3.5 text-amber-500" />
+                  <Calculator className="h-3.5 w-3.5 text-primary" />
                   <span>75% Attendance & SGPA Calculator</span>
                 </Link>
               </li>
@@ -105,7 +105,7 @@ export function Footer() {
                   rel="noopener noreferrer"
                   className="hover:text-primary transition-colors inline-flex items-center gap-1.5 group"
                 >
-                  <ExternalLink className="h-3.5 w-3.5 text-amber-500" />
+                  <ExternalLink className="h-3.5 w-3.5 text-primary" />
                   <span>Official Student UMS Portal</span>
                   <ExternalLink className="h-3 w-3 opacity-60 group-hover:opacity-100" />
                 </a>

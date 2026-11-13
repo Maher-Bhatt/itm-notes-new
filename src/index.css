@@ -1,7 +1,7 @@
 /* ==========================================================================
-   ITM NOTES — Dual-Mode Minimalist Aesthetic Design System (2026)
-   Palette: Architectural White / Inky Obsidian, Solar Amber / Gold Accent
-   Aesthetic: Leica / Teenage Engineering minimalism, tactile bento grids, zero blue, zero green, zero rainbow
+   CampusLoop - "Paper & Ink" design system
+   Warm paper canvas, near-black ink, a single sienna accent. No blue, no purple,
+   no decorative gradients. Inter for the interface, Source Serif 4 for reading.
    ========================================================================== */
 
 @tailwind base;
@@ -11,96 +11,104 @@
 @layer base {
   /* ── LIGHT MODE (DEFAULT CAMPUSLOOP) ── */
   :root {
-    --background: 43 28% 95%;          /* #F6F3EC Warm Off-White / Cream Canvas */
-    --foreground: 0 0% 7%;             /* #111111 Near-Black High Contrast Text */
+    /* Paper & Ink: warm paper canvas, near-black ink, one sienna accent */
+    --background: 36 33% 95%;          /* #F7F5F0 paper */
+    --foreground: 30 14% 11%;          /* #1C1A17 ink */
 
-    --card: 0 0% 100%;                 /* #FFFFFF Pure White Card */
-    --card-foreground: 0 0% 7%;        /* #111111 */
+    --card: 0 0% 100%;
+    --card-foreground: 30 14% 11%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 7%;
+    --popover-foreground: 30 14% 11%;
 
-    /* Vivid Electric Blue */
-    --primary: 230 100% 58%;           /* #2B4EFF Electric Campus Blue */
-    --primary-foreground: 0 0% 100%;   /* #FFFFFF */
-    --primary-glow: 230 100% 58% / 0.18;
+    --primary: 26 48% 40%;             /* #9C4A23 sienna */
+    --primary-foreground: 36 40% 98%;
+    --primary-glow: 26 48% 40% / 0.14;
 
-    --secondary: 231 82% 95%;          /* #E6EAFD Light Blue Tint */
-    --secondary-foreground: 230 100% 45%;
+    --secondary: 34 30% 91%;           /* #F1ECE4 parchment */
+    --secondary-foreground: 30 14% 18%;
 
-    --muted: 43 20% 92%;               /* #EDEAE2 Warm Neutral Border/Fill */
-    --muted-foreground: 220 9% 46%;    /* #6B7280 Muted Secondary Text */
+    --muted: 34 26% 90%;
+    --muted-foreground: 30 8% 40%;     /* #6E675D warm gray */
 
-    /* Lime / Chartreuse Accent */
-    --accent: 72 90% 66%;              /* #D7F75B Electric Lime */
-    --accent-foreground: 0 0% 7%;      /* #111111 */
+    --accent: 32 42% 92%;              /* #EFE3D3 sand */
+    --accent-foreground: 26 48% 30%;
 
-    --destructive: 0 84% 60%;          /* #EF4444 Crimson */
+    --destructive: 8 52% 44%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 43 16% 88%;              /* #E8E4DA Soft Canvas Hairline Border */
-    --input: 43 16% 88%;
-    --ring: 230 100% 58%;              /* #2B4EFF Focus Ring */
+    --border: 34 24% 87%;              /* #E3DED5 hairline */
+    --input: 34 22% 84%;
+    --ring: 26 48% 40%;
 
-    --radius: 1.25rem;                 /* 20px - 24px CampusLoop Card Radius */
+    --radius: 0.75rem;
 
-    --success: 142 71% 45%;
+    --success: 140 22% 36%;
     --success-foreground: 0 0% 100%;
-    --warning: 38 92% 50%;
+    --warning: 36 50% 42%;
     --warning-foreground: 0 0% 100%;
-    --info: 230 100% 58%;
+    --info: 30 10% 30%;
     --info-foreground: 0 0% 100%;
 
-    /* Sidebar in Light Mode */
-    --sidebar-background: 0 0% 100%;   /* Pure White */
-    --sidebar-foreground: 0 0% 7%;
-    --sidebar-primary: 230 100% 58%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 231 82% 95%;
-    --sidebar-accent-foreground: 230 100% 45%;
-    --sidebar-border: 43 16% 88%;
-    --sidebar-ring: 230 100% 58%;
+    --sidebar-background: 28 9% 15%;
+    --sidebar-foreground: 36 25% 90%;
+    --sidebar-primary: 28 50% 64%;
+    --sidebar-primary-foreground: 30 14% 11%;
+    --sidebar-accent: 36 38% 93%;
+    --sidebar-accent-foreground: 30 14% 11%;
+    --sidebar-border: 28 8% 22%;
+    --sidebar-ring: 28 50% 64%;
+
+    --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-reading: 'Source Serif 4', 'Source Serif Pro', Georgia, 'Times New Roman', serif;
+    --font-serif-display: 'Fraunces', 'Source Serif 4', Georgia, serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Consolas, monospace;
   }
 
   /* ── DARK MODE ── */
   .dark {
-    --background: 0 0% 7%;             /* #111111 Inky Obsidian Canvas */
-    --foreground: 43 28% 96%;          /* #F6F3EC Off-White Text */
+    --background: 28 9% 8%;            /* #121110 */
+    --foreground: 36 25% 91%;          /* #ECE8E1 */
 
-    --card: 0 0% 11%;                  /* #1C1C1E Charcoal Surface */
-    --card-foreground: 43 28% 96%;
+    --card: 28 8% 11%;                 /* #1A1917 */
+    --card-foreground: 36 25% 91%;
 
-    --popover: 0 0% 12%;               /* #1E1E22 */
-    --popover-foreground: 43 28% 96%;
+    --popover: 28 8% 12%;
+    --popover-foreground: 36 25% 91%;
 
-    --primary: 230 100% 62%;           /* #3D5EFF Electric Blue */
-    --primary-foreground: 0 0% 100%;
-    --primary-glow: 230 100% 62% / 0.25;
+    --primary: 28 50% 62%;             /* #D98A5F warm sienna */
+    --primary-foreground: 28 9% 8%;
+    --primary-glow: 28 50% 62% / 0.18;
 
-    --secondary: 230 30% 18%;          /* Dark Blue Surface */
-    --secondary-foreground: 230 100% 88%;
+    --secondary: 28 8% 15%;
+    --secondary-foreground: 36 25% 86%;
 
-    --muted: 0 0% 16%;                 /* Dark neutral */
-    --muted-foreground: 220 9% 65%;    /* #9CA3AF */
+    --muted: 28 8% 16%;
+    --muted-foreground: 34 10% 63%;
 
-    --accent: 72 90% 66%;              /* #D7F75B Lime */
-    --accent-foreground: 0 0% 7%;
+    --accent: 28 22% 18%;
+    --accent-foreground: 28 50% 72%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 8 50% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 18%;
-    --input: 0 0% 18%;
-    --ring: 230 100% 62%;
+    --border: 28 8% 20%;
+    --input: 28 8% 22%;
+    --ring: 28 50% 62%;
 
-    --sidebar-background: 0 0% 9%;     /* #17171A */
-    --sidebar-foreground: 43 28% 96%;
-    --sidebar-primary: 230 100% 62%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 230 30% 18%;
-    --sidebar-accent-foreground: 230 100% 88%;
-    --sidebar-border: 0 0% 18%;
-    --sidebar-ring: 230 100% 62%;
+    --success: 140 22% 55%;
+    --warning: 36 50% 58%;
+    --info: 38 15% 70%;
+
+    --sidebar-background: 28 9% 6%;
+    --sidebar-foreground: 36 25% 90%;
+    --sidebar-primary: 26 78% 60%;
+    --sidebar-primary-foreground: 28 9% 8%;
+    --sidebar-accent: 36 30% 90%;
+    --sidebar-accent-foreground: 28 9% 8%;
+    --sidebar-border: 28 8% 16%;
+    --sidebar-ring: 26 78% 60%;
   }
 }
 
@@ -115,7 +123,7 @@
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
     line-height: 1.55;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.006em;
     transition: background-color 0.25s ease, color 0.25s ease;
   }
 
@@ -123,9 +131,16 @@
     overflow-x: hidden;
   }
 
-  h1, h2, h3, h4, h5, h6, .font-heading, .display, .font-display {
+  h3, h4, h5, h6, .font-heading, .display, .font-display {
     font-family: var(--font-display);
     letter-spacing: -0.025em;
+  }
+
+  h1, h2, .font-serif-display {
+    font-family: var(--font-serif-display);
+    font-optical-sizing: auto;
+    letter-spacing: -0.015em;
+    font-variation-settings: "SOFT" 30, "WONK" 0;
   }
 
   p, span, div, input, button, select, textarea, label, li {
@@ -138,7 +153,7 @@
   }
 
   ::selection {
-    background: rgba(43, 78, 255, 0.25);
+    background: hsl(var(--primary) / 0.18);
     color: hsl(var(--foreground));
   }
 }
@@ -182,13 +197,13 @@
     transform: translateX(-50%);
     width: 1000px;
     height: 440px;
-    background: radial-gradient(50% 50% at 50% 0%, rgba(43, 78, 255, 0.035) 0%, transparent 80%);
+    background: radial-gradient(50% 50% at 50% 0%, hsl(var(--primary) / 0.03) 0%, transparent 80%);
     pointer-events: none;
     z-index: 0;
   }
 
   .dark .ambient-spotlight {
-    background: radial-gradient(50% 50% at 50% 0%, rgba(43, 78, 255, 0.08) 0%, transparent 80%);
+    background: radial-gradient(50% 50% at 50% 0%, hsl(var(--primary) / 0.06) 0%, transparent 80%);
   }
 
   /* ── Bento Glass Card (Light & Dark Adapted) ── */
@@ -223,15 +238,15 @@
   }
 
   .glass-card-hover:hover {
-    border-color: rgba(245, 158, 11, 0.4);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08), 0 0 20px rgba(245, 158, 11, 0.12);
+    border-color: hsl(var(--primary) / 0.35);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08), 0 0 20px transparent;
     transform: translateY(-2px);
   }
 
   .dark .glass-card-hover:hover {
     background: rgba(24, 24, 29, 0.85);
-    border-color: rgba(245, 158, 11, 0.4);
-    box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.12), 0 12px 36px rgba(0, 0, 0, 0.55), 0 0 24px rgba(245, 158, 11, 0.15);
+    border-color: hsl(var(--primary) / 0.35);
+    box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.12), 0 12px 36px rgba(0, 0, 0, 0.55), 0 0 24px transparent;
     transform: translateY(-2px);
   }
 
@@ -268,11 +283,11 @@
 
   /* ── Gradients: Solar Amber & Monolith Black (Zero green, zero blue, zero rainbow) ── */
   .bg-gradient-amber {
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    background: hsl(var(--primary));
   }
 
   .bg-gradient-electric {
-    background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+    background: hsl(var(--primary));
   }
 
   .bg-gradient-monolith {
@@ -288,7 +303,7 @@
   }
 
   .text-gradient-amber {
-    background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+    background: hsl(var(--primary));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -296,7 +311,7 @@
 
   /* ── Glow Accents ── */
   .glow-amber {
-    box-shadow: 0 0 24px rgba(245, 158, 11, 0.3);
+    box-shadow: 0 0 24px hsl(var(--primary) / 0.2);
   }
 
   .glow-primary {
@@ -327,7 +342,7 @@
       transparent 100%
     );
     transform: rotate(30deg);
-    animation: shimmerEffect 4s infinite linear;
+    animation: none;
   }
 
   /* ── Animation Keyframes ── */
@@ -447,4 +462,213 @@ code {
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* ==========================================================================
+   Library reader — long-form reading typography
+   ========================================================================== */
+
+.reader-prose {
+  --reader-line: 1.75;
+  color: hsl(var(--foreground));
+  line-height: var(--reader-line);
+  font-family: var(--font-body);
+  letter-spacing: 0;
+  overflow-wrap: break-word;
+}
+
+.reader-prose.reader-serif,
+.reader-prose.reader-serif p,
+.reader-prose.reader-serif li,
+.reader-prose.reader-serif blockquote {
+  font-family: var(--font-reading);
+}
+
+.reader-prose p,
+.reader-prose li {
+  font-family: inherit;
+  font-size: 1em;
+}
+
+.reader-prose > * + * { margin-top: 1.1em; }
+
+.reader-prose .reader-heading {
+  font-family: var(--font-serif-display);
+  color: hsl(var(--foreground));
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+}
+.reader-prose h1.reader-heading {
+  font-size: 1.75em;
+  font-weight: 600;
+  margin-top: 2.6em;
+  padding-top: 1.4em;
+  border-top: 1px solid hsl(var(--border));
+}
+.reader-prose > h1.reader-heading:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+.reader-prose h2.reader-heading { font-size: 1.32em; font-weight: 600; margin-top: 2.2em; color: hsl(var(--primary)); }
+.reader-prose h3.reader-heading { font-size: 1.05em; font-weight: 650; margin-top: 1.8em; font-family: var(--font-display); }
+.reader-prose h1 + *, .reader-prose h2 + *, .reader-prose h3 + * { margin-top: 0.6em; }
+
+.reader-prose strong { font-weight: 650; color: hsl(var(--foreground)); }
+.reader-prose em { font-style: italic; }
+
+.reader-prose a {
+  color: hsl(var(--primary));
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+
+.reader-prose ul, .reader-prose ol { padding-left: 1.35em; }
+.reader-prose ul { list-style: disc; }
+.reader-prose ol { list-style: decimal; }
+.reader-prose li + li { margin-top: 0.35em; }
+.reader-prose li::marker { color: hsl(var(--muted-foreground)); }
+.reader-prose li > ul, .reader-prose li > ol { margin-top: 0.35em; }
+
+/* "In one line" summaries and slide notes */
+.reader-prose blockquote {
+  border-left: 3px solid hsl(var(--primary));
+  background: hsl(var(--accent) / 0.45);
+  padding: 0.8em 1.1em;
+  border-radius: 0 0.5rem 0.5rem 0;
+  color: hsl(var(--foreground));
+}
+.reader-prose blockquote > * + * { margin-top: 0.5em; }
+
+.reader-prose pre {
+  font-family: var(--font-mono);
+  font-size: 0.78em;
+  line-height: 1.6;
+  background: hsl(var(--secondary));
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.6rem;
+  padding: 1em 1.15em;
+  overflow-x: auto;
+  white-space: pre;
+}
+.reader-prose pre code { background: none; border: 0; padding: 0; font-size: inherit; }
+.reader-prose :not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  padding: 0.1em 0.35em;
+  border-radius: 0.3rem;
+  background: hsl(var(--secondary));
+  border: 1px solid hsl(var(--border));
+}
+
+.reader-prose .reader-table {
+  overflow-x: auto;
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.6rem;
+  background: hsl(var(--card));
+}
+.reader-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body);
+  font-size: 0.8em;
+  line-height: 1.5;
+}
+.reader-prose th, .reader-prose td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.6em 0.85em;
+  border-bottom: 1px solid hsl(var(--border));
+  min-width: 7em;
+}
+.reader-prose th {
+  font-weight: 600;
+  background: hsl(var(--secondary));
+  color: hsl(var(--foreground));
+}
+.reader-prose tr:last-child td { border-bottom: 0; }
+
+.reader-prose hr { border: 0; border-top: 1px solid hsl(var(--border)); margin: 2.5em 0; }
+
+.reader-prose .reader-figure { margin: 1.6em 0; }
+.reader-prose img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+  border-radius: 0.5rem;
+  border: 1px solid hsl(var(--border));
+  background: #fff;
+}
+.dark .reader-prose img { filter: brightness(0.92); }
+.reader-prose.reader-scanned img { width: 100%; }
+.reader-prose p:has(> .reader-figure) { margin-top: 1.2em; }
+
+.reader-prose kbd, kbd {
+  font-family: var(--font-mono);
+  font-size: 0.75em;
+  padding: 0.05em 0.4em;
+  border: 1px solid hsl(var(--border));
+  border-bottom-width: 2px;
+  border-radius: 0.3rem;
+  background: hsl(var(--card));
+}
+
+@media print {
+  .reader-prose { font-size: 11pt !important; }
+  .reader-prose pre, .reader-prose .reader-table { break-inside: avoid; }
+}
+
+/* Existing topic notes: long-form reading in serif */
+.topic-reading p,
+.topic-reading li,
+.topic-reading blockquote {
+  font-family: var(--font-reading);
+  font-size: 1.0625rem;
+  line-height: 1.75;
+}
+@media (min-width: 640px) {
+  .topic-reading p,
+  .topic-reading li,
+  .topic-reading blockquote { font-size: 1.125rem; }
+}
+
+
+/* Dark charcoal sidebar: re-point theme tokens so every child component follows automatically */
+.sidebar-dark {
+  --background: 28 9% 15%;
+  --foreground: 36 25% 92%;
+  --card: 28 8% 19%;
+  --card-foreground: 36 25% 92%;
+  --popover: 28 8% 19%;
+  --popover-foreground: 36 25% 92%;
+  --secondary: 28 8% 21%;
+  --secondary-foreground: 36 25% 92%;
+  --muted: 28 8% 21%;
+  --muted-foreground: 34 12% 64%;
+  --border: 28 8% 24%;
+  --input: 28 8% 26%;
+  --primary: 28 50% 66%;
+  --primary-foreground: 28 9% 10%;
+  --accent: 28 20% 24%;
+  --accent-foreground: 28 50% 76%;
+  background: hsl(var(--sidebar-background));
+  color: hsl(var(--foreground));
+}
+
+/* Soft elevated card used across redesigned surfaces */
+.surface-card {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 1rem;
+  box-shadow: 0 1px 2px rgba(60, 40, 20, 0.04), 0 6px 20px -8px rgba(60, 40, 20, 0.10);
+}
+.dark .surface-card { box-shadow: none; }
+
+.icon-tile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.75rem;
+  background: hsl(var(--accent));
+  color: hsl(var(--primary));
 }

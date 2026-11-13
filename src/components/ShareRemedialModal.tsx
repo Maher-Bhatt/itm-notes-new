@@ -106,7 +106,7 @@ ${targetUrl}`;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in">
-      <div className="bg-card border border-border rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl relative animate-scale-in text-foreground">
+      <div className="bg-card border border-border rounded-2xl max-w-lg w-full p-6 sm:p-7 shadow-lg relative animate-scale-in text-foreground">
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -117,17 +117,17 @@ ${targetUrl}`;
 
         {/* Modal Header */}
         <div className="flex items-center gap-3 mb-5">
-          <div className="w-11 h-11 rounded-2xl bg-[#18181B] text-[#FAFAFA] flex items-center justify-center shadow-md shadow-[#18181B]/20">
+          <div className="w-11 h-11 rounded-2xl bg-foreground text-[#FAFAFA] flex items-center justify-center shadow-md shadow-foreground/20">
             <Share2 className="h-5 w-5" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold text-[10px] uppercase">
+              <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary dark:text-primary font-bold text-[10px] uppercase">
                 Viral Study Hub
               </span>
               <span className="text-[11px] font-mono text-muted-foreground">Share & Help Friends</span>
             </div>
-            <h3 className="font-extrabold text-lg text-foreground font-display">
+            <h3 className="font-semibold text-lg text-foreground font-display">
               Share OOPJ Remedial Special
             </h3>
           </div>
@@ -142,7 +142,7 @@ ${targetUrl}`;
         <div className="grid grid-cols-2 gap-3 mb-5">
           <button
             onClick={handleWhatsAppShare}
-            className="w-full py-3 px-4 rounded-2xl bg-amber-500 hover:bg-amber-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer"
+            className="w-full py-3 px-4 rounded-2xl bg-primary hover:bg-primary text-white font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer"
           >
             <MessageCircle className="h-4 w-4" />
             <span>Share on WhatsApp</span>
@@ -150,7 +150,7 @@ ${targetUrl}`;
 
           <button
             onClick={handleTelegramShare}
-            className="w-full py-3 px-4 rounded-2xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer"
+            className="w-full py-3 px-4 rounded-2xl bg-primary hover:bg-primary text-white font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer"
           >
             <Send className="h-4 w-4" />
             <span>Share on Telegram</span>
@@ -166,7 +166,7 @@ ${targetUrl}`;
             onClick={handleCopyLink}
             className={`px-3.5 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
               copied
-                ? "bg-amber-500 text-white"
+                ? "bg-primary text-white"
                 : "bg-primary text-primary-foreground hover:opacity-90"
             }`}
           >
@@ -197,7 +197,7 @@ ${targetUrl}`;
             {typeof navigator !== "undefined" && "share" in navigator && (
               <button
                 onClick={handleNativeShare}
-                className="px-2.5 py-1.5 rounded-xl bg-[#18181B] text-[#FAFAFA] text-xs font-bold flex items-center gap-1 cursor-pointer hover:bg-[#27272A]"
+                className="px-2.5 py-1.5 rounded-xl bg-foreground text-[#FAFAFA] text-xs font-bold flex items-center gap-1 cursor-pointer hover:bg-[#27272A]"
                 title="System Share Menu"
               >
                 <Share2 className="h-3.5 w-3.5" />
@@ -209,7 +209,7 @@ ${targetUrl}`;
 
         {/* QR Code Reveal Panel */}
         {showQr && (
-          <div className="mt-5 p-4 rounded-2xl bg-[#18181B] text-center space-y-2 animate-fade-in border border-[#FAFAFA]/30">
+          <div className="mt-5 p-4 rounded-2xl bg-foreground text-center space-y-2 animate-fade-in border border-[#FAFAFA]/30">
             <p className="text-[11px] font-bold text-[#FAFAFA] uppercase tracking-wider">
               Scan with phone to open instantly
             </p>
@@ -221,7 +221,7 @@ ${targetUrl}`;
                 loading="lazy"
               />
             </div>
-            <p className="text-[10px] text-[#A1A1AA]">
+            <p className="text-[10px] text-muted-foreground">
               Perfect for sharing in the classroom, lab, or exam hall!
             </p>
           </div>

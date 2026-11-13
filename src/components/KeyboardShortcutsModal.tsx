@@ -50,25 +50,25 @@ export function KeyboardShortcutsModal({
       keys: ['B'],
       label: 'Toggle Bookmark',
       description: 'Quickly bookmark or unbookmark the active topic while reading.',
-      icon: <Bookmark className="h-4 w-4 text-amber-500" />,
+      icon: <Bookmark className="h-4 w-4 text-primary" />,
     },
     {
       keys: ['F'],
       label: 'Toggle Focus Mode',
       description: 'Hide sidebars and distraction elements on TopicPage for deep study.',
-      icon: <Eye className="h-4 w-4 text-amber-500" />,
+      icon: <Eye className="h-4 w-4 text-primary" />,
     },
     {
       keys: ['?'],
       label: 'Keyboard Shortcuts',
       description: 'Open this cheat sheet modal anywhere on CampusLoop.',
-      icon: <HelpCircle className="h-4 w-4 text-amber-500" />,
+      icon: <HelpCircle className="h-4 w-4 text-primary" />,
     },
     {
       keys: ['Esc'],
       label: 'Close Overlays',
       description: 'Close modals, drawers, and search dialogs.',
-      icon: <X className="h-4 w-4 text-rose-500" />,
+      icon: <X className="h-4 w-4 text-destructive" />,
     },
   ];
 
@@ -78,7 +78,7 @@ export function KeyboardShortcutsModal({
       onClick={() => setOpen(false)}
     >
       <div 
-        className="w-full max-w-md bg-card border border-border rounded-3xl p-6 shadow-2xl relative animate-scale-in"
+        className="w-full max-w-md bg-card border border-border rounded-2xl p-6 shadow-lg relative animate-scale-in"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between pb-4 border-b border-border/60 mb-4">
@@ -87,7 +87,7 @@ export function KeyboardShortcutsModal({
               <Keyboard className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="font-extrabold text-base text-foreground">Keyboard Shortcuts</h3>
+              <h3 className="font-semibold text-base text-foreground">Keyboard Shortcuts</h3>
               <p className="text-xs text-muted-foreground">Power-user keybindings for faster study navigation</p>
             </div>
           </div>
