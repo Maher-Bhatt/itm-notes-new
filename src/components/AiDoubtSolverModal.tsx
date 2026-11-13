@@ -131,10 +131,10 @@ export const AiDoubtSolverModal: React.FC<AiDoubtSolverModalProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="font-bold text-base text-foreground">
-                  AI Syllabus Doubt Solver
+                  Doubt Finder
                 </h3>
                 <span className="px-2 py-0.5 rounded-full bg-primary/15 text-primary dark:text-primary text-[10px] font-bold">
-                  Grounded in CampusLoop
+                  Searches your notes
                 </span>
               </div>
               <p className="text-xs text-muted-foreground">
@@ -229,7 +229,7 @@ export const AiDoubtSolverModal: React.FC<AiDoubtSolverModalProps> = ({
                 <button
                   onClick={() => handleSpeak(`${answer.summary}. ${answer.explanation}`)}
                   className="flex items-center gap-1 text-xs font-medium text-primary hover:text-primary/80 transition-colors px-2 py-1 rounded-lg bg-primary/10"
-                  title="Listen with Studio AI Voice"
+                  title="Read aloud"
                 >
                   {isSpeaking ? (
                     <>
@@ -237,7 +237,7 @@ export const AiDoubtSolverModal: React.FC<AiDoubtSolverModalProps> = ({
                     </>
                   ) : (
                     <>
-                      <Volume2 className="h-3.5 w-3.5" /> Listen (Studio AI)
+                      <Volume2 className="h-3.5 w-3.5" /> Read aloud
                     </>
                   )}
                 </button>

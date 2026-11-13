@@ -225,7 +225,7 @@ export function SearchDialog({ open, onOpenChange, onOpenAiDoubt }: SearchDialog
                   }}
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-primary-foreground font-semibold text-xs shadow-md hover:opacity-90 transition-all apple-press"
                 >
-                  <Bot className="h-4 w-4" /> Ask AI Doubt Solver for "{query}"
+                  <Bot className="h-4 w-4" /> Ask Doubt Finder for "{query}"
                 </button>
               )}
             </div>
@@ -387,7 +387,7 @@ export function SearchDialog({ open, onOpenChange, onOpenAiDoubt }: SearchDialog
               }}
               className="flex items-center gap-1 text-primary hover:underline font-semibold"
             >
-              <Bot className="h-3.5 w-3.5" /> AI Doubt Solver
+              <Bot className="h-3.5 w-3.5" /> Doubt Finder
             </button>
           )}
         </div>

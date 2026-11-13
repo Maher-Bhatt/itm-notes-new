@@ -1,9 +1,9 @@
 {
   "name": "CampusLoop — Multi-University Student Learning & Campus Community",
   "short_name": "CampusLoop",
-  "description": "India's Premier Multi-University Student Learning Platform & Campus Community.",
-  "theme_color": "#2B4EFF",
-  "background_color": "#F6F3EC",
+  "description": "Study guides, lecture notes, slides and handwritten pages for DSA, DBMS, CONMP, COA and Java, rewritten for focused reading. Free for students.",
+  "theme_color": "#F6F2EC",
+  "background_color": "#F6F2EC",
   "display": "standalone",
   "orientation": "portrait",
   "start_url": "/",

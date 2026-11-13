@@ -10,11 +10,11 @@
           var isDark = saved === 'dark';
           if (isDark) {
             document.documentElement.classList.add('dark');
-            document.documentElement.style.backgroundColor = '#12221E';
+            document.documentElement.style.backgroundColor = '#161412';
             document.documentElement.style.colorScheme = 'dark';
           } else {
             document.documentElement.classList.remove('dark');
-            document.documentElement.style.backgroundColor = '#F5F1E8';
+            document.documentElement.style.backgroundColor = '#F6F2EC';
             document.documentElement.style.colorScheme = 'light';
           }
         } catch (e) {}
@@ -88,13 +88,13 @@
         } catch (err) {}
       });
     </script>
-    <title>CampusLoop | Multi-University Campus Community & Academic Suite</title>
+    <title>CampusLoop | Semester 3 notes, study guides & exam prep for B.Tech students</title>
     <meta name="apple-mobile-web-app-title" content="CampusLoop" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="application-name" content="CampusLoop" />
-    <meta name="description" content="CampusLoop is a mobile campus community app & academic suite for university students across India. Connect with multi-campus feeds, explore verified B.Tech & BCA semester notes, solved question banks, interactive coding labs, and attendance tracking." />
-    <meta name="keywords" content="CampusLoop, campus social, university notes, B.Tech notes, BCA notes, engineering syllabus, coding lab, attendance tracker, Indian Technical Universities, Multi-Campus Engineering, GTU, Parul University, ITM SLS, Maher Bhatt" />
+    <meta name="description" content="Read Semester 3 B.Tech study guides, lecture notes, slides and handwritten notes for DSA, DBMS, Numerical Methods (CONMP), Computer Organization & Architecture and Java in a focused reader. Question banks, mock exams, quizzes, a coding lab and an attendance & SGPA calculator for ITM SLS Baroda and other Indian universities." />
+    <meta name="keywords" content="Semester 3 notes, B.Tech CSE notes, DSA notes, DBMS notes, Computer Organization and Architecture notes, Numerical Methods with Python, Java OOP notes, ITM SLS Baroda, exam preparation, question bank, study guide, CampusLoop" />
     <meta name="author" content="CampusLoop" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F6F1EA" />
@@ -107,82 +107,247 @@
     <link rel="apple-touch-icon" href="/icon-192.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
 
-    <!-- Open Graph / Facebook / WhatsApp -->
+    <!-- Open Graph / Facebook / WhatsApp / LinkedIn -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://itm-notes-new.vercel.app/" />
     <meta property="og:site_name" content="CampusLoop" />
-    <meta property="og:title" content="CampusLoop | Multi-University Campus Community & Academic Suite" />
-    <meta property="og:description" content="A mobile campus community app and academic suite. News, clubs, events, posts, code, and conversations closed into one loop." />
-    <meta property="og:image" content="https://itm-notes-new.vercel.app/icon-512.png" />
+    <meta property="og:locale" content="en_IN" />
+    <meta property="og:title" content="CampusLoop | Your semester, in one calm place" />
+    <meta property="og:description" content="Study guides, lecture notes, slides and handwritten pages for DSA, DBMS, CONMP, COA and Java, rewritten for focused reading. Free for students." />
+    <meta property="og:image" content="https://itm-notes-new.vercel.app/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="CampusLoop: Your semester, in one calm place" />
 
     <!-- Twitter / X Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content="https://itm-notes-new.vercel.app/" />
-    <meta name="twitter:title" content="CampusLoop | Multi-University Campus Community & Academic Suite" />
-    <meta name="twitter:description" content="A mobile campus community app and academic suite. News, clubs, events, posts, code, and conversations closed into one loop." />
-    <meta name="twitter:image" content="https://itm-notes-new.vercel.app/icon-512.png" />
+    <meta name="twitter:title" content="CampusLoop | Your semester, in one calm place" />
+    <meta name="twitter:description" content="Study guides, lecture notes, slides and handwritten pages for DSA, DBMS, CONMP, COA and Java, rewritten for focused reading. Free for students." />
+    <meta name="twitter:image" content="https://itm-notes-new.vercel.app/og-image.png" />
 
     <!-- Structured Data (JSON-LD) for Google SEO -->
     <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
     {
-      "@context": "https://schema.org",
-      "@graph": [
+      "@type": "WebSite",
+      "@id": "https://itm-notes-new.vercel.app/#website",
+      "url": "https://itm-notes-new.vercel.app/",
+      "name": "CampusLoop",
+      "alternateName": [
+        "Campus Loop"
+      ],
+      "description": "Study guides, lecture notes, slides and handwritten pages for DSA, DBMS, CONMP, COA and Java, rewritten for focused reading. Free for students.",
+      "inLanguage": "en-IN",
+      "publisher": {
+        "@id": "https://itm-notes-new.vercel.app/#organization"
+      }
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://itm-notes-new.vercel.app/#organization",
+      "name": "CampusLoop",
+      "url": "https://itm-notes-new.vercel.app/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://itm-notes-new.vercel.app/icon-512.png",
+        "width": 512,
+        "height": 512
+      },
+      "founder": {
+        "@type": "Person",
+        "name": "Maher Bhatt"
+      }
+    },
+    {
+      "@type": "WebApplication",
+      "@id": "https://itm-notes-new.vercel.app/#app",
+      "name": "CampusLoop",
+      "url": "https://itm-notes-new.vercel.app/",
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "Web, Android",
+      "description": "Read Semester 3 B.Tech study guides, lecture notes, slides and handwritten notes for DSA, DBMS, Numerical Methods (CONMP), Computer Organization & Architecture and Java in a focused reader. Question banks, mock exams, quizzes, a coding lab and an attendance & SGPA calculator for ITM SLS Baroda and other Indian universities.",
+      "image": "https://itm-notes-new.vercel.app/og-image.png",
+      "isAccessibleForFree": true,
+      "offers": {
+        "@type": "Offer",
+        "price": 0,
+        "priceCurrency": "INR"
+      },
+      "audience": {
+        "@type": "EducationalAudience",
+        "educationalRole": "student"
+      }
+    },
+    {
+      "@type": "ItemList",
+      "name": "Semester 3 subjects",
+      "itemListElement": [
         {
-          "@type": "WebSite",
-          "@id": "https://itm-notes-new.vercel.app/#website",
-          "url": "https://itm-notes-new.vercel.app/",
-          "name": "CampusLoop",
-          "alternateName": ["CampusLoop", "Campus Loop", "CampusLoop Academic", "CampusLoop India"],
-          "description": "Multi-university campus community and comprehensive academic suite for technical education.",
-          "inLanguage": "en"
-        },
-        {
-          "@type": "Organization",
-          "@id": "https://itm-notes-new.vercel.app/#organization",
-          "name": "CampusLoop",
-          "url": "https://itm-notes-new.vercel.app/",
-          "logo": "https://itm-notes-new.vercel.app/logo.png",
-          "founder": {
-            "@type": "Person",
-            "name": "Maher Bhatt"
+          "@type": "ListItem",
+          "position": 1,
+          "item": {
+            "@type": "Course",
+            "name": "Data Structures & Algorithms",
+            "courseCode": "C2310C5",
+            "description": "Semester 3 DSA: complete study guide, unit-wise lecture notes, slides and practice material.",
+            "provider": {
+              "@id": "https://itm-notes-new.vercel.app/#organization"
+            },
+            "educationalLevel": "Undergraduate (B.Tech, Semester 3)",
+            "inLanguage": "en",
+            "isAccessibleForFree": true,
+            "hasCourseInstance": {
+              "@type": "CourseInstance",
+              "courseMode": "online",
+              "courseWorkload": "PT10H"
+            },
+            "offers": {
+              "@type": "Offer",
+              "price": 0,
+              "priceCurrency": "INR",
+              "category": "Free"
+            }
           }
         },
         {
-          "@type": "BreadcrumbList",
-          "itemListElement": [
-            {
-              "@type": "ListItem",
-              "position": 1,
-              "name": "Home",
-              "item": "https://itm-notes-new.vercel.app/"
+          "@type": "ListItem",
+          "position": 2,
+          "item": {
+            "@type": "Course",
+            "name": "Database Management Systems",
+            "courseCode": "C2311C4",
+            "description": "Semester 3 DBMS: complete study guide, unit-wise lecture notes, slides and practice material.",
+            "provider": {
+              "@id": "https://itm-notes-new.vercel.app/#organization"
             },
-            {
-              "@type": "ListItem",
-              "position": 2,
-              "name": "Study Materials & Question Banks",
-              "item": "https://itm-notes-new.vercel.app/materials"
+            "educationalLevel": "Undergraduate (B.Tech, Semester 3)",
+            "inLanguage": "en",
+            "isAccessibleForFree": true,
+            "hasCourseInstance": {
+              "@type": "CourseInstance",
+              "courseMode": "online",
+              "courseWorkload": "PT10H"
             },
-            {
-              "@type": "ListItem",
-              "position": 3,
-              "name": "Practical Coding Lab",
-              "item": "https://itm-notes-new.vercel.app/coding-lab"
-            },
-            {
-              "@type": "ListItem",
-              "position": 4,
-              "name": "Attendance & SGPA Calculator",
-              "item": "https://itm-notes-new.vercel.app/calculator"
+            "offers": {
+              "@type": "Offer",
+              "price": 0,
+              "priceCurrency": "INR",
+              "category": "Free"
             }
-          ]
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "item": {
+            "@type": "Course",
+            "name": "Computer Oriented Numerical Methods with Python",
+            "courseCode": "S2320C1",
+            "description": "Semester 3 CONMP: complete study guide, unit-wise lecture notes, slides and practice material.",
+            "provider": {
+              "@id": "https://itm-notes-new.vercel.app/#organization"
+            },
+            "educationalLevel": "Undergraduate (B.Tech, Semester 3)",
+            "inLanguage": "en",
+            "isAccessibleForFree": true,
+            "hasCourseInstance": {
+              "@type": "CourseInstance",
+              "courseMode": "online",
+              "courseWorkload": "PT10H"
+            },
+            "offers": {
+              "@type": "Offer",
+              "price": 0,
+              "priceCurrency": "INR",
+              "category": "Free"
+            }
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "item": {
+            "@type": "Course",
+            "name": "Computer Organization & Architecture",
+            "description": "Semester 3 COA: complete study guide, unit-wise lecture notes, slides and practice material.",
+            "provider": {
+              "@id": "https://itm-notes-new.vercel.app/#organization"
+            },
+            "educationalLevel": "Undergraduate (B.Tech, Semester 3)",
+            "inLanguage": "en",
+            "isAccessibleForFree": true,
+            "hasCourseInstance": {
+              "@type": "CourseInstance",
+              "courseMode": "online",
+              "courseWorkload": "PT10H"
+            },
+            "offers": {
+              "@type": "Offer",
+              "price": 0,
+              "priceCurrency": "INR",
+              "category": "Free"
+            }
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 5,
+          "item": {
+            "@type": "Course",
+            "name": "Object-Oriented Programming with Java",
+            "description": "Semester 3 Java: complete study guide, unit-wise lecture notes, slides and practice material.",
+            "provider": {
+              "@id": "https://itm-notes-new.vercel.app/#organization"
+            },
+            "educationalLevel": "Undergraduate (B.Tech, Semester 3)",
+            "inLanguage": "en",
+            "isAccessibleForFree": true,
+            "hasCourseInstance": {
+              "@type": "CourseInstance",
+              "courseMode": "online",
+              "courseWorkload": "PT10H"
+            },
+            "offers": {
+              "@type": "Offer",
+              "price": 0,
+              "priceCurrency": "INR",
+              "category": "Free"
+            }
+          }
         }
       ]
     }
+  ]
+}
     </script>
   </head>
 
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <main style="max-width:44rem;margin:0 auto;padding:3rem 1.25rem;font-family:Georgia,serif;color:#201B16;background:#F6F2EC">
+        <h1>CampusLoop: your semester, in one calm place</h1>
+        <p>Read Semester 3 B.Tech study guides, lecture notes, slides and handwritten notes for DSA, DBMS, Numerical Methods (CONMP), Computer Organization & Architecture and Java in a focused reader. Question banks, mock exams, quizzes, a coding lab and an attendance & SGPA calculator for ITM SLS Baroda and other Indian universities.</p>
+        <h2>Semester 3 library</h2>
+        <ul>
+          <li><strong>Data Structures & Algorithms</strong> (C2310C5): 17 documents including DSA — Complete Study Guide, Syllabus DSA C2310C5, Abstract Data Types ADT, Algorithm Analysis, Asymptotic Notation Notes, Asymptotic Notation Slides.</li>
+          <li><strong>Database Management Systems</strong> (C2311C4): 9 documents including DBMS — Complete Study Guide, Syllabus DBMS C2311C4, Database System Architecture, Data Models ER, Relational Query Language, Relational Database Design.</li>
+          <li><strong>Computer Oriented Numerical Methods with Python</strong> (S2320C1): 15 documents including CONMP — Complete Study Guide, CET-1 Syllabus, Syllabus CONMP S2320C1, Approximations and Errors Summary, Exact Approx Numbers Significant Digits, Handwritten Errors and Roots.</li>
+          <li><strong>Computer Organization & Architecture</strong>: 14 documents including COA — Complete Study Guide, Data Representation Register Transfer, Basic Computer Organization Design, Programming Basic Computer, Microprogrammed Control, Central Processing Unit.</li>
+          <li><strong>Object-Oriented Programming with Java</strong>: 6 documents including Java — Complete Study Guide, Basics of Java Arrays Strings, Classes Objects Methods, Inheritance and Interface, JavaFX GUI Event Handling, Class Modeling IO Exceptions Threads.</li>
+        </ul>
+        <h2>Also on CampusLoop</h2>
+        <ul>
+          <li>Exam question banks and solved previous-year papers</li>
+          <li>Timed mock exams and unit-wise quizzes</li>
+          <li>Coding lab with university practicals</li>
+          <li>Attendance and SGPA calculator</li>
+        </ul>
+        <p><a href="/auth">Sign in to start reading</a></p>
+      </main>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

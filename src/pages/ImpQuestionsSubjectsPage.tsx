@@ -303,7 +303,7 @@ export default function ImpQuestionsSubjectsPage() {
               </span>
               <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white/10 text-white border border-white/20 flex items-center gap-1">
                 <Mic className="h-3 w-3 text-[#FAFAFA]" />
-                Single Studio AI Voice Narrator
+                Single Read aloud Narrator
               </span>
             </div>
 

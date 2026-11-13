@@ -21,6 +21,7 @@ import { CampusLoopLogo } from "@/components/campusloop/CampusLoopLogo";
 import { UniversityDropdown } from "@/components/campusloop/UniversityDropdown";
 import { resolveAvatarUrl } from "@/components/UserAvatar";
 import { openTimetable } from "@/components/GlobalTimetableModal";
+import { buildNotifications, markNotificationsRead, NOTIFICATIONS_EVENT, type AppNotification } from "@/lib/notifications";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -48,43 +49,25 @@ export function PortalTopNav({
   const { state: game } = useGamification();
   const { timeLeft, isRunning, setIsModalOpen } = usePomodoro();
 
-  const [notifications, setNotifications] = useState<Array<{ id: string; title: string; message: string; timestamp: string; read: boolean }>>(() => {
-    try {
-      const saved = localStorage.getItem("itm_notifications");
-      return saved ? JSON.parse(saved) : [
-        {
-          id: "notif-mst",
-          title: "Semester Schedule Live",
-          message: "Check exam questions and verified schedules for ITM SLS Baroda.",
-          timestamp: new Date().toISOString(),
-          read: false,
-        },
-      ];
-    } catch {
-      return [];
-    }
-  });
+  const [notifications, setNotifications] = useState<AppNotification[]>(() => buildNotifications());
 
   useEffect(() => {
-    const handleUpdate = () => {
-      try {
-        const saved = localStorage.getItem("itm_notifications");
-        if (saved) setNotifications(JSON.parse(saved));
-      } catch (e) {
-        console.warn("Failed to parse notifications:", e);
-      }
+    const refresh = () => setNotifications(buildNotifications());
+    window.addEventListener(NOTIFICATIONS_EVENT, refresh);
+    window.addEventListener("focus", refresh);
+    return () => {
+      window.removeEventListener(NOTIFICATIONS_EVENT, refresh);
+      window.removeEventListener("focus", refresh);
     };
-    window.addEventListener("itm_notifications_updated", handleUpdate);
-    return () => window.removeEventListener("itm_notifications_updated", handleUpdate);
   }, []);
+
+  useEffect(() => {
+    setNotifications(buildNotifications());
+  }, [location.pathname]);
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 
-  const markAllRead = () => {
-    const updated = notifications.map((n) => ({ ...n, read: true }));
-    setNotifications(updated);
-    localStorage.setItem("itm_notifications", JSON.stringify(updated));
-  };
+  const markAllRead = () => markNotificationsRead(notifications.map((n) => n.id));
 
   return (
     <header className="shrink-0 z-30 bg-background/85 backdrop-blur-md border-b border-border px-3 sm:px-6 flex items-center justify-between transition-all pt-[env(safe-area-inset-top,0px)] h-[calc(3.75rem+env(safe-area-inset-top,0px))] w-full">
@@ -206,7 +189,16 @@ export function PortalTopNav({
                 </div>
               ) : (
                 notifications.map((notif) => (
-                  <div key={notif.id} className="p-3 hover:bg-background dark:hover:bg-stone-800/60 rounded-xl transition-colors">
+                  <div
+                    key={notif.id}
+                    role={notif.href ? "link" : undefined}
+                    tabIndex={notif.href ? 0 : undefined}
+                    onClick={() => {
+                      markNotificationsRead([notif.id]);
+                      if (notif.href) navigate(notif.href);
+                    }}
+                    className={`p-3 hover:bg-secondary rounded-xl transition-colors ${notif.href ? "cursor-pointer" : ""}`}
+                  >
                     <div className="flex items-center gap-1.5 mb-1">
                       {!notif.read && <span className="w-2 h-2 rounded-full bg-primary shrink-0" />}
                       <span className="font-bold text-xs text-foreground dark:text-white truncate">{notif.title}</span>

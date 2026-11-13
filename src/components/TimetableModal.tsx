@@ -544,7 +544,7 @@ export function TimetableModal({
                   </span>
                 </div>
                 <h4 className="font-bold text-xs sm:text-sm text-foreground font-display">
-                  Full 38-Question Model Solutions with Step-by-Step Code & Single Studio AI Voice
+                  Full 38-Question Model Solutions with Step-by-Step Code & Single Read aloud
                 </h4>
                 <div className="flex items-center gap-1.5 flex-wrap pt-0.5 text-[11px]">
                   {[

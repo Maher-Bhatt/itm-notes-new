@@ -50,7 +50,7 @@ export function AudioNotesPlayer({ title, textToRead, className = '' }: AudioNot
     });
 
     toast.success(`Reading full audio notes for "${title}"`, {
-      description: `Studio AI Voice · Listen hands-free with auto-progression.`,
+      description: `Read aloud · Listen hands-free with auto-progression.`,
     });
   };
 
@@ -99,7 +99,7 @@ export function AudioNotesPlayer({ title, textToRead, className = '' }: AudioNot
             <div className="flex items-center gap-1.5 flex-wrap">
               <span className="text-xs sm:text-sm font-bold text-foreground">Continuous Audio Lecture</span>
               <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary dark:text-primary flex items-center gap-1 border border-primary/20">
-                <Mic className="h-2.5 w-2.5" /> Studio AI Narrator
+                <Mic className="h-2.5 w-2.5" /> Read aloud
               </span>
               <span className="text-[10px] font-mono text-muted-foreground hidden sm:inline">
                 ({voiceState.voiceName})

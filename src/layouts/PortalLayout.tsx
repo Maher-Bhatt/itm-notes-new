@@ -3,26 +3,28 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { PortalSidebar } from "./PortalSidebar";
 import { PortalTopNav } from "./PortalTopNav";
 import { SearchDialog } from "@/components/SearchDialog";
-import { MessageSquare, X, Send } from "lucide-react";
+import { HelpCircle, X } from "lucide-react";
 import { toast } from "sonner";
 import { useFocusMode } from "@/contexts/FocusModeContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { createSupportTicket } from "@/services/adminOperationsService";
+import { HelpPanel } from "@/components/HelpPanel";
+import { setRobots, titleForPath } from "@/lib/pageMeta";
 
 export function PortalLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [chatMessage, setChatMessage] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
 
   const { focusMode, toggleFocusMode, setFocusMode } = useFocusMode();
   const { user, profile } = useAuth();
 
-  // Close mobile sidebar on route change
+  // Close mobile sidebar on route change; keep the tab title meaningful
   useEffect(() => {
     setSidebarOpen(false);
+    document.title = titleForPath(location.pathname);
+    setRobots("noindex, nofollow");
   }, [location.pathname]);
 
   // Global keyboard shortcuts: Cmd+K (search), 'F' (Fullscreen Focus Mode)
@@ -49,26 +51,6 @@ export function PortalLayout() {
   const handleToggleFocusMode = () => {
     toggleFocusMode();
     toast.info(!focusMode ? "🎯 Focus Mode Enabled" : "Focus Mode Disabled");
-  };
-
-  const handleSendQuickSupport = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!chatMessage.trim()) return;
-    const msg = chatMessage.trim();
-    setChatMessage("");
-    setIsChatOpen(false);
-    toast.success("Message dispatched to Campus Support!");
-    try {
-      await createSupportTicket(
-        msg,
-        "Campus Desk Inquiry",
-        user?.email || undefined,
-        profile?.display_name || undefined,
-        user?.id
-      );
-    } catch {
-      // Ignored - fallback handled
-    }
   };
 
   const isCodingLab = location.pathname.startsWith("/coding-lab");
@@ -110,91 +92,18 @@ export function PortalLayout() {
         <div className="fixed bottom-[calc(5.25rem+env(safe-area-inset-bottom,0px))] md:bottom-8 right-4 sm:right-6 z-40">
           <button
             onClick={() => setIsChatOpen(!isChatOpen)}
-            className="w-12 h-12 rounded-full bg-primary text-white shadow-lg flex items-center justify-center transition-all hover:scale-105 active:scale-95 press cursor-pointer border border-primary/20"
-            title="Campus Assistant & Study Help"
+            className="w-12 h-12 rounded-full bg-foreground text-background shadow-lg flex items-center justify-center transition-transform hover:scale-105 active:scale-95 cursor-pointer"
+            title="Help: search notes or contact support"
+            aria-label="Help"
           >
             {isChatOpen ? (
               <X className="h-5 w-5" />
             ) : (
-              <MessageSquare className="h-5 w-5" />
+              <HelpCircle className="h-5 w-5" />
             )}
           </button>
 
-          {/* Quick Assistant Popup */}
-          {isChatOpen && (
-            <div className="absolute bottom-16 right-0 w-80 sm:w-96 bg-white dark:bg-background border border-border dark:border-stone-800 rounded-2xl shadow-lg p-4 scale-in">
-              <div className="flex items-center justify-between pb-3 border-b border-border dark:border-stone-800 mb-3">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center">
-                    <MessageSquare className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-xs text-foreground dark:text-white font-display">Campus Assistant</h4>
-                    <p className="text-[10px] text-muted-foreground dark:text-stone-400">
-                      Ask doubts, find question banks, or get exam tips
-                    </p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setIsChatOpen(false)}
-                  className="text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 p-1 cursor-pointer press"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              </div>
-
-              <div className="space-y-2 mb-3 max-h-48 overflow-y-auto text-xs">
-                <div className="p-2.5 rounded-xl bg-background dark:bg-stone-800 text-foreground dark:text-stone-200">
-                  👋 Hello! Need help finding syllabus notes, timetables, or previous year questions?
-                </div>
-                <div className="flex flex-wrap gap-1.5 pt-1">
-                  <button
-                    onClick={() => {
-                      setIsChatOpen(false);
-                      navigate("/materials");
-                    }}
-                    className="px-2.5 py-1 rounded-full text-[11px] font-semibold border border-border dark:border-stone-700 bg-white dark:bg-stone-800 text-foreground dark:text-stone-200 hover:bg-primary/10 hover:text-primary transition-colors cursor-pointer"
-                  >
-                    📚 Study Materials
-                  </button>
-                  <button
-                    onClick={() => {
-                      setIsChatOpen(false);
-                      navigate("/imp-questions");
-                    }}
-                    className="px-2.5 py-1 rounded-full text-[11px] font-semibold border border-border dark:border-stone-700 bg-white dark:bg-stone-800 text-foreground dark:text-stone-200 hover:bg-primary/10 hover:text-primary transition-colors cursor-pointer"
-                  >
-                    ⚡ Question Banks
-                  </button>
-                  <button
-                    onClick={() => {
-                      setIsChatOpen(false);
-                      navigate("/community");
-                    }}
-                    className="px-2.5 py-1 rounded-full text-[11px] font-semibold border border-border dark:border-stone-700 bg-white dark:bg-stone-800 text-foreground dark:text-stone-200 hover:bg-primary/10 hover:text-primary transition-colors cursor-pointer"
-                  >
-                    💬 Campus Pulse Feed
-                  </button>
-                </div>
-              </div>
-
-              <form onSubmit={handleSendQuickSupport} className="relative">
-                <input
-                  type="text"
-                  placeholder="Ask anything or request a note..."
-                  value={chatMessage}
-                  onChange={(e) => setChatMessage(e.target.value)}
-                  className="w-full h-10 pl-3 pr-10 rounded-full border border-border dark:border-stone-700 bg-background dark:bg-stone-800 text-xs text-foreground dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:border-primary"
-                />
-                <button
-                  type="submit"
-                  className="absolute right-1.5 top-1/2 -translate-y-1/2 p-1.5 rounded-full bg-primary text-white hover:bg-primary transition-opacity cursor-pointer press"
-                >
-                  <Send className="h-3.5 w-3.5" />
-                </button>
-              </form>
-            </div>
-          )}
+          {isChatOpen && <HelpPanel onClose={() => setIsChatOpen(false)} />}
         </div>
       )}
     </div>

@@ -262,7 +262,7 @@ export default function DashboardPage() {
                 accent: "text-primary bg-primary/10 border-primary/20",
               },
               {
-                label: "AI Doubt Solver",
+                label: "Doubt Finder",
                 desc: "Instant Answers",
                 icon: Bot,
                 onClick: () => setAiDoubtOpen(true),

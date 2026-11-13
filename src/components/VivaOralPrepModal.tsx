@@ -100,7 +100,7 @@ export function VivaOralPrepModal({ isOpen, onClose }: VivaOralPrepModalProps) {
     } else {
       aiVoice.speak(text, () => setIsSpeaking(false));
       setIsSpeaking(true);
-      toast.success("Reading viva response with Studio AI Voice");
+      toast.success("Reading viva response with Read aloud");
     }
   };
 

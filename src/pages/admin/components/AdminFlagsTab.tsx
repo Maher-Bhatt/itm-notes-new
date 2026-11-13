@@ -27,7 +27,7 @@ const FLAG_METADATA: Record<
   { label: string; description: string; icon: React.FC<{ className?: string }> }
 > = {
   ai_doubt_solver: {
-    label: "AI Doubt Solver",
+    label: "Doubt Finder",
     description: "Multi-turn syllabus-constrained academic doubt assistant.",
     icon: Bot,
   },

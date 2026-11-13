@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
+import { LIBRARY } from "@/data/libraryIndex";
+import { DEFAULT_TITLE, setRobots } from "@/lib/pageMeta";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -129,16 +131,24 @@ export const UNIVERSITIES: UniversityOption[] = [
   },
 ];
 
+const LIBRARY_DOC_COUNT = LIBRARY.reduce((n, sub) => n + sub.docs.length, 0);
+
 const TYPEWRITER_PHRASES = [
+  "Semester 3 Library: notes, slides & handwritten pages in a focused reader",
   "Multi-University Combined Campus Feed & Live Pulse",
   "51+ Academic Subjects (21 B.Tech + 30 BCA) with Full Notes",
   "LeetCode & HackerRank-Grade Coding Lab (154+ Practicals)",
   "Safe 75% Attendance Buffer & Bunk Calculator",
   "Clubs, Hackathons & Tech Events in One Loop",
-  "10-Year Solved University Exam Question Banks",
+  "Solved University Exam Question Banks",
 ];
 
 export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean }) {
+  useEffect(() => {
+    document.title = focusAuth ? "Sign in · CampusLoop" : DEFAULT_TITLE;
+    setRobots(focusAuth ? "noindex, nofollow" : "index, follow");
+  }, [focusAuth]);
+
   const navigate = useNavigate();
   const location = useLocation();
   const { user, profile, isLoading } = useAuth();
@@ -472,7 +482,7 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
               <span className="text-muted-foreground">·</span>
               <span className="text-primary font-bold text-[11px]">{selectedUniversity.badge}</span>
             </div>
-            <span className="text-xs text-muted-foreground">Over 12,000+ students across India connected</span>
+            <span className="text-xs text-muted-foreground">{LIBRARY_DOC_COUNT} Semester 3 documents across {LIBRARY.length} subjects, ready for finals</span>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">

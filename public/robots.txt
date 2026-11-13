@@ -1,23 +1,24 @@
 # robots.txt for CampusLoop (https://itm-notes-new.vercel.app/)
+# Only the landing page is public; the app itself requires sign-in.
 
 User-agent: *
-Allow: /
-Allow: /materials
-Allow: /coding-lab
-Allow: /calculator
-Allow: /quiz
-Allow: /imp-questions
-Allow: /subject/
-
-# Disallow private user data & authenticated panels from indexation
+Allow: /$
+Allow: /og-image.png
+Allow: /icon-512.png
 Disallow: /dashboard
+Disallow: /library
+Disallow: /reading/
+Disallow: /subjects
+Disallow: /subject/
 Disallow: /profile
 Disallow: /onboarding
 Disallow: /community
 Disallow: /social
+Disallow: /explore
+Disallow: /inbox
+Disallow: /messages
 Disallow: /bookmarks
-Disallow: /admin/
+Disallow: /admin
 Disallow: /auth
 
-# Reference verified XML Sitemap
 Sitemap: https://itm-notes-new.vercel.app/sitemap.xml

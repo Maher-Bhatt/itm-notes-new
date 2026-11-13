@@ -287,18 +287,19 @@ export async function createSupportTicket(
     localStorage.setItem(TICKETS_STORAGE_KEY, JSON.stringify(list));
   } catch {}
 
-  // Supabase insert
-  try {
-    await supabase.from("support_tickets").insert({
-      user_id: userId || null,
-      user_email: userEmail || null,
-      user_name: userName || "Student",
-      subject,
-      message,
-      status: "open",
-      priority: "medium",
-    });
-  } catch {}
+  // Supabase insert: report failure to the caller instead of pretending it worked
+  const { error } = await supabase.from("support_tickets").insert({
+    user_id: userId || null,
+    user_email: userEmail || null,
+    user_name: userName || "Student",
+    subject,
+    message,
+    status: "open",
+    priority: "medium",
+  } as never);
+  if (error) {
+    throw new Error(error.message || "Could not reach the support desk");
+  }
 
   return newTicket;
 }

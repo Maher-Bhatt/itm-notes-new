@@ -128,7 +128,7 @@ export default function SubjectImpQuestionsPage() {
         setCurrentlySpeakingId(null);
       });
       setCurrentlySpeakingId(id);
-      toast.success("Reading question with Studio AI Narrator", {
+      toast.success("Reading question with Read aloud", {
         description: "Hands-free single AI voice lecture",
       });
     }

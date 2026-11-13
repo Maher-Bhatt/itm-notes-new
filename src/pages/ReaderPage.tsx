@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { LIBRARY } from "@/data/libraryIndex";
 import { getProgress, minutesFor, saveProgress } from "@/lib/readingProgress";
+import { setRobots } from "@/lib/pageMeta";
 
 /* ───────────────────────── preferences ───────────────────────── */
 
@@ -207,7 +208,8 @@ export default function ReaderPage() {
       .catch(() => {
         if (!cancelled) setError("This document could not be loaded. Check your connection and try again.");
       });
-    document.title = `${doc.title} · Library · CampusLoop`;
+    document.title = `${doc.title} · ${subject.short} · CampusLoop`;
+    setRobots("noindex, nofollow");
     return () => {
       cancelled = true;
     };
@@ -216,8 +218,21 @@ export default function ReaderPage() {
   const headings = useMemo(() => (md ? extractHeadings(md) : []), [md]);
   const tocHeadings = useMemo(() => {
     const levels = [...new Set(headings.map((h) => h.level))].sort();
-    const keep = levels.slice(0, 2);
-    return headings.filter((h) => keep.includes(h.level));
+    const norm = (t: string) => t.toLowerCase().replace(/\(cont\.\)|\s+/g, " ").trim();
+    const pick = (keep: number[]) => {
+      // Slide decks repeat the same title on many slides: list each title once.
+      const seen = new Set<string>();
+      return headings.filter((h) => {
+        if (!keep.includes(h.level)) return false;
+        const k = norm(h.text);
+        if (k.length < 2 || seen.has(k)) return false;
+        seen.add(k);
+        return true;
+      });
+    };
+    let list = pick(levels.slice(0, 2));
+    if (list.length > 60 && levels.length > 1) list = pick(levels.slice(0, 1));
+    return list;
   }, [headings]);
   const topLevel = tocHeadings.length ? Math.min(...tocHeadings.map((h) => h.level)) : 1;
 
