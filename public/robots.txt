@@ -1,13 +1,13 @@
 # robots.txt for CampusLoop (https://itm-notes-new.vercel.app/)
-# Only the landing page is public; the app itself requires sign-in.
+# Public: the landing page and the Semester 3 Library. Everything else requires sign-in.
 
 User-agent: *
 Allow: /$
 Allow: /og-image.png
 Allow: /icon-512.png
+Allow: /library
+Allow: /reading/
 Disallow: /dashboard
-Disallow: /library
-Disallow: /reading/
 Disallow: /subjects
 Disallow: /subject/
 Disallow: /profile

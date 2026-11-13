@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { useFocusMode } from "@/contexts/FocusModeContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { HelpPanel } from "@/components/HelpPanel";
-import { setRobots, titleForPath } from "@/lib/pageMeta";
+import { isPublicPath, setRobots, titleForPath } from "@/lib/pageMeta";
 
 export function PortalLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -23,8 +23,11 @@ export function PortalLayout() {
   // Close mobile sidebar on route change; keep the tab title meaningful
   useEffect(() => {
     setSidebarOpen(false);
-    document.title = titleForPath(location.pathname);
-    setRobots("noindex, nofollow");
+    if (!isPublicPath(location.pathname)) {
+      // public pages (library) set their own title, description and canonical
+      document.title = titleForPath(location.pathname);
+      setRobots("noindex, nofollow");
+    }
   }, [location.pathname]);
 
   // Global keyboard shortcuts: Cmd+K (search), 'F' (Fullscreen Focus Mode)

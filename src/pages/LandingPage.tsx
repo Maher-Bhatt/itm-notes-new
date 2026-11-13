@@ -422,6 +422,7 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
           <nav className="hidden lg:flex items-center gap-7 text-xs font-bold text-muted-foreground dark:text-stone-400">
             <a href="#five-screens" className="hover:text-foreground dark:hover:text-white transition-colors">Campus Features</a>
             <a href="#interactive-sandbox" className="hover:text-foreground dark:hover:text-white transition-colors">Live Preview</a>
+            <a href="/library" onClick={(e) => { e.preventDefault(); navigate("/library"); }} className="text-foreground font-semibold hover:text-primary transition-colors">Free Library</a>
             <a href="#academic-suite" className="hover:text-foreground dark:hover:text-white transition-colors">B.Tech & BCA Notes</a>
             <a href="#auth-portal-card" className="hover:text-foreground dark:hover:text-white transition-colors">Sign In</a>
           </nav>
@@ -531,14 +532,11 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
                 </button>
                 <button
                   type="button"
-                  onClick={() => {
-                    sessionStorage.setItem('itm_guest_mode', 'true');
-                    navigate("/subjects");
-                  }}
+                  onClick={() => navigate("/library")}
                   className="px-6 py-3.5 rounded-full border border-border dark:border-stone-800 bg-white dark:bg-card text-foreground dark:text-white font-bold text-xs sm:text-sm hover:border-primary/50 shadow-2xs transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <BookOpen className="h-4 w-4 text-primary" />
-                  <span>Browse 51+ Course Syllabi →</span>
+                  <span>Read Semester 3 notes free</span>
                 </button>
               </div>
 
@@ -547,7 +545,7 @@ export default function LandingPage({ focusAuth = false }: { focusAuth?: boolean
                 {[
                   { val: "51+", label: "Academic Subjects" },
                   { val: "154+", label: "Coding Practicals" },
-                  { val: "100%", label: "Syllabus Covered" },
+                  { val: String(LIBRARY_DOC_COUNT), label: "Free Library Documents" },
                   { val: "0 ₹", label: "Free Forever" },
                 ].map((item) => (
                   <div key={item.label} className="p-3.5 rounded-2xl bg-white dark:bg-card border border-border dark:border-stone-800 text-center shadow-2xs">

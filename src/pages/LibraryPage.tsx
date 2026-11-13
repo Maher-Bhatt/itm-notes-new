@@ -1,8 +1,9 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ArrowRight, BookOpen, FileText, PenLine, Presentation, ScrollText, Search, ClipboardList, FlaskConical, CheckCircle2 } from "lucide-react";
 import { LIBRARY } from "@/data/libraryIndex";
 import type { LibraryDoc, LibrarySubject } from "@/data/libraryTypes";
+import { setPageMeta } from "@/lib/pageMeta";
 import { daysUntilFinals, getAllProgress, getLastRead, minutesFor, docKey, FINALS_START } from "@/lib/readingProgress";
 
 const KIND_ICON: Record<string, typeof FileText> = {
@@ -75,6 +76,22 @@ export default function LibraryPage() {
       s.docs.filter((d) => `${d.title} ${d.kind} ${s.short} ${s.name}`.toLowerCase().includes(q)).map((d) => ({ s, d }))
     );
   }, [query]);
+
+  useEffect(() => {
+    setPageMeta(
+      subjectSlug
+        ? {
+            title: `${subject.name} (${subject.short}) Semester 3 notes, study guide & slides | CampusLoop`,
+            description: `Free ${subject.short} Semester 3 study material: a complete study guide plus ${subject.docs.length - 1} unit-wise lecture notes, slides, tutorials and papers for ${subject.name}. Read online in a focused reader.`,
+            path: `/library/${subject.slug}`,
+          }
+        : {
+            title: "Semester 3 Library: free B.Tech notes, study guides & slides | CampusLoop",
+            description: `Free Semester 3 B.Tech study material for ${LIBRARY.map((s) => s.short).join(", ")}: complete study guides, lecture notes, slides and handwritten notes, readable online without sign-in.`,
+            path: "/library",
+          }
+    );
+  }, [subjectSlug, subject]);
 
   const guide = subject.docs.find((d) => d.featured);
   const guidePct = guide ? progress[docKey(subject.slug, guide.slug)]?.pct ?? 0 : 0;

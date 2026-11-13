@@ -171,7 +171,7 @@ const App = () => (
                         <Route path="/onboarding" element={<ProtectedRoute><OnboardingPage /></ProtectedRoute>} />
 
                         {/* Distraction-Free Topic Reader */}
-                        <Route path="/library/:subjectSlug/:docSlug" element={<ProtectedRoute><ReaderPage /></ProtectedRoute>} />
+                        <Route path="/library/:subjectSlug/:docSlug" element={<ReaderPage />} />
                         <Route path="/subject/:subjectId/topic/:topicId" element={<ProtectedRoute><TopicPage /></ProtectedRoute>} />
 
                         {/* Redirects for legacy and intuitive routes */}
@@ -181,8 +181,8 @@ const App = () => (
                         {/* Unified Modern Portal Layout */}
                         <Route element={<PortalLayout />}>
                           <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
-                          <Route path="/library" element={<ProtectedRoute><LibraryPage /></ProtectedRoute>} />
-                          <Route path="/library/:subjectSlug" element={<ProtectedRoute><LibraryPage /></ProtectedRoute>} />
+                          <Route path="/library" element={<LibraryPage />} />
+                          <Route path="/library/:subjectSlug" element={<LibraryPage />} />
                           <Route path="/materials" element={<ProtectedRoute><MaterialsPage /></ProtectedRoute>} />
                           <Route path="/quiz" element={<ProtectedRoute><QuizPage /></ProtectedRoute>} />
                           <Route path="/coding-lab" element={<ProtectedRoute><ErrorBoundary><CodingLabPage /></ErrorBoundary></ProtectedRoute>} />

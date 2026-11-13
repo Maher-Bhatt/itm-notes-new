@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 import { LIBRARY } from "@/data/libraryIndex";
 import { getProgress, minutesFor, saveProgress } from "@/lib/readingProgress";
-import { setRobots } from "@/lib/pageMeta";
+import { setPageMeta } from "@/lib/pageMeta";
 
 /* ───────────────────────── preferences ───────────────────────── */
 
@@ -208,8 +208,14 @@ export default function ReaderPage() {
       .catch(() => {
         if (!cancelled) setError("This document could not be loaded. Check your connection and try again.");
       });
-    document.title = `${doc.title} · ${subject.short} · CampusLoop`;
-    setRobots("noindex, nofollow");
+    setPageMeta({
+      title: `${doc.title} | ${subject.short} Semester 3 ${doc.kind} | CampusLoop`,
+      description:
+        (doc.summary ||
+          `${doc.title}: ${doc.kind.toLowerCase()} for ${subject.name}${doc.unit != null ? `, Unit ${doc.unit}` : ""}, B.Tech Semester 3.`) +
+        ` Free to read online${doc.scanned ? "" : ` · ${minutesFor(doc.words)} min read`}.`,
+      path: `/library/${subject.slug}/${doc.slug}`,
+    });
     return () => {
       cancelled = true;
     };

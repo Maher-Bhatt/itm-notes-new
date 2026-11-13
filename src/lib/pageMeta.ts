@@ -43,3 +43,40 @@ export function setRobots(content: "index, follow" | "noindex, nofollow") {
   }
   tag.content = content;
 }
+
+export const SITE_URL = "https://itm-notes-new.vercel.app";
+
+/** Public, indexable sections of the app (everything else requires sign-in). */
+export function isPublicPath(pathname: string) {
+  return pathname === "/" || /^\/library(\/|$)/.test(pathname);
+}
+
+function upsertMeta(attr: "name" | "property", key: string, content: string) {
+  let tag = document.head.querySelector<HTMLMetaElement>(`meta[${attr}="${key}"]`);
+  if (!tag) {
+    tag = document.createElement("meta");
+    tag.setAttribute(attr, key);
+    document.head.appendChild(tag);
+  }
+  tag.content = content;
+}
+
+/** Title, description, canonical and social tags for a public page. */
+export function setPageMeta({ title, description, path }: { title: string; description: string; path: string }) {
+  document.title = title;
+  const url = `${SITE_URL}${path}`;
+  upsertMeta("name", "description", description);
+  upsertMeta("property", "og:title", title);
+  upsertMeta("property", "og:description", description);
+  upsertMeta("property", "og:url", url);
+  upsertMeta("name", "twitter:title", title);
+  upsertMeta("name", "twitter:description", description);
+  let link = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+  if (!link) {
+    link = document.createElement("link");
+    link.rel = "canonical";
+    document.head.appendChild(link);
+  }
+  link.href = url;
+  setRobots("index, follow");
+}
