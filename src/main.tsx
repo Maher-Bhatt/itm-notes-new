@@ -10,8 +10,16 @@ if (typeof window !== "undefined") {
 
 // Auto-reload on Vite chunk preload errors when a new version is deployed on Vercel
 window.addEventListener("vite:preloadError", (event) => {
-  console.warn("[Vite] Preload chunk error detected. Reloading for newest deployment...", event);
+  console.warn("[Vite] Preload chunk error detected. Purging cache and reloading...", event);
   event.preventDefault();
+  try {
+    if ("caches" in window) {
+      caches.keys().then((keys) => Promise.all(keys.map((k) => caches.delete(k)))).finally(() => {
+        window.location.reload();
+      });
+      return;
+    }
+  } catch {}
   window.location.reload();
 });
 

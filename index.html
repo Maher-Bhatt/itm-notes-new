@@ -42,22 +42,37 @@
       try {
         window.results = { totalCount: 0, tools: [], subjects: [], materials: [], topics: [], inContent: [] };
       } catch (e) {}
-      // Immediate proactive service-worker and cache purge for CampusLoop rebranding
+      // Immediate proactive service-worker and cache purge for CampusLoop rebranding & iOS Safari updates
       try {
-        var CAMPUSLOOP_VER = 'campusloop-v2026.11.02-r2';
+        var CAMPUSLOOP_VER = 'campusloop-v2026.11.13-r25';
         var storedVer = localStorage.getItem('campusloop_app_version');
-        if (storedVer !== CAMPUSLOOP_VER) {
+        var needsPurge = storedVer !== CAMPUSLOOP_VER;
+        if (needsPurge) {
           localStorage.setItem('campusloop_app_version', CAMPUSLOOP_VER);
-          if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistrations().then(function(regs) {
-              for (var i = 0; i < regs.length; i++) regs[i].unregister();
-            });
-          }
+          // Purge all legacy caches on version change
           if ('caches' in window) {
             caches.keys().then(function(keys) {
               for (var j = 0; j < keys.length; j++) caches.delete(keys[j]);
             });
           }
+        }
+        // Always unregister legacy Service Workers to prevent stale iOS Safari intercept
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.getRegistrations().then(function(regs) {
+            if (regs && regs.length > 0) {
+              for (var i = 0; i < regs.length; i++) regs[i].unregister();
+              if (navigator.serviceWorker.controller && needsPurge) {
+                window.location.reload();
+              }
+            }
+          });
+        }
+        // Sync canonical URL with current origin to avoid stale redirect loops on custom domains
+        if (window.location && window.location.origin && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+          var canonEl = document.querySelector('link[rel="canonical"]');
+          if (canonEl) canonEl.href = window.location.origin + window.location.pathname;
+          var ogUrlEl = document.querySelector('meta[property="og:url"]');
+          if (ogUrlEl) ogUrlEl.content = window.location.origin + window.location.pathname;
         }
       } catch (e) {}
       // Automatic cache recovery for stale Service Worker / cached bundles

@@ -44,7 +44,9 @@ export function setRobots(content: "index, follow" | "noindex, nofollow") {
   tag.content = content;
 }
 
-export const SITE_URL = "https://itm-notes-new.vercel.app";
+export const SITE_URL = typeof window !== "undefined" && window.location.origin && !window.location.origin.includes("localhost")
+  ? window.location.origin
+  : "https://itm-notes-new.vercel.app";
 
 /** Public, indexable sections of the app (everything else requires sign-in). */
 export function isPublicPath(pathname: string) {
