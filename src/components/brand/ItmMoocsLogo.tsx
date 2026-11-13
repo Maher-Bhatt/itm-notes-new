@@ -88,14 +88,14 @@ export function ItmMoocsLogo({
                 inverted ? "text-secondary" : "text-foreground"
               }`}
             >
-              ITM
+              Campus
             </span>
             <span
               className={`font-bold tracking-tight ${textSizeClasses[size]} ${
                 inverted ? "text-primary" : "text-primary"
               }`}
             >
-              Notes
+              Loop
             </span>
           </div>
           {showTagline && (
