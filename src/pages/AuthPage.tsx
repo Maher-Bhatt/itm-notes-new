@@ -25,7 +25,7 @@ function useReturnPath() {
 export default function AuthPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, signInWithGoogle } = useAuth();
   const returnPath = useReturnPath();
   const params = new URLSearchParams(location.search);
   const [mode, setMode] = useState<Mode>(params.get("mode") === "reset" ? "reset" : params.get("mode") === "signup" ? "signup" : "signin");
@@ -34,6 +34,7 @@ export default function AuthPage() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [googleBusy, setGoogleBusy] = useState(false);
   const [sentReset, setSentReset] = useState(false);
 
   useEffect(() => {
@@ -49,15 +50,34 @@ export default function AuthPage() {
     return () => data.subscription.unsubscribe();
   }, []);
 
-  // Already signed in (and not resetting a password): continue to the app.
-  useEffect(() => {
-    if (!isLoading && user && mode !== "reset") navigate(returnPath, { replace: true });
-  }, [isLoading, user, mode, navigate, returnPath]);
-
   const afterSignIn = async (userId: string) => {
     const { data: profile } = await supabase.from("profiles").select("onboarding_completed, semester").eq("user_id", userId).maybeSingle();
     const p = profile as { onboarding_completed?: boolean | null; semester?: number | null } | null;
-    navigate(!p || (p.onboarding_completed !== true && !p.semester) ? "/onboarding" : returnPath, { replace: true });
+    const stored = localStorage.getItem('campusloop_auth_redirect');
+    if (stored) localStorage.removeItem('campusloop_auth_redirect');
+    const destination = (stored && stored !== "/" && !stored.startsWith("/auth")) ? stored : returnPath;
+    navigate(!p || (p.onboarding_completed !== true && !p.semester) ? "/onboarding" : destination, { replace: true });
+  };
+
+  // Already signed in (and not resetting a password): continue to the app.
+  useEffect(() => {
+    if (!isLoading && user && mode !== "reset") {
+      afterSignIn(user.id);
+    }
+  }, [isLoading, user, mode]);
+
+  const handleGoogleSignIn = async () => {
+    try {
+      setGoogleBusy(true);
+      if (returnPath && returnPath !== "/" && !returnPath.startsWith("/auth")) {
+        localStorage.setItem('campusloop_auth_redirect', returnPath);
+      }
+      await signInWithGoogle(`${window.location.origin}/auth`);
+    } catch (err) {
+      setGoogleBusy(false);
+      const msg = err instanceof Error ? err.message : "Failed to connect to Google sign in.";
+      toast.error(msg);
+    }
   };
 
   const submit = async (e: React.FormEvent) => {
@@ -139,12 +159,54 @@ export default function AuthPage() {
           <h2 className="text-3xl font-medium text-foreground">{heading.t}</h2>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{heading.d}</p>
 
+          {(mode === "signin" || mode === "signup") && (
+            <div className="mt-6">
+              <button
+                type="button"
+                disabled={googleBusy || busy}
+                onClick={handleGoogleSignIn}
+                className="flex w-full items-center justify-center gap-3 rounded-full border border-border/80 bg-card px-5 py-3 text-sm font-medium text-foreground hover:bg-secondary/70 hover:border-foreground/30 transition-all shadow-xs disabled:opacity-60 cursor-pointer"
+              >
+                {googleBusy ? (
+                  <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                ) : (
+                  <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
+                    <path
+                      fill="#4285F4"
+                      d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"
+                    />
+                    <path
+                      fill="#34A853"
+                      d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.24v3.15C3.26 21.36 7.33 24 12 24z"
+                    />
+                    <path
+                      fill="#FBBC05"
+                      d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.24C.45 8.15 0 9.92 0 12s.45 3.85 1.24 5.42l4.04-3.15z"
+                    />
+                    <path
+                      fill="#EA4335"
+                      d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.24 6.58l4.04 3.15c.95-2.83 3.6-4.98 6.72-4.98z"
+                    />
+                  </svg>
+                )}
+                <span>{mode === "signup" ? "Sign up with Google" : "Continue with Google"}</span>
+              </button>
+
+              <div className="relative my-5 flex items-center justify-center">
+                <div className="w-full border-t border-border" />
+                <span className="bg-card px-3 text-[11px] font-medium uppercase tracking-wider text-muted-foreground shrink-0">
+                  or continue with email
+                </span>
+              </div>
+            </div>
+          )}
+
           {mode === "forgot" && sentReset ? (
             <div className="mt-6 rounded-lg border border-border bg-secondary/60 p-4 text-sm text-foreground">
               If an account exists for <strong>{email}</strong>, a reset link is on its way. It can take a minute; check spam too.
             </div>
           ) : (
-            <form onSubmit={submit} className="mt-6 space-y-4">
+            <form onSubmit={submit} className={mode === "signin" || mode === "signup" ? "space-y-4" : "mt-6 space-y-4"}>
               {mode === "signup" && (
                 <label className="block">
                   <span className="mb-1.5 block text-sm font-medium text-foreground">Your name</span>

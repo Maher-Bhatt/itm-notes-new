@@ -59,6 +59,7 @@ interface AuthContextType {
   role: AppRole | null;
   isLoading: boolean;
   signOut: () => Promise<void>;
+  signInWithGoogle: (customRedirect?: string) => Promise<void>;
   updateProfile: (updates: Partial<UserProfile>) => Promise<void>;
   uploadAvatar: (file: File) => Promise<string>;
   refreshProfile: () => Promise<void>;
@@ -88,9 +89,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         supabase.from('user_roles').select('role').eq('user_id', userAuth.id)
       ]);
 
+      const metaName = userAuth.user_metadata?.full_name || userAuth.user_metadata?.name || userAuth.user_metadata?.display_name || null;
+      const metaAvatar = userAuth.user_metadata?.avatar_url || userAuth.user_metadata?.picture || null;
+
       if (profileResponse.data) {
         let currentProfile = profileResponse.data as UserProfile;
         const isMaher = (userAuth.email || '').toLowerCase().includes('maher') || (userAuth.email || '').toLowerCase().includes('bhatt') || (currentProfile.display_name || '').toLowerCase().includes('maher') || (currentProfile.display_name || '').toLowerCase().includes('bhatt');
+
+        // If profile doesn't have an avatar or has a default gradient, sync from OAuth metadata
+        if (metaAvatar && (!currentProfile.avatar_url || currentProfile.avatar_url.startsWith('grad-') || currentProfile.avatar_url.includes('placeholder'))) {
+          currentProfile.avatar_url = metaAvatar;
+          supabase.from('profiles').update({ avatar_url: metaAvatar } as never).eq('user_id', userAuth.id).then(() => {});
+        }
+        if (metaName && (!currentProfile.display_name || currentProfile.display_name === 'Student')) {
+          currentProfile.display_name = metaName;
+          supabase.from('profiles').update({ display_name: metaName } as never).eq('user_id', userAuth.id).then(() => {});
+        }
         
         // If Maher's account has lower than 14,500 XP, restore authentic 15,000 XP and save to Supabase
         if (isMaher && (!currentProfile.xp || currentProfile.xp < 14500)) {
@@ -103,7 +117,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             level: restoredLevel,
             streak_days: restoredStreak,
             updated_at: new Date().toISOString()
-          }).eq('user_id', userAuth.id).then(() => {});
+          } as never).eq('user_id', userAuth.id).then(() => {});
 
           currentProfile = {
             ...currentProfile,
@@ -125,7 +139,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       } else {
         // Auto-create initial profile for user in Supabase with genuine data
-        const defaultName = userAuth.user_metadata?.display_name || userAuth.email?.split('@')[0] || 'Student';
+        const defaultName = metaName || userAuth.email?.split('@')[0] || 'Student';
+        const defaultAvatar = metaAvatar || null;
         const isMaher = (userAuth.email || '').toLowerCase().includes('maher') || (userAuth.email || '').toLowerCase().includes('bhatt') || defaultName.toLowerCase().includes('maher') || defaultName.toLowerCase().includes('bhatt');
         const initialXp = isMaher ? 15000 : 0;
         const initialLevel = isMaher ? 8 : 1;
@@ -135,6 +150,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           user_id: userAuth.id,
           email: userAuth.email || null,
           display_name: defaultName,
+          avatar_url: defaultAvatar,
           branch: null,
           program: null,
           semester: null,
@@ -142,7 +158,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           level: initialLevel,
           streak_days: initialStreak,
           onboarding_completed: false,
-        }).select().maybeSingle();
+        } as never).select().maybeSingle();
 
         if (data) {
           setProfile(data as UserProfile);
@@ -434,6 +450,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const signInWithGoogle = async (customRedirect?: string) => {
+    const redirectUrl = customRedirect || `${window.location.origin}/auth`;
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: redirectUrl,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'select_account',
+        },
+      },
+    });
+    if (error) throw error;
+  };
+
   const signOut = async () => {
     try {
       await supabase.auth.signOut();
@@ -453,7 +484,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ session, user, profile, role, isLoading, signOut, updateProfile, uploadAvatar, refreshProfile }}>
+    <AuthContext.Provider value={{ session, user, profile, role, isLoading, signOut, signInWithGoogle, updateProfile, uploadAvatar, refreshProfile }}>
       {children}
     </AuthContext.Provider>
   );
