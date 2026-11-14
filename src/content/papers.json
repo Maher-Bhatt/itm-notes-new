@@ -5,5 +5,8 @@
   {"subject": "coa", "slug": "paper-end-sem-2025-12-17", "exam": "End-sem", "date": "2025-12-17", "academicYear": "2025-26", "batch": "2024-28", "marks": 100},
   {"subject": "dbms", "slug": "paper-cet-2-2025-10-09", "exam": "CET-2", "date": "2025-10-09", "academicYear": "2025-26", "batch": "2024-28", "marks": 30},
   {"subject": "dbms", "slug": "paper-end-sem-2025-12-19", "exam": "End-sem", "date": "2025-12-19", "academicYear": "2025-26", "batch": "2024-28", "marks": 100},
-  {"subject": "dbms", "slug": "paper-mid-sem-2026-10-06", "exam": "Mid-sem", "date": "2026-10-06", "academicYear": "2026-27", "batch": "2025-29", "marks": 60}
+  {"subject": "dbms", "slug": "paper-mid-sem-2026-10-06", "exam": "Mid-sem", "date": "2026-10-06", "academicYear": "2026-27", "batch": "2025-29", "marks": 60},
+  {"subject": "dsa", "slug": "paper-end-sem-2025-12-23", "exam": "End-sem", "date": "2025-12-23", "academicYear": "2025-26", "batch": "2024-28", "marks": 100},
+  {"subject": "dsa", "slug": "paper-cet-1-2026-09-01", "exam": "CET-1", "date": "2026-09-01", "academicYear": "2026-27", "batch": "2025-29", "marks": 30},
+  {"subject": "dsa", "slug": "paper-cet-2-2026-09-30", "exam": "CET-2", "date": "2026-09-30", "academicYear": "2026-27", "batch": "2025-29", "marks": 30}
 ]
