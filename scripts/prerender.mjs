@@ -265,4 +265,39 @@ for (const [slug, page] of Object.entries(guides)) {
   count++;
 }
 
+// ── App SPA Routes (Ensures direct URLs and refreshes never 404 with cleanUrls) ──
+const SPA_ROUTES = [
+  "dashboard",
+  "auth",
+  "coding-lab",
+  "subjects",
+  "profile",
+  "quiz",
+  "materials",
+  "today",
+  "mock-exam",
+  "remedials",
+  "timetable",
+  "analytics",
+  "gpa-calculator",
+  "onboarding",
+  "community",
+  "messages",
+  "explore",
+  "settings",
+  "admin",
+  "leaderboard",
+];
+
+for (const r of SPA_ROUTES) {
+  const target = path.join(DIST, `${r}.html`);
+  if (!fs.existsSync(target)) {
+    fs.writeFileSync(target, template);
+    count++;
+  }
+}
+
+// Universal fallback for any dynamic path (e.g. /subject/:id, /user/:id)
+fs.writeFileSync(path.join(DIST, "404.html"), template);
+
 console.log(`prerendered ${count} public pages`);
