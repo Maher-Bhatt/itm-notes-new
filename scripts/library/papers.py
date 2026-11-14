@@ -60,8 +60,8 @@ for s in index:
     dated = sorted((d for d in s["docs"] if d["kind"] == "Question paper" and "date" in d), key=lambda d: d["date"], reverse=True)
     s["docs"] = others + dated
 
-ts_path.write_text(head + "export const LIBRARY: LibrarySubject[] = " + json.dumps(index, ensure_ascii=False, indent=2) + ";\n", encoding="utf-8")
-(reading / "index.json").write_text(json.dumps(index, ensure_ascii=False, indent=1), encoding="utf-8")
+ts_path.write_text(head + "export const LIBRARY: LibrarySubject[] = " + json.dumps(index, ensure_ascii=False, indent=2) + ";\n", encoding="utf-8", newline="\n")
+(reading / "index.json").write_text(json.dumps(index, ensure_ascii=False, indent=1), encoding="utf-8", newline="\n")
 
 # sitemap: /papers plus one URL per paper
 sm_path = root / "public" / "sitemap.xml"
@@ -72,5 +72,5 @@ for url, freq, prio in entries:
     if f"<loc>{SITE}{url}</loc>" in sm:
         continue
     sm = sm.replace("</urlset>", f"  <url>\n    <loc>{SITE}{url}</loc>\n    <lastmod>{today}</lastmod>\n    <changefreq>{freq}</changefreq>\n    <priority>{prio}</priority>\n  </url>\n</urlset>")
-sm_path.write_text(sm, encoding="utf-8")
+sm_path.write_text(sm, encoding="utf-8", newline="\n")
 print(f"registered {len(registered)} papers")

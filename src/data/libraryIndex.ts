@@ -1022,7 +1022,7 @@ export const LIBRARY: LibrarySubject[] = [
         "title": "CET-1 · 20 Aug 2025",
         "kind": "Question paper",
         "unit": null,
-        "words": 1168,
+        "words": 1164,
         "scanned": false,
         "featured": false,
         "summary": "Object-Oriented Programming with Java CET-1 paper, 20 Aug 2025 (2025-26, 30 marks), with worked solutions.",
