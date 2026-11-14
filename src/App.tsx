@@ -8,29 +8,9 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { AcademicProvider } from "@/contexts/AcademicContext";
 import { UniversityProvider } from "@/contexts/UniversityContext";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import Index from "./pages/Index";
-import SubjectDashboard from "./pages/SubjectDashboard";
-import TopicPage from "./pages/TopicPage";
 import NotFound from "./pages/NotFound";
-import ImpQuestionsSubjectsPage from "./pages/ImpQuestionsSubjectsPage";
-import CProgrammingImpQuestionsPage from "./pages/CProgrammingImpQuestionsPage";
-import PythonImpQuestionsPage from "./pages/PythonImpQuestionsPage";
-import OopjImpQuestionsPage from "./pages/OopjImpQuestionsPage";
 import AuthPage from "./pages/AuthPage";
-import DashboardPage from "./pages/DashboardPage";
-import OnboardingPage from "./pages/OnboardingPage";
 import { lazy, Suspense, useEffect } from "react";
-import BookmarksPage from "./pages/BookmarksPage";
-import MaterialsPage from "./pages/MaterialsPage";
-import QuizPage from "./pages/QuizPage";
-import SeedPage from "./pages/admin/SeedPage";
-import SubjectImpQuestionsPage from "./pages/SubjectImpQuestionsPage";
-import ProfilePage from "./pages/ProfilePage";
-import ExplorePage from "./pages/ExplorePage";
-import InboxPage from "./pages/InboxPage";
-import GpaCalculatorPage from "./pages/GpaCalculatorPage";
-import SubjectCheatSheetPage from "./pages/SubjectCheatSheetPage";
-import SubjectsPage from "./pages/SubjectsPage";
 import { PortalLayout } from "@/layouts/PortalLayout";
 import { PublicLayout } from "@/layouts/PublicLayout";
 import { PomodoroProvider } from "@/contexts/PomodoroContext";
@@ -84,8 +64,29 @@ function lazyWithRetry<T extends React.ComponentType<any>>(
 
 // React.lazy + Suspense code splitting with deployment-resilient retry
 const CodingLabPage = lazyWithRetry(() => import("./pages/CodingLabPage"));
+const Index = lazyWithRetry(() => import("./pages/Index"));
+const SubjectDashboard = lazyWithRetry(() => import("./pages/SubjectDashboard"));
+const TopicPage = lazyWithRetry(() => import("./pages/TopicPage"));
+const ImpQuestionsSubjectsPage = lazyWithRetry(() => import("./pages/ImpQuestionsSubjectsPage"));
+const CProgrammingImpQuestionsPage = lazyWithRetry(() => import("./pages/CProgrammingImpQuestionsPage"));
+const PythonImpQuestionsPage = lazyWithRetry(() => import("./pages/PythonImpQuestionsPage"));
+const OopjImpQuestionsPage = lazyWithRetry(() => import("./pages/OopjImpQuestionsPage"));
+const DashboardPage = lazyWithRetry(() => import("./pages/DashboardPage"));
+const OnboardingPage = lazyWithRetry(() => import("./pages/OnboardingPage"));
+const BookmarksPage = lazyWithRetry(() => import("./pages/BookmarksPage"));
+const MaterialsPage = lazyWithRetry(() => import("./pages/MaterialsPage"));
+const QuizPage = lazyWithRetry(() => import("./pages/QuizPage"));
+const SeedPage = lazyWithRetry(() => import("./pages/admin/SeedPage"));
+const SubjectImpQuestionsPage = lazyWithRetry(() => import("./pages/SubjectImpQuestionsPage"));
+const ProfilePage = lazyWithRetry(() => import("./pages/ProfilePage"));
+const ExplorePage = lazyWithRetry(() => import("./pages/ExplorePage"));
+const InboxPage = lazyWithRetry(() => import("./pages/InboxPage"));
+const GpaCalculatorPage = lazyWithRetry(() => import("./pages/GpaCalculatorPage"));
+const SubjectCheatSheetPage = lazyWithRetry(() => import("./pages/SubjectCheatSheetPage"));
+const SubjectsPage = lazyWithRetry(() => import("./pages/SubjectsPage"));
 const LibraryPage = lazyWithRetry(() => import("./pages/LibraryPage"));
 const HomePage = lazyWithRetry(() => import("./pages/HomePage"));
+const ExamPlanPage = lazyWithRetry(() => import("./pages/ExamPlanPage"));
 const InfoPageModule = () => import("./pages/InfoPage");
 const AboutPage = lazyWithRetry(() => InfoPageModule().then((m) => ({ default: () => <m.InfoPage slug="about" /> })));
 const PrivacyPage = lazyWithRetry(() => InfoPageModule().then((m) => ({ default: () => <m.InfoPage slug="privacy" /> })));
@@ -200,6 +201,7 @@ const App = () => (
                         <Route element={<LibraryShell />}>
                           <Route path="/library" element={<LibraryPage />} />
                           <Route path="/library/:subjectSlug" element={<LibraryPage />} />
+                          <Route path="/exam-plan" element={<ExamPlanPage />} />
                         </Route>
 
                         {/* Public information pages */}

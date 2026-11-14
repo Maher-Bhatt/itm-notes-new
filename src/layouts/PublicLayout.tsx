@@ -8,6 +8,7 @@ import { LIBRARY } from "@/data/libraryIndex";
 
 const NAV = [
   { to: "/library", label: "Library" },
+  { to: "/exam-plan", label: "Exam plan" },
   { to: "/about", label: "About" },
   { to: "/contact", label: "Contact" },
 ];
@@ -124,8 +125,9 @@ export function PublicFooter() {
 export function PublicLayout({ children }: { children?: ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-foreground focus:px-4 focus:py-2 focus:text-sm focus:text-background">Skip to content</a>
       <PublicHeader />
-      <main className="flex-1">{children ?? <Outlet />}</main>
+      <main id="main-content" tabIndex={-1} className="flex-1 focus:outline-none">{children ?? <Outlet />}</main>
       <PublicFooter />
     </div>
   );

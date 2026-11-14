@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useSearchParams } from 'react-router-dom';
 import { useUniversity } from '@/contexts/UniversityContext';
 import { useGamification } from '@/hooks/useGamification';
 import {
@@ -46,6 +47,8 @@ type HomeFeedTab = 'for_you' | 'my_campus' | 'following' | 'my_clubs';
 
 export default function CommunityPage() {
   const { user, profile, role } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [askPrefill, setAskPrefill] = useState<string | undefined>(undefined);
   const { currentUniversity } = useUniversity();
   const { addXp } = useGamification();
 
@@ -117,6 +120,17 @@ export default function CommunityPage() {
       if (typeof unsubscribe === 'function') unsubscribe();
     };
   }, [loadData]);
+
+  // Doubt raised from the Library reader: open the composer pre-filled, then clear the URL param
+  useEffect(() => {
+    const ask = searchParams.get('ask');
+    if (ask) {
+      setAskPrefill(ask);
+      setIsCreateModalOpen(true);
+      searchParams.delete('ask');
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   // Global listener for "Create Post" modal trigger
   useEffect(() => {
@@ -530,8 +544,12 @@ export default function CommunityPage() {
       {/* 7. Create Post Modal Component */}
       <CreatePostModal
         isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
+        onClose={() => {
+          setIsCreateModalOpen(false);
+          setAskPrefill(undefined);
+        }}
         onPostCreated={loadData}
+        initialContent={askPrefill}
       />
     </div>
   );

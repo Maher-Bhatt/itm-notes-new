@@ -5,6 +5,7 @@ const ROUTE_TITLES: [RegExp, string][] = [
   [/^\/dashboard/, "Dashboard"],
   [/^\/library\/?$/, "Library"],
   [/^\/library\/[^/]+\/?$/, "Library"],
+  [/^\/exam-plan/, "Exam plan"],
   [/^\/today/, "Today"],
   [/^\/subjects/, "Subjects"],
   [/^\/subject\/[^/]+\/cheat-sheet/, "Cheat sheet"],
@@ -50,7 +51,7 @@ export const SITE_URL = typeof window !== "undefined" && window.location.origin 
 
 /** Public, indexable sections of the app (everything else requires sign-in). */
 export function isPublicPath(pathname: string) {
-  return pathname === "/" || /^\/library(\/|$)/.test(pathname);
+  return pathname === "/" || /^\/(library|exam-plan)(\/|$)/.test(pathname);
 }
 
 function upsertMeta(attr: "name" | "property", key: string, content: string) {
@@ -64,7 +65,7 @@ function upsertMeta(attr: "name" | "property", key: string, content: string) {
 }
 
 /** Title, description, canonical and social tags for a public page. */
-export function setPageMeta({ title, description, path }: { title: string; description: string; path: string }) {
+export function setPageMeta({ title, description, path, image }: { title: string; description: string; path: string; image?: string }) {
   document.title = title;
   const url = `${SITE_URL}${path}`;
   upsertMeta("name", "description", description);
@@ -73,6 +74,10 @@ export function setPageMeta({ title, description, path }: { title: string; descr
   upsertMeta("property", "og:url", url);
   upsertMeta("name", "twitter:title", title);
   upsertMeta("name", "twitter:description", description);
+  if (image) {
+    upsertMeta("property", "og:image", `${SITE_URL}${image}`);
+    upsertMeta("name", "twitter:image", `${SITE_URL}${image}`);
+  }
   let link = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
   if (!link) {
     link = document.createElement("link");

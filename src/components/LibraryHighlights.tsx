@@ -33,7 +33,7 @@ export function LibraryHighlights({ name, streakDays }: { name?: string; streakD
   }, [last, progress]);
 
   const stats = [
-    { label: "Days to finals", value: days > 0 ? String(days) : "Live", unit: days > 0 ? `from ${FINALS_START.toLocaleDateString("en-IN", { day: "numeric", month: "short" })}` : "", icon: CalendarClock },
+    { label: "Days to finals", value: days > 0 ? String(days) : "Live", unit: days > 0 ? `from ${FINALS_START.toLocaleDateString("en-IN", { day: "numeric", month: "short" })}` : "", icon: CalendarClock, to: "/exam-plan" },
     { label: "Documents read", value: String(finished), unit: `of ${totalDocs}`, icon: BookOpen },
     { label: "Study streak", value: String(streakDays ?? 0), unit: streakDays === 1 ? "day" : "days", icon: Flame, warm: true },
   ];
@@ -96,15 +96,28 @@ export function LibraryHighlights({ name, streakDays }: { name?: string; streakD
       </div>
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        {stats.map(({ label, value, unit, icon: Icon, warm }) => (
-          <div key={label} className={`surface-card p-5 ${warm ? "!bg-accent/60" : ""}`}>
-            <Icon className="h-5 w-5 text-primary" />
-            <p className="mt-3 text-sm font-medium text-foreground">{label}</p>
-            <p className="mt-0.5 text-2xl font-semibold tabular-nums text-foreground">
-              {value} <span className="text-sm font-medium text-primary">{unit}</span>
-            </p>
-          </div>
-        ))}
+        {stats.map(({ label, value, unit, icon: Icon, warm, to }) => {
+          const inner = (
+            <>
+              <Icon className="h-5 w-5 text-primary" />
+              <p className="mt-3 text-sm font-medium text-foreground">{label}</p>
+              <p className="mt-0.5 text-2xl font-semibold tabular-nums text-foreground">
+                {value} <span className="text-sm font-medium text-primary">{unit}</span>
+              </p>
+              {to && <p className="mt-2 text-xs font-medium text-primary">Open revision plan →</p>}
+            </>
+          );
+          const cls = `surface-card p-5 ${warm ? "!bg-accent/60" : ""}`;
+          return to ? (
+            <Link key={label} to={to} className={`${cls} block transition-colors hover:border-primary/40`}>
+              {inner}
+            </Link>
+          ) : (
+            <div key={label} className={cls}>
+              {inner}
+            </div>
+          );
+        })}
       </div>
 
       <div>

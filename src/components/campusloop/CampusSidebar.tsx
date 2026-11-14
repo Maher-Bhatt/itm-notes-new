@@ -3,6 +3,7 @@ import { useLocation, Link, useNavigate } from 'react-router-dom';
 import {
   Library,
   LayoutDashboard,
+  Target,
   Home,
   Compass,
   PlusCircle,
@@ -101,6 +102,7 @@ export const CampusSidebar: React.FC<CampusSidebarProps> = ({
   const studyTools = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'Library', path: '/library', icon: Library },
+    { name: 'Exam plan', path: '/exam-plan', icon: Target },
     { name: 'Today', path: '/today', icon: Calendar },
     { name: 'Subjects & Topics', path: '/subjects', icon: BookOpen },
     { name: 'Question Banks', path: '/imp-questions', icon: HelpCircle },

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { AlertCircle, AlertTriangle, Info, X, Calendar } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 import { openTimetable } from './GlobalTimetableModal';
 
 export interface Announcement {
@@ -21,6 +22,7 @@ export const DEFAULT_ANNOUNCEMENT: Announcement = {
 };
 
 export function AnnouncementBanner() {
+  const { pathname } = useLocation();
   const [announcement, setAnnouncement] = useState<Announcement | null>(null);
 
   const loadAnnouncement = () => {
@@ -91,7 +93,9 @@ export function AnnouncementBanner() {
     }
   })();
 
-  if (isMaintenanceActive || !announcement || !announcement.active) return null;
+  // The reader is a focused, full-screen view: keep banners out of it.
+  const isReader = /^\/library\/[^/]+\/[^/]+/.test(pathname) || pathname.includes('/topic/');
+  if (isReader || isMaintenanceActive || !announcement || !announcement.active) return null;
 
   return (
     <div className="relative z-40 border-b border-border bg-accent/70 text-foreground px-4 py-2 transition-all text-xs">

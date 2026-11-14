@@ -20,6 +20,10 @@ export const CampusBottomNav: React.FC<CampusBottomNavProps> = ({
   const { user } = useAuth();
 
   // Hide on topic reading page or coding lab full screen
+  // Signed-out visitors use the public header menu; most of these tabs need an account.
+  if (!user) {
+    return null;
+  }
   if (location.pathname.includes('/topic/') || /^\/library\/[^/]+\/[^/]+/.test(location.pathname)) {
     return null;
   }

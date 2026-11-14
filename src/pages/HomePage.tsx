@@ -154,7 +154,7 @@ export default function HomePage() {
                 <p className="text-sm text-muted-foreground">Start with a subject's complete study guide, then revise unit by unit.</p>
               </div>
             </div>
-            <Link to="/library" className="shrink-0 rounded-full bg-foreground px-5 py-2.5 text-center text-sm font-medium text-background hover:bg-primary hover:text-primary-foreground transition-colors">
+            <Link to="/exam-plan" className="shrink-0 rounded-full bg-foreground px-5 py-2.5 text-center text-sm font-medium text-background hover:bg-primary hover:text-primary-foreground transition-colors">
               Plan my revision
             </Link>
           </div>

@@ -24,6 +24,8 @@ export interface CreatePostModalProps {
   isOpen: boolean;
   onClose: () => void;
   onPostCreated?: () => void;
+  /** Pre-fills the post text, e.g. a doubt raised from the Library reader */
+  initialContent?: string;
 }
 
 const CAMPUS_LOCATIONS = [
@@ -60,11 +62,15 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
   isOpen,
   onClose,
   onPostCreated,
+  initialContent,
 }) => {
   const { user, profile } = useAuth();
   const { currentUniversity } = useUniversity();
 
   const [content, setContent] = useState('');
+  useEffect(() => {
+    if (isOpen && initialContent) setContent(initialContent);
+  }, [isOpen, initialContent]);
   const [selectedCommunity, setSelectedCommunity] = useState('Study Groups');
   const [images, setImages] = useState<string[]>([]);
   const [eventDate, setEventDate] = useState('');

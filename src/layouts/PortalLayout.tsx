@@ -1,14 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { PortalSidebar } from "./PortalSidebar";
 import { PortalTopNav } from "./PortalTopNav";
-import { SearchDialog } from "@/components/SearchDialog";
 import { HelpCircle, X } from "lucide-react";
 import { toast } from "sonner";
 import { useFocusMode } from "@/contexts/FocusModeContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { HelpPanel } from "@/components/HelpPanel";
 import { isPublicPath, setRobots, titleForPath } from "@/lib/pageMeta";
+
+// Loaded on first use: both pull in the full subject data set.
+const SearchDialog = lazy(() => import("@/components/SearchDialog").then((m) => ({ default: m.SearchDialog })));
+const HelpPanel = lazy(() => import("@/components/HelpPanel").then((m) => ({ default: m.HelpPanel })));
 
 export function PortalLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -60,6 +62,7 @@ export function PortalLayout() {
 
   return (
     <div className="h-screen w-full overflow-hidden bg-background text-foreground flex antialiased">
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-foreground focus:px-4 focus:py-2 focus:text-sm focus:text-background">Skip to content</a>
       {/* Ambient Spotlight & Dot Pattern */}
       <div className="ambient-spotlight" />
       <div className="fixed inset-0 z-0 pointer-events-none pattern-dots opacity-35" />
@@ -82,13 +85,17 @@ export function PortalLayout() {
         />
 
         {/* Dynamic Page Content */}
-        <main className="flex-1 overflow-y-auto overflow-x-hidden pb-16 md:pb-6 bg-transparent relative z-10">
+        <main id="main-content" tabIndex={-1} className="flex-1 overflow-y-auto overflow-x-hidden pb-16 md:pb-6 bg-transparent relative z-10 focus:outline-none">
           <Outlet />
         </main>
       </div>
 
       {/* 3. Universal Search Dialog */}
-      <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
+      {searchOpen && (
+        <Suspense fallback={null}>
+          <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
+        </Suspense>
+      )}
 
       {/* 4. Global Floating Action Button (Campus Assistant) */}
       {!isCodingLab && (
@@ -106,7 +113,11 @@ export function PortalLayout() {
             )}
           </button>
 
-          {isChatOpen && <HelpPanel onClose={() => setIsChatOpen(false)} />}
+          {isChatOpen && (
+            <Suspense fallback={null}>
+              <HelpPanel onClose={() => setIsChatOpen(false)} />
+            </Suspense>
+          )}
         </div>
       )}
     </div>

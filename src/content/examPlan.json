@@ -1,0 +1,257 @@
+[
+  {
+    "slug": "dsa",
+    "short": "DSA",
+    "name": "Data Structures & Algorithms",
+    "weightsKnown": true,
+    "revisionAnchor": "last-night-revision-sheet-dsa",
+    "units": [
+      {
+        "unit": 1,
+        "topic": "Introduction: pseudocode, ADT, data types, linear/non-linear, asymptotic notation",
+        "weight": 10,
+        "anchor": "introduction-data-structures-adts-and-algorithm-efficiency"
+      },
+      {
+        "unit": 2,
+        "topic": "Recursion: factorial, Tower of Hanoi, Fibonacci",
+        "weight": 5,
+        "anchor": "recursion"
+      },
+      {
+        "unit": 3,
+        "topic": "Linear lists: array, stack, Polish notation, queue (circular, priority, deque), linked lists",
+        "weight": 20,
+        "anchor": "linear-lists-part-a-arrays-and-stacks"
+      },
+      {
+        "unit": 4,
+        "topic": "Trees: binary tree, traversals, threaded tree, BST, general → binary",
+        "weight": 20,
+        "anchor": "non-linear-lists-trees"
+      },
+      {
+        "unit": 5,
+        "topic": "Graphs: terminology, matrix/list representation, DFS, BFS",
+        "weight": 20,
+        "anchor": "graphs"
+      },
+      {
+        "unit": 6,
+        "topic": "Searching & sorting: selection, insertion, bubble, quick, external sort, linear/binary search, hashing",
+        "weight": 15,
+        "anchor": "searching-sorting"
+      }
+    ]
+  },
+  {
+    "slug": "dbms",
+    "short": "DBMS",
+    "name": "Database Management Systems",
+    "weightsKnown": true,
+    "revisionAnchor": "last-night-revision-sheet-dbms",
+    "units": [
+      {
+        "unit": 1,
+        "topic": "Database system architecture",
+        "weight": 10,
+        "anchor": "database-system-architecture"
+      },
+      {
+        "unit": 2,
+        "topic": "Data models (ER model, integrity constraints)",
+        "weight": 15,
+        "anchor": "data-models"
+      },
+      {
+        "unit": 3,
+        "topic": "Relational query languages (algebra, calculus, SQL)",
+        "weight": 10,
+        "anchor": "relational-query-languages"
+      },
+      {
+        "unit": 4,
+        "topic": "Relational database design (FD, normalisation)",
+        "weight": 15,
+        "anchor": "relational-database-design"
+      },
+      {
+        "unit": 5,
+        "topic": "Query processing & optimisation",
+        "weight": 10,
+        "anchor": "query-processing-and-query-optimisation"
+      },
+      {
+        "unit": 6,
+        "topic": "Transaction processing, concurrency, recovery, security",
+        "weight": 15,
+        "anchor": "transaction-processing-concurrency-recovery-security"
+      },
+      {
+        "unit": 7,
+        "topic": "SQL concepts & PL/SQL",
+        "weight": 25,
+        "anchor": "sql-concepts-and-pl-sql-25-of-the-paper"
+      }
+    ]
+  },
+  {
+    "slug": "conmp",
+    "short": "CONMP",
+    "name": "Computer Oriented Numerical Methods with Python",
+    "weightsKnown": true,
+    "revisionAnchor": "last-night-formula-sheet-conmp",
+    "units": [
+      {
+        "unit": 1,
+        "topic": "Errors and Computation",
+        "weight": 7,
+        "anchor": "errors-and-computation"
+      },
+      {
+        "unit": 2,
+        "topic": "Solution of Algebraic & Transcendental Equations",
+        "weight": 19,
+        "anchor": "solution-of-algebraic-and-transcendental-equations"
+      },
+      {
+        "unit": 3,
+        "topic": "Curve Fitting",
+        "weight": 11,
+        "anchor": "curve-fitting-method-of-least-squares"
+      },
+      {
+        "unit": 4,
+        "topic": "Interpolation Techniques",
+        "weight": 24,
+        "anchor": "interpolation-techniques-24-marks-the-biggest-unit"
+      },
+      {
+        "unit": 5,
+        "topic": "System of Linear Equations — Iterative Methods",
+        "weight": 10,
+        "anchor": "solution-of-systems-of-linear-equations-iterative-methods"
+      },
+      {
+        "unit": 6,
+        "topic": "Numerical Integration",
+        "weight": 10,
+        "anchor": "numerical-integration"
+      },
+      {
+        "unit": 7,
+        "topic": "Numerical Solution of ODEs",
+        "weight": 19,
+        "anchor": "numerical-solution-of-ordinary-differential-equations"
+      }
+    ]
+  },
+  {
+    "slug": "coa",
+    "short": "COA",
+    "name": "Computer Organization & Architecture",
+    "weightsKnown": false,
+    "revisionAnchor": "last-night-revision-sheet-coa",
+    "units": [
+      {
+        "unit": 1,
+        "topic": "Fundamentals: Architecture, Functional Units, Buses, Registers",
+        "weight": 10,
+        "anchor": "fundamentals-architecture-functional-units-buses-registers"
+      },
+      {
+        "unit": 2,
+        "topic": "Data Representation, Register Transfer and Micro-operations",
+        "weight": 10,
+        "anchor": "data-representation-register-transfer-and-micro-operations"
+      },
+      {
+        "unit": 3,
+        "topic": "Computer Arithmetic: Adders, Multiplication, Division, Floating Point",
+        "weight": 10,
+        "anchor": "computer-arithmetic-adders-multiplication-division-floating-point"
+      },
+      {
+        "unit": 4,
+        "topic": "Basic Computer Organization and Design (Mano’s Basic Computer)",
+        "weight": 10,
+        "anchor": "basic-computer-organization-and-design-mano-s-basic-computer"
+      },
+      {
+        "unit": 5,
+        "topic": "Programming the Basic Computer",
+        "weight": 10,
+        "anchor": "programming-the-basic-computer"
+      },
+      {
+        "unit": 6,
+        "topic": "Microprogrammed Control",
+        "weight": 10,
+        "anchor": "microprogrammed-control"
+      },
+      {
+        "unit": 7,
+        "topic": "Central Processing Unit",
+        "weight": 10,
+        "anchor": "central-processing-unit"
+      },
+      {
+        "unit": 8,
+        "topic": "Pipeline and Vector Processing",
+        "weight": 10,
+        "anchor": "pipeline-and-vector-processing"
+      },
+      {
+        "unit": 9,
+        "topic": "Input-Output Organization",
+        "weight": 10,
+        "anchor": "input-output-organization"
+      },
+      {
+        "unit": 10,
+        "topic": "Memory Organization",
+        "weight": 10,
+        "anchor": "memory-organization"
+      }
+    ]
+  },
+  {
+    "slug": "java",
+    "short": "Java",
+    "name": "Object-Oriented Programming with Java",
+    "weightsKnown": false,
+    "revisionAnchor": "last-night-revision-sheet-java",
+    "units": [
+      {
+        "unit": 1,
+        "topic": "Basics of Java, Arrays and Strings",
+        "weight": 20,
+        "anchor": "basics-of-java-arrays-and-strings"
+      },
+      {
+        "unit": 2,
+        "topic": "Classes, Objects and Methods",
+        "weight": 20,
+        "anchor": "classes-objects-and-methods"
+      },
+      {
+        "unit": 3,
+        "topic": "Inheritance and Interfaces",
+        "weight": 20,
+        "anchor": "inheritance-and-interfaces"
+      },
+      {
+        "unit": 4,
+        "topic": "JavaFX: GUI and Event-Driven Programming",
+        "weight": 20,
+        "anchor": "javafx-gui-and-event-driven-programming"
+      },
+      {
+        "unit": 5,
+        "topic": "Class Modeling (UML), Java I/O, Exceptions and Multithreading",
+        "weight": 20,
+        "anchor": "class-modeling-uml-java-i-o-exceptions-and-multithreading"
+      }
+    ]
+  }
+]

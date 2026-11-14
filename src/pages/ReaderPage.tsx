@@ -11,6 +11,10 @@ import {
   ChevronRight,
   NotebookPen,
   Link2,
+  Search,
+  MessageCircleQuestion,
+  ChevronUp,
+  ChevronDown,
   List,
   Maximize2,
   Minimize2,
@@ -23,7 +27,8 @@ import {
 } from "lucide-react";
 import { LIBRARY } from "@/data/libraryIndex";
 import { getProgress, minutesFor, saveProgress } from "@/lib/readingProgress";
-import { setPageMeta } from "@/lib/pageMeta";
+import { setPageMeta, SITE_URL } from "@/lib/pageMeta";
+import { useAuth } from "@/contexts/AuthContext";
 
 /* ───────────────────────── preferences ───────────────────────── */
 
@@ -177,6 +182,15 @@ export default function ReaderPage() {
   const [barHidden, setBarHidden] = useState(false);
   const [resumed, setResumed] = useState<number | null>(null);
   const [panel, setPanel] = useState<"notes" | "related">("notes");
+  const { user } = useAuth();
+
+  // ── find in document (CSS Custom Highlight API; falls back to scrolling only) ──
+  const [findOpen, setFindOpen] = useState(false);
+  const [findQuery, setFindQuery] = useState("");
+  const [findIndex, setFindIndex] = useState(0);
+  const [findCount, setFindCount] = useState(0);
+  const findRanges = useRef<Range[]>([]);
+  const findInputRef = useRef<HTMLInputElement>(null);
   const noteKey = `${subjectSlug}/${docSlug}`;
   const [note, setNote] = useState("");
   useEffect(() => setNote(loadNote(noteKey)), [noteKey]);
@@ -215,6 +229,7 @@ export default function ReaderPage() {
           `${doc.title}: ${doc.kind.toLowerCase()} for ${subject.name}${doc.unit != null ? `, Unit ${doc.unit}` : ""}, B.Tech Semester 3.`) +
         ` Free to read online${doc.scanned ? "" : ` · ${minutesFor(doc.words)} min read`}.`,
       path: `/library/${subject.slug}/${doc.slug}`,
+      image: `/og/${subject.slug}/${doc.slug}.png`,
     });
     return () => {
       cancelled = true;
@@ -247,6 +262,15 @@ export default function ReaderPage() {
     if (!md || !subject || !doc) return;
     const saved = getProgress(subject.slug, doc.slug);
     window.scrollTo(0, 0);
+    // A #section link (e.g. from the exam plan) wins over the saved position.
+    const hash = decodeURIComponent(window.location.hash.slice(1));
+    if (hash) {
+      const id = window.setTimeout(() => {
+        const el = document.getElementById(hash);
+        if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 72 });
+      }, 120);
+      return () => window.clearTimeout(id);
+    }
     if (saved && saved.pct > 0.02 && saved.pct < 0.97) {
       const id = window.setTimeout(() => {
         const max = document.documentElement.scrollHeight - window.innerHeight;
@@ -301,16 +325,76 @@ export default function ReaderPage() {
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       if (e.key === "f") setFocus((v) => !v);
       else if (e.key === "t") setTocOpen((v) => !v);
+      else if (e.key === "/") {
+        e.preventDefault();
+        setFindOpen(true);
+        window.setTimeout(() => findInputRef.current?.focus(), 0);
+      }
       else if (e.key === "Escape") {
         setFocus(false);
         setTocOpen(false);
         setSettingsOpen(false);
+        setFindOpen(false);
       } else if (e.key === "+" || e.key === "=") setPrefs((p) => ({ ...p, size: SIZES[Math.min(SIZES.length - 1, SIZES.indexOf(p.size) + 1)] }));
       else if (e.key === "-") setPrefs((p) => ({ ...p, size: SIZES[Math.max(0, SIZES.indexOf(p.size) - 1)] }));
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
+
+  // Collect matches whenever the query (or the document) changes
+  useEffect(() => {
+    const hl = (globalThis as unknown as { CSS?: { highlights?: Map<string, unknown> } }).CSS?.highlights;
+    const HighlightCtor = (globalThis as unknown as { Highlight?: new (...r: Range[]) => unknown }).Highlight;
+    const clear = () => {
+      hl?.delete("reader-find");
+      hl?.delete("reader-find-current");
+    };
+    const q = findQuery.trim().toLowerCase();
+    if (!findOpen || q.length < 2 || !articleRef.current) {
+      findRanges.current = [];
+      setFindCount(0);
+      clear();
+      return;
+    }
+    const id = window.setTimeout(() => {
+      const ranges: Range[] = [];
+      const walker = document.createTreeWalker(articleRef.current!, NodeFilter.SHOW_TEXT);
+      let node: Node | null;
+      while ((node = walker.nextNode()) && ranges.length < 500) {
+        const text = (node.nodeValue || "").toLowerCase();
+        let at = text.indexOf(q);
+        while (at !== -1 && ranges.length < 500) {
+          const r = document.createRange();
+          r.setStart(node, at);
+          r.setEnd(node, at + q.length);
+          ranges.push(r);
+          at = text.indexOf(q, at + q.length);
+        }
+      }
+      findRanges.current = ranges;
+      setFindCount(ranges.length);
+      setFindIndex(0);
+      if (hl && HighlightCtor) hl.set("reader-find", new HighlightCtor(...ranges));
+    }, 150);
+    return () => window.clearTimeout(id);
+  }, [findQuery, findOpen, md]);
+
+  // Highlight and scroll to the current match
+  useEffect(() => {
+    const r = findRanges.current[findIndex];
+    if (!r) return;
+    const hl = (globalThis as unknown as { CSS?: { highlights?: Map<string, unknown> } }).CSS?.highlights;
+    const HighlightCtor = (globalThis as unknown as { Highlight?: new (...r: Range[]) => unknown }).Highlight;
+    if (hl && HighlightCtor) hl.set("reader-find-current", new HighlightCtor(r));
+    const rect = r.getBoundingClientRect();
+    window.scrollTo({ top: window.scrollY + rect.top - window.innerHeight / 3, behavior: "smooth" });
+  }, [findIndex, findCount]);
+
+  const stepFind = (dir: 1 | -1) => {
+    if (!findCount) return;
+    setFindIndex((i) => (i + dir + findCount) % findCount);
+  };
 
   const jumpTo = useCallback((id: string) => {
     const el = document.getElementById(id);
@@ -339,6 +423,14 @@ export default function ReaderPage() {
   const activeTocIndex = tocHeadings.reduce((acc, h, i) => (h.line <= activeLine ? i : acc), -1);
   const activeTocId = activeTocIndex >= 0 ? tocHeadings[activeTocIndex].id : "";
   const related = subject.docs.filter((d) => d.slug !== doc.slug && (doc.unit == null ? d.featured || d.unit == null : d.unit === doc.unit || d.featured)).slice(0, 8);
+  const askDoubt = () => {
+    const section = activeHeading ? ` › ${activeHeading.text}` : "";
+    const link = `${SITE_URL}/library/${subject.slug}/${doc.slug}${activeId ? `#${activeId}` : ""}`;
+    const text = `Doubt in ${subject.short}: ${doc.title}${section}\n\n(write your doubt here)\n\n${link}`;
+    const target = `/community?ask=${encodeURIComponent(text)}`;
+    if (user) navigate(target);
+    else navigate("/auth", { state: { from: target } });
+  };
   const breadcrumb = ["Library", subject.short, doc.unit != null ? `Unit ${doc.unit}` : doc.kind];
 
   const Toc = (
@@ -414,6 +506,16 @@ export default function ReaderPage() {
                 <List className="h-4 w-4" />
               </IconBtn>
             )}
+            <IconBtn
+              label="Find in document (/)"
+              onClick={() => {
+                setFindOpen((v) => !v);
+                window.setTimeout(() => findInputRef.current?.focus(), 0);
+              }}
+              active={findOpen}
+            >
+              <Search className="h-4 w-4" />
+            </IconBtn>
             <IconBtn label="Text settings" onClick={() => setSettingsOpen((v) => !v)} active={settingsOpen}>
               <Type className="h-4 w-4" />
             </IconBtn>
@@ -424,6 +526,42 @@ export default function ReaderPage() {
               <Maximize2 className="h-4 w-4" />
             </IconBtn>
           </div>
+
+          {findOpen && (
+            <div className="border-t border-border bg-background">
+              <div className="mx-auto flex max-w-6xl items-center gap-2 px-4 py-2.5 sm:px-6">
+                <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
+                <input
+                  ref={findInputRef}
+                  value={findQuery}
+                  onChange={(e) => setFindQuery(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      stepFind(e.shiftKey ? -1 : 1);
+                    } else if (e.key === "Escape") {
+                      setFindOpen(false);
+                    }
+                  }}
+                  placeholder="Find in this document"
+                  aria-label="Find in this document"
+                  className="h-9 min-w-0 flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
+                />
+                <span className="shrink-0 text-xs tabular-nums text-muted-foreground" aria-live="polite">
+                  {findQuery.trim().length < 2 ? "" : findCount ? `${findIndex + 1} of ${findCount}` : "No matches"}
+                </span>
+                <IconBtn label="Previous match (Shift+Enter)" onClick={() => stepFind(-1)}>
+                  <ChevronUp className="h-4 w-4" />
+                </IconBtn>
+                <IconBtn label="Next match (Enter)" onClick={() => stepFind(1)}>
+                  <ChevronDown className="h-4 w-4" />
+                </IconBtn>
+                <IconBtn label="Close find" onClick={() => setFindOpen(false)}>
+                  <X className="h-4 w-4" />
+                </IconBtn>
+              </div>
+            </div>
+          )}
 
           {settingsOpen && (
             <div className="border-t border-border bg-background">
@@ -559,6 +697,13 @@ export default function ReaderPage() {
                   >
                     <CheckCircle2 className="h-4 w-4 text-success" /> Mark as finished
                   </button>
+                  <button
+                    type="button"
+                    onClick={askDoubt}
+                    className="ml-2 inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-secondary transition-colors cursor-pointer"
+                  >
+                    <MessageCircleQuestion className="h-4 w-4 text-primary" /> Ask a doubt
+                  </button>
                   <div className="mt-8 grid gap-3 sm:grid-cols-2">
                     {prevDoc ? (
                       <Link to={`/library/${subject.slug}/${prevDoc.slug}`} className="rounded-xl border border-border p-4 hover:border-primary/40 transition-colors">
@@ -615,6 +760,13 @@ export default function ReaderPage() {
                     placeholder="Add a note: formulas to memorise, doubts to ask, 'came in CET-2'…"
                     className="surface-card mt-2 h-64 w-full resize-y p-3 text-sm leading-relaxed text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50"
                   />
+                  <button
+                    type="button"
+                    onClick={askDoubt}
+                    className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground hover:bg-secondary transition-colors cursor-pointer"
+                  >
+                    <MessageCircleQuestion className="h-4 w-4 text-primary" /> Ask the community about this section
+                  </button>
                 </div>
               ) : (
                 <ul className="space-y-1">

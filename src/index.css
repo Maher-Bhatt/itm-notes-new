@@ -672,3 +672,13 @@ code {
   background: hsl(var(--accent));
   color: hsl(var(--primary));
 }
+
+/* Reader find-in-document highlights (CSS Custom Highlight API) */
+::highlight(reader-find) {
+  background-color: hsl(var(--accent));
+  color: hsl(var(--foreground));
+}
+::highlight(reader-find-current) {
+  background-color: hsl(var(--primary) / 0.35);
+  color: hsl(var(--foreground));
+}
