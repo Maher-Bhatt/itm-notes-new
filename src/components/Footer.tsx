@@ -1,4 +1,4 @@
-import { Globe, LogOut, LayoutDashboard, User, ExternalLink, GraduationCap, FileText, Code, Calculator } from "lucide-react";
+import { Globe, LogOut, LayoutDashboard, User, ExternalLink, GraduationCap, FileText, Code, Calculator, ShieldCheck, Mail, MessageSquare, Phone } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "@/assets/logo.png";
 import { useAuth } from "@/contexts/AuthContext";
@@ -15,21 +15,47 @@ export function Footer() {
   return (
     <footer className="border-t border-border/80 bg-card/50 mt-auto">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4 mb-10">
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-5 mb-10">
 
           {/* About & Identity */}
-          <div className="space-y-3">
+          <div className="space-y-3 sm:col-span-2 lg:col-span-1">
             <Link to="/" className="flex items-center gap-2.5">
               <img src={logo} alt="CampusLoop" className="w-8 h-8 object-contain dark:invert" />
               <div>
                 <span className="font-semibold text-base text-foreground tracking-tight block">CampusLoop</span>
-                <span className="text-[10px] text-muted-foreground font-semibold">ITM (SLS) Baroda University</span>
+                <span className="text-[10px] text-muted-foreground font-semibold">Engineering & Student Study Portal</span>
               </div>
             </Link>
 
             <p className="text-xs text-muted-foreground leading-relaxed">
-              The independent student study portal for ITM (SLS) Baroda University students. Verified syllabus notes, question banks, practical coding labs, and attendance calculators.
+              Independent study platform for Indian university students. Verified syllabus notes, question banks, practical coding labs, and attendance calculators.
             </p>
+
+            <div className="space-y-1.5 pt-1 text-xs">
+              <a
+                href="mailto:support@campusloop.in"
+                className="flex items-center gap-1.5 text-muted-foreground hover:text-primary transition-colors"
+              >
+                <Mail className="h-3.5 w-3.5 text-primary" />
+                <span>support@campusloop.in</span>
+              </a>
+              <a
+                href="https://wa.me/919429486337?text=Hi%20CampusLoop%20Support"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 text-muted-foreground hover:text-success transition-colors"
+              >
+                <MessageSquare className="h-3.5 w-3.5 text-success" />
+                <span>WhatsApp Helpline: +91 94294 86337</span>
+              </a>
+              <a
+                href="tel:+919429486337"
+                className="flex items-center gap-1.5 text-muted-foreground hover:text-primary transition-colors"
+              >
+                <Phone className="h-3.5 w-3.5 text-primary" />
+                <span>Tel: +91 94294 86337</span>
+              </a>
+            </div>
 
             <div className="pt-1">
               <a
@@ -50,9 +76,15 @@ export function Footer() {
             </h4>
             <ul className="space-y-2.5 text-xs text-muted-foreground">
               <li>
-                <Link to="/materials" className="hover:text-primary transition-colors flex items-center gap-1.5">
+                <Link to="/library" className="hover:text-primary transition-colors flex items-center gap-1.5">
                   <FileText className="h-3.5 w-3.5 text-primary" />
-                  <span>MST Question Banks & Papers</span>
+                  <span>Syllabus Notes Library</span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/papers" className="hover:text-primary transition-colors flex items-center gap-1.5">
+                  <FileText className="h-3.5 w-3.5 text-primary" />
+                  <span>Solved PYQ Papers</span>
                 </Link>
               </li>
               <li>
@@ -64,7 +96,7 @@ export function Footer() {
               <li>
                 <Link to="/calculator" className="hover:text-primary transition-colors flex items-center gap-1.5">
                   <Calculator className="h-3.5 w-3.5 text-primary" />
-                  <span>75% Attendance & SGPA Calculator</span>
+                  <span>75% Attendance & SGPA</span>
                 </Link>
               </li>
               <li>
@@ -80,10 +112,55 @@ export function Footer() {
             </ul>
           </div>
 
+          {/* Legal & DPDP Compliance */}
+          <div>
+            <h4 className="font-bold text-xs uppercase tracking-wider text-foreground mb-3 flex items-center gap-1.5">
+              <ShieldCheck className="h-3.5 w-3.5 text-primary" />
+              <span>Legal & DPDP 2023</span>
+            </h4>
+            <ul className="space-y-2.5 text-xs text-muted-foreground">
+              <li>
+                <Link to="/privacy" className="hover:text-primary transition-colors">
+                  Privacy Policy (DPDP Act)
+                </Link>
+              </li>
+              <li>
+                <Link to="/terms" className="hover:text-primary transition-colors">
+                  Terms of Service (IT Act)
+                </Link>
+              </li>
+              <li>
+                <Link to="/refund" className="hover:text-primary transition-colors">
+                  Refund & Cancellation Policy
+                </Link>
+              </li>
+              <li>
+                <Link to="/cookies" className="hover:text-primary transition-colors">
+                  Cookie & Storage Policy
+                </Link>
+              </li>
+              <li>
+                <Link to="/data-deletion" className="hover:text-primary transition-colors">
+                  Data Deletion Request
+                </Link>
+              </li>
+              <li>
+                <Link to="/guidelines" className="hover:text-primary transition-colors">
+                  Community Guidelines
+                </Link>
+              </li>
+              <li>
+                <Link to="/contact" className="hover:text-primary transition-colors">
+                  Grievance Redressal Desk
+                </Link>
+              </li>
+            </ul>
+          </div>
+
           {/* Official University Portals */}
           <div>
             <h4 className="font-bold text-xs uppercase tracking-wider text-foreground mb-3">
-              Official University Portals
+              Official University
             </h4>
             <ul className="space-y-2.5 text-xs text-muted-foreground">
               <li>
@@ -94,7 +171,7 @@ export function Footer() {
                   className="hover:text-primary transition-colors inline-flex items-center gap-1.5 group"
                 >
                   <GraduationCap className="h-3.5 w-3.5 text-primary" />
-                  <span>ITM (SLS) Baroda University</span>
+                  <span>ITM (SLS) Baroda Univ</span>
                   <ExternalLink className="h-3 w-3 opacity-60 group-hover:opacity-100" />
                 </a>
               </li>
@@ -106,13 +183,13 @@ export function Footer() {
                   className="hover:text-primary transition-colors inline-flex items-center gap-1.5 group"
                 >
                   <ExternalLink className="h-3.5 w-3.5 text-primary" />
-                  <span>Official Student UMS Portal</span>
+                  <span>Official UMS Portal</span>
                   <ExternalLink className="h-3 w-3 opacity-60 group-hover:opacity-100" />
                 </a>
               </li>
               <li className="pt-2">
                 <span className="text-[11px] text-muted-foreground leading-normal block">
-                  Use UMS for official university fee payments, grade card downloads, and administrative registration.
+                  Use official UMS for university fee receipts, official hall tickets, and administrative enrollment.
                 </span>
               </li>
             </ul>
@@ -135,13 +212,13 @@ export function Footer() {
                   <li>
                     <Link to="/dashboard" className="flex items-center gap-1.5 hover:text-foreground transition-colors">
                       <LayoutDashboard className="h-3.5 w-3.5" />
-                      <span>My Dashboard</span>
+                      <span>My Study Dashboard</span>
                     </Link>
                   </li>
                   <li>
                     <button
                       onClick={handleSignOut}
-                      className="flex items-center gap-1.5 text-xs text-destructive hover:underline pt-1"
+                      className="flex items-center gap-1.5 text-xs text-destructive hover:underline pt-1 cursor-pointer"
                     >
                       <LogOut className="h-3.5 w-3.5" />
                       <span>Sign Out</span>
@@ -162,7 +239,7 @@ export function Footer() {
                   </li>
                   <li className="pt-2">
                     <p className="text-[11px] text-muted-foreground leading-relaxed">
-                      Register with your email to sync your study streak, save bookmarks, and view verified classmate networks.
+                      Register with Google or your college email to sync study streaks, save bookmarks, and view classmate networks.
                     </p>
                   </li>
                 </>
@@ -174,7 +251,7 @@ export function Footer() {
         {/* Disclaimer & Bottom Bar */}
         <div className="border-t border-border/80 pt-6 space-y-4">
           <p className="text-[11px] text-muted-foreground leading-relaxed">
-            <strong>Institutional Disclaimer:</strong> CampusLoop is an independent, student-led multi-university study & academic resource portal. It is not an official university administration website. Official institutional services, fee receipts, and official notifications are maintained at{" "}
+            <strong>Institutional Disclaimer:</strong> CampusLoop is an independent, student-led study & academic resource portal. It is not an official university administration portal. Official institutional services, fee receipts, and official notifications are maintained at{" "}
             <a href="https://itmbu.ac.in/" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">
               itmbu.ac.in
             </a>{" "}

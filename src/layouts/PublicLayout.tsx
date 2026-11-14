@@ -85,8 +85,18 @@ export function PublicFooter() {
   const year = new Date().getFullYear();
   const cols = [
     { title: "Study", links: [{ to: "/library", label: "Library" }, ...LIBRARY.map((s) => ({ to: `/library/${s.slug}`, label: `${s.short} notes` }))] },
-    { title: "CampusLoop", links: [{ to: "/about", label: "About" }, { to: "/contact", label: "Contact" }, { to: "/auth", label: "Sign in" }] },
-    { title: "Legal", links: [{ to: "/privacy", label: "Privacy policy" }, { to: "/terms", label: "Terms of use" }, { to: "/guidelines", label: "Community guidelines" }] },
+    { title: "CampusLoop", links: [{ to: "/about", label: "About" }, { to: "/contact", label: "Contact & Grievance" }, { to: "/auth", label: "Sign in" }] },
+    {
+      title: "Legal & DPDP",
+      links: [
+        { to: "/privacy", label: "Privacy Policy" },
+        { to: "/terms", label: "Terms of Service" },
+        { to: "/refund", label: "Refund Policy" },
+        { to: "/cookies", label: "Cookie Policy" },
+        { to: "/data-deletion", label: "Data Deletion" },
+        { to: "/guidelines", label: "Community Guidelines" },
+      ],
+    },
   ];
   return (
     <footer className="sidebar-dark mt-24">

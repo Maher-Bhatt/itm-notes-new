@@ -21,6 +21,7 @@ import { AchievementCelebrationModal } from "@/components/AchievementCelebration
 import { AnnouncementBanner } from "@/components/AnnouncementBanner";
 import { MaintenanceBanner } from "@/components/MaintenanceBanner";
 import { GlobalTimetableModal } from "@/components/GlobalTimetableModal";
+import { CookieConsentBanner } from "@/components/CookieConsentBanner";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 import { PageFallback } from "@/components/PageSkeletonLoaders";
@@ -91,6 +92,9 @@ const InfoPageModule = () => import("./pages/InfoPage");
 const AboutPage = lazyWithRetry(() => InfoPageModule().then((m) => ({ default: () => <m.InfoPage slug="about" /> })));
 const PrivacyPage = lazyWithRetry(() => InfoPageModule().then((m) => ({ default: () => <m.InfoPage slug="privacy" /> })));
 const TermsPage = lazyWithRetry(() => InfoPageModule().then((m) => ({ default: () => <m.InfoPage slug="terms" /> })));
+const RefundPage = lazyWithRetry(() => InfoPageModule().then((m) => ({ default: () => <m.InfoPage slug="refund" /> })));
+const CookiesPage = lazyWithRetry(() => InfoPageModule().then((m) => ({ default: () => <m.InfoPage slug="cookies" /> })));
+const DataDeletionPage = lazyWithRetry(() => InfoPageModule().then((m) => ({ default: () => <m.InfoPage slug="data-deletion" /> })));
 const GuidelinesPage = lazyWithRetry(() => InfoPageModule().then((m) => ({ default: () => <m.InfoPage slug="guidelines" /> })));
 const ContactPage = lazyWithRetry(() => InfoPageModule().then((m) => ({ default: m.ContactPage })));
 const GuidePage = lazyWithRetry(() => InfoPageModule().then((m) => ({ default: m.GuidePage })));
@@ -183,6 +187,7 @@ const App = () => (
                     <PomodoroFloatingWidget />
                     <AchievementCelebrationModal />
                     <GlobalTimetableModal />
+                    <CookieConsentBanner />
                     <Suspense fallback={<PageFallback />}>
                       <Routes>
                         {/* Standalone Landing, Authentication & Onboarding */}
@@ -211,6 +216,11 @@ const App = () => (
                           <Route path="/about" element={<AboutPage />} />
                           <Route path="/privacy" element={<PrivacyPage />} />
                           <Route path="/terms" element={<TermsPage />} />
+                          <Route path="/refund" element={<RefundPage />} />
+                          <Route path="/refund-policy" element={<RefundPage />} />
+                          <Route path="/cookies" element={<CookiesPage />} />
+                          <Route path="/cookie-policy" element={<CookiesPage />} />
+                          <Route path="/data-deletion" element={<DataDeletionPage />} />
                           <Route path="/guidelines" element={<GuidelinesPage />} />
                           <Route path="/contact" element={<ContactPage />} />
                           <Route path="/guides/:guideSlug" element={<GuidePage />} />

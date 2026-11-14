@@ -240,6 +240,19 @@ for (const [slug, page] of Object.entries(infoPages)) {
   write(route, withBody(html, shell(`<h1>${esc(page.title)}</h1>${renderMarkdown(page.body)}`)));
   count++;
 }
+// Aliases for policy routes
+if (infoPages.refund) {
+  const route = `/refund-policy`;
+  const html = setMeta(template, { title: `${infoPages.refund.title} | CampusLoop`, description: infoPages.refund.description, url: `${SITE}${route}`, image: ogImageFor() });
+  write(route, withBody(html, shell(`<h1>${esc(infoPages.refund.title)}</h1>${renderMarkdown(infoPages.refund.body)}`)));
+  count++;
+}
+if (infoPages.cookies) {
+  const route = `/cookie-policy`;
+  const html = setMeta(template, { title: `${infoPages.cookies.title} | CampusLoop`, description: infoPages.cookies.description, url: `${SITE}${route}`, image: ogImageFor() });
+  write(route, withBody(html, shell(`<h1>${esc(infoPages.cookies.title)}</h1>${renderMarkdown(infoPages.cookies.body)}`)));
+  count++;
+}
 // ── Exam-technique guides ────────────────────────────────────────────────────
 for (const [slug, page] of Object.entries(guides)) {
   const route = `/guides/${slug}`;

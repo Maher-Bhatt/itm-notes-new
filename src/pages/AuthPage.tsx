@@ -273,12 +273,12 @@ export default function AuthPage() {
               <button type="button" onClick={() => { setMode("signin"); setSentReset(false); }} className="font-medium text-primary hover:underline cursor-pointer">Back to sign in</button>
             )}
           </div>
-          {mode === "signup" && (
-            <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
-              By creating an account you agree to the <Link to="/terms" className="underline underline-offset-2">terms</Link> and{" "}
-              <Link to="/privacy" className="underline underline-offset-2">privacy policy</Link>.
-            </p>
-          )}
+          <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
+            By continuing, you confirm you are 18+ (or have parental consent) and agree to our{" "}
+            <Link to="/terms" className="underline text-foreground">Terms of Service</Link>,{" "}
+            <Link to="/privacy" className="underline text-foreground">Privacy Policy</Link>, and{" "}
+            <Link to="/refund" className="underline text-foreground">Refund Policy</Link>.
+          </p>
         </div>
       </section>
     </PublicLayout>

@@ -57,8 +57,26 @@ export default function OnboardingPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
 
-  // Form State
-  const [displayName, setDisplayName] = useState(profile?.display_name || user?.email?.split('@')[0] || "");
+  // Scanned Google Metadata
+  const googleName = useMemo(() => {
+    return (user?.user_metadata?.full_name as string) ||
+      (user?.user_metadata?.name as string) ||
+      (user?.user_metadata?.display_name as string) ||
+      "";
+  }, [user]);
+
+  const googleAvatar = useMemo(() => {
+    return (user?.user_metadata?.avatar_url as string) ||
+      (user?.user_metadata?.picture as string) ||
+      null;
+  }, [user]);
+
+  const isGoogleUser = Boolean(user?.app_metadata?.provider === "google" || googleName || googleAvatar);
+
+  // Form State - Prepopulated from Google or Supabase profile
+  const [displayName, setDisplayName] = useState(
+    profile?.display_name || googleName || user?.email?.split('@')[0] || ""
+  );
   const [selectedUniversityId, setSelectedUniversityId] = useState<string>(profile?.university || "itm-baroda");
   const [universitySearch, setUniversitySearch] = useState("");
   const [program, setProgram] = useState(profile?.program || "B.Tech");
@@ -66,9 +84,15 @@ export default function OnboardingPage() {
   const [semester, setSemester] = useState<number>(profile?.semester || 3);
   const [division, setDivision] = useState(profile?.division || "Div A");
   const [enrollmentNo, setEnrollmentNo] = useState(profile?.enrollment_no || "");
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(profile?.avatar_url || "grad-blue");
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(
+    (profile?.avatar_url && !profile.avatar_url.startsWith('grad-') && !profile.avatar_url.includes('placeholder'))
+      ? profile.avatar_url
+      : (googleAvatar || profile?.avatar_url || "grad-blue")
+  );
   const [selectedPriorities, setSelectedPriorities] = useState<string[]>(["qb", "notes", "coding", "calc"]);
   const [academicGoal, setAcademicGoal] = useState("Score 8.5+ SGPA and excel in technical campus placements");
+  const [ageConsent, setAgeConsent] = useState(true);
+  const [legalConsent, setLegalConsent] = useState(true);
 
   // Redirect if already completed
   useEffect(() => {
@@ -81,19 +105,27 @@ export default function OnboardingPage() {
     }
   }, [profile?.onboarding_completed, navigate]);
 
-  // Keep in sync with user profile if already loaded
+  // Keep in sync with user profile & scanned Google details
   useEffect(() => {
+    const bestName = profile?.display_name || googleName || (user?.email ? user.email.split('@')[0] : "");
+    if (bestName && (!displayName || displayName === "Student" || displayName === user?.email?.split('@')[0])) {
+      setDisplayName(bestName);
+    }
+    const bestAvatar = (profile?.avatar_url && !profile.avatar_url.startsWith('grad-') && !profile.avatar_url.includes('placeholder'))
+      ? profile.avatar_url
+      : (googleAvatar || profile?.avatar_url);
+    if (bestAvatar && (!avatarUrl || avatarUrl === "grad-blue")) {
+      setAvatarUrl(bestAvatar);
+    }
     if (profile) {
-      if (profile.display_name && !displayName) setDisplayName(profile.display_name);
       if (profile.university) setSelectedUniversityId(profile.university);
       if (profile.program) setProgram(profile.program);
       if (profile.branch) setBranch(profile.branch);
       if (profile.semester) setSemester(profile.semester);
       if (profile.division) setDivision(profile.division);
       if (profile.enrollment_no) setEnrollmentNo(profile.enrollment_no);
-      if (profile.avatar_url) setAvatarUrl(profile.avatar_url);
     }
-  }, [profile]);
+  }, [profile, user, googleName, googleAvatar]);
 
   const activeUniversity = useMemo(() => {
     return allUniversities.find(u => u.id === selectedUniversityId) || allUniversities[0];
@@ -268,6 +300,41 @@ export default function OnboardingPage() {
                 Set up your profile identity for campus friend requests, study groups, and notes sharing.
               </p>
             </div>
+
+            {/* Google Sync Badge & Alert */}
+            {isGoogleUser && (
+              <div className="p-3.5 rounded-2xl bg-primary/10 dark:bg-primary/15 border border-primary/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-fade-in">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="h-9 w-9 rounded-xl bg-white dark:bg-stone-800 flex items-center justify-center shrink-0 shadow-xs">
+                    <svg className="w-5 h-5" viewBox="0 0 24 24">
+                      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+                    </svg>
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs font-bold text-foreground dark:text-white">Google Profile Auto-Scanned</span>
+                      <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-success/20 text-success font-semibold">Verified</span>
+                    </div>
+                    <p className="text-[11px] text-muted-foreground truncate">
+                      Scanned profile photo and name from <span className="font-semibold text-foreground">{user?.email}</span>.
+                    </p>
+                  </div>
+                </div>
+
+                {googleAvatar && avatarUrl !== googleAvatar && (
+                  <button
+                    type="button"
+                    onClick={() => setAvatarUrl(googleAvatar)}
+                    className="text-xs font-bold text-primary hover:underline shrink-0 cursor-pointer text-left sm:text-right"
+                  >
+                    Restore Google Photo
+                  </button>
+                )}
+              </div>
+            )}
 
             {/* Avatar Selector */}
             <div className="space-y-3 pt-2">
@@ -671,6 +738,41 @@ export default function OnboardingPage() {
               </div>
             </div>
 
+            {/* Statutory DPDP Act & Legal Consent */}
+            <div className="p-4 rounded-2xl bg-background dark:bg-stone-900 border border-border dark:border-stone-800 space-y-3">
+              <div className="flex items-center gap-2 text-xs font-bold text-foreground dark:text-white">
+                <CheckCircle2 className="h-4 w-4 text-primary" />
+                <span>Statutory Consent & Age Verification (DPDP Act 2023)</span>
+              </div>
+
+              <label className="flex items-start gap-2.5 text-xs text-stone-600 dark:text-stone-300 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={ageConsent}
+                  onChange={(e) => setAgeConsent(e.target.checked)}
+                  className="mt-0.5 h-4 w-4 rounded accent-primary border-border cursor-pointer"
+                />
+                <span>
+                  I confirm that I am <strong>18 years of age or older</strong> (or have obtained consent from my parent/legal guardian as mandated under Section 9 of the Digital Personal Data Protection Act, 2023).
+                </span>
+              </label>
+
+              <label className="flex items-start gap-2.5 text-xs text-stone-600 dark:text-stone-300 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={legalConsent}
+                  onChange={(e) => setLegalConsent(e.target.checked)}
+                  className="mt-0.5 h-4 w-4 rounded accent-primary border-border cursor-pointer"
+                />
+                <span>
+                  I agree to CampusLoop's{" "}
+                  <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-primary underline font-medium">Terms of Service</a>,{" "}
+                  <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-primary underline font-medium">Privacy Policy</a>, and{" "}
+                  <a href="/refund" target="_blank" rel="noopener noreferrer" className="text-primary underline font-medium">Refund Policy</a>.
+                </span>
+              </label>
+            </div>
+
             {/* Summary Preview Box */}
             <div className="p-4 rounded-2xl bg-primary/10 dark:bg-primary/20 border border-primary/20 space-y-1">
               <div className="flex items-center gap-2 text-xs font-bold text-primary dark:text-primary">
@@ -696,7 +798,7 @@ export default function OnboardingPage() {
               <button
                 type="button"
                 onClick={handleComplete}
-                disabled={isSubmitting}
+                disabled={isSubmitting || !ageConsent || !legalConsent}
                 className="h-11 px-8 rounded-full bg-primary hover:bg-primary text-white text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer shadow-md disabled:opacity-50"
               >
                 {isSubmitting ? (

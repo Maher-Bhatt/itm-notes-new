@@ -1,12 +1,25 @@
 # robots.txt for CampusLoop (https://itm-notes-new.vercel.app/)
-# Public: the landing page and the Semester 3 Library. Everything else requires sign-in.
+# Public: the landing page, the Semester 3 Library, papers, guides, and legal pages. Everything else requires sign-in.
 
 User-agent: *
 Allow: /$
 Allow: /og-image.png
 Allow: /icon-512.png
+Allow: /favicon.png
 Allow: /library
 Allow: /reading/
+Allow: /papers
+Allow: /exam-plan
+Allow: /about
+Allow: /privacy
+Allow: /terms
+Allow: /refund
+Allow: /refund-policy
+Allow: /cookies
+Allow: /cookie-policy
+Allow: /data-deletion
+Allow: /guidelines
+Allow: /contact
 Disallow: /dashboard
 Disallow: /subjects
 Disallow: /subject/
