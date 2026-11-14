@@ -837,6 +837,20 @@ export const LIBRARY: LibrarySubject[] = [
         "summary": ""
       },
       {
+        "slug": "paper-mid-sem-2026-10-03",
+        "title": "Mid-semester exam · 3 Oct 2026",
+        "kind": "Question paper",
+        "unit": null,
+        "words": 2586,
+        "scanned": false,
+        "featured": false,
+        "summary": "Computer Organization & Architecture Mid-semester exam paper, 3 Oct 2026 (2026-27, 60 marks), with worked solutions.",
+        "exam": "Mid-sem",
+        "date": "2026-10-03",
+        "academicYear": "2026-27",
+        "marks": 60
+      },
+      {
         "slug": "paper-end-sem-2025-12-17",
         "title": "End-semester exam · 17 Dec 2025",
         "kind": "Question paper",
@@ -849,6 +863,34 @@ export const LIBRARY: LibrarySubject[] = [
         "date": "2025-12-17",
         "academicYear": "2025-26",
         "marks": 100
+      },
+      {
+        "slug": "paper-cet-2-2025-10-07",
+        "title": "CET-2 · 7 Oct 2025",
+        "kind": "Question paper",
+        "unit": null,
+        "words": 1226,
+        "scanned": false,
+        "featured": false,
+        "summary": "Computer Organization & Architecture CET-2 paper, 7 Oct 2025 (2025-26, 30 marks), with worked solutions.",
+        "exam": "CET-2",
+        "date": "2025-10-07",
+        "academicYear": "2025-26",
+        "marks": 30
+      },
+      {
+        "slug": "paper-cet-1-2025-08-21",
+        "title": "CET-1 · 21 Aug 2025",
+        "kind": "Question paper",
+        "unit": null,
+        "words": 1918,
+        "scanned": false,
+        "featured": false,
+        "summary": "Computer Organization & Architecture CET-1 paper, 21 Aug 2025 (2025-26, 30 marks), with worked solutions.",
+        "exam": "CET-1",
+        "date": "2025-08-21",
+        "academicYear": "2025-26",
+        "marks": 30
       }
     ]
   },
@@ -932,6 +974,62 @@ export const LIBRARY: LibrarySubject[] = [
         "featured": false,
         "pages": 18,
         "summary": ""
+      },
+      {
+        "slug": "paper-mid-sem-2026-10-01",
+        "title": "Mid-semester exam · 1 Oct 2026",
+        "kind": "Question paper",
+        "unit": null,
+        "words": 2495,
+        "scanned": false,
+        "featured": false,
+        "summary": "Object-Oriented Programming with Java Mid-semester exam paper, 1 Oct 2026 (2026-27, 60 marks), with worked solutions.",
+        "exam": "Mid-sem",
+        "date": "2026-10-01",
+        "academicYear": "2026-27",
+        "marks": 60
+      },
+      {
+        "slug": "paper-end-sem-2026-01-03",
+        "title": "End-semester exam · 3 Jan 2026",
+        "kind": "Question paper",
+        "unit": null,
+        "words": 4835,
+        "scanned": false,
+        "featured": false,
+        "summary": "Object-Oriented Programming with Java End-semester exam paper, 3 Jan 2026 (2025-26, 100 marks), with worked solutions.",
+        "exam": "End-sem",
+        "date": "2026-01-03",
+        "academicYear": "2025-26",
+        "marks": 100
+      },
+      {
+        "slug": "paper-cet-2-2025-10-06",
+        "title": "CET-2 · 6 Oct 2025",
+        "kind": "Question paper",
+        "unit": null,
+        "words": 1708,
+        "scanned": false,
+        "featured": false,
+        "summary": "Object-Oriented Programming with Java CET-2 paper, 6 Oct 2025 (2025-26, 30 marks), with worked solutions.",
+        "exam": "CET-2",
+        "date": "2025-10-06",
+        "academicYear": "2025-26",
+        "marks": 30
+      },
+      {
+        "slug": "paper-cet-1-2025-08-20",
+        "title": "CET-1 · 20 Aug 2025",
+        "kind": "Question paper",
+        "unit": null,
+        "words": 1168,
+        "scanned": false,
+        "featured": false,
+        "summary": "Object-Oriented Programming with Java CET-1 paper, 20 Aug 2025 (2025-26, 30 marks), with worked solutions.",
+        "exam": "CET-1",
+        "date": "2025-08-20",
+        "academicYear": "2025-26",
+        "marks": 30
       }
     ]
   }
