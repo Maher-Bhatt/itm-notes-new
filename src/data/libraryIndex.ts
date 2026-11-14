@@ -349,6 +349,48 @@ export const LIBRARY: LibrarySubject[] = [
         "summary": ""
       },
       {
+        "slug": "paper-mid-sem-2026-10-06",
+        "title": "Mid-semester exam · 6 Oct 2026",
+        "kind": "Question paper",
+        "unit": null,
+        "words": 1812,
+        "scanned": false,
+        "featured": false,
+        "summary": "Database Management Systems Mid-semester exam paper, 6 Oct 2026 (2026-27, 60 marks), with worked solutions.",
+        "exam": "Mid-sem",
+        "date": "2026-10-06",
+        "academicYear": "2026-27",
+        "marks": 60
+      },
+      {
+        "slug": "paper-end-sem-2025-12-19",
+        "title": "End-semester exam · 19 Dec 2025",
+        "kind": "Question paper",
+        "unit": null,
+        "words": 2745,
+        "scanned": false,
+        "featured": false,
+        "summary": "Database Management Systems End-semester exam paper, 19 Dec 2025 (2025-26, 100 marks), with worked solutions.",
+        "exam": "End-sem",
+        "date": "2025-12-19",
+        "academicYear": "2025-26",
+        "marks": 100
+      },
+      {
+        "slug": "paper-cet-2-2025-10-09",
+        "title": "CET-2 · 9 Oct 2025",
+        "kind": "Question paper",
+        "unit": null,
+        "words": 1620,
+        "scanned": false,
+        "featured": false,
+        "summary": "Database Management Systems CET-2 paper, 9 Oct 2025 (2025-26, 30 marks), with worked solutions.",
+        "exam": "CET-2",
+        "date": "2025-10-09",
+        "academicYear": "2025-26",
+        "marks": 30
+      },
+      {
         "slug": "paper-cet-1-2025-08-23",
         "title": "CET-1 · 23 Aug 2025",
         "kind": "Question paper",
