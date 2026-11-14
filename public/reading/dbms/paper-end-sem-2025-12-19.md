@@ -286,7 +286,7 @@ GROUP BY D_Name;
 
 **Entities:** Patient(patient_id, name, dob, phone), Doctor(doctor_id, name, specialization), Department(dept_id, name), Ward/Room(room_no, type), Appointment(appt_id, date, time), Test(test_id, name, result, date), Bill(bill_id, amount, date).
 **Relationships:** Doctor *works in* Department (N:1); Patient *books* Appointment *with* Doctor; Patient *undergoes* Test (1:N); Patient *admitted to* Room (N:1, with admit/discharge dates); Patient *pays* Bill (1:N).
-Draw rectangles for entities, ovals for attributes (primary keys underlined), diamonds for relationships with cardinalities. Schema and constraints: see [DBMS CET-1, Q3.2](/library/dbms/paper-cet-1-2025-08-23#q3-2-design-a-database-for-a-hospital-with-patients-doctors-and-a-log-of-tests-examinations-per-patient).
+Draw rectangles for entities, ovals for attributes (primary keys underlined), diamonds for relationships with cardinalities. Schema and constraints: see [DBMS CET-1, Q3.2](/library/dbms/paper-cet-1-2025-08-23#q3-2-design-a-database-for-a-hospital-with-patients-doctors-and-a-log-of-tests-e).
 
 ## Q5.4 What are integrity constraints? Explain types with examples.
 

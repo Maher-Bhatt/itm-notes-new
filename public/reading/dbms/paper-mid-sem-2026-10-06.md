@@ -71,7 +71,7 @@ Check with closure: AG⁺ = {A, G} → (A → B, C) {A, B, C, G} → (CG → H, 
 
 ## 3(a) Closure for R(A, B, C, D, E), F = {A → BC, CD → E, B → D, E → A}; list the candidate keys.
 
-A⁺ = E⁺ = CD⁺ = BC⁺ = {A, B, C, D, E}; B⁺ = {B, D}, C⁺ = {C}, D⁺ = {D}. **Candidate keys: A, E, CD, BC.** Full working: [DBMS CET-2, Q3.3](/library/dbms/paper-cet-2-2025-10-09#q3-3-closure-for-r-a-b-c-d-e-f-a-bc-cd-e-b-d-e-a).
+A⁺ = E⁺ = CD⁺ = BC⁺ = {A, B, C, D, E}; B⁺ = {B, D}, C⁺ = {C}, D⁺ = {D}. **Candidate keys: A, E, CD, BC.** Full working: [DBMS CET-2, Q3.3](/library/dbms/paper-cet-2-2025-10-09#q3-3-closure-for-ra-b-c-d-e-f-a-bc-cd-e-b-d-e-a).
 
 ## 3(b) Explain different aggregate functions with example.
 
