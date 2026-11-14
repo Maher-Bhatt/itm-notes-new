@@ -362,7 +362,7 @@
 
 ### Slide 19
 
-![Slide 19 figure](/reading/coa/img/u2-basic-computer-organization-design-s019-1026.jpg)
+![Slide 19 figure](/reading/coa/img/u2-basic-computer-organization-design-s019-1026.webp)
 
 ### Register Reference Instruction
 

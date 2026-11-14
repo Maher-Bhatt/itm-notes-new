@@ -131,6 +131,19 @@ export default function ExamPlanPage() {
         )}
       </div>
 
+      <div className="mt-6 flex flex-wrap items-center gap-2 text-sm">
+        <span className="text-muted-foreground">Exam guides (questions, mistakes, self-checks):</span>
+        {SUBJECTS.map((s) => (
+          <Link
+            key={s.slug}
+            to={`/library/${s.slug}/exam-guide`}
+            className="rounded-full border border-border px-3 py-1 text-foreground hover:border-primary/50 hover:text-primary transition-colors"
+          >
+            {s.short}
+          </Link>
+        ))}
+      </div>
+
       <ol className="mt-10 space-y-6">
         {schedule.map((d, i) => (
           <li key={d.day} className={`surface-card p-5 sm:p-6 ${i === todayIndex && days > 0 ? "ring-1 ring-primary/40" : ""}`}>

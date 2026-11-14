@@ -44,7 +44,7 @@ Big-O notation describes an upper bound on the growth rate of a function. Inform
 
 In words: beyond some threshold input size n₀, the function f(n) is always bounded above by some constant multiple c of g(n).
 
-![Figure](/reading/dsa/img/u1-06-asymptotic-notation-notes-p003-213.jpg)
+![Figure](/reading/dsa/img/u1-06-asymptotic-notation-notes-p003-213.webp)
 
 Figure 1: f(n) = 3n² + 5n + 2 stays below c·g(n) = 8n² for every n ≥ n₀, so f(n) = O(n²).
 
@@ -64,7 +64,7 @@ Big-Omega notation describes a lower bound on the growth rate of a function. Inf
 
 4.1 Formal Definition f(n) = Ω(g(n)) if and only if there exist positive constants c and n₀ such that:0 ≤ c · g(n) ≤ f(n) for all n ≥ n₀
 
-![Figure](/reading/dsa/img/u1-06-asymptotic-notation-notes-p004-174.jpg)
+![Figure](/reading/dsa/img/u1-06-asymptotic-notation-notes-p004-174.webp)
 
 Figure 2: f(n) = 3n² + 5n + 2 stays above c·g(n) = 1.5n² for every n ≥ n₀, so f(n) = Ω(n²).
 
@@ -83,7 +83,7 @@ Big-Theta notation describes a tight bound — a function that is bounded both a
 
 Equivalently: f(n) = Θ(g(n)) if and only if f(n) = O(g(n)) AND f(n) = Ω(g(n)).
 
-![Figure](/reading/dsa/img/u1-06-asymptotic-notation-notes-p005-78.jpg)
+![Figure](/reading/dsa/img/u1-06-asymptotic-notation-notes-p005-78.webp)
 
 Figure 3: f(n) = 3n² + 5n + 2 is sandwiched between c₁·g(n) = 2n² and c₂·g(n) = 5n², so f(n) = Θ(n²).
 
@@ -229,7 +229,7 @@ This is why every real contacts/address-book application keeps names sorted — 
 
 Case Study 2: Bubble Sort vs. Merge Sort at Internet Scale
 
-![Figure](/reading/dsa/img/u1-06-asymptotic-notation-notes-p008-276.jpg)
+![Figure](/reading/dsa/img/u1-06-asymptotic-notation-notes-p008-276.webp)
 
 Figure 4: Approximate operation counts at n = 10,000 (log scale) — note how dramatically O(n²) diverges from O(n log n).
 

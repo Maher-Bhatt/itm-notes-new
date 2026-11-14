@@ -24,7 +24,7 @@ Database Management Systems (DBMS)
 - 4NF
 - 5NF
 
-![Page 3](/reading/dbms/img/u4-relational-database-design-p003.jpg)
+![Page 3](/reading/dbms/img/u4-relational-database-design-p003.webp)
 
 ### What is Functional Dependency (FD)?
 
@@ -93,7 +93,7 @@ Sub_Fac Subject Faculty Age DS Shah DBMS Patel DF Shah
 
 Trivial Functional Dependency X → Y is trivial FD if Y is a subset of X Eg. {Roll_No, Department_Name, Semester} → Roll_No Nontrivial Functional Dependency X → Y is nontrivial FD if Y is not a subset of X Eg. {Roll_No, Department_Name, Semester} → Student_Name
 
-![Page 9](/reading/dbms/img/u4-relational-database-design-p009.jpg)
+![Page 9](/reading/dbms/img/u4-relational-database-design-p009.webp)
 
 ### Armstrong's axioms OR Inference rules
 
@@ -105,7 +105,7 @@ Transitivity Pseudo Transitivity Decomposition If A → B and B → C If A
 
 Union Composition If A → B and A → C If A → B and C → D then A → BC then AC → BD
 
-![Page 11](/reading/dbms/img/u4-relational-database-design-p011.jpg)
+![Page 11](/reading/dbms/img/u4-relational-database-design-p011.webp)
 
 ### What is closure of a set of FDs?
 
@@ -198,7 +198,7 @@ D → AC Decomposition Rule D → A & D → C D → AC & D → E Union Rule D �
 
 F+ = (D → A, D → C, D → ACE)
 
-![Page 20](/reading/dbms/img/u4-relational-database-design-p020.jpg)
+![Page 20](/reading/dbms/img/u4-relational-database-design-p020.webp)
 
 ### What is a closure of attribute sets?
 
@@ -255,7 +255,7 @@ result = α => result = AG Algorithm
 
 Given functional dependencies (FDs) for relational schema R = (A,B,C,D,E): F = {A → BC, CD → E, B → D, E → A} Find Closure for A Find Closure for CD Find Closure for B Find Closure for BC Find Closure for E Answer A+ = ABCDE CD+ = ABCDE B+ = BD BC+ = ABCDE E+ = ABCDE
 
-![Page 25](/reading/dbms/img/u4-relational-database-design-p025.jpg)
+![Page 25](/reading/dbms/img/u4-relational-database-design-p025.webp)
 
 ### What is extraneous attributes?
 
@@ -302,7 +302,7 @@ F = {A → B, A → C} Decomposition Rule Union Rule Fc = {A → BC}
 
 Fc = {A → BC, CD → E, B → D, E → A}
 
-![Page 31](/reading/dbms/img/u4-relational-database-design-p031.jpg)
+![Page 31](/reading/dbms/img/u4-relational-database-design-p031.webp)
 
 ### What is decomposition?
 
@@ -336,7 +336,7 @@ Ano Balance Ano Bname Same A01 5000 A01 Rajkot A02 5000 A02 Surat
 
 Customer Ano Balance Bname A01 5000 Rajkot A02 5000 Surat
 
-![Page 35](/reading/dbms/img/u4-relational-database-design-p035.jpg)
+![Page 35](/reading/dbms/img/u4-relational-database-design-p035.webp)
 
 ### What is an anomaly in database design?
 
@@ -399,7 +399,7 @@ Emp_Dept Emp Dept EID Ename City DID Dname Manager EID Ename City DID DID Dname 
 
 Such type of anomalies in the database design can be solved by using normalization.
 
-![Page 41](/reading/dbms/img/u4-relational-database-design-p041.jpg)
+![Page 41](/reading/dbms/img/u4-relational-database-design-p041.webp)
 
 ### What is normalization?
 
@@ -433,7 +433,7 @@ Such type of anomalies in the database design can be solved by using normalizati
 
 As we move from 1NF to 5NF number of tables and complexity increases but redundancy decreases.
 
-![Page 44](/reading/dbms/img/u4-relational-database-design-p044.jpg)
+![Page 44](/reading/dbms/img/u4-relational-database-design-p044.webp)
 
 ### 1NF (First Normal Form)
 
@@ -502,7 +502,7 @@ Student Student Result Rno Name FailedinSubjects Rno Name RID Rno Subject ravi D
 
 insert the primary key of first table in the second table as a foreign key.
 
-![Page 50](/reading/dbms/img/u4-relational-database-design-p050.jpg)
+![Page 50](/reading/dbms/img/u4-relational-database-design-p050.webp)
 
 ### 2NF (Second Normal Form)
 
@@ -552,7 +552,7 @@ Student Student Result Rno Name FailedinSubjects Rno Name RID Rno Subject ravi D
 
 Keep other attributes same as in that table with the same primary key.
 
-![Page 55](/reading/dbms/img/u4-relational-database-design-p055.jpg)
+![Page 55](/reading/dbms/img/u4-relational-database-design-p055.webp)
 
 ### 3NF (Third Normal Form)
 
@@ -680,7 +680,7 @@ DBMS Dave Dave
 
 Multivalued dependency (MVD) is denoted by →→ Multivalued dependency (MVD) is represented as X →→ Y
 
-![Page 65](/reading/dbms/img/u4-relational-database-design-p065.jpg)
+![Page 65](/reading/dbms/img/u4-relational-database-design-p065.webp)
 
 ### 4NF (Forth Normal Form)
 
@@ -698,7 +698,7 @@ Student Subject Faculty RNO Subject Faculty RNO Subject RNO Faculty DS Patel DS 
 
 Student Subject Faculty Address RNO Address Subject Faculty RNO Subject RNO Faculty RNO Address C. G. Road, Rajkot DS Patel DS Patel C. G. Road, Rajkot C. G. Road, Rajkot DBMS Patel DBMS Shah C. G. Road, Rajkot DS Shah C. G. Road, Rajkot DBMS Shah
 
-![Page 68](/reading/dbms/img/u4-relational-database-design-p068.jpg)
+![Page 68](/reading/dbms/img/u4-relational-database-design-p068.webp)
 
 ### 5NF (Fifth Normal Form)
 
@@ -966,8 +966,8 @@ F = { A → BC, CD → E, B → D, E → A}
 
 6. A college maintains details of its lecturers' subject area skills. These details comprise: Lecturer Number, Lecturer Name, Lecturer Grade, Department Code, Department Name, Subject Code, Subject Name, Subject Level. Assume that each lecturer may teach many subjects but may not belong to more than one department. Subject Code, Subject Name and Subject Level are repeating fields. Normalize this data to Third Normal Form.
 
-![Page 85](/reading/dbms/img/u4-relational-database-design-p085.jpg)
+![Page 85](/reading/dbms/img/u4-relational-database-design-p085.webp)
 
-![Page 86](/reading/dbms/img/u4-relational-database-design-p086.jpg)
+![Page 86](/reading/dbms/img/u4-relational-database-design-p086.webp)
 
-![Page 87](/reading/dbms/img/u4-relational-database-design-p087.jpg)
+![Page 87](/reading/dbms/img/u4-relational-database-design-p087.webp)

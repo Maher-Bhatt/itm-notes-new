@@ -16,7 +16,7 @@ Database Management Systems (DBMS)
 - Database recovery
 - Concurrency
 
-![Page 3](/reading/dbms/img/u6-transaction-processing-p003.jpg)
+![Page 3](/reading/dbms/img/u6-transaction-processing-p003.webp)
 
 ### What is transaction?
 
@@ -32,7 +32,7 @@ Operations read (B)
 
 B = B + 50 write (B)
 
-![Page 5](/reading/dbms/img/u6-transaction-processing-p005.jpg)
+![Page 5](/reading/dbms/img/u6-transaction-processing-p005.webp)
 
 ### ACID properties of transaction
 
@@ -94,7 +94,7 @@ A=450, B=550
 
 These values must be stored permanently in the database
 
-![Page 11](/reading/dbms/img/u6-transaction-processing-p011.jpg)
+![Page 11](/reading/dbms/img/u6-transaction-processing-p011.webp)
 
 ### Transaction State Diagram \ State Transition Diagram
 
@@ -132,7 +132,7 @@ the transaction.
 
 Aborted The state after the transaction has been rolled back and the database has been restored to its state prior to the start of the transaction.
 
-![Page 14](/reading/dbms/img/u6-transaction-processing-p014.jpg)
+![Page 14](/reading/dbms/img/u6-transaction-processing-p014.webp)
 
 ### What is schedule?
 
@@ -557,7 +557,7 @@ Write (B)
 
 Also, as we know that the schedule S2 is the serial schedule of S1, thus we can say that the schedule S1 is view serializable schedule.
 
-![Page 38](/reading/dbms/img/u6-transaction-processing-p038.jpg)
+![Page 38](/reading/dbms/img/u6-transaction-processing-p038.webp)
 
 ### Two phase commit protocol
 
@@ -615,7 +615,7 @@ Two phase commit protocol Commit Request Phase (Obtaining Decision)
 
 When the controlling site receives “Abort ACK” message from all the slaves, it considers the transaction as aborted.
 
-![Page 43](/reading/dbms/img/u6-transaction-processing-p043.jpg)
+![Page 43](/reading/dbms/img/u6-transaction-processing-p043.webp)
 
 ### Database recovery
 
@@ -713,7 +713,7 @@ Undo and Redo both operations are performed. Only Redo operation is performed.
 
 Size of transaction log file Amount of searching
 
-![Page 51](/reading/dbms/img/u6-transaction-processing-p051.jpg)
+![Page 51](/reading/dbms/img/u6-transaction-processing-p051.webp)
 
 ### What is concurrency?
 
@@ -755,9 +755,9 @@ T2 --- Through this change will be hidden from Sum  Sum + 250 = 450 first 
 
 T8 --- Sum Sum + 100 = 550
 
-![Page 56](/reading/dbms/img/u6-transaction-processing-p056.jpg)
+![Page 56](/reading/dbms/img/u6-transaction-processing-p056.webp)
 
-![Page 57](/reading/dbms/img/u6-transaction-processing-p057.jpg)
+![Page 57](/reading/dbms/img/u6-transaction-processing-p057.webp)
 
 ### What is data security?
 
@@ -771,7 +771,7 @@ T8 --- Sum Sum + 100 = 550
 
 Some users may be permitted only to retrieve data, whereas others are allowed to retrieve as well as to update data.
 
-![Page 59](/reading/dbms/img/u6-transaction-processing-p059.jpg)
+![Page 59](/reading/dbms/img/u6-transaction-processing-p059.webp)
 
 ### Security v/s Integrity
 
@@ -789,7 +789,7 @@ Data security is implemented through user Data integrity is implemented through 
 
 constraints such as Primary key, Foreign key, Check constraints etc.
 
-![Page 61](/reading/dbms/img/u6-transaction-processing-p061.jpg)
+![Page 61](/reading/dbms/img/u6-transaction-processing-p061.webp)
 
 ### Authentication v/s Authorization
 
@@ -821,7 +821,7 @@ and access control of data.
 
 What (identification of the data affected, as well as a before-and-after image of that portion of the database that was affected by the update operation)
 
-![Page 64](/reading/dbms/img/u6-transaction-processing-p064.jpg)
+![Page 64](/reading/dbms/img/u6-transaction-processing-p064.webp)
 
 ### What is data encryption?
 
@@ -857,7 +857,7 @@ Should not access OR cant understand
 
 Asymmetric key encryption is slow in execution due to the high computational burden.
 
-![Page 68](/reading/dbms/img/u6-transaction-processing-p068.jpg)
+![Page 68](/reading/dbms/img/u6-transaction-processing-p068.webp)
 
 ### Access control methods of data security
 
@@ -952,7 +952,7 @@ Top Secret Secret Confidential Unclassified
 
 Using RBAC will help in securing your company’s sensitive data and important applications.
 
-![Page 75](/reading/dbms/img/u6-transaction-processing-p075.jpg)
+![Page 75](/reading/dbms/img/u6-transaction-processing-p075.webp)
 
 ### Intrusion detection
 
@@ -964,11 +964,11 @@ Top Secret Secret Confidential Unclassified
 
 A SIEM system integrates outputs from multiple sources and uses alarm filtering techniques to differentiate malicious activity from false alarms.
 
-![Page 77](/reading/dbms/img/u6-transaction-processing-p077.jpg)
+![Page 77](/reading/dbms/img/u6-transaction-processing-p077.webp)
 
 ### SQL injection
 
-![Figure](/reading/dbms/img/u6-transaction-processing-p078-67.jpg)
+![Figure](/reading/dbms/img/u6-transaction-processing-p078-67.webp)
 
 SQL injection, also known as SQLI, is a common attack vector that uses malicious SQL code for backend database manipulation to access information that was not intended to be displayed.
 
@@ -998,4 +998,4 @@ Top Secret Secret Confidential Unclassified
 
 6. Define transaction. Explain various states of transaction with suitable diagram.
 
-![Page 81](/reading/dbms/img/u6-transaction-processing-p081.jpg)
+![Page 81](/reading/dbms/img/u6-transaction-processing-p081.webp)

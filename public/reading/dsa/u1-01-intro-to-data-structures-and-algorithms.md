@@ -282,9 +282,9 @@ Different data types
 
 - Example: C structs, Python dictionaries
 
-![Page 31](/reading/dsa/img/u1-01-intro-to-data-structures-and-algorithms-p031.jpg)
+![Page 31](/reading/dsa/img/u1-01-intro-to-data-structures-and-algorithms-p031.webp)
 
-![Page 32](/reading/dsa/img/u1-01-intro-to-data-structures-and-algorithms-p032.jpg)
+![Page 32](/reading/dsa/img/u1-01-intro-to-data-structures-and-algorithms-p032.webp)
 
 ## Questions - Conceptual understanding
 
@@ -448,9 +448,9 @@ For example, a family tree of the royal family of Britain
 - would show the connections between people who were directly related. Prince William is the son of Charles Philip Arthur Windsor. Charles is the son of Queen Elizabeth II. The problem is to find a short chain on the family tree connecting Prince William and William III, using these direct connections.
 - As you can see from the tree below, it might take a few connections.
 
-![Page 51](/reading/dsa/img/u1-01-intro-to-data-structures-and-algorithms-p051.jpg)
+![Page 51](/reading/dsa/img/u1-01-intro-to-data-structures-and-algorithms-p051.webp)
 
-![Figure](/reading/dsa/img/u1-01-intro-to-data-structures-and-algorithms-p052-23.jpg)
+![Figure](/reading/dsa/img/u1-01-intro-to-data-structures-and-algorithms-p052-23.webp)
 
 - For Pac-Man we need a map of the maze.
 
@@ -466,7 +466,7 @@ No single road directly connects Dallas to Orlando, but
 
 - several sequences of roads do.
 
-![Page 54](/reading/dsa/img/u1-01-intro-to-data-structures-and-algorithms-p054.jpg)
+![Page 54](/reading/dsa/img/u1-01-intro-to-data-structures-and-algorithms-p054.webp)
 
 Exploring a maze
 
@@ -519,7 +519,7 @@ Here’s a picture showing the connections between possible
 
 - locations for the character, the start, the goal and the shortest distance of each location from the goal:
 
-![Figure](/reading/dsa/img/u1-01-intro-to-data-structures-and-algorithms-p062-27.jpg)
+![Figure](/reading/dsa/img/u1-01-intro-to-data-structures-and-algorithms-p062-27.webp)
 
 - There’s a square immediately to the south of the start that is only 12 steps from the goal. So the first move is “south”.
 - South of that square is an 11. South again. South again to a
@@ -587,7 +587,7 @@ The input to the problem is the number n, the highest
 - possible number that your opponent is thinking of.
 - We assume that the lowest possible number is one, but it would be easy to modify the algorithm to take the lowest possible number as the second input.
 
-![Page 70](/reading/dsa/img/u1-01-intro-to-data-structures-and-algorithms-p070.jpg)
+![Page 70](/reading/dsa/img/u1-01-intro-to-data-structures-and-algorithms-p070.webp)
 
 ## Implementing binary search of an array
 
@@ -612,7 +612,7 @@ We might also want to know how many primes are smaller
 
 - Once we know that the prime number 67 is at index 18, we can identify that it is a prime. We can also quickly identify that there are 18 elements which come before 67 in the array, meaning that there are 18 prime numbers smaller than 67.
 
-![Figure](/reading/dsa/img/u1-01-intro-to-data-structures-and-algorithms-p073-297.jpg)
+![Figure](/reading/dsa/img/u1-01-intro-to-data-structures-and-algorithms-p073-297.webp)
 
 - Did you see how many steps that took?
 - A binary search might be more efficient. Because the array primes contains 25 numbers, the indices into the array range from 0 to 24.
@@ -622,7 +622,7 @@ Using the step-by-step instructions from the previous article,
 - we start by letting min = 0 and max = 24.
 - The first guess in the binary search would therefore be at index 12 (which is (0 + 24) / 2). Is primes[12] equal to 67? No, primes[12] is 41.
 
-![Figure](/reading/dsa/img/u1-01-intro-to-data-structures-and-algorithms-p074-277.jpg)
+![Figure](/reading/dsa/img/u1-01-intro-to-data-structures-and-algorithms-p074-277.webp)
 
 Is the index we are looking for higher or lower than 12?
 
@@ -633,14 +633,14 @@ Is the index we are looking for higher or lower than 12?
 
 - be greater than 12. We update the value of min to 12 + 1, or 13, and we leave max unchanged at 24.
 
-![Figure](/reading/dsa/img/u1-01-intro-to-data-structures-and-algorithms-p075-282.jpg)
+![Figure](/reading/dsa/img/u1-01-intro-to-data-structures-and-algorithms-p075-282.webp)
 
 What's the next index to guess?
 
 - The average of 13 and 24 is 18.5, which we round down to
 - 18, since an index into an array must be an integer. We find that primes[18] is 67.
 
-![Figure](/reading/dsa/img/u1-01-intro-to-data-structures-and-algorithms-p076-197.jpg)
+![Figure](/reading/dsa/img/u1-01-intro-to-data-structures-and-algorithms-p076-197.webp)
 
 The binary search algorithm stops at this point, since it
 
@@ -675,7 +675,7 @@ The inputs are the array, which we call array; the number
 
 - n of elements in array; and target, the number being searched for. The output is the index in array of target:
 
-![Page 80](/reading/dsa/img/u1-01-intro-to-data-structures-and-algorithms-p080.jpg)
+![Page 80](/reading/dsa/img/u1-01-intro-to-data-structures-and-algorithms-p080.webp)
 
 ## Implementing pseudocode
 
@@ -706,7 +706,7 @@ What does it mean for min to equal 4 and max to equal 3? It means that the only
 - possible guesses are at least 4 and at most 3. There are no such numbers! At this point, we can conclude that the target number, 10, is not in the primes array, and the binarySearch function would return -1.
 - In general, once max becomes strictly less than min, we know that the target number is not in the sorted array. Here is modified pseudocode for binary search that handles the case in which the target number is not present:
 
-![Page 84](/reading/dsa/img/u1-01-intro-to-data-structures-and-algorithms-p084.jpg)
+![Page 84](/reading/dsa/img/u1-01-intro-to-data-structures-and-algorithms-p084.webp)
 
 ## Running time of binary search
 
@@ -757,7 +757,7 @@ Suppose we need at most m guesses for an array of length n. Then,
 | 1,048,576 | 20 |
 | 2,097,152 | 21 |
 
-![Page 90](/reading/dsa/img/u1-01-intro-to-data-structures-and-algorithms-p090.jpg)
+![Page 90](/reading/dsa/img/u1-01-intro-to-data-structures-and-algorithms-p090.webp)
 
 The logarithmic function grows very slowly.
 
@@ -774,7 +774,7 @@ If n is 128, binary search will require at most 8
 - In the case of a decimal number, we round down to find the actual number of guesses. Therefore, for a 1000-element array, binary search would require at most 10 guesses.
 - For the Tycho-2 star catalog with 2,539,913 stars, the closest lower power of 2 is 221 (which is 2,097,152), so we would need at most 22 guesses. Much better than linear search!
 
-![Page 93](/reading/dsa/img/u1-01-intro-to-data-structures-and-algorithms-p093.jpg)
+![Page 93](/reading/dsa/img/u1-01-intro-to-data-structures-and-algorithms-p093.webp)
 
 ## Exercises
 
@@ -815,7 +815,7 @@ log2n + 1, rounded down to log264 is exactly 6, so the answer would still be 7.
 
 4. In 2013, there were 193 member states in the United Nations. If the names of these states were sorted alphabetically in an array, about how many names would binary search examine to locate a particular name in the array, in
 
-![Figure](/reading/dsa/img/u1-01-intro-to-data-structures-and-algorithms-p096-226.jpg)
+![Figure](/reading/dsa/img/u1-01-intro-to-data-structures-and-algorithms-p096-226.webp)
 
 the worst case?
 
@@ -833,7 +833,7 @@ No more than 64
 
 5. The 2014 “Catalogue of Life” contains about 1580000 names of species. If these names were sorted in an array, in the worst
 
-![Figure](/reading/dsa/img/u1-01-intro-to-data-structures-and-algorithms-p097-114.jpg)
+![Figure](/reading/dsa/img/u1-01-intro-to-data-structures-and-algorithms-p097-114.webp)
 
 case, how long would it take to use binary search to find the name of a particular species in the array?
 

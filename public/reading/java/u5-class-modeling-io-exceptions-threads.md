@@ -136,9 +136,9 @@ Read a multiplicity at one end as the permitted number of objects at that end fo
 
 1..* requires at least one related object.
 
-![Figure](/reading/java/img/u5-class-modeling-io-exceptions-threads-p005-36.jpg)
+![Figure](/reading/java/img/u5-class-modeling-io-exceptions-threads-p005-36.webp)
 
-![Figure](/reading/java/img/u5-class-modeling-io-exceptions-threads-p005-36.jpg)
+![Figure](/reading/java/img/u5-class-modeling-io-exceptions-threads-p005-36.webp)
 
 Student Course 1..* 0..*
 

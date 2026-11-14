@@ -36,7 +36,7 @@ For example, an employee’s name may be divided into three subitems - first nam
 
 Each record in a file may contain many field items, but the value in a certain field may uniquely determine the record in the file. Such a field K is called primary key, and the values k1,k2,.. in such a field are called keys or key values.
 
-![Page 7](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p007.jpg)
+![Page 7](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p007.webp)
 
 Records may also be classified according to length.
 
@@ -79,7 +79,7 @@ Regardless of the notation, the number K in A[K] is
 
 - called a subscript and A[K] is called a subscripted variable.
 
-![Figure](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p013-0.jpg)
+![Figure](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p013-0.webp)
 
 The size of the array is denoted by 28 X 4, since it contains 28 rows and 4 columns.
 
@@ -99,7 +99,7 @@ Suppose a brokerage firm maintains a file where record contains a customer’s n
 |  | 8 | Hill | Smith |  |
 |  | 9 | Infeld | Ray |  |
 
-![Figure](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p016-0.jpg)
+![Figure](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p016-0.webp)
 
 - Another way of storing the data above is to have a separated array for the salespeople and an entry (called a pointer) in the customer file which gives the location of each customer’s salesperson. Fig 1.4
 - Fig 1.5 - Each salesperson have a set of pointers giving the positions of his or her customers.
@@ -111,9 +111,9 @@ Data often contain a hierarchical relationship between
 
 - various elements. The data structure that reflects this relationship is called a rooted tree graph or simple a tree.
 
-![Page 18](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p018.jpg)
+![Page 18](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p018.webp)
 
-![Page 19](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p019.jpg)
+![Page 19](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p019.webp)
 
 There are data structures other than arrays, linked list and trees. Some of these structures are briefly described below:
 
@@ -131,7 +131,7 @@ Data sometimes contain a relationship between pairs of elements which is not nec
 
 For example, suppose an airline flies only between cities connected by lines in the figure. The data structure which reflects this type of relationship is called a Graph.
 
-![Page 23](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p023.jpg)
+![Page 23](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p023.webp)
 
 ## Data structure operations
 
@@ -154,7 +154,7 @@ The following four operations play a major role for this
 
 Other operations like copying or concatenation will be discussed later.
 
-![Page 26](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p026.jpg)
+![Page 26](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p026.webp)
 
 ## Algorithms : complexity, time space tradeoff
 
@@ -216,13 +216,13 @@ Another way, as shown in the figure, is to have the main
 
 - file sorted numerically by social security number and to have an auxiliary array with only two columns, the first column containing an alphabetized list of the names and the second column containing pointers which give the locations of the corresponding records in the main file.
 
-![Page 34](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p034.jpg)
+![Page 34](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p034.webp)
 
 ## Exercises
 
 1. Consider the linear array NAME in the figure. The values of FIRST and LINK[K] in the figure determines a linear ordering of the names as follows. FIRST gives the location of the first name in the list, and LINK[K] gives the location of the name following NAME[K], with 0 denoting the end of the list. Find the linear ordering of the names.
 
-![Page 36](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p036.jpg)
+![Page 36](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p036.webp)
 
 2. Consider the algebraic expression (7x + y)(5a - b)3.
 
@@ -284,7 +284,7 @@ The binary search algorithm assumes that one can directly access the middle elem
 
 6. The daily flights of an airline company appear in the following figure. CITY lists the cities and ORIG[K] and DEST[K] denote the cities of origin and destination, respectively, of the flight NUMBER[k]. Draw the corresponding directed graph of the data. (The graph is directed because the flight numbers represent flights from one city to another but not returning.
 
-![Page 45](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p045.jpg)
+![Page 45](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p045.webp)
 
 7. Consider the data above, which gives the different flights of an airline. Discuss different ways of storing the data so as to decrease the time in executing the following:
 
@@ -298,7 +298,7 @@ Give city A and city B, find whether there is a flight from A to B, and if there
 
 Answer:
 
-![Figure](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p047-118.jpg)
+![Figure](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p047-118.webp)
 
 a) Store the data in arrays ORIG and DEST where the subscript is the flight number.
 
@@ -308,7 +308,7 @@ b) Store the data in a two-dimensional array FLIGHT where FLIGHT[J,K] contains t
 
 The various mathematical functions which appear very often in the analysis of algorithms and in computer science, and their notations.
 
-![Page 49](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p049.jpg)
+![Page 49](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p049.webp)
 
 ## Remainder function; modular arithmetic
 
@@ -690,7 +690,7 @@ Example: Loop with step size or offset.
 
 7. Geometric Series
 
-![Figure](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p085-134.jpg)
+![Figure](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p085-134.webp)
 
 Use Case:
 
@@ -712,7 +712,7 @@ Coupon collector problem: Expected time to collect all n coupons
 
 - is
 
-![Page 88](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p088.jpg)
+![Page 88](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p088.webp)
 
 ## Factorial function
 
@@ -724,9 +724,9 @@ What is the factorial function?
 
 - The factorial of a non-negative integer n , denoted by n! , is the product of all positive integers less than or equal to n .
 
-![Figure](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p089-264.jpg)
+![Figure](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p089-264.webp)
 
-![Page 90](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p090.jpg)
+![Page 90](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p090.webp)
 
 Recursive Definition:
 
@@ -743,11 +743,11 @@ Example:
 - Example: 3 books → 3!=6 possible orders.
 - Number of permutations of r items from n :
 
-![Figure](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p092-171.jpg)
+![Figure](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p092-171.webp)
 
-![Page 93](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p093.jpg)
+![Page 93](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p093.webp)
 
-![Page 94](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p094.jpg)
+![Page 94](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p094.webp)
 
 ## permutations
 
@@ -755,15 +755,15 @@ A permutation is an arrangement of all or part of a set of objects in a specific
 
 Unlike combinations, order matters in permutations.
 
-![Page 96](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p096.jpg)
+![Page 96](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p096.webp)
 
-![Page 97](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p097.jpg)
+![Page 97](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p097.webp)
 
-![Page 98](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p098.jpg)
+![Page 98](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p098.webp)
 
-![Page 99](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p099.jpg)
+![Page 99](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p099.webp)
 
-![Page 100](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p100.jpg)
+![Page 100](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p100.webp)
 
 ## Exponents and logarithms
 
@@ -781,7 +781,7 @@ Algorithms can have vastly different performance
 
 - characteristics. Some run very quickly even on large inputs, while others become impractical as input size grows. Exponents and logarithms allow us to categorize these behaviors into meaningful growth rates:
 
-![Page 103](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p103.jpg)
+![Page 103](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p103.webp)
 
 Consider a recursive algorithm to def fib(n):
 
@@ -797,9 +797,9 @@ Implication: Even for moderate values of n (e.g., n=50 ), the algorithm becomes 
 
 Use Case: Exponential algorithms are typically only feasible for very small inputs.
 
-![Page 106](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p106.jpg)
+![Page 106](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p106.webp)
 
-![Page 107](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p107.jpg)
+![Page 107](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p107.webp)
 
 Time complexity: O(log n)
 
@@ -819,9 +819,9 @@ Implication: Even for very large n (e.g. 1 billion), log (109) = 30 steps suffic
 
 Logarithmic and Linearithmic algorithm scale well; exponential ones do not
 
-![Page 110](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p110.jpg)
+![Page 110](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p110.webp)
 
-![Page 111](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p111.jpg)
+![Page 111](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p111.webp)
 
 ## Algorithmic notation
 
@@ -847,9 +847,9 @@ Logarithmic and Linearithmic algorithm scale well; exponential ones do not
 
 3. Iteration logic or repetitive flow
 
-![Page 114](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p114.jpg)
+![Page 114](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p114.webp)
 
-![Page 115](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p115.jpg)
+![Page 115](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p115.webp)
 
 ## Asymptotic notation
 
@@ -888,15 +888,15 @@ There are 3 primary notations:
 
 3. Theta notation - tight-bound average case
 
-![Page 119](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p119.jpg)
+![Page 119](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p119.webp)
 
-![Page 120](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p120.jpg)
+![Page 120](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p120.webp)
 
-![Page 121](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p121.jpg)
+![Page 121](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p121.webp)
 
-![Page 122](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p122.jpg)
+![Page 122](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p122.webp)
 
-![Page 123](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p123.jpg)
+![Page 123](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p123.webp)
 
 - An algorithm is said to have constant time with order O (1) when it is not dependent on the input size n. Irrespective of the input size n, the runtime will always be the same.
 - An algorithm is said to have a linear time complexity when the running time increases linearly with the length of the input. When the function involves checking all the values in input data, with this order O(n).
@@ -928,7 +928,7 @@ Step 2: Look for Loops
 
 Every loop often contributes to the complexity.
 
-![Figure](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p128-189.jpg)
+![Figure](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p128-189.webp)
 
 ## How to compute big-o from a given problem or code
 
@@ -972,45 +972,45 @@ O(n) * O(log n) = O(n log n)
 
 Step 7: Use Big-O rules
 
-![Figure](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p132-133.jpg)
+![Figure](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p132-133.webp)
 
-![Page 133](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p133.jpg)
+![Page 133](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p133.webp)
 
-![Page 134](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p134.jpg)
+![Page 134](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p134.webp)
 
-![Page 135](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p135.jpg)
+![Page 135](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p135.webp)
 
-![Page 136](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p136.jpg)
+![Page 136](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p136.webp)
 
-![Page 137](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p137.jpg)
+![Page 137](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p137.webp)
 
-![Page 138](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p138.jpg)
+![Page 138](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p138.webp)
 
-![Page 139](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p139.jpg)
+![Page 139](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p139.webp)
 
-![Page 140](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p140.jpg)
+![Page 140](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p140.webp)
 
-![Page 141](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p141.jpg)
+![Page 141](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p141.webp)
 
-![Page 142](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p142.jpg)
+![Page 142](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p142.webp)
 
-![Page 143](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p143.jpg)
+![Page 143](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p143.webp)
 
-![Page 144](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p144.jpg)
+![Page 144](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p144.webp)
 
-![Page 145](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p145.jpg)
+![Page 145](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p145.webp)
 
-![Figure](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p146-0.jpg)
+![Figure](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p146-0.webp)
 
 In this algorithm, we see that for each element in a row, we add all of the elements in a column. This is the classic quadratic loop. The efficiency of the algorithm is O(n2)
 
-![Page 147](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p147.jpg)
+![Page 147](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p147.webp)
 
-![Page 148](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p148.jpg)
+![Page 148](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p148.webp)
 
 In this algorithm we see three nested loops. Because each loop starts at the first element, we have a cubic loop. Loops with three nested loops have a big-O efficiency of O(n3)
 
-![Figure](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p150-0.jpg)
+![Figure](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p150-0.webp)
 
 ## Common Properties of
 
@@ -1018,28 +1018,28 @@ In this algorithm we see three nested loops. Because each loop starts at the fir
 
 ## Common Properties of asymptotic notations
 
-![Figure](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p151-57.jpg)
+![Figure](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p151-57.webp)
 
 ## Common Properties of asymptotic notations
 
-![Figure](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p152-60.jpg)
+![Figure](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p152-60.webp)
 
-![Page 153](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p153.jpg)
+![Page 153](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p153.webp)
 
-![Page 154](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p154.jpg)
+![Page 154](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p154.webp)
 
-![Page 155](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p155.jpg)
+![Page 155](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p155.webp)
 
-![Page 156](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p156.jpg)
+![Page 156](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p156.webp)
 
-![Page 157](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p157.jpg)
+![Page 157](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p157.webp)
 
-![Page 158](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p158.jpg)
+![Page 158](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p158.webp)
 
-![Page 159](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p159.jpg)
+![Page 159](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p159.webp)
 
-![Page 160](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p160.jpg)
+![Page 160](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p160.webp)
 
-![Page 161](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p161.jpg)
+![Page 161](/reading/dsa/img/u1-02-basic-terminology-and-data-organization-p161.webp)
 
 ### The next topic is Unit 2- Recursion

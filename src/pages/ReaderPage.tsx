@@ -29,6 +29,7 @@ import { LIBRARY } from "@/data/libraryIndex";
 import { getProgress, minutesFor, saveProgress } from "@/lib/readingProgress";
 import { setPageMeta, SITE_URL } from "@/lib/pageMeta";
 import { useAuth } from "@/contexts/AuthContext";
+import { DocDoubts } from "@/components/DocDoubts";
 
 /* ───────────────────────── preferences ───────────────────────── */
 
@@ -726,6 +727,14 @@ export default function ReaderPage() {
                     )}
                   </div>
                 </footer>
+              )}
+
+              {md && (
+                <DocDoubts
+                  docKey={`${subject.slug}/${doc.slug}`}
+                  docTitle={doc.title}
+                  section={activeTocId ? { id: activeTocId, title: tocHeadings.find((h) => h.id === activeTocId)?.text ?? "" } : null}
+                />
               )}
             </div>
           </main>

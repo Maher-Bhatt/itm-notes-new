@@ -295,7 +295,7 @@ T(n) = Θ(n^3)
 
 ## Graphical representation
 
-![Figure](/reading/dsa/img/u1-05-asymptotic-notation-slides-p028-96.jpg)
+![Figure](/reading/dsa/img/u1-05-asymptotic-notation-slides-p028-96.webp)
 
 Refer:
 

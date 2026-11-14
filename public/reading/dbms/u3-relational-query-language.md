@@ -20,7 +20,7 @@
 - Aggregate Functions
 - Open Source and Commercial DBMS
 
-![Page 3](/reading/dbms/img/u3-relational-query-language-p003.jpg)
+![Page 3](/reading/dbms/img/u3-relational-query-language-p003.webp)
 
 ### Structure of Relational Databases
 
@@ -44,7 +44,7 @@ Domain is a set of all possible unique values for a specific column.
 
 Domain of Branch attribute is (CE, CI, ME, EE)
 
-![Page 5](/reading/dbms/img/u3-relational-query-language-p005.jpg)
+![Page 5](/reading/dbms/img/u3-relational-query-language-p005.webp)
 
 ### Super Key
 
@@ -135,7 +135,7 @@ Parent Child Table Table
 
 Project EnrollNo Name Branch Sem ProjectID Title EnrollNo 190540107001 jack CE Bank 190540107001 190540107002 Mitesh CE College 190540107002 190540107003 Nilesh CE School 190540107003 Hospital 190540107001 190540107004 Meet CE
 
-![Page 12](/reading/dbms/img/u3-relational-query-language-p012.jpg)
+![Page 12](/reading/dbms/img/u3-relational-query-language-p012.webp)
 
 ### Relational Algebra Operations
 
@@ -149,7 +149,7 @@ Project EnrollNo Name Branch Sem ProjectID Title EnrollNo 190540107001 jack CE B
 | Division | Divides one relation by another |
 | Rename | Rename a column or a table |
 
-![Page 14](/reading/dbms/img/u3-relational-query-language-p014.jpg)
+![Page 14](/reading/dbms/img/u3-relational-query-language-p014.webp)
 
 ### Selection Operator
 
@@ -273,7 +273,7 @@ RollNo Name Branch SPI CE
 
 Display the detail of employee belongs to either “HR” or “Admin” Dept. Display the detail of employee whose Salary between 10000 and 25000 and belongs to “HR” Dept.
 
-![Page 20](/reading/dbms/img/u3-relational-query-language-p020.jpg)
+![Page 20](/reading/dbms/img/u3-relational-query-language-p020.webp)
 
 ### Projection Operator
 
@@ -622,7 +622,7 @@ Example Display the name of students with their project name whose guide is “A
 
 List the name of students with their department name doing project “Hackathon” under guide “I. I. Shah”.
 
-![Page 38](/reading/dbms/img/u3-relational-query-language-p038.jpg)
+![Page 38](/reading/dbms/img/u3-relational-query-language-p038.webp)
 
 ### Outer Join
 
@@ -754,7 +754,7 @@ Result RollNo Name Branch RollNo SPI BL Raj CE ME
 | 102 | Meet | NULL |
 | 103 | NULL | 9 |
 
-![Page 46](/reading/dbms/img/u3-relational-query-language-p046.jpg)
+![Page 46](/reading/dbms/img/u3-relational-query-language-p046.webp)
 
 ### Set Operators
 
@@ -963,21 +963,21 @@ Employee Customer ID Name Balance ID Name Dept Salary 10000 Suresh CE 8000 Sures
 
 EXCEPT : contains all the rows that are returned by the first SELECT operation, and not returned by the second SELECT operation.
 
-![Figure](/reading/dbms/img/u3-relational-query-language-p059-139.jpg)
+![Figure](/reading/dbms/img/u3-relational-query-language-p059-139.webp)
 
-![Page 60](/reading/dbms/img/u3-relational-query-language-p060.jpg)
+![Page 60](/reading/dbms/img/u3-relational-query-language-p060.webp)
 
 ### SQL - NULL Values
 
 SQL uses the term NULL to represent a non-existent data value in the database. These values are not the same as an empty string or a zero. They don't hold any space in the database and are used to signify the absence of a value or the unknown value in a data field.
 
-![Figure](/reading/dbms/img/u3-relational-query-language-p061-163.jpg)
+![Figure](/reading/dbms/img/u3-relational-query-language-p061-163.webp)
 
-![Figure](/reading/dbms/img/u3-relational-query-language-p061-202.jpg)
+![Figure](/reading/dbms/img/u3-relational-query-language-p061-202.webp)
 
-![Page 62](/reading/dbms/img/u3-relational-query-language-p062.jpg)
+![Page 62](/reading/dbms/img/u3-relational-query-language-p062.webp)
 
-![Page 63](/reading/dbms/img/u3-relational-query-language-p063.jpg)
+![Page 63](/reading/dbms/img/u3-relational-query-language-p063.webp)
 
 ### Division Operator
 
@@ -1033,7 +1033,7 @@ Project RNo Name Technology TID Technology Raj .NET .NET Raj PHP PHP .NET Androi
 
 Answer Android Rohit Android Name Suresh .NET Suresh iPhone Suresh Android
 
-![Page 68](/reading/dbms/img/u3-relational-query-language-p068.jpg)
+![Page 68](/reading/dbms/img/u3-relational-query-language-p068.webp)
 
 ### Rename Operator
 
@@ -1194,7 +1194,7 @@ Jay
 
 Output-3 CPI A.CPI CPI − =
 
-![Page 75](/reading/dbms/img/u3-relational-query-language-p075.jpg)
+![Page 75](/reading/dbms/img/u3-relational-query-language-p075.webp)
 
 ### Aggregate Functions
 
@@ -1284,7 +1284,7 @@ avg
 
 Find out the total number of employee.
 
-![Page 79](/reading/dbms/img/u3-relational-query-language-p079.jpg)
+![Page 79](/reading/dbms/img/u3-relational-query-language-p079.webp)
 
 ### Open Source and Commercial DBMS
 

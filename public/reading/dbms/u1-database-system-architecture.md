@@ -17,7 +17,7 @@ Database Management Systems (DBMS)
 - Database users and DBA
 - Database system architecture
 
-![Page 3](/reading/dbms/img/u1-database-system-architecture-p003.jpg)
+![Page 3](/reading/dbms/img/u1-database-system-architecture-p003.webp)
 
 ### What is Database Management System (DBMS)?
 
@@ -35,7 +35,7 @@ Database Management Systems (DBMS)
 
 e.g. MS SQL Server, Oracle, My SQL, SQLite, MongoDB etc.
 
-![Page 5](/reading/dbms/img/u1-database-system-architecture-p005.jpg)
+![Page 5](/reading/dbms/img/u1-database-system-architecture-p005.webp)
 
 ### Applications of DBMS
 
@@ -49,7 +49,7 @@ Database Management Systems (DBMS)
 
 Exercise Write down any five applications of DBMS other than above.
 
-![Page 7](/reading/dbms/img/u1-database-system-architecture-p007.jpg)
+![Page 7](/reading/dbms/img/u1-database-system-architecture-p007.webp)
 
 ### Reduce data redundancy (duplication)
 
@@ -85,7 +85,7 @@ File - 2 DBMS allow us to access (retrieve) appropriate data easily.
 
 Emp_Name Post Salary Load
 
-![Figure](/reading/dbms/img/u1-database-system-architecture-p010-287.jpg)
+![Figure](/reading/dbms/img/u1-database-system-architecture-p010-287.webp)
 
 Prof. john wick Lecturer 50,000 Data isolation is a property that determines when and how changes made by one operation become visible to other File - 3 concurrent users and systems.
 
@@ -127,7 +127,7 @@ DBMS prevents unauthorized user to access data.
 
 ### Providing backup and recovery services
 
-![Figure](/reading/dbms/img/u1-database-system-architecture-p015-108.jpg)
+![Figure](/reading/dbms/img/u1-database-system-architecture-p015-108.webp)
 
 Provides facilities to backup and restore the database in case of failure.
 
@@ -147,11 +147,11 @@ Provides facilities to backup and restore the database in case of failure.
 
 Providing backup and recovery services Can take a regular auto or manual backup and use it to restore the database if it corrupts.
 
-![Page 18](/reading/dbms/img/u1-database-system-architecture-p018.jpg)
+![Page 18](/reading/dbms/img/u1-database-system-architecture-p018.webp)
 
-![Page 19](/reading/dbms/img/u1-database-system-architecture-p019.jpg)
+![Page 19](/reading/dbms/img/u1-database-system-architecture-p019.webp)
 
-![Page 20](/reading/dbms/img/u1-database-system-architecture-p020.jpg)
+![Page 20](/reading/dbms/img/u1-database-system-architecture-p020.webp)
 
 ### Basic terms
 
@@ -205,7 +205,7 @@ Faculty Emp_Name Address Mobile_No Subject Fields Newyor Prof. john wick 9876543
 
 Newyor Prof. john wick 9876543210 DBMS Record / Tuple k Prof. Ajay Patel Surat 0123456789 DBMS
 
-![Page 25](/reading/dbms/img/u1-database-system-architecture-p025.jpg)
+![Page 25](/reading/dbms/img/u1-database-system-architecture-p025.webp)
 
 ### 3 Levels Database System
 
@@ -283,13 +283,13 @@ Want to access some data
 
 User 1 User 3 User 2 View View 1 View 2 View 3 Level
 
-![Figure](/reading/dbms/img/u1-database-system-architecture-p030-212.jpg)
+![Figure](/reading/dbms/img/u1-database-system-architecture-p030-212.webp)
 
 Request Process of transforming requests and results between the Logical three levels is called mapping.
 
 Conceptual Level Level
 
-![Figure](/reading/dbms/img/u1-database-system-architecture-p030-323.jpg)
+![Figure](/reading/dbms/img/u1-database-system-architecture-p030-323.webp)
 
 Ability to modify a schema definition in one level without Internal Physical affecting a schema definition in the next higher level.
 
@@ -311,7 +311,7 @@ Database
 
 Modification at the logical levels is necessary whenever the logical structure of the database is changed. Application programs are heavily dependent on logical structures of the data they access. So any change in logical structure also requires programs to change.
 
-![Page 32](/reading/dbms/img/u1-database-system-architecture-p032.jpg)
+![Page 32](/reading/dbms/img/u1-database-system-architecture-p032.webp)
 
 ### Types of Database Users
 
@@ -321,7 +321,7 @@ Database
 
 User write specialized database applications program Use administration tools e.g. Database Administrator
 
-![Page 34](/reading/dbms/img/u1-database-system-architecture-p034.jpg)
+![Page 34](/reading/dbms/img/u1-database-system-architecture-p034.webp)
 
 ### Role of DBA
 
@@ -341,7 +341,7 @@ Database
 
 Backup and Recovery DBA backing up the database on some storage devices such as DVD, CD or magnetic tape or remote servers and recover the system in case of failures, such as flood or virus attack from this backup.
 
-![Page 37](/reading/dbms/img/u1-database-system-architecture-p037.jpg)
+![Page 37](/reading/dbms/img/u1-database-system-architecture-p037.webp)
 
 ### Database System Architecture
 

@@ -14,7 +14,7 @@
 - Transformation of relational expressions
 - Sorting and join
 
-![Page 3](/reading/dbms/img/u5-query-processing-and-optimization-p003.jpg)
+![Page 3](/reading/dbms/img/u5-query-processing-and-optimization-p003.webp)
 
 ### Steps in Query Processing
 
@@ -26,7 +26,7 @@ Choose best execution plan Optimizer Execute the query-evaluation plan and retur
 
 Database Catalog Data Statistics about Data
 
-![Page 5](/reading/dbms/img/u5-query-processing-and-optimization-p005.jpg)
+![Page 5](/reading/dbms/img/u5-query-processing-and-optimization-p005.webp)
 
 ### Measures of Query Cost
 
@@ -36,7 +36,7 @@ Database Catalog Data Statistics about Data
 
 Cost to write a block is greater than cost to read a block because data is read back after being written to ensure that the write was successful.
 
-![Page 7](/reading/dbms/img/u5-query-processing-and-optimization-p007.jpg)
+![Page 7](/reading/dbms/img/u5-query-processing-and-optimization-p007.webp)
 
 ### Selection Operator
 
@@ -90,7 +90,7 @@ Example Display the detail of students belongs to “CE” Branch.
 
 cost of binary search = [log2(br)] br denotes number of blocks containing records from relation r This algorithm is faster than linear search algorithm.
 
-![Page 12](/reading/dbms/img/u5-query-processing-and-optimization-p012.jpg)
+![Page 12](/reading/dbms/img/u5-query-processing-and-optimization-p012.webp)
 
 ### Evaluation of expressions
 
@@ -134,7 +134,7 @@ if it contains more than one operations.
 
 Demand driven (System makes repeated requests for tuples from the operation at the top of pipeline) Producer driven (Operations do not wait for request to produce tuples, but generate the tuples eagerly.)
 
-![Page 16](/reading/dbms/img/u5-query-processing-and-optimization-p016.jpg)
+![Page 16](/reading/dbms/img/u5-query-processing-and-optimization-p016.webp)
 
 ### Query optimization
 
@@ -164,7 +164,7 @@ C04 A04 Ram A04 4000
 
 This algorithms do not necessarily produce the best query plan.
 
-![Page 19](/reading/dbms/img/u5-query-processing-and-optimization-p019.jpg)
+![Page 19](/reading/dbms/img/u5-query-processing-and-optimization-p019.webp)
 
 ### Transformation of relational expressions
 
@@ -307,7 +307,7 @@ Customer Employee Student (Customer ∩ Employee) ∩ Student Output Cst_Name Em
 
 ### σθ(E1 – E2) = σθ(E1) – σθ(E2)
 
-![Page 30](/reading/dbms/img/u5-query-processing-and-optimization-p030.jpg)
+![Page 30](/reading/dbms/img/u5-query-processing-and-optimization-p030.webp)
 
 ### Sorting
 

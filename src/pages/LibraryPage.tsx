@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { ArrowRight, BookOpen, FileText, PenLine, Presentation, ScrollText, Search, ClipboardList, FlaskConical, CheckCircle2 } from "lucide-react";
+import { ArrowRight, BookOpen, FileText, PenLine, Presentation, ScrollText, Search, ClipboardList, FlaskConical, CheckCircle2, Target } from "lucide-react";
 import { LIBRARY } from "@/data/libraryIndex";
 import type { LibraryDoc, LibrarySubject } from "@/data/libraryTypes";
 import { setPageMeta } from "@/lib/pageMeta";
@@ -8,6 +8,7 @@ import { daysUntilFinals, getAllProgress, getLastRead, minutesFor, docKey, FINAL
 
 const KIND_ICON: Record<string, typeof FileText> = {
   "Study guide": BookOpen,
+  "Exam guide": Target,
   Syllabus: ScrollText,
   "Lecture notes": FileText,
   Slides: Presentation,
@@ -23,6 +24,7 @@ const FILTERS = [
   { label: "Notes", kinds: ["Lecture notes", "Lab manual"] },
   { label: "Slides", kinds: ["Slides"] },
   { label: "Handwritten", kinds: ["Handwritten notes"] },
+  { label: "Exam prep", kinds: ["Exam guide"] },
   { label: "Practice & papers", kinds: ["Tutorial", "Question paper", "Assignment", "Syllabus"] },
 ];
 
@@ -35,11 +37,11 @@ function groupByUnit(docs: LibraryDoc[]) {
   const groups = new Map<string, LibraryDoc[]>();
   for (const d of docs) {
     if (d.featured) continue;
-    const key = d.unit != null ? `Unit ${d.unit}` : d.kind === "Syllabus" ? "Course" : "Practice & papers";
+    const key = d.unit != null ? `Unit ${d.unit}` : d.kind === "Exam guide" ? "Exam prep" : d.kind === "Syllabus" ? "Course" : "Practice & papers";
     if (!groups.has(key)) groups.set(key, []);
     groups.get(key)!.push(d);
   }
-  const order = (k: string) => (k === "Course" ? -1 : k.startsWith("Unit") ? parseInt(k.slice(5), 10) : 999);
+  const order = (k: string) => (k === "Exam prep" ? -2 : k === "Course" ? -1 : k.startsWith("Unit") ? parseInt(k.slice(5), 10) : 999);
   return [...groups.entries()].sort((a, b) => order(a[0]) - order(b[0]));
 }
 

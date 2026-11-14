@@ -2,7 +2,7 @@
 
 Prof. Madonna Lamin
 
-![Page 2](/reading/dsa/img/u2-01-recursion-p002.jpg)
+![Page 2](/reading/dsa/img/u2-01-recursion-p002.webp)
 
 ## What is recursion?
 
@@ -89,7 +89,7 @@ Problem Statement:Given a number X, print its factorial.
 
 To obtain the factorial of a number, it has to be multiplied by all the whole numbers preceding it. More precisely X! = X x (X - 1) x (X - 2)... x 3 x 2 x 1 Note: X is always a positive number.
 
-![Figure](/reading/dsa/img/u2-01-recursion-p011-259.jpg)
+![Figure](/reading/dsa/img/u2-01-recursion-p011-259.webp)
 
 Example 1:
 
@@ -115,15 +115,15 @@ A repetitive algorithm uses
 - recursion whenever the algorithm appears within the definition itself. For example, the factorial
 - algorithm can be defined recursively
 
-![Figure](/reading/dsa/img/u2-01-recursion-p014-281.jpg)
+![Figure](/reading/dsa/img/u2-01-recursion-p014-281.webp)
 
-![Page 15](/reading/dsa/img/u2-01-recursion-p015.jpg)
+![Page 15](/reading/dsa/img/u2-01-recursion-p015.webp)
 
 “Recursion is a repetitive process in which algorithm calls itself”
 
 ## Iterative solution
 
-![Figure](/reading/dsa/img/u2-01-recursion-p017-48.jpg)
+![Figure](/reading/dsa/img/u2-01-recursion-p017-48.webp)
 
 Time Complexity: O(n)
 
@@ -139,7 +139,7 @@ In the recursive solution, we let the factorial algorithm
 
 - call itself, each time with a different set of parameters.
 
-![Page 19](/reading/dsa/img/u2-01-recursion-p019.jpg)
+![Page 19](/reading/dsa/img/u2-01-recursion-p019.webp)
 
 Time Complexity: O(n) since the function is being called n times, and for each function, we have only one printable line that takes O(1)time, so the cumulative time complexity would be O(n)
 
@@ -154,7 +154,7 @@ The recursive version consists of a simple
 
 - selection statement that returns either the value 1 or the product of the two values, one of which is a call to a factorial itself.
 
-![Page 22](/reading/dsa/img/u2-01-recursion-p022.jpg)
+![Page 22](/reading/dsa/img/u2-01-recursion-p022.webp)
 
 ## Limitations of recursion
 
@@ -221,9 +221,9 @@ To start a Fibonacci series, we need to know the first
 
 These are 0 and 1. These are the base cases.
 
-![Figure](/reading/dsa/img/u2-01-recursion-p028-202.jpg)
+![Figure](/reading/dsa/img/u2-01-recursion-p028-202.webp)
 
-![Page 29](/reading/dsa/img/u2-01-recursion-p029.jpg)
+![Page 29](/reading/dsa/img/u2-01-recursion-p029.webp)
 
 ## TIME AND SPACE COMPLEXITY OF FIBONACCI SEQUENCE USING RECURSION
 
@@ -277,7 +277,7 @@ Given two integers, a and b, the greatest common divisor
 
 - is recursively found using the formula.
 
-![Figure](/reading/dsa/img/u2-01-recursion-p034-208.jpg)
+![Figure](/reading/dsa/img/u2-01-recursion-p034-208.webp)
 
 The Euclidean Division Algorithm is a method used in
 
@@ -287,17 +287,17 @@ The Euclidean Division Algorithm is a method used in
 - According to Euclidean Division Algorithm, two positive integers a and b, where a = bq + r, a common divisor of a and b is also a common divisor of b and r, and vice versa,
 - GCD(a,b) = GCD(b,r)
 
-![Page 36](/reading/dsa/img/u2-01-recursion-p036.jpg)
+![Page 36](/reading/dsa/img/u2-01-recursion-p036.webp)
 
-![Page 37](/reading/dsa/img/u2-01-recursion-p037.jpg)
+![Page 37](/reading/dsa/img/u2-01-recursion-p037.webp)
 
-![Page 38](/reading/dsa/img/u2-01-recursion-p038.jpg)
+![Page 38](/reading/dsa/img/u2-01-recursion-p038.webp)
 
-![Page 39](/reading/dsa/img/u2-01-recursion-p039.jpg)
+![Page 39](/reading/dsa/img/u2-01-recursion-p039.webp)
 
-![Page 40](/reading/dsa/img/u2-01-recursion-p040.jpg)
+![Page 40](/reading/dsa/img/u2-01-recursion-p040.webp)
 
-![Page 41](/reading/dsa/img/u2-01-recursion-p041.jpg)
+![Page 41](/reading/dsa/img/u2-01-recursion-p041.webp)
 
 ## How many steps does it take? (Time complexity)
 
@@ -510,15 +510,15 @@ Space Complexity = O(n)
 
 ## Compute powers of a number using recursion
 
-![Figure](/reading/dsa/img/u2-01-recursion-p056-105.jpg)
+![Figure](/reading/dsa/img/u2-01-recursion-p056-105.webp)
 
-![Page 57](/reading/dsa/img/u2-01-recursion-p057.jpg)
+![Page 57](/reading/dsa/img/u2-01-recursion-p057.webp)
 
-![Page 58](/reading/dsa/img/u2-01-recursion-p058.jpg)
+![Page 58](/reading/dsa/img/u2-01-recursion-p058.webp)
 
-![Page 59](/reading/dsa/img/u2-01-recursion-p059.jpg)
+![Page 59](/reading/dsa/img/u2-01-recursion-p059.webp)
 
-![Page 60](/reading/dsa/img/u2-01-recursion-p060.jpg)
+![Page 60](/reading/dsa/img/u2-01-recursion-p060.webp)
 
 ## Towers of hanoi
 
@@ -538,7 +538,7 @@ The monks moved one disk to another needle each hour,
 
 - The legend said that when all disks had been transferred to the
 
-![Figure](/reading/dsa/img/u2-01-recursion-p062-248.jpg)
+![Figure](/reading/dsa/img/u2-01-recursion-p062-248.webp)
 
 destination needle,the stars would be extinguished and the world would end.
 
@@ -568,9 +568,9 @@ We will use only three disks because we do not
 - Move one disk to the destination needle
 - Move one disk from the auxiliary to destination needle
 
-![Figure](/reading/dsa/img/u2-01-recursion-p065-210.jpg)
+![Figure](/reading/dsa/img/u2-01-recursion-p065-210.webp)
 
-![Figure](/reading/dsa/img/u2-01-recursion-p066-0.jpg)
+![Figure](/reading/dsa/img/u2-01-recursion-p066-0.webp)
 
 - The case for three disks.
 - The first three steps move the top two disks from the source to auxiliary needle (Refer Case 2)
@@ -581,7 +581,7 @@ We then need three more
 
 - steps to move the two disks on the auxiliary needle to the destination needle.
 
-![Figure](/reading/dsa/img/u2-01-recursion-p067-0.jpg)
+![Figure](/reading/dsa/img/u2-01-recursion-p067-0.webp)
 
 - The case for three disks.
 
@@ -620,9 +620,9 @@ We are now ready to generalize the problem.
 
 (Remember that the positions of the parameters in the called algorithm are source, destination, and auxiliary. The calling algorithm must remember which of the three needles is the source and which is the destination for each call.)
 
-![Page 71](/reading/dsa/img/u2-01-recursion-p071.jpg)
+![Page 71](/reading/dsa/img/u2-01-recursion-p071.webp)
 
-![Page 72](/reading/dsa/img/u2-01-recursion-p072.jpg)
+![Page 72](/reading/dsa/img/u2-01-recursion-p072.webp)
 
 ## THe Josephus Problem
 
@@ -675,7 +675,7 @@ So, if you were standing at position 3, you would survive!
 - It’s a great problem for understanding recursion (a way a function can call itself).
 - It is also useful in computer science (like memory management, circular queues, or resource allocation problems).
 
-![Page 77](/reading/dsa/img/u2-01-recursion-p077.jpg)
+![Page 77](/reading/dsa/img/u2-01-recursion-p077.webp)
 
 The problem has the following recursive structure.
 
@@ -683,7 +683,7 @@ josephus(n,k) = (josephus(n-1),k) % n + 1 and josephus(1,k) = 1 After the first 
 
 Make recursive call for josephus(n-1,k) to get the position with n - 1 persons. But the position returned by josephus (n-1,k) will consider the position starting from k % n + 1. So make adjustments to the position returned by josephus(n-1,k)
 
-![Figure](/reading/dsa/img/u2-01-recursion-p079-23.jpg)
+![Figure](/reading/dsa/img/u2-01-recursion-p079-23.webp)
 
 In human counting (1-based), that’s position 3- which matches our step-by-step elimination earlier.
 
@@ -724,7 +724,7 @@ The general rule for designing a recursive algorithm is as
 
 1. Consider the following algorithm
 
-![Figure](/reading/dsa/img/u2-01-recursion-p083-133.jpg)
+![Figure](/reading/dsa/img/u2-01-recursion-p083-133.webp)
 
 Solution:
 
@@ -758,7 +758,7 @@ Now compute fun1(2) = 3 * 2 ( since 2 < 5) = 6 Substitute back:
 
 fun1(7) = 2 * 6 + 7 = 19 fun1(12) = 2 * 19 + 7 = 45
 
-![Page 87](/reading/dsa/img/u2-01-recursion-p087.jpg)
+![Page 87](/reading/dsa/img/u2-01-recursion-p087.webp)
 
 Solution
 
@@ -768,7 +768,7 @@ Solution
 
 3. fun2(15,3) = 6
 
-![Page 89](/reading/dsa/img/u2-01-recursion-p089.jpg)
+![Page 89](/reading/dsa/img/u2-01-recursion-p089.webp)
 
 ### Solution:
 
@@ -780,7 +780,7 @@ Solution
 
 4. fun3(0,0) = 1
 
-![Page 91](/reading/dsa/img/u2-01-recursion-p091.jpg)
+![Page 91](/reading/dsa/img/u2-01-recursion-p091.webp)
 
 5. Write a recursive algorithm that calculates and returns the length of a list.
 
@@ -794,11 +794,11 @@ Solution
 
 Key Idea of Recursion
 
-![Figure](/reading/dsa/img/u2-01-recursion-p093-184.jpg)
+![Figure](/reading/dsa/img/u2-01-recursion-p093-184.webp)
 
-![Page 94](/reading/dsa/img/u2-01-recursion-p094.jpg)
+![Page 94](/reading/dsa/img/u2-01-recursion-p094.webp)
 
-![Page 95](/reading/dsa/img/u2-01-recursion-p095.jpg)
+![Page 95](/reading/dsa/img/u2-01-recursion-p095.webp)
 
 ## example
 
@@ -822,13 +822,13 @@ So the length is 3
 
 Write a recursive algorithm that converts a string of numerals to an integer. For example, “43567” will be converted to 43567.
 
-![Page 98](/reading/dsa/img/u2-01-recursion-p098.jpg)
+![Page 98](/reading/dsa/img/u2-01-recursion-p098.webp)
 
-![Page 99](/reading/dsa/img/u2-01-recursion-p099.jpg)
+![Page 99](/reading/dsa/img/u2-01-recursion-p099.webp)
 
-![Page 100](/reading/dsa/img/u2-01-recursion-p100.jpg)
+![Page 100](/reading/dsa/img/u2-01-recursion-p100.webp)
 
-![Page 101](/reading/dsa/img/u2-01-recursion-p101.jpg)
+![Page 101](/reading/dsa/img/u2-01-recursion-p101.webp)
 
 ## Recursive algorithm to add the ﬁrst n elements of the series
 
@@ -836,13 +836,13 @@ Write a recursive algorithm to add the first n elements of the series. (Harmonic
 
 S(n) = 1 + 1/2 + 1/3 + 1/4 + 1/5 +...+1/n
 
-![Page 103](/reading/dsa/img/u2-01-recursion-p103.jpg)
+![Page 103](/reading/dsa/img/u2-01-recursion-p103.webp)
 
-![Page 104](/reading/dsa/img/u2-01-recursion-p104.jpg)
+![Page 104](/reading/dsa/img/u2-01-recursion-p104.webp)
 
-![Page 105](/reading/dsa/img/u2-01-recursion-p105.jpg)
+![Page 105](/reading/dsa/img/u2-01-recursion-p105.webp)
 
-![Page 106](/reading/dsa/img/u2-01-recursion-p106.jpg)
+![Page 106](/reading/dsa/img/u2-01-recursion-p106.webp)
 
 ## Preﬁx to postﬁx conversion
 
@@ -889,7 +889,7 @@ As the expression grows in complexity,however, we can
 - To parse it we begin at the left and work right until we isolate one binary expression, in this case *AB.
 - Once we have a simple prefix expression, we can convert it to postfix and put it in the output.
 
-![Page 112](/reading/dsa/img/u2-01-recursion-p112.jpg)
+![Page 112](/reading/dsa/img/u2-01-recursion-p112.webp)
 
 The first step in designing a recursive algorithm is
 
@@ -905,7 +905,7 @@ To find the left and right operands in the prefix
 - We also can use recursion for this algorithm.
 - Because each operand is one character long, our base case is finding one operand.
 
-![Page 115](/reading/dsa/img/u2-01-recursion-p115.jpg)
+![Page 115](/reading/dsa/img/u2-01-recursion-p115.webp)
 
 The algorithm is rather straightforward.
 
@@ -923,7 +923,7 @@ This algorithm needs to return the length of the
 - The minimum length of a prefix expression is therefore three: one for the operator and one for each operand.
 - As we recursively decompose the expression,we continue to add the size of its combined expression until we have the total length.
 
-![Page 118](/reading/dsa/img/u2-01-recursion-p118.jpg)
+![Page 118](/reading/dsa/img/u2-01-recursion-p118.webp)
 
 We examine the first character of a string containing a
 

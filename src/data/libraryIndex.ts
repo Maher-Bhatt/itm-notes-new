@@ -19,6 +19,16 @@ export const LIBRARY: LibrarySubject[] = [
         "summary": "Learn-from-zero guide covering every unit: Introduction: Data Structures, ADTs and Algorithm Efficiency, Recursion, Linear Lists, Part A: Arrays and Stacks, Linear Lists, Part B: Queues, Linear Lists, Part C: Linked Lists, Non-Linear Lists: Trees"
       },
       {
+        "slug": "exam-guide",
+        "title": "DSA: Exam Guide",
+        "kind": "Exam guide",
+        "unit": null,
+        "words": 1882,
+        "scanned": false,
+        "featured": false,
+        "summary": "Unit-by-unit exam questions, what to write, common mistakes and self-checks for Data Structures & Algorithms, plus the last-night revision sheet."
+      },
+      {
         "slug": "00-syllabus-dsa-c2310c5",
         "title": "Syllabus DSA C2310C5",
         "kind": "Syllabus",
@@ -213,6 +223,16 @@ export const LIBRARY: LibrarySubject[] = [
         "summary": "Learn-from-zero guide covering every unit: Database System Architecture, Data Models, Relational Query Languages, Relational Database Design, Query Processing and Query Optimisation, Transaction Processing, Concurrency, Recovery, Security"
       },
       {
+        "slug": "exam-guide",
+        "title": "DBMS: Exam Guide",
+        "kind": "Exam guide",
+        "unit": null,
+        "words": 1733,
+        "scanned": false,
+        "featured": false,
+        "summary": "Unit-by-unit exam questions, what to write, common mistakes and self-checks for Database Management Systems, plus the last-night revision sheet."
+      },
+      {
         "slug": "00-syllabus-dbms-c2311c4",
         "title": "Syllabus DBMS C2311C4",
         "kind": "Syllabus",
@@ -317,6 +337,16 @@ export const LIBRARY: LibrarySubject[] = [
         "scanned": false,
         "featured": true,
         "summary": "Learn-from-zero guide covering every unit: Errors and Computation, Solution of Algebraic and Transcendental Equations, Curve Fitting (Method of Least Squares), Interpolation Techniques (24 marks — the biggest unit), Solution of Systems of Linear Equations: Iterative Methods, Numerical Integration"
+      },
+      {
+        "slug": "exam-guide",
+        "title": "CONMP: Exam Guide",
+        "kind": "Exam guide",
+        "unit": null,
+        "words": 1017,
+        "scanned": false,
+        "featured": false,
+        "summary": "Unit-by-unit exam questions, what to write, common mistakes and self-checks for Computer Oriented Numerical Methods with Python, plus the last-night revision sheet."
       },
       {
         "slug": "00-cet1-syllabus",
@@ -491,6 +521,16 @@ export const LIBRARY: LibrarySubject[] = [
         "summary": "Learn-from-zero guide covering every unit: Fundamentals: Architecture, Functional Units, Buses, Registers, Data Representation, Register Transfer and Micro-operations, Computer Arithmetic: Adders, Multiplication, Division, Floating Point, Basic Computer Organization and Design (Mano’s Basic Computer), Programming the Basic Computer, Microprogrammed Control"
       },
       {
+        "slug": "exam-guide",
+        "title": "COA: Exam Guide",
+        "kind": "Exam guide",
+        "unit": null,
+        "words": 1158,
+        "scanned": false,
+        "featured": false,
+        "summary": "Unit-by-unit exam questions, what to write, common mistakes and self-checks for Computer Organization & Architecture, plus the last-night revision sheet."
+      },
+      {
         "slug": "u1-data-representation-register-transfer",
         "title": "Data Representation Register Transfer",
         "kind": "Lecture notes",
@@ -650,6 +690,16 @@ export const LIBRARY: LibrarySubject[] = [
         "scanned": false,
         "featured": true,
         "summary": "Learn-from-zero guide covering every unit: Basics of Java, Arrays and Strings, Classes, Objects and Methods, Inheritance and Interfaces, JavaFX: GUI and Event-Driven Programming, Class Modeling (UML), Java I/O, Exceptions and Multithreading, Last-Night Revision Sheet (Java)"
+      },
+      {
+        "slug": "exam-guide",
+        "title": "Java: Exam Guide",
+        "kind": "Exam guide",
+        "unit": null,
+        "words": 1436,
+        "scanned": false,
+        "featured": false,
+        "summary": "Unit-by-unit exam questions, what to write, common mistakes and self-checks for Object-Oriented Programming with Java, plus the last-night revision sheet."
       },
       {
         "slug": "u1-basics-of-java-arrays-strings",

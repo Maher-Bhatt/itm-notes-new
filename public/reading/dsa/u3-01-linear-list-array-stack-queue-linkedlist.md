@@ -20,7 +20,7 @@ They exist in all programming languages, and are used as the basis for most othe
 
 On their own, arrays can be used to solve many interesting problems.
 
-![Page 4](/reading/dsa/img/u3-01-linear-list-array-stack-queue-linkedlist-p004.jpg)
+![Page 4](/reading/dsa/img/u3-01-linear-list-array-stack-queue-linkedlist-p004.webp)
 
 ## Array - A dvd box
 
@@ -609,7 +609,7 @@ All we need to do for inserting an element at the end is
 
 - to assign the new element to one index past the current last element.
 
-![Figure](/reading/dsa/img/u3-01-linear-list-array-stack-queue-linkedlist-p049-235.jpg)
+![Figure](/reading/dsa/img/u3-01-linear-list-array-stack-queue-linkedlist-p049-235.webp)
 
 ## Inserting at the start of an array
 
@@ -622,7 +622,7 @@ In terms of time complexity analysis, this is linear time complexity: O(N), wher
 
 - N is the length of the array.
 
-![Figure](/reading/dsa/img/u3-01-linear-list-array-stack-queue-linkedlist-p050-243.jpg)
+![Figure](/reading/dsa/img/u3-01-linear-list-array-stack-queue-linkedlist-p050-243.webp)
 
 ## Insert anywhere in the array
 
@@ -630,7 +630,7 @@ Similarly, for inserting at any given index, we first need to shift all the elem
 
 Once the space is created for the new element, we proceed with the insertion. If you think about it, insertion at the beginning is basically a special case of inserting an element at a given index - in that case, the given index was
 
-![Figure](/reading/dsa/img/u3-01-linear-list-array-stack-queue-linkedlist-p051-223.jpg)
+![Figure](/reading/dsa/img/u3-01-linear-list-array-stack-queue-linkedlist-p051-223.webp)
 
 Again, this is also a costly operation since we could potentially have to shift almost all the other elements to the right before we actually inserting the new element.
 
@@ -809,7 +809,7 @@ Deleting from the end of an Array is the least time consuming of the three
 - cases.
 - Recall that insertion at the end of an Array was also the least time-consuming case for insertion.
 
-![Figure](/reading/dsa/img/u3-01-linear-list-array-stack-queue-linkedlist-p068-243.jpg)
+![Figure](/reading/dsa/img/u3-01-linear-list-array-stack-queue-linkedlist-p068-243.webp)
 
 - Yup, that's it! Even though we call it a deletion, it's not like we actually freed up the space for a new element, right?
 - This is because we don't actually need to free up any space.
@@ -833,7 +833,7 @@ To fill that spot, we shift the element at index 1 one
 - Going on by the ripple effect, every element all the way to the last one will be shifted one place to the left.
 - This shift of elements takes O(N) time, where N is the number of elements in the array.
 
-![Page 71](/reading/dsa/img/u3-01-linear-list-array-stack-queue-linkedlist-p071.jpg)
+![Page 71](/reading/dsa/img/u3-01-linear-list-array-stack-queue-linkedlist-p071.webp)
 
 ## Deleting from anywhere in the array
 
@@ -954,7 +954,7 @@ Constraints:
 - -100 <= nums[i] <= 100
 - nums is sorted in non-decreasing order.
 
-![Page 86](/reading/dsa/img/u3-01-linear-list-array-stack-queue-linkedlist-p086.jpg)
+![Page 86](/reading/dsa/img/u3-01-linear-list-array-stack-queue-linkedlist-p086.webp)
 
 Since the array is already sorted, duplicates will always be next to each other. We can solve this with two-pointer technique.
 
@@ -992,7 +992,7 @@ If the index is not known which is the case most of the
 - In the worst case, a linear search ends up checking the entire array.
 - Therefore,the time complexity for a linear search is O(N)
 
-![Page 91](/reading/dsa/img/u3-01-linear-list-array-stack-queue-linkedlist-p091.jpg)
+![Page 91](/reading/dsa/img/u3-01-linear-list-array-stack-queue-linkedlist-p091.webp)
 
 Let’s see the linear algorithm in action, with all the
 
@@ -1017,7 +1017,7 @@ Homogeneous elements: All elements are of the same data type.
 - Contiguous memory allocation: Elements in a row are stored in adjacent memory locations.
 - Indexed access: Elements are accessed using row and column indices.
 
-![Page 94](/reading/dsa/img/u3-01-linear-list-array-stack-queue-linkedlist-p094.jpg)
+![Page 94](/reading/dsa/img/u3-01-linear-list-array-stack-queue-linkedlist-p094.webp)
 
 ## Operations on 2d arrays or matrices
 

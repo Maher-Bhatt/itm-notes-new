@@ -17,7 +17,7 @@
 - Database Models
 - Integrity Constraints
 
-![Page 3](/reading/dbms/img/u2-data-models-er-p003.jpg)
+![Page 3](/reading/dbms/img/u2-data-models-er-p003.webp)
 
 ### Basic concepts
 
@@ -87,7 +87,7 @@ Student Issue Book
 
 Branch Sem Entities Author Price
 
-![Figure](/reading/dbms/img/u2-data-models-er-p009-373.jpg)
+![Figure](/reading/dbms/img/u2-data-models-er-p009-373.webp)
 
 Each and every entity must have one primary key attribute. Relationship between 2 entities is called binary relationship.
 
@@ -111,7 +111,7 @@ Relationship between 3 entities is called ternary relationship.
 
 - Note: Take four attributes per entity with one primary key attribute. Keep proper relationship between two entities.
 
-![Page 12](/reading/dbms/img/u2-data-models-er-p012.jpg)
+![Page 12](/reading/dbms/img/u2-data-models-er-p012.webp)
 
 ### Types of Attributes
 
@@ -189,7 +189,7 @@ Recursive Post Relationship FName Post Set DName Ajay Professor Computer Prof.
 
 Haresh Professor Civil Ramesh HOD Mechanical
 
-![Page 21](/reading/dbms/img/u2-data-models-er-p021.jpg)
+![Page 21](/reading/dbms/img/u2-data-models-er-p021.webp)
 
 ### Mapping Cardinality (Cardinality Constraints)
 
@@ -251,7 +251,7 @@ C3 L3 A B C4 L4
 
 A subject is taught by more than one faculty and a faculty can teach more than one subject.
 
-![Page 28](/reading/dbms/img/u2-data-models-er-p028.jpg)
+![Page 28](/reading/dbms/img/u2-data-models-er-p028.webp)
 
 ### Participation Constraints
 
@@ -275,7 +275,7 @@ C1 L1 Each customer has C2 L2 maximum one loan
 
 C3
 
-![Page 30](/reading/dbms/img/u2-data-models-er-p030.jpg)
+![Page 30](/reading/dbms/img/u2-data-models-er-p030.webp)
 
 ### Weak Entity Set
 
@@ -289,7 +289,7 @@ loan L_P payment
 
 Strong Entity Weak Entity Weak Entity Set Relationship Set
 
-![Figure](/reading/dbms/img/u2-data-models-er-p031-395.jpg)
+![Figure](/reading/dbms/img/u2-data-models-er-p031-395.webp)
 
 - Weak entity set is indicated by double rectangle.
 - Weak entity relationship set is indicated by double diamond.
@@ -310,7 +310,7 @@ Strong Entity Weak Entity Weak Entity Set Relationship Set
 
 So primary key for payment is (loan-no, payment-no).
 
-![Page 33](/reading/dbms/img/u2-data-models-er-p033.jpg)
+![Page 33](/reading/dbms/img/u2-data-models-er-p033.webp)
 
 ### Superclass v/s Subclass
 
@@ -330,7 +330,7 @@ Saving_Account Current_Account
 
 Sub Class
 
-![Page 35](/reading/dbms/img/u2-data-models-er-p035.jpg)
+![Page 35](/reading/dbms/img/u2-data-models-er-p035.webp)
 
 ### Generalization v/s Specialization
 
@@ -386,7 +386,7 @@ Days Worked Hour Worked
 
 Insurance Company.
 
-![Page 40](/reading/dbms/img/u2-data-models-er-p040.jpg)
+![Page 40](/reading/dbms/img/u2-data-models-er-p040.webp)
 
 ### Constraints on Specialization and Generalization
 
@@ -502,7 +502,7 @@ Professor Head (Sub class)
 
 (Sub class)
 
-![Page 49](/reading/dbms/img/u2-data-models-er-p049.jpg)
+![Page 49](/reading/dbms/img/u2-data-models-er-p049.webp)
 
 ### Limitation of E-R diagram
 
@@ -524,7 +524,7 @@ Loan Loan
 
 Process of creating an entity by combining various components of E-R diagram is called aggregation.
 
-![Page 52](/reading/dbms/img/u2-data-models-er-p052.jpg)
+![Page 52](/reading/dbms/img/u2-data-models-er-p052.webp)
 
 ### E-R diagram of Hospital Management System
 
@@ -536,7 +536,7 @@ Report Name ISA Has
 
 Indoor Outdoor Doctor RoomNo IPDID OPDID DrID Dr Name Charge
 
-![Page 54](/reading/dbms/img/u2-data-models-er-p054.jpg)
+![Page 54](/reading/dbms/img/u2-data-models-er-p054.webp)
 
 ### Reduce the E-R diagram to database schema
 
@@ -632,7 +632,7 @@ Disjoint E R E ISA ISA One to One Total Disjoint Specialization/ Specialization/
 
 E R E Overlapping Many to One ISA ISA Partial Overlapping E R E Specialization/ Specialization/ Many to Many Generalization Generalization
 
-![Page 62](/reading/dbms/img/u2-data-models-er-p062.jpg)
+![Page 62](/reading/dbms/img/u2-data-models-er-p062.webp)
 
 ### What is a Database Models?
 
@@ -700,9 +700,9 @@ ResID Rno SubID Marks
 
 It groups its related functionalities together and allows inheriting its functionality to other related sub-groups.
 
-![Figure](/reading/dbms/img/u2-data-models-er-p069-220.jpg)
+![Figure](/reading/dbms/img/u2-data-models-er-p069-220.webp)
 
-![Page 70](/reading/dbms/img/u2-data-models-er-p070.jpg)
+![Page 70](/reading/dbms/img/u2-data-models-er-p070.webp)
 
 ### Integrity Constraints
 

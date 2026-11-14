@@ -65,7 +65,8 @@ Also done: focused sign-in page at `/auth` with sign up, forgot password and a w
 
 - [ ] Previous-year papers section with year/subject filters and solutions
 - [x] Finals revision plan at `/exam-plan`: day-by-day schedule weighted by each unit's real syllabus marks, tick-off progress, deep links into the study guides
-- [ ] Exam-prep guides (10–20 articles): one per subject plus cross-cutting ("last 7 days plan", "how to write a 7-mark answer")
+- [x] Exam guide per subject (5 documents in the Library, "Exam prep" group): each unit's exam questions, what to write, common mistakes and self-checks, plus the last-night revision sheet, compiled from the study guides by `scripts/library/exam_guides.py`
+- [ ] Long-form exam-prep articles (original writing; not started): one per subject plus cross-cutting ("last 7 days plan", "how to write a 7-mark answer")
 - [x] Find-in-document in the reader (`/` or the search icon; highlights all matches) and `#section` deep links
 - [ ] Better source conversion: OCR for handwritten notes (searchable text alongside page images); formula extraction for CONMP
 - [ ] Semester 1, 2, 4 libraries using `scripts/library`
@@ -73,7 +74,7 @@ Also done: focused sign-in page at `/auth` with sign up, forgot password and a w
 ### Phase 4: Community done properly
 
 - [x] "Ask a doubt" from any document/section opens the community composer pre-filled with the document, section and link
-- [ ] Dedicated doubt threads per document (needs a new database table and moderation)
+- [x] Doubt threads on every document: questions, answers, section tags, delete own posts, report to the admin moderation queue, rate limit 10 posts / 10 min (`supabase/migrations/20261114000009_doc_doubts.sql` + `src/components/DocDoubts.tsx`). **Owner: apply the migration** (Supabase SQL editor or `supabase db push`); the section stays hidden until the table exists
 - [ ] Moderation queue, report button, rate limits, community guidelines
 - [ ] Email digests: "new notes for your subjects", "exam in 7 days"
 
@@ -83,7 +84,7 @@ Also done: focused sign-in page at `/auth` with sign up, forgot password and a w
 - [x] Accessibility basics: skip-to-content link, focus states, labelled icon buttons, reduced motion, AA contrast on the palette
 - [ ] Full accessibility audit with a screen reader
 - [x] Performance: main bundle cut from 10.3 MB to 0.9 MB (2.3 MB to 258 KB gzipped) by lazy-loading pages, search and help
-- [ ] Performance (further): compress scanned page images (WebP/AVIF); the original item was: split the 10 MB main bundle (question banks and practicals load on demand), image compression for scanned pages (WebP/AVIF)
+- [x] Scanned page images converted to WebP: 33.3 MB to 18.6 MB (`scripts/library/to_webp.py`) (question banks and practicals load on demand), image compression for scanned pages (WebP/AVIF)
 - [ ] Error monitoring and uptime checks
 
 ## Decisions needed from the owner
@@ -92,3 +93,17 @@ Also done: focused sign-in page at `/auth` with sign up, forgot password and a w
 2. **Positioning**: one university done deeply (ITM SLS Baroda) or multi-university? College Confidential works because every school page has real content; empty university pages hurt trust and SEO.
 3. **Material permissions**: confirm that sharing faculty slides and notes publicly is allowed, or limit the public library to student-written study guides.
 4. **Monetisation**: none, ads, or sponsors? This affects the privacy policy and consent banner.
+
+## Status on 14 Nov 2026
+
+**Done in code:** Phases 1, 3 (except original articles, OCR and new semesters), 4 (except email digests and a moderator UI for hidden doubts) and 5 (except a full screen-reader audit).
+
+**Needs the owner**
+1. Apply `supabase/migrations/20261114000009_doc_doubts.sql` to turn on doubt threads.
+2. Domain, Google Search Console, and an analytics decision (Phase 2).
+3. Confirm faculty material may be public.
+
+**Needs tools or material not available in the repo**
+- OCR for handwritten notes: an OCR engine (e.g. Tesseract) on the build machine, or a cloud OCR API key.
+- Other semesters: their notes, then run `scripts/library/build_library.py`.
+- Email digests ("exam in 7 days"): an email provider (e.g. Resend) and a Supabase scheduled function.
