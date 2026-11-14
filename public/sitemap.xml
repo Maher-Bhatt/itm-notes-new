@@ -540,4 +540,16 @@
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
+  <url>
+    <loc>https://itm-notes-new.vercel.app/library/conmp/paper-cet-1-2025-08-22</loc>
+    <lastmod>2026-11-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://itm-notes-new.vercel.app/library/conmp/paper-cet-2-2025-10-08</loc>
+    <lastmod>2026-11-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
 </urlset>

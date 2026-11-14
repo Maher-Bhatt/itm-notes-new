@@ -627,6 +627,34 @@ export const LIBRARY: LibrarySubject[] = [
         "featured": false,
         "pages": 1,
         "summary": ""
+      },
+      {
+        "slug": "paper-cet-2-2025-10-08",
+        "title": "CET-2 · 8 Oct 2025",
+        "kind": "Question paper",
+        "unit": null,
+        "words": 1483,
+        "scanned": false,
+        "featured": false,
+        "summary": "Computer Oriented Numerical Methods with Python CET-2 paper, 8 Oct 2025 (2025-26, 30 marks), with worked solutions.",
+        "exam": "CET-2",
+        "date": "2025-10-08",
+        "academicYear": "2025-26",
+        "marks": 30
+      },
+      {
+        "slug": "paper-cet-1-2025-08-22",
+        "title": "CET-1 · 22 Aug 2025",
+        "kind": "Question paper",
+        "unit": null,
+        "words": 1322,
+        "scanned": false,
+        "featured": false,
+        "summary": "Computer Oriented Numerical Methods with Python CET-1 paper, 22 Aug 2025 (2025-26, 30 marks), with worked solutions.",
+        "exam": "CET-1",
+        "date": "2025-08-22",
+        "academicYear": "2025-26",
+        "marks": 30
       }
     ]
   },
