@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Check, RotateCcw } from "lucide-react";
 import plan from "@/content/examPlan.json";
+import guides from "@/content/guides.json";
 import { setPageMeta } from "@/lib/pageMeta";
 import { daysUntilFinals, FINALS_START } from "@/lib/readingProgress";
 
@@ -203,6 +204,26 @@ export default function ExamPlanPage() {
           </div>
         </li>
       </ol>
+
+      <section className="mt-10" aria-labelledby="technique-heading">
+        <h2 id="technique-heading" className="text-xl font-medium text-foreground">Exam technique</h2>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          {Object.entries(guides as Record<string, { title: string; description: string }>).map(([slug, g]) => (
+            <Link key={slug} to={`/guides/${slug}`} className="surface-card group block p-5 transition-colors hover:border-primary/40">
+              <p className="font-medium text-foreground group-hover:text-primary">{g.title}</p>
+              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{g.description}</p>
+            </Link>
+          ))}
+          <Link to="/library/conmp/formula-sheet" className="surface-card group block p-5 transition-colors hover:border-primary/40">
+            <p className="font-medium text-foreground group-hover:text-primary">CONMP formula sheet</p>
+            <p className="mt-1 text-sm leading-relaxed text-muted-foreground">Every numerical-methods formula on one page, each linked to a solved exam question.</p>
+          </Link>
+          <Link to="/papers" className="surface-card group block p-5 transition-colors hover:border-primary/40">
+            <p className="font-medium text-foreground group-hover:text-primary">Solved past papers</p>
+            <p className="mt-1 text-sm leading-relaxed text-muted-foreground">22 CET, mid-sem and end-sem papers with worked solutions, filterable by subject and year.</p>
+          </Link>
+        </div>
+      </section>
 
       <p className="mt-10 text-xs leading-relaxed text-muted-foreground">
         Unit weights come from the official syllabus tables in each study guide (DSA, DBMS, CONMP). COA and Java don't publish unit weights, so their units get equal time. Ticks are saved on this device.

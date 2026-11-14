@@ -23,6 +23,7 @@ const SITE = "https://itm-notes-new.vercel.app";
 const template = fs.readFileSync(path.join(DIST, "index.html"), "utf8");
 const library = JSON.parse(fs.readFileSync(path.join(DIST, "reading", "index.json"), "utf8"));
 const infoPages = JSON.parse(fs.readFileSync(path.join(ROOT, "src", "content", "infoPages.json"), "utf8"));
+const guides = JSON.parse(fs.readFileSync(path.join(ROOT, "src", "content", "guides.json"), "utf8"));
 
 const esc = (s) =>
   String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -237,6 +238,20 @@ for (const [slug, page] of Object.entries(infoPages)) {
   const route = `/${slug}`;
   const html = setMeta(template, { title: `${page.title} | CampusLoop`, description: page.description, url: `${SITE}${route}`, image: ogImageFor() });
   write(route, withBody(html, shell(`<h1>${esc(page.title)}</h1>${renderMarkdown(page.body)}`)));
+  count++;
+}
+// ── Exam-technique guides ────────────────────────────────────────────────────
+for (const [slug, page] of Object.entries(guides)) {
+  const route = `/guides/${slug}`;
+  let html = setMeta(template, { title: `${page.title} | CampusLoop`, description: page.description, url: `${SITE}${route}`, image: ogImageFor() });
+  html = withJsonLd(html, {
+    "@context": "https://schema.org",
+    "@graph": [
+      breadcrumbLd([["Home", "/"], ["Exam plan", "/exam-plan"], [page.title, route]]),
+      { "@type": "Article", headline: page.title, description: page.description, url: `${SITE}${route}`, publisher: { "@type": "Organization", name: "CampusLoop" } },
+    ],
+  });
+  write(route, withBody(html, shell(`${crumbs([["Home", "/"], ["Exam plan", "/exam-plan"], [page.title]])}<h1>${esc(page.title)}</h1>${renderMarkdown(page.body)}`)));
   count++;
 }
 {

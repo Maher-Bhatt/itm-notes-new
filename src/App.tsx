@@ -93,6 +93,7 @@ const PrivacyPage = lazyWithRetry(() => InfoPageModule().then((m) => ({ default:
 const TermsPage = lazyWithRetry(() => InfoPageModule().then((m) => ({ default: () => <m.InfoPage slug="terms" /> })));
 const GuidelinesPage = lazyWithRetry(() => InfoPageModule().then((m) => ({ default: () => <m.InfoPage slug="guidelines" /> })));
 const ContactPage = lazyWithRetry(() => InfoPageModule().then((m) => ({ default: m.ContactPage })));
+const GuidePage = lazyWithRetry(() => InfoPageModule().then((m) => ({ default: m.GuidePage })));
 const ReaderPage = lazyWithRetry(() => import("./pages/ReaderPage"));
 const CommunityPage = lazyWithRetry(() => import("./pages/CommunityPage"));
 const AdminDashboard = lazyWithRetry(() => import("./pages/admin/AdminDashboard"));
@@ -212,6 +213,7 @@ const App = () => (
                           <Route path="/terms" element={<TermsPage />} />
                           <Route path="/guidelines" element={<GuidelinesPage />} />
                           <Route path="/contact" element={<ContactPage />} />
+                          <Route path="/guides/:guideSlug" element={<GuidePage />} />
                         </Route>
 
                         <Route element={<PortalLayout />}>

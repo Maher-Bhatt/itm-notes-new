@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState, type ReactNode } from "react";
+import { Link, Navigate, useParams } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Loader2, Send } from "lucide-react";
@@ -8,20 +8,64 @@ import { useAuth } from "@/contexts/AuthContext";
 import { createSupportTicket } from "@/services/adminOperationsService";
 import { setPageMeta } from "@/lib/pageMeta";
 import infoPages from "@/content/infoPages.json";
+import guides from "@/content/guides.json";
 
 export const INFO_PAGES = infoPages as Record<"about" | "privacy" | "terms" | "guidelines", { title: string; description: string; body: string }>;
 
 export type InfoSlug = keyof typeof INFO_PAGES;
 
+type ArticlePage = { title: string; description: string; body: string };
+
+export const GUIDES = guides as Record<string, ArticlePage>;
+
 export function InfoPage({ slug }: { slug: InfoSlug }) {
-  const page = INFO_PAGES[slug];
+  return <Article page={INFO_PAGES[slug]} path={`/${slug}`} />;
+}
+
+/** Exam-technique articles at /guides/:guideSlug (content in src/content/guides.json). */
+export function GuidePage() {
+  const { guideSlug = "" } = useParams();
+  const page = GUIDES[guideSlug];
+  if (!page) return <Navigate to="/exam-plan" replace />;
+  const others = Object.entries(GUIDES).filter(([slug]) => slug !== guideSlug);
+  return (
+    <Article
+      page={page}
+      path={`/guides/${guideSlug}`}
+      eyebrow={
+        <Link to="/exam-plan" className="text-sm text-muted-foreground hover:text-foreground">
+          Exam plan · Exam technique
+        </Link>
+      }
+      footer={
+        others.length > 0 && (
+          <div className="mt-12 border-t border-border pt-6">
+            <p className="text-sm text-muted-foreground">Also read</p>
+            <ul className="mt-2 space-y-1">
+              {others.map(([slug, g]) => (
+                <li key={slug}>
+                  <Link to={`/guides/${slug}`} className="text-[17px] text-foreground underline decoration-border underline-offset-4 hover:decoration-primary">
+                    {g.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+    />
+  );
+}
+
+function Article({ page, path, eyebrow, footer }: { page: ArticlePage; path: string; eyebrow?: ReactNode; footer?: ReactNode }) {
   useEffect(() => {
-    setPageMeta({ title: `${page.title} | CampusLoop`, description: page.description, path: `/${slug}` });
+    setPageMeta({ title: `${page.title} | CampusLoop`, description: page.description, path });
     window.scrollTo(0, 0);
-  }, [page, slug]);
+  }, [page, path]);
 
   return (
     <article className="mx-auto max-w-[44rem] px-5 pb-8 pt-14 sm:px-8">
+      {eyebrow && <div className="mb-3">{eyebrow}</div>}
       <h1 className="text-4xl font-medium leading-tight text-foreground sm:text-5xl">{page.title}</h1>
       <div className="reader-prose mt-8" style={{ fontSize: "17px" }}>
         <ReactMarkdown
@@ -40,6 +84,7 @@ export function InfoPage({ slug }: { slug: InfoSlug }) {
           {page.body}
         </ReactMarkdown>
       </div>
+      {footer}
     </article>
   );
 }

@@ -475,6 +475,16 @@ export const LIBRARY: LibrarySubject[] = [
         "summary": "Unit-by-unit exam questions, what to write, common mistakes and self-checks for Computer Oriented Numerical Methods with Python, plus the last-night revision sheet."
       },
       {
+        "slug": "formula-sheet",
+        "title": "Formula sheet (typed from handwritten notes)",
+        "kind": "Handwritten notes",
+        "unit": null,
+        "words": 1774,
+        "scanned": false,
+        "featured": true,
+        "summary": "Every CONMP formula on one page: errors, Descartes and Budan, bisection to Lin-Bairstow, Jacobi and Seidel, Newton, Stirling, Lagrange and divided differences, trapezoidal and Simpson's rules, Euler and Runge-Kutta, least-squares fitting. Typed from handwritten notes, slips corrected, each linked to a solved exam question."
+      },
+      {
         "slug": "00-cet1-syllabus",
         "title": "CET-1 Syllabus",
         "kind": "Syllabus",

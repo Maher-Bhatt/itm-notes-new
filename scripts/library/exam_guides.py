@@ -67,7 +67,7 @@ head, body = ts.split("export const LIBRARY: LibrarySubject[] = ", 1)
 index = json.loads(body.rstrip().rstrip(";"))  # libraryIndex.ts is the source of truth (lecture order)
 for s in index:
     md, picked = build(s)
-    (reading / s["slug"] / "exam-guide.md").write_text(md, encoding="utf-8")
+    (reading / s["slug"] / "exam-guide.md").write_text(md, encoding="utf-8", newline="\n")
     words = len(re.findall(r"\w+", re.sub(r"!\[[^\]]*\]\([^)]*\)", "", md)))
     doc = {
         "slug": "exam-guide",
@@ -84,5 +84,5 @@ for s in index:
     s["docs"].insert(at, doc)
     print(f"{s['slug']}: {picked} sections, {words} words")
 
-(reading / "index.json").write_text(json.dumps(index, ensure_ascii=False, indent=1), encoding="utf-8")
-ts_path.write_text(head + "export const LIBRARY: LibrarySubject[] = " + json.dumps(index, ensure_ascii=False, indent=2) + ";\n", encoding="utf-8")
+(reading / "index.json").write_text(json.dumps(index, ensure_ascii=False, indent=1), encoding="utf-8", newline="\n")
+ts_path.write_text(head + "export const LIBRARY: LibrarySubject[] = " + json.dumps(index, ensure_ascii=False, indent=2) + ";\n", encoding="utf-8", newline="\n")

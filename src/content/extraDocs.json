@@ -1,0 +1,11 @@
+[
+  {
+    "subject": "conmp",
+    "slug": "formula-sheet",
+    "title": "Formula sheet (typed from handwritten notes)",
+    "kind": "Handwritten notes",
+    "featured": true,
+    "after": "exam-guide",
+    "summary": "Every CONMP formula on one page: errors, Descartes and Budan, bisection to Lin-Bairstow, Jacobi and Seidel, Newton, Stirling, Lagrange and divided differences, trapezoidal and Simpson's rules, Euler and Runge-Kutta, least-squares fitting. Typed from handwritten notes, slips corrected, each linked to a solved exam question."
+  }
+]
