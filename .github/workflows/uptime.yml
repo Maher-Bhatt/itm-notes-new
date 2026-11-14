@@ -1,0 +1,65 @@
+# Uptime check for the public site.
+# Runs every 30 minutes and on demand. A failed run means a page is down, returns the wrong
+# status, or no longer serves its prerendered content; GitHub emails the repository owner
+# about failed scheduled runs, and the run log shows which URL failed.
+name: Uptime
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: uptime
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      SITE: https://itm-notes-new.vercel.app
+    steps:
+      - name: Check pages
+        shell: bash
+        run: |
+          # path | text that must appear in the response
+          checks=(
+            "/|CampusLoop"
+            "/library|CampusLoop"
+            "/papers|previous-year papers"
+            "/exam-plan|revision plan"
+            "/library/dbms/study-guide|DBMS"
+            "/library/conmp/formula-sheet|Formula sheet"
+            "/guides/7-mark-answer|7-mark answer"
+            "/reading/index.json|\"slug\""
+            "/sitemap.xml|<urlset"
+            "/robots.txt|Sitemap"
+          )
+          failed=0
+          for entry in "${checks[@]}"; do
+            path="${entry%%|*}"
+            expect="${entry#*|}"
+            url="$SITE$path"
+            ok=0
+            for attempt in 1 2 3; do
+              start=$(date +%s%3N)
+              code=$(curl -sS -L -o body.txt -w '%{http_code}' --max-time 20 "$url" || echo 000)
+              ms=$(( $(date +%s%3N) - start ))
+              if [ "$code" = "200" ] && grep -qF "$expect" body.txt; then
+                echo "OK   $code ${ms}ms $path"
+                ok=1
+                break
+              fi
+              echo "retry $attempt: $path returned $code (${ms}ms)"
+              sleep 10
+            done
+            if [ "$ok" != "1" ]; then
+              echo "::error title=Down::$url returned $code or is missing \"$expect\""
+              failed=1
+            fi
+          done
+          exit $failed

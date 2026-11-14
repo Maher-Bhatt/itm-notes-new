@@ -63,12 +63,14 @@ Also done: focused sign-in page at `/auth` with sign up, forgot password and a w
 
 ### Phase 3: Content depth (ongoing)
 
-- [ ] Previous-year papers section with year/subject filters and solutions
+- [x] Previous-year papers at `/papers` with subject, exam and year filters: all 22 papers supplied (CET-1, CET-2, mid-sem and end-sem for DBMS, DSA, COA, Java and CONMP, 2025–2026) transcribed with worked solutions. Numerical answers were checked with Python and every Java program was compiled and run. Manifest `src/content/papers.json`, registered by `scripts/library/papers.py`; cross-paper links checked by `scripts/library/fix_anchors.py`
 - [x] Finals revision plan at `/exam-plan`: day-by-day schedule weighted by each unit's real syllabus marks, tick-off progress, deep links into the study guides
 - [x] Exam guide per subject (5 documents in the Library, "Exam prep" group): each unit's exam questions, what to write, common mistakes and self-checks, plus the last-night revision sheet, compiled from the study guides by `scripts/library/exam_guides.py`
-- [ ] Long-form exam-prep articles (original writing; not started): one per subject plus cross-cutting ("last 7 days plan", "how to write a 7-mark answer")
+- [x] Cross-cutting exam-technique guides at `/guides/last-7-days` and `/guides/7-mark-answer` (content in `src/content/guides.json`, linked from the exam plan, prerendered with `Article` structured data)
+- [ ] One long-form prep article per subject
 - [x] Find-in-document in the reader (`/` or the search icon; highlights all matches) and `#section` deep links
-- [ ] Better source conversion: OCR for handwritten notes (searchable text alongside page images); formula extraction for CONMP
+- [x] CONMP handwritten formula notes typed into a searchable [formula sheet](/library/conmp/formula-sheet) (slips in the notes corrected and marked; each formula linked to a solved exam question). Standalone docs like this are registered from `src/content/extraDocs.json` by `scripts/library/extra_docs.py`
+- [ ] OCR for the remaining handwritten scans (searchable text alongside page images)
 - [ ] Semester 1, 2, 4 libraries using `scripts/library`
 
 ### Phase 4: Community done properly
@@ -85,7 +87,8 @@ Also done: focused sign-in page at `/auth` with sign up, forgot password and a w
 - [ ] Full accessibility audit with a screen reader
 - [x] Performance: main bundle cut from 10.3 MB to 0.9 MB (2.3 MB to 258 KB gzipped) by lazy-loading pages, search and help
 - [x] Scanned page images converted to WebP: 33.3 MB to 18.6 MB (`scripts/library/to_webp.py`) (question banks and practicals load on demand), image compression for scanned pages (WebP/AVIF)
-- [ ] Error monitoring and uptime checks
+- [x] Uptime checks: `.github/workflows/uptime.yml` fetches 10 key URLs every 30 minutes and fails (GitHub emails the owner) if one is down or stops serving its prerendered content
+- [ ] Error monitoring service (client errors are already logged by `src/services/clientErrorService.ts`; a hosted tool such as Sentry needs an account)
 
 ## Decisions needed from the owner
 
@@ -94,14 +97,15 @@ Also done: focused sign-in page at `/auth` with sign up, forgot password and a w
 3. **Material permissions**: confirm that sharing faculty slides and notes publicly is allowed, or limit the public library to student-written study guides.
 4. **Monetisation**: none, ads, or sponsors? This affects the privacy policy and consent banner.
 
-## Status on 14 Nov 2026
+## Status on 14 Nov 2026 (updated after the papers batch)
 
-**Done in code:** Phases 1, 3 (except original articles, OCR and new semesters), 4 (except email digests and a moderator UI for hidden doubts) and 5 (except a full screen-reader audit).
+**Done in code:** Phases 1, 3 (except per-subject articles, OCR of the remaining scans and new semesters), 4 (except email digests and a moderator UI for hidden doubts) and 5 (except a full screen-reader audit and a hosted error-monitoring service). The build prerenders 101 public pages, including all 22 solved papers.
 
 **Needs the owner**
 1. Apply `supabase/migrations/20261114000009_doc_doubts.sql` to turn on doubt threads.
 2. Domain, Google Search Console, and an analytics decision (Phase 2).
 3. Confirm faculty material may be public.
+4. After the next deploy, open `/papers` and one paper URL without a trailing `.html` to confirm Vercel `cleanUrls` serves the prerendered pages, and run the **Uptime** workflow once from the Actions tab.
 
 **Needs tools or material not available in the repo**
 - OCR for handwritten notes: an OCR engine (e.g. Tesseract) on the build machine, or a cloud OCR API key.
