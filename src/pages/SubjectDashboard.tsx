@@ -1,5 +1,5 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { getSubject, getAllTopicIds, subjects } from "@/data/subjects";
+import { getSubject, getAllTopicIds, subjects, isBcaSubject } from "@/data/subjects";
 import { Subject } from "@/data/types";
 import { useProgress } from "@/hooks/useProgress";
 import { useSubject } from "@/hooks/useAcademicData";
@@ -78,9 +78,11 @@ export default function SubjectDashboard() {
 
   const { isCompleted, isBookmarked, getSubjectProgress } = useProgress();
 
+  const isCurrentBca = useMemo(() => isBcaSubject(subject), [subject]);
+
   const siblingSubjects = useMemo(
-    () => (subject ? subjects.filter((s) => s.semester === subject.semester) : []),
-    [subject?.semester]
+    () => (subject ? subjects.filter((s) => s.semester === subject.semester && isBcaSubject(s) === isCurrentBca) : []),
+    [subject?.semester, isCurrentBca]
   );
 
   if (isDbLoading) {
@@ -146,7 +148,7 @@ export default function SubjectDashboard() {
             </span>
           </div>
 
-          {/* Quick Subject Select Dropdown */}
+          {/* Quick Subject Select Dropdown (Filtered to current degree) */}
           <div className="flex items-center gap-2">
             <span className="text-xs font-semibold text-muted-foreground hidden sm:inline">Switch Course:</span>
             <select
@@ -154,51 +156,19 @@ export default function SubjectDashboard() {
               onChange={(e) => navigate(`/subject/${e.target.value}`)}
               className="h-8 px-3 rounded-full border border-border dark:border-stone-800 bg-white dark:bg-card text-xs font-bold text-foreground dark:text-white outline-none cursor-pointer hover:border-primary transition-all"
             >
-              <optgroup label="Semester 5">
-                {subjects
-                  .filter((s) => s.semester === 5)
-                  .map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.code ? `[${s.code}] ` : ""}{s.name.split("—")[0].trim()}
-                    </option>
-                  ))}
-              </optgroup>
-              <optgroup label="Semester 4">
-                {subjects
-                  .filter((s) => s.semester === 4)
-                  .map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.code ? `[${s.code}] ` : ""}{s.name.split("—")[0].trim()}
-                    </option>
-                  ))}
-              </optgroup>
-              <optgroup label="Semester 3">
-                {subjects
-                  .filter((s) => s.semester === 3)
-                  .map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.code ? `[${s.code}] ` : ""}{s.name.split("—")[0].trim()}
-                    </option>
-                  ))}
-              </optgroup>
-              <optgroup label="Semester 2">
-                {subjects
-                  .filter((s) => s.semester === 2)
-                  .map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.code ? `[${s.code}] ` : ""}{s.name.split("—")[0].trim()}
-                    </option>
-                  ))}
-              </optgroup>
-              <optgroup label="Semester 1">
-                {subjects
-                  .filter((s) => s.semester === 1)
-                  .map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.code ? `[${s.code}] ` : ""}{s.name.split("—")[0].trim()}
-                    </option>
-                  ))}
-              </optgroup>
+              {[5, 4, 3, 2, 1].map((sem) => {
+                const semSubs = subjects.filter((s) => s.semester === sem && isBcaSubject(s) === isCurrentBca);
+                if (semSubs.length === 0) return null;
+                return (
+                  <optgroup key={sem} label={`${isCurrentBca ? "BCA" : "B.Tech"} Semester ${sem}`}>
+                    {semSubs.map((s) => (
+                      <option key={s.id} value={s.id}>
+                        {s.code ? `[${s.code}] ` : ""}{s.name.split("—")[0].trim()}
+                      </option>
+                    ))}
+                  </optgroup>
+                );
+              })}
             </select>
           </div>
         </div>

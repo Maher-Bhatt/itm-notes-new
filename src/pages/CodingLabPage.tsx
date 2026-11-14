@@ -788,6 +788,17 @@ export const ALL_SUBJECTS_METADATA: SubjectMeta[] = [
   }
 ];
 
+export function isBcaProblem(p: CodingProblem): boolean {
+  const d = (p.department || '').toLowerCase();
+  const s = p.subjectName.toLowerCase();
+  const id = p.id.toLowerCase();
+  return d === 'bca' || s.includes('bca') || id.startsWith('bca');
+}
+
+export function isBcaMeta(m: SubjectMeta): boolean {
+  return m.code.startsWith('BCA') || m.name.includes('BCA') || m.shortName.includes('BCA');
+}
+
 export function getSubjectSemester(subjectName: string): number {
   const meta = ALL_SUBJECTS_METADATA.find(s => s.name === subjectName);
   return meta ? meta.semester : 3;
@@ -843,14 +854,31 @@ export default function CodingLabPage() {
   const { focusMode, toggleFocusMode } = useFocusMode();
   const { addXp, unlockAchievement } = useGamification();
 
+  // Degree program default: strictly honors user's enrolled degree
+  const userEnrolledDegree = useMemo(() => {
+    return profile?.program?.toLowerCase().includes("bca") ? "bca" : "btech";
+  }, [profile?.program]);
+
   // Filters state
-  const [selectedSemester, setSelectedSemester] = useState<number | 'all'>('all');
+  const [selectedDegree, setSelectedDegree] = useState<'btech' | 'bca' | 'all'>(userEnrolledDegree);
+  const [selectedSemester, setSelectedSemester] = useState<number | 'all'>(profile?.semester || semesterNumber || 3);
   const [selectedDepartment, setSelectedDepartment] = useState<string>('all');
   const [selectedSubject, setSelectedSubject] = useState<string>('all');
   const [selectedLanguage, setSelectedLanguage] = useState<string>('all');
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('all');
   const [searchProblemQuery, setSearchProblemQuery] = useState<string>('');
   const [isProblemPickerOpen, setIsProblemPickerOpen] = useState(false);
+
+  // Sync degree & semester when profile loads
+  useEffect(() => {
+    if (profile?.program) {
+      const deg = profile.program.toLowerCase().includes("bca") ? "bca" : "btech";
+      setSelectedDegree(deg);
+    }
+    if (profile?.semester) {
+      setSelectedSemester(profile.semester);
+    }
+  }, [profile?.program, profile?.semester]);
 
   // Active Problem & Code state
   const [activeProblemId, setActiveProblemId] = useState<string>(CODING_PROBLEMS[0]?.id || 'dsa-01-array-reverse');
@@ -953,20 +981,29 @@ export default function CodingLabPage() {
     }
   }, [terminalLogs, activeConsoleTab]);
 
-  // Filter problems
+  // Filter problems with strict degree and semester boundaries
   const filteredProblems = useMemo(() => {
     return CODING_PROBLEMS.filter((p) => {
+      const isBca = isBcaProblem(p);
+
+      // 1. Strictly enforce degree program:
+      if (selectedDegree === 'btech' && isBca) return false;
+      if (selectedDegree === 'bca' && !isBca) return false;
+
+      // 2. Filter by semester
       const probSem = getSubjectSemester(p.subjectName);
       if (selectedSemester !== 'all' && probSem !== selectedSemester) return false;
+
+      // 3. Filter by department
       if (selectedDepartment !== 'all') {
         const d = (p.department || '').toLowerCase();
         const s = p.subjectName.toLowerCase();
         const depTarget = selectedDepartment.toLowerCase();
         const match = d === depTarget || s.includes(depTarget) || 
-          (depTarget === 'cse' && (s.includes('cs') || s.includes('dsa') || s.includes('os') || s.includes('cn'))) ||
+          (depTarget === 'cse' && !isBca && (s.includes('cs') || s.includes('dsa') || s.includes('os') || s.includes('cn') || s.includes('java') || s.includes('dbms'))) ||
           (depTarget === 'ai&ds' && (s.includes('ai') || s.includes('ml') || s.includes('nlp') || s.includes('vision'))) ||
           (depTarget === 'ece' && (s.includes('ec') || s.includes('electronics') || s.includes('vlsi') || s.includes('signal'))) ||
-          (depTarget === 'bca' && s.includes('bca')) ||
+          (depTarget === 'bca' && isBca) ||
           (depTarget === 'mca' && s.includes('mca')) ||
           (depTarget === 'mba' && s.includes('mba')) ||
           (depTarget === 'mech' && (s.includes('me') || s.includes('cad') || s.includes('fea'))) ||
@@ -987,7 +1024,7 @@ export default function CodingLabPage() {
       }
       return true;
     });
-  }, [selectedSemester, selectedDepartment, selectedSubject, selectedLanguage, selectedDifficulty, searchProblemQuery]);
+  }, [selectedDegree, selectedSemester, selectedDepartment, selectedSubject, selectedLanguage, selectedDifficulty, searchProblemQuery]);
 
   const currentProblem = useMemo(() => {
     const found = filteredProblems.find(p => p.id === activeProblemId);
@@ -2000,6 +2037,31 @@ export default function CodingLabPage() {
                 />
               </div>
 
+              {/* Row 0: Degree Program Switcher */}
+              <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-0.5">
+                <span className="text-[10px] font-bold uppercase text-stone-400 shrink-0 mr-1">Degree:</span>
+                {[
+                  { id: 'btech', label: 'B.Tech Engineering' },
+                  { id: 'bca', label: 'BCA' },
+                  { id: 'all', label: 'All Degrees' },
+                ].map(deg => (
+                  <button
+                    key={deg.id}
+                    onClick={() => {
+                      setSelectedDegree(deg.id as any);
+                      setSelectedSubject('all');
+                    }}
+                    className={`px-2.5 py-1 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                      selectedDegree === deg.id
+                        ? 'bg-primary text-white shadow-xs'
+                        : 'bg-white dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700'
+                    }`}
+                  >
+                    {deg.label}
+                  </button>
+                ))}
+              </div>
+
               {/* Row 1: Department Filter Pills */}
               <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-0.5">
                 <span className="text-[10px] font-bold uppercase text-stone-400 shrink-0 mr-1">Dept:</span>
@@ -2054,7 +2116,15 @@ export default function CodingLabPage() {
                   All Subjects
                 </button>
                 {ALL_SUBJECTS_METADATA.filter(meta => {
+                  const isBca = isBcaMeta(meta);
+                  if (selectedDegree === 'btech' && isBca) return false;
+                  if (selectedDegree === 'bca' && !isBca) return false;
                   if (selectedSemester !== 'all' && meta.semester !== selectedSemester) return false;
+                  if (selectedDepartment !== 'all') {
+                    const dep = selectedDepartment.toLowerCase();
+                    if (dep === 'cse' && isBca) return false;
+                    if (dep === 'bca' && !isBca) return false;
+                  }
                   return true;
                 }).map(meta => (
                   <button

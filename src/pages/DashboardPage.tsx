@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useGamification } from "@/hooks/useGamification";
 import { useAcademic } from "@/contexts/AcademicContext";
 import { useUniversity } from "@/contexts/UniversityContext";
-import { subjects, getAllTopicIds } from "@/data/subjects";
+import { subjects, getAllTopicIds, isBcaSubject, isBtechSubject } from "@/data/subjects";
 import { useProgress } from "@/hooks/useProgress";
 import { LibraryHighlights } from "@/components/LibraryHighlights";
 import {
@@ -64,27 +64,61 @@ export default function DashboardPage() {
   } = useGamification();
   const { progress } = useProgress();
 
+  const studentDisplayName = profile?.display_name || user?.email?.split("@")[0] || null;
+  const activeSemester = profile?.semester || semesterNumber || 3;
+  const completedTopicsCount = progress?.completedTopics?.length || 0;
+
+  // Degree Program Filter: defaults strictly to user's enrolled degree (B.Tech or BCA)
+  const userEnrolledDegree = useMemo(() => {
+    return profile?.program?.toLowerCase().includes("bca") ? "bca" : "btech";
+  }, [profile?.program]);
+
+  const [selectedDegreeFilter, setSelectedDegreeFilter] = useState<"btech" | "bca" | "all">(userEnrolledDegree);
   const [selectedCourseFilter, setSelectedCourseFilter] = useState("all");
   const [subjectSemFilter, setSubjectSemFilter] = useState<number | "all">(profile?.semester || 3);
   const [aiDoubtOpen, setAiDoubtOpen] = useState(false);
   const [isContributionModalOpen, setIsContributionModalOpen] = useState(false);
 
-  const studentDisplayName = profile?.display_name || user?.email?.split("@")[0] || null;
-  const activeSemester = profile?.semester || semesterNumber || 3;
-  const completedTopicsCount = progress?.completedTopics?.length || 0;
+  // Sync degree when profile loads
+  useEffect(() => {
+    if (profile?.program) {
+      const deg = profile.program.toLowerCase().includes("bca") ? "bca" : "btech";
+      setSelectedDegreeFilter(deg);
+    }
+  }, [profile?.program]);
 
+  // Sync semester when profile loads
+  useEffect(() => {
+    if (profile?.semester) {
+      setSubjectSemFilter(profile.semester);
+    }
+  }, [profile?.semester]);
+
+  // Available subjects matching selected degree and semester for the subject dropdown filter
+  const availableSubjectsForFilter = useMemo(() => {
+    return subjects.filter((s) => {
+      const isBca = isBcaSubject(s);
+      if (selectedDegreeFilter === "btech" && isBca) return false;
+      if (selectedDegreeFilter === "bca" && !isBca) return false;
+      if (subjectSemFilter !== "all" && s.semester !== subjectSemFilter) return false;
+      return true;
+    });
+  }, [selectedDegreeFilter, subjectSemFilter]);
+
+  // Final displayed subjects list strictly filtering out unauthorized degrees
   const displayedSubjects = useMemo(() => {
     return subjects.filter((s) => {
+      const isBca = isBcaSubject(s);
+      if (selectedDegreeFilter === "btech" && isBca) return false;
+      if (selectedDegreeFilter === "bca" && !isBca) return false;
       if (subjectSemFilter !== "all" && s.semester !== subjectSemFilter) return false;
+
       if (selectedCourseFilter !== "all") {
-        if (selectedCourseFilter === "dsa" && !s.id.includes("dsa")) return false;
-        if (selectedCourseFilter === "dbms" && !s.id.includes("dbms")) return false;
-        if (selectedCourseFilter === "ca" && !s.id.includes("coanmp") && !s.id.includes("architecture")) return false;
-        if (selectedCourseFilter === "java" && !s.id.includes("java")) return false;
+        if (s.id !== selectedCourseFilter) return false;
       }
       return true;
     });
-  }, [subjectSemFilter, selectedCourseFilter]);
+  }, [selectedDegreeFilter, subjectSemFilter, selectedCourseFilter]);
 
   return (
     <div className="p-4 sm:p-6 lg:p-10 max-w-[1400px] mx-auto space-y-8 fade-in">
@@ -307,21 +341,54 @@ export default function DashboardPage() {
                 </p>
               </div>
 
-              {/* Minimal Clean Filter Controls */}
+              {/* Minimal Clean Filter Controls: Degree, Semester, and Subject */}
               <div className="flex items-center gap-2 flex-wrap">
+                {/* Degree Switcher */}
+                <div className="flex items-center gap-1 bg-secondary/60 p-1 rounded-xl border border-border">
+                  {[
+                    { label: "B.Tech", val: "btech" },
+                    { label: "BCA", val: "bca" },
+                    { label: "All Degrees", val: "all" },
+                  ].map((deg) => {
+                    const isActive = selectedDegreeFilter === deg.val;
+                    return (
+                      <button
+                        key={deg.val}
+                        type="button"
+                        onClick={() => {
+                          setSelectedDegreeFilter(deg.val as any);
+                          setSelectedCourseFilter("all");
+                        }}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                          isActive
+                            ? "bg-primary text-primary-foreground font-bold shadow-xs"
+                            : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                        }`}
+                      >
+                        {deg.label}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Semester Switcher */}
                 <div className="flex items-center gap-1 bg-secondary/60 p-1 rounded-xl border border-border">
                   {[
                     { label: "Sem 3", val: 3 },
                     { label: "Sem 1", val: 1 },
                     { label: "Sem 2", val: 2 },
-                    { label: "All", val: "all" },
+                    { label: "Sem 4", val: 4 },
+                    { label: "All Sem", val: "all" },
                   ].map((item) => {
                     const isActive = subjectSemFilter === item.val;
                     return (
                       <button
                         key={String(item.val)}
                         type="button"
-                        onClick={() => setSubjectSemFilter(item.val as any)}
+                        onClick={() => {
+                          setSubjectSemFilter(item.val as any);
+                          setSelectedCourseFilter("all");
+                        }}
                         className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                           isActive
                             ? "bg-primary text-primary-foreground font-bold shadow-xs"
@@ -334,16 +401,18 @@ export default function DashboardPage() {
                   })}
                 </div>
 
+                {/* Dynamic Subject Filter Dropdown */}
                 <select
                   value={selectedCourseFilter}
                   onChange={(e) => setSelectedCourseFilter(e.target.value)}
-                  className="h-8 px-2.5 rounded-xl border border-border bg-background text-xs font-semibold text-foreground outline-none cursor-pointer"
+                  className="h-8 px-2.5 rounded-xl border border-border bg-background text-xs font-semibold text-foreground outline-none cursor-pointer max-w-[190px]"
                 >
-                  <option value="all">All Topics</option>
-                  <option value="dsa">Data Structures</option>
-                  <option value="dbms">DBMS</option>
-                  <option value="ca">Computer Arch</option>
-                  <option value="java">Java OOP</option>
+                  <option value="all">All Subjects ({availableSubjectsForFilter.length})</option>
+                  {availableSubjectsForFilter.map((s) => (
+                    <option key={s.id} value={s.id}>
+                      {s.code ? `[${s.code}] ` : ""}{s.name.length > 25 ? s.name.slice(0, 25) + "..." : s.name}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -366,12 +435,12 @@ export default function DashboardPage() {
                     <div>
                       {/* Top Row: Code & Counts */}
                       <div className="flex items-center justify-between gap-2 mb-2.5">
-                        <div className="flex items-center gap-1.5">
+                        <div className="flex items-center gap-1.5 flex-wrap">
                           <span className="px-2 py-0.5 rounded-md font-mono text-[10px] font-bold bg-primary/10 text-primary dark:text-primary border border-primary/20">
                             {sub.code || "SUB"}
                           </span>
-                          <span className="text-[10px] font-semibold text-muted-foreground">
-                            Sem {sub.semester}
+                          <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-secondary text-muted-foreground border border-border">
+                            {isBcaSubject(sub) ? "BCA" : "B.Tech"} · Sem {sub.semester}
                           </span>
                         </div>
                         <span className="text-[11px] font-medium text-muted-foreground flex items-center gap-1">

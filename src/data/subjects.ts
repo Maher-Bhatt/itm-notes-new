@@ -147,14 +147,42 @@ const rawBtechSubjects: Subject[] = [
   ),
 ];
 
-export const btechSubjects: Subject[] = rawBtechSubjects.map(enrichSubjectWithBankMCQs);
+export const btechSubjects: Subject[] = rawBtechSubjects
+  .map(enrichSubjectWithBankMCQs)
+  .map((s) => ({ ...s, program: "B.Tech" }));
 
-export const bcaSubjects: Subject[] = bcaMasterSubjects;
+export const bcaSubjects: Subject[] = bcaMasterSubjects.map((s) => ({
+  ...s,
+  program: "BCA",
+}));
 
 export const subjects: Subject[] = [
   ...btechSubjects,
   ...bcaSubjects,
 ];
+
+export function isBcaSubject(subject: { id?: string; code?: string; program?: string } | null | undefined): boolean {
+  if (!subject) return false;
+  if (subject.program?.toUpperCase() === "BCA") return true;
+  if (subject.program?.toUpperCase() === "B.TECH") return false;
+  const id = (subject.id || "").toLowerCase();
+  const code = (subject.code || "").toUpperCase();
+  return id.startsWith("bca") || code.startsWith("BCA");
+}
+
+export function isBtechSubject(subject: { id?: string; code?: string; program?: string } | null | undefined): boolean {
+  return !isBcaSubject(subject);
+}
+
+export function getSubjectsForProgram(
+  program: string | null | undefined,
+  semester?: number | "all"
+): Subject[] {
+  const isBca = program?.toLowerCase().includes("bca");
+  const base = isBca ? bcaSubjects : btechSubjects;
+  if (!semester || semester === "all") return base;
+  return base.filter((s) => s.semester === semester);
+}
 
 export function getSubject(id: any): Subject | undefined {
   if (!id) return undefined;

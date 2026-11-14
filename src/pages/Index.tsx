@@ -1,5 +1,5 @@
 import { useNavigate, Link } from "react-router-dom";
-import { subjects, getAllTopicIds } from "@/data/subjects";
+import { subjects, getAllTopicIds, isBcaSubject } from "@/data/subjects";
 import { REAL_STUDY_MATERIALS } from "@/data/materialsData";
 import { useProgress } from "@/hooks/useProgress";
 import { useGamification } from "@/hooks/useGamification";
@@ -57,6 +57,9 @@ export default function Index() {
   const { semesterNumber } = useAcademic();
   const [searchOpen, setSearchOpen] = useState(false);
   const [semesterFilter, setSemesterFilter] = useState<number | 'all'>(profile?.semester || semesterNumber || 1);
+  const [programFilter, setProgramFilter] = useState<"btech" | "bca" | "all">(() => {
+    return profile?.program?.toLowerCase().includes("bca") ? "bca" : "btech";
+  });
   const navigate = useNavigate();
 
   // If authenticated user hasn't completed onboarding, direct to /onboarding
@@ -77,15 +80,27 @@ export default function Index() {
     }
   }, [semesterNumber, profile?.semester]);
 
-  // Clean list of verified subjects with actual topics
+  // Sync program with profile
+  useEffect(() => {
+    if (profile?.program) {
+      setProgramFilter(profile.program.toLowerCase().includes("bca") ? "bca" : "btech");
+    }
+  }, [profile?.program]);
+
+  // Clean list of verified subjects with actual topics matching program
   const validSubjects = useMemo(() => {
     return subjects
-      .filter((s) => s.units && s.units.some((u) => u.topics && u.topics.length > 0))
+      .filter((s) => {
+        const isBca = isBcaSubject(s);
+        if (programFilter === "btech" && isBca) return false;
+        if (programFilter === "bca" && !isBca) return false;
+        return s.units && s.units.some((u) => u.topics && u.topics.length > 0);
+      })
       .sort((a, b) => {
         if (a.semester !== b.semester) return a.semester - b.semester;
         return a.name.localeCompare(b.name);
       });
-  }, []);
+  }, [programFilter]);
 
   const totalTopics = validSubjects.reduce((sum, s) => sum + getAllTopicIds(s.id).length, 0);
   const allTopicIds = validSubjects.flatMap((s) => getAllTopicIds(s.id));
@@ -415,31 +430,66 @@ export default function Index() {
             </p>
           </div>
 
-          {/* Semester Selector Tabs */}
-          <div className="inline-flex p-1 bg-secondary rounded-xl border border-border">
-            <button
-              onClick={() => setSemesterFilter('all')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                semesterFilter === 'all'
-                  ? 'bg-card text-foreground shadow-xs'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              All
-            </button>
-            {[1, 2, 3].map((sem) => (
+          {/* Degree & Semester Selector Tabs */}
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="inline-flex p-1 bg-secondary rounded-xl border border-border">
               <button
-                key={sem}
-                onClick={() => setSemesterFilter(sem)}
+                onClick={() => setProgramFilter('btech')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                  semesterFilter === sem
+                  programFilter === 'btech'
                     ? 'bg-card text-foreground shadow-xs'
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
-                Sem {sem}
+                B.Tech
               </button>
-            ))}
+              <button
+                onClick={() => setProgramFilter('bca')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  programFilter === 'bca'
+                    ? 'bg-card text-foreground shadow-xs'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                BCA
+              </button>
+              <button
+                onClick={() => setProgramFilter('all')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  programFilter === 'all'
+                    ? 'bg-card text-foreground shadow-xs'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                All
+              </button>
+            </div>
+
+            <div className="inline-flex p-1 bg-secondary rounded-xl border border-border">
+              <button
+                onClick={() => setSemesterFilter('all')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  semesterFilter === 'all'
+                    ? 'bg-card text-foreground shadow-xs'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                All Sem
+              </button>
+              {[1, 2, 3].map((sem) => (
+                <button
+                  key={sem}
+                  onClick={() => setSemesterFilter(sem)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                    semesterFilter === sem
+                      ? 'bg-card text-foreground shadow-xs'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  Sem {sem}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 

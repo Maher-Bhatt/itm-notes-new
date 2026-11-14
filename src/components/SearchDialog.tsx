@@ -15,10 +15,11 @@ import {
   Layers,
   FileCode
 } from "lucide-react";
-import { searchTopics, subjects } from "@/data/subjects";
+import { searchTopics, subjects, isBcaSubject } from "@/data/subjects";
 import { REAL_STUDY_MATERIALS } from "@/data/materialsData";
 import { searchFullTextContent, ContentSearchResult } from "@/utils/contentSearchEngine";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { LIBRARY } from "@/data/libraryIndex";
 
@@ -60,6 +61,7 @@ const TOOLS_SEARCH_ITEMS = [
 export function SearchDialog({ open, onOpenChange, onOpenAiDoubt }: SearchDialogProps) {
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
+  const { profile } = useAuth();
 
   useEffect(() => {
     if (!open) setQuery("");
@@ -86,10 +88,17 @@ export function SearchDialog({ open, onOpenChange, onOpenAiDoubt }: SearchDialog
       ...TOOLS_SEARCH_ITEMS.filter((t) => t.title.toLowerCase().includes(q) || t.desc.toLowerCase().includes(q)),
     ];
 
-    // 2. Matched Subjects
-    const matchedSubjects = subjects.filter(
-      (s) => s.name.toLowerCase().includes(q) || s.code.toLowerCase().includes(q)
-    );
+    // 2. Matched Subjects (prioritizing user's degree)
+    const isUserBca = profile?.program?.toLowerCase().includes("bca") ?? false;
+    const matchedSubjects = subjects
+      .filter((s) => s.name.toLowerCase().includes(q) || s.code.toLowerCase().includes(q))
+      .sort((a, b) => {
+        const aMatchesUser = isBcaSubject(a) === isUserBca;
+        const bMatchesUser = isBcaSubject(b) === isUserBca;
+        if (aMatchesUser && !bMatchesUser) return -1;
+        if (!aMatchesUser && bMatchesUser) return 1;
+        return a.semester - b.semester;
+      });
 
     // 3. Matched Study Materials
     const matchedMaterials = REAL_STUDY_MATERIALS.filter(
@@ -307,8 +316,11 @@ export function SearchDialog({ open, onOpenChange, onOpenAiDoubt }: SearchDialog
                           <BookOpen className="h-4 w-4 text-primary shrink-0" />
                           <div className="truncate">
                             <h4 className="text-xs font-bold text-foreground truncate">{sub.name}</h4>
-                            <p className="text-[10px] text-muted-foreground">
-                              {sub.code} • Semester {sub.semester}
+                            <p className="text-[10px] text-muted-foreground flex items-center gap-1.5 mt-0.5">
+                              <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-secondary text-foreground">
+                                {isBcaSubject(sub) ? "BCA" : "B.Tech"}
+                              </span>
+                              <span>{sub.code} • Semester {sub.semester}</span>
                             </p>
                           </div>
                         </div>

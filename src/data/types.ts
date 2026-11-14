@@ -49,6 +49,7 @@ export interface Subject {
   description: string;
   semester: number;
   units: Unit[];
+  program?: "B.Tech" | "BCA" | string;
 }
 
 export interface Progress {

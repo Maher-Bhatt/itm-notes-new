@@ -1,6 +1,7 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { subjects, btechSubjects, bcaSubjects, getAllTopicIds } from "@/data/subjects";
+import { subjects, btechSubjects, bcaSubjects, getAllTopicIds, isBcaSubject, isBtechSubject } from "@/data/subjects";
+import { useAuth } from "@/contexts/AuthContext";
 import { 
   DEPARTMENT_CURRICULA, 
   getAllDepartments, 
@@ -201,16 +202,29 @@ function SubjectCard({
 
 export default function SubjectsPage() {
   const navigate = useNavigate();
+  const { user, profile } = useAuth();
   const { getSubjectProgress, isCompleted } = useProgress();
   const { currentUniversity } = useUniversity();
 
   // Tab View Mode: "interactive" notes vs "specializations" deep research vs "curriculum" directory vs "iimb-topics"
   const [activeTab, setActiveTab] = useState<"interactive" | "specializations" | "curriculum" | "iimb-topics">("interactive");
 
+  // Determine user enrolled program: strictly defaults to B.Tech (or BCA if enrolled in BCA)
+  const defaultProgram = useMemo(() => {
+    return profile?.program?.toLowerCase().includes("bca") ? "bca" : "btech";
+  }, [profile?.program]);
+
   // Interactive study view states
-  const [selectedCourse, setSelectedCourse] = useState<"all" | "btech" | "bca">("all");
-  const [selectedSemester, setSelectedSemester] = useState<number | "all">("all");
+  const [selectedCourse, setSelectedCourse] = useState<"all" | "btech" | "bca">(defaultProgram);
+  const [selectedSemester, setSelectedSemester] = useState<number | "all">(profile?.semester || "all");
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Sync with profile when loaded
+  useEffect(() => {
+    if (profile?.program) {
+      setSelectedCourse(profile.program.toLowerCase().includes("bca") ? "bca" : "btech");
+    }
+  }, [profile?.program]);
 
   // Specialization deep research states
   const allSpecs = useMemo(() => getAllSpecializations(), []);
@@ -263,7 +277,7 @@ export default function SubjectsPage() {
   // Filtered interactive subjects
   const filteredSubjects = useMemo(() => {
     return subjects.filter((subject) => {
-      const isBca = subject.id.startsWith("bca") || (subject.code || "").startsWith("BCA");
+      const isBca = isBcaSubject(subject);
       if (selectedCourse === "bca" && !isBca) return false;
       if (selectedCourse === "btech" && isBca) return false;
 

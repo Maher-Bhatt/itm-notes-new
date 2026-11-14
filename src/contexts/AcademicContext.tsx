@@ -8,6 +8,7 @@ interface AcademicContextType {
   branchId: string | null;
   semesterId: string | null;
   semesterNumber: number;
+  isBcaUser: boolean;
   setAcademicContext: (context: {
     universityId?: string;
     programId?: string;
@@ -27,19 +28,35 @@ export function AcademicProvider({ children }: { children: React.ReactNode }) {
   const [semesterId, setSemesterId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Sync from profile whenever profile.semester is loaded or updated
+  // Sync from profile whenever profile loads or updates
   useEffect(() => {
     if (profile?.semester) {
       setSemesterId(`sem-${profile.semester}`);
     }
-  }, [profile?.semester]);
+    if (profile?.program) {
+      const prog = profile.program.toLowerCase();
+      setProgramId(prog.includes("bca") ? "bca" : "btech");
+    }
+    if (profile?.branch) {
+      setBranchId(profile.branch);
+    }
+  }, [profile?.semester, profile?.program, profile?.branch]);
 
   // Reset when user logs out
   useEffect(() => {
     if (!user) {
       setSemesterId(null);
+      setProgramId(null);
+      setBranchId(null);
     }
   }, [user]);
+
+  const isBcaUser = useMemo(() => {
+    if (profile?.program) {
+      return profile.program.toLowerCase().includes("bca");
+    }
+    return programId === "bca";
+  }, [profile?.program, programId]);
 
   // Derive semester number from semesterId (handles both "sem-N" format and plain numbers)
   const semesterNumber = useMemo(() => {
@@ -102,6 +119,7 @@ export function AcademicProvider({ children }: { children: React.ReactNode }) {
         branchId,
         semesterId,
         semesterNumber,
+        isBcaUser,
         setAcademicContext,
         isLoading,
       }}

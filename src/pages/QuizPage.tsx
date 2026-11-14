@@ -1,7 +1,8 @@
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { subjects } from "@/data/subjects";
+import { subjects, isBcaSubject } from "@/data/subjects";
 import { MASSIVE_QUESTION_BANK } from "@/data/massiveQuestionBank";
+import { useAuth } from "@/contexts/AuthContext";
 import { useGamification } from "@/hooks/useGamification";
 import type { MCQ } from "@/data/types";
 import { 
@@ -54,11 +55,18 @@ interface UserAnswerRecord {
 
 export default function QuizPage() {
   const navigate = useNavigate();
+  const { profile } = useAuth();
   const { recordQuizCompleted, addXp } = useGamification();
 
+  // Degree program filter defaulting to user's enrolled program
+  const userEnrolledDegree = useMemo(() => {
+    return profile?.program?.toLowerCase().includes("bca") ? "bca" : "btech";
+  }, [profile?.program]);
+
   // Selection & Config state
+  const [selectedDegree, setSelectedDegree] = useState<"btech" | "bca" | "all">(userEnrolledDegree);
   const [selectedSubject, setSelectedSubject] = useState<string>("all");
-  const [selectedSemesterFilter, setSelectedSemesterFilter] = useState<number | "all">("all");
+  const [selectedSemesterFilter, setSelectedSemesterFilter] = useState<number | "all">(profile?.semester || "all");
   const [selectedUnitFilter, setSelectedUnitFilter] = useState<string>("all");
   const [questionCount, setQuestionCount] = useState<number>(10);
   const [searchTopicInput, setSearchTopicInput] = useState("");
@@ -79,7 +87,6 @@ export default function QuizPage() {
   const [customPool, setCustomPool] = useState<EnrichedMCQ[] | null>(null);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
-
   // Timing state
   const [totalTimerSeconds, setTotalTimerSeconds] = useState(0);
   const [questionTimerSeconds, setQuestionTimerSeconds] = useState(0);
@@ -96,9 +103,23 @@ export default function QuizPage() {
     }
   });
 
-  // Extract subjects with MCQs
+  // Sync degree when profile loads
+  useEffect(() => {
+    if (profile?.program) {
+      const deg = profile.program.toLowerCase().includes("bca") ? "bca" : "btech";
+      setSelectedDegree(deg);
+    }
+  }, [profile?.program]);
+
+  // Extract subjects with MCQs strictly matching selected degree
   const availableSubjects = useMemo(() => {
     return (subjects || [])
+      .filter((s) => {
+        const isBca = isBcaSubject(s);
+        if (selectedDegree === "btech" && isBca) return false;
+        if (selectedDegree === "bca" && !isBca) return false;
+        return true;
+      })
       .map((s) => {
         let count = 0;
         (s.units || []).forEach((u) => {
@@ -109,7 +130,7 @@ export default function QuizPage() {
         return { ...s, totalMcqs: count };
       })
       .filter((s) => s.totalMcqs > 0);
-  }, []);
+  }, [selectedDegree]);
 
   // All Universal MCQs pool with full metadata across all engineering curricula
   const allUniversalMcqs = useMemo(() => {
@@ -513,6 +534,60 @@ export default function QuizPage() {
               <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-primary/10 text-primary border border-primary/20 text-xs font-mono font-bold shrink-0">
                 <Zap className="h-3.5 w-3.5" />
                 <span>+15 XP / correct</span>
+              </div>
+            </div>
+
+            {/* Degree Program Switcher */}
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-foreground uppercase tracking-wider block">
+                Degree Program
+              </label>
+              <div className="flex flex-wrap items-center gap-1.5 p-1 bg-card rounded-xl border border-border w-fit">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedDegree("btech");
+                    setSelectedSubject("all");
+                    setSelectedUnitFilter("all");
+                  }}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    selectedDegree === "btech"
+                      ? "bg-foreground text-background shadow-sm"
+                      : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                  }`}
+                >
+                  B.Tech Engineering
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedDegree("bca");
+                    setSelectedSubject("all");
+                    setSelectedUnitFilter("all");
+                  }}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    selectedDegree === "bca"
+                      ? "bg-foreground text-background shadow-sm"
+                      : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                  }`}
+                >
+                  BCA Computer Applications
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedDegree("all");
+                    setSelectedSubject("all");
+                    setSelectedUnitFilter("all");
+                  }}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    selectedDegree === "all"
+                      ? "bg-foreground text-background shadow-sm"
+                      : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                  }`}
+                >
+                  All Degrees
+                </button>
               </div>
             </div>
 
