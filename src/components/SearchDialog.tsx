@@ -42,7 +42,7 @@ const LIBRARY_SEARCH_ITEMS = [
 ];
 
 const TOOLS_SEARCH_ITEMS = [
-  { title: "Previous Year Question Papers (PYQs)", category: "Exam", route: "/pyq-papers", icon: FileText, desc: "MST-1, MST-2, and End-Sem papers with step-by-step solutions" },
+  { title: "Previous Year Question Papers (PYQs)", category: "Exam", route: "/papers", icon: FileText, desc: "Real CET-1, CET-2, mid-sem and end-sem papers with worked solutions" },
   { title: "Full Timed Mock Exams", category: "Exam", route: "/mock-exam", icon: Trophy, desc: "Simulate 90-min GTU/ITM university paper with timer & negative marking" },
   { title: "Rapid Revision Packs (Revise in 30 Mins)", category: "Exam", route: "/rapid-revision", icon: Sparkles, desc: "High-yield one-pagers and golden formulas" },
   { title: "Formula & Definition Bank", category: "Reference", route: "/formulas", icon: BookOpen, desc: "Searchable KaTeX math, complexity, and architecture formulas" },

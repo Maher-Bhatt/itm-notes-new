@@ -11,7 +11,7 @@ const ROUTE_TITLES: [RegExp, string][] = [
   [/^\/subject\/[^/]+\/cheat-sheet/, "Cheat sheet"],
   [/^\/subject\//, "Subject"],
   [/^\/imp-questions/, "Question banks"],
-  [/^\/pyq-papers/, "Past papers"],
+  [/^\/(papers|pyq-papers)/, "Past papers"],
   [/^\/mock-exam/, "Mock exams"],
   [/^\/rapid-revision/, "Rapid revision"],
   [/^\/formulas/, "Formula bank"],
@@ -51,7 +51,7 @@ export const SITE_URL = typeof window !== "undefined" && window.location.origin 
 
 /** Public, indexable sections of the app (everything else requires sign-in). */
 export function isPublicPath(pathname: string) {
-  return pathname === "/" || /^\/(library|exam-plan)(\/|$)/.test(pathname);
+  return pathname === "/" || /^\/(library|exam-plan|papers)(\/|$)/.test(pathname);
 }
 
 function upsertMeta(attr: "name" | "property", key: string, content: string) {

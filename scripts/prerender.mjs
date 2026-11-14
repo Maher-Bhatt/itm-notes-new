@@ -215,6 +215,23 @@ for (const s of library) {
   count++;
 }
 
+// ── Past papers index ────────────────────────────────────────────────────────
+{
+  const rows = library.flatMap((s) => s.docs.filter((d) => d.kind === "Question paper" && d.date).map((d) => ({ s, d })));
+  rows.sort((a, b) => b.d.date.localeCompare(a.d.date));
+  const title = "Semester 3 previous-year papers with solutions (DSA, DBMS, CONMP, COA, Java) | CampusLoop";
+  const description = `${rows.length} real ITM SLS Baroda Semester 3 question papers (CET-1, CET-2, mid-semester and end-semester) transcribed as text, with worked solutions.`;
+  const body = shell(
+    `${crumbs([["Home", "/"], ["Past papers"]])}<h1>Semester 3 previous-year papers, solved</h1><p>${esc(description)}</p><ul>${rows
+      .map(({ s, d }) => `<li><a href="/library/${s.slug}/${d.slug}">${esc(s.short)}: ${esc(d.title)}</a> (${d.marks} marks, ${esc(d.academicYear)})</li>`)
+      .join("")}</ul>`
+  );
+  let html = setMeta(template, { title, description, url: `${SITE}/papers`, image: ogImageFor() });
+  html = withJsonLd(html, { "@context": "https://schema.org", "@graph": [breadcrumbLd([["Home", "/"], ["Past papers", "/papers"]])] });
+  write("/papers", withBody(html, body));
+  count++;
+}
+
 // ── Info pages ───────────────────────────────────────────────────────────────
 for (const [slug, page] of Object.entries(infoPages)) {
   const route = `/${slug}`;

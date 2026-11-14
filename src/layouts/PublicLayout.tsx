@@ -8,6 +8,7 @@ import { LIBRARY } from "@/data/libraryIndex";
 
 const NAV = [
   { to: "/library", label: "Library" },
+  { to: "/papers", label: "Papers" },
   { to: "/exam-plan", label: "Exam plan" },
   { to: "/about", label: "About" },
   { to: "/contact", label: "Contact" },

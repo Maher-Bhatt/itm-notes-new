@@ -244,7 +244,7 @@ export default function DashboardPage() {
                 label: "PYQ Papers",
                 desc: "Solved 2024–2026",
                 icon: FileText,
-                onClick: () => navigate("/pyq-papers"),
+                onClick: () => navigate("/papers"),
                 accent: "text-primary bg-primary/10 border-primary/20",
               },
               {

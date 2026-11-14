@@ -20,6 +20,11 @@ export interface LibraryDoc {
   featured: boolean;
   pages?: number;
   summary: string;
+  /** Past papers only */
+  exam?: "CET-1" | "CET-2" | "Mid-sem" | "End-sem" | string;
+  date?: string;
+  academicYear?: string;
+  marks?: number;
 }
 
 export interface LibrarySubject {

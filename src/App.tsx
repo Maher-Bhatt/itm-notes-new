@@ -96,7 +96,7 @@ const ContactPage = lazyWithRetry(() => InfoPageModule().then((m) => ({ default:
 const ReaderPage = lazyWithRetry(() => import("./pages/ReaderPage"));
 const CommunityPage = lazyWithRetry(() => import("./pages/CommunityPage"));
 const AdminDashboard = lazyWithRetry(() => import("./pages/admin/AdminDashboard"));
-const PyqPapersPage = lazyWithRetry(() => import("./pages/PyqPapersPage"));
+const PapersPage = lazyWithRetry(() => import("./pages/PapersPage"));
 const MockExamPage = lazyWithRetry(() => import("./pages/MockExamPage"));
 const RapidRevisionPage = lazyWithRetry(() => import("./pages/RapidRevisionPage"));
 const FormulaBankPage = lazyWithRetry(() => import("./pages/FormulaBankPage"));
@@ -202,6 +202,7 @@ const App = () => (
                           <Route path="/library" element={<LibraryPage />} />
                           <Route path="/library/:subjectSlug" element={<LibraryPage />} />
                           <Route path="/exam-plan" element={<ExamPlanPage />} />
+                          <Route path="/papers" element={<PapersPage />} />
                         </Route>
 
                         {/* Public information pages */}
@@ -237,7 +238,7 @@ const App = () => (
 
                           {/* 32 High-Value Features Routes */}
                           <Route path="/today" element={<ProtectedRoute><TodayPage /></ProtectedRoute>} />
-                          <Route path="/pyq-papers" element={<ProtectedRoute><PyqPapersPage /></ProtectedRoute>} />
+                          <Route path="/pyq-papers" element={<Navigate to="/papers" replace />} />
                           <Route path="/mock-exam" element={<ProtectedRoute><MockExamPage /></ProtectedRoute>} />
                           <Route path="/rapid-revision" element={<ProtectedRoute><RapidRevisionPage /></ProtectedRoute>} />
                           <Route path="/formulas" element={<ProtectedRoute><FormulaBankPage /></ProtectedRoute>} />

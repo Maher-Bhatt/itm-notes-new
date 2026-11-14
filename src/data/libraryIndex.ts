@@ -203,6 +203,34 @@ export const LIBRARY: LibrarySubject[] = [
         "featured": false,
         "pages": 0,
         "summary": ""
+      },
+      {
+        "slug": "paper-cet-2-2025-10-10",
+        "title": "CET-2 · 10 Oct 2025",
+        "kind": "Question paper",
+        "unit": null,
+        "words": 1443,
+        "scanned": false,
+        "featured": false,
+        "summary": "Data Structures & Algorithms CET-2 paper, 10 Oct 2025 (2025-26, 30 marks), with worked solutions.",
+        "exam": "CET-2",
+        "date": "2025-10-10",
+        "academicYear": "2025-26",
+        "marks": 30
+      },
+      {
+        "slug": "paper-cet-1-2025-08-25",
+        "title": "CET-1 · 25 Aug 2025",
+        "kind": "Question paper",
+        "unit": null,
+        "words": 1290,
+        "scanned": false,
+        "featured": false,
+        "summary": "Data Structures & Algorithms CET-1 paper, 25 Aug 2025 (2025-26, 30 marks), with worked solutions.",
+        "exam": "CET-1",
+        "date": "2025-08-25",
+        "academicYear": "2025-26",
+        "marks": 30
       }
     ]
   },
@@ -319,6 +347,20 @@ export const LIBRARY: LibrarySubject[] = [
         "featured": false,
         "pages": 39,
         "summary": ""
+      },
+      {
+        "slug": "paper-cet-1-2025-08-23",
+        "title": "CET-1 · 23 Aug 2025",
+        "kind": "Question paper",
+        "unit": null,
+        "words": 1203,
+        "scanned": false,
+        "featured": false,
+        "summary": "Database Management Systems CET-1 paper, 23 Aug 2025 (2025-26, 30 marks), with worked solutions.",
+        "exam": "CET-1",
+        "date": "2025-08-23",
+        "academicYear": "2025-26",
+        "marks": 30
       }
     ]
   },
@@ -672,6 +714,20 @@ export const LIBRARY: LibrarySubject[] = [
         "featured": false,
         "pages": 66,
         "summary": ""
+      },
+      {
+        "slug": "paper-end-sem-2025-12-17",
+        "title": "End-semester exam · 17 Dec 2025",
+        "kind": "Question paper",
+        "unit": null,
+        "words": 3248,
+        "scanned": false,
+        "featured": false,
+        "summary": "Computer Organization & Architecture End-semester exam paper, 17 Dec 2025 (2025-26, 100 marks), with worked solutions.",
+        "exam": "End-sem",
+        "date": "2025-12-17",
+        "academicYear": "2025-26",
+        "marks": 100
       }
     ]
   },

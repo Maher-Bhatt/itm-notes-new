@@ -106,7 +106,7 @@ export const CampusSidebar: React.FC<CampusSidebarProps> = ({
     { name: 'Today', path: '/today', icon: Calendar },
     { name: 'Subjects & Topics', path: '/subjects', icon: BookOpen },
     { name: 'Question Banks', path: '/imp-questions', icon: HelpCircle },
-    { name: 'Past Papers', path: '/pyq-papers', icon: FileText },
+    { name: 'Past Papers', path: '/papers', icon: FileText },
     { name: 'Mock Exams', path: '/mock-exam', icon: Sparkles },
     { name: 'Rapid Revision', path: '/rapid-revision', icon: Zap },
     { name: 'Formula Bank', path: '/formulas', icon: BookOpen },
