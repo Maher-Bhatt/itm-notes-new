@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Download, Trash2, X, AlertTriangle, ShieldCheck, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
+import { createSupportTicket } from "@/services/adminOperationsService";
 import { useAuth } from "@/contexts/AuthContext";
 import { useGamification } from "@/hooks/useGamification";
 
@@ -35,6 +36,8 @@ export function DataExportDeleteModal({ isOpen, onClose }: DataExportDeleteModal
         studyPlan: JSON.parse(localStorage.getItem("itm_active_study_plan") || "null"),
         srsFlashcards: JSON.parse(localStorage.getItem("itm_srs_flashcards") || "{}"),
         focusSessions: JSON.parse(localStorage.getItem("itm_focus_sessions_log") || "[]"),
+        libraryReadingProgress: JSON.parse(localStorage.getItem("cl_reading_progress_v1") || "{}"),
+        libraryNotes: JSON.parse(localStorage.getItem("cl_reader_notes_v1") || "{}"),
       };
 
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportPayload, null, 2));
@@ -53,30 +56,47 @@ export function DataExportDeleteModal({ isOpen, onClose }: DataExportDeleteModal
     }
   };
 
-  const handleDeleteAccount = () => {
+  const handleDeleteAccount = async () => {
     if (confirmDeleteText !== "DELETE") {
       toast.error("Type DELETE to confirm account removal.");
       return;
     }
 
     setIsDeleting(true);
-    setTimeout(async () => {
-      // Clear personal storage
-      const keysToClear = [
-        "itm_bookmarks",
-        "itm_quiz_attempts",
-        "itm_daily_attendance_log",
-        "itm_active_study_plan",
-        "itm_srs_flashcards",
-        "itm_focus_sessions_log",
-      ];
-      keysToClear.forEach((k) => localStorage.removeItem(k));
-
-      toast.success("Account and local study data deleted.");
+    try {
+      // A browser client cannot delete an auth account itself (that needs a server-side admin key),
+      // so record a real deletion request that an administrator completes, as promised in the privacy policy.
+      await createSupportTicket(
+        `Please delete my CampusLoop account and all associated data. User ID: ${user?.id ?? "unknown"}`,
+        "Account deletion request",
+        user?.email || undefined,
+        profile?.display_name || undefined,
+        user?.id
+      );
+    } catch {
+      toast.error("We couldn't submit your deletion request. Please try again or use the contact page.");
       setIsDeleting(false);
-      onClose();
-      await signOut();
-    }, 1000);
+      return;
+    }
+
+    [
+      "itm_bookmarks",
+      "itm_quiz_attempts",
+      "itm_daily_attendance_log",
+      "itm_active_study_plan",
+      "itm_srs_flashcards",
+      "itm_focus_sessions_log",
+      "cl_reading_progress_v1",
+      "cl_reading_last_v1",
+      "cl_reader_notes_v1",
+    ].forEach((k) => localStorage.removeItem(k));
+
+    toast.success("Deletion request received", {
+      description: "Your account and its data will be deleted within 30 days. Data on this device has been cleared.",
+    });
+    setIsDeleting(false);
+    onClose();
+    await signOut();
   };
 
   return (
@@ -132,7 +152,7 @@ export function DataExportDeleteModal({ isOpen, onClose }: DataExportDeleteModal
               <span>Delete Student Account</span>
             </h4>
             <p className="text-muted-foreground text-[11px] leading-relaxed">
-              This action permanently deletes your local study streak ({game.streakDays} days), {game.xp} XP, attendance logs, and quiz history. This action cannot be reversed.
+              Sends a request to delete your account and everything linked to it (profile, posts, messages, progress). We complete deletions within 30 days. Study data on this device ({game.streakDays}-day streak, {game.xp} XP, notes and reading progress) is cleared immediately. This cannot be undone.
             </p>
 
             <div>

@@ -40,14 +40,17 @@ Top navigation (public): **Library · Papers · Guides · Universities**, then a
 
 ## Phases
 
-### Phase 1: Foundation (1–2 days)
+### Phase 1: Foundation (done 14 Nov 2026)
+
+Remaining from this phase: `/auth` still shows the old landing page around the sign-in form; give it a focused sign-in page.
+
 
 - [x] Make the Library and reader public; sitemap with all 68 URLs; robots allow `/library` and `/reading/`
-- [ ] Replace the landing page with a College Confidential-style home: one promise ("Your semester, in one calm place"), a search box, subject cards, 3 real proof numbers (documents, subjects, practicals), a "Why CampusLoop" section, footer
-- [ ] Public header and footer on all public pages (logo, 4 links, search, sign in; footer with About, Privacy, Terms, Contact)
-- [ ] About, Privacy Policy, Terms of Use, Contact and Community Guidelines pages
-- [ ] Cookie/analytics consent that defaults to essential-only
-- [ ] Remove the unused PWA install prompt branding and the leftover "ITM SLS Baroda" hard-coding in the logo subtitle and sidebar
+- [x] Replace the landing page with a College Confidential-style home: one promise ("Your semester, in one calm place"), a search box, subject cards, 3 real proof numbers (documents, subjects, practicals), a "Why CampusLoop" section, footer
+- [x] Public header and footer on all public pages (logo, 4 links, search, sign in; footer with About, Privacy, Terms, Contact)
+- [x] About, Privacy Policy, Terms of Use, Contact and Community Guidelines pages
+- [x] Cookie/analytics consent: not needed, because only strictly necessary storage is used (stated in the privacy policy). Add a consent banner before adding any analytics
+- [x] Remove the unused PWA install prompt branding and the leftover "ITM SLS Baroda" hard-coding in the logo subtitle and sidebar
 
 ### Phase 2: Discoverability (2–3 days)
 

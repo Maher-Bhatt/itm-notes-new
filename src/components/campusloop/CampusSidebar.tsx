@@ -267,7 +267,7 @@ export const CampusSidebar: React.FC<CampusSidebarProps> = ({
                   {profile?.display_name || 'Campus Student'}
                 </p>
                 <p className="text-xs text-muted-foreground dark:text-stone-400 truncate">
-                  {profile?.branch || 'ITM SLS Baroda'}
+                  {profile?.branch || 'Student'}
                 </p>
               </div>
             </Link>

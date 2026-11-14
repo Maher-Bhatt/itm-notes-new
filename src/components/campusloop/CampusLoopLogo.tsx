@@ -53,7 +53,7 @@ export const CampusLoopLogo: React.FC<CampusLoopLogoProps> = ({
         </div>
         {showSubtitle && (
           <span className="text-[10px] font-semibold text-muted-foreground dark:text-stone-400 tracking-wider uppercase mt-0.5">
-            ITM SLS Baroda
+            Student study platform
           </span>
         )}
       </div>

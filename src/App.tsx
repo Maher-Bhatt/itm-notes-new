@@ -17,7 +17,6 @@ import CProgrammingImpQuestionsPage from "./pages/CProgrammingImpQuestionsPage";
 import PythonImpQuestionsPage from "./pages/PythonImpQuestionsPage";
 import OopjImpQuestionsPage from "./pages/OopjImpQuestionsPage";
 import AuthPage from "./pages/AuthPage";
-import LandingPage from "./pages/LandingPage";
 import DashboardPage from "./pages/DashboardPage";
 import OnboardingPage from "./pages/OnboardingPage";
 import { lazy, Suspense, useEffect } from "react";
@@ -33,6 +32,7 @@ import GpaCalculatorPage from "./pages/GpaCalculatorPage";
 import SubjectCheatSheetPage from "./pages/SubjectCheatSheetPage";
 import SubjectsPage from "./pages/SubjectsPage";
 import { PortalLayout } from "@/layouts/PortalLayout";
+import { PublicLayout } from "@/layouts/PublicLayout";
 import { PomodoroProvider } from "@/contexts/PomodoroContext";
 import { FocusModeProvider } from "@/contexts/FocusModeContext";
 import { GamificationProvider, useGamification } from "@/hooks/useGamification";
@@ -85,6 +85,13 @@ function lazyWithRetry<T extends React.ComponentType<any>>(
 // React.lazy + Suspense code splitting with deployment-resilient retry
 const CodingLabPage = lazyWithRetry(() => import("./pages/CodingLabPage"));
 const LibraryPage = lazyWithRetry(() => import("./pages/LibraryPage"));
+const HomePage = lazyWithRetry(() => import("./pages/HomePage"));
+const InfoPageModule = () => import("./pages/InfoPage");
+const AboutPage = lazyWithRetry(() => InfoPageModule().then((m) => ({ default: () => <m.InfoPage slug="about" /> })));
+const PrivacyPage = lazyWithRetry(() => InfoPageModule().then((m) => ({ default: () => <m.InfoPage slug="privacy" /> })));
+const TermsPage = lazyWithRetry(() => InfoPageModule().then((m) => ({ default: () => <m.InfoPage slug="terms" /> })));
+const GuidelinesPage = lazyWithRetry(() => InfoPageModule().then((m) => ({ default: () => <m.InfoPage slug="guidelines" /> })));
+const ContactPage = lazyWithRetry(() => InfoPageModule().then((m) => ({ default: m.ContactPage })));
 const ReaderPage = lazyWithRetry(() => import("./pages/ReaderPage"));
 const CommunityPage = lazyWithRetry(() => import("./pages/CommunityPage"));
 const AdminDashboard = lazyWithRetry(() => import("./pages/admin/AdminDashboard"));
@@ -123,7 +130,7 @@ function NativeAppInitializer() {
 }
 
 /**
- * RootRoute: If guest/unauthenticated, renders the modern marketing LandingPage.
+ * RootRoute: visitors get the public HomePage; signed-in students go to /dashboard.
  * If student is signed in, redirects to the personalized /dashboard inside PortalLayout.
  */
 function RootRoute() {
@@ -132,9 +139,20 @@ function RootRoute() {
     return <PageFallback />;
   }
   if (!user) {
-    return <LandingPage />;
+    return (
+      <PublicLayout>
+        <HomePage />
+      </PublicLayout>
+    );
   }
   return <Navigate to="/dashboard" replace />;
+}
+
+/** Library: public header/footer for visitors, the app shell for signed-in students. */
+function LibraryShell() {
+  const { user, isLoading } = useAuth();
+  if (isLoading) return <PageFallback />;
+  return user ? <PortalLayout /> : <PublicLayout />;
 }
 
 const App = () => (
@@ -179,10 +197,22 @@ const App = () => (
                         <Route path="/settings" element={<Navigate to="/profile" replace />} />
 
                         {/* Unified Modern Portal Layout */}
-                        <Route element={<PortalLayout />}>
-                          <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+                        <Route element={<LibraryShell />}>
                           <Route path="/library" element={<LibraryPage />} />
                           <Route path="/library/:subjectSlug" element={<LibraryPage />} />
+                        </Route>
+
+                        {/* Public information pages */}
+                        <Route element={<PublicLayout />}>
+                          <Route path="/about" element={<AboutPage />} />
+                          <Route path="/privacy" element={<PrivacyPage />} />
+                          <Route path="/terms" element={<TermsPage />} />
+                          <Route path="/guidelines" element={<GuidelinesPage />} />
+                          <Route path="/contact" element={<ContactPage />} />
+                        </Route>
+
+                        <Route element={<PortalLayout />}>
+                          <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
                           <Route path="/materials" element={<ProtectedRoute><MaterialsPage /></ProtectedRoute>} />
                           <Route path="/quiz" element={<ProtectedRoute><QuizPage /></ProtectedRoute>} />
                           <Route path="/coding-lab" element={<ProtectedRoute><ErrorBoundary><CodingLabPage /></ErrorBoundary></ProtectedRoute>} />
